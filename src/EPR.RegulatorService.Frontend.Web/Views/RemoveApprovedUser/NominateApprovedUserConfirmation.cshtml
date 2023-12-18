@@ -1,0 +1,56 @@
+@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
+
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+
+@model EPR.RegulatorService.Frontend.Core.Sessions.RemoveApprovedUserSession
+
+@{
+  ViewData["Title"] = @Localizer["Page.Title"];
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+  const string errorClass = "govuk-input--error";
+}
+
+@* Next page not required for user story after user continue *@
+
+<form action="@Url.Action("", "")"
+      enctype="application/x-www-form-urlencoded" method="post">
+  <input type="hidden" value=@Model.ConnExternalId name="ConnExternalId"/>
+  <input type="hidden" value=@Model.OrganisationId name="OrganisationId"/>
+
+  <div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                  @Localizer["Page.Title"]
+                </h1>
+              </legend>
+              <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">
+                    @Localizer["User.Prompt"]
+                  </dt>
+                  <dd class="govuk-summary-list__value">
+                    @Model.NominationDecision
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" href="/regulators/remove-approved/approve-confirmation">
+                      @Localizer["Change"]<span class="govuk-visually-hidden"> @Model</span>
+                    </a>
+                  </dd>
+                </div>
+              </dl>
+            </fieldset>
+          </div>
+          <button class="govuk-button" data-module="govuk-button" type="submit">
+            @SharedLocalizer["Continue"]
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</form>

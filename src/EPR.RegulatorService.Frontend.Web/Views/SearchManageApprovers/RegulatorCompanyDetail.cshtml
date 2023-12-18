@@ -1,0 +1,136 @@
+﻿@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorSearchPage
+
+@model RegulatorCompanyDetailViewModel
+@{
+  ViewData["Title"] = @Localizer["Page.Title"];
+}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@Model.OrganisationName</h1>
+
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationID"]</h3>
+          <p class="govuk-body">@Model.OrganisationId</p>
+        </div>
+
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationType"]</h3>
+          <p class="govuk-body">@(Model.IsComplianceScheme ? Localizer["Text.ComplianceScheme"] : Localizer["Text.DirectProducer"])</p>
+        </div>
+
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.RegisteredAddress"]</h3>
+          <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.BuildingNumber @Model.BusinessAddress.BuildingName</p>
+          <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.Street</p>
+          <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.County</p>
+          <p class="govuk-body">@Model.BusinessAddress.PostCode</p>
+        </div>
+
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.CompaniesHouseNumber"]</h3>
+          @if (!string.IsNullOrEmpty(@Model.CompaniesHouseNumber))
+          {
+            <p class="govuk-body">@Model.CompaniesHouseNumber</p>
+            <companies-house-link gov-value="@Model.CompaniesHouseNumber" class="govuk-link govuk-link--no-visited-state">
+              @Localizer["link.CompaniesHouseRegister"]
+            </companies-house-link>
+          }
+          else
+          {
+            <p class="govuk-body">@Localizer["Text.NotListed"]</p>
+          }
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="govuk-tabs" data-module="govuk-tabs">
+    <h2 class="govuk-tabs__title">
+      @Localizer["TabTitle.Contents"]
+    </h2>
+    <ul class="govuk-tabs__list">
+      <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+        <a class="govuk-tabs__tab" href="#approved-person">
+          @Localizer["Tab.ApprovedPerson"]
+        </a>
+      </li>
+      <li class="govuk-tabs__list-item">
+        <a class="govuk-tabs__tab" href="#delegated-persons">
+          @Localizer["Tab.DelegatedPersons"]
+        </a>
+      </li>
+      <li class="govuk-tabs__list-item">
+        <a class="govuk-tabs__tab" href="#admin-users">
+          @Localizer["Tab.AdminUsers"]
+        </a>
+      </li>
+      <li class="govuk-tabs__list-item">
+        <a class="govuk-tabs__tab" href="#basic-users">
+          @Localizer["Tab.BasicUsers"]
+        </a>
+      </li>
+    </ul>
+
+    <div class="govuk-tabs__panel" id="approved-person">
+      @if (Model.ApprovedUsersInformation.ApprovedUsers.Any())
+      {
+        <partial name="Partials/ManageApprovedUser/_ApprovedPerson" model="Model.ApprovedUsersInformation"/>
+      }
+      else
+      {
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">@Localizer["TextAssist.Warning"]</span>
+            @Localizer["Text.NoApprovedPerson"]
+          </strong>
+        </div>
+        <form class="govuk-!-display-inline-block"
+              action="@Url.Action("ApprovedPersonListPage", "SearchManageApprovers")"
+              enctype="multipart/form-data" method="GET">
+          <input type="hidden" name="externalOrganisationId" value="@Model.ExternalOrganisationId"/>
+          <button class="govuk-button" data-module="govuk-button">
+            @Localizer["Button.NominateNewApprovedPerson"]
+          </button>
+        </form>
+      }
+    </div>
+
+    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="delegated-persons">
+      @if (Model.DelegatedUsers.Any())
+      {
+        <partial name="Partials/ManageApprovedUser/_DelegatedPersons" model="Model.DelegatedUsers" />
+      }
+      else
+      {
+        <p class="govuk-body govuk-!-margin-5">@Localizer["Text.NoDelegatedPersons"]</p>
+      }
+    </div>
+
+    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="admin-users">
+      @if (Model.AdminUsers.Any())
+      {
+        <partial name="Partials/ManageApprovedUser/_AdminUsers" model="Model.AdminUsers" />
+      }
+      else
+      {
+        <p class="govuk-body govuk-!-margin-5">@Localizer["Text.NoAdminUsers"]</p>
+      }
+    </div>
+
+    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="basic-users">
+      @if (Model.BasicUsers.Any())
+      {
+        <partial name="Partials/ManageApprovedUser/_BasicUsers" model="Model.BasicUsers" />
+      }
+      else
+      {
+        <p class="govuk-body govuk-!-margin-5">@Localizer["Text.NoBasicUsers"]</p>
+      }
+    </div>
+  </div>
+</div>

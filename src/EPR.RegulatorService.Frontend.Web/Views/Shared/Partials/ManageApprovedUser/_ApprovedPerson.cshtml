@@ -1,0 +1,53 @@
+﻿@model EPR.RegulatorService.Frontend.Core.Models.CompanyDetails.ApprovedUserInformation
+
+@foreach (var user in Model.ApprovedUsers)
+{
+  <div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+      <h2 class="govuk-summary-card__title">@user.FirstName @user.LastName</h2>
+      <ul class="govuk-summary-card__actions">
+        <li class="govuk-summary-card__action">
+          <p class="govuk-body">
+            @Html.ActionLink(SharedLocalizer["Regulator.CompanyDetail.Remove"].Value,
+              "Confirm",
+              "RemoveApprovedUser",
+              new {connExternalId = user.ExternalId,
+                userName = $"{user.FirstName + " " + user.LastName}",
+                organisationName = Model.OrganisationName,
+                organisationId = Model.OrganisationExternalId
+              },
+              new { @class = "govuk-link govuk-link--no-visited-state" })
+          </p>
+        </li>
+      </ul>
+    </div>
+    <div class="govuk-summary-card__content">
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            @SharedLocalizer["Regulator.CompanyDetail.CompanyRole"]
+          </dt>
+          <dd class="govuk-summary-list__value">
+            @user.JobTitle
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            @SharedLocalizer["Regulator.CompanyDetail.Telephone"]
+          </dt>
+          <dd class="govuk-summary-list__value">
+            @user.PhoneNumber
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            @SharedLocalizer["Regulator.CompanyDetail.Email"]
+          </dt>
+          <dd class="govuk-summary-list__value">
+            @user.Email
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+}

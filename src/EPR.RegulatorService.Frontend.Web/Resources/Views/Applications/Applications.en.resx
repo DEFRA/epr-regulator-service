@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title.ApplicationTitle" xml:space="preserve">
+    <value>Regulator Service</value>
+  </data>
+  <data name="Title.EnvironmentAgency" xml:space="preserve">
+    <value>Environment Agency</value>
+    <comment>EnvironmentAgency</comment>
+  </data>
+  <data name="Subtitle.ApplicationsForApprovedDelegated" xml:space="preserve">
+    <value>Applications for approved and delegated people</value>
+  </data>
+  <data name="Success.NationTransferred" xml:space="preserve">
+    <value>You’ve transferred {0} to the {1}</value>
+  </data>
+  <data name="RejectedApprovedPerson" xml:space="preserve">
+      <value>You rejected {0} as an approved person. This also means you’ve rejected any delegated people.</value>
+  </data>
+  <data name="Applications.Title" xml:space="preserve">
+    <value>Environment Agency</value>
+  </data>
+</root>
+

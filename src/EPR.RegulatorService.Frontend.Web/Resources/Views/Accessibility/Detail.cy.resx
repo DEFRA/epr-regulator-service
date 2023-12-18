@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Accessibility.Call" xml:space="preserve">
+    <value>ffoniwch 03459 33 55 77 (dydd Llun i ddydd Gwener, 8.30am i 5pm)</value>
+  </data>
+  <data name="Accessibility.ChangeColours" xml:space="preserve">
+    <value>newid lliwiau, lefelau cyferbyniad a ffontiau</value>
+  </data>
+  <data name="Accessibility.ComplianceStatus" xml:space="preserve">
+    <value>Statws cydymffurfio</value>
+  </data>
+  <data name="Accessibility.ContactingUs" xml:space="preserve">
+    <value>Cysylltu â ni dros y ffôn neu ymweld â ni’n bersonol</value>
+  </data>
+  <data name="Accessibility.ContactUs" xml:space="preserve">
+    <value>Cysylltu â ni</value>
+  </data>
+  <data name="Accessibility.DefraIsCommitted" xml:space="preserve">
+    <value>Mae Defra wedi ymrwymo i wneud ei gwefan yn hygyrch, yn unol â Rheoliadau Hygyrchedd Cyrff Sector Cyhoeddus (Gwefannau a Chymwysiadau Symudol) (Rhif 2) 2018.</value>
+  </data>
+  <data name="Accessibility.Email" xml:space="preserve">
+    <value>ebost</value>
+  </data>
+  <data name="Accessibility.EnforcementProcedure" xml:space="preserve">
+    <value>Gweithdrefn orfodi</value>
+  </data>
+  <data name="Accessibility.EqualityAdvisorySupportService" xml:space="preserve">
+    <value>gysylltu â’r Gwasanaeth Cynghori a Chymorth Cydraddoldeb (EASS)</value>
+  </data>
+  <data name="Accessibility.FeedbackAndContact" xml:space="preserve">
+    <value>Adborth a gwybodaeth gysylltu</value>
+  </data>
+  <data name="Accessibility.FindOutHowTo" xml:space="preserve">
+    <value>Rhagor o wybodaeth am sut i</value>
+  </data>
+  <data name="Accessibility.HasAdviceOn" xml:space="preserve">
+    <value>gyngor ar wneud eich dyfais yn haws i’w defnyddio os oes gennych anabledd.</value>
+  </data>
+  <data name="Accessibility.HowAccessible" xml:space="preserve">
+    <value>Pa mor hygyrch yw’r wefan yma</value>
+  </data>
+  <data name="Accessibility.IfYouAreNotHappy" xml:space="preserve">
+    <value>Os nad ydych chi’n fodlon ar y ffordd rydyn ni’n ymateb i’ch cwyn</value>
+  </data>
+  <data name="Accessibility.IfYouNeedInformation" xml:space="preserve">
+    <value>Os oes arnoch chi angen gwybodaeth ar y wefan yma mewn fformat gwahanol fel PDF hygyrch, print bras, hawdd ei ddarllen, recordiad sain neu braille:</value>
+  </data>
+  <data name="Accessibility.LastReviewed" xml:space="preserve">
+    <value>Y tro diwethaf iddo gael ei adolygu oedd</value>
+  </data>
+  <data name="Accessibility.NavigateUsingKeyboard" xml:space="preserve">
+    <value>llywio’r rhan fwyaf o’r wefan drwy ddefnyddio’r bysellfwrdd yn unig</value>
+  </data>
+  <data name="Accessibility.NavigateUsingReader" xml:space="preserve">
+    <value>gwrando ar y rhan fwyaf o’r wefan drwy ddefnyddio darllenydd sgrin (gan gynnwys y fersiynau diweddaraf o JAWS, NVDA a VoiceOver)</value>
+  </data>
+  <data name="Accessibility.NavigateUsingSpeech" xml:space="preserve">
+    <value>llywio’r rhan fwyaf o’r wefan drwy ddefnyddio meddalwedd adnabod lleferydd</value>
+  </data>
+  <data name="Accessibility.OurOfficesHaveAudio" xml:space="preserve">
+    <value>Mae gan ein swyddfeydd ddolenni sain, neu os byddwch yn cysylltu â ni cyn eich ymweliad gallwn drefnu cyfieithydd Iaith Arwyddion Prydain (BSL).</value>
+  </data>
+  <data name="Accessibility.PreparationOfThis" xml:space="preserve">
+    <value>Paratoi’r datganiad hygyrchedd yma</value>
+  </data>
+  <data name="Accessibility.ReportingProblems" xml:space="preserve">
+    <value>Rhoi gwybod am broblemau hygyrchedd gyda’r wefan yma</value>
+  </data>
+  <data name="Accessibility.TechnicalInformation" xml:space="preserve">
+    <value>Gwybodaeth dechnegol am hygyrchedd y wefan yma</value>
+  </data>
+  <data name="Accessibility.TheEqualityAndHumanRights" xml:space="preserve">
+    <value>Mae’r Comisiwn Cydraddoldeb a Hawliau Dynol (EHRC) yn gyfrifol am orfodi Rheoliadau Hygyrchedd Cyrff y Sector Cyhoeddus (Gwefannau a Chymwysiadau Symudol) (Rhif 2) 2018 (y ‘rheoliadau hygyrchedd’).</value>
+  </data>
+  <data name="Accessibility.TheTestWasCarriedOut" xml:space="preserve">
+    <value>Cafodd y prawf ei gynnal gan y Ganolfan Hygyrchedd Digidol yn ôl safon WCAG 2.1.</value>
+  </data>
+  <data name="Accessibility.ThisAccessibilityStatement" xml:space="preserve">
+    <value>Mae’r datganiad hygyrchedd yma yn berthnasol i’r gwasanaeth i Reoleiddwyr.</value>
+  </data>
+  <data name="Accessibility.ThisStatementWasPrepared" xml:space="preserve">
+    <value>Cafodd y datganiad yma ei baratoi ar</value>
+  </data>
+  <data name="Accessibility.ThisWebsiteIsPartially" xml:space="preserve">
+    <value>Mae’r wefan yma’n cydymffurfio yn rhannol â</value>
+  </data>
+  <data name="Accessibility.ThisWebsiteIsRun" xml:space="preserve">
+    <value>Mae’r wefan yma yn cael ei rhedeg gan Adran yr Amgylchedd, Bwyd a Materion Gwledig (Defra).</value>
+  </data>
+  <data name="Accessibility.ThisWebsiteWas" xml:space="preserve">
+    <value>Y tro diwethaf i’r wefan yma gael ei phrofi oedd</value>
+  </data>
+  <data name="Accessibility.Title" xml:space="preserve">
+    <value>Datganiad hygyrchedd ar gyfer y Gwasanaeth i Reoleiddwyr</value>
+  </data>
+  <data name="Accessibility.WebContentAccessibility" xml:space="preserve">
+    <value>safon AA Canllawiau Hygyrchedd Cynnwys y We fersiwn 2.1</value>
+  </data>
+  <data name="Accessibility.WeKnowSomeParts" xml:space="preserve">
+    <value>Rydyn ni’n gwybod nad yw rhai rhannau o’r wefan yma’n gwbl hygyrch:</value>
+  </data>
+  <data name="Accessibility.WeProvideAText" xml:space="preserve">
+    <value>Rydyn ni’n darparu gwasanaeth trosglwyddo testun ar gyfer pobl sy’n Fyddar neu’n fyddar, pobl sydd â nam ar eu clyw neu sydd â nam ar eu lleferydd.</value>
+  </data>
+  <data name="Accessibility.WereAlwaysLooking" xml:space="preserve">
+    <value>Rydyn ni bob amser yn ceisio gwella hygyrchedd y wefan yma. Os byddwch chi’n gweld unrhyw broblemau sydd heb eu rhestru ar y tudalen yma neu’n credu ein bod ni heb fodloni gofynion hygyrchedd, cysylltwch â:</value>
+  </data>
+  <data name="Accessibility.WeveAlsoMade" xml:space="preserve">
+    <value>Rydyn ni hefyd wedi gwneud testun y wefan mor syml â phosibl i’w ddeall.</value>
+  </data>
+  <data name="Accessibility.WeWantAsMany" xml:space="preserve">
+    <value>Rydyn ni am i gynifer o bobl â phosibl allu defnyddio’r wefan yma. Er enghraifft, mae hyn yn golygu y dylech chi allu:</value>
+  </data>
+  <data name="Accessibility.ZoomIn" xml:space="preserve">
+    <value>chwyddo i mewn hyd at 400% heb i’r testun ollwng oddi ar y sgrin</value>
+  </data>
+  <data name="Accessibility.AbilityNet" xml:space="preserve">
+    <value>AbilityNet</value>
+  </data>
+  <data name="Accessibility.Has" xml:space="preserve">
+    <value>Mae gan </value>
+  </data>
+  <data name="Accessibility.PageTitle" xml:space="preserve">
+    <value>Datganiad hygyrchedd ar gyfer y Gwasanaeth i Reoleiddwyr</value>
+  </data>
+  <data name="Accessibility.ThereAreIssuesWithKeyboard" xml:space="preserve">
+    <value>mae yna faterion ynglŷn â llywio â bysellfwrdd, strwythur y penawdau a negeseuon gwall wrth greu cyfrif neu fewngofnodi</value>
+  </data>
+  <data name="Accessibility.YoureAutomaticallySignedOut" xml:space="preserve">
+    <value>rydych chi’n cael eich allgofnodi’n awtomatig ar ôl cyfnod segur a hynny heb rybudd neu esboniad</value>
+  </data>
+  <data name="Accessibility.SomePageTitleMetaTags" xml:space="preserve">
+    <value>nid yw rhai o dagiau meta teitlau’r tudalennau yn disgrifio cynnwys y tudalen neu’n cyd-fynd â phennawd y tudalen</value>
+  </data>
+  <data name="Accessibility.NonAccessibleContent" xml:space="preserve">
+    <value>Cynnwys nad yw’n hygyrch</value>
+  </data>
+  <data name="Accessibility.TheContentListedBelow" xml:space="preserve">
+    <value>Nid yw’r cynnwys isod yn hygyrch am y rhesymau a ganlyn.</value>
+  </data>
+  <data name="Accessibility.NonComplianceWithTheAccessibility" xml:space="preserve">
+    <value>Methu cydymffurfio â’r rheoliadau hygyrchedd</value>
+  </data>
+  <data name="Accessibility.WhenCreatingAnAccount" xml:space="preserve">
+    <value>Wrth greu cyfrif neu fewngofnodi:</value>
+  </data>
+  <data name="Accessibility.ThereAreSomeUnnecessarySteps" xml:space="preserve">
+    <value>mae yna gamau diangen yn nhrefn llywio’r bysellfwrdd – mae hyn yn methu maen prawf llwyddiant 2.4.3 WCAG 2.1 (trefn y ffocws)</value>
+  </data>
+  <data name="Accessibility.EachTimeAPageLoads" xml:space="preserve">
+    <value>bob tro y mae tudalen yn llwytho, nid yw’r ffocws ar frig y tudalen – mae hyn yn methu maen prawf llwyddiant 2.4.3 WCAG 2.1 (trefn y ffocws)</value>
+  </data>
+  <data name="Accessibility.PageTitleMetaTags" xml:space="preserve">
+    <value>nid yw tagiau meta teitlau’r tudalennu yn gyson yn disgrifio cynnwys y tudalen neu’n cyd-fynd â phennawd y tudalen - mae hyn yn methu maen prawf llwyddiant 2.4.2 WCAG 2.1 (mae gan y tudalen deitl)</value>
+  </data>
+  <data name="Accessibility.SomeTextIsStyled" xml:space="preserve">
+    <value>mae rhywfaint o’r testun yn arddull pennawd ond heb ei farcio fel pennawd, felly gall yr adrannau fod yn anodd eu deall neu eu llywio drwy ddefnyddio darllenydd sgrin - mae hyn yn methu maen prawf llwyddiant 1.3.1 WCAG 2.1 (gwybodaeth a pherthnasoedd)</value>
+  </data>
+  <data name="Accessibility.ErrorMessagesDoNotAccurately" xml:space="preserve">
+    <value>nid yw’r negeseuon gwall yn rhoi esboniad cywir o’r gwall sydd wedi digwydd - mae hyn yn methu maen prawf llwyddiant 3.3.3 WCAG 2.1 (awgrymu gwall)</value>
+  </data>
+  <data name="Accessibility.WhenYoureSignedOutAutomatically" xml:space="preserve">
+    <value>Pan gewch chi eich allgofnodi ar ôl cyfnod segur, does dim rhybudd. Does dim opsiwn o ymestyn neu addasu’r cyfnod amser. Mae hyn yn methu maen prawf llwyddiant 2.2.1 WCAG 2.1 (gall yr amseru gael ei addasu). Hefyd, nid yw’r tudalen a ddangosir ar ôl ichi gael eich allgofnodi’n awtomatig yn esbonio beth ddigwyddodd.</value>
+  </data>
+  <data name="Accessibility.SomePageTitleMetaTagsThroughout" xml:space="preserve">
+    <value>Nid yw rhai o dagiau meta teitlau’r tudalennau drwy’r wefan yn disgrifio cynnwys y tudalen neu’n cyd-fynd â phennawd y tudalen. Mae hyn yn methu maen prawf llwyddiant 2.4.2 WCAG 2.1 (mae gan y tudalen deitl).</value>
+  </data>
+  <data name="Accessibility.WereWorkingThroughTheseIssues" xml:space="preserve">
+    <value>Rydyn ni wrthi’n gweithio drwy’r materion hyn ac yn bwriadu eu cywiro erbyn mis Medi 2024.</value>
+  </data>
+  <data name="Accessibility.DueToTheNonCompliances" xml:space="preserve">
+    <value>, oherwydd y diffygion cydymffurfiaeth isod.</value>
+  </data>
+</root>

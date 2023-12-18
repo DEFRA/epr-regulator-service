@@ -1,0 +1,70 @@
+﻿@using EPR.RegulatorService.Frontend.Web.ViewModels.Home
+@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
+
+@model LandingPageViewModel
+@{
+    ViewData["Title"] = @Localizer["Regulator.Home", Model.OrganisationName];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">
+                    @Localizer["LandingPage.Title"]
+                </h1>
+
+                <h2 class="govuk-heading-l govuk-!-margin-bottom-2">
+                    @Model.OrganisationName
+                </h2>
+
+                <h3 class="govuk-heading-m govuk-caption-l govuk-!-margin-bottom-2">
+                    @Model.PersonName
+                </h3>
+
+                @if (Model.IsRegulatorAdmin)
+                {
+                    <div class="govuk-!-margin-bottom-2">
+                        <a class="govuk-link govuk-link--no-visited-state govuk-body-l govuk-!-font-weight-bold" href="@Model.ManageAccountUrl">
+                            @Localizer["LandingPage.ManageAccount"]
+                        </a>
+                    </div>
+                    <p class="govuk-body">
+                        @Localizer["LandingPage.ManageAccountDescription"]
+                    </p>
+                }
+
+                <div class="govuk-!-margin-bottom-2">
+                    <a class="govuk-link govuk-link--no-visited-state govuk-body-l govuk-!-font-weight-bold" href="@Model.ApplicationsUrl">
+                        @Localizer["LandingPage.ManageApplications"]
+                    </a>
+                </div>
+                <p class="govuk-body">
+                  @Localizer["LandingPage.ManageApplicationsDescription"]
+                </p>
+                <feature name="ManagePoMSubmissions">
+                  <div class="govuk-!-margin-bottom-2">
+                    <a class="govuk-link govuk-link--no-visited-state govuk-body-l govuk-!-font-weight-bold" href="@Model.SubmissionsUrl">
+                      @Localizer["LandingPage.ManageSubmissions"]
+                    </a>
+                  </div>
+                  <p class="govuk-body">
+                    @Localizer["LandingPage.ManageSubmissionsDescription"]
+                  </p>
+                </feature>
+
+                 <feature name="ManageApprovedUsers">
+                    <div class="govuk-!-margin-bottom-2">
+                      <a id="manageApprovedUsersLink" class="govuk-link govuk-link--no-visited-state govuk-body-l govuk-!-font-weight-bold" href="@Model.ManageApprovedPersonUrl">
+                        @Localizer["LandingPage.ManageApprovedPerson"]
+                      </a>
+                    </div>
+                    <p id="manageApprovedUsersHelpText" class="govuk-body">
+                      @Localizer["LandingPage.ManageApprovedPersonDescription"]
+                    </p>
+                  </feature>
+            </div>
+        </div>
+    </main>
+</div>

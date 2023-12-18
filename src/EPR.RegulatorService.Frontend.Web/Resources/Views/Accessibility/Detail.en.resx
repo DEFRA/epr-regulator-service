@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+	  <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+	  <xsd:element name="root" msdata:IsDataSet="true">
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Accessibility.Call" xml:space="preserve">
+    <value>call 03459 33 55 77 (Monday to Friday, 8.30am to 5pm)</value>
+  </data>
+  <data name="Accessibility.ChangeColours" xml:space="preserve">
+    <value>change colours, contrast levels and fonts</value>
+  </data>
+  <data name="Accessibility.ComplianceStatus" xml:space="preserve">
+    <value>Compliance status</value>
+  </data>
+  <data name="Accessibility.ContactingUs" xml:space="preserve">
+    <value>Contacting us by phone or visiting us in person</value>
+  </data>
+  <data name="Accessibility.ContactUs" xml:space="preserve">
+    <value>contact us</value>
+  </data>
+  <data name="Accessibility.DefraIsCommitted" xml:space="preserve">
+    <value>Defra is committed to making its website accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.</value>
+  </data>
+  <data name="Accessibility.Email" xml:space="preserve">
+    <value>email</value>
+  </data>
+  <data name="Accessibility.EnforcementProcedure" xml:space="preserve">
+    <value>Enforcement procedure</value>
+  </data>
+  <data name="Accessibility.EqualityAdvisorySupportService" xml:space="preserve">
+    <value>contact the Equality Advisory and Support Service (EASS)</value>
+  </data>
+  <data name="Accessibility.FeedbackAndContact" xml:space="preserve">
+    <value>Feedback and contact information</value>
+  </data>
+  <data name="Accessibility.FindOutHowTo" xml:space="preserve">
+    <value>Find out how to</value>
+  </data>
+  <data name="Accessibility.HasAdviceOn" xml:space="preserve">
+    <value>has advice on making your device easier to use if you have a disability.</value>
+  </data>
+  <data name="Accessibility.HowAccessible" xml:space="preserve">
+    <value>How accessible this website is</value>
+  </data>
+  <data name="Accessibility.IfYouAreNotHappy" xml:space="preserve">
+    <value>If you’re not happy with how we respond to your complaint</value>
+  </data>
+  <data name="Accessibility.IfYouNeedInformation" xml:space="preserve">
+    <value>If you need information on this website in a different format like an accessible PDF, large print, easy read, audio recording or braille:</value>
+  </data>
+  <data name="Accessibility.LastReviewed" xml:space="preserve">
+    <value>It was last reviewed on</value>
+  </data>
+  <data name="Accessibility.NavigateUsingKeyboard" xml:space="preserve">
+    <value>navigate most of the website using just a keyboard</value>
+  </data>
+  <data name="Accessibility.NavigateUsingReader" xml:space="preserve">
+    <value>listen to most of the website using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)</value>
+  </data>
+  <data name="Accessibility.NavigateUsingSpeech" xml:space="preserve">
+    <value>navigate most of the website using speech recognition software</value>
+  </data>
+  <data name="Accessibility.OurOfficesHaveAudio" xml:space="preserve">
+    <value>Our offices have audio induction loops, or if you contact us before your visit we can arrange a British Sign Language (BSL) interpreter.</value>
+  </data>
+  <data name="Accessibility.PreparationOfThis" xml:space="preserve">
+    <value>Preparation of this accessibility statement</value>
+  </data>
+  <data name="Accessibility.ReportingProblems" xml:space="preserve">
+    <value>Reporting accessibility problems with this website</value>
+  </data>
+  <data name="Accessibility.TechnicalInformation" xml:space="preserve">
+    <value>Technical information about this website’s accessibility</value>
+  </data>
+  <data name="Accessibility.TheEqualityAndHumanRights" xml:space="preserve">
+    <value>The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No.2) Accessibility Regulations 2018 (the ‘accessibility regulations’).</value>
+  </data>
+  <data name="Accessibility.TheTestWasCarriedOut" xml:space="preserve">
+    <value>The test was carried out by the Digital Accessibility Centre to the WCAG 2.1 standard.</value>
+  </data>
+  <data name="Accessibility.ThisAccessibilityStatement" xml:space="preserve">
+    <value>This accessibility statement applies to the Regulator service.</value>
+  </data>
+  <data name="Accessibility.ThisStatementWasPrepared" xml:space="preserve">
+    <value>This statement was prepared on</value>
+  </data>
+  <data name="Accessibility.ThisWebsiteIsPartially" xml:space="preserve">
+    <value>This website is partially compliant with the</value>
+  </data>
+  <data name="Accessibility.ThisWebsiteIsRun" xml:space="preserve">
+    <value>This website is run by the Department for Environment, Food and Rural Affairs (Defra).</value>
+  </data>
+  <data name="Accessibility.ThisWebsiteWas" xml:space="preserve">
+    <value>This website was last tested on</value>
+  </data>
+  <data name="Accessibility.Title" xml:space="preserve">
+    <value>Accessibility statement for Regulator service</value>
+  </data>
+  <data name="Accessibility.WebContentAccessibility" xml:space="preserve">
+    <value>Web Content Accessibility Guidelines version 2.1 AA standard</value>
+  </data>
+  <data name="Accessibility.WeKnowSomeParts" xml:space="preserve">
+    <value>We know some parts of this website are not fully accessible:</value>
+  </data>
+  <data name="Accessibility.WeProvideAText" xml:space="preserve">
+    <value>We provide a text relay service for people who are D/deaf, hearing impaired or have a speech impediment.</value>
+  </data>
+  <data name="Accessibility.WereAlwaysLooking" xml:space="preserve">
+    <value>We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page or think we’re not meeting accessibility requirements, contact:</value>
+  </data>
+  <data name="Accessibility.WeveAlsoMade" xml:space="preserve">
+    <value>We’ve also made the website text as simple as possible to understand.</value>
+  </data>
+  <data name="Accessibility.WeWantAsMany" xml:space="preserve">
+    <value>We want as many people as possible to be able to use this website. For example, that means that you should be able to:</value>
+  </data>
+  <data name="Accessibility.ZoomIn" xml:space="preserve">
+    <value>zoom in up to 400% without the text spilling off the screen</value>
+  </data>
+  <data name="Accessibility.AbilityNet" xml:space="preserve">
+    <value>AbilityNet</value>
+  </data>
+  <data name="Accessibility.Has" xml:space="preserve">
+    <value> </value>
+  </data>
+  <data name="Accessibility.PageTitle" xml:space="preserve">
+    <value>Accessibility statement for Regulator service</value>
+  </data>
+  <data name="Accessibility.ThereAreIssuesWithKeyboard" xml:space="preserve">
+    <value>there are issues with keyboard navigation, heading structure and error messages when creating an account or signing in</value>
+  </data>
+  <data name="Accessibility.YoureAutomaticallySignedOut" xml:space="preserve">
+    <value>you’re automatically signed out after a period of inactivity without warning or explanation</value>
+  </data>
+  <data name="Accessibility.SomePageTitleMetaTags" xml:space="preserve">
+    <value>some page title meta tags do not consistently describe the page content or match the page heading</value>
+  </data>
+  <data name="Accessibility.DueToTheNonCompliances" xml:space="preserve">
+    <value>, due to the non-compliances listed below.</value>
+  </data>
+  <data name="Accessibility.TheContentListedBelow" xml:space="preserve">
+    <value>The content listed below is non-accessible for the following reasons.</value>
+  </data>
+  <data name="Accessibility.NonComplianceWithTheAccessibility" xml:space="preserve">
+    <value>Non-compliance with the accessibility regulations</value>
+  </data>
+  <data name="Accessibility.WhenCreatingAnAccount" xml:space="preserve">
+    <value>When creating an account or signing in:</value>
+  </data>
+  <data name="Accessibility.ThereAreSomeUnnecessarySteps" xml:space="preserve">
+    <value>there are some unnecessary steps in the keyboard navigation order - this fails WCAG 2.1 success criterion 2.4.3 (focus order)</value>
+  </data>
+  <data name="Accessibility.EachTimeAPageLoads" xml:space="preserve">
+    <value>each time a page loads, the focus is not at the top of the page - this fails WCAG 2.1 success criterion 2.4.3 (focus order)</value>
+  </data>
+  <data name="Accessibility.PageTitleMetaTags" xml:space="preserve">
+    <value>page title meta tags do not consistently describe the page content or match the page heading - this fails WCAG 2.1 success criterion 2.4.2 (page titled)</value>
+  </data>
+  <data name="Accessibility.SomeTextIsStyled" xml:space="preserve">
+    <value>some text is styled as a heading but not marked up as a heading, so the sections may be difficult to understand or navigate using a screen reader - this fails WCAG 2.1 success criterion 1.3.1 (info and relationships)</value>
+  </data>
+  <data name="Accessibility.ErrorMessagesDoNotAccurately" xml:space="preserve">
+    <value>error messages do not accurately explain the error that occurred - this fails WCAG 2.1 success criterion 3.3.3 (error suggestion)</value>
+  </data>
+  <data name="Accessibility.WhenYoureSignedOutAutomatically" xml:space="preserve">
+    <value>When you’re signed out automatically after a period of inactivity, there is no warning. There is no option to extend or adjust the time period. This fails WCAG 2.1 success criterion 2.2.1 (timing adjustable). Also, the page shown after being signed out automatically does not explain what happened.</value>
+  </data>
+  <data name="Accessibility.SomePageTitleMetaTagsThroughout" xml:space="preserve">
+    <value>Some page title meta tags throughout the website do not consistently describe the page content or match the page heading. This fails WCAG 2.1 success criterion 2.4.2 (page titled).</value>
+  </data>
+  <data name="Accessibility.WereWorkingThroughTheseIssues" xml:space="preserve">
+    <value>We’re working through these issues and intend to fix them by September 2024.</value>
+  </data>
+  <data name="Accessibility.NonAccessibleContent" xml:space="preserve">
+    <value>Non-accessible content</value>
+  </data>
+</root>

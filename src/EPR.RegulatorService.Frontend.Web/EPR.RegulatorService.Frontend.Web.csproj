@@ -1,0 +1,147 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <UserSecretsId>8c277499-f889-42f1-b2d9-569b72dd51ae</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- SonarCloud does not recognise file-scoped namespaces in current version. -->
+    <NoWarn>S3903</NoWarn>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'EPR.RegulatorService.Frontend' " />
+  
+  <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
+    <Exec Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'" />
+
+    <!-- Write the stamp file, so incremental builds work -->
+    <Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
+  </Target>
+
+  <Target Name="NpmRunBuildFrontend" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
+    <Exec Command="npm run build-frontend" />
+  </Target>
+  
+  <ItemGroup>
+    <PackageReference Include="EPR.Common.Authorization" Version="1.0.13" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="7.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.10" />
+    <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.6.1" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.13.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EPR.RegulatorService.Frontend.Core\EPR.RegulatorService.Frontend.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Views\Applications\EnrolmentRequests.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Applications\EnrolmentRequests.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\RegulatorEnrolment\FullName.en.resx" />
+    <EmbeddedResource Update="Resources\Views\SearchManageApprovers\RegulatorSearchPage.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\SearchManageApprovers\RegulatorSearchPage.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_EnrolmentRequestApprovedUser.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_EnrolmentRequestApprovedUser.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_EnrolmentRequestDelegatedUser.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_EnrolmentRequestDelegatedUser.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Applications\Applications.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\Applications\Applications.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_RegulatorApplicationFilters.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_RegulatorApplicationFilters.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.resx" />
+    <EmbeddedResource Remove="Resources\Views\Applications\EnrolmentRequests.en-gb.resx" />
+    <EmbeddedResource Remove="Resources\Views\Applications\EnrolmentDecision.en-gb.resx" />
+    <EmbeddedResource Remove="Resources\Views\Accessibility\Detail.en-gb.resx" />
+    <EmbeddedResource Remove="Resources\SharedResources.en-gb.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_SubmissionDetails.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_SubmissionDetails.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_ResubmissionDetails.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_ResubmissionDetails.en.resx" />
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\Confirm.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Confirm.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\Confirm.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Confirm.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\NominateApprovedUserConfirmation.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NominateApprovedUserConfirmation.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\NominateApprovedUserConfirmation.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NominateApprovedUserConfirmation.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\NominationDecision.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NominationDecision.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\NominationDecision.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NominationDecision.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\Views\Applications\EnrolmentDecision.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EnrolmentDecision.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_PaginationNavigation.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_EnrolmentRequestApprovedUser.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_PaginationNavigation.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_EnrolmentRequestApprovedUser.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="Resources\Views\RemoveApprovedUser\Confirm.cy.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Confirm.cy.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\RemoveApprovedUser\Confirm.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Confirm.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\RemoveApprovedUser\NominateApprovedUserConfirmation.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NominateApprovedUserConfirmation.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\RemoveApprovedUser\NominateApprovedUserConfirmation.cy.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NominateApprovedUserConfirmation.cy.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\RemoveApprovedUser\NominationDecision.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NominationDecision.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\RemoveApprovedUser\NominationDecision.cy.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NominationDecision.cy.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <SonarQubeSetting Include="sonar.coverage.exclusions">
+      <Value>
+        **/SubmissionListRequest.cs,**/ApplicationsRequestViewModel.cs,**/SecurityHeaderMiddleware.cs,**/InputTagHelper.cs,**/JourneyAccessCheckerMiddleware.cs,**/AnalyticsOptions.cs,**/EmailAddressOptions.cs,**/EprCookieOptions.cs,**/ExternalUrlsOptions.cs,**/PhaseBannerOptions.cs,**/ServiceSettingsOptions.cs,**/SiteDateOptions.cs,**/gulpfile.js,**/HealthCheckOptionBuilder.cs,**/AnalyticsCookieMiddleware.cs,**/Program.cs,**/SessionRequestCultureProvider.cs,**/LabelTagHelper.cs,**/LanguageSwitcherViewComponent.cs,**/AccessibilityViewModel.cs,**/ApplicationsViewModel.cs,**/EnrolmentDecisionViewModel.cs,**/EnrolmentRequestsViewModel.cs,**/TransferBannerViewModel.cs,**/CookieBannerModel.cs,**/CookieDetailViewModel.cs,**/ErrorViewModel.cs,**/LanguageSwitcherModel.cs,**/PhaseBannerModel.cs,**/PaginatedSearch.cshtml.cs,**/_PaginationNavigation.cshtml.cs
+      </Value>
+    </SonarQubeSetting>
+  </ItemGroup>
+  
+</Project>

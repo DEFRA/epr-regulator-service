@@ -1,0 +1,27 @@
+.action-list {
+    counter-reset: gov-speak-numbered-action;
+    padding-left: 40px;
+
+    &--item {
+        counter-increment: gov-speak-numbered-action;
+        position: relative;
+        margin-bottom: 30px;
+    }
+
+    ::before {
+        content: counter(gov-speak-numbered-action);
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: bold;
+        position: absolute;
+        --size: 26px;
+        left: calc(-1 * var(--size) - 10px);
+        line-height: var(--size);
+        width: var(--size);
+        height: var(--size);
+        top: 0;
+        background: govuk-colour("black");
+        border-radius: 100%;
+        text-align: center;
+    }
+}

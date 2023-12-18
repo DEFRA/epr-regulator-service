@@ -1,0 +1,26 @@
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Table.Header.OrganisationId" xml:space="preserve">
+    <value>ID y sefydliad</value>
+  </data>
+  <data name="Table.Header.SubmissionDate" xml:space="preserve">
+    <value>Dyddiad y cyflwyniad</value>
+  </data>
+  <data name="Table.Header.Status" xml:space="preserve">
+    <value>Statws</value>
+  </data>
+  <data name="Table.Header.Organisation" xml:space="preserve">
+    <value>Sefydliad</value>
+  </data>
+</root>

@@ -1,0 +1,32 @@
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Table.Header.Company" xml:space="preserve">
+    <value>Sefydliad</value>
+  </data>
+  <data name="Table.Header.ApplicationDate" xml:space="preserve">
+    <value>Dyddiad ymgeisio</value>
+  </data>
+  <data name="Table.Header.Type" xml:space="preserve">
+    <value>Math</value>
+  </data>
+  <data name="Table.Header.Action" xml:space="preserve">
+    <value>Cam i’w gymryd</value>
+  </data>
+  <data name="ApprovedPerson" xml:space="preserve">
+    <value>Person a gymeradwywyd</value>
+  </data>
+  <data name="DelegatedPerson" xml:space="preserve">
+    <value>Person a ddirprwywyd</value>
+  </data>
+</root>

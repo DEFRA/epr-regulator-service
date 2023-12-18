@@ -1,0 +1,33 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
+@using EPR.RegulatorService.Frontend.Core.Models
+
+@model EnrolmentRequestDetailsModel
+<div>
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Heading.Applications"]</h2>
+  <div>
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-4">@Localizer["Subheading.ApprovedPerson"]</h3>
+    @{
+      var approvedUser = new UserEnrolment {
+        IsApprovedUserAccepted = Model.IsApprovedUserAccepted,
+        User = Model.ApprovedUser
+      };
+    }
+    <partial name="Partials/_EnrolmentRequestApprovedUser" model="approvedUser"/>
+  </div>
+  @if (Model.DelegatedUsers.Count > 0)
+  {
+    <div>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-4">@Localizer["Subheading.DelegatedPerson"]</h3>
+      @foreach (var user in Model.DelegatedUsers)
+      {
+        var delegatedUser = new UserEnrolment
+        {
+          IsApprovedUserAccepted = Model.IsApprovedUserAccepted,
+          User = user
+        };
+
+        <partial name="Partials/_EnrolmentRequestDelegatedUser" model="delegatedUser"/>
+      }
+    </div>
+  }
+</div>

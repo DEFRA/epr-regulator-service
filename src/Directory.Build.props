@@ -1,0 +1,17 @@
+<Project>
+
+    <PropertyGroup>
+        <CodeAnalysisRuleSet>..\SonarAnalyzer.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference
+				Include="SonarAnalyzer.CSharp"
+				Version="8.29.0.36737"
+				PrivateAssets="all"
+				Condition="$(MSBuildProjectExtension) == '.csproj'"
+        />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
+    </ItemGroup>
+
+</Project>

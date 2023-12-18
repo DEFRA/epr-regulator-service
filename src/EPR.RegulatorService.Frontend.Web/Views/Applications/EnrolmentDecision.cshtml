@@ -1,0 +1,68 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+
+@model EnrolmentDecisionViewModel
+
+@{
+  ViewData["Title"] = Localizer["Page.Title"];
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+@using (Html.BeginForm("EnrolmentDecision", "Applications", FormMethod.Post))
+{
+  <div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+          @if (!ViewData.ModelState.IsValid)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+          }
+
+          <div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
+            @Html.HiddenFor(x => x.RejectedUserFirstName)
+            @Html.HiddenFor(x => x.RejectedUserLastName)
+            @Html.HiddenFor(x => x.OrganisationId)
+            @Html.HiddenFor(x => x.ApprovedUserFirstName)
+            @Html.HiddenFor(x => x.ApprovedUserLastName)
+
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+              <div class="govuk-form-group">
+                <h1 class="govuk-label-wrapper">
+                  <label class="govuk-label govuk-label--l" for="@nameof(Model.Comments)">
+                    @Localizer["Reject.WhyAreYouRejecting", @Model.RejectedUserFirstName, @Model.RejectedUserLastName]
+                  </label>
+                </h1>
+                <div id="comments-hint" class="govuk-hint">
+                  @Localizer["Reject.WeUseThisInformationInAnEmailTo", @Model.ApprovedUserFirstName,  @Model.ApprovedUserLastName]
+                </div>
+                @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(EnrolmentDecisionViewModel.Comments)])
+                @Html.TextAreaFor(m => m.Comments, new { @class = "govuk-textarea govuk-js-character-count", @rows = "5", @aria_describedby = $"{nameof(Model.Comments)}-info" })
+              </div>
+              <div id="@nameof(Model.Comments)-info" class="govuk-hint govuk-character-count__message"></div>
+            </div>
+
+          </div> @* End of error styling - line 25 *@
+
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            @SharedLocalizer["Continue"]
+          </button>
+
+          <p class="govuk-body">
+            @Html.ActionLink(SharedLocalizer["Cancel"].Value,
+              "EnrolmentRequests",
+              "Applications",
+              new
+              {
+                organisationId = Model.OrganisationId
+              },
+              new {@class = "govuk-link govuk-link--no-visited-state"})
+          </p>
+
+        </div>
+      </div>
+    </main>
+  </div>
+}

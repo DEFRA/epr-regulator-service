@@ -1,0 +1,15 @@
+﻿@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@model ErrorsViewModel
+
+@if (Model.Errors.Count > 0)
+{
+    @foreach (var error in Model.Errors)
+    {
+        @for (var i = 0; i < error.Errors.Count; i++)
+        {
+            <p id="error-@(error.Item1+i)" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> @Html.Raw(error.Errors[i].Message)
+            </p>
+        }
+    }
+}

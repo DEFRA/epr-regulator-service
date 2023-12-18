@@ -1,0 +1,88 @@
+@using EPR.RegulatorService.Frontend.Web.Constants
+@model EPR.RegulatorService.Frontend.Core.Models.UserEnrolment
+
+@{ var isApprovedUser = Model.User.Enrolment.EnrolmentStatus == EnrolmentStatus.Approved; }
+
+<div class="govuk-summary-card">
+  <div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title">@Model.User.FirstName @Model.User.LastName</h2>
+    <ul class="govuk-summary-card__actions">
+      <li class="govuk-summary-card__action">
+        @if (isApprovedUser)
+        {
+          <strong class="govuk-tag govuk-tag--green">@SharedLocalizer["Tag.Accepted"]</strong>
+        }
+      </li>
+    </ul>
+  </div>
+  <div class="govuk-summary-card__content">
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          @Localizer["Summary.Telephone"]
+        </dt>
+        <dd class="govuk-summary-list__value">
+          @Model.User.TelephoneNumber
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          @Localizer["Summary.Email"]
+        </dt>
+        <dd class="govuk-summary-list__value">
+          @Model.User.Email
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          @Localizer["Summary.EmployeeOfOrganisation"]
+        </dt>
+        <dd class="govuk-summary-list__value">
+          @(Model.User.IsEmployeeOfOrganisation ? "Yes" : "No")
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          @Localizer["Summary.JobTitle"]
+        </dt>
+        <dd class="govuk-summary-list__value">
+          @Model.User.JobTitle
+        </dd>
+      </div>
+    </dl>
+    @if (!Model.IsApprovedUserAccepted)
+    {
+      <div class="govuk-inset-text">@Localizer["Summary.Information"]</div>
+    }
+    else
+    {
+      if (!isApprovedUser)
+      {
+        <div class="govuk-button-group govuk-!-margin-top-2">
+          <form class="govuk-!-display-inline-block" method="post" asp-controller="Applications" asp-action="AcceptApplication">
+            <input type="hidden" name="acceptedUserFirstName" value="@Model.User.FirstName"/>
+            <input type="hidden" name="acceptedUserLastName" value="@Model.User.LastName"/>
+            <input type="hidden" name="acceptedUserEmail" value="@Model.User.Email"/>
+            <input type="hidden" name="serviceRole" value="@ServiceRole.DelegatedPerson"/>
+
+            <button class="govuk-button" data-module="govuk-button">
+              @SharedLocalizer["Button.Accept"]
+            </button>
+          </form>
+
+          <form class="govuk-!-display-inline-block" method="post" asp-controller="Applications" asp-action="PreEnrolmentDecision">
+            <input type="hidden" name="rejectedUserFirstName" value="@Model.User.FirstName"/>
+            <input type="hidden" name="rejectedUserLastName" value="@Model.User.LastName"/>
+            <input type="hidden" name="rejectedUserEmail" value="@Model.User.Email"/>
+            <input type="hidden" name="serviceRole" value="@ServiceRole.DelegatedPerson"/>
+            <input type="hidden" name="decision" value="@RegulatorDecision.Rejected"/>
+
+            <button class="govuk-button govuk-button--warning" data-module="govuk-button">
+              @SharedLocalizer["Button.Reject"]
+            </button>
+          </form>
+        </div>
+      }
+    }
+  </div>
+</div>

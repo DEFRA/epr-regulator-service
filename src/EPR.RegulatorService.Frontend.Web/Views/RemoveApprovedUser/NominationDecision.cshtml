@@ -1,0 +1,55 @@
+@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
+
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+
+@{
+  ViewData["Title"] = @Localizer["Page.Title"];
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+  const string errorClass = "govuk-input--error";
+}
+
+<form action="@Url.Action("Nomination", "RemoveApprovedUser")"
+      enctype="application/x-www-form-urlencoded" method="POST">
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-full">
+                          @if (errorsViewModel.HasErrorKey(nameof(Model.NominationDecision)))
+                          {
+                            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                          }
+                <div class="govuk-form-group">
+                  <fieldset class="govuk-fieldset">
+                    <div class="govuk-form-group@(errorsViewModel.HasErrorKey(nameof(Model.NominationDecision)) ? " govuk-form-group--error" : "")">
+                      @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(Model.NominationDecision)])
+                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                          @Localizer["Page.Title"]
+                        </h1>
+                      </legend>
+                      <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                          <input class="govuk-radios__input" id="nominationDecision" name="nominationDecision" type="radio" value="true">
+                          <label class="govuk-label govuk-radios__label" for="nominationDecision">
+                            @Localizer["Yes"]
+                          </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                          <input class="govuk-radios__input" id="nominationDecision-2" name="nominationDecision" type="radio" value="false">
+                          <label class="govuk-label govuk-radios__label" for="nominationDecision-2">
+                            @Localizer["No"]
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+                <button class="govuk-button" data-module="govuk-button" type="submit">
+                  @SharedLocalizer["Continue"]
+                </button>
+              </div>
+            </div>
+        </main>
+    </div>
+</form>

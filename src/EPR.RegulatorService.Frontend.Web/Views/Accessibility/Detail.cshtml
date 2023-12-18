@@ -1,0 +1,86 @@
+@model EPR.RegulatorService.Frontend.Web.ViewModels.Accessibility.AccessibilityViewModel
+
+@{
+    ViewData["Title"] = Localizer["Accessibility.PageTitle"];
+}
+
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@Localizer["Accessibility.Title"]</h1>
+        <p class="govuk-body">@Localizer["Accessibility.ThisAccessibilityStatement"]</p>
+        <p class="govuk-body">@Localizer["Accessibility.ThisWebsiteIsRun"]</p>
+        <p class="govuk-body">@Localizer["Accessibility.WeWantAsMany"]</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li class="govuk-body">@Localizer["Accessibility.ChangeColours"]</li>
+          <li class="govuk-body">@Localizer["Accessibility.ZoomIn"]</li>
+          <li class="govuk-body">@Localizer["Accessibility.NavigateUsingKeyboard"]</li>
+          <li class="govuk-body">@Localizer["Accessibility.NavigateUsingSpeech"]</li>
+          <li class="govuk-body">@Localizer["Accessibility.NavigateUsingReader"]</li>
+        </ul>
+        <p class="govuk-body">@Localizer["Accessibility.WeveAlsoMade"]</p>
+        <p class="govuk-body">
+          @Localizer["Accessibility.Has"] <a href="@Model.AbilityNetUrl" class="govuk-link">@Localizer["Accessibility.AbilityNet"]</a> @Localizer["Accessibility.HasAdviceOn"]
+        </p>
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Accessibility.HowAccessible"]</h2>
+        <p class="govuk-body">@Localizer["Accessibility.WeKnowSomeParts"]</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li class="govuk-body">@Localizer["Accessibility.ThereAreIssuesWithKeyboard"]</li>
+          <li class="govuk-body">@Localizer["Accessibility.YoureAutomaticallySignedOut"]</li>
+          <li class="govuk-body">@Localizer["Accessibility.SomePageTitleMetaTags"]</li>
+        </ul>
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Accessibility.FeedbackAndContact"]</h2>
+        <p class="govuk-body">@Localizer["Accessibility.IfYouNeedInformation"]</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li class="govuk-body">
+            @Localizer["Accessibility.Email"] <a href="mailto:@Model.DefraHelplineEmail" class="govuk-link">@Model.DefraHelplineEmail</a>
+          </li>
+          <li class="govuk-body">@Localizer["Accessibility.Call"]</li>
+        </ul>
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Accessibility.ReportingProblems"]</h2>
+        <p class="govuk-body">@Localizer["Accessibility.WereAlwaysLooking"]</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li class="govuk-body">
+            @Localizer["Accessibility.Email"] <a href="mailto:@Model.DefraHelplineEmail" class="govuk-link">@Model.DefraHelplineEmail</a>
+          </li>
+          <li class="govuk-body">@Localizer["Accessibility.Call"]</li>
+        </ul>
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Accessibility.EnforcementProcedure"]</h2>
+        <p class="govuk-body">@Localizer["Accessibility.TheEqualityAndHumanRights"]</p>
+        <p class="govuk-body">@Localizer["Accessibility.IfYouAreNotHappy"] <a href="@Model.EqualityAdvisorySupportServiceUrl" class="govuk-link">@Localizer["Accessibility.EqualityAdvisorySupportService"]</a>.</p>
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Accessibility.ContactingUs"]</h2>
+        <p class="govuk-body">@Localizer["Accessibility.WeProvideAText"]</p>
+        <p class="govuk-body">@Localizer["Accessibility.OurOfficesHaveAudio"]</p>
+        <p class="govuk-body">@Localizer["Accessibility.FindOutHowTo"] <a href="@Model.ContactUsUrl" class="govuk-link">@Localizer["Accessibility.ContactUs"]</a>.</p>
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Accessibility.TechnicalInformation"]</h2>
+        <p class="govuk-body">@Localizer["Accessibility.DefraIsCommitted"]</p>
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Accessibility.ComplianceStatus"]</h3>
+        <p class="govuk-body">
+          @Localizer["Accessibility.ThisWebsiteIsPartially"] <a href="@Model.WebContentAccessibilityUrl" class="govuk-link">@Localizer["Accessibility.WebContentAccessibility"]</a>@Localizer["Accessibility.DueToTheNonCompliances"]
+        </p>
+
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Accessibility.NonAccessibleContent"]</h2>
+        <p class="govuk-body">@Localizer["Accessibility.TheContentListedBelow"]</p>
+
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Accessibility.NonComplianceWithTheAccessibility"]</h3>
+        <p class="govuk-body">@Localizer["Accessibility.WhenCreatingAnAccount"]</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li class="govuk-body">@Localizer["Accessibility.ThereAreSomeUnnecessarySteps"]</li>
+          <li class="govuk-body">@Localizer["Accessibility.EachTimeAPageLoads"]</li>
+          <li class="govuk-body">@Localizer["Accessibility.PageTitleMetaTags"]</li>
+          <li class="govuk-body">@Localizer["Accessibility.SomeTextIsStyled"]</li>
+          <li class="govuk-body">@Localizer["Accessibility.ErrorMessagesDoNotAccurately"]</li>
+        </ul>
+
+        <p class="govuk-body">@Localizer["Accessibility.WhenYoureSignedOutAutomatically"]</p>
+        <p class="govuk-body">@Localizer["Accessibility.SomePageTitleMetaTagsThroughout"]</p>
+        <p class="govuk-body">@Localizer["Accessibility.WereWorkingThroughTheseIssues"]</p>
+
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Accessibility.PreparationOfThis"]</h2>
+        <p class="govuk-body">@Localizer["Accessibility.ThisStatementWasPrepared"] @Model.StatementPreparedDate. @Localizer["Accessibility.LastReviewed"] @Model.StatementReviewedDate.</p>
+        <p class="govuk-body">@Localizer["Accessibility.ThisWebsiteWas"] @Model.SiteTestedDate. @Localizer["Accessibility.TheTestWasCarriedOut"]</p>
+      </div>
+    </div>
+  </main>
+</div>

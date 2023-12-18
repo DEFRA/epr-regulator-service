@@ -1,0 +1,35 @@
+@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
+
+@model EPR.RegulatorService.Frontend.Core.Sessions.RemoveApprovedUserSession
+
+@{
+  ViewData["Title"] = Localizer["Page.Title", Model.UserNameToDelete, Model.OrganisationName];
+}
+
+<form action="@Url.Action("Continue", "RemoveApprovedUser", Model)"
+      enctype="application/x-www-form-urlencoded" method="POST">
+  <div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <h1 class="govuk-heading-l govuk-!-margin-bottom-2">
+            @Localizer["Page.Title", Model.UserNameToDelete, Model.OrganisationName]
+          </h1>
+          <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <span class="govuk-warning-text__text govuk-!-font-weight-regular">
+              <span class="govuk-visually-hidden" style="font-weight: normal">Warning</span>
+              @Localizer["Warning.Text.1"]
+              <br/>
+              <br/>
+              @Localizer["Warning.Text.2"]
+            </span>
+          </div>
+          <button class="govuk-button" data-module="govuk-button" type="submit">
+            @SharedLocalizer["Continue"]
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</form>

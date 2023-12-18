@@ -1,0 +1,109 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
+@model RegulatorSubmissionFiltersModel
+
+@using (Html.BeginForm("Submissions", "Submissions", FormMethod.Get))
+{
+  <div class="epr-filter-panel">
+    <div class="govuk-width-container">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <div class="epr-filter-panel-full">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-5">@Localizer["Title.FilterOptions"].Value</h2>
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--m" for="organisation-name"
+                     gov-for="SearchOrganisationName"
+                     gov-first-option="true">@Localizer["SubTitle.OrganisationName"].Value
+              </label>
+              <input type="text"
+                     class="govuk-input govuk-!-width-full"
+                     id="organisation-name"
+                     name="organisation-name"
+                     gov-first-option="true"
+                     gov-for="SearchOrganisationName"
+                     gov-value="@Model.SearchOrganisationName"/>
+            </div>
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--m" for="organisation-name"
+                     gov-for="SearchOrganisationId"
+                     gov-first-option="false">@Localizer["SubTitle.OrganisationId"].Value
+              </label>
+              <input type="text"
+                     class="govuk-input govuk-!-width-full"
+                     id="organisation-name"
+                     name="organisation-name"
+                     gov-first-option="false"
+                     gov-for="SearchOrganisationId"
+                     gov-value="@Model.SearchOrganisationId"/>
+            </div>
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend>
+                  <span class="govuk-label govuk-label--m">@Localizer["SubTitle.OrganisationType"].Value</span>
+                </legend>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                  <div class="epr-filter-panel-checkbox-layout">
+                    <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                      @Html.CheckBoxFor(x => x.IsDirectProducerChecked,
+                        new { id = "is-direct-producer-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-direct-producer-type-checked-label" })
+                      @Html.LabelFor(x => x.IsDirectProducerChecked, Localizer["Checkbox.OrganisationType.DirectProducer"].Value,
+                        new { id = "is-direct-producer-type-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-direct-producer-type-checked-check" })
+                    </div>
+                  </div>
+                  <div class="epr-filter-panel-checkbox-layout">
+                    <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                      @Html.CheckBoxFor(x => x.IsComplianceSchemeChecked,
+                        new { id = "is-compliance-scheme-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-compliance-scheme-type-checked-label" })
+                      @Html.LabelFor(x => x.IsComplianceSchemeChecked, Localizer["Checkbox.OrganisationType.ComplianceScheme"].Value,
+                        new { id = "is-compliance-scheme-type-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-compliance-scheme-type-checked-check" })
+                    </div>
+                  </div>
+                  <div class="epr-filter-panel-checkbox-layout"></div>
+                </div>
+              </fieldset>
+            </div>
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend>
+                  <span class="govuk-label govuk-label--m">@Localizer["SubTitle.SubmissionStatus"].Value</span>
+                </legend>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                  <div class="epr-filter-panel-checkbox-layout">
+                    <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                      @Html.CheckBoxFor(x => x.IsPendingSubmissionChecked,
+                        new { id = "is-pending-submission-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-pending-submission-type-checked-label" })
+                      @Html.LabelFor(x => x.IsPendingSubmissionChecked, SharedLocalizer["Tag.Pending"].Value,
+                        new { id = "is-pending-submission-type-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-pending-submission-type-checked-check" })
+                    </div>
+                  </div>
+                  <div class="epr-filter-panel-checkbox-layout">
+                    <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                      @Html.CheckBoxFor(x => x.IsAcceptedSubmissionChecked,
+                        new { id = "is-accepted-submission-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-accepted-submission-type-checked-label" })
+                      @Html.LabelFor(x => x.IsAcceptedSubmissionChecked, SharedLocalizer["Tag.Accepted"].Value,
+                        new { id = "is-accepted-submission-type-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-accepted-submission-type-checked-check" })
+                    </div>
+                  </div>
+                  <div class="epr-filter-panel-checkbox-layout">
+                    <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                      @Html.CheckBoxFor(x => x.IsRejectedSubmissionChecked,
+                        new { id = "is-rejected-submission-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-rejected-submission-type-checked-label" })
+                      @Html.LabelFor(x => x.IsRejectedSubmissionChecked, SharedLocalizer["Tag.Rejected"].Value,
+                        new { id = "is-rejected-submission-type-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-rejected-submission-type-checked-check" })
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            @Html.Hidden("isFilteredSearch", true)
+            <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button">@SharedLocalizer["ApplyFilters"].Value</button>
+            @Html.ActionLink(SharedLocalizer["ClearFilters"].Value,
+              "Submissions",
+              "Submissions",
+              new { clearFilters = true },
+              new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-filter-panel-control" })
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

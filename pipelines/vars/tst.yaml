@@ -1,0 +1,6 @@
+variables:
+  azureSubscription: 'AZD-RWD-TST1'
+  docker.imageName: 'eprregulatorfrontendregistry'
+  acr.azureContainerRegistryName: 'tstrwdinfac1401'
+  acr.repositoryName: 'eprregulatorfrontendregistry'
+  serviceName: 'tstrwdwebwa1411'

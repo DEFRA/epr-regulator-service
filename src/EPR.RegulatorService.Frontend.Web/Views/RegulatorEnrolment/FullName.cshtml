@@ -1,0 +1,60 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorEnrolment;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+
+@model FullNameViewModel
+
+@{
+    ViewData["Title"] = Localizer["Page.Title"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    const string errorClass = "govuk-input--error";
+}
+
+<form action="@Url.Action("FullName", "RegulatorEnrolment")?token=@Model.Token"
+  enctype="multipart/form-data" method="POST">
+
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                    }
+
+                    <h1 class="govuk-heading-l">
+                        @Localizer["Page.Title"]
+                    </h1>
+                    <div class="govuk-form-group">                        
+                         <div class="govuk-form-group@(errorsViewModel.HasErrorKey(nameof(Model.FirstName)) ? " govuk-form-group--error" : "")"> 
+                            <label class="govuk-label" asp-for="FirstName">
+                                @Localizer["FirstName.Label"]
+                            </label>
+
+                            @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(Model.FirstName)])
+                            <input class="govuk-input govuk-!-width-two-thirds @Html.Raw(errorsViewModel.HasErrorKey(nameof(Model.FirstName))?errorClass:"")"
+                                   type="text"
+                                   gov-for="FirstName"
+                                   gov-value="@Model.FirstName">
+                        </div>
+                        <div class="govuk-form-group@(errorsViewModel.HasErrorKey(nameof(Model.LastName)) ? " govuk-form-group--error" : "")">
+                            <label class="govuk-label" asp-for="LastName">
+                                @Localizer["LastName.Label"]
+                            </label>
+
+                            @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(Model.LastName)])                            
+                            <input class="govuk-input govuk-!-width-two-thirds @Html.Raw(errorsViewModel.HasErrorKey(nameof(Model.LastName))?errorClass:"")"
+                                   type="text"
+                                   gov-for="LastName"
+                                   gov-value="@Model.LastName">
+                        </div>
+                    </div>
+                    <button class="govuk-button" data-module="govuk-button" type="submit">
+                        @SharedLocalizer["Continue"]
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+</form>

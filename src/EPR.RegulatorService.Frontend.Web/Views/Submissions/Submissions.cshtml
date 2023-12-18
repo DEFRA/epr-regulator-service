@@ -1,0 +1,60 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Core.Models
+
+@model SubmissionsViewModel
+
+@{
+  ViewData["Title"] = Localizer["Title.SubmissionsTitle"];
+
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        @if(Model.RejectSubmissionResult == EndpointResponseStatus.Success)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["Banner.Success.RejectedSubmission", Model.OrganisationName]);
+        }
+        @if(Model.AcceptSubmissionResult == EndpointResponseStatus.Success)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["Banner.Success.AcceptedSubmission", Model.OrganisationName]);
+        }
+        @if (!ViewData.ModelState.IsValid)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+        }
+      </div>
+
+      <div class="govuk-grid-column-full">
+
+        <h1 class="govuk-caption-xl">
+          @Localizer["Title.EnvironmentAgency"]
+        </h1>
+
+        <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">
+          @Localizer["Title.SubmissionsTitle"]
+        </h2>
+        <div id="contact-hint" class="govuk-hint">
+          @Localizer["Page.Submissions.Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state"9>@Localizer["PowerBILogin"]</a>.
+        </div>
+
+        @await Component.InvokeAsync("SubmissionsList",
+                new SubmissionListRequest
+                 {
+                   SearchOrganisationName = Model.SubmissionFilters.SearchOrganisationName, 
+                   SearchOrganisationReference = Model.SubmissionFilters.SearchOrganisationId, 
+                   IsDirectProducerChecked = Model.SubmissionFilters.IsDirectProducerChecked,
+                   IsComplianceSchemeChecked = Model.SubmissionFilters.IsComplianceSchemeChecked,
+                   IsPendingSubmissionChecked = Model.SubmissionFilters.IsPendingSubmissionChecked,
+                   IsAcceptedSubmissionChecked = Model.SubmissionFilters.IsAcceptedSubmissionChecked,
+                   IsRejectedSubmissionChecked = Model.SubmissionFilters.IsRejectedSubmissionChecked,
+                   PageNumber = (int)Model.PageNumber,
+                 })
+      </div>
+    </div>
+  </main>
+</div>

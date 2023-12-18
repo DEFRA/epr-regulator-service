@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Detail.Title" xml:space="preserve">
+    <value>Cookies</value>
+  </data>
+  <data name="Detail.EssentialCookies" xml:space="preserve">
+    <value>Essential cookies</value>
+  </data>
+  <data name="Detail.EssentialCookiesWeUse" xml:space="preserve">
+    <value>Essential cookies we use</value>
+  </data>
+  <data name="Detail.AnalyticsCookies" xml:space="preserve">
+    <value>Analytics cookies (optional)</value>
+  </data>
+  <data name="Detail.Purpose" xml:space="preserve">
+    <value>Purpose</value>
+  </data>
+  <data name="Detail.Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Detail.Expires" xml:space="preserve">
+    <value>Expires</value>
+  </data>
+  <data name="Detail.No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Detail.Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Detail.SaveCookieSettings" xml:space="preserve">
+    <value>Save cookie settings</value>
+  </data>
+  <data name="Detail.Accept" xml:space="preserve">
+    <value>Do you want to accept analytics cookies?</value>
+  </data>
+  <data name="Detail.AnalyticsCookieExpires1" xml:space="preserve">
+    <value>400 days</value>
+  </data>
+  <data name="Detail.AnalyticsCookieExpires2" xml:space="preserve">
+    <value>400 days</value>
+  </data>
+  <data name="Detail.AnalyticsCookiePurpose1" xml:space="preserve">
+    <value>This cookie is a Google Analytics persistent cookie which is used to distinguish unique visitors.</value>
+  </data>
+  <data name="Detail.AnalyticsCookiePurpose2" xml:space="preserve">
+    <value>This is a third party cookie that is placed on your device to allow us to use the Google Analytics service. This cookie is used to collect information about how visitors use our website. We use this information to compile reports and to help us improve the website.</value>
+  </data>
+  <data name="Detail.EssentialCookieExpires1" xml:space="preserve">
+    <value>1 year</value>
+  </data>
+  <data name="Detail.EssentialCookieExpiresSession" xml:space="preserve">
+    <value>Session</value>
+  </data>
+  <data name="Detail.RegistrationAuthenticationCookiePurpose" xml:space="preserve">
+    <value>Multiple cookies used as part of user registration and authentication.</value>
+  </data>
+  <data name="Detail.EssentialCookiePurpose1" xml:space="preserve">
+    <value>Saves your cookie consent settings.</value>
+  </data>
+  <data name="Detail.EssentialCookiePurpose2" xml:space="preserve">
+    <value>Saves your responses so you have a better experience.</value>
+  </data>
+  <data name="Detail.EssentialCookiePurpose3" xml:space="preserve">
+    <value>This is an anti-forgery token and is used to prevent cross-site request forgery (CSRF) attacks. It prevents others from forging your website links.</value>
+  </data>
+  <data name="Detail.AnalyticsCookiesWeUse" xml:space="preserve">
+    <value>Analytics cookies we use</value>
+  </data>
+  <data name="Detail.EssentialCookiesDescription" xml:space="preserve">
+    <value>Essential cookies keep your information secure while you use this service. We do not need to ask permission to use them.</value>
+  </data>
+  <data name="Detail.AnalyticalCookiesDescription1" xml:space="preserve">
+    <value>With your permission, we use Google Analytics to collect data about how you use this service. This information helps us to improve our service.</value>
+  </data>
+  <data name="Detail.AnalyticalCookiesDescription2" xml:space="preserve">
+    <value>Google is not allowed to use or share our analytics data with anyone.</value>
+  </data>
+  <data name="Detail.AnalyticalCookiesDescription3" xml:space="preserve">
+    <value>Google Analytics stores anonymised information about:</value>
+  </data>
+  <data name="Detail.AnalyticalCookiesPoint1" xml:space="preserve">
+    <value>the pages you visit</value>
+  </data>
+  <data name="Detail.AnalyticalCookiesPoint2" xml:space="preserve">
+    <value>how long you spend on each page</value>
+  </data>
+  <data name="Detail.AnalyticalCookiesPoint3" xml:space="preserve">
+    <value>how you arrived at the site</value>
+  </data>
+  <data name="Detail.AnalyticalCookiesPoint4" xml:space="preserve">
+    <value>what you click on while you visit the site</value>
+  </data>
+  <data name="Detail.AnalyticalCookiesPoint5" xml:space="preserve">
+    <value>the device and browser you use</value>
+  </data>
+  <data name="Detail.CookieDescription1" xml:space="preserve">
+    <value>Cookies are small files saved on your phone, tablet or computer when you visit a website.</value>
+  </data>
+  <data name="Detail.CookieDescription2" xml:space="preserve">
+    <value>We use cookies to make the pEPR: Regulators’ service work and collect information about how you use our service.</value>
+  </data>
+  <data name="Detail.SetCookiePreferences" xml:space="preserve">
+    <value>You’ve set your cookie preferences.</value>
+  </data>
+  <data name="Detail.Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Detail.EssentialCookiePurpose4" xml:space="preserve">
+    <value>Used to identify a logged-in user to enable access to secure areas of a site.</value>
+  </data>
+  <data name="Detail.EssentialCookiePurpose5" xml:space="preserve">
+    <value>Saves information about form completion so you have a better experience.</value>
+  </data>
+  <data name="Detail.EssentialCookiePurpose6" xml:space="preserve">
+    <value>F5 Networks BIG-IP ASM domain validation and security management cookie.</value>
+  </data>
+</root>

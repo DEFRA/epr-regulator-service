@@ -1,0 +1,60 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
+@using EPR.RegulatorService.Frontend.Core.Models
+@using EPR.RegulatorService.Frontend.Web.Constants
+
+@model ApplicationsViewModel
+@{
+  ViewData["Title"] = Localizer["Applications.Title"];
+
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      @if (!ViewData.ModelState.IsValid)
+      {
+        @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+      }
+
+      <div class="govuk-grid-column-full">
+        @if (!ViewData.ModelState.IsValid)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+        }
+
+        @if(Model.RejectionStatus == EndpointResponseStatus.Success && Model.RejectedServiceRole == ServiceRole.ApprovedPerson)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["RejectedApprovedPerson", Model.RejectedUserName]);
+        }
+
+          @if(Model != null && Model.TransferNationResult == EndpointResponseStatus.Success)
+          {
+              @await Html.PartialAsync("Partials/_SuccessBanner",  Localizer["Success.NationTransferred", Model.TransferredOrganisationName, Model.TransferredOrganisationAgency])
+          }
+      </div>
+
+      <div class="govuk-grid-column-full">
+        <h1 class="govuk-caption-xl">
+          @Localizer["Title.EnvironmentAgency"]
+        </h1>
+
+        <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">
+          @Localizer["Subtitle.ApplicationsForApprovedDelegated"]
+        </h2>
+
+        @await Component.InvokeAsync("ApplicationsList",
+           new
+           {
+             pageNumber = Model.PageNumber,
+             searchOrganisationName = Model.SearchOrganisationName,
+             approvedPersonFilterSelected = Model.IsApprovedUserTypeChecked,
+             delegatedPersonFilterSelected = Model.IsDelegatedUserTypeChecked
+           })
+
+      </div>
+    </div>
+  </main>
+</div>

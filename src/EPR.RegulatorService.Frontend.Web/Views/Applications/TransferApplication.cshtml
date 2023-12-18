@@ -1,0 +1,127 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
+
+@model TransferApplicationViewModel
+@{
+  ViewData["Title"] = Localizer["Page.Title", Model.OrganisationName];
+
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+  var userNation = Model.UserNation;
+  var regulatorIndex = 0;
+}
+
+@functions
+{
+    private static string GetAgencyTag(int nationId) => nationId switch {
+        2 => "Agency.NIEA",
+        3 => "Agency.SEPA",
+        4 => "Agency.NRW",
+        _  => "Agency.EA"
+        };
+}
+
+@using(Html.BeginForm("TransferApplication", "Applications", HttpMethod.Post))
+{
+  @Html.HiddenFor(m => m.OrganisationName)
+  @Html.HiddenFor(m => m.UserNation)
+  
+  <div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          @if (!ViewData.ModelState.IsValid)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+          }
+          
+          @{ var agencyErrorExists = errorsViewModel.Errors.Exists(x => x.Key == $"AgencyIndex"); }
+          <div class="govuk-form-group @(agencyErrorExists ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset" aria-describedby="contact-hint">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                  @Localizer["Page.Title", Model.OrganisationName]
+                </h1>
+              </legend>
+              <div id="contact-hint" class="govuk-hint">
+                @Localizer["Page.Subtitle"]
+              </div>
+              @if (agencyErrorExists)
+              {
+                  @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+              }
+              <div class="govuk-radios" data-module="govuk-radios">
+
+                @foreach (var regulator in Model.RegulatorOrganisations)
+                {
+                  if (userNation != regulator.NationId)
+                  {
+                    var transferNotes = Model.TransferNotes != null ? Model.TransferNotes[regulatorIndex].Notes : string.Empty;
+                    var notesErrorExists = errorsViewModel.Errors.Exists(x => x.Key == $"TransferNotes.{regulatorIndex}-notes");
+                    var isFirstOption = regulatorIndex == 0;
+                    <div class="govuk-radios__item">
+                      <input class="govuk-radios__input"
+                             type="radio"
+                             data-aria-controls="conditional-@regulatorIndex"
+                             aria-labelledby="radio-label-@regulatorIndex"
+                             gov-for="AgencyIndex"
+                             gov-first-option="@isFirstOption"
+                             gov-value=@regulatorIndex>
+                      <label id="radio-label-@regulatorIndex" 
+                             class="govuk-label govuk-radios__label" 
+                             gov-for="AgencyIndex" 
+                             gov-first-option="@isFirstOption" 
+                             gov-value="@regulatorIndex">
+                        @Localizer[GetAgencyTag(regulator.NationId)]
+                      </label>
+                    </div>
+                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-@regulatorIndex" aria-labelledby="@regulatorIndex-transfer-details-label">
+                      <div class="govuk-form-group @(notesErrorExists ? "govuk-form-group--error": string.Empty)">
+                        <label id="@regulatorIndex-transfer-details-label" class="govuk-label" for="TransferNotes.@regulatorIndex-notes">
+                          @Localizer["Text.TransferDetails"]
+                        </label>
+                        @if (notesErrorExists)
+                        {
+                          @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+                        }
+                        
+                        @Html.Hidden($"TransferNotes[{regulatorIndex}].AgencyIndex", regulatorIndex)
+                        @Html.Hidden($"TransferNotes[{regulatorIndex}].AgencyName", regulator.KeyValue)
+                        @Html.Hidden($"TransferNotes[{regulatorIndex}].NationId", regulator.NationId)
+                        <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+                          <div class="govuk-form-group">
+                            <textarea class="govuk-textarea govuk-js-character-count @(notesErrorExists ? "epr-textarea--error" : string.Empty)"
+                                      id="TransferNotes.@regulatorIndex-notes"
+                                      name="TransferNotes[@regulatorIndex].Notes"
+                                      rows="5"
+                                      aria-describedby="TransferNotes.@regulatorIndex-notes-info">@transferNotes</textarea>
+                                                                                                                </div>
+                          <div id="TransferNotes.@regulatorIndex-notes-info" class="govuk-hint govuk-character-count__message">
+                            You can enter up to 200 characters
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    regulatorIndex++;
+                  }
+                }
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <button class="govuk-button epr-horizontal-control epr-horizontal-control-button" data-module="govuk-button">
+            @SharedLocalizer["Continue"]
+          </button>
+          @Html.ActionLink(SharedLocalizer["Cancel"],
+            "EnrolmentRequests",
+            "Applications",
+            null,
+            new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-horizontal-control epr-horizontal-control-link" })
+        </div>
+      </div>
+    </main>
+  </div>
+}

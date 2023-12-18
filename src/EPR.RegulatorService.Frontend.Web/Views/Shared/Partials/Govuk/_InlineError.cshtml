@@ -1,0 +1,9 @@
+﻿@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@model (string Key, List<ErrorViewModel> Errors)
+
+@if (Model.Errors.Count > 0)
+{
+  <p id="error-@(Model.Key)" class="govuk-error-message">
+    <span class="govuk-visually-hidden">Error:</span> @Html.Raw(Model.Errors.FirstOrDefault()?.Message)
+  </p>
+}

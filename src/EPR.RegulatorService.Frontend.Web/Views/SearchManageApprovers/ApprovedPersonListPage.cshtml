@@ -1,0 +1,83 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ApprovedPersonListPage.OrganisationUsersModel
+
+@{
+  ViewData["Title"] = @Localizer["Page.Title"];
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+  var radioButtonIndex = "";
+}
+
+<form action="@Url.Action("ApprovedPersonListPage", "SearchManageApprovers")"
+      enctype="application/x-www-form-urlencoded" method="POST">
+
+  <div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+          @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+          <div class="govuk-form-group @(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
+
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">@Localizer["Page.Title"]</h1>
+                <div class="govuk-hint" id="select-user-hint">@Localizer["Page.Title.Hint"]</div>
+              </legend>
+
+              @if (!ViewData.ModelState.IsValid)
+              {
+                  @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+                  <br/>
+              }
+
+              <div class="govuk-radios" data-module="govuk-radios">
+                @foreach (var user in Model.OrganisationUsers
+                  .Select((value, index) => new { Index = index, Value = value }))
+                {
+                  radioButtonIndex = user.Index == 0 ? "" : user.Index.ToString();
+
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input"
+                           id="NewApprovedUserId@(radioButtonIndex)"
+                           name="NewApprovedUserId"
+                           aria-describedby="select-user-hint"
+                           type="radio"
+                           value=@user.Value.PersonExternalId>
+
+                    <label class="govuk-label govuk-radios__label" for="NewApprovedUserId@(radioButtonIndex)">
+                      <span>@user.Value.FirstName @user.Value.LastName</span><br/>
+                      <span class="govuk-hint">@user.Value.Email</span>
+                    </label>
+                  </div>
+                }
+
+                @if (Model.OrganisationUsers.Any())
+                {
+                    radioButtonIndex = Model.OrganisationUsers.Count.ToString();
+                }
+
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input"
+                         aria-describedby="select-user-hint"
+                         id="NewApprovedUserId@(radioButtonIndex)"
+                         name="NewApprovedUserId"
+                         type="radio"
+                         value=@Guid.Empty>
+                  <label class="govuk-label govuk-radios__label"
+                          for="NewApprovedUserId@(radioButtonIndex)">
+                    <span>@Localizer["Someone.new"]</span>
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <input type="hidden" asp-for="ExternalOrganisationId" value="@Model.ExternalOrganisationId" />
+          <button class="govuk-button" data-module="govuk-button">@SharedLocalizer["Continue"]</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</form>
+

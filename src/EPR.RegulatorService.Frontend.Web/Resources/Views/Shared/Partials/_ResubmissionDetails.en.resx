@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SummaryList.Title" xml:space="preserve">
+    <value>Resubmission details</value>
+  </data>
+  <data name="SummaryList.SubTitle.TimeAndDateOfSubmission" xml:space="preserve">
+    <value>Time and date of resubmission</value>
+  </data>
+  <data name="SummaryList.SubTitle.SubmittedBy" xml:space="preserve">
+    <value>Resubmitted by</value>
+  </data>
+  <data name="SummaryList.SubTitle.AccountRole" xml:space="preserve">
+    <value>Account role</value>
+  </data>
+  <data name="SummaryList.SubTitle.Telephone" xml:space="preserve">
+    <value>Telephone</value>
+  </data>
+  <data name="SummaryList.SubTitle.Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="SummaryList.SubTitle.ReasonForRejection" xml:space="preserve">
+    <value>Reason for rejection of previous submission</value>
+  </data>
+  <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
+    <value>Resubmission required</value>
+  </data>
+  <data name="SummaryList.Information.Text" xml:space="preserve">
+    <value>{0} cannot resubmit until this submission has been actioned.</value>
+  </data>
+</root>

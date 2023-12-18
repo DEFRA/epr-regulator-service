@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="LandingPage.Title" xml:space="preserve">
+        <value>pEPR: Regulators’ Service</value>
+    </data>
+    <data name="LandingPage.ManageAccount" xml:space="preserve">
+        <value>Manage your account</value>
+    </data>
+    <data name="LandingPage.ManageAccountDescription" xml:space="preserve">
+        <value>Add or remove team members from your account</value>
+    </data>
+    <data name="LandingPage.ManageApplications" xml:space="preserve">
+        <value>Manage applications for approved and delegated people</value>
+    </data>
+    <data name="LandingPage.ManageApplicationsDescription" xml:space="preserve">
+        <value>View, accept or reject applications for approved and delegated persons</value>
+    </data>
+  <data name="LandingPage.ManageSubmissions" xml:space="preserve">
+    <value>Manage packaging data submissions</value>
+  </data>
+  <data name="LandingPage.ManageSubmissionsDescription" xml:space="preserve">
+    <value>View, accept or reject packaging data submissions</value>
+  </data>
+  <data name="Regulator.Home" xml:space="preserve">
+    <value>Regulator home - {0}</value>
+  </data>
+  <data name="LandingPage.ManageApprovedPerson" xml:space="preserve">
+    <value>Manage organisations and their approved person</value>
+  </data>
+  <data name="LandingPage.ManageApprovedPersonDescription" xml:space="preserve">
+    <value>Remove or invite approved persons</value>
+  </data>
+</root>

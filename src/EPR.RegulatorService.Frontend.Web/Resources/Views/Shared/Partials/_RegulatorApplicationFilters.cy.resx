@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Title.FilterOptions" xml:space="preserve">
+    <value>Opsiynau hidlo</value>
+  </data>
+  <data name="SubTitle.OrganisationName" xml:space="preserve">
+    <value>Enw’r sefydliad</value>
+  </data>
+  <data name="SubTitle.ApplicationType" xml:space="preserve">
+    <value>Math o gais</value>
+  </data>
+  <data name="Checkbox.ApprovedPerson" xml:space="preserve">
+    <value>Person a gymeradwywyd</value>
+  </data>
+  <data name="Checkbox.DelegatedPerson" xml:space="preserve">
+    <value>Person a ddirprwywyd</value>
+  </data>
+  <data name="Button.ApplyFilters" xml:space="preserve">
+    <value>Defnyddio hidlyddion</value>
+  </data>
+  <data name="Link.ClearFilters" xml:space="preserve">
+    <value>Clirio hidlyddion</value>
+  </data>
+</root>

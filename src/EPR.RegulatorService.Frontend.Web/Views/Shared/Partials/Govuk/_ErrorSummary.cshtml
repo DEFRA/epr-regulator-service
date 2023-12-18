@@ -1,0 +1,22 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@model ErrorsViewModel
+
+@if (Model.Errors.Count > 0)
+{
+  <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+          @Localizer["ErrorSummary.Title"].Value
+      </h2>
+          <div class="govuk-error-summary__body">
+              <ul class="govuk-list govuk-error-summary__list">
+                  @foreach (var error in Model.Errors.SelectMany(x =>
+                    x.Errors.Select(y => new { Key = x.Key, ErrorMessage = y.Message })))
+                  {
+                    <li>
+                      <a href="#@error.Key" data-testid="error-banner-text">@error.ErrorMessage</a>
+                    </li>
+                  }
+              </ul>
+        </div>
+  </div>
+}

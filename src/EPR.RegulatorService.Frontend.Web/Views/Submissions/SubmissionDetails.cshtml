@@ -1,0 +1,62 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
+
+@model SubmissionDetailsViewModel
+@{
+    ViewData["Title"] = Localizer["Title.ManagePackagingDataSubmissions"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        @if (!ViewData.ModelState.IsValid)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+        }
+        
+        <h1 class="govuk-caption-xl">@Localizer["Title.ManagePackagingDataSubmissions"]</h1>
+        <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">@Model.OrganisationName</h2>
+        <div class="govuk-!-margin-bottom-4">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationType"]</h3>
+            <p class="govuk-body">@Model.OrganisationType</p>
+        </div>
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationId"]</h3>
+          <p class="govuk-body">@Model.OrganisationReferenceNumber</p>
+        </div>
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.PackagingData"]</h3>
+          <p class="govuk-body">@Localizer["SubTitle.PackagingData.Text"]
+            <a href="@Model.PowerBiLogin" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        @if (!Model.IsResubmission)
+        {
+          <partial name="Partials/_SubmissionDetails"/>
+        }
+        else
+        {
+          <partial name="Partials/_ResubmissionDetails"/>
+        }
+      </div>
+    </div>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        @Html.ActionLink(Localizer["Link.BackToSubmissions"].Value,
+               "Submissions",
+               "Submissions",
+               null,
+               new {@class = "govuk-body govuk-link govuk-link--no-visited-state"})
+      </div>
+    </div>
+  </main>
+</div>

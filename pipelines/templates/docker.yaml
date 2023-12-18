@@ -1,0 +1,52 @@
+parameters:
+  - name: azureSubscription
+    type: string
+  - name: solutionFolder
+    type: string
+    default: ''
+  - name: projectFolder
+    type: string
+    default: ''
+  - name: azureContainerRegistryName
+    type: string
+  - name: imageName
+    type: string
+    default: rwdeprdevdockerimage
+  - name: repositoryName
+    type: string
+  - name: branchName
+    type: string
+
+steps:
+  - task: NuGetAuthenticate@1
+    displayName: 'Authenticate to NuGet'
+
+  - task: Docker@2
+    displayName: 'Build Docker image'
+    inputs:
+      repository: ${{parameters.imageName}}
+      command: build
+      buildContext: ${{parameters.solutionFolder}}
+      dockerfile: ${{parameters.solutionFolder}}/${{parameters.projectFolder}}/Dockerfile
+      tags: $(Build.BuildNumber)
+      arguments: '--build-arg PAT=$(VSS_NUGET_ACCESSTOKEN)'
+
+  - task: AzureCLI@2
+    displayName: 'Push Docker Image to ACR'
+    inputs:
+      azureSubscription: ${{parameters.azureSubscription}}
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        docker images
+        az acr login --name ${{parameters.azureContainerRegistryName}}
+        docker tag ${{parameters.imageName}}:$(Build.BuildNumber) ${{parameters.azureContainerRegistryName}}.azurecr.io/${{parameters.repositoryName}}:${{parameters.branchName}}-$(Build.BuildNumber)
+        if [ ${{parameters.branchName}} = 'main' ]
+        then
+          echo Adding latest tag to the image
+          docker tag ${{parameters.imageName}}:$(Build.BuildNumber) ${{parameters.azureContainerRegistryName}}.azurecr.io/${{parameters.repositoryName}}:latest
+          docker tag ${{parameters.imageName}}:$(Build.BuildNumber) ${{parameters.azureContainerRegistryName}}.azurecr.io/${{parameters.repositoryName}}:${{parameters.branchName}}-latest
+          docker push ${{parameters.azureContainerRegistryName}}.azurecr.io/${{parameters.repositoryName}}:latest
+          docker push ${{parameters.azureContainerRegistryName}}.azurecr.io/${{parameters.repositoryName}}:${{parameters.branchName}}-latest
+        fi
+        docker push ${{parameters.azureContainerRegistryName}}.azurecr.io/${{parameters.repositoryName}}:${{parameters.branchName}}-$(Build.BuildNumber)

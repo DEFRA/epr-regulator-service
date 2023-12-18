@@ -1,0 +1,13 @@
+﻿@model EPR.RegulatorService.Frontend.Web.ViewModels.Shared.PaginationNavigationModel
+
+@using (Html.BeginForm(Model.ActionName, Model.ControllerName, FormMethod.Post))
+{
+  <input class="govuk-input govuk-!-width-one-half" 
+         id="searchText" 
+         name="searchText" 
+         type="text"
+         maxlength="50"
+         value="@Model">
+        
+  <button class="govuk-button" data-module="govuk-button" type="submit">Search</button>
+}
