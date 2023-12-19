@@ -32,6 +32,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         private Fixture _fixture;
 
         private readonly Guid _organisationId = Guid.NewGuid();
+        private readonly Guid _connExternalId = Guid.NewGuid();
 
         [TestInitialize]
         public void Setup()
@@ -56,7 +57,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["GetOrganisationUsersByOrganisationExternalIdPath"] = "organisations/users-by-organisation-external-id?externalId={0}",
                     ["PomSubmissions"] = "http://testurl.com",
                     ["OrganisationsSearchPath"] = "organisations/search-organisations?currentPage={0}&pageSize={1}&searchTerm={2}",
-                    ["PomSubmissionDecision"] = "http://testurl.com"
+                    ["PomSubmissionDecision"] = "http://testurl.com",
+                    ["OrganisationsRemoveApprovedUser"] = "organisations/remove-approved-users?connExternalId={0}&organisationId={1}"
                 }
             });
 
@@ -742,6 +744,52 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             result.Should().BeEquivalentTo(organisationUsers);
 
             response.Dispose();
+        }
+
+        [TestMethod]
+        public async Task RemoveApprovedUser_WhenHttpStatusCodeOk_ThenReturnSuccess()
+        {
+            // Arrange
+            var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _facadeService.RemoveApprovedUser(_connExternalId,_organisationId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.Should().Be(EndpointResponseStatus.Success);
+        }
+
+        [TestMethod]
+        public async Task RemoveApprovedUser_UnsuccessfulResponse_ReturnsFail()
+        {
+            // Arrange
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpResponseMessage);
+
+            // Act
+            var result = await _facadeService.RemoveApprovedUser(_connExternalId,_organisationId);
+
+            // Assert
+            result.Should().Be(EndpointResponseStatus.Fail);
+
+            httpResponseMessage.Dispose();
         }
     }
 }

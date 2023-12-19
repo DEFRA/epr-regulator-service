@@ -216,4 +216,11 @@ public class SearchManageApproversController : RegulatorSessionBaseController
                 OrganisationExternalId = organisationId
             }
         };
+
+    public async Task<ActionResult> RemoveApprovedUser(Guid personExternalId, Guid organisationId)
+    {
+        var test = await _facadeService.RemoveApprovedUser(personExternalId,organisationId);
+
+        return Ok(true);
+    }
 }

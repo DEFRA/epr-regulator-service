@@ -25,6 +25,7 @@ public class FacadeService : IFacadeService
     private const string OrganisationDetailsPath = "OrganisationDetails";
     private const string OrganisationsSearchPath = "OrganisationsSearchPath";
     private const string GetOrganisationUsersByOrganisationExternalIdPath = "GetOrganisationUsersByOrganisationExternalIdPath";
+    private const string OrganisationsRemoveApprovedUserPath = "OrganisationsRemoveApprovedUser";
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
     private readonly ITokenAcquisition _tokenAcquisition;
@@ -241,6 +242,16 @@ public class FacadeService : IFacadeService
 
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<List<OrganisationUser>>();
+    }
+
+    public async Task<EndpointResponseStatus> RemoveApprovedUser(Guid connExternalId, Guid organisationId)
+    {
+        await PrepareAuthenticatedClient();
+        var path = string.Format(_facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath], connExternalId, organisationId);
+
+        var response = await _httpClient.DeleteAsync(path);
+
+        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
     private async Task PrepareAuthenticatedClient()

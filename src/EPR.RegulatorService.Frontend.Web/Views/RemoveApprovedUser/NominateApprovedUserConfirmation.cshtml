@@ -13,7 +13,7 @@
 
 @* Next page not required for user story after user continue *@
 
-<form action="@Url.Action("", "")"
+<form action="@Url.Action("Submit", "RemoveApprovedUser", Model)"
       enctype="application/x-www-form-urlencoded" method="post">
   <input type="hidden" value=@Model.ConnExternalId name="ConnExternalId"/>
   <input type="hidden" value=@Model.OrganisationId name="OrganisationId"/>

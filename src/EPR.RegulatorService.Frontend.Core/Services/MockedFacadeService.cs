@@ -280,4 +280,6 @@ public class MockedFacadeService : IFacadeService
 
         return Task.FromResult(response);
     }
+
+    public async Task<EndpointResponseStatus> RemoveApprovedUser(Guid connExternalId, Guid organisationId) => EndpointResponseStatus.Success;
 }

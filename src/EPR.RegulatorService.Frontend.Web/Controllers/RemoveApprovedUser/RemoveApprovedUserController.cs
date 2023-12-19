@@ -5,6 +5,8 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.RemoveApprovedUser;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Core.Models;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RemoveApprovedUser;
 
@@ -12,11 +14,13 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RemoveApprovedUser;
 [FeatureGate(FeatureFlags.ManageApprovedUsers)]
 public class RemoveApprovedUserController : RegulatorSessionBaseController
 {
-
+    private readonly IFacadeService _facadeService;
     public RemoveApprovedUserController(ISessionManager<JourneySession> sessionManager,
         ILogger<RemoveApprovedUserController> logger,
-        IConfiguration configuration) : base(sessionManager, logger, configuration)
+        IConfiguration configuration,
+        IFacadeService facadeService) : base(sessionManager, logger, configuration)
     {
+        _facadeService = facadeService;
     }
 
     [HttpGet]
@@ -57,7 +61,7 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
 
         string backLink = $"{PagePath.RemoveApprovedUserConfirmationPage}?userName={session.RemoveApprovedUserSession.UserNameToDelete}" +
                           $"&organisationName={session.RemoveApprovedUserSession.OrganisationName}" +
-                          $"&personExternalId={session.RemoveApprovedUserSession.ConnExternalId}";
+                          $"&connExternalId={session.RemoveApprovedUserSession.ConnExternalId}";
 
         ViewBag.BackLinkToDisplay = backLink;
 
@@ -101,11 +105,24 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
 
     [HttpPost]
     [Route(PagePath.NominationDecisionConfirmation)]
-    public IActionResult Submit(ApprovedUserToRemoveViewModel model)
+    public async Task<IActionResult> Submit(ApprovedUserToRemoveViewModel model)
     {
-        throw new NotImplementedException();
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        if (model.ConnExternalId != Guid.Empty && model.OrganisationId != Guid.Empty)
+        {
+            session.RegulatorSession.OrganisationId = model.OrganisationId;
+            session.RegulatorSession.ConnExternalId = model.ConnExternalId;
+        }
 
-        // TODO
-        // Take model and call facade with user information
+        var response = await _facadeService.RemoveApprovedUser(
+            session.RegulatorSession.ConnExternalId.Value,
+            session.RegulatorSession.OrganisationId.Value);
+
+        if (response == EndpointResponseStatus.Success)
+        {
+            return View("RemovedConfirmation", session.RemoveApprovedUserSession);
+        }
+
+        return RedirectToAction(PagePath.Error, "Error");
     }
 }

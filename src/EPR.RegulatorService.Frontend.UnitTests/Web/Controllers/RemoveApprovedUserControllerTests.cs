@@ -1,6 +1,9 @@
 using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.RemoveApprovedUser;
+using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Web.ViewModels.RemoveApprovedUser;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +17,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 public class RemoveApprovedUserControllerTests
 {
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
-
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
     private Mock<ILogger<RemoveApprovedUserController>> _mockLogger;
     private Mock<IConfiguration> _mockConfiguration;
+    private Mock<IFacadeService> _mockFacade = null!;
     private RemoveApprovedUserController _controller;
     private Mock<HttpContext> _httpContextMock = null!;
+    private readonly Guid _organisationExternalId = Guid.NewGuid();
+    private readonly Guid _connExternalId = Guid.NewGuid();
 
     [TestInitialize]
     public void Setup()
@@ -32,8 +37,9 @@ public class RemoveApprovedUserControllerTests
         configurationSectionMock.Setup(section => section.Value).Returns("/regulators");
         _mockConfiguration.Setup(config => config.GetSection(ConfigKeys.PathBase))
             .Returns(configurationSectionMock.Object);
+        _mockFacade = new Mock<IFacadeService>();
 
-        _controller = new RemoveApprovedUserController(_mockSessionManager.Object, _mockLogger.Object, _mockConfiguration.Object);
+        _controller = new RemoveApprovedUserController(_mockSessionManager.Object, _mockLogger.Object, _mockConfiguration.Object, _mockFacade.Object);
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
 
@@ -140,5 +146,63 @@ public class RemoveApprovedUserControllerTests
 
         // Assert
         AssertBackLink(result, PagePath.NominationDecision);
+    }
+
+    [TestMethod]
+    public async Task Submit_Returns_RemovedConfirmation_When_ApprovedUser_Response_Returns_Success()
+    {
+        // Arrange
+
+        var session = new JourneySession
+        {
+            RegulatorSession =
+                new RegulatorSession
+                {
+                    OrganisationId = _organisationExternalId,
+                    ConnExternalId = _connExternalId
+                }
+        };
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        _mockFacade
+            .Setup(x => x.RemoveApprovedUser(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(EndpointResponseStatus.Success);
+
+        // Act
+        var result = await _controller.Submit(new ApprovedUserToRemoveViewModel()) as ViewResult;
+
+        // Assert
+        Assert.IsNotNull(result);
+    }
+
+    [TestMethod]
+    public async Task Submit_Returns_Error_When_ApprovedUser_Response_Returns_Fail()
+    {
+        // Arrange
+
+        var session = new JourneySession
+        {
+            RegulatorSession =
+                new RegulatorSession
+                {
+                    OrganisationId = _organisationExternalId,
+                    ConnExternalId = _connExternalId
+                }
+        };
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        _mockFacade
+            .Setup(x => x.RemoveApprovedUser(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .ReturnsAsync(EndpointResponseStatus.Fail);
+
+        // Act
+        var result = await _controller.Submit(new ApprovedUserToRemoveViewModel()) as RedirectToActionResult;
+
+        // Assert
+        Assert.IsNotNull(result);
     }
 }

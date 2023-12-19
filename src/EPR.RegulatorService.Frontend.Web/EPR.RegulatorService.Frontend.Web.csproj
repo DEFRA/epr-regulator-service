@@ -12,9 +12,9 @@
     <!-- SonarCloud does not recognise file-scoped namespaces in current version. -->
     <NoWarn>S3903</NoWarn>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'EPR.RegulatorService.Frontend' " />
-  
+
   <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
     <Exec Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'" />
 
@@ -25,7 +25,7 @@
   <Target Name="NpmRunBuildFrontend" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
     <Exec Command="npm run build-frontend" />
   </Target>
-  
+
   <ItemGroup>
     <PackageReference Include="EPR.Common.Authorization" Version="1.0.13" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
@@ -89,6 +89,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>NominationDecision.cy.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\RemovedConfirmation.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Confirm.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\RemovedConfirmation.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Confirm.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Views\Applications\EnrolmentDecision.Designer.cs">
@@ -135,7 +143,7 @@
       <DependentUpon>NominationDecision.cy.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-  
+
   <ItemGroup>
     <SonarQubeSetting Include="sonar.coverage.exclusions">
       <Value>
@@ -143,5 +151,5 @@
       </Value>
     </SonarQubeSetting>
   </ItemGroup>
-  
+
 </Project>

@@ -10,6 +10,8 @@ public class RegulatorSession
 
     public Guid? OrganisationId { get; set; }
 
+    public Guid? ConnExternalId { get; set; }
+
     public string OrganisationName { get; set; }
 
     public string ReferenceNumber { get; set; }
