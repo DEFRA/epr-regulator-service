@@ -64,6 +64,9 @@
   <data name="Custom.BackToHome" xml:space="preserve">
     <value>Back to home</value>
    </data>
+  <data name="Custom.GoToHome" xml:space="preserve">
+    <value>Go to home</value>
+   </data>
   <data name="Link.LogIntoPowerBI" xml:space="preserve">
     <value>log in to Power BI</value>
   </data>

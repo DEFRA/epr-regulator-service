@@ -32,7 +32,7 @@
           @Model.FormattedTimeAndDateOfSubmission
         </dd>
       </div>
-      
+
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           @Localizer["SummaryList.SubTitle.SubmittedBy"]
@@ -41,7 +41,7 @@
           @Model.SubmittedBy
         </dd>
       </div>
-      
+
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           @Localizer["SummaryList.SubTitle.AccountRole"]
@@ -50,7 +50,7 @@
           @Model.AccountRole
         </dd>
       </div>
-      
+
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           @Localizer["SummaryList.SubTitle.Telephone"]
@@ -59,7 +59,7 @@
           @Model.Telephone
         </dd>
       </div>
-      
+
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           @Localizer["SummaryList.SubTitle.Email"]
@@ -68,7 +68,7 @@
           @Model.Email
         </dd>
       </div>
-      
+
       @if (!string.IsNullOrEmpty(Model.RejectionReason))
       {
         <div class="govuk-summary-list__row">
@@ -80,24 +80,23 @@
           </dd>
         </div>
       }
-      @if(Model.ResubmissionRequired)
-      {
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            @Localizer["SummaryList.SubTitle.ResubmissionRequired"]
-          </dt>
-          <dd class="govuk-summary-list__value">
-            @if (Model.ResubmissionRequired )
-            {
-              @SharedLocalizer["Yes"]
-            }
-            else
-            {
-              @SharedLocalizer["No"]
-            }
-          </dd>
-        </div>
-      }
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          @Localizer["SummaryList.SubTitle.ResubmissionRequired"]
+        </dt>
+        <dd class="govuk-summary-list__value">
+          @if (Model.ResubmissionRequired )
+          {
+            @SharedLocalizer["Yes"]
+          }
+          else
+          {
+            @SharedLocalizer["No"]
+          }
+        </dd>
+      </div>
+
       @if (Model.Status == EnrolmentStatus.Pending)
       {
         <div class="govuk-summary-list__row"></div>
@@ -107,7 +106,7 @@
     {
       <div class="govuk-inset-text">@Localizer["SummaryList.Information.Text", Model.OrganisationName]</div>
       <div class="govuk-button-group govuk-!-margin-top-2">
-        
+
         <form class="govuk-!-display-inline-block" method="get" asp-controller="Submissions" asp-action="AcceptSubmission">
           <input type="hidden" name="submissionId" value="@Model.SubmissionId"/>
           <input type="hidden" name="submittedBy" value="@Model.SubmittedBy"/>

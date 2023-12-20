@@ -787,6 +787,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var result = await _facadeService.RemoveApprovedUser(_connExternalId,_organisationId);
 
             // Assert
+            Assert.IsNotNull(result);
             result.Should().Be(EndpointResponseStatus.Fail);
 
             httpResponseMessage.Dispose();

@@ -1,31 +1,36 @@
 @model EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorSearchPage.OrganisationSearchResultsListViewModel
+@{
+  var organisationRecordIndex = "";
+}
+<h1 id="tableTitle" class="govuk-heading-xl govuk-!-margin-bottom-8">@Localizer["Table.Title"]</h1>
 
-<h1 class="govuk-heading-xl govuk-!-margin-bottom-8">@Localizer["Table.Title"]</h1>
-
-<table class="govuk-table responsive-table" aria-label="Organisation Application Listing">
+<table id="organisationTable" class="govuk-table responsive-table" aria-label="Organisation Application Listing">
   <thead role="rowgroup" class="govuk-table__head">
   <tr role="row" class="govuk-table__row">
-    <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.Company"]</th>
-    <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.OrganisationId"]</th>
-    <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.CompanyHouseNumber"]</th>
+    <th id="companyHeader" role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.Company"]</th>
+    <th id="organisationIdHeader" role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.OrganisationId"]</th>
+    <th id="companyHouseNumberHeader" role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.CompanyHouseNumber"]</th>
   </tr>
   </thead>
-  <tbody class="govuk-table__body">
+  <tbody id="organisationTableBody"class="govuk-table__body">
 
   <!-- look at the for-each-partial in razor -->
-  @foreach (var organisation in Model.PagedOrganisationSearchResults)
+  @foreach (var organisation in Model.PagedOrganisationSearchResults
+    .Select((value, index) => new {Index = index, Value = value}))
   {
-    <tr role="row" class="govuk-table__row">
-      <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+    organisationRecordIndex = organisation.Index == 0 ? "" : organisation.Index.ToString();
+    
+    <tr id="row@(organisation.Index)" role="row" class="govuk-table__row">
+      <td id="companyCell@(organisation.Index)" role="gridcell" class="govuk-table__cell vertical-middle-align">
         <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Company"]</span>
         <p class="govuk-body">
-          <a href="@Url.ActionLink("RegulatorCompanyDetail",
+          <a id="organisationIdCell@(organisation.Index)" href="@Url.ActionLink("RegulatorCompanyDetail",
                      "SearchManageApprovers",
-                     new { organisationId = organisation.ExternalId })">
-            @organisation.OrganisationName
+                     new { organisationId = organisation.Value.ExternalId })">
+            @organisation.Value.OrganisationName
           </a>
           <br/>
-          @if (organisation.IsComplianceScheme)
+          @if (organisation.Value.IsComplianceScheme)
           {
             <span>@Localizer["OrgType.ComplianceScheme.Yes"]</span>
           }
@@ -37,14 +42,14 @@
       </td>
       <td role="gridcell" class="govuk-table__cell vertical-middle-align">
         <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.OrganisationId"]</span>
-        <p class="govuk-body">
-          @organisation.OrganisationId
+        <p id="companyHouseCell@(organisation.Index)" class="govuk-body">
+          @organisation.Value.OrganisationId
         </p>
       </td>
       <td role="gridcell" class="govuk-table__cell vertical-middle-align">
         <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.CompanyHouseNumber"]</span>
-        <p class="govuk-body">
-          @organisation.CompanyHouseNumber
+        <p id="companyHouseNumberCell@(organisation.Index)"class="govuk-body">
+          @organisation.Value.CompanyHouseNumber
         </p>
       </td>
     </tr>

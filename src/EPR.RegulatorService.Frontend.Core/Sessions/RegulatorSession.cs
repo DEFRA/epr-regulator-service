@@ -12,6 +12,8 @@ public class RegulatorSession
 
     public Guid? ConnExternalId { get; set; }
 
+    public bool? NominationDecision { get; set; }
+
     public string OrganisationName { get; set; }
 
     public string ReferenceNumber { get; set; }

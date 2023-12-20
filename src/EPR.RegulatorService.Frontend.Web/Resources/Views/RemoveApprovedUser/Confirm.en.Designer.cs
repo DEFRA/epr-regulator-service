@@ -9,8 +9,8 @@
 
 namespace EPR.RegulatorService.Frontend.Web.Resources.Views.RemoveApprovedUser {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -21,31 +21,27 @@ namespace EPR.RegulatorService.Frontend.Web.Resources.Views.RemoveApprovedUser {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class RemovedConfirmation_en {
-        
+    internal class Confirm_en {
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal RemovedConfirmation_en() {
+        internal Confirm_en() {
         }
-        
-        /// <summary>
-        ///   Returns the cached ResourceManager instance used by this class.
-        /// </summary>
-        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("EPR.RegulatorService.Frontend.Web.Resources.Views.RemoveApprovedUser.RemovedConfi" +
-                            "rmation.en", typeof(RemovedConfirmation_en).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("EPR.RegulatorService.Frontend.Web.Resources.Views.RemoveApprovedUser.Confirm.en", typeof(Confirm_en).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,49 +55,31 @@ namespace EPR.RegulatorService.Frontend.Web.Resources.Views.RemoveApprovedUser {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The organisation has not nominated a new approved person. They cannot submit packaging data..
-        /// </summary>
-        internal static string Confirmation_Text_1 {
-            get {
-                return ResourceManager.GetString("Confirmation.Text.1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You need to ask the organisation to contact the service desk to nominate a new approved person..
-        /// </summary>
-        internal static string Confirmation_Text_2 {
-            get {
-                return ResourceManager.GetString("Confirmation.Text.2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to What happens next.
-        /// </summary>
-        internal static string Page_Heading {
-            get {
-                return ResourceManager.GetString("Page.Heading", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Approved person removed.
-        /// </summary>
-        internal static string Page_Panel {
-            get {
-                return ResourceManager.GetString("Page.Panel", resourceCulture);
-            }
-        }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You have selected {0} to be removed from {1} account.
         /// </summary>
         internal static string Page_Title {
             get {
                 return ResourceManager.GetString("Page.Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The organisation will not be able to submit packaging data until it has a new approved person..
+        /// </summary>
+        internal static string Warning_Submit_Packaging {
+            get {
+                return ResourceManager.GetString("Warning.Submit.Packaging", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Any delegated persons linked to the organisation will receive an email telling them they are basic users and unable to submit data..
+        /// </summary>
+        internal static string Warning_Users {
+            get {
+                return ResourceManager.GetString("Warning.Users", resourceCulture);
             }
         }
     }

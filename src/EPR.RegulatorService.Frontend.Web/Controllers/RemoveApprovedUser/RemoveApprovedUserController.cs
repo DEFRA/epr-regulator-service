@@ -49,10 +49,6 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         return View(session.RemoveApprovedUserSession);
     }
 
-    [HttpPost]
-    [Route(PagePath.RemoveApprovedUserConfirmationPage)]
-    public IActionResult Continue() => RedirectToAction("NominationDecision");
-
     [HttpGet]
     [Route(PagePath.NominationDecision)]
     public async Task<IActionResult> NominationDecision()
@@ -112,6 +108,13 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         {
             session.RegulatorSession.OrganisationId = model.OrganisationId;
             session.RegulatorSession.ConnExternalId = model.ConnExternalId;
+            session.RegulatorSession.NominationDecision = model.NominationDecision;
+        }
+
+        //This is the flow when nominationDecision = true as of now it will stay on the same page
+        if (model.NominationDecision)
+        {
+            return RedirectToAction("ConfirmNominationDecision", session.RemoveApprovedUserSession);
         }
 
         var response = await _facadeService.RemoveApprovedUser(

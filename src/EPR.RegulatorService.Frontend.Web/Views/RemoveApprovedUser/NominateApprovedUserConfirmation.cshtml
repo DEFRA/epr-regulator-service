@@ -11,12 +11,10 @@
   const string errorClass = "govuk-input--error";
 }
 
-@* Next page not required for user story after user continue *@
-
-<form action="@Url.Action("Submit", "RemoveApprovedUser", Model)"
+<form id="removeUserForm" action="@Url.Action("Submit", "RemoveApprovedUser", Model)"
       enctype="application/x-www-form-urlencoded" method="post">
-  <input type="hidden" value=@Model.ConnExternalId name="ConnExternalId"/>
-  <input type="hidden" value=@Model.OrganisationId name="OrganisationId"/>
+  <input id="hiddenConnExternalId" type="hidden" value=@Model.ConnExternalId name="ConnExternalId"/>
+  <input id="hiddenOrganisationId" type="hidden" value=@Model.OrganisationId name="OrganisationId"/>
 
   <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -25,20 +23,20 @@
           <div class="govuk-form-group">
             <fieldset class="govuk-fieldset">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">
+                <h1 id="pageTitle" class="govuk-fieldset__heading">
                   @Localizer["Page.Title"]
                 </h1>
               </legend>
               <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
+                  <dt id="userPrompt" class="govuk-summary-list__key">
                     @Localizer["User.Prompt"]
                   </dt>
-                  <dd class="govuk-summary-list__value">
+                  <dd id="nominationDecision" class="govuk-summary-list__value">
                     @Model.NominationDecision
                   </dd>
                   <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="/regulators/remove-approved/approve-confirmation">
+                    <a id="changeButton" class="govuk-link" href="/regulators/remove-approved/approve-confirmation">
                       @Localizer["Change"]<span class="govuk-visually-hidden"> @Model</span>
                     </a>
                   </dd>
@@ -46,7 +44,7 @@
               </dl>
             </fieldset>
           </div>
-          <button class="govuk-button" data-module="govuk-button" type="submit">
+          <button id="continueButton" class="govuk-button" data-module="govuk-button" type="submit">
             @SharedLocalizer["Continue"]
           </button>
         </div>

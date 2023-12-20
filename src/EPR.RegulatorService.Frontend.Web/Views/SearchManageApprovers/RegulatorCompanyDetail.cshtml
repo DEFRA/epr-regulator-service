@@ -14,34 +14,36 @@
 
         <div class="govuk-!-margin-bottom-4">
           <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationID"]</h3>
-          <p class="govuk-body">@Model.OrganisationId</p>
+          <p id="regulatorOrganisationId" class="govuk-body">@Model.OrganisationId</p>
         </div>
 
         <div class="govuk-!-margin-bottom-4">
           <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationType"]</h3>
-          <p class="govuk-body">@(Model.IsComplianceScheme ? Localizer["Text.ComplianceScheme"] : Localizer["Text.DirectProducer"])</p>
+          <p id="regulatorIsComplianceScheme" class="govuk-body">@(Model.IsComplianceScheme ? Localizer["Text.ComplianceScheme"] : Localizer["Text.DirectProducer"])</p>
         </div>
 
         <div class="govuk-!-margin-bottom-4">
           <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.RegisteredAddress"]</h3>
-          <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.BuildingNumber @Model.BusinessAddress.BuildingName</p>
-          <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.Street</p>
-          <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.County</p>
-          <p class="govuk-body">@Model.BusinessAddress.PostCode</p>
+          <p id="regulatorBusinessAddressBuildingNumber" class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.BuildingNumber @Model.BusinessAddress.BuildingName</p>
+          <p id="regulatorBusinessAddressStreet" class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.Street</p>
+          <p id="regulatorBusinessAddressCounty" class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.County</p>
+          <p id="regulatorBusinessAddressPostCode" class="govuk-body">@Model.BusinessAddress.PostCode</p>
         </div>
 
         <div class="govuk-!-margin-bottom-4">
           <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.CompaniesHouseNumber"]</h3>
           @if (!string.IsNullOrEmpty(@Model.CompaniesHouseNumber))
           {
-            <p class="govuk-body">@Model.CompaniesHouseNumber</p>
-            <companies-house-link gov-value="@Model.CompaniesHouseNumber" class="govuk-link govuk-link--no-visited-state">
+            <p id="regulatorCompanyHouseNumber" class="govuk-body">@Model.CompaniesHouseNumber</p>
+            <companies-house-link gov-value="@Model.CompaniesHouseNumber" 
+                                  id="companyHouseLink"
+                                  class="govuk-link govuk-link--no-visited-state">
               @Localizer["link.CompaniesHouseRegister"]
             </companies-house-link>
           }
           else
           {
-            <p class="govuk-body">@Localizer["Text.NotListed"]</p>
+            <p id="noRegulatorCompanyHouseNumber"class="govuk-body">@Localizer["Text.NotListed"]</p>
           }
         </div>
       </div>
@@ -49,27 +51,27 @@
   </main>
 
   <div class="govuk-tabs" data-module="govuk-tabs">
-    <h2 class="govuk-tabs__title">
+    <h2 id="regulatorContents" class="govuk-tabs__title">
       @Localizer["TabTitle.Contents"]
     </h2>
     <ul class="govuk-tabs__list">
       <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-        <a class="govuk-tabs__tab" href="#approved-person">
+        <a id="approvedPersonTab" class="govuk-tabs__tab" href="#approved-person">
           @Localizer["Tab.ApprovedPerson"]
         </a>
       </li>
       <li class="govuk-tabs__list-item">
-        <a class="govuk-tabs__tab" href="#delegated-persons">
+        <a id="delegatedPersonTab" class="govuk-tabs__tab" href="#delegated-persons">
           @Localizer["Tab.DelegatedPersons"]
         </a>
       </li>
       <li class="govuk-tabs__list-item">
-        <a class="govuk-tabs__tab" href="#admin-users">
+        <a id="adminUsersTab" class="govuk-tabs__tab" href="#admin-users">
           @Localizer["Tab.AdminUsers"]
         </a>
       </li>
       <li class="govuk-tabs__list-item">
-        <a class="govuk-tabs__tab" href="#basic-users">
+        <a id="basicUsersTab" class="govuk-tabs__tab" href="#basic-users">
           @Localizer["Tab.BasicUsers"]
         </a>
       </li>
@@ -93,7 +95,7 @@
               action="@Url.Action("ApprovedPersonListPage", "SearchManageApprovers")"
               enctype="multipart/form-data" method="GET">
           <input type="hidden" name="externalOrganisationId" value="@Model.ExternalOrganisationId"/>
-          <button class="govuk-button" data-module="govuk-button">
+          <button id="nominateNewApprovedPersonButton" class="govuk-button" data-module="govuk-button">
             @Localizer["Button.NominateNewApprovedPerson"]
           </button>
         </form>
@@ -107,7 +109,7 @@
       }
       else
       {
-        <p class="govuk-body govuk-!-margin-5">@Localizer["Text.NoDelegatedPersons"]</p>
+        <p id="noDelegatedPersons" class="govuk-body govuk-!-margin-5">@Localizer["Text.NoDelegatedPersons"]</p>
       }
     </div>
 
@@ -118,7 +120,7 @@
       }
       else
       {
-        <p class="govuk-body govuk-!-margin-5">@Localizer["Text.NoAdminUsers"]</p>
+        <p id="noAdminUsers" class="govuk-body govuk-!-margin-5">@Localizer["Text.NoAdminUsers"]</p>
       }
     </div>
 
@@ -129,7 +131,7 @@
       }
       else
       {
-        <p class="govuk-body govuk-!-margin-5">@Localizer["Text.NoBasicUsers"]</p>
+        <p id="noBasicUsers" class="govuk-body govuk-!-margin-5">@Localizer["Text.NoBasicUsers"]</p>
       }
     </div>
   </div>

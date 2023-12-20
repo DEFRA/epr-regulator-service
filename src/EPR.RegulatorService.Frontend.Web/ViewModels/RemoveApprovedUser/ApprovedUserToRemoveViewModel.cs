@@ -4,4 +4,6 @@ public class ApprovedUserToRemoveViewModel
 {
     public Guid ConnExternalId { get; set; }
     public Guid OrganisationId { get; set; }
+
+    public bool NominationDecision { get; set; }
 }

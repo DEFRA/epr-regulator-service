@@ -159,7 +159,8 @@ public class RemoveApprovedUserControllerTests
                 new RegulatorSession
                 {
                     OrganisationId = _organisationExternalId,
-                    ConnExternalId = _connExternalId
+                    ConnExternalId = _connExternalId,
+                    NominationDecision = false
                 }
         };
         _mockSessionManager
@@ -170,11 +171,21 @@ public class RemoveApprovedUserControllerTests
             .Setup(x => x.RemoveApprovedUser(It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(EndpointResponseStatus.Success);
 
+        var vm = new ApprovedUserToRemoveViewModel
+        {
+            OrganisationId = Guid.NewGuid(),
+            ConnExternalId = Guid.NewGuid(),
+            NominationDecision = false
+        };
         // Act
-        var result = await _controller.Submit(new ApprovedUserToRemoveViewModel()) as ViewResult;
+        var result = await _controller.Submit(vm) as ViewResult;
 
         // Assert
         Assert.IsNotNull(result);
+        result.ViewName.Should().Be("RemovedConfirmation");
+
+        var model = result.Model as RemoveApprovedUserSession;
+        Assert.IsNotNull(model);
     }
 
     [TestMethod]
@@ -182,13 +193,14 @@ public class RemoveApprovedUserControllerTests
     {
         // Arrange
 
-        var session = new JourneySession
+       var session = new JourneySession
         {
             RegulatorSession =
                 new RegulatorSession
                 {
                     OrganisationId = _organisationExternalId,
-                    ConnExternalId = _connExternalId
+                    ConnExternalId = _connExternalId,
+                    NominationDecision = false
                 }
         };
         _mockSessionManager
@@ -196,13 +208,22 @@ public class RemoveApprovedUserControllerTests
             .ReturnsAsync(session);
 
         _mockFacade
-            .Setup(x => x.RemoveApprovedUser(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .Setup(x => x.RemoveApprovedUser(_organisationExternalId, _connExternalId))
             .ReturnsAsync(EndpointResponseStatus.Fail);
 
+        var vm = new ApprovedUserToRemoveViewModel
+        {
+            OrganisationId = Guid.NewGuid(),
+            ConnExternalId = Guid.NewGuid(),
+            NominationDecision = false
+        };
         // Act
-        var result = await _controller.Submit(new ApprovedUserToRemoveViewModel()) as RedirectToActionResult;
+        var result = await _controller.Submit(vm) as RedirectToActionResult;
 
         // Assert
         Assert.IsNotNull(result);
+        Assert.IsNotNull(result.ActionName);
+        result.ControllerName.Should().Be("Error");
+        result.ActionName.Should().Be("error");
     }
 }

@@ -67,6 +67,9 @@
   <data name="Custom.BackToHome" xml:space="preserve">
     <value>Yn ôl i’r hafan</value>
   </data>
+  <data name="Custom.GoToHome" xml:space="preserve">
+    <value>WGo to home</value>
+   </data>
   <data name="Link.LogIntoPowerBI" xml:space="preserve">
     <value>mewngofnodi i Power BI</value>
   </data>
@@ -130,4 +133,7 @@
   <data name="Regulator.CompanyDetail.JobTitle" xml:space="preserve">
     <value>WJob title</value>
   </data>
+  <data name="Custom.GoToHome" xml:space="preserve">
+    <value>WGo to home</value>
+   </data>
 </root>
