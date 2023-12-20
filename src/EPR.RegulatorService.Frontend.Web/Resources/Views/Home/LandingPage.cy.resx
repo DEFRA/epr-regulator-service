@@ -40,7 +40,7 @@
     <value>Gweld, derbyn neu wrthod cyflwyniadau data pecynwaith</value>
   </data>
   <data name="Regulator.Home" xml:space="preserve">
-    <value>WRegulator home - {0}</value>
+    <value>Hafan Rheoleiddwyr - {0}</value>
   </data>
   <data name="LandingPage.ManageApprovedPerson" xml:space="preserve">
   <value>WManage organisations and their approved person</value>
