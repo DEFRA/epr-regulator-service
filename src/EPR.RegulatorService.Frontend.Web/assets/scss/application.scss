@@ -20,7 +20,7 @@ $narrow-media-width: 40.0625em;
 
 .link-button-active{
     font-size: 1.1875rem;
-    text-align: left;
+    text-align: inherit;
     color: govuk-colour("blue");
     background: none;
     margin: 0;
@@ -195,7 +195,7 @@ table.responsive-table {
     .epr-text-align-left-override {
         text-align: left !important;
     }
-    
+
     .epr-horizontal-control,
     .epr-filter-panel-control {
         display: flex;
@@ -277,7 +277,7 @@ table.responsive-table {
     .epr-horizontal-control-link, {
         margin: 0 0 0 15px;
     }
-    
+
     .epr-horizontal-control-button {
         margin: 0;
     }

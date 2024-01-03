@@ -26,7 +26,7 @@
           {
             @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
           }
-          <h2 class="govuk-heading-l govuk-!-margin-bottom-4">@Localizer["Title.RejectSubmission"]</h2>
+          <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@Localizer["Title.RejectSubmission"]</h1>
           <p class="govuk-body govuk-!-margin-bottom-8">@Localizer["Title.Description", Model.SubmittedBy]</p>
         </div>
       </div>
@@ -44,7 +44,7 @@
               {
                 @await Html.PartialAsync("Partials/Govuk/_InlineError", reasonForRejectionError)
               }
-              <textarea class="govuk-textarea govuk-textarea--error govuk-js-character-count @(reasonForRejectionErrorExists ? "epr-textarea--error" : string.Empty)" id="@nameof(Model.ReasonForRejection)" name="@nameof(Model.ReasonForRejection)" rows="5" aria-describedby="@nameof(Model.ReasonForRejection)-info">@reasonForRejection</textarea>            
+              <textarea class="govuk-textarea govuk-textarea--error govuk-js-character-count @(reasonForRejectionErrorExists ? "epr-textarea--error" : string.Empty)" id="@nameof(Model.ReasonForRejection)" name="@nameof(Model.ReasonForRejection)" rows="5" aria-describedby="@nameof(Model.ReasonForRejection)-info">@reasonForRejection</textarea>
             </div>
             <div id="@nameof(Model.ReasonForRejection)-info" class="govuk-hint govuk-character-count__message">
               You can enter up to 500 characters

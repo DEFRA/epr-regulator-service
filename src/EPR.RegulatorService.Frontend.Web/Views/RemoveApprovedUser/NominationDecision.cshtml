@@ -2,6 +2,7 @@
 
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using EPR.RegulatorService.Frontend.Web.Extensions
+@model EPR.RegulatorService.Frontend.Core.Sessions.RemoveApprovedUserSession
 
 @{
   ViewData["Title"] = @Localizer["Page.Title"];
@@ -9,7 +10,7 @@
   const string errorClass = "govuk-input--error";
 }
 
-<form action="@Url.Action("Nomination", "RemoveApprovedUser")"
+<form action="@Url.Action("Nomination", "RemoveApprovedUser", Model)"
       enctype="application/x-www-form-urlencoded" method="POST">
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -30,15 +31,40 @@
                       </legend>
                       <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                          <input class="govuk-radios__input" id="nominationDecision" name="nominationDecision" type="radio" value="true">
-                          <label id="radioButtonNominationDecision" class="govuk-label govuk-radios__label" for="nominationDecision">
-                            @Localizer["Yes"]
+                          <input class="govuk-radios__input"
+                                 id="nominationDecisionYes"
+                                 name="nominationDecision"
+                                 type="radio"
+                                 aria-labelledby="radio-label-accepted-true"
+                                 gov-for="NominationDecision"
+                                 gov-first-option="true"
+                                 gov-value="true">
+                          <label class="govuk-label govuk-radios__label"
+                                 for="nominationDecisionYes"
+                                 id="radio-label-accepted-true"
+                                 gov-for="NominationDecision"
+                                 gov-first-option="true"
+                                 gov-value="true">
+                            @SharedLocalizer["Yes"]
                           </label>
                         </div>
                         <div class="govuk-radios__item">
-                          <input class="govuk-radios__input" id="nominationDecision-2" name="nominationDecision" type="radio" value="false">
-                          <label id="radioButtonNominationDecision-2" class="govuk-label govuk-radios__label" for="nominationDecision-2">
-                            @Localizer["No"]
+                          <input class="govuk-radios__input"
+                                 id="nominationDecisionNo"
+                                 name="nominationDecision"
+                                 type="radio"
+                                 aria-labelledby="radio-label-accepted-false"
+                                 value="false"
+                                 gov-for="NominationDecision"
+                                 gov-first-option="false"
+                                 gov-value="false">
+                          <label id="radio-label-accepted-false"
+                                 class="govuk-label govuk-radios__label"
+                                 for="nominationDecisionNo"
+                                 gov-for="NominationDecision"
+                                 gov-first-option="false"
+                                 gov-value="false">
+                            @SharedLocalizer["No"]
                           </label>
                         </div>
                       </div>

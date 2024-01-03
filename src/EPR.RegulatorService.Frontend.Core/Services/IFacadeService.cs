@@ -40,6 +40,6 @@ public interface IFacadeService
 
     Task<List<OrganisationUser>> GetProducerOrganisationUsersByOrganisationExternalId(Guid externalId);
 
-    Task<EndpointResponseStatus> RemoveApprovedUser(Guid connExternalId, Guid organisationId);
+    Task<EndpointResponseStatus> RemoveApprovedUser(RemoveApprovedUserRequest request);
 
 }

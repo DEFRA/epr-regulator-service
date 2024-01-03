@@ -96,7 +96,7 @@ public class RemoveApprovedUserControllerTests
         _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = await _controller.Nomination(true) as RedirectToActionResult;
+        var result = await _controller.Nomination(new ApprovedUserToRemoveViewModel{ NominationDecision = true }) as RedirectToActionResult;
 
         // Assert
         Assert.IsNotNull(result);
@@ -110,7 +110,7 @@ public class RemoveApprovedUserControllerTests
         _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = await _controller.Nomination(false) as RedirectToActionResult;
+        var result = await _controller.Nomination(new ApprovedUserToRemoveViewModel{NominationDecision = false }) as RedirectToActionResult;
 
         // Assert
         Assert.IsNotNull(result);
@@ -125,7 +125,7 @@ public class RemoveApprovedUserControllerTests
         _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
         // Act
-        var result = await _controller.Nomination(null) as ViewResult;
+        var result = await _controller.Nomination(new ApprovedUserToRemoveViewModel{NominationDecision = null }) as ViewResult;
 
         // Assert
         Assert.IsNotNull(result);
@@ -152,40 +152,42 @@ public class RemoveApprovedUserControllerTests
     public async Task Submit_Returns_RemovedConfirmation_When_ApprovedUser_Response_Returns_Success()
     {
         // Arrange
+        var model = new ApprovedUserToRemoveViewModel
+        {
+            ConnExternalId = Guid.NewGuid(),
+            OrganisationId = Guid.NewGuid(),
+            NominationDecision = false
+        };
 
         var session = new JourneySession
         {
             RegulatorSession =
                 new RegulatorSession
                 {
-                    OrganisationId = _organisationExternalId,
-                    ConnExternalId = _connExternalId,
-                    NominationDecision = false
+                    OrganisationId = model.OrganisationId,
+                    ConnExternalId = model.ConnExternalId,
+                    NominationDecision = model.NominationDecision
                 }
         };
         _mockSessionManager
             .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
+
         _mockFacade
-            .Setup(x => x.RemoveApprovedUser(It.IsAny<Guid>(), It.IsAny<Guid>()))
+            .Setup(x => x.RemoveApprovedUser(It.IsAny<RemoveApprovedUserRequest>()))
             .ReturnsAsync(EndpointResponseStatus.Success);
 
-        var vm = new ApprovedUserToRemoveViewModel
-        {
-            OrganisationId = Guid.NewGuid(),
-            ConnExternalId = Guid.NewGuid(),
-            NominationDecision = false
-        };
         // Act
-        var result = await _controller.Submit(vm) as ViewResult;
+        var result = await _controller.Submit(model) as ViewResult;
 
         // Assert
         Assert.IsNotNull(result);
         result.ViewName.Should().Be("RemovedConfirmation");
 
-        var model = result.Model as RemoveApprovedUserSession;
-        Assert.IsNotNull(model);
+       var resultModel = result.Model as RemoveApprovedUserSession;
+       Assert.IsNotNull(resultModel);
+       resultModel.ResponseStatus.Should().Be(EndpointResponseStatus.Success);
     }
 
     [TestMethod]
@@ -208,7 +210,7 @@ public class RemoveApprovedUserControllerTests
             .ReturnsAsync(session);
 
         _mockFacade
-            .Setup(x => x.RemoveApprovedUser(_organisationExternalId, _connExternalId))
+            .Setup(x => x.RemoveApprovedUser(new RemoveApprovedUserRequest()))
             .ReturnsAsync(EndpointResponseStatus.Fail);
 
         var vm = new ApprovedUserToRemoveViewModel
@@ -225,5 +227,6 @@ public class RemoveApprovedUserControllerTests
         Assert.IsNotNull(result.ActionName);
         result.ControllerName.Should().Be("Error");
         result.ActionName.Should().Be("error");
+
     }
 }

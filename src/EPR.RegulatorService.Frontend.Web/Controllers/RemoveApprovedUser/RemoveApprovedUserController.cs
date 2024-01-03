@@ -66,20 +66,20 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
 
     [HttpPost]
     [Route(PagePath.NominationDecision)]
-    public async Task<IActionResult> Nomination(bool? nominationDecision)
+    public async Task<IActionResult> Nomination(ApprovedUserToRemoveViewModel model)
     {
         const string backLink = PagePath.NominationDecision;
         ViewBag.BackLinkToDisplay = backLink;
 
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new();
 
-        if (nominationDecision == null)
+        if (model.NominationDecision == null)
         {
             ModelState.AddModelError(nameof(session.RemoveApprovedUserSession.NominationDecision), "NominateApproved.Decision.Error");
             return View(nameof(NominationDecision));
         }
 
-        session.RemoveApprovedUserSession.NominationDecision = nominationDecision;
+        session.RemoveApprovedUserSession.NominationDecision = model.NominationDecision;
 
         await SaveSession(session);
 
@@ -112,14 +112,20 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         }
 
         //This is the flow when nominationDecision = true as of now it will stay on the same page
-        if (model.NominationDecision)
+        if (model.NominationDecision ?? true)
         {
             return RedirectToAction("ConfirmNominationDecision", session.RemoveApprovedUserSession);
         }
 
-        var response = await _facadeService.RemoveApprovedUser(
-            session.RegulatorSession.ConnExternalId.Value,
-            session.RegulatorSession.OrganisationId.Value);
+        var request = new RemoveApprovedUserRequest
+        {
+            ConnectionExternalId = model.ConnExternalId,
+            OrganisationId = model.OrganisationId,
+            NominationDecision = (bool)model.NominationDecision
+        };
+
+        var response = await _facadeService.RemoveApprovedUser(request);
+        session.RemoveApprovedUserSession.ResponseStatus = response;
 
         if (response == EndpointResponseStatus.Success)
         {

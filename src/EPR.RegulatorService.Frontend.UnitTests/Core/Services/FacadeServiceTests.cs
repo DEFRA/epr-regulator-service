@@ -762,8 +762,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(response);
 
+            var request = new RemoveApprovedUserRequest
+            {
+                ConnectionExternalId = _connExternalId, OrganisationId = _organisationId
+            };
+
             // Act
-            var result = await _facadeService.RemoveApprovedUser(_connExternalId,_organisationId);
+            var result = await _facadeService.RemoveApprovedUser(request);
 
             // Assert
             Assert.IsNotNull(result);
@@ -783,8 +788,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(httpResponseMessage);
 
+            var request = new RemoveApprovedUserRequest
+            {
+                ConnectionExternalId = _connExternalId, OrganisationId = _organisationId
+            };
             // Act
-            var result = await _facadeService.RemoveApprovedUser(_connExternalId,_organisationId);
+            var result = await _facadeService.RemoveApprovedUser(request);
 
             // Assert
             Assert.IsNotNull(result);

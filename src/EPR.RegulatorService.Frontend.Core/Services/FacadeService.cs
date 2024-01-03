@@ -244,12 +244,12 @@ public class FacadeService : IFacadeService
         return await response.Content.ReadFromJsonAsync<List<OrganisationUser>>();
     }
 
-    public async Task<EndpointResponseStatus> RemoveApprovedUser(Guid connExternalId, Guid organisationId)
+    public async Task<EndpointResponseStatus> RemoveApprovedUser(RemoveApprovedUserRequest request)
     {
         await PrepareAuthenticatedClient();
-        var path = string.Format(_facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath], connExternalId, organisationId);
+        var path = string.Format(_facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath], request.ConnectionExternalId, request.OrganisationId);
 
-        var response = await _httpClient.DeleteAsync(path);
+        var response = await _httpClient.PostAsJsonAsync(path, request);
 
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
