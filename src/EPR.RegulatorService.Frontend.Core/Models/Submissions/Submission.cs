@@ -22,5 +22,5 @@ public class Submission
     public Guid FileId { get; set; }
     public string? SubmissionPeriod { get; set; }
     public string? Comments { get; set; }
-
+    public string? PreviousRejectionComments { get; set; }
 }

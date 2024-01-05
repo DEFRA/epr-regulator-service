@@ -16,4 +16,5 @@ public class SubmissionDetailsViewModel
     public bool IsResubmission { get; set; }
     public string RejectionReason { get; set; }
     public bool ResubmissionRequired { get; set; }
+    public string PreviousRejectionComments { get; set; }
 }

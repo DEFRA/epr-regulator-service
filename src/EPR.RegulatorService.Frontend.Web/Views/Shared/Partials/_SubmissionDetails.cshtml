@@ -32,7 +32,7 @@
           @Model.FormattedTimeAndDateOfSubmission
         </dd>
       </div>
-      
+
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           @Localizer["SummaryList.SubTitle.SubmittedBy"]
@@ -41,7 +41,7 @@
           @Model.SubmittedBy
         </dd>
       </div>
-      
+
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           @Localizer["SummaryList.SubTitle.AccountRole"]
@@ -50,7 +50,7 @@
           @Model.AccountRole
         </dd>
       </div>
-      
+
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           @Localizer["SummaryList.SubTitle.Telephone"]
@@ -59,7 +59,7 @@
           @Model.Telephone
         </dd>
       </div>
-      
+
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           @Localizer["SummaryList.SubTitle.Email"]
@@ -68,8 +68,8 @@
           @Model.Email
         </dd>
       </div>
-      
-      @if (!string.IsNullOrEmpty(Model.RejectionReason))
+
+      @if (!string.IsNullOrEmpty(Model.RejectionReason) && Model.Status != SubmissionStatus.Accepted)
       {
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
@@ -79,7 +79,7 @@
             @Model.RejectionReason
           </dd>
         </div>
-        
+
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
             @Localizer["SummaryList.SubTitle.ResubmissionRequired"]
@@ -106,7 +106,7 @@
     {
       <div class="govuk-inset-text">@Localizer["SummaryList.Information.Text", Model.OrganisationName]</div>
       <div class="govuk-button-group govuk-!-margin-top-2">
-        
+
         <form class="govuk-!-display-inline-block" method="get" asp-controller="Submissions" asp-action="AcceptSubmission">
           <input type="hidden" name="submissionId" value="@Model.SubmissionId"/>
           <input type="hidden" name="submittedBy" value="@Model.SubmittedBy"/>

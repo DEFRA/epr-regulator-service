@@ -8,12 +8,12 @@
   ViewData["Title"] = @Localizer["Page.Title"];
   var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
   const string errorClass = "govuk-input--error";
-  var crsfToken = Html.AntiForgeryToken();
 }
 
 <form action="@Url.Action("Nomination", "RemoveApprovedUser", Model)"
       enctype="application/x-www-form-urlencoded" method="POST">
-  <input type="hidden" name="crsfToken" value="@crsfToken" />
+  @Html.AntiForgeryToken()
+
   <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
       <div class="govuk-grid-row">

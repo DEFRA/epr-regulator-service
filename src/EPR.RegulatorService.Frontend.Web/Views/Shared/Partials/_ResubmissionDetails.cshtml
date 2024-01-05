@@ -69,33 +69,36 @@
         </dd>
       </div>
 
-      @if (!string.IsNullOrEmpty(Model.RejectionReason))
+      @if (!string.IsNullOrEmpty(Model.PreviousRejectionComments) && Model.Status != SubmissionStatus.Accepted)
       {
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
             @Localizer["SummaryList.SubTitle.ReasonForRejection"]
           </dt>
           <dd class="govuk-summary-list__value">
-            @Model.RejectionReason
+            @Model.PreviousRejectionComments
           </dd>
         </div>
       }
 
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          @Localizer["SummaryList.SubTitle.ResubmissionRequired"]
-        </dt>
-        <dd class="govuk-summary-list__value">
-          @if (Model.ResubmissionRequired )
-          {
-            @SharedLocalizer["Yes"]
-          }
-          else
-          {
-            @SharedLocalizer["No"]
-          }
-        </dd>
-      </div>
+      @if (Model.Status != SubmissionStatus.Accepted)
+      {
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            @Localizer["SummaryList.SubTitle.ResubmissionRequired"]
+          </dt>
+          <dd class="govuk-summary-list__value">
+            @if (Model.ResubmissionRequired)
+            {
+              @SharedLocalizer["Yes"]
+            }
+            else
+            {
+              @SharedLocalizer["No"]
+            }
+          </dd>
+        </div>
+      }
 
       @if (Model.Status == EnrolmentStatus.Pending)
       {

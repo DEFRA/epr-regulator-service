@@ -116,7 +116,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 IsResubmission = submission.IsResubmission,
                 RejectionReason = submission.Comments,
                 ResubmissionRequired = submission.IsResubmissionRequired,
-                PowerBiLogin = _options.PowerBiLogin
+                PowerBiLogin = _options.PowerBiLogin,
+                PreviousRejectionComments = submission.PreviousRejectionComments
             };
 
             await SaveSessionAndJourney(session, PagePath.Submissions, PagePath.SubmissionDetails);
