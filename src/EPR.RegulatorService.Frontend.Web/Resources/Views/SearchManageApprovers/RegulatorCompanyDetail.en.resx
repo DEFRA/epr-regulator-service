@@ -110,10 +110,13 @@
     <value>Nominate new approved person</value>
   </data>
   <data name="Text.ComplianceScheme" xml:space="preserve">
-    <value>Compliance Scheme</value>
+    <value>Compliance scheme</value>
   </data>
   <data name="Text.DirectProducer" xml:space="preserve">
-    <value>Direct Producer</value>
+    <value>Direct producer</value>
+  </data>
+  <data name="Text.IndirectProducer" xml:space="preserve">
+    <value>Indirect producer</value>
   </data>
   <data name="Page.Title" xml:space="preserve">
     <value>Organisation Details</value>

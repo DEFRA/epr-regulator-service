@@ -8,8 +8,11 @@ using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using System.Text.Json;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
+
+using Enums;
 
 public class FacadeService : IFacadeService
 {
@@ -253,6 +256,17 @@ public class FacadeService : IFacadeService
 
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
+    public Task<EndpointResponseStatus> RejectSubmission() => throw new NotImplementedException();
+
+    public Task<EndpointResponseStatus> AcceptSubmission() => throw new NotImplementedException();
+
+    public Task<PaginatedList<Registration>> GetRegulatorRegistrations(
+        string? organisationName,
+        string? organisationReference,
+        OrganisationType? organisationType,
+        string[]? status,
+        int currentPage = 1) =>
+        throw new NotImplementedException();
 
     private async Task PrepareAuthenticatedClient()
     {

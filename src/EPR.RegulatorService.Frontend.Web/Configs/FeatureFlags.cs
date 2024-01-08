@@ -9,5 +9,7 @@ public static class FeatureFlags
 
     public const string ManagePoMSubmissions = "ManagePoMSubmissions";
 
+    public const string ManageRegistrations = "ManageRegistrations";
+
     public const string ManageApprovedUsers = "ManageApprovedUsers";
 }

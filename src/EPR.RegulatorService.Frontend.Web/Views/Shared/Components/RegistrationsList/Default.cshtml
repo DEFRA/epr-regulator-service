@@ -1,0 +1,70 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
+@using System.Text.Json
+@using EPR.RegulatorService.Frontend.Core.Extensions
+
+
+@model RegistrationsListViewModel
+
+<table class="govuk-table responsive-table" aria-label="Organisation Submission Listing">
+  @await Html.PartialAsync("Partials/_RegulatorRegistrationFilters", Model.RegulatorRegistrationFiltersModel)
+<thead role="rowgroup" class="govuk-table__head">
+  <tr role="row" class="govuk-table__row">
+    <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-eight-percent">@Localizer["Table.Header.Organisation"]</th>
+    <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-eight-percent">@Localizer["Table.Header.OrganisationId"]</th>
+    <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-eight-percent">@Localizer["Table.Header.SubmissionDate"]</th>
+    <th role="columnheader" scope="col" class="govuk-table__header epr-width-sixteen-percent">@Localizer["Table.Header.Status"]</th>
+  </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+
+  @foreach (var registration in Model.PagedOrganisationRegistrations)
+  {
+    <tr role="row" class="govuk-table__row">
+      <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Organisation"]</span>
+
+        @using (Html.BeginForm("Registrations", "Registrations", new { jsonSubmission = JsonSerializer.Serialize(registration) }, FormMethod.Post))
+        {
+
+          <button class="govuk-link link-button-active" type="submit">
+            @registration.OrganisationName
+          </button>
+          <br/>
+          @registration.OrganisationType.GetDescription()
+        }
+
+      </td>
+      <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.OrganisationId"]</span>
+        <p class="govuk-body">
+          @registration.OrganisationReference
+        </p>
+      </td>
+      <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.SubmissionDate"]</span>
+        <p class="govuk-body">
+          @registration.RegistrationDate.ToString("d MMMM yyyy")
+        </p>
+      </td>
+      <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Status"]</span>
+        <p class="govuk-body">
+          @if (registration.Decision.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+          {
+            <strong class="govuk-tag govuk-tag--blue">@registration.Decision</strong>
+          }
+          else if (registration.Decision.Equals("Accepted", StringComparison.OrdinalIgnoreCase))
+          {
+            <strong class="govuk-tag govuk-tag--green">@registration.Decision</strong>
+          }
+          else
+          {
+            <strong class="govuk-tag govuk-tag--red">@registration.Decision</strong>
+          }
+        </p>
+      </td>
+    </tr>
+  }
+  </tbody>
+</table>
+@await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel)

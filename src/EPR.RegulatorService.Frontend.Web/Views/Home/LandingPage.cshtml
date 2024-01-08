@@ -43,6 +43,7 @@
                 <p class="govuk-body">
                   @Localizer["LandingPage.ManageApplicationsDescription"]
                 </p>
+                
                 <feature name="ManagePoMSubmissions">
                   <div class="govuk-!-margin-bottom-2">
                     <a class="govuk-link govuk-link--no-visited-state govuk-body-l govuk-!-font-weight-bold" href="@Model.SubmissionsUrl">
@@ -53,8 +54,19 @@
                     @Localizer["LandingPage.ManageSubmissionsDescription"]
                   </p>
                 </feature>
+                
+                <feature name="ManageRegistrations">
+                  <div class="govuk-!-margin-bottom-2">
+                    <a class="govuk-link govuk-link--no-visited-state govuk-body-l govuk-!-font-weight-bold" href="@Model.RegistrationsUrl">
+                      @Localizer["LandingPage.ManageRegistrations"]
+                    </a>
+                  </div>
+                  <p class="govuk-body">
+                    @Localizer["LandingPage.ManageRegistrationsDescription"]
+                  </p>
+                </feature>
 
-                 <feature name="ManageApprovedUsers">
+                <feature name="ManageApprovedUsers">
                     <div class="govuk-!-margin-bottom-2">
                       <a id="manageApprovedUsersLink" class="govuk-link govuk-link--no-visited-state govuk-body-l govuk-!-font-weight-bold" href="@Model.ManageApprovedPersonUrl">
                         @Localizer["LandingPage.ManageApprovedPerson"]

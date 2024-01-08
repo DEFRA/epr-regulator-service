@@ -1,15 +1,18 @@
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.MockedData;
+using EPR.RegulatorService.Frontend.Core.MockedData.Filters;
+using EPR.RegulatorService.Frontend.Core.MockedData.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using EPR.RegulatorService.Frontend.Core.Enums;
+using System.Security.Cryptography;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
-
-using MockedData.Filters;
 
 [ExcludeFromCodeCoverage]
 public class MockedFacadeService : IFacadeService
@@ -23,6 +26,7 @@ public class MockedFacadeService : IFacadeService
     private static List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
     private static List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
     private static List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
+    private static List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
 
     public MockedFacadeService(IOptions<PaginationConfig> options)
     {
@@ -132,8 +136,7 @@ public class MockedFacadeService : IFacadeService
 
     private static string GetRandomSixDigitNumber()
     {
-        Random random = new Random();
-        int number = random.Next(100000, 999999); // Generate a random 6-digit number
+        int number = RandomNumberGenerator.GetInt32(100000, 999999); // Generate a random 6-digit number
 
         return number.ToString();
     }
@@ -141,12 +144,12 @@ public class MockedFacadeService : IFacadeService
     private static List<OrganisationSearchResult> GenerateOrganisationSearchResults()
     {
         var allItems = new List<OrganisationSearchResult>();
-        var random = new Random();
+        var random = RandomNumberGenerator.GetInt32(0, 2);
 
         for (int i = 1; i <= 1000; i++)
         {
-            bool isComplianceScheme = random.Next(2) == 0;
-            bool hasCompaniesHouseNumber = random.Next(2) == 0;
+            bool isComplianceScheme = random == 0;
+            bool hasCompaniesHouseNumber = random == 0;
             string companiesHouseNumber = hasCompaniesHouseNumber ? $"NI{GetRandomSixDigitNumber()}" : "";
             string organisationId = GetRandomSixDigitNumber();
 
@@ -282,4 +285,56 @@ public class MockedFacadeService : IFacadeService
     }
 
     public async Task<EndpointResponseStatus> RemoveApprovedUser(RemoveApprovedUserRequest request) => EndpointResponseStatus.Success;
+    public async Task<EndpointResponseStatus> RemoveApprovedUser(Guid connExternalId, Guid organisationId) => EndpointResponseStatus.Success;
+    public async Task<EndpointResponseStatus> RejectSubmission() => EndpointResponseStatus.Success;
+
+    public async Task<EndpointResponseStatus> AcceptSubmission() => EndpointResponseStatus.Success;
+
+    private static List<Registration> GenerateRegulatorRegistrations()
+    {
+        var allItems = new List<Registration>();
+
+        allItems.AddRange(MockedPendingRegistrations.GetMockedPendingRegistrations(1, 100));
+        allItems.AddRange(MockedRejectedRegistrations.GetMockedRejectedRegistrations(101, 200));
+        allItems.AddRange(MockedAcceptedRegistrations.GetMockedAcceptedRegistrations(201, 300));
+
+        return allItems;
+    }
+
+    public async Task<PaginatedList<Registration>> GetRegulatorRegistrations(
+        string? organisationName,
+        string? organisationReference,
+        OrganisationType? organisationType,
+        string[]? status,
+        int currentPage = 1)
+    {
+        if (currentPage > (int)Math.Ceiling(_allRegistrations.Count / (double)_config.PageSize))
+        {
+            currentPage = 1;
+        }
+
+        var results = _allRegistrations
+            .AsQueryable()
+            .FilterByOrganisationNameAndOrganisationReference(organisationName, organisationReference)
+            .FilterByOrganisationType(organisationType)
+            .FilterByRegistrationStatus(status).ToList();
+
+        var response = new PaginatedList<Registration>
+        {
+            Items = results
+                .OrderBy(x => x.Decision == Accepted)
+                .ThenBy(x => x.Decision == Rejected)
+                .ThenBy(x => x.Decision == Pending)
+                .ThenBy(x => x.RegistrationDate)
+                .ThenBy(x => x.IsResubmission)
+                .Skip((currentPage - 1) * _config.PageSize)
+                .Take(_config.PageSize)
+                .ToList(),
+            CurrentPage = currentPage,
+            TotalItems = results.Count,
+            PageSize = _config.PageSize
+        };
+
+        return response;
+    }
 }

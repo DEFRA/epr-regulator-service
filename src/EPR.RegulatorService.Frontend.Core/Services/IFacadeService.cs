@@ -1,8 +1,11 @@
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
+
+using Enums;
 
 public interface IFacadeService
 {
@@ -42,4 +45,13 @@ public interface IFacadeService
 
     Task<EndpointResponseStatus> RemoveApprovedUser(RemoveApprovedUserRequest request);
 
+    public Task<EndpointResponseStatus> RejectSubmission();
+    Task<EndpointResponseStatus> AcceptSubmission();
+
+    Task<PaginatedList<Registration>> GetRegulatorRegistrations(
+        string? organisationName,
+        string? organisationReference,
+        OrganisationType? organisationType,
+        string[]? status,
+        int currentPage = 1);
 }

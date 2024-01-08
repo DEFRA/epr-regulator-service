@@ -19,7 +19,7 @@
     .Select((value, index) => new {Index = index, Value = value}))
   {
     organisationRecordIndex = organisation.Index == 0 ? "" : organisation.Index.ToString();
-    
+
     <tr id="row@(organisation.Index)" role="row" class="govuk-table__row">
       <td id="companyCell@(organisation.Index)" role="gridcell" class="govuk-table__cell vertical-middle-align">
         <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Company"]</span>
@@ -30,15 +30,11 @@
             @organisation.Value.OrganisationName
           </a>
           <br/>
-          @if (organisation.Value.IsComplianceScheme)
-          {
-            <span>@Localizer["OrgType.ComplianceScheme.Yes"]</span>
-          }
-          else
-          {
-            <span>@Localizer["OrgType.ComplianceScheme.No"]</span>
-          }
-        </p>
+          @(organisation.Value.IsComplianceScheme
+            ? Localizer["OrgType.ComplianceScheme"]
+            : organisation.Value.OrganisationType.Contains("DirectProducer")
+              ? Localizer["OrgType.DirectProducer"]
+              : Localizer["OrgType.InDirectProducer"])
       </td>
       <td role="gridcell" class="govuk-table__cell vertical-middle-align">
         <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.OrganisationId"]</span>

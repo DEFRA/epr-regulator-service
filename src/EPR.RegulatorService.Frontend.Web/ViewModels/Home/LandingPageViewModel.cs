@@ -7,8 +7,7 @@ public class LandingPageViewModel
     public bool IsRegulatorAdmin { get; set; }
     public string ManageAccountUrl { get; set; }
     public string ApplicationsUrl { get; set; }
-
     public string SubmissionsUrl { get; set; }
-
+    public string RegistrationsUrl { get; set; }
     public string ManageApprovedPersonUrl { get; set; }
 }

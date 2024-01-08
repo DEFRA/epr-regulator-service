@@ -24,6 +24,7 @@ public static class PagePath
     public const string NominationDecision = "approve-confirmation";
     public const string NominationDecisionConfirmation = "approve-decision-confirmation";
     public const string PrePageNotFound = "pre-page-not-found";
+    public const string Registrations = "manage-registrations";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

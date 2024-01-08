@@ -39,14 +39,14 @@
           @Localizer["Title.SubmissionsTitle"]
         </h2>
         <div id="contact-hint" class="govuk-hint">
-          @Localizer["Page.Submissions.Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state"9>@Localizer["PowerBILogin"]</a>.
+          @Localizer["Page.Submissions.Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@Localizer["PowerBILogin"]</a>.
         </div>
 
         @await Component.InvokeAsync("SubmissionsList",
                 new SubmissionListRequest
                  {
-                   SearchOrganisationName = Model.SubmissionFilters.SearchOrganisationName, 
-                   SearchOrganisationReference = Model.SubmissionFilters.SearchOrganisationId, 
+                   SearchOrganisationName = Model.SubmissionFilters.SearchOrganisationName,
+                   SearchOrganisationReference = Model.SubmissionFilters.SearchOrganisationId,
                    IsDirectProducerChecked = Model.SubmissionFilters.IsDirectProducerChecked,
                    IsComplianceSchemeChecked = Model.SubmissionFilters.IsComplianceSchemeChecked,
                    IsPendingSubmissionChecked = Model.SubmissionFilters.IsPendingSubmissionChecked,

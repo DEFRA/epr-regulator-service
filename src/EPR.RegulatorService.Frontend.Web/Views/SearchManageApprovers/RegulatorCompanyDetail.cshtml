@@ -19,7 +19,14 @@
 
         <div class="govuk-!-margin-bottom-4">
           <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationType"]</h3>
-          <p id="regulatorIsComplianceScheme" class="govuk-body">@(Model.IsComplianceScheme ? Localizer["Text.ComplianceScheme"] : Localizer["Text.DirectProducer"])</p>
+          <p id="regulatorOrganisationType" class="govuk-body">
+            @(Model.IsComplianceScheme
+              ? Localizer["Text.ComplianceScheme"]
+              : Model.OrganisationType.Contains("DirectProducer")
+                ? Localizer["Text.DirectProducer"]
+                : Localizer["Text.IndirectProducer"])
+          </p>
+
         </div>
 
         <div class="govuk-!-margin-bottom-4">
@@ -35,7 +42,7 @@
           @if (!string.IsNullOrEmpty(@Model.CompaniesHouseNumber))
           {
             <p id="regulatorCompanyHouseNumber" class="govuk-body">@Model.CompaniesHouseNumber</p>
-            <companies-house-link gov-value="@Model.CompaniesHouseNumber" 
+            <companies-house-link gov-value="@Model.CompaniesHouseNumber"
                                   id="companyHouseLink"
                                   class="govuk-link govuk-link--no-visited-state">
               @Localizer["link.CompaniesHouseRegister"]

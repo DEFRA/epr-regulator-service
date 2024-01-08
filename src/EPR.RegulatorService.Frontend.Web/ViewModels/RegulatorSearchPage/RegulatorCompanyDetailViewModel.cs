@@ -1,8 +1,10 @@
 ﻿using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorSearchPage;
 
+[ExcludeFromCodeCoverage]
 public class RegulatorCompanyDetailViewModel
 {
     public string OrganisationId { get; set; }

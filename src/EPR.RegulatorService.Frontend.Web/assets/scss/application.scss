@@ -1,5 +1,5 @@
 $govuk-assets-path: '/regulators/';
-@import "node_modules/govuk-frontend/govuk/all";
+@import "../../node_modules/govuk-frontend/govuk/all";
 
 // Components
 @import './components/language_toggle';

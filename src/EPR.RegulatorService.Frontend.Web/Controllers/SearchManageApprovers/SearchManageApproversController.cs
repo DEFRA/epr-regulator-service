@@ -186,7 +186,7 @@ public class SearchManageApproversController : RegulatorSessionBaseController
             ExternalOrganisationId = organisationId,
             OrganisationId = organisationDetails.Company.OrganisationId,
             OrganisationName = organisationDetails.Company.OrganisationName,
-            OrganisationType = organisationDetails.Company.OrganisationTypeId.ToString(),
+            OrganisationType = organisationDetails.Company.OrganisationType,
             CompaniesHouseNumber = organisationDetails.Company.CompaniesHouseNumber,
             BusinessAddress = new BusinessAddress
             {

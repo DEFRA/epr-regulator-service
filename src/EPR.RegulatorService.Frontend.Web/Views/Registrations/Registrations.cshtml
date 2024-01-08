@@ -1,0 +1,62 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Core.Models
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations
+
+@model RegistrationsViewModel
+
+@{
+  ViewData["Title"] = Localizer["Title.RegistrationsTitle"];
+
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        @if (Model.RejectRegistrationResult == EndpointResponseStatus.Success)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["Banner.Success.RejectedSubmission", Model.OrganisationName])
+          ;
+        }
+        @if (Model.AcceptRegistrationResult == EndpointResponseStatus.Success)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["Banner.Success.AcceptedSubmission", Model.OrganisationName])
+          ;
+        }
+        @if (!ViewData.ModelState.IsValid)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+        }
+      </div>
+
+      <div class="govuk-grid-column-full">
+
+        <h1 class="govuk-caption-xl">
+          @Localizer["Title.EnvironmentAgency"]
+        </h1>
+
+        <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">
+          @Localizer["Title.RegistrationsTitle"]
+        </h2>
+        <div id="contact-hint" class="govuk-hint">
+          @Localizer["Page.Registrations.Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@Localizer["PowerBILogin"]</a>.
+        </div>
+
+        @await Component.InvokeAsync("RegistrationsList",
+                 new RegistrationListRequest()
+                 {
+                   SearchOrganisationName = Model.RegistrationFilters.SearchOrganisationName,
+                   SearchOrganisationReference = Model.RegistrationFilters.SearchOrganisationId,
+                   IsDirectProducerChecked = Model.RegistrationFilters.IsDirectProducerChecked,
+                   IsComplianceSchemeChecked = Model.RegistrationFilters.IsComplianceSchemeChecked,
+                   IsPendingRegistrationChecked = Model.RegistrationFilters.IsPendingRegistrationChecked,
+                   IsAcceptedRegistrationChecked = Model.RegistrationFilters.IsAcceptedRegistrationChecked,
+                   IsRejectedRegistrationChecked = Model.RegistrationFilters.IsRejectedRegistrationChecked,
+                   PageNumber = (int)Model.PageNumber,
+                 })
+      </div>
+    </div>
+  </main>
+</div>

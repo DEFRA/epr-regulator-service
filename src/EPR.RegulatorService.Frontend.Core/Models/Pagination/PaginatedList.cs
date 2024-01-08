@@ -10,5 +10,5 @@ public class PaginatedList<T>
     public int TotalPages
     {
         get => (TotalItems + PageSize - 1) / PageSize;
-    } 
+    }
 }

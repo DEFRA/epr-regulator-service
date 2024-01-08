@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace EPR.RegulatorService.Frontend.Core.Models;
 
+[ExcludeFromCodeCoverage]
 public class OrganisationSearchResult
 {
     public string OrganisationName { get; set; }

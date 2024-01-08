@@ -39,6 +39,12 @@
   <data name="LandingPage.ManageSubmissionsDescription" xml:space="preserve">
     <value>Gweld, derbyn neu wrthod cyflwyniadau data pecynwaith</value>
   </data>
+    <data name="LandingPage.ManageRegistrations" xml:space="preserve">
+        <value>WManage organisation details submissions</value>
+    </data>
+    <data name="LandingPage.ManageRegistrationsDescription" xml:space="preserve">
+        <value>WView, accept or reject organisation details submissions</value>
+    </data>
   <data name="Regulator.Home" xml:space="preserve">
     <value>Hafan Rheoleiddwyr - {0}</value>
   </data>

@@ -13,7 +13,7 @@ public static class MockedOrganisationDetails
         Company = new Company
         {
             OrganisationId = Guid.NewGuid().ToString(),
-            OrganisationTypeId = 2,
+            OrganisationType = "Direct producer",
             CompaniesHouseNumber = "NI622515",
             IsComplianceScheme = false,
             OrganisationName = "Test Company",

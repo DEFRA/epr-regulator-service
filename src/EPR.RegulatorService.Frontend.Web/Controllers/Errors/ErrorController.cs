@@ -9,6 +9,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Errors;
 public class ErrorController : Controller
 {
     [ActionName(PagePath.Error)]
+    [Route(PagePath.Error)]
     [Route(PagePath.PageNotFoundPath)]
     public ViewResult Error(int? statusCode, string? backLink)
     {

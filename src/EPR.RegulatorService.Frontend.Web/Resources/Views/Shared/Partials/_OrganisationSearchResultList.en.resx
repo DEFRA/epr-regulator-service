@@ -29,10 +29,13 @@
     <data name="Table.Header.CompanyHouseNumber" xml:space="preserve">
         <value>Company house</value>
     </data>
-    <data name="OrgType.ComplianceScheme.Yes" xml:space="preserve">
-        <value>Compliance scheme</value>
+  <data name="OrgType.ComplianceScheme" xml:space="preserve">
+          <value>Compliance scheme</value>
+      </data>
+  <data name="OrgType.DirectProducer" xml:space="preserve">
+          <value>Direct producer</value>
     </data>
-    <data name="OrgType.ComplianceScheme.No" xml:space="preserve">
-        <value>Direct producer</value>
+  <data name="OrgType.InDirectProducer" xml:space="preserve">
+          <value>Indirect producer</value>
     </data>
 </root>

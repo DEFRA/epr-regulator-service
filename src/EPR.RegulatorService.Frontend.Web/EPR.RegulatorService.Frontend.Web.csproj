@@ -97,6 +97,30 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Confirm.en.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\OrganisationSubmissions\Submissions.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Submissions.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\OrganisationSubmissions\Submissions.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Submissions.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\RegistrationsList\Default.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\RegistrationsList\Default.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Default.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_RegulatorRegistrationFilters.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_RegulatorRegistrationFilters.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_RegulatorRegistrationFilters.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_RegulatorRegistrationFilters.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Views\Applications\EnrolmentDecision.Designer.cs">
@@ -142,8 +166,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>NominationDecision.cy.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Views\OrganisationSubmissions\Submissions.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Submissions.en.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <SonarQubeSetting Include="sonar.coverage.exclusions">
       <Value>
@@ -151,5 +179,4 @@
       </Value>
     </SonarQubeSetting>
   </ItemGroup>
-
 </Project>

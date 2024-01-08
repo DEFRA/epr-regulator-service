@@ -79,6 +79,7 @@ public class HomeController : RegulatorSessionBaseController
             ManageAccountUrl = _landingPageConfig.ManageAccountUrl,
             ApplicationsUrl = _landingPageConfig.ApplicationsUrl,
             SubmissionsUrl = _landingPageConfig.SubmissionsUrl,
+            RegistrationsUrl = _landingPageConfig.RegistrationsUrl,
             ManageApprovedPersonUrl = _landingPageConfig.ManageApprovedPersonUrl
         };
 
