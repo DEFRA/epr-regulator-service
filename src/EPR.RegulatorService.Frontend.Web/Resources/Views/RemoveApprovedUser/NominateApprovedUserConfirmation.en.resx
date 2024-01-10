@@ -21,7 +21,10 @@
   <data name="Page.Title" xml:space="preserve">
       <value>Check your answers before confirming nominated approved person</value>
   </data>
-  <data name="User.Prompt" xml:space="preserve">
+  <data name="Question.HasAnApprovedPersonBeenNominated" xml:space="preserve">
       <value>Has an approved person been nominated?</value>
+  </data>
+  <data name="Question.Name" xml:space="preserve">
+      <value>Name</value>
   </data>
 </root>

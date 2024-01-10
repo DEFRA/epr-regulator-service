@@ -8,7 +8,7 @@
   var radioButtonIndex = "";
 }
 
-<form action="@Url.Action("ApprovedPersonListPage", "SearchManageApprovers")"
+<form action="@Url.Action("ApprovedPersonListPage", "RemoveApprovedUser")"
       enctype="application/x-www-form-urlencoded" method="POST">
 
   <div class="govuk-width-container">
@@ -43,6 +43,7 @@
                            name="NewApprovedUserId"
                            aria-describedby="select-user-hint"
                            type="radio"
+                           checked=@(Model.NewApprovedUserId == user.Value.PersonExternalId)
                            value=@user.Value.PersonExternalId>
 
                     <label class="govuk-label govuk-radios__label" for="NewApprovedUserId@(radioButtonIndex)">

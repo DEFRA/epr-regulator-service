@@ -1,6 +1,6 @@
 @addTagHelper *, Microsoft.FeatureManagement.AspNetCore
 
-@model EPR.RegulatorService.Frontend.Core.Sessions.RemoveApprovedUserSession
+@model EPR.RegulatorService.Frontend.Core.Sessions.AddRemoveApprovedUserSession
 
 @{
   ViewData["Title"] = Localizer["Page.Title", Model.UserNameToDelete, Model.OrganisationName];
@@ -12,7 +12,7 @@
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-          <h1 id="pageTitle" class="govuk-heading-l govuk-!-margin-bottom-2">
+          <h1 id="pageTitle" class="govuk-heading-l govuk-!-margin-bottom-8">
             @Localizer["Page.Title", Model.UserNameToDelete, Model.OrganisationName]
           </h1>
           <div id="warningText" class="govuk-warning-text">

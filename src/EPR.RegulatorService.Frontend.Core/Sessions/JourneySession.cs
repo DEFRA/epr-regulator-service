@@ -13,6 +13,6 @@ public class JourneySession : IHasUserData
     public PermissionManagementSession PermissionManagementSession { get; set; } = new();
     public bool IsComplianceScheme { get; set; }
     public SearchManageApproversSession SearchManageApproversSession { get; set; } = new();
-    public RemoveApprovedUserSession RemoveApprovedUserSession { get; set; } = new();
+    public AddRemoveApprovedUserSession AddRemoveApprovedUserSession { get; set; } = new();
     public RegulatorRegistrationSession RegulatorRegistrationSession { get; set; } = new();
 }

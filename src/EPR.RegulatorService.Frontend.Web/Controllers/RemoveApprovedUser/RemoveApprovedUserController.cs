@@ -10,7 +10,8 @@ using EPR.RegulatorService.Frontend.Core.Models;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RemoveApprovedUser;
 
-[Route(PagePath.RemoveApprovedUserPage)]
+using ViewModels.ApprovedPersonListPage;
+
 [FeatureGate(FeatureFlags.ManageApprovedUsers)]
 public class RemoveApprovedUserController : RegulatorSessionBaseController
 {
@@ -28,12 +29,13 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
     public async Task<IActionResult> Confirm(string userName, string organisationName, Guid connExternalId, Guid organisationId)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new();
-        if (string.IsNullOrEmpty(session.RemoveApprovedUserSession.OrganisationName)
-            || string.IsNullOrEmpty(session.RemoveApprovedUserSession.UserNameToDelete)
-            || Guid.Empty == connExternalId
-            || Guid.Empty == organisationId)
+
+        if (connExternalId != Guid.Empty
+            && organisationId != Guid.Empty
+            && !string.IsNullOrWhiteSpace(userName)
+            && !string.IsNullOrWhiteSpace(organisationName))
         {
-            session.RemoveApprovedUserSession = new RemoveApprovedUserSession
+            session.AddRemoveApprovedUserSession = new AddRemoveApprovedUserSession
             {
                 UserNameToDelete = userName,
                 ConnExternalId = connExternalId,
@@ -44,9 +46,10 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
             await SaveSession(session);
         }
 
-        ViewBag.BackLinkToDisplay = GetHomeBackLink();
+        await AddCurrentPageAndSaveSession(session, PagePath.RemoveApprovedUserConfirmationPage);
+        SetBackLink(session, PagePath.RemoveApprovedUserConfirmationPage);
 
-        return View(session.RemoveApprovedUserSession);
+        return View(session.AddRemoveApprovedUserSession);
     }
 
     [HttpGet]
@@ -55,13 +58,11 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new();
 
-        string backLink = $"{PagePath.RemoveApprovedUserConfirmationPage}?userName={session.RemoveApprovedUserSession.UserNameToDelete}" +
-                          $"&organisationName={session.RemoveApprovedUserSession.OrganisationName}" +
-                          $"&connExternalId={session.RemoveApprovedUserSession.ConnExternalId}";
+        await AddCurrentPageAndSaveSession(session, PagePath.NominationDecision);
+        SetBackLink(session, PagePath.NominationDecision);
 
-        ViewBag.BackLinkToDisplay = backLink;
 
-        return View(nameof(NominationDecision));
+        return View(session.AddRemoveApprovedUserSession);
     }
 
     [HttpPost]
@@ -75,15 +76,18 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
 
         if (model.NominationDecision == null)
         {
-            ModelState.AddModelError(nameof(session.RemoveApprovedUserSession.NominationDecision), "NominateApproved.Decision.Error");
+            ModelState.AddModelError(nameof(session.AddRemoveApprovedUserSession.NominationDecision), "NominateApproved.Decision.Error");
             return View(nameof(NominationDecision));
         }
 
-        session.RemoveApprovedUserSession.NominationDecision = model.NominationDecision;
+        session.AddRemoveApprovedUserSession.NominationDecision = model.NominationDecision;
+        _sessionManager.SaveSessionAsync(HttpContext.Session, session);
 
-        await SaveSession(session);
-
-        return RedirectToAction("ConfirmNominationDecision", session.RemoveApprovedUserSession);
+        if (session.AddRemoveApprovedUserSession.NominationDecision == true)
+        {
+            return RedirectToAction("ApprovedPersonListPage");
+        }
+        return RedirectToAction("ConfirmNominationDecision");
     }
 
     [HttpGet]
@@ -92,11 +96,10 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new();
 
-        const string backLink = PagePath.NominationDecision;
+        await AddCurrentPageAndSaveSession(session, PagePath.NominationDecisionConfirmation);
+        SetBackLink(session, PagePath.NominationDecisionConfirmation);
 
-        ViewBag.BackLinkToDisplay = backLink;
-
-        return View("NominateApprovedUserConfirmation", session.RemoveApprovedUserSession);
+        return View("NominateApprovedUserConfirmation", session.AddRemoveApprovedUserSession);
     }
 
     [HttpPost]
@@ -114,7 +117,7 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         //This is the flow when nominationDecision = true as of now it will stay on the same page
         if (model.NominationDecision ?? true)
         {
-            return RedirectToAction("ConfirmNominationDecision", session.RemoveApprovedUserSession);
+            return RedirectToAction("ConfirmNominationDecision", session.AddRemoveApprovedUserSession);
         }
 
         var request = new RemoveApprovedUserRequest
@@ -125,13 +128,78 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         };
 
         var response = await _facadeService.RemoveApprovedUser(request);
-        session.RemoveApprovedUserSession.ResponseStatus = response;
+        session.AddRemoveApprovedUserSession.ResponseStatus = response;
 
         if (response == EndpointResponseStatus.Success)
         {
-            return View("RemovedConfirmation", session.RemoveApprovedUserSession);
+            return View("RemovedConfirmation", session.AddRemoveApprovedUserSession);
         }
 
         return RedirectToAction(PagePath.Error, "Error");
+    }
+
+
+    [HttpGet]
+    [Route(PagePath.ApprovedPersonListPage)]
+    public async Task<ActionResult> ApprovedPersonListPage(Guid externalOrganisationId)
+    {
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        if (externalOrganisationId != Guid.Empty)
+        {
+            session.AddRemoveApprovedUserSession = new ();
+            session.AddRemoveApprovedUserSession.OrganisationId = externalOrganisationId;
+        }
+        var results = await _facadeService.GetProducerOrganisationUsersByOrganisationExternalId(session.AddRemoveApprovedUserSession.OrganisationId);
+
+        var model = new OrganisationUsersModel
+        {
+            ExternalOrganisationId = session.AddRemoveApprovedUserSession.OrganisationId,
+            OrganisationUsers = results.Select(user => new OrganisationUser
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PersonExternalId = user.PersonExternalId
+            }).ToList(),
+            NewApprovedUserId = session.AddRemoveApprovedUserSession.NewApprovedUser?.PersonExternalId
+        };
+
+        await AddCurrentPageAndSaveSession(session, PagePath.ApprovedPersonListPage);
+        SetBackLink(session, PagePath.ApprovedPersonListPage);
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [Route(PagePath.ApprovedPersonListPage)]
+    public async Task<ActionResult> ApprovedPersonListPage(OrganisationUsersModel model)
+    {
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+
+        var results = await _facadeService.GetProducerOrganisationUsersByOrganisationExternalId(model.ExternalOrganisationId);
+
+        if (ModelState.IsValid)
+        {
+            var selectedUser = results.FirstOrDefault(r => r.PersonExternalId == model.NewApprovedUserId);
+            if (selectedUser != null)
+            {
+                session.AddRemoveApprovedUserSession.NewApprovedUser = selectedUser;
+                _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+
+                return RedirectToAction("ConfirmNominationDecision");
+            }
+        }
+
+        model.OrganisationUsers = results.Select(user => new OrganisationUser
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            PersonExternalId = user.PersonExternalId
+        }).ToList();
+
+        await AddCurrentPageAndSaveSession(session, PagePath.ApprovedPersonListPage);
+        SetBackLink(session, PagePath.ApprovedPersonListPage);
+        return View(model);
     }
 }

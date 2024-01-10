@@ -22,9 +22,9 @@
           <p id="regulatorOrganisationType" class="govuk-body">
             @(Model.IsComplianceScheme
               ? Localizer["Text.ComplianceScheme"]
-              : Model.OrganisationType.Contains("DirectProducer")
-                ? Localizer["Text.DirectProducer"]
-                : Localizer["Text.IndirectProducer"])
+              : Model.OrganisationType.Contains("InDirectProducer")
+                ? Localizer["Text.IndirectProducer"]
+                : Localizer["Text.DirectProducer"])
           </p>
 
         </div>
@@ -99,7 +99,7 @@
           </strong>
         </div>
         <form class="govuk-!-display-inline-block"
-              action="@Url.Action("ApprovedPersonListPage", "SearchManageApprovers")"
+              action="@Url.Action("ApprovedPersonListPage", "RemoveApprovedUser")"
               enctype="multipart/form-data" method="GET">
           <input type="hidden" name="externalOrganisationId" value="@Model.ExternalOrganisationId"/>
           <button id="nominateNewApprovedPersonButton" class="govuk-button" data-module="govuk-button">

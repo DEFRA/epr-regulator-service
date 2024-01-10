@@ -2,7 +2,7 @@
 
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using EPR.RegulatorService.Frontend.Web.Extensions
-@model EPR.RegulatorService.Frontend.Core.Sessions.RemoveApprovedUserSession
+@model EPR.RegulatorService.Frontend.Core.Sessions.AddRemoveApprovedUserSession
 
 @{
   ViewData["Title"] = @Localizer["Page.Title"];
@@ -40,6 +40,7 @@
                            aria-labelledby="radio-label-accepted-true"
                            gov-for="NominationDecision"
                            gov-first-option="true"
+                           checked=@(Model.NominationDecision == true)
                            gov-value="true">
                     <label class="govuk-label govuk-radios__label"
                            for="nominationDecisionYes"
@@ -57,6 +58,7 @@
                            type="radio"
                            aria-labelledby="radio-label-accepted-false"
                            value="false"
+                           checked=@(Model.NominationDecision == false)
                            gov-for="NominationDecision"
                            gov-first-option="false"
                            gov-value="false">

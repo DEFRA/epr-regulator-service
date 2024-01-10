@@ -14,7 +14,6 @@ using EPR.RegulatorService.Frontend.Core.MockedData;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Services;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ApprovedPersonListPage;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
@@ -31,14 +30,8 @@ public class SearchManagedApproversTests
     private readonly int _pageSize = 20;
     private readonly Guid _organisationId = Guid.NewGuid();
 
-    private OrganisationUser _userJohn;
-    private OrganisationUser _userJames;
-
     private void SetupBase()
     {
-        _userJames = new OrganisationUser { FirstName = "James", LastName = "Smith", Email = "jsmith@gmail.com", PersonExternalId = Guid.NewGuid() };
-        _userJohn = new OrganisationUser { FirstName = "John", LastName = "Lewis", Email = "jlewis@gmail.com", PersonExternalId = Guid.NewGuid() };
-
         _httpContextMock = new Mock<HttpContext>();
         var mockFeatureManager = new Mock<IFeatureManager>();
         mockFeatureManager.Setup(f => f.IsEnabledAsync(FeatureFlags.ManageApprovedUsers))
@@ -64,10 +57,6 @@ public class SearchManagedApproversTests
         _facadeServiceMock
             .Setup(x => x.GetRegulatorCompanyDetails(It.IsAny<Guid>()))
             .ReturnsAsync(MockedOrganisationDetails.GetMockedOrganisationDetails);
-
-        _facadeServiceMock
-            .Setup(x => x.GetProducerOrganisationUsersByOrganisationExternalId(It.IsAny<Guid>()))
-            .ReturnsAsync(new List<OrganisationUser>() { _userJohn, _userJames });
 
         _systemUnderTest = new SearchManageApproversController(
             _mockSessionManager.Object,
@@ -226,131 +215,4 @@ public class SearchManagedApproversTests
 
         result.ViewData.Should().ContainKey("BackLinkToDisplay");
     }
-
-    [TestMethod]
-    public async Task ApprovedPersonListPage_ReturnsViewWithModel()
-    {
-        var session = new JourneySession
-        {
-            RegulatorSession = new RegulatorSession
-            {
-                Journey = new List<string> { PagePath.RegulatorCompanyDetail, PagePath.ApprovedPersonListPage }
-            }
-        };
-
-        _mockSessionManager
-            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-
-        var orgId = Guid.NewGuid();
-
-        var result = await _systemUnderTest.ApprovedPersonListPage(orgId) as ViewResult;
-        Assert.IsNotNull(result);
-        result.Model.Should().BeOfType<OrganisationUsersModel>();
-
-        ValidateOrganisationUsersModel(result, orgId);
-
-        result.ViewData.Should().ContainKey("BackLinkToDisplay");
-        result.ViewData["BackLinkToDisplay"].Should().Be(PagePath.RegulatorCompanyDetail);
-    }
-
-    [TestMethod]
-    public async Task ApprovedPersonListPage_ValidModel_RedirectsToNextPage()
-    {
-        var session = new JourneySession();
-
-        _mockSessionManager
-            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-
-        var input = new OrganisationUsersModel
-        {
-            NewApprovedUserId = Guid.NewGuid(),
-            ExternalOrganisationId = Guid.NewGuid()
-        };
-
-        await _systemUnderTest.ApprovedPersonListPage(input);
-
-        _mockSessionManager.Verify(x =>
-                x.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
-    }
-
-
-    [TestMethod]
-    public async Task ApprovedPersonListPage_WithNo_NewApprovedUserId_ReturnsSamePage()
-    {
-        var session = new JourneySession
-        {
-            RegulatorSession = new RegulatorSession
-            {
-                Journey = new List<string> { PagePath.RegulatorCompanyDetail, PagePath.ApprovedPersonListPage }
-            }
-        };
-
-        _mockSessionManager
-            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-
-        var input = new OrganisationUsersModel
-        {
-            ExternalOrganisationId = Guid.NewGuid()
-        };
-
-        // Manually add an error to ModelState
-        _systemUnderTest.ModelState.AddModelError("NewApprovedUserId", "Error message");
-
-        var result = await _systemUnderTest.ApprovedPersonListPage(input) as ViewResult;
-
-        ValidateOrganisationUsersModel(result, input.ExternalOrganisationId);
-
-        result.ViewData.Should().ContainKey("BackLinkToDisplay");
-        result.ViewData["BackLinkToDisplay"].Should().Be(PagePath.RegulatorCompanyDetail);
-
-        _mockSessionManager.Verify(x =>
-            x.SaveSessionAsync(It.IsAny<ISession>(), session), Times.Once);
-    }
-
-
-    [TestMethod]
-    public async Task ApprovedPersonListPage_Stores_ExternalId_To_Session()
-    {
-        // arrange
-        var externalId = Guid.NewGuid();
-        var session = new JourneySession
-        {
-            RegulatorSession = new RegulatorSession
-            {
-                Journey = new List<string> { PagePath.RegulatorCompanyDetail, PagePath.ApprovedPersonListPage }
-            }
-        };
-
-        _mockSessionManager
-            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-
-        // act
-        await _systemUnderTest.ApprovedPersonListPage(externalId);
-
-        // assert
-        session.RegulatorSession.OrganisationId.Should().HaveValue();
-        session.RegulatorSession.OrganisationId.Value.Should().Be(externalId);
-    }
-
-    private void ValidateOrganisationUsersModel(ViewResult result, Guid orgId)
-    {
-        var model = result.Model as OrganisationUsersModel;
-        model.ExternalOrganisationId.Should().Be(orgId);
-        model.OrganisationUsers.Count.Should().Be(2);
-        model.OrganisationUsers[0].FirstName.Should().Be(_userJohn.FirstName);
-        model.OrganisationUsers[0].LastName.Should().Be(_userJohn.LastName);
-        model.OrganisationUsers[0].Email.Should().Be(_userJohn.Email);
-        model.OrganisationUsers[0].PersonExternalId.Should().Be(_userJohn.PersonExternalId);
-        model.OrganisationUsers[1].FirstName.Should().Be(_userJames.FirstName);
-        model.OrganisationUsers[1].LastName.Should().Be(_userJames.LastName);
-        model.OrganisationUsers[1].Email.Should().Be(_userJames.Email);
-        model.OrganisationUsers[1].PersonExternalId.Should().Be(_userJames.PersonExternalId);
-
-    }
-
-
 }

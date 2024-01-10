@@ -27,6 +27,7 @@ $narrow-media-width: 40.0625em;
     padding: 0;
     border: none;
     cursor: pointer;
+    overflow-wrap: anywhere;
 }
 
 .epr-header.epr-header--with-additional-navigation {
@@ -187,8 +188,9 @@ table.responsive-table {
         .govuk-table__header > .govuk-body,
         .govuk-table__cell > .govuk-body,
         .govuk-table__cell form button.govuk-link.link-button-destructive{
-            overflow-wrap: break-word !important;
-            inline-size: 200px !important;
+            overflow-wrap: break-word;
+            max-inline-size: 200px;
+            min-inline-size: 100px;
         }
     }
 

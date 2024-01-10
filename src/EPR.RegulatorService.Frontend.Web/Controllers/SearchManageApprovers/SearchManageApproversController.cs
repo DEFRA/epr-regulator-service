@@ -7,7 +7,6 @@ using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ApprovedPersonListPage;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorSearchPage;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 
@@ -119,67 +118,6 @@ public class SearchManageApproversController : RegulatorSessionBaseController
         return View(model);
     }
 
-    [HttpGet]
-    [Route(PagePath.ApprovedPersonListPage)]
-    public async Task<ActionResult> ApprovedPersonListPage(Guid externalOrganisationId)
-    {
-        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-        if (externalOrganisationId != Guid.Empty)
-        {
-            session.RegulatorSession.OrganisationId = externalOrganisationId;
-        }
-        var results = await _facadeService.GetProducerOrganisationUsersByOrganisationExternalId(session.RegulatorSession.OrganisationId.Value);
-
-        var model = new OrganisationUsersModel
-        {
-            ExternalOrganisationId = session.RegulatorSession.OrganisationId.Value,
-            OrganisationUsers = results.Select(user => new OrganisationUser
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                PersonExternalId = user.PersonExternalId
-            }).ToList()
-        };
-
-        await AddCurrentPageAndSaveSession(session, PagePath.ApprovedPersonListPage);
-        SetBackLink(session, PagePath.ApprovedPersonListPage);
-
-        return View(model);
-    }
-
-    [HttpPost]
-    [Route(PagePath.ApprovedPersonListPage)]
-    public async Task<ActionResult> ApprovedPersonListPage(OrganisationUsersModel model)
-    {
-        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-
-        if (ModelState.IsValid)
-        {
-            // TODO
-            // Whoever is implementing the next page will have to edit this redirect
-            // For now, let's just go back to the search results page
-
-            return await SaveSessionAndRedirect(session,
-                nameof(RegulatorSearchResult),
-                PagePath.RegulatorSearchPage,
-                PagePath.RegulatorSearchResult, null);
-        }
-
-        var results = await _facadeService.GetProducerOrganisationUsersByOrganisationExternalId(model.ExternalOrganisationId);
-        model.OrganisationUsers = results.Select(user => new OrganisationUser
-        {
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            PersonExternalId = user.PersonExternalId
-        }).ToList();
-
-        await AddCurrentPageAndSaveSession(session, PagePath.ApprovedPersonListPage);
-        SetBackLink(session, PagePath.ApprovedPersonListPage);
-
-        return View(model);
-    }
     private static RegulatorCompanyDetailViewModel GetCompanyDetailsRequest(RegulatorCompanyDetailsModel organisationDetails, Guid organisationId) =>
         new()
         {

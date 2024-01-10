@@ -3,7 +3,7 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using EPR.RegulatorService.Frontend.Web.Extensions
 
-@model EPR.RegulatorService.Frontend.Core.Sessions.RemoveApprovedUserSession
+@model EPR.RegulatorService.Frontend.Core.Sessions.AddRemoveApprovedUserSession
 
 @{
   ViewData["Title"] = @Localizer["Page.Title"];
@@ -28,19 +28,39 @@
                 </h1>
               </legend>
               <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                  <dt id="userPrompt" class="govuk-summary-list__key">
-                    @Localizer["User.Prompt"]
-                  </dt>
-                  <dd id="nominationDecision" class="govuk-summary-list__value">
-                    @Model.NominationDecision
-                  </dd>
-                  <dd class="govuk-summary-list__actions">
-                    <a id="changeButton" class="govuk-link" href="/regulators/remove-approved/approve-confirmation">
-                      @Localizer["Change"]<span class="govuk-visually-hidden"> @Model</span>
-                    </a>
-                  </dd>
-                </div>
+                @if (Model.NominationDecision != null)
+                {
+                  <div class="govuk-summary-list__row">
+                    <dt id="userPrompt" class="govuk-summary-list__key">
+                      @Localizer["Question.HasAnApprovedPersonBeenNominated"]
+                    </dt>
+                    <dd id="nominationDecision" class="govuk-summary-list__value">
+                      @(Model.NominationDecision == true ? SharedLocalizer["Yes"] : SharedLocalizer["No"])
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                      <a id="changeButton" class="govuk-link" href="@Url.Action("NominationDecision", "RemoveApprovedUser")">
+                        @SharedLocalizer["Change"]
+                      </a>
+                    </dd>
+                  </div>
+                }
+                @if (Model.NominationDecision != false && Model.NewApprovedUser != null)
+                {
+                  <div class="govuk-summary-list__row">
+                    <dt id="userPrompt" class="govuk-summary-list__key">
+                      @Localizer["Question.Name"]
+                    </dt>
+                    <dd id="nominationDecision" class="govuk-summary-list__value">
+                      @Model.NewApprovedUser.FirstName @Model.NewApprovedUser.LastName <br/>
+                      @Model.NewApprovedUser.Email
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                      <a id="changeButton" class="govuk-link" href="@Url.Action("ApprovedPersonListPage", "RemoveApprovedUser")">
+                        @SharedLocalizer["Change"]
+                      </a>
+                    </dd>
+                  </div>
+                }
               </dl>
             </fieldset>
           </div>

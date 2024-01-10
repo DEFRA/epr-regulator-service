@@ -32,9 +32,9 @@
           <br/>
           @(organisation.Value.IsComplianceScheme
             ? Localizer["OrgType.ComplianceScheme"]
-            : organisation.Value.OrganisationType.Contains("DirectProducer")
-              ? Localizer["OrgType.DirectProducer"]
-              : Localizer["OrgType.InDirectProducer"])
+            : organisation.Value.OrganisationType.Contains("InDirectProducer")
+              ? Localizer["OrgType.InDirectProducer"]
+              : Localizer["OrgType.DirectProducer"])
       </td>
       <td role="gridcell" class="govuk-table__cell vertical-middle-align">
         <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.OrganisationId"]</span>
