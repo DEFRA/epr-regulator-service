@@ -121,6 +121,7 @@ public class SearchManageApproversController : RegulatorSessionBaseController
     private static RegulatorCompanyDetailViewModel GetCompanyDetailsRequest(RegulatorCompanyDetailsModel organisationDetails, Guid organisationId) =>
         new()
         {
+            IsComplianceScheme = organisationDetails.Company.IsComplianceScheme,
             ExternalOrganisationId = organisationId,
             OrganisationId = organisationDetails.Company.OrganisationId,
             OrganisationName = organisationDetails.Company.OrganisationName,

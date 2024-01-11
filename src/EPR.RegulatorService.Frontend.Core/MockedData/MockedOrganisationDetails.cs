@@ -15,7 +15,7 @@ public static class MockedOrganisationDetails
             OrganisationId = Guid.NewGuid().ToString(),
             OrganisationType = "Direct producer",
             CompaniesHouseNumber = "NI622515",
-            IsComplianceScheme = false,
+            IsComplianceScheme = true,
             OrganisationName = "Test Company",
             RegisteredAddress = new RegisteredAddress
             {

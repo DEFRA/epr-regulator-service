@@ -215,4 +215,25 @@ public class SearchManagedApproversTests
 
         result.ViewData.Should().ContainKey("BackLinkToDisplay");
     }
+
+    [TestMethod]
+    public async Task RegulatorCompanyDetails_ModelHasIsComplianceScheme()
+    {
+        var session = new JourneySession
+        {
+            RegulatorSession =
+                new RegulatorSession
+                {
+                    Journey = new List<string> { PagePath.RegulatorSearchPage, PagePath.RegulatorSearchResult, PagePath.RegulatorCompanyDetail },
+                    OrganisationId = _organisationId
+                }
+        };
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+
+        var result = await _systemUnderTest.RegulatorCompanyDetail(_organisationId) as ViewResult;
+        (result.Model as RegulatorCompanyDetailViewModel).IsComplianceScheme.Should().BeTrue();
+    }
 }
