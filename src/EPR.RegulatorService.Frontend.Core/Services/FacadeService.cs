@@ -29,6 +29,9 @@ public class FacadeService : IFacadeService
     private const string OrganisationsSearchPath = "OrganisationsSearchPath";
     private const string GetOrganisationUsersByOrganisationExternalIdPath = "GetOrganisationUsersByOrganisationExternalIdPath";
     private const string OrganisationsRemoveApprovedUserPath = "OrganisationsRemoveApprovedUser";
+    private const string InviteNewApprovedPersonPath = "InviteNewApprovedPerson";
+    private const string AddRemoveApprovedUserPath = "AddRemoveApprovedUser";
+
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
     private readonly ITokenAcquisition _tokenAcquisition;
@@ -267,6 +270,16 @@ public class FacadeService : IFacadeService
         string[]? status,
         int currentPage = 1) =>
         throw new NotImplementedException();
+
+    public async Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request)
+    {
+        await PrepareAuthenticatedClient();
+        var path = _facadeApiConfig.Endpoints[AddRemoveApprovedUserPath];
+
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+
+        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+    }
 
     private async Task PrepareAuthenticatedClient()
     {

@@ -1,11 +1,12 @@
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 using Enums;
+
+using Models.Registrations;
 
 public interface IFacadeService
 {
@@ -54,4 +55,7 @@ public interface IFacadeService
         OrganisationType? organisationType,
         string[]? status,
         int currentPage = 1);
+
+    Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request);
+
 }

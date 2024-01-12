@@ -6,10 +6,10 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.Controllers.InviteNewApprovedPerson;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorSearchPage;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -112,6 +112,12 @@ public class SearchManageApproversController : RegulatorSessionBaseController
         var organisationDetails = await _facadeService.GetRegulatorCompanyDetails(session.RegulatorSession.OrganisationId.Value);
 
         var model = GetCompanyDetailsRequest(organisationDetails, session.RegulatorSession.OrganisationId.Value);
+
+        session.AddRemoveApprovedUserSession = new AddRemoveApprovedUserSession
+        {
+            OrganisationName = model.OrganisationName,
+            ExternalOrganisationId = model.ExternalOrganisationId
+        };
 
         await AddCurrentPageAndSaveSession(session, PagePath.RegulatorCompanyDetail);
         SetBackLink(session, PagePath.RegulatorCompanyDetail);

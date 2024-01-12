@@ -11,6 +11,7 @@ using EPR.RegulatorService.Frontend.Core.Models;
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RemoveApprovedUser;
 
 using ViewModels.ApprovedPersonListPage;
+using ViewModels.InviteNewApprovedPerson;
 
 [FeatureGate(FeatureFlags.ManageApprovedUsers)]
 public class RemoveApprovedUserController : RegulatorSessionBaseController
@@ -37,11 +38,11 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         {
             session.AddRemoveApprovedUserSession = new AddRemoveApprovedUserSession
             {
-                UserNameToDelete = userName,
+                UserNameToRemove = userName,
                 ConnExternalId = connExternalId,
                 NominationDecision = null,
                 OrganisationName = organisationName,
-                OrganisationId = organisationId,
+                ExternalOrganisationId = organisationId,
             };
             await SaveSession(session);
         }
@@ -100,6 +101,7 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         SetBackLink(session, PagePath.NominationDecisionConfirmation);
 
         return View("NominateApprovedUserConfirmation", session.AddRemoveApprovedUserSession);
+
     }
 
     [HttpPost]
@@ -109,9 +111,9 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         if (model.ConnExternalId != Guid.Empty && model.OrganisationId != Guid.Empty)
         {
-            session.RegulatorSession.OrganisationId = model.OrganisationId;
-            session.RegulatorSession.ConnExternalId = model.ConnExternalId;
-            session.RegulatorSession.NominationDecision = model.NominationDecision;
+            session.AddRemoveApprovedUserSession.ExternalOrganisationId = model.OrganisationId;
+            session.AddRemoveApprovedUserSession.ConnExternalId = model.ConnExternalId;
+            session.AddRemoveApprovedUserSession.NominationDecision = model.NominationDecision;
         }
 
         //This is the flow when nominationDecision = true as of now it will stay on the same page
@@ -141,19 +143,15 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
 
     [HttpGet]
     [Route(PagePath.ApprovedPersonListPage)]
-    public async Task<ActionResult> ApprovedPersonListPage(Guid externalOrganisationId)
+    public async Task<ActionResult> ApprovedPersonListPage()
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-        if (externalOrganisationId != Guid.Empty)
-        {
-            session.AddRemoveApprovedUserSession = new ();
-            session.AddRemoveApprovedUserSession.OrganisationId = externalOrganisationId;
-        }
-        var results = await _facadeService.GetProducerOrganisationUsersByOrganisationExternalId(session.AddRemoveApprovedUserSession.OrganisationId);
+
+        var results = await _facadeService.GetProducerOrganisationUsersByOrganisationExternalId(session.AddRemoveApprovedUserSession.ExternalOrganisationId);
 
         var model = new OrganisationUsersModel
         {
-            ExternalOrganisationId = session.AddRemoveApprovedUserSession.OrganisationId,
+            ExternalOrganisationId = session.AddRemoveApprovedUserSession.ExternalOrganisationId,
             OrganisationUsers = results.Select(user => new OrganisationUser
             {
                 FirstName = user.FirstName,
@@ -180,6 +178,13 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
 
         if (ModelState.IsValid)
         {
+            if (model.NewApprovedUserId == Guid.Empty)
+            {
+                session.InviteNewApprovedPersonSession = new InviteNewApprovedPersonSession();
+                await AddCurrentPageAndSaveSession(session, PagePath.ApprovedPersonListPage);
+                return RedirectToAction("EnterPersonName", "InviteNewApprovedPerson");
+            }
+
             var selectedUser = results.FirstOrDefault(r => r.PersonExternalId == model.NewApprovedUserId);
             if (selectedUser != null)
             {

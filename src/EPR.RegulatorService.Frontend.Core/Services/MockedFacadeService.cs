@@ -337,4 +337,6 @@ public class MockedFacadeService : IFacadeService
 
         return response;
     }
+
+    public async Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 }

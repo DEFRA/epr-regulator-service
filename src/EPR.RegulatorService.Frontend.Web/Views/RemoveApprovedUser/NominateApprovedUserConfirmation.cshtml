@@ -14,7 +14,7 @@
 <form id="removeUserForm" action="@Url.Action("Submit", "RemoveApprovedUser", Model)"
       enctype="application/x-www-form-urlencoded" method="post">
   <input id="hiddenConnExternalId" type="hidden" value=@Model.ConnExternalId name="ConnExternalId"/>
-  <input id="hiddenOrganisationId" type="hidden" value=@Model.OrganisationId name="OrganisationId"/>
+  <input id="hiddenOrganisationId" type="hidden" value=@Model.ExternalOrganisationId name="OrganisationId"/>
 
   <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">

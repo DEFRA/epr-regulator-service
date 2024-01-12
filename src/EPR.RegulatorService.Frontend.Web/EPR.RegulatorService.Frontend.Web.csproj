@@ -121,6 +121,46 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_RegulatorRegistrationFilters.cy.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\AccountPermissionHaveChanged.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AccountPermissionHaveChanged.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\AccountPermissionHaveChanged.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AccountPermissionHaveChanged.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\Confirmation.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Confirmation.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\Confirmation.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Confirmation.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\EmailSentToNominatedApprovedPerson.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EmailSentToNominatedApprovedPerson.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\EmailSentToNominatedApprovedPerson.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EmailSentToNominatedApprovedPerson.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\EnterPersonEmail.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EnterPersonEmail.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\EnterPersonEmail.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EnterPersonEmail.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\EnterPersonName.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EnterPersonName.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\EnterPersonName.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EnterPersonName.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Views\Applications\EnrolmentDecision.Designer.cs">
@@ -170,6 +210,56 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Submissions.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\InviteNewApprovedPerson\AccountPermissionHaveChanged.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AccountPermissionHaveChanged.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\InviteNewApprovedPerson\AccountPermissionHaveChanged.cy.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AccountPermissionHaveChanged.cy.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\InviteNewApprovedPerson\Confirmation.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Confirmation.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\InviteNewApprovedPerson\Confirmation.cy.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Confirmation.cy.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\InviteNewApprovedPerson\EmailSentToNominatedApprovedPerson.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EmailSentToNominatedApprovedPerson.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\InviteNewApprovedPerson\EmailSentToNominatedApprovedPerson.cy.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EmailSentToNominatedApprovedPerson.cy.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\InviteNewApprovedPerson\EnterPersonEmail.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EnterPersonEmail.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\InviteNewApprovedPerson\EnterPersonEmail.cy.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EnterPersonEmail.cy.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\InviteNewApprovedPerson\EnterPersonName.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EnterPersonName.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\InviteNewApprovedPerson\EnterPersonName.cy.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EnterPersonName.cy.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

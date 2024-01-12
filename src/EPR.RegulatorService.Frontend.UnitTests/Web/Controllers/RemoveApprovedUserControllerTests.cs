@@ -2,8 +2,10 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.RemoveApprovedUser;
+using EPR.RegulatorService.Frontend.Web.Controllers.InviteNewApprovedPerson;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RemoveApprovedUser;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ApprovedPersonListPage;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +14,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
-
-using Frontend.Web.ViewModels.ApprovedPersonListPage;
 
 [TestClass]
 public class RemoveApprovedUserControllerTests
@@ -81,9 +81,9 @@ public class RemoveApprovedUserControllerTests
         // Assert
         Assert.IsNotNull(result);
         session.AddRemoveApprovedUserSession.OrganisationName.Should().Be(organisationName);
-        session.AddRemoveApprovedUserSession.UserNameToDelete.Should().Be(userNameToDelete);
+        session.AddRemoveApprovedUserSession.UserNameToRemove.Should().Be(userNameToDelete);
         session.AddRemoveApprovedUserSession.ConnExternalId.Should().Be(connExternalId);
-        session.AddRemoveApprovedUserSession.OrganisationId.Should().Be(organisationId);
+        session.AddRemoveApprovedUserSession.ExternalOrganisationId.Should().Be(organisationId);
         AssertBackLink(result, PagePath.Home);
     }
 
@@ -249,15 +249,55 @@ public class RemoveApprovedUserControllerTests
 
     }
 
+    [TestMethod]
+    public async Task Submit_ValidRequest_Should_Save_To_Session_Correctly()
+    {
+        // Arrange
+        var model = new ApprovedUserToRemoveViewModel
+        {
+            ConnExternalId = Guid.NewGuid(),
+            OrganisationId = Guid.NewGuid(),
+            NominationDecision = false
+        };
+        var session = new JourneySession();
+
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+
+        _mockFacade
+            .Setup(x => x.RemoveApprovedUser(It.IsAny<RemoveApprovedUserRequest>()))
+            .ReturnsAsync(EndpointResponseStatus.Success);
+
+        // Act
+        var result = await _controller.Submit(model) as ViewResult;
+
+        // Assert
+        var resultModel = result.Model as AddRemoveApprovedUserSession;
+        Assert.IsNotNull(resultModel);
+        resultModel.ConnExternalId.Should().Be(model.ConnExternalId);
+        resultModel.ExternalOrganisationId.Should().Be(model.OrganisationId);
+        resultModel.NominationDecision.Should().Be(model.NominationDecision);
+
+        session.AddRemoveApprovedUserSession.ConnExternalId.Should().Be(model.ConnExternalId);
+        session.AddRemoveApprovedUserSession.ExternalOrganisationId.Should().Be(model.OrganisationId);
+        session.AddRemoveApprovedUserSession.NominationDecision.Should().Be(model.NominationDecision);
+    }
 
     [TestMethod]
     public async Task ApprovedPersonListPage_ReturnsViewWithModel()
     {
+        var orgId = Guid.NewGuid();
         var session = new JourneySession
         {
             RegulatorSession = new RegulatorSession
             {
                 Journey = new List<string> { PagePath.RegulatorCompanyDetail, PagePath.ApprovedPersonListPage }
+            },
+            AddRemoveApprovedUserSession = new AddRemoveApprovedUserSession
+            {
+                ExternalOrganisationId = orgId
             }
         };
 
@@ -265,9 +305,9 @@ public class RemoveApprovedUserControllerTests
             .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
-        var orgId = Guid.NewGuid();
 
-        var result = await _controller.ApprovedPersonListPage(orgId) as ViewResult;
+
+        var result = await _controller.ApprovedPersonListPage() as ViewResult;
         Assert.IsNotNull(result);
         result.Model.Should().BeOfType<OrganisationUsersModel>();
 
@@ -338,11 +378,16 @@ public class RemoveApprovedUserControllerTests
     {
         // arrange
         var externalId = Guid.NewGuid();
+
         var session = new JourneySession
         {
             RegulatorSession = new RegulatorSession
             {
                 Journey = new List<string> { PagePath.RegulatorCompanyDetail, PagePath.ApprovedPersonListPage }
+            },
+            AddRemoveApprovedUserSession = new AddRemoveApprovedUserSession
+            {
+                ExternalOrganisationId = externalId
             }
         };
 
@@ -351,13 +396,46 @@ public class RemoveApprovedUserControllerTests
             .ReturnsAsync(session);
 
         // act
-        await _controller.ApprovedPersonListPage(externalId);
+        await _controller.ApprovedPersonListPage();
 
         // assert
-        session.AddRemoveApprovedUserSession.OrganisationId.Should().Be(externalId);
+        session.AddRemoveApprovedUserSession.ExternalOrganisationId.Should().Be(externalId);
     }
 
+    [TestMethod]
+    public async Task NewApprovedUserIdIsEmpty_ApprovedPersonListPage_RedirectToEnterPersonName()
+    {
+        // arrange
+        var input = new OrganisationUsersModel
+        {
+            NewApprovedUserId = Guid.Empty,
+            ExternalOrganisationId = Guid.NewGuid()
+        };
 
+        var session = new JourneySession
+        {
+            RegulatorSession = new RegulatorSession
+            {
+                Journey = new List<string> { PagePath.RegulatorCompanyDetail, PagePath.ApprovedPersonListPage }
+            },
+            AddRemoveApprovedUserSession = new AddRemoveApprovedUserSession
+            {
+                ExternalOrganisationId = input.ExternalOrganisationId
+            }
+        };
+
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+        // act
+        var result = await _controller.ApprovedPersonListPage(input) as RedirectToActionResult;
+
+        // assert
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(InviteNewApprovedPersonController.EnterPersonName));
+        session.AddRemoveApprovedUserSession.ExternalOrganisationId.Should().Be(input.ExternalOrganisationId);
+    }
 
     private void ValidateOrganisationUsersModel(ViewResult result, Guid orgId)
     {

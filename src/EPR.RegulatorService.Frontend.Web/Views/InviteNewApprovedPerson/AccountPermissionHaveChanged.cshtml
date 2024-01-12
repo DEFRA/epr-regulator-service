@@ -1,6 +1,6 @@
-﻿@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
+@using EPR.RegulatorService.Frontend.Web.ViewModels.InviteNewApprovedPerson;
 
-@model EPR.RegulatorService.Frontend.Core.Sessions.AddRemoveApprovedUserSession
+@model AccountPermissionHaveChangedModel
 
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
@@ -12,16 +12,16 @@
           </h1>
         </div>
         <p id="pageTitle" class="govuk-body">
-          @Localizer["Page.Title", Model.UserNameToRemove, Model.OrganisationName]
+          @Localizer["Page.Title", Model.RemovedPersonFullName, Model.OrganisationName, Model.InvitedPersonFullName ]
           </p>
         <h2 class="govuk-heading-m">@Localizer["Page.Heading"]</h2>
 
         <div class="govuk-inset-text">
           <p id="cannotSubmitConfirmation" class="govuk-body">
-            @Localizer["Confirmation.CannotSubmit.PackagingData"]
+            @Localizer["Confirmation.AfterAccountCreated.AcceptOrRejectAccount", Model.InvitedPersonFullName]
           </p>
           <p id="nominateApprovedUserConfirmation" class="govuk-body">
-            @Localizer["Confirmation.Nominate.ApprovedUser"]
+            @Localizer["Confirmation.DoesNotApplyToBeApprovedUser.ContactThem", Model.InvitedPersonFullName]
           </p>
         </div>
       </div>
@@ -38,6 +38,3 @@
     </div>
   </main>
 </div>
-
-
-

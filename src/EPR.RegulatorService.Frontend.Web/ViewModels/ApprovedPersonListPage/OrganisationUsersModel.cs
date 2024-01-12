@@ -10,6 +10,6 @@ public class OrganisationUsersModel
 
     public List<OrganisationUser>? OrganisationUsers { get; set; }
 
-   [Required(ErrorMessage = "SelectNominatedApprovedPerson")]
+    [Required(ErrorMessage = "SelectNominatedApprovedPerson")]
     public Guid? NewApprovedUserId { get; set; }
 }

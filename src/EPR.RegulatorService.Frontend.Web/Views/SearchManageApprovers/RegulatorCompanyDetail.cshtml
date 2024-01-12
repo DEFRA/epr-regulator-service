@@ -101,7 +101,6 @@
         <form class="govuk-!-display-inline-block"
               action="@Url.Action("ApprovedPersonListPage", "RemoveApprovedUser")"
               enctype="multipart/form-data" method="GET">
-          <input type="hidden" name="externalOrganisationId" value="@Model.ExternalOrganisationId"/>
           <button id="nominateNewApprovedPersonButton" class="govuk-button" data-module="govuk-button">
             @Localizer["Button.NominateNewApprovedPerson"]
           </button>

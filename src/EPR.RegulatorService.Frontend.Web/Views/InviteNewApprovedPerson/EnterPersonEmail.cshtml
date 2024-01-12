@@ -1,0 +1,53 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+
+@model EPR.RegulatorService.Frontend.Web.ViewModels.InviteNewApprovedPerson.EnterPersonEmailModel
+
+@{
+  ViewData["Title"] = @Localizer["Page.Title"];
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+  const string errorClass = "govuk-input--error";
+}
+
+<form action="@Url.Action("EnterPersonEmail", "InviteNewApprovedPerson")"
+      enctype="application/x-www-form-urlencoded" method="POST">
+
+  <div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+
+          @if (!ViewData.ModelState.IsValid)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+          }
+
+          <h1 class="govuk-heading-l govuk-!-margin-bottom-2">
+            @Localizer["Page.Title"]
+          </h1>
+
+          <div class="govuk-hint" id="email-hint">
+            @Localizer["Email.HintText"]
+          </div>
+
+          <div class="govuk-form-group">
+            <div class="govuk-form-group@(errorsViewModel.HasErrorKey(nameof(Model.Email)) ? " govuk-form-group--error" : "")">
+              
+              @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(Model.Email)])
+               <input class="govuk-input govuk-!-width-two-thirds @Html.Raw(errorsViewModel.HasErrorKey(nameof(Model.Email))?errorClass:"")"
+                     type="text"
+                     aria-labelledby="email-hint"
+                     aria-describedby="email-hint"
+                     gov-for="Email"
+                     gov-value="@Model.Email">
+            </div>
+          </div>
+
+          <button id="continueButton" class="govuk-button" data-module="govuk-button" type="submit">
+            @SharedLocalizer["Continue"]
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</form>

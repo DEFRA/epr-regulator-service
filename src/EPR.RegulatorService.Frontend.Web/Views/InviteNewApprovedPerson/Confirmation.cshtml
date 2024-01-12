@@ -1,0 +1,85 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.InviteNewApprovedPerson;
+
+@model ConfirmationModel
+
+@{
+  ViewData["Title"] = @Localizer["Page.Title"];
+}
+
+<form id="removeUserForm" action="@Url.Action("Submit", "InviteNewApprovedPerson", Model)"
+      enctype="application/x-www-form-urlencoded" method="post">
+
+  <div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 id="pageTitle" class="govuk-fieldset__heading">
+                  @Localizer["Page.Title"]
+                </h1>
+              </legend>
+              <dl class="govuk-summary-list">
+                @if (Model.HasANewApprovedPersonBeenNominated.HasValue)
+                {
+                  <div class="govuk-summary-list__row">
+                   <dt id="userPromptHasANewApprovedPersonBeenNominated" class="govuk-summary-list__key">
+                     @Localizer["User.Prompt.HasANewApprovedPersonBeenNominated"]
+                   </dt>
+                   <dd id="HasANewApprovedPersonBeenNominated" class="govuk-summary-list__value">
+                     @(Model.HasANewApprovedPersonBeenNominated == true ? SharedLocalizer["Yes"] : SharedLocalizer["No"])
+                   </dd>
+                   <dd class="govuk-summary-list__actions">
+                     <a id="changeHasANewApprovedPersonBeenNominatedButton"
+                        class="govuk-link"
+                        href="/regulators/approve-confirmation">
+                       @Localizer["Change"]<span class="govuk-visually-hidden"> @Model</span>
+                     </a>
+                   </dd>
+                 </div>
+                }
+
+                <div class="govuk-summary-list__row">
+                  <dt id="InvitedApprovedPersonFullName" class="govuk-summary-list__key">
+                    @Localizer["User.Prompt.InvitedApprovedPersonFullName"]
+                  </dt>
+                  <dd id="HasANewApprovedPersonBeenNominated" class="govuk-summary-list__value">
+                    @Model.InvitedApprovedPersonFullName
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a id="InvitedApprovedPersonFullName"
+                       class="govuk-link"
+                       href="/regulators/invite-new-approved-person/invite-new-approved-person-name">
+                      @Localizer["Change"]<span class="govuk-visually-hidden"> @Model</span>
+                    </a>
+                  </dd>
+                </div>
+
+                <div class="govuk-summary-list__row">
+                  <dt id="InvitedApprovedPersonEmail" class="govuk-summary-list__key">
+                    @Localizer["User.Prompt.InvitedApprovedPersonEmail"]
+                  </dt>
+                  <dd id="InvitedApprovedPersonEmail" class="govuk-summary-list__value">
+                    @Model.InvitedApprovedPersonEmail
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a id="InvitedApprovedPersonEmail"
+                       class="govuk-link"
+                       href="/regulators/invite-new-approved-person/invite-new-approved-person-email">
+                      @Localizer["Change"]<span class="govuk-visually-hidden"> @Model</span>
+                    </a>
+                  </dd>
+                </div>
+
+              </dl>
+            </fieldset>
+          </div>
+          <button id="continueButton" class="govuk-button" data-module="govuk-button" type="submit">
+            @SharedLocalizer["Continue"]
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</form>

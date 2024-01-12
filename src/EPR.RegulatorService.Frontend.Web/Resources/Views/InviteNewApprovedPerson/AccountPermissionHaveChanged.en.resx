@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Page.Panel" xml:space="preserve">
+    <value>Account permissions have changed</value>
+  </data>
+  <data name="Page.Title" xml:space="preserve">
+    <value>You have removed {0} from {1}. We've sent and email to {2} asking them to apply to be an approved person by creating an account.</value>
+  </data>
+  <data name="Page.Heading" xml:space="preserve">
+    <value>What you need to do next</value>
+  </data>
+  <data name="Confirmation.AfterAccountCreated.AcceptOrRejectAccount" xml:space="preserve">
+    <value>Once {0} has created an account, you need to accept or reject it.</value>
+  </data>
+  <data name="Confirmation.DoesNotApplyToBeApprovedUser.ContactThem" xml:space="preserve">
+    <value>If {0} does not apply to be an approved user, you will need to contact them.</value>
+  </data>
+  <data name="Custom.GoToHome" xml:space="preserve">
+    <value>Go to home</value>
+  </data>
+</root>
