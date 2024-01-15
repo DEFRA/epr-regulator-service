@@ -161,6 +161,22 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EnterPersonName.cy.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\ManageApprovedUsers\_ApprovedPerson.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_ApprovedPerson.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\ManageApprovedUser\_ApprovedPerson.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_ApprovedPerson.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\ManageApprovedUsers\_ApprovedPerson.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_ApprovedPerson.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\ManageApprovedUser\_ApprovedPerson.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>_ApprovedPerson.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Views\Applications\EnrolmentDecision.Designer.cs">
@@ -260,6 +276,16 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>EnterPersonName.cy.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Shared\Partials\ManageApprovedUsers\_ApprovedPerson.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>_ApprovedPerson.en.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Views\Shared\Partials\ManageApprovedUsers\_ApprovedPerson.en.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>_ApprovedPerson.en.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

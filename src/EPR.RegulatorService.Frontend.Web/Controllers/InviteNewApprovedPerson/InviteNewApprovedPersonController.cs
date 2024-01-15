@@ -121,6 +121,7 @@ public class InviteNewApprovedPersonController : RegulatorSessionBaseController
     }
 
     [HttpPost]
+    [HttpGet]
     [Route(PagePath.InviteNewApprovedPersonSubmit)]
     public async Task<ActionResult> Submit()
     {
@@ -156,8 +157,6 @@ public class InviteNewApprovedPersonController : RegulatorSessionBaseController
             RemovedPersonFullName = session.InviteNewApprovedPersonSession.UserNameToRemove
         };
 
-        session.InviteNewApprovedPersonSession = null;
-        await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
         return View("AccountPermissionHaveChanged", accountPermissionHaveChangedModel);
     }
 }

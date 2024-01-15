@@ -24,10 +24,10 @@
         <value>Organisation</value>
     </data>
     <data name="Table.Header.OrganisationId" xml:space="preserve">
-        <value>Organisation Id</value>
+        <value>Organisation ID</value>
     </data>
     <data name="Table.Header.CompanyHouseNumber" xml:space="preserve">
-        <value>Company house</value>
+        <value>Companies House number</value>
     </data>
   <data name="OrgType.ComplianceScheme" xml:space="preserve">
           <value>Compliance scheme</value>

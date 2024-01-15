@@ -3,7 +3,7 @@
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:element name="root" msdata:IsDataSet="true">
-      
+
     </xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
@@ -22,7 +22,7 @@
     <value>WEmail sent to nominated approved person</value>
   </data>
   <data name="Page.Heading" xml:space="preserve">
-    <value>WWe've sent an email to {0} asking them to apply to be an approved person for {1}.</value>
+    <value>WWe've sent an email to {0} asking them to apply to be an approved user by creating an account.</value>
   </data>
   <data name="Page.Title" xml:space="preserve">
     <value>WWhat you need to do next</value>

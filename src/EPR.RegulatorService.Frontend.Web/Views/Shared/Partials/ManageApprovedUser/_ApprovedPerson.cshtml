@@ -1,22 +1,43 @@
-﻿@model EPR.RegulatorService.Frontend.Core.Models.CompanyDetails.ApprovedUserInformation
+﻿@using EPR.RegulatorService.Frontend.Core.Enums
+@model EPR.RegulatorService.Frontend.Core.Models.CompanyDetails.ApprovedUserInformation
 
 @foreach (var user in Model.ApprovedUsers)
 {
   <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper">
-      <h2 class="govuk-summary-card__title">@user.FirstName @user.LastName</h2>
+      <h2 class="govuk-summary-card__title">
+        <span class="govuk-summary-card__title"> @user.FirstName @user.LastName </span>
+        @if (user.UserEnrolments.First().EnrolmentStatusId == (int)EnrolmentStatusEnum.Invited || 
+             user.UserEnrolments.First().EnrolmentStatusId == (int)EnrolmentStatusEnum.Nominated)
+        {
+          <span class="govuk-summary-card__title govuk-tag--yellow">
+              @Localizer["Enrolment.Status.Pending"]
+          </span>
+        }
+        @if (user.UserEnrolments.First().EnrolmentStatusId == (int)EnrolmentStatusEnum.Pending)
+        {
+          <span class="govuk-summary-card__title govuk-tag--yellow">
+               @Localizer["Enrolment.Status.Awaiting"]
+          </span>
+        }
+      </h2>
       <ul class="govuk-summary-card__actions">
         <li class="govuk-summary-card__action">
           <p class="govuk-body">
             @Html.ActionLink(SharedLocalizer["Regulator.CompanyDetail.Remove"].Value,
               "Confirm",
               "RemoveApprovedUser",
-              new {connExternalId = user.ExternalId,
+              new
+              {
+                connExternalId = user.ExternalId,
                 userName = $"{user.FirstName + " " + user.LastName}",
                 organisationName = Model.OrganisationName,
                 organisationId = Model.OrganisationExternalId
               },
-              new { @class = "govuk-link govuk-link--no-visited-state" })
+              new
+              {
+                @class = "govuk-link govuk-link--no-visited-state"
+              })
           </p>
         </li>
       </ul>

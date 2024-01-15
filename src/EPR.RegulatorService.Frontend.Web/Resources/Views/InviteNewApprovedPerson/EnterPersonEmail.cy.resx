@@ -3,7 +3,7 @@
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:element name="root" msdata:IsDataSet="true">
-      
+
     </xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
@@ -19,10 +19,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Page.Title" xml:space="preserve">
-    <value>WEnter the email address of the nominated approved person</value>
+    <value>WWhat is their email address?</value>
   </data>
   <data name="Email.HintText" xml:space="preserve">
-    <value>WAn emaill will be sent to them telling them how to apply to be an nominated person. You will need to accept or reject their application.</value>
+    <value>WAn email will be sent to them telling them how to apply to be a nominated person. You will need to accept or reject their application.</value>
   </data>
   <data name="ErrorSummary.Title" xml:space="preserve">
     <value>WThere is a problem</value>

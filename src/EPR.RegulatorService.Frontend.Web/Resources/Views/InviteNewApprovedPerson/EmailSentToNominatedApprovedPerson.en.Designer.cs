@@ -79,7 +79,7 @@ namespace EPR.RegulatorService.Frontend.Web.Resources.Views.InviteNewApprovedPer
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We&apos;ve sent an email to {0} asking them to apply to be an approved person for {1}..
+        ///   Looks up a localized string similar to We&apos;ve sent an email to {0} asking them to apply to be an approved user by creating an account..
         /// </summary>
         internal static string Page_Heading {
             get {

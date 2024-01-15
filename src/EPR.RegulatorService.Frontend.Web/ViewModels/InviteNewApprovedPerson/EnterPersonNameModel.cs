@@ -30,12 +30,12 @@ public class EnterPersonNameModel : IValidatableObject
     {
         var validationResults = new List<ValidationResult> { };
 
-        if (FirstName.All(char.IsDigit) && FirstName.All(char.IsDigit))
+        if (FirstName.Any(char.IsDigit))
         {
             validationResults.AddRange(_firstInvalidErrors.Select(
                 errorString => new ValidationResult(errorString, new[] {nameof(FirstName)})));
         }
-        if (LastName.All(char.IsDigit) && LastName.All(char.IsDigit))
+        if (LastName.Any(char.IsDigit))
         {
             validationResults.AddRange(_lastInvalidErrors.Select(
                 errorString => new ValidationResult(errorString, new[] {nameof(LastName)})));

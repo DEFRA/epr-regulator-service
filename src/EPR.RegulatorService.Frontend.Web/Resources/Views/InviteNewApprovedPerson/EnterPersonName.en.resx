@@ -40,7 +40,7 @@
     <value>First name must be 35 characters or less</value>
   </data>
   <data name="ErrorTitle.LastNameNull" xml:space="preserve">
-    <value>Last their first name</value>
+    <value>Enter their last name</value>
   </data>
   <data name="ErrorTitle.LastNameDigits" xml:space="preserve">
     <value>Last name must not include numbers</value>
