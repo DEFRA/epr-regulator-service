@@ -175,7 +175,8 @@ public class RemoveApprovedUserControllerTests
         {
             ConnExternalId = Guid.NewGuid(),
             OrganisationId = Guid.NewGuid(),
-            NominationDecision = false
+            NominationDecision = false,
+            PromotedPersonExternalId = Guid.NewGuid()
         };
 
         var session = new JourneySession
@@ -207,6 +208,101 @@ public class RemoveApprovedUserControllerTests
        var resultModel = result.Model as AddRemoveApprovedUserSession;
        Assert.IsNotNull(resultModel);
        resultModel.ResponseStatus.Should().Be(EndpointResponseStatus.Success);
+    }
+
+    [TestMethod]
+    public async Task Submit_Returns_NominatedConfirmation_When_Response_Returns_Success()
+    {
+        // Arrange
+        var model = new ApprovedUserToRemoveViewModel
+        {
+            ConnExternalId = Guid.NewGuid(),
+            OrganisationId = Guid.NewGuid(),
+            PromotedPersonExternalId = Guid.NewGuid(),
+            NominationDecision = null
+        };
+
+        var session = new JourneySession
+        {
+            RegulatorSession = new RegulatorSession
+            {
+                OrganisationId = model.OrganisationId,
+                ConnExternalId = model.ConnExternalId,
+                NominationDecision = model.NominationDecision
+            },
+            AddRemoveApprovedUserSession = new AddRemoveApprovedUserSession()
+            {
+                NewApprovedUser = new OrganisationUser()
+                {
+                    FirstName = "Joe",
+                    LastName = "Bloggs"
+                }
+            }
+        };
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+
+        _mockFacade
+            .Setup(x => x.RemoveApprovedUser(It.IsAny<RemoveApprovedUserRequest>()))
+            .ReturnsAsync(EndpointResponseStatus.Success);
+
+        // Act
+        var result = await _controller.Submit(model)  as RedirectToActionResult;
+
+        // Assert
+        Assert.IsNotNull(result);
+        result.ActionName.Should().Be("EmailNominatedApprovedPerson");
+    }
+
+
+    [TestMethod]
+    public async Task Submit_Returns_RemoveAndNominatedConfirmation_When_Response_Returns_Success()
+    {
+        // Arrange
+        var model = new ApprovedUserToRemoveViewModel
+        {
+            ConnExternalId = Guid.NewGuid(),
+            OrganisationId = Guid.NewGuid(),
+            PromotedPersonExternalId = Guid.NewGuid(),
+            NominationDecision = true
+        };
+
+        var session = new JourneySession
+        {
+            RegulatorSession = new RegulatorSession
+            {
+                OrganisationId = model.OrganisationId,
+                ConnExternalId = model.ConnExternalId,
+                NominationDecision = model.NominationDecision
+            },
+            AddRemoveApprovedUserSession = new AddRemoveApprovedUserSession()
+            {
+                NewApprovedUser = new OrganisationUser()
+                {
+                    FirstName = "Joe",
+                    LastName = "Bloggs"
+                },
+                OrganisationName = "Acme Ltd",
+                UserNameToRemove = "Jenny Smith"
+            }
+        };
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+
+
+        _mockFacade
+            .Setup(x => x.RemoveApprovedUser(It.IsAny<RemoveApprovedUserRequest>()))
+            .ReturnsAsync(EndpointResponseStatus.Success);
+
+        // Act
+        var result = await _controller.Submit(model)  as RedirectToActionResult;
+
+        // Assert
+        Assert.IsNotNull(result);
+        result.ActionName.Should().Be("AccountPermissionsChanged");
     }
 
     [TestMethod]

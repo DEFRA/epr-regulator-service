@@ -2,9 +2,9 @@
 
 public class RemoveApprovedUserRequest
 {
-    public Guid ConnectionExternalId { get; set; }
+    public Guid RemovedConnectionExternalId { get; set; }
 
     public Guid OrganisationId { get; set; }
 
-    public bool NominationDecision { get; set; }
+    public Guid PromotedPersonExternalId { get; set; }
 }

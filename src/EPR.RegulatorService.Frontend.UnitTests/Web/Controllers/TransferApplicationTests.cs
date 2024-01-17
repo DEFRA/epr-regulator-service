@@ -1,8 +1,8 @@
+using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
-using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Web.Controllers.Applications;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using EPR.RegulatorService.Frontend.UnitTests.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -142,7 +142,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             
             _facadeServiceMock.Setup(e => e.TransferOrganisationNation(It.IsAny<OrganisationTransferNationRequest>()))
                 .ReturnsAsync(EndpointResponseStatus.Success);
-
+            
             var viewModel = new TransferApplicationViewModel()
             {
                 AgencyIndex = 0,
@@ -159,17 +159,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Act
             var result = await _systemUnderTest.TransferApplication(viewModel) as RedirectToActionResult;
             
-
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.ActionName);
+            result.Should().NotBeNull();
+            result.ActionName.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(ApplicationsController.Applications));
-
-            var routeValues = result.RouteValues;
-            routeValues!.Values.Should().Contain(EndpointResponseStatus.Success);
-            routeValues.Values.Should().Contain(TransferDetails.OrganisationName);
-            routeValues.Values.Should().Contain(TransferDetails.ScotlandAgencyName);
-
+            
+            _systemUnderTest.TempData["TransferNationResult"].Should().Be(EndpointResponseStatus.Success);
+            _systemUnderTest.TempData["TransferredOrganisationName"].Should().Be(TransferDetails.OrganisationName);
+            _systemUnderTest.TempData["TransferredOrganisationAgency"].Should().Be(TransferDetails.ScotlandAgencyName);
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Once);
         }
     }

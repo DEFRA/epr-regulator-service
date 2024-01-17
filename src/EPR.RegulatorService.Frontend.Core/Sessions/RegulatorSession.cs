@@ -23,9 +23,7 @@ public class RegulatorSession
     public bool IsApprovedUserTypeChecked { get; set; }
 
     public bool IsDelegatedUserTypeChecked { get; set; }
-
-    public AcceptUserJourneyData? AcceptUserJourneyData { get; set; }
-
+    
     public RejectUserJourneyData? RejectUserJourneyData { get; set; }
 
     public int? CurrentPageNumber { get; set; }

@@ -205,6 +205,7 @@ table.responsive-table {
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
+        width: 100%;
     }
 
     .epr-filter-panel-checkbox {
@@ -330,9 +331,19 @@ a.epr-filter-panel-control {
 .epr-filter-panel-checkboxes-label {
     background: #f3f2f1;
 }
+
+button.epr-link-no-visited-state {
+    border: none;
+    padding: 0;
+    background: none;
+    color: #1d70b8;
+    cursor: pointer;
+}
+
 .epr_error_message {
     color: govuk-colour('red') !important;
 }
+
 .epr-textarea--error{border-color:#d4351c}
 .epr-textarea--error:focus{border-color:#0b0c0c}
 

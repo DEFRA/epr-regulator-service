@@ -9,4 +9,7 @@ public class ApprovedUserToRemoveViewModel
     public Guid OrganisationId { get; set; }
 
     public bool? NominationDecision { get; set; }
+
+    public Guid PromotedPersonExternalId { get; set; }
+
 }

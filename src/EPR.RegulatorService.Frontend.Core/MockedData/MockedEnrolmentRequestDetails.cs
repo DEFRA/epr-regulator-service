@@ -7,9 +7,10 @@ namespace EPR.RegulatorService.Frontend.Core.MockedData
         public static OrganisationEnrolments GetMockedEnrolmentRequestDetails() => new()
         {
             OrganisationId = Guid.NewGuid(),
-            OrganisationName = "Kainos",
+            OrganisationName = "Test Org Worldwide.",
+            OrganisationReferenceNumber = "123245",
             OrganisationType = "CompaniesHouseCompany",
-            CompaniesHouseNumber = "NI622515",
+            CompaniesHouseNumber = "123456",
             IsComplianceScheme = false,
             NationId = 1,
             NationName = "England",

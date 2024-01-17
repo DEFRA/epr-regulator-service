@@ -33,6 +33,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
         private readonly Guid _organisationId = Guid.NewGuid();
         private readonly Guid _connExternalId = Guid.NewGuid();
+        private readonly Guid _promotedPersonExternalId = Guid.NewGuid();
 
         [TestInitialize]
         public void Setup()
@@ -58,7 +59,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["PomSubmissions"] = "http://testurl.com",
                     ["OrganisationsSearchPath"] = "organisations/search-organisations?currentPage={0}&pageSize={1}&searchTerm={2}",
                     ["PomSubmissionDecision"] = "http://testurl.com",
-                    ["OrganisationsRemoveApprovedUser"] = "organisations/remove-approved-users?connExternalId={0}&organisationId={1}",
+                    ["OrganisationsRemoveApprovedUser"] = "organisations/remove-approved-users?connExternalId={0}&organisationId={1}&promotedPersonExternalId={2}",
                     ["AddRemoveApprovedUser"] = "/accounts-management/add-remove-approved-users"
                 }
             });
@@ -765,7 +766,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             var request = new RemoveApprovedUserRequest
             {
-                ConnectionExternalId = _connExternalId, OrganisationId = _organisationId
+                RemovedConnectionExternalId = _connExternalId,
+                OrganisationId = _organisationId,
+                PromotedPersonExternalId = _promotedPersonExternalId
             };
 
             // Act
@@ -791,7 +794,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             var request = new RemoveApprovedUserRequest
             {
-                ConnectionExternalId = _connExternalId, OrganisationId = _organisationId
+                RemovedConnectionExternalId = _connExternalId,
+                OrganisationId = _organisationId,
+                PromotedPersonExternalId = _promotedPersonExternalId
             };
             // Act
             var result = await _facadeService.RemoveApprovedUser(request);

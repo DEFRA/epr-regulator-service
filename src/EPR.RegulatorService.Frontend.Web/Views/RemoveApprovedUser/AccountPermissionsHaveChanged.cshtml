@@ -1,0 +1,43 @@
+﻿@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
+
+@model EPR.RegulatorService.Frontend.Web.ViewModels.RemoveApprovedUser.RemovedNominatedUserViewModel;
+
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+          <h1 class="govuk-panel__title">
+            @Localizer["Page.Panel"]
+          </h1>
+        </div>
+        <p id="pageTitle" class="govuk-body">
+          @Localizer["Page.RemoveAndNominate", Model.RemovedUserName, Model.OrganisationName, Model.PromotedUserName]
+          </p>
+        <h2 class="govuk-heading-m">@Localizer["Page.Heading"]</h2>
+
+        <div class="govuk-inset-text">
+          <p id="whenAccountIsCreated" class="govuk-body">
+            @Localizer["Content.WhenAccountIsCreated", Model.PromotedUserName]
+          </p>
+          <p id="userDoesNotApply" class="govuk-body">
+            @Localizer["Content.DoesNotApply", Model.PromotedUserName]
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="govuk-grid-row">
+      <div id="goToHomeLink" class="govuk-grid-column-full">
+        @Html.ActionLink(@SharedLocalizer["Custom.GoToHome"],
+          "LandingPage",
+          "Home",
+          null,
+          new {@class = "govuk-body govuk-link govuk-link--no-visited-state"})
+      </div>
+    </div>
+  </main>
+</div>
+
+
+

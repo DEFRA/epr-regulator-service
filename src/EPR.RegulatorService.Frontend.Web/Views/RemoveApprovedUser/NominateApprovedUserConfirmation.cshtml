@@ -15,6 +15,7 @@
       enctype="application/x-www-form-urlencoded" method="post">
   <input id="hiddenConnExternalId" type="hidden" value=@Model.ConnExternalId name="ConnExternalId"/>
   <input id="hiddenOrganisationId" type="hidden" value=@Model.ExternalOrganisationId name="OrganisationId"/>
+  <input id="hiddenPromotedPersonExternalId" type="hidden" value=@Model.NewApprovedUser?.PersonExternalId name="PromotedPersonExternalId"/>
 
   <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -64,8 +65,8 @@
               </dl>
             </fieldset>
           </div>
-          <button id="continueButton" class="govuk-button" data-module="govuk-button" type="submit">
-            @SharedLocalizer["Continue"]
+          <button id="confirmButton" class="govuk-button" data-module="govuk-button" type="submit">
+            @SharedLocalizer["Confirm"]
           </button>
         </div>
       </div>

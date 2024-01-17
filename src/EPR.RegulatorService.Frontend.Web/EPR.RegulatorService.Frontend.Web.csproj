@@ -121,6 +121,22 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_RegulatorRegistrationFilters.cy.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\EmailSentToNominatedApprovedPerson.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NominateApprovedUserConfirmation.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\EmailSentToNominatedApprovedPerson.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NominateApprovedUserConfirmation.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\AccountPermissionsHaveChanged.cy.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NominateApprovedUserConfirmation.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\AccountPermissionsHaveChanged.en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NominateApprovedUserConfirmation.cy.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\InviteNewApprovedPerson\AccountPermissionHaveChanged.en.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AccountPermissionHaveChanged.en.Designer.cs</LastGenOutput>
@@ -291,7 +307,41 @@
   <ItemGroup>
     <SonarQubeSetting Include="sonar.coverage.exclusions">
       <Value>
-        **/SubmissionListRequest.cs,**/ApplicationsRequestViewModel.cs,**/SecurityHeaderMiddleware.cs,**/InputTagHelper.cs,**/JourneyAccessCheckerMiddleware.cs,**/AnalyticsOptions.cs,**/EmailAddressOptions.cs,**/EprCookieOptions.cs,**/ExternalUrlsOptions.cs,**/PhaseBannerOptions.cs,**/ServiceSettingsOptions.cs,**/SiteDateOptions.cs,**/gulpfile.js,**/HealthCheckOptionBuilder.cs,**/AnalyticsCookieMiddleware.cs,**/Program.cs,**/SessionRequestCultureProvider.cs,**/LabelTagHelper.cs,**/LanguageSwitcherViewComponent.cs,**/AccessibilityViewModel.cs,**/ApplicationsViewModel.cs,**/EnrolmentDecisionViewModel.cs,**/EnrolmentRequestsViewModel.cs,**/TransferBannerViewModel.cs,**/CookieBannerModel.cs,**/CookieDetailViewModel.cs,**/ErrorViewModel.cs,**/LanguageSwitcherModel.cs,**/PhaseBannerModel.cs,**/PaginatedSearch.cshtml.cs,**/_PaginationNavigation.cshtml.cs
+        **/SubmissionListRequest.cs,
+        **/ApplicationsRequestViewModel.cs,
+        **/SecurityHeaderMiddleware.cs,
+        **/InputTagHelper.cs,
+        **/JourneyAccessCheckerMiddleware.cs,
+        **/AnalyticsOptions.cs,
+        **/EmailAddressOptions.cs,
+        **/EprCookieOptions.cs,
+        **/ExternalUrlsOptions.cs,
+        **/PhaseBannerOptions.cs,
+        **/ServiceSettingsOptions.cs,
+        **/SiteDateOptions.cs,
+        **/gulpfile.js,
+        **/HealthCheckOptionBuilder.cs,
+        **/AnalyticsCookieMiddleware.cs,
+        **/Program.cs,
+        **/SessionRequestCultureProvider.cs,
+        **/LabelTagHelper.cs,
+        **/LanguageSwitcherViewComponent.cs,
+        **/AccessibilityViewModel.cs,
+        **/ApplicationsViewModel.cs,
+        **/EnrolmentDecisionViewModel.cs,
+        **/EnrolmentRequestsViewModel.cs,
+        **/TransferBannerViewModel.cs,
+        **/CookieBannerModel.cs,
+        **/CookieDetailViewModel.cs,
+        **/ErrorViewModel.cs,
+        **/LanguageSwitcherModel.cs,
+        **/PhaseBannerModel.cs,
+        **/PaginatedSearch.cshtml.cs,
+        **/_PaginationNavigation.cshtml.cs,
+        **/_RegistrationResubmissionDetails.cshtml,
+        **/_RegistrationSubmissionDetails.cshtml,
+        **/_ResubmissionDetails.cshtml,
+        **/_SubmissionDetails.cshtml
       </Value>
     </SonarQubeSetting>
   </ItemGroup>

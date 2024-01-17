@@ -27,7 +27,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         protected Mock<IFacadeService> _facadeServiceMock = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _urlsOptionMock = null!;
         protected Mock<ILogger<ApplicationsController>> _loggerMock = null!;
-        protected Mock<ITempDataDictionary> _tempDataDictionaryMock = null!;
+        protected ITempDataDictionary _tempDataDictionary = null!;
         protected ApplicationsController _systemUnderTest = null!;
         protected Mock<IOptions<TransferOrganisationConfig>> _transferOrganisationConfig = null!;
         protected Mock<IConfiguration> _configurationMock = null!;
@@ -40,7 +40,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
             _facadeServiceMock = new Mock<IFacadeService>();
             _urlsOptionMock = new Mock<IOptions<ExternalUrlsOptions>>();
-            _tempDataDictionaryMock = new Mock<ITempDataDictionary>();
+            _tempDataDictionary = new TempDataDictionary(_httpContextMock.Object, Mock.Of<ITempDataProvider>());
             _transferOrganisationConfig = new Mock<IOptions<TransferOrganisationConfig>>();
             _transferOrganisationConfig.Setup(x => x.Value).Returns(GetRegulatorOrganisations());
             
@@ -55,13 +55,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).Returns(Task.FromResult(JourneySessionMock));
            
             _loggerMock = new Mock<ILogger<ApplicationsController>>();
-            _tempDataDictionaryMock = new Mock<ITempDataDictionary>();
-
             _systemUnderTest = new ApplicationsController(_sessionManagerMock.Object, _facadeServiceMock.Object,
                 _transferOrganisationConfig.Object, _configurationMock.Object, _loggerMock.Object);
 
             _systemUnderTest.ControllerContext.HttpContext = _httpContextMock.Object;
-            _systemUnderTest.TempData = _tempDataDictionaryMock.Object;
+            _systemUnderTest.TempData = _tempDataDictionary;
         }
 
         private void SetUpUserData(UserData? userData)
@@ -76,7 +74,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
         }
 
-        public static TransferOrganisationConfig GetRegulatorOrganisations() =>
+        private static TransferOrganisationConfig GetRegulatorOrganisations() =>
             new()
             {
                 Organisations = "{\"data\":[{\"KeyName\":\"England\",\"KeyValue\":\"Environment Agency\",\"OrganisationTypeId\":6,\"NationId\":1},{\"KeyName\":\"Northern Ireland\",\"KeyValue\":\"Northern Ireland Environment Agency\",\"OrganisationTypeId\":6,\"NationId\":2},{\"KeyName\":\"Scotland\",\"KeyValue\":\"Scottish Environment Protection Agency\",\"OrganisationTypeId\":6,\"NationId\":3},{\"KeyName\":\"Wales\",\"KeyValue\":\"Natural Resources Wales\",\"OrganisationTypeId\":6,\"NationId\":4}]}"

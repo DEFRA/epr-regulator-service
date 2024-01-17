@@ -29,6 +29,8 @@ public static class PagePath
     public const string InviteNewApprovedPersonEmail = "invite-new-approved-person-email";
     public const string InviteNewApprovedPersonConfirmation = "invite-new-approved-person-confirm";
     public const string InviteNewApprovedPersonSubmit = "invite-new-approved-person-submit";
+    public const string EmailNominatedApprovedPerson = "email-nominated-approved-person";
+    public const string AccountPermissionsChanged = "account-permissions-changed";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

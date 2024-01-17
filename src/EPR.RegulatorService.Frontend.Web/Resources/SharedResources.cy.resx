@@ -25,6 +25,9 @@
   <data name="Continue" xml:space="preserve">
     <value>Parhau</value>
   </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>WConfirm</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Canslo</value>
   </data>

@@ -5,11 +5,10 @@ using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.InviteNewApprovedPerson;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Services;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.InviteNewApprovedPerson;
-
-using Core.Models;
-using Core.Services;
 
 [Route(PagePath.InviteNewApprovedPersonPage)]
 [FeatureGate(FeatureFlags.ManageApprovedUsers)]
@@ -136,27 +135,32 @@ public class InviteNewApprovedPersonController : RegulatorSessionBaseController
             InvitedPersonLastname = session.InviteNewApprovedPersonSession.InvitedPersonLastname
         };
 
-        await _facadeService.AddRemoveApprovedUser(request);
+        var response = await _facadeService.AddRemoveApprovedUser(request);
+        session.InviteNewApprovedPersonSession.ResponseStatus = response;
 
-        if (session.InviteNewApprovedPersonSession.RemovedConnectionExternalId is null
-            || session.InviteNewApprovedPersonSession.RemovedConnectionExternalId == Guid.Empty)
+        if (response == EndpointResponseStatus.Success)
         {
-            var emailSentToNominatedApprovedPersonModel = new EmailSentToNominatedApprovedPersonModel
+            if (session.InviteNewApprovedPersonSession.RemovedConnectionExternalId is null
+                || session.InviteNewApprovedPersonSession.RemovedConnectionExternalId == Guid.Empty)
             {
-                InvitedApprovedPersonFullName = $"{session.InviteNewApprovedPersonSession.InvitedPersonFirstname} {session.InviteNewApprovedPersonSession.InvitedPersonLastname}",
-                OrganisationName = session.InviteNewApprovedPersonSession.OrganisationName
+                var emailSentToNominatedApprovedPersonModel = new EmailSentToNominatedApprovedPersonModel
+                {
+                    InvitedApprovedPersonFullName = $"{session.InviteNewApprovedPersonSession.InvitedPersonFirstname} {session.InviteNewApprovedPersonSession.InvitedPersonLastname}",
+                    OrganisationName = session.InviteNewApprovedPersonSession.OrganisationName
+                };
+                return View("EmailSentToNominatedApprovedPerson", emailSentToNominatedApprovedPersonModel);
+            }
+
+            var accountPermissionHaveChangedModel = new AccountPermissionHaveChangedModel
+            {
+                InvitedPersonFullName =
+                    $"{session.InviteNewApprovedPersonSession.InvitedPersonFirstname} {session.InviteNewApprovedPersonSession.InvitedPersonLastname}",
+                OrganisationName = session.InviteNewApprovedPersonSession.OrganisationName,
+                RemovedPersonFullName = session.InviteNewApprovedPersonSession.UserNameToRemove
             };
-            return View("EmailSentToNominatedApprovedPerson", emailSentToNominatedApprovedPersonModel);
+
+            return View("AccountPermissionHaveChanged", accountPermissionHaveChangedModel);
         }
-
-
-        var accountPermissionHaveChangedModel = new AccountPermissionHaveChangedModel
-        {
-            InvitedPersonFullName = $"{session.InviteNewApprovedPersonSession.InvitedPersonFirstname} {session.InviteNewApprovedPersonSession.InvitedPersonLastname}",
-            OrganisationName = session.InviteNewApprovedPersonSession.OrganisationName,
-            RemovedPersonFullName = session.InviteNewApprovedPersonSession.UserNameToRemove
-        };
-
-        return View("AccountPermissionHaveChanged", accountPermissionHaveChangedModel);
+        return RedirectToAction(PagePath.Error, "Error");
     }
 }

@@ -3,7 +3,9 @@
 
 @{ var isApprovedUser = Model.User.Enrolment.EnrolmentStatus == EnrolmentStatus.Approved; }
 
-<div class="govuk-summary-card">
+@using (Html.BeginForm("EnrolmentRequests", "Applications", FormMethod.Post))
+{
+  <div class="govuk-summary-card">
   <div class="govuk-summary-card__title-wrapper">
     <h2 class="govuk-summary-card__title">@Model.User.FirstName @Model.User.LastName</h2>
     <ul class="govuk-summary-card__actions">
@@ -58,31 +60,21 @@
     {
       if (!isApprovedUser)
       {
+        @Html.HiddenFor(x => x.IsApprovedUserAccepted)
+        @Html.HiddenFor(x => x.User.FirstName)
+        @Html.HiddenFor(x => x.User.LastName)
+        @Html.HiddenFor(x => x.User.Email)
+        @Html.HiddenFor(x => x.User.Enrolment.ServiceRole)
         <div class="govuk-button-group govuk-!-margin-top-2">
-          <form class="govuk-!-display-inline-block" method="post" asp-controller="Applications" asp-action="AcceptApplication">
-            <input type="hidden" name="acceptedUserFirstName" value="@Model.User.FirstName"/>
-            <input type="hidden" name="acceptedUserLastName" value="@Model.User.LastName"/>
-            <input type="hidden" name="acceptedUserEmail" value="@Model.User.Email"/>
-            <input type="hidden" name="serviceRole" value="@ServiceRole.DelegatedPerson"/>
-
-            <button class="govuk-button" data-module="govuk-button">
+          <button class="govuk-button" data-module="govuk-button" name="journeyType" value="@JourneyType.Accept">
               @SharedLocalizer["Button.Accept"]
-            </button>
-          </form>
-
-          <form class="govuk-!-display-inline-block" method="post" asp-controller="Applications" asp-action="PreEnrolmentDecision">
-            <input type="hidden" name="rejectedUserFirstName" value="@Model.User.FirstName"/>
-            <input type="hidden" name="rejectedUserLastName" value="@Model.User.LastName"/>
-            <input type="hidden" name="rejectedUserEmail" value="@Model.User.Email"/>
-            <input type="hidden" name="serviceRole" value="@ServiceRole.DelegatedPerson"/>
-            <input type="hidden" name="decision" value="@RegulatorDecision.Rejected"/>
-
-            <button class="govuk-button govuk-button--warning" data-module="govuk-button">
+          </button>
+          <button class="govuk-button govuk-button--warning" data-module="govuk-button" name="journeyType" value="@JourneyType.Reject">
               @SharedLocalizer["Button.Reject"]
-            </button>
-          </form>
+          </button>
         </div>
       }
     }
   </div>
 </div>
+}

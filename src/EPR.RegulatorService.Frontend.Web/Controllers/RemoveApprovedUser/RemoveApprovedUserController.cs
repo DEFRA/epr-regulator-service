@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using EPR.RegulatorService.Frontend.Web.Sessions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ApprovedPersonListPage;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RemoveApprovedUser;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -9,9 +10,6 @@ using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Models;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RemoveApprovedUser;
-
-using ViewModels.ApprovedPersonListPage;
-using ViewModels.InviteNewApprovedPerson;
 
 [FeatureGate(FeatureFlags.ManageApprovedUsers)]
 public class RemoveApprovedUserController : RegulatorSessionBaseController
@@ -116,17 +114,11 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
             session.AddRemoveApprovedUserSession.NominationDecision = model.NominationDecision;
         }
 
-        //This is the flow when nominationDecision = true as of now it will stay on the same page
-        if (model.NominationDecision ?? true)
-        {
-            return RedirectToAction("ConfirmNominationDecision", session.AddRemoveApprovedUserSession);
-        }
-
         var request = new RemoveApprovedUserRequest
         {
-            ConnectionExternalId = model.ConnExternalId,
+            RemovedConnectionExternalId = model.ConnExternalId,
             OrganisationId = model.OrganisationId,
-            NominationDecision = (bool)model.NominationDecision
+            PromotedPersonExternalId = model.PromotedPersonExternalId
         };
 
         var response = await _facadeService.RemoveApprovedUser(request);
@@ -134,11 +126,58 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
 
         if (response == EndpointResponseStatus.Success)
         {
+            //This is the nominate only flow (no removal)
+            if (model.NominationDecision == null)
+            {
+                return await NominateOnly(session.AddRemoveApprovedUserSession);
+            }
+
+            //This is remove and nominate flow
+            if (model.NominationDecision == true)
+            {
+                return await RemoveAndNominate(session.AddRemoveApprovedUserSession);
+            }
+
+            //This is the remove only flow (model.NominationDecision == false, ie. no nomination)
             return View("RemovedConfirmation", session.AddRemoveApprovedUserSession);
         }
-
         return RedirectToAction(PagePath.Error, "Error");
     }
+
+    private async Task<IActionResult> NominateOnly(AddRemoveApprovedUserSession addRemoveApprovedUserSession)
+    {
+        var promotedApprovedUserModel = new RemovedNominatedUserViewModel()
+        {
+            PromotedUserName =
+                $"{addRemoveApprovedUserSession.NewApprovedUser.FirstName} " +
+                $"{addRemoveApprovedUserSession.NewApprovedUser.LastName}"
+        };
+        return RedirectToAction("EmailNominatedApprovedPerson", promotedApprovedUserModel);
+    }
+
+    private async Task<IActionResult> RemoveAndNominate(AddRemoveApprovedUserSession addRemoveApprovedUserSession)
+    {
+        var promotedApprovedUserModel = new RemovedNominatedUserViewModel()
+        {
+            PromotedUserName =
+                $"{addRemoveApprovedUserSession.NewApprovedUser.FirstName} " +
+                $"{addRemoveApprovedUserSession.NewApprovedUser.LastName}",
+            RemovedUserName = addRemoveApprovedUserSession.UserNameToRemove,
+            OrganisationName = addRemoveApprovedUserSession.OrganisationName
+        };
+        return RedirectToAction("AccountPermissionsChanged", promotedApprovedUserModel);
+    }
+
+
+    [HttpGet]
+    [Route(PagePath.EmailNominatedApprovedPerson)]
+    public async Task<ActionResult> EmailNominatedApprovedPerson(RemovedNominatedUserViewModel model)
+        => View("EmailSentToNominatedApprovedPerson", model);
+
+    [HttpGet]
+    [Route(PagePath.AccountPermissionsChanged)]
+    public async Task<ActionResult> AccountPermissionsChanged(RemovedNominatedUserViewModel model)
+        => View("AccountPermissionsHaveChanged", model);
 
 
     [HttpGet]
@@ -191,7 +230,7 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
                 session.AddRemoveApprovedUserSession.NewApprovedUser = selectedUser;
                 _sessionManager.SaveSessionAsync(HttpContext.Session, session);
 
-                return RedirectToAction("ConfirmNominationDecision");
+                return RedirectToAction("ConfirmNominationDecision", session.AddRemoveApprovedUserSession);
             }
         }
 

@@ -9,13 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
+using EPR.RegulatorService.Frontend.Core.Models;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 using ViewResult = Microsoft.AspNetCore.Mvc.ViewResult;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
-
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 [TestClass]
 public class InviteApprovedPersonControllerTests
@@ -254,6 +253,7 @@ public class InviteApprovedPersonControllerTests
             string expectedViewName)
     {
         // Arrange
+
         var session = new JourneySession
         {
             InviteNewApprovedPersonSession = new InviteNewApprovedPersonSession
@@ -261,6 +261,10 @@ public class InviteApprovedPersonControllerTests
                 RemovedConnectionExternalId = existingConnectionExternalIdToRemove
             }
         };
+
+        _mockFacade
+            .Setup(x => x.AddRemoveApprovedUser(It.IsAny<AddRemoveApprovedUserRequest>()))
+            .ReturnsAsync(EndpointResponseStatus.Success);
 
         _mockSessionManager
             .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))

@@ -7,14 +7,14 @@
     <div class="govuk-summary-card__title-wrapper">
       <h2 class="govuk-summary-card__title">
         <span class="govuk-summary-card__title"> @user.FirstName @user.LastName </span>
-        @if (user.UserEnrolments.First().EnrolmentStatusId == (int)EnrolmentStatusEnum.Invited || 
-             user.UserEnrolments.First().EnrolmentStatusId == (int)EnrolmentStatusEnum.Nominated)
+        @if (user.UserEnrolments.Any(e =>
+          e.EnrolmentStatusId is (int)EnrolmentStatusEnum.Invited or (int)EnrolmentStatusEnum.Nominated))
         {
           <span class="govuk-summary-card__title govuk-tag--yellow">
               @Localizer["Enrolment.Status.Pending"]
           </span>
         }
-        @if (user.UserEnrolments.First().EnrolmentStatusId == (int)EnrolmentStatusEnum.Pending)
+        @if (user.UserEnrolments.Any(e => e.EnrolmentStatusId == (int)EnrolmentStatusEnum.Pending))
         {
           <span class="govuk-summary-card__title govuk-tag--yellow">
                @Localizer["Enrolment.Status.Awaiting"]

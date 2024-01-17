@@ -107,11 +107,7 @@
           @Html.ActionLink(@Localizer["link.TransferToAnotherRegulator"].Value,
             "TransferApplication",
             "Applications",
-            new
-            {
-              organisationId = Model.OrganisationId,
-              organisationName = Model.OrganisationName
-            },
+            null,
             new {@class = "govuk-link govuk-link--no-visited-state"})
         </div>
       </div>

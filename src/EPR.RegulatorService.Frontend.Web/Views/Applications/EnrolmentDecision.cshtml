@@ -53,12 +53,9 @@
           <p class="govuk-body">
             @Html.ActionLink(SharedLocalizer["Cancel"].Value,
               "EnrolmentRequests",
-              "Applications",
-              new
-              {
-                organisationId = Model.OrganisationId
-              },
-              new {@class = "govuk-link govuk-link--no-visited-state"})
+              "Applications", 
+              null,
+              new { @class = "govuk-link govuk-link--no-visited-state" })
           </p>
 
         </div>

@@ -253,7 +253,9 @@ public class FacadeService : IFacadeService
     public async Task<EndpointResponseStatus> RemoveApprovedUser(RemoveApprovedUserRequest request)
     {
         await PrepareAuthenticatedClient();
-        var path = string.Format(_facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath], request.ConnectionExternalId, request.OrganisationId);
+
+        var path = string.Format(_facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath],
+            request.RemovedConnectionExternalId, request.OrganisationId, request.PromotedPersonExternalId);
 
         var response = await _httpClient.PostAsJsonAsync(path, request);
 

@@ -2,7 +2,6 @@ using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Services;
-using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
@@ -36,87 +35,147 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             _facadeService = facadeService;
             _transferOrganisationConfig = transferOrganisationOptions.Value;
         }
-
+        
         [HttpGet]
         [Consumes("application/json")]
         [Route(PagePath.Applications)]
         [Route("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Applications(ApplicationsRequestViewModel viewModel)
+        public async Task<IActionResult> Applications(int? pageNumber = null)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new();
             session.RegulatorSession.OrganisationId = null;
             session.RegulatorSession.OrganisationName = string.Empty;
             session.RegulatorSession.RegulatorOrganisations = new List<RegulatorOrganisation>();
-
+            
+            if (pageNumber == null)
+            {
+                session.RegulatorSession.CurrentPageNumber ??= 1;
+            }
+            else
+            {
+                session.RegulatorSession.CurrentPageNumber = pageNumber;
+            }
+            
             ViewBag.CustomBackLinkToDisplay = GetHomeBackLink();
-            SetFilterValues(session, viewModel.SearchOrganisationName,
-                viewModel.IsApprovedUserTypeChecked,
-                viewModel.IsDelegatedUserTypeChecked,
-                viewModel.ClearFilters,
-                viewModel.IsFilteredSearch,
-                viewModel.PageNumber);
+
+            EndpointResponseStatus? transferNationResult = TempData.TryGetValue("TransferNationResult", out object? result) ? (EndpointResponseStatus)result : EndpointResponseStatus.NotSet;
+            string? transferredOrganisationName = TempData.TryGetValue("TransferredOrganisationName", out object? organisationName) ? organisationName.ToString() : string.Empty;
+            string? transferredOrganisationAgency = TempData.TryGetValue("TransferredOrganisationAgency", out object? organisationAgency) ? organisationAgency.ToString() : string.Empty;
 
             var model = new ApplicationsViewModel
             {
-                PageNumber = session.RegulatorSession.CurrentPageNumber,
+                PageNumber = session.RegulatorSession.CurrentPageNumber ?? 1,
                 SearchOrganisationName = session.RegulatorSession.SearchOrganisationName,
                 IsApprovedUserTypeChecked = session.RegulatorSession.IsApprovedUserTypeChecked,
                 IsDelegatedUserTypeChecked = session.RegulatorSession.IsDelegatedUserTypeChecked,
-                TransferNationResult = viewModel.TransferNationResult,
-                TransferredOrganisationName = viewModel.TransferredOrganisationName,
-                TransferredOrganisationAgency = viewModel.TransferredOrganisationAgency
+                TransferNationResult = transferNationResult.Value,
+                TransferredOrganisationName = transferredOrganisationName,
+                TransferredOrganisationAgency = transferredOrganisationAgency,
+                RejectedUserName = TempData.TryGetValue("RejectUserName", out object? rejectUserName) ? rejectUserName.ToString() : string.Empty
             };
-
-            UpdateUserStatusInSession(session, model);
-
+            
             await SaveSessionAndJourney(session, PagePath.Applications, PagePath.Applications);
 
             return View(model);
         }
+        
+        [HttpPost]
+        [Route(PagePath.Applications)]
+        public async Task<IActionResult> Applications(ApplicationsRequestViewModel viewModel, string? filterType = null, Guid? organisationId = null)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new();
 
+            // if not filtering
+            if (filterType == null)
+            {
+                if (organisationId == null)
+                {
+                    _logger.LogError($"Organisation id was null.");
+                    return RedirectToAction(PagePath.Error, "Error");  
+                }
+                
+                session.RegulatorSession.OrganisationId = organisationId;
+                    
+                return await SaveSessionAndRedirect(
+                    session,
+                    nameof(EnrolmentRequests),
+                    PagePath.Applications,
+                    PagePath.EnrolmentRequests,
+                    null);
+            }
+            
+            //if filtering
+            if (filterType == FilterActions.ClearFilters)
+            {
+                viewModel.ClearFilters = true;
+            }
+            
+            SetFilterValues(session, 
+                viewModel.SearchOrganisationName,
+                viewModel.IsApprovedUserTypeChecked,
+                viewModel.IsDelegatedUserTypeChecked,
+                viewModel.ClearFilters,
+                viewModel.IsFilteredSearch);
+
+            return await SaveSessionAndRedirect(
+                session,
+                nameof(Applications),
+                PagePath.Applications,
+                PagePath.Applications, 
+                null);
+        }
+        
         [HttpGet]
         [Route(PagePath.EnrolmentRequests)]
-        public async Task<IActionResult> EnrolmentRequests(Guid organisationId, string? organisationName)
+        public async Task<IActionResult> EnrolmentRequests()
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-            if (organisationId != Guid.Empty)
-            {
-                session.RegulatorSession.OrganisationId = organisationId;
-            }
-
-            var organisationDetails =
-                await _facadeService.GetOrganisationEnrolments(session.RegulatorSession.OrganisationId.Value);
+            var organisationId = session.RegulatorSession.OrganisationId;
+            var organisationDetails = await _facadeService.GetOrganisationEnrolments(organisationId.Value);
 
             session.RegulatorSession.OrganisationName = organisationDetails.OrganisationName;
             session.RegulatorSession.ReferenceNumber = organisationDetails.OrganisationReferenceNumber;
 
             var model = GetEnrolmentRequestsViewModel(organisationDetails);
-
-            if (session.RegulatorSession.AcceptUserJourneyData?.OrganisationId != organisationId)
-            {
-                session.RegulatorSession.AcceptUserJourneyData = null;
-            }
-            else if (session.RegulatorSession.AcceptUserJourneyData?.ResponseStatus == EndpointResponseStatus.Success)
-            {
-                var acceptData = session.RegulatorSession.AcceptUserJourneyData;
-                model.AcceptStatus = EndpointResponseStatus.Success;
-                model.AcceptedFirstName = acceptData.FirstName;
-                model.AcceptedLastName = acceptData.LastName;
-                model.AcceptedRole = acceptData.ServiceRole;
-            }
-
-            session.RegulatorSession.OrganisationName ??= organisationName;
-            session.RegulatorSession.RegulatorNation ??= organisationDetails.NationId;
-
-            UpdateUserStatusInSession(session, model);
+            model.AcceptStatus = TempData.TryGetValue("AcceptResult", out object? acceptResult) ? (EndpointResponseStatus)acceptResult : EndpointResponseStatus.NotSet;
+            model.AcceptedFirstName = TempData.TryGetValue("AcceptFirstName", out object? acceptFirstName) ? acceptFirstName.ToString() : string.Empty;
+            model.AcceptedLastName = TempData.TryGetValue("AcceptLastName", out object? acceptLastName) ? acceptLastName.ToString() : string.Empty;
+            model.AcceptedRole = TempData.TryGetValue("AcceptedRole", out object? acceptedRole) ? acceptedRole.ToString() : string.Empty;
+            model.RejectionStatus = TempData.TryGetValue("RejectResult", out object? rejectResult) ? (EndpointResponseStatus)rejectResult : EndpointResponseStatus.NotSet;
+            model.RejectedUserName = TempData.TryGetValue("RejectUserName", out object? rejectUserName) ? rejectUserName.ToString() : string.Empty;
+            model.RejectedServiceRole = TempData.TryGetValue("RejectedRole", out object? rejectedRole) ? rejectedRole.ToString() : string.Empty;
 
             await SaveSessionAndJourney(session, PagePath.Applications, PagePath.EnrolmentRequests);
             SetBackLink(session, PagePath.EnrolmentRequests);
 
             return View(nameof(EnrolmentRequests), model);
+        }
+
+        [HttpPost]
+        [Route(PagePath.EnrolmentRequests)]
+        public async Task<IActionResult> EnrolmentRequests(UserEnrolment userEnrolment, string journeyType)
+        {
+            var session = (await _sessionManager.GetSessionAsync(HttpContext.Session)) ?? new JourneySession();
+
+            if (journeyType == JourneyType.Accept)
+            {
+               return await AcceptApplication(userEnrolment.User.FirstName, userEnrolment.User.LastName, userEnrolment.User.Email,
+                    userEnrolment.User.Enrolment.ServiceRole);
+            }
+            
+            session.RegulatorSession.RejectUserJourneyData = new()
+            {
+                FirstName = userEnrolment.User.FirstName,
+                LastName = userEnrolment.User.LastName,
+                Email = userEnrolment.User.Email,
+                ServiceRole = userEnrolment.User.Enrolment.ServiceRole,
+                Decision = RegulatorDecision.Rejected
+            };
+
+            await SaveSession(session);
+            return RedirectToAction("EnrolmentDecision", "Applications");
         }
 
         [HttpGet]
@@ -165,39 +224,18 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
 
             var result = await _facadeService.TransferOrganisationNation(organisationNationTransfer);
 
+            TempData["TransferNationResult"] = result;
+            TempData["TransferredOrganisationName"] = session.RegulatorSession.OrganisationName;
+            TempData["TransferredOrganisationAgency"] = transferNote.AgencyName;
+
             return await SaveSessionAndRedirect(
                 session,
                 nameof(Applications),
                 PagePath.TransferApplication,
-                PagePath.Applications,
-                new
-                {
-                    transferNationResult = result,
-                    transferredOrganisationName = session.RegulatorSession.OrganisationName,
-                    transferredOrganisationAgency = transferNote.AgencyName
-                });
+                PagePath.Applications, 
+                null);
         }
-
-        [HttpPost]
-        [Route(PagePath.PreEnrolmentDecision)]
-        public async Task<IActionResult> PreEnrolmentDecision(
-            string? rejectedUserFirstName, string? rejectedUserLastName,
-            string? rejectedUserEmail, string? serviceRole, string? decision)
-        {
-            var session = (await _sessionManager.GetSessionAsync(HttpContext.Session)) ?? new JourneySession();
-
-            session.RegulatorSession.RejectUserJourneyData = new()
-            {
-                FirstName = rejectedUserFirstName ?? string.Empty,
-                LastName = rejectedUserLastName ?? string.Empty,
-                Email = rejectedUserEmail ?? string.Empty,
-                ServiceRole = serviceRole ?? string.Empty,
-                Decision = decision ?? string.Empty
-            };
-            await SaveSession(session);
-            return RedirectToAction("EnrolmentDecision", "Applications");
-        }
-
+        
         [HttpGet]
         [Route(PagePath.EnrolmentDecision)]
         public async Task<IActionResult> EnrolmentDecision()
@@ -333,6 +371,10 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                 rejectedUserData.ResponseStatus = EndpointResponseStatus.Fail;
             }
 
+            TempData["RejectResult"] = rejectedUserData.ResponseStatus;
+            TempData["RejectUserName"] = $"{rejectedUserData.FirstName} {rejectedUserData.LastName}";
+            TempData["RejectedRole"] = rejectedUserData.ServiceRole;
+            
             if (rejectedUserData.ServiceRole == ServiceRole.ApprovedPerson)
             {
                 return await SaveSessionAndRedirect(
@@ -342,22 +384,10 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             return await SaveSessionAndRedirect(
                 session, nameof(EnrolmentRequests), PagePath.Applications, PagePath.EnrolmentRequests, null);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> AcceptApplication(string? acceptedUserFirstName, string? acceptedUserLastName,
-    string? acceptedUserEmail, string? serviceRole)
+        
+        public async Task<IActionResult> AcceptApplication(string? acceptedUserFirstName, string? acceptedUserLastName, string? acceptedUserEmail, string? serviceRole)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new();
-
-            var acceptUserJourneyData = session.RegulatorSession.AcceptUserJourneyData ?? new();
-
-            acceptUserJourneyData.FirstName = acceptedUserFirstName ?? acceptUserJourneyData.FirstName;
-            acceptUserJourneyData.LastName = acceptedUserLastName ?? acceptUserJourneyData.LastName;
-            acceptUserJourneyData.Email = acceptedUserEmail ?? acceptUserJourneyData.Email;
-            acceptUserJourneyData.ServiceRole = serviceRole ?? acceptUserJourneyData.ServiceRole;
-
-            session.RegulatorSession.AcceptUserJourneyData = acceptUserJourneyData;
-
             await SaveSessionAndJourney(session, PagePath.Applications, PagePath.EnrolmentDecision);
 
             SetBackLink(session, PagePath.Applications);
@@ -406,7 +436,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                 {
                     var updateEnrolmentRequest = new UpdateEnrolment()
                     {
-                        EnrolmentId = GetEnrolmentId(serviceRole, approvedUser, delegatedUsers, acceptUserJourneyData.Email),
+                        EnrolmentId = GetEnrolmentId(serviceRole, approvedUser, delegatedUsers, acceptedUserEmail),
                         EnrolmentStatus = RegulatorDecision.Approved,
                         Comments = string.Empty
                     };
@@ -414,18 +444,16 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                     var result = await _facadeService.UpdateEnrolment(updateEnrolmentRequest);
                     if (result == EndpointResponseStatus.Success)
                     {
-                        session.RegulatorSession.AcceptUserJourneyData ??= new();
                         session.RegulatorSession.OrganisationId = organisationDetails.OrganisationId;
-                        session.RegulatorSession.AcceptUserJourneyData.OrganisationId = organisationDetails.OrganisationId;
-                        session.RegulatorSession.AcceptUserJourneyData.ResponseStatus = EndpointResponseStatus.Success;
-                        session.RegulatorSession.AcceptUserJourneyData.ServiceRole = serviceRole;
-                        session.RegulatorSession.AcceptUserJourneyData.FirstName = acceptedUserFirstName;
-                        session.RegulatorSession.AcceptUserJourneyData.LastName = acceptedUserLastName;
+                        
+                        TempData["AcceptResult"] = EndpointResponseStatus.Success;
+                        TempData["AcceptFirstName"] = acceptedUserFirstName;
+                        TempData["AcceptLastName"] = acceptedUserLastName;
+                        TempData["AcceptedRole"] = serviceRole;
 
                         await SaveSession(session);
 
-                        var url = $"~/enrolment-requests?organisationId={organisationDetails.OrganisationId}";
-                        return new RedirectResult(url);
+                        return RedirectToAction("EnrolmentRequests", "Applications");
                     }
                 }
             }
@@ -439,7 +467,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
 
             return View(nameof(EnrolmentRequests), enrolmentRequestsViewModel);
         }
-
 
         private EnrolmentRequestsViewModel GetEnrolmentRequestsViewModel(OrganisationEnrolments organisationDetails)
         {
@@ -491,38 +518,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             session.RegulatorSession.IsDelegatedUserTypeChecked = false;
             session.RegulatorSession.CurrentPageNumber = 1;
         }
-
-        private static void UpdateUserStatusInSession(JourneySession session, ApplicationsViewModel model)
-        {
-            if (session.RegulatorSession?.RejectUserJourneyData?.ResponseStatus == EndpointResponseStatus.Success)
-            {
-                model.RejectedUserName =
-                    $"{session.RegulatorSession.RejectUserJourneyData.FirstName} {session.RegulatorSession.RejectUserJourneyData.LastName}";
-                model.RejectedServiceRole = session.RegulatorSession.RejectUserJourneyData.ServiceRole;
-                model.RejectionStatus = session.RegulatorSession.RejectUserJourneyData.ResponseStatus;
-
-                ClearRejectionStatusAttributesInSession(session);
-            }
-        }
-
-        private static void UpdateUserStatusInSession(JourneySession session, EnrolmentRequestsViewModel model)
-        {
-            if (session.RegulatorSession?.RejectUserJourneyData?.ResponseStatus == EndpointResponseStatus.Success)
-            {
-                model.RejectedUserName =
-                    $"{session.RegulatorSession.RejectUserJourneyData.FirstName} {session.RegulatorSession.RejectUserJourneyData.LastName}";
-                model.RejectedServiceRole = session.RegulatorSession.RejectUserJourneyData.ServiceRole;
-                model.RejectionStatus = session.RegulatorSession.RejectUserJourneyData.ResponseStatus;
-
-                ClearRejectionStatusAttributesInSession(session);
-            }
-        }
-
-        private static void ClearRejectionStatusAttributesInSession(JourneySession session)
-        {
-            session.RegulatorSession.RejectUserJourneyData = null;
-        }
-
+        
         private Guid GetEnrolmentId(string serviceRole, User approvedUser, IEnumerable<User> delegatedUsers,
             string email)
         {
@@ -544,8 +540,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             bool isApprovedUserTypeChecked,
             bool isDelegatedUserTypeChecked,
             bool clearFilters,
-            bool isFilteredSearch,
-            int? pageNumber)
+            bool isFilteredSearch)
         {
             var regulatorSession = session.RegulatorSession;
             if (clearFilters)
@@ -557,24 +552,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                 if ((!string.IsNullOrEmpty(searchOrganisationName)
                      || isApprovedUserTypeChecked
                      || isDelegatedUserTypeChecked)
-                    || isFilteredSearch)
+                     || isFilteredSearch)
                 {
                     regulatorSession.SearchOrganisationName = searchOrganisationName;
                     regulatorSession.IsApprovedUserTypeChecked = isApprovedUserTypeChecked;
                     regulatorSession.IsDelegatedUserTypeChecked = isDelegatedUserTypeChecked;
                     regulatorSession.CurrentPageNumber = 1;
-                }
-
-                if (pageNumber == null)
-                {
-                    if (regulatorSession.CurrentPageNumber == null)
-                    {
-                        regulatorSession.CurrentPageNumber = 1;
-                    }
-                }
-                else
-                {
-                    regulatorSession.CurrentPageNumber = pageNumber;
                 }
             }
         }

@@ -1,5 +1,5 @@
-using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.MockedData;
+using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
@@ -16,7 +16,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         private const string ApprovedUserEmail = "jtester@test.com";
         private const string DelegatedUserOneEmail = "ptester@test.com";
         private const string DelegatedUserTwoEmail = "atester@test.com";
-        private const string OrganisationName = "Organisation Test";
         private readonly Guid _organisationId = Guid.NewGuid();
 
         [TestInitialize]
@@ -46,8 +45,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(e => e.GetOrganisationEnrolments(_organisationId))
                 .ReturnsAsync(MockedEnrolmentRequestDetails.GetMockedEnrolmentRequestDetails);
 
+            JourneySessionMock.RegulatorSession.OrganisationId = _organisationId;
+
             // Act
-            var result = await _systemUnderTest.EnrolmentRequests(_organisationId, OrganisationName) as ViewResult;
+            var result = await _systemUnderTest.EnrolmentRequests() as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -62,8 +63,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(e => e.GetOrganisationEnrolments(_organisationId))
                 .ReturnsAsync(MockedEnrolmentRequestDetails.GetMockedEnrolmentRequestDetails);
 
+            JourneySessionMock.RegulatorSession.OrganisationId = _organisationId;
+
             // Act           
-            var result = await _systemUnderTest.EnrolmentRequests(_organisationId, OrganisationName);
+            var result = await _systemUnderTest.EnrolmentRequests();
 
             // Assert
             Assert.IsNotNull(result);
@@ -95,7 +98,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                          PagePath.Applications,
                          PagePath.EnrolmentRequests,
                      },
-                    AcceptUserJourneyData = new AcceptUserJourneyData()
+                    OrganisationId = _organisationId
                 }
             };
 
@@ -106,7 +109,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(MockedEnrolmentRequestDetails.GetMockedEnrolmentRequestDetails);
 
             // Act
-            var result = await _systemUnderTest.EnrolmentRequests(_organisationId, OrganisationName);
+            var result = await _systemUnderTest.EnrolmentRequests();
 
             // Assert
             Assert.IsNotNull(result);
@@ -129,10 +132,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                         PagePath.Applications,
                         PagePath.EnrolmentRequests,
                     },
-                    AcceptUserJourneyData = new AcceptUserJourneyData
-                    {
-                        OrganisationId = Guid.NewGuid()
-                    }
+                    OrganisationId = _organisationId
                 }
             };
 
@@ -143,7 +143,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(MockedEnrolmentRequestDetails.GetMockedEnrolmentRequestDetails);
 
             // Act
-            var result = await _systemUnderTest.EnrolmentRequests(_organisationId, OrganisationName);
+            var result = await _systemUnderTest.EnrolmentRequests();
 
             // Assert
             Assert.IsNotNull(result);
@@ -166,10 +166,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                         PagePath.Applications,
                         PagePath.EnrolmentRequests,
                     },
-                    AcceptUserJourneyData = new AcceptUserJourneyData
-                    {
-                        OrganisationId = _organisationId
-                    }
+                    OrganisationId = _organisationId
                 }
             };
 
@@ -180,7 +177,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(MockedEnrolmentRequestDetails.GetMockedEnrolmentRequestDetails);
 
             // Act
-            var result = await _systemUnderTest.EnrolmentRequests(_organisationId, OrganisationName);
+            var result = await _systemUnderTest.EnrolmentRequests();
 
             // Assert
             Assert.IsNotNull(result);
@@ -192,7 +189,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
 
         [TestMethod]
-        public async Task GivenOnEnrolmentRequestsPage_WhenEnrolmentRequestsHttpGetCalledAndAcceptUserJourneyDataOrganisationIdAndResponseStatusIsSuccessl_ThenAssertBackLinkSet()
+        public async Task GivenOnEnrolmentRequestsPage_WhenEnrolmentRequestsHttpGetCalledAndAcceptUserJourneyDataOrganisationIdAndResponseStatusIsSuccess_ThenAssertBackLinkSet()
         {
             // Arrange
             string firstName = "An";
@@ -207,14 +204,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                         PagePath.Applications,
                         PagePath.EnrolmentRequests,
                     },
-                    AcceptUserJourneyData = new AcceptUserJourneyData
-                    {
-                        OrganisationId = _organisationId,
-                        ResponseStatus = EndpointResponseStatus.Success,
-                        FirstName = firstName,
-                        LastName = lastName,
-                        ServiceRole = ServiceRole.ApprovedPerson
-                    }
+                    OrganisationId = _organisationId
                 }
             };
 
@@ -224,8 +214,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(e => e.GetOrganisationEnrolments(_organisationId))
                 .ReturnsAsync(MockedEnrolmentRequestDetails.GetMockedEnrolmentRequestDetails);
 
+            _systemUnderTest.TempData["AcceptResult"] = EndpointResponseStatus.Success;
+            _systemUnderTest.TempData["AcceptFirstName"] = firstName;
+            _systemUnderTest.TempData["AcceptLastName"] = lastName;
+            _systemUnderTest.TempData["AcceptedRole"] = ServiceRole.ApprovedPerson;
+            
             // Act
-            var result = await _systemUnderTest.EnrolmentRequests(_organisationId, OrganisationName);
+            var result = await _systemUnderTest.EnrolmentRequests();
 
             // Assert
             Assert.IsNotNull(result);
@@ -235,7 +230,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             view!.ViewName.Should().Be(ViewName);
             AssertBackLink(view, PagePath.Applications);
             view.Model.Should().BeOfType<EnrolmentRequestsViewModel>();
-
+            
             var model = view.Model as EnrolmentRequestsViewModel;
             Assert.IsNotNull(model);
             Assert.AreEqual(expected: firstName, actual: model.AcceptedFirstName);
@@ -254,8 +249,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(e => e.GetOrganisationEnrolments(_organisationId))
                 .ReturnsAsync(MockedEnrolmentRequestDetails.GetMockedEnrolmentRequestDetails);
 
+            JourneySessionMock.RegulatorSession.OrganisationId = _organisationId;
+
             // Act
-            var result = await _systemUnderTest.EnrolmentRequests(_organisationId, OrganisationName) as ViewResult;
+            var result = await _systemUnderTest.EnrolmentRequests() as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);

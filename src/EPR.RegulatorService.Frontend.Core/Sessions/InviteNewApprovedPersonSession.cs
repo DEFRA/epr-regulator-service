@@ -1,3 +1,4 @@
+using EPR.RegulatorService.Frontend.Core.Models;
 namespace EPR.RegulatorService.Frontend.Core.Sessions;
 
 public class InviteNewApprovedPersonSession
@@ -11,4 +12,5 @@ public class InviteNewApprovedPersonSession
     public string InvitedPersonLastname { get; set; }
     public string InvitedPersonEmail { get; set; }
     public string InvitedPersonFullName => string.Join(" ", InvitedPersonFirstname, InvitedPersonLastname);
+    public EndpointResponseStatus? ResponseStatus { get; set; }
 }
