@@ -19,7 +19,7 @@ parameters:
     - Team-9_Ops
 
 - name: envToDeploy
-  displayName: 'Target Environment to deploy:    (select "development" for Team1-8)'
+  displayName: 'Target Environment to deploy:    (select "development" for Team1-9)'
   default: development
   type: string
   values:
@@ -28,13 +28,11 @@ parameters:
     - preprod
     - prod
 - name: imageTag
-  displayName: Enter Tag for the Image
+  displayName: Enter Tag for the Image (Docker tag) or Release name (Git repo tag)
   default: ''
   type: string
 
-
-
-##deployment varible for each environment that requires applicaiton to be deployed into.
+##deployment variable for each environment that requires application to be deployed into.
 ## In order to deploy to each environment two yaml files are required 1.front-end 2. Facade each are named teamname-environment-deployment ie "team-3-development-facade.yaml"
 ##this is picked up by the above inputs and fed into the below parameters, in order to add a new team in you will need to add a new team you will need to add the two above files to vars folder
 ##and update the parameters below.
@@ -44,10 +42,6 @@ variables:
     - name: env
       value: DEV1
     - template: vars/${{ parameters.teamName }}-${{ parameters.envToDeploy }}.yaml
-  - ${{ elseif eq(parameters.envToDeploy, 'qa-dev4') }}:
-    - name: env
-      value: DEV4
-    - template: vars/${{ parameters.envToDeploy }}.yaml
   - ${{ elseif eq(parameters.envToDeploy, 'tst') }}:
     - name: env
       value: TST1
@@ -60,6 +54,7 @@ variables:
     - name: env
       value: PRD1
     - template: vars/${{ parameters.envToDeploy }}.yaml
+  - template: pipelines/image-tags/${{ parameters.envToDeploy }}.yaml@ReleaseTags
 
 resources:
   repositories:
@@ -68,10 +63,19 @@ resources:
       type: git
       ref: main
 
+    # The repo will be reference the repo by a release tag (if the imageTag parameter contains 'release') otherwise it will pull down the main branch.
+    - repository: ReleaseTags
+      name: RWD-CPR-EPR4P-ADO/epr-app-config-settings
+      type: git
+      ref: ${{ replace(replace(contains(parameters.imageTag, 'RELEASE'),'True',replace('refs/tags/RELEASETAG','RELEASETAG', parameters.imageTag)),'False','main') }}
+
 extends:
   template: epr-deployment-pipeline.yaml@CommonTemplates
   parameters:
-    imageTag: ${{ parameters.imageTag }}
+    ${{ if contains(parameters.imageTag, 'RELEASE') }}:
+      imageTag: $(DEVRWDWEBWAx411)
+    ${{ else }}:
+      imageTag: ${{ parameters.imageTag }}
     azureSubscription: $(azureSubscription)
     acrName: $(acr.azureContainerRegistryName)
     registryName: $(acr.repositoryName)
