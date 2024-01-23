@@ -13,12 +13,16 @@ public class ErrorController : Controller
     [Route(PagePath.PageNotFoundPath)]
     public ViewResult Error(int? statusCode, string? backLink)
     {
-        string errorView = statusCode == (int?)HttpStatusCode.NotFound ? PagePath.PageNotFound : "Error";
+        bool isPageNotFoundError = statusCode == (int?)HttpStatusCode.NotFound;
+        string errorView = isPageNotFoundError ? PagePath.PageNotFound : "Error";
 
         // Status code of 200 required for Gateway
         Response.StatusCode = 200;
 
-        ViewBag.BackLinkToDisplay = backLink ?? PagePath.Home;
+        if (isPageNotFoundError && !string.IsNullOrEmpty(backLink))
+        {
+            ViewBag.BackLinkToDisplay = backLink;
+        }
 
         return View(errorView);
     }
