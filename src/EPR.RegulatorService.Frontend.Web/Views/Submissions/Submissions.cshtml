@@ -45,13 +45,13 @@
         @await Component.InvokeAsync("SubmissionsList",
                 new SubmissionListRequest
                  {
-                   SearchOrganisationName = Model.SubmissionFilters.SearchOrganisationName,
-                   SearchOrganisationReference = Model.SubmissionFilters.SearchOrganisationId,
-                   IsDirectProducerChecked = Model.SubmissionFilters.IsDirectProducerChecked,
-                   IsComplianceSchemeChecked = Model.SubmissionFilters.IsComplianceSchemeChecked,
-                   IsPendingSubmissionChecked = Model.SubmissionFilters.IsPendingSubmissionChecked,
-                   IsAcceptedSubmissionChecked = Model.SubmissionFilters.IsAcceptedSubmissionChecked,
-                   IsRejectedSubmissionChecked = Model.SubmissionFilters.IsRejectedSubmissionChecked,
+                   SearchOrganisationName = Model.SearchOrganisationName,
+                   SearchOrganisationReference = Model.SearchOrganisationId,
+                   IsDirectProducerChecked = Model.IsDirectProducerChecked,
+                   IsComplianceSchemeChecked = Model.IsComplianceSchemeChecked,
+                   IsPendingSubmissionChecked = Model.IsPendingSubmissionChecked,
+                   IsAcceptedSubmissionChecked = Model.IsAcceptedSubmissionChecked,
+                   IsRejectedSubmissionChecked = Model.IsRejectedSubmissionChecked,
                    PageNumber = (int)Model.PageNumber,
                  })
       </div>

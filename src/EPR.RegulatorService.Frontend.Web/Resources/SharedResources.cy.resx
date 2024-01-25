@@ -80,10 +80,10 @@
     <value>Canslo</value>
   </data>
   <data name="ApplyFilters" xml:space="preserve">
-    <value>WApply filters</value>
+    <value>Defnyddio hidlyddion</value>
   </data>
   <data name="ClearFilters" xml:space="preserve">
-    <value>WClear filters</value>
+    <value>Clirio hidlyddion</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Llwyddiant</value>
@@ -138,5 +138,17 @@
   </data>
   <data name="Custom.GoToHome" xml:space="preserve">
     <value>WGo to home</value>
+   </data>
+  <data name="OrganisationType.DirectProducer" xml:space="preserve">
+    <value>Cynhyrchydd Uniongyrchol</value>
+  </data>
+  <data name="OrganisationType.ComplianceScheme" xml:space="preserve">
+    <value>Cynllun cydymffurfio</value>
+  </data>
+  <data name="Tag.ApprovedPerson" xml:space="preserve">
+    <value>Person a gymeradwywyd</value>
+  </data>
+  <data name="Tag.DelegatedPerson" xml:space="preserve">
+    <value>Person a ddirprwywyd</value>
   </data>
 </root>

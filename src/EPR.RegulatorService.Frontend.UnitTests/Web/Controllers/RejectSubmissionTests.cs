@@ -1,11 +1,11 @@
+using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
-using EPR.RegulatorService.Frontend.UnitTests.TestData;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-using EPR.RegulatorService.Frontend.UnitTests.Constants;
-using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
+using EPR.RegulatorService.Frontend.UnitTests.Constants;
+using EPR.RegulatorService.Frontend.UnitTests.TestData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -178,29 +178,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var result = await _systemUnderTest.RejectSubmission(viewModel) as RedirectToActionResult;
 
             // Assert
-            Assert.IsNotNull(result);
+            result.Should().NotBe(null);
             result.ActionName.Should().Be(nameof(SubmissionsController.Submissions));
 
-            var routeValues = result.RouteValues;
-            Assert.IsNotNull(routeValues);
-            routeValues.Values.Should().Contain(EndpointResponseStatus.Success);
-            routeValues.Values.Should().Contain(rejectSubmissionJourneyData.OrganisationName);
-
+            _systemUnderTest.TempData["SubmissionResultReject"].Should().Be(EndpointResponseStatus.Success);
+            _systemUnderTest.TempData["SubmissionResultOrganisationName"].Should().Be(_testSubmission.OrganisationName);
+            
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Once);
-        }
-
-        [TestMethod]
-        public async Task PreSubmissionDecision_WhenCalled_CreatesRejectSubmissionJourneyDataAndRedirectsToRejectSubmission()
-        {
-            var result = await _systemUnderTest.PreSubmissionDecision("OrganisationName", Guid.NewGuid(), "Submitter");
-
-            // Assert
-            Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToActionResult>();
-
-            var actionResult = result as RedirectToActionResult;
-            Assert.IsNotNull(actionResult);
-            actionResult.ActionName.Should().Be("RejectSubmission");
         }
     }
 }

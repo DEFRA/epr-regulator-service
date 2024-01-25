@@ -1,18 +1,17 @@
+using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
-using EPR.RegulatorService.Frontend.UnitTests.TestData;
-using EPR.RegulatorService.Frontend.UnitTests.Constants;
-using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
+using EPR.RegulatorService.Frontend.UnitTests.Constants;
+using EPR.RegulatorService.Frontend.UnitTests.TestData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
-    using Frontend.Core.Models.Submissions;
-
     [TestClass]
     public class AcceptSubmissionTests : SubmissionsTestBase
     {
@@ -129,13 +128,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert
             result.Should().NotBeNull();
-            result!.ActionName.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(SubmissionsController.Submissions));
-
-            var routeValues = result.RouteValues;
-            routeValues.Should().NotBeNull();
-            routeValues!.Values.Should().Contain(EndpointResponseStatus.Success);
-            routeValues.Values.Should().Contain(organisationSubmission.OrganisationName);
+            
+            _systemUnderTest.TempData["SubmissionResultAccept"].Should().Be(EndpointResponseStatus.Success);
+            _systemUnderTest.TempData["SubmissionResultOrganisationName"].Should().Be("Test Org Ltd.");
 
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Once);
         }

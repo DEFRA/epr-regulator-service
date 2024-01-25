@@ -45,7 +45,7 @@ public class SubmissionsListViewComponent : ViewComponent
                 organisationType,
                 statuses,
                 request.PageNumber);
-        if ((request.PageNumber > pagedOrganisationSubmissions.TotalPages && request.PageNumber > 1)|| request.PageNumber < 1)
+        if ((request.PageNumber > pagedOrganisationSubmissions.TotalPages && request.PageNumber > 1) || request.PageNumber < 1)
         {
             _httpContextAccessor.HttpContext.Response.Redirect(PagePath.PrePageNotFound);
         }

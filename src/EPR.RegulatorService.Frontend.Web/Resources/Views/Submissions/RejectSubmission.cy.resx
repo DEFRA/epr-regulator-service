@@ -18,25 +18,26 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Title.RejectSubmission" xml:space="preserve">
-    <value>WReject submission</value>
+    <value>Gwrthod y cyflwyniad</value>
   </data>
   <data name="Title.Description" xml:space="preserve">
-    <value>WWe’ll use this information in an email to {0} and add it to the submission details.</value>
+    <value>Byddwn ni’n defnyddio'r wybodaeth yma mewn neges ebost at {0} ac yn ei hychwanegu at y manylion cyflwyno.</value>
   </data>
   <data name="Subtitle.RejectionReason" xml:space="preserve">
-    <value>WWhy are you rejecting this submission?</value>
+    <value>Pam rydych chi'n gwrthod y cyflwyniad yma?</value>
   </data>
   <data name="Subtitle.ResubmissionRequired" xml:space="preserve">
-    <value>WDo you require a resubmission?</value>
+    <value>Oes arnoch chi angen ailgyflwyniad?</value>
   </data>
   <data name="Error.RejectionReason" xml:space="preserve">
-    <value>WEnter why you’re rejecting this submission</value>
+    <value>Dywedwch pam rydych chi’n
+gwrthod y cyflwyniad yma</value>
   </data>
   <data name="Error.RejectionReasonTooLong" xml:space="preserve">
-    <value>WYour summary must be 500 characters or less</value>
+    <value>Rhaid i'ch crynodeb fod yn 500 o gymeriadau neu lai</value>
   </data>
   <data name="Error.ResubmissionRequired" xml:space="preserve">
-    <value>WSelect yes if you require a resubmission</value>
+    <value>Dewiswch ‘Oes’ os oes arnoch chi angen ailgyflwyniad</value>
   </data>
 </root>
 

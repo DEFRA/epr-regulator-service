@@ -1,7 +1,7 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 @model RegulatorSubmissionFiltersModel
 
-@using (Html.BeginForm("Submissions", "Submissions", FormMethod.Get))
+@using (Html.BeginForm("Submissions", "Submissions", FormMethod.Post))
 {
   <div class="epr-filter-panel">
     <div class="govuk-width-container">
@@ -95,12 +95,8 @@
               </fieldset>
             </div>
             @Html.Hidden("isFilteredSearch", true)
-            <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button">@SharedLocalizer["ApplyFilters"].Value</button>
-            @Html.ActionLink(SharedLocalizer["ClearFilters"].Value,
-              "Submissions",
-              "Submissions",
-              new { clearFilters = true },
-              new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-filter-panel-control" })
+            <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button" name="filterType" value="SubmitFilters">@SharedLocalizer["ApplyFilters"].Value</button>
+            <button type="submit" class="govuk-body govuk-link epr-filter-panel-control epr-link-no-visited-state" data-module="govuk-button" name="filterType" value="ClearFilters" >@SharedLocalizer["ClearFilters"].Value</button>
           </div>
         </div>
       </div>

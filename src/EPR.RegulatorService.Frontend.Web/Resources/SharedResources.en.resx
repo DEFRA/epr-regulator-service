@@ -133,4 +133,16 @@
   <data name="Regulator.CompanyDetail.JobTitle" xml:space="preserve">
     <value>Job title</value>
   </data>
+  <data name="OrganisationType.DirectProducer" xml:space="preserve">
+    <value>Direct Producer</value>
+  </data>
+  <data name="OrganisationType.ComplianceScheme" xml:space="preserve">
+    <value>Compliance scheme</value>
+  </data>
+  <data name="Tag.ApprovedPerson" xml:space="preserve">
+    <value>Approved Person</value>
+  </data>
+  <data name="Tag.DelegatedPerson" xml:space="preserve">
+    <value>Delegated Person</value>
+  </data>
 </root>

@@ -16,15 +16,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
+
   <data name="Title.AcceptSubmission" xml:space="preserve">
-    <value>WAccept Submission</value>
+    <value>Derbyn Cyflwyniad</value>
   </data>
   <data name="Header.AreYouSure" xml:space="preserve">
-    <value>WAre you sure you want to accept this submission?</value>
+    <value>Ydych chi'n siŵr yr hoffech chi
+dderbyn y cyflwyniad yma?</value>
   </data>
   <data name="Error.AcceptSubmission" xml:space="preserve">
-    <value>WSelect yes if you want to accept this submission</value>
+    <value>Dewiswch ‘Hoffwn’ os hoffech chi dderbyn y cyflwyniad yma</value>
   </data>
 </root>
 

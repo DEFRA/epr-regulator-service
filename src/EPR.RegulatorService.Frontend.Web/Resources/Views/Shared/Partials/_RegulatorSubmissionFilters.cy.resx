@@ -17,24 +17,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Title.FilterOptions" xml:space="preserve">
-    <value>WFilter options</value>
+    <value>Opsiynau hidlo</value>
   </data>
   <data name="SubTitle.OrganisationName" xml:space="preserve">
-    <value>WOrganisation name</value>
+    <value>Enw’r sefydliad</value>
   </data>
   <data name="SubTitle.OrganisationId" xml:space="preserve">
-    <value>WOrganisation ID</value>
+    <value>ID y sefydliad</value>
   </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
-    <value>WOrganisation type</value>
+    <value>Math o sefydliad</value>
   </data>
   <data name="SubTitle.SubmissionStatus" xml:space="preserve">
-    <value>WSubmission status</value>
+    <value>Statws yr ailgyflwyniad</value>
   </data>
   <data name="Checkbox.OrganisationType.DirectProducer" xml:space="preserve">
-    <value>WDirect producer</value>
+    <value>Cynhyrchydd Uniongyrchol</value>
   </data>
   <data name="Checkbox.OrganisationType.ComplianceScheme" xml:space="preserve">
-    <value>WCompliance scheme</value>
+    <value>Cynllun cydymffurfio</value>
   </data>
 </root>

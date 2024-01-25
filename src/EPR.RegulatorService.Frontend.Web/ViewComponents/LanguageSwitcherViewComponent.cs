@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
-using System.Web;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents;
 
@@ -23,27 +22,9 @@ public class LanguageSwitcherViewComponent : ViewComponent
     {
         var cultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
 
-        var queryString = HttpUtility.ParseQueryString(Request.QueryString.ToString());
-
-        string? token = queryString.Get("token");
-
-        string? returnUrlInLink = queryString.Get("returnUrl");
-
         string returnPath = Request.Path.Value ?? "/";
+        var returnUrl = $"{returnPath}{Request.QueryString.ToString()}";
 
-        var returnUrl = token == null
-            ? $"{returnPath}"
-            : $"{returnPath}?token={token}";
-
-        if (returnUrlInLink != null && token == null)
-        {
-            returnUrl += $"?returnUrl={returnUrlInLink}";
-        }
-
-        if (returnUrlInLink != null && token != null)
-        {
-            returnUrl += $"&returnUrl={returnUrlInLink}";
-        }
         var languageSwitcherModel = new LanguageSwitcherModel
         {
             SupportedCultures = _localizationOptions.Value.SupportedCultures!.ToList(),

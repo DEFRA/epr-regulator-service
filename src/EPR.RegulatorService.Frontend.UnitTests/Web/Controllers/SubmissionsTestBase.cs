@@ -14,6 +14,8 @@ using Moq;
 using System.Security.Claims;
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
 public abstract class SubmissionsTestBase
 {
     protected const string ModelErrorKey = "Error";
@@ -27,6 +29,7 @@ public abstract class SubmissionsTestBase
     protected JourneySession JourneySessionMock { get; set; }
     protected Mock<IOptions<ExternalUrlsOptions>> _urlsOptionMock = null!;
     protected Mock<IConfiguration> _configurationMock = null!;
+    protected ITempDataDictionary _tempDataDictionary = null!;
     private const string PowerBiLogin = "https://app.powerbi.com/";
 
     protected void SetupBase(UserData userData = null)
@@ -35,6 +38,7 @@ public abstract class SubmissionsTestBase
         _userMock = new Mock<ClaimsPrincipal>();
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         _urlsOptionMock = new Mock<IOptions<ExternalUrlsOptions>>();
+        _tempDataDictionary = new TempDataDictionary(_httpContextMock.Object, Mock.Of<ITempDataProvider>());
         _facadeServiceMock = new Mock<IFacadeService>();
         _configurationMock = new Mock<IConfiguration>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
@@ -56,6 +60,7 @@ public abstract class SubmissionsTestBase
             _urlsOptionMock.Object, _facadeServiceMock.Object);
 
         _systemUnderTest.ControllerContext.HttpContext = _httpContextMock.Object;
+        _systemUnderTest.TempData = _tempDataDictionary;
     }
 
     private void SetUpUserData(UserData? userData)

@@ -15,9 +15,6 @@
 
 @using (Html.BeginForm("RejectSubmission", "Submissions", FormMethod.Post))
 {
-  @Html.HiddenFor(x => x.OrganisationName)
-  @Html.HiddenFor(x => x.SubmissionId)
-  @Html.HiddenFor(x => x.SubmittedBy)
   <div class="govuk-width-container">
     <main class="govuk-main-wrapper" id="main-content" role="main">
       <div class="govuk-grid-row">

@@ -40,7 +40,7 @@
     <value>WReason for rejection</value>
   </data>
   <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
-    <value>WResubmission required</value>
+    <value>Angen ailgyflwyniad</value>
   </data>
   <data name="SummaryList.Information.Text" xml:space="preserve">
     <value>Chaiff {0} ddim ailgyflwyno nes bod y cyflwyniad yma wedi’i weithredu.</value>

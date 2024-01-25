@@ -16,12 +16,21 @@
         {
           @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
         }
-        
+
         <h1 class="govuk-caption-xl">@Localizer["Title.ManagePackagingDataSubmissions"]</h1>
         <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">@Model.OrganisationName</h2>
         <div class="govuk-!-margin-bottom-4">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationType"]</h3>
-            <p class="govuk-body">@Model.OrganisationType</p>
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationType"]</h3>
+          <p class="govuk-body">
+            @if(@Model.OrganisationType.Equals("Direct Producer"))
+            {
+              @SharedLocalizer["OrganisationType.DirectProducer"]
+            }
+            else
+            {
+              @SharedLocalizer["OrganisationType.ComplianceScheme"]
+            }
+          </p>
         </div>
         <div class="govuk-!-margin-bottom-4">
           <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationId"]</h3>
@@ -35,7 +44,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
         @if (!Model.IsResubmission)
