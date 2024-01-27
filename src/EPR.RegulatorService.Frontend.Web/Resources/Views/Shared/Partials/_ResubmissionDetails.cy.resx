@@ -25,7 +25,7 @@
     <value>Amser a dyddiad ailgyflwyno</value>
   </data>
   <data name="SummaryList.SubTitle.SubmittedBy" xml:space="preserve">
-    <value>Ailgyflwynwyd gan</value>
+    <value>Wedi'i ailgyflwyno gan</value>
   </data>
   <data name="SummaryList.SubTitle.AccountRole" xml:space="preserve">
     <value>Rôl yn y cyfrif</value>

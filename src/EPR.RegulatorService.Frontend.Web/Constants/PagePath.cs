@@ -8,13 +8,11 @@ public static class PagePath
     public const string EnrolmentRequests = "enrolment-requests";
     public const string TransferApplication = "transfer-application";
     public const string EnrolmentDecision= "enrolment-decision";
-    public const string PreEnrolmentDecision = "pre-enrolment-decision";
     public const string LandingPage = "LandingPage";
-    public const string Submissions = "manage-submissions";
-    public const string SubmissionDetails = "submission-details";
-    public const string PreSubmissionDecision = "pre-submission-decision";
-    public const string RejectSubmission = "reject-submission";
-    public const string AcceptSubmission = "accept-submission";
+    public const string Submissions = "manage-packaging-data-submissions";
+    public const string SubmissionDetails = "packaging-data-submission";
+    public const string RejectSubmission = "packaging-data-submission-reject";
+    public const string AcceptSubmission = "packaging-data-submission-confirm";
     public const string RegulatorSearchPage = "regulator-search-page";
     public const string RegulatorSearchResult = "regulator-search-results";
     public const string RegulatorCompanyDetail = "regulator-company-detail";

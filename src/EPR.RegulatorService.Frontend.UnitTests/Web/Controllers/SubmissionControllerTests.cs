@@ -21,12 +21,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         private const string SearchOrganisationName = "Test Organisation";
         private const string UserName = "Test User";
         private Fixture _fixture;
-        
+
         [TestInitialize]
         public void Setup()
         {
             SetupBase();
-            
+
             JourneySessionMock = new JourneySession()
             {
                 RegulatorSubmissionSession = new RegulatorSubmissionSession()
@@ -68,7 +68,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             viewResult.ViewData.Should().ContainKey("CustomBackLinkToDisplay");
             viewResult.ViewData["CustomBackLinkToDisplay"].Should().Be($"/regulators/{PagePath.Home}");
         }
-        
+
         [TestMethod]
         public async Task GivenOnSubmissionsGet_WithValidSession_WhenSubmissionAccepted_ThenUpdatesSession_AndGetsValuesFromTempData_AndReturnsView()
         {
@@ -97,7 +97,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             viewResult.ViewData["CustomBackLinkToDisplay"].Should().Be($"/regulators/{PagePath.Home}");
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(DefaultPageNumber);
         }
-        
+
         [TestMethod]
         public async Task GivenOnSubmissionsGet_WithValidSession_WhenSubmissionRejected_ThenUpdatesSession_AndGetsValuesFromTempData_AndReturnsView()
         {
@@ -126,7 +126,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             viewResult.ViewData["CustomBackLinkToDisplay"].Should().Be($"/regulators/{PagePath.Home}");
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(DefaultPageNumber);
         }
-        
+
         [TestMethod]
         public async Task GivenOnSubmissionsGet_WithValidSession_WhenPageTwoSelected_ThenUpdatesSessionAndReturnsView()
         {
@@ -147,7 +147,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             viewResult.ViewData.Should().ContainKey("CustomBackLinkToDisplay");
             viewResult.ViewData["CustomBackLinkToDisplay"].Should().Be($"/regulators/{PagePath.Home}");
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(PageNumberTwo);
-            
+
             _systemUnderTest.TempData["SubmissionResultAccept"].Should().BeNull();
             _systemUnderTest.TempData["SubmissionResultReject"].Should().BeNull();
             _systemUnderTest.TempData["SubmissionResultOrganisationName"].Should().BeNull();
@@ -167,7 +167,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             JourneySessionMock.RegulatorSubmissionSession.IsPendingSubmissionChecked = false;
             JourneySessionMock.RegulatorSubmissionSession.IsAcceptedSubmissionChecked = false;
             JourneySessionMock.RegulatorSubmissionSession.IsRejectedSubmissionChecked = false;
-            
+
             // Act
             var result = await _systemUnderTest.Submissions();
 
@@ -184,14 +184,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             viewModel.IsAcceptedSubmissionChecked.Should().BeFalse();
             viewModel.IsRejectedSubmissionChecked.Should().BeFalse();
         }
-        
+
         [TestMethod]
         public async Task Applications_WithValidSession_ReturnsCorrectViewAndModel_Where_NoFilterActionApplied_AndNullJsonSubmission()
         {
             // Arrange
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
-            
+
             // Act
             var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel());
 
@@ -200,7 +200,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectToActionResult = result as RedirectToActionResult;
             redirectToActionResult.ActionName.Should().Be("error");
         }
-        
+
         [TestMethod]
         public async Task Applications_WithValidSession_ReturnsCorrectViewAndModel_Where_NoFilterActionApplied_AndJsonSubmissionNotEmpty()
         {
@@ -210,7 +210,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var submission = _fixture.Create<Submission>();
             var submissionString =  JsonSerializer.Serialize(submission);
-            
+
             // Act
             var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel(), null, submissionString);
 
@@ -228,7 +228,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
-            
+
             // Act
             var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel(), FilterActions.SubmitFilters);
 
@@ -236,7 +236,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             result.Should().BeOfType<RedirectToActionResult>();
             var redirectToActionResult = result as RedirectToActionResult;
             redirectToActionResult.ActionName.Should().Be("Submissions");
-            
+
             var session = JourneySessionMock.RegulatorSubmissionSession;
             session.CurrentPageNumber.Should().Be(DefaultPageNumber);
             session.SearchOrganisationName.Should().Be(SearchOrganisationName);
@@ -247,14 +247,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.IsAcceptedSubmissionChecked.Should().BeTrue();
             session.IsRejectedSubmissionChecked.Should().BeTrue();
         }
-        
+
         [TestMethod]
         public async Task Applications_WithValidSession_ReturnsCorrectViewAndModel_Where_FiltersCleared()
         {
             // Arrange
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
-            
+
             // Act
             var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel{ClearFilters = true}, FilterActions.ClearFilters);
 
@@ -273,14 +273,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.IsAcceptedSubmissionChecked.Should().BeFalse();
             session.IsRejectedSubmissionChecked.Should().BeFalse();
         }
-        
+
         [TestMethod]
         public async Task Applications_WithValidSession_ReturnsCorrectViewAndModel_Where_RedirectedFromSecondPage()
         {
             // Arrange
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
-            
+
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationName = SearchOrganisationName;
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationId = string.Empty;
             JourneySessionMock.RegulatorSubmissionSession.IsDirectProducerChecked = true;
@@ -307,7 +307,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             viewModel.IsAcceptedSubmissionChecked.Should().BeFalse();
             viewModel.IsRejectedSubmissionChecked.Should().BeFalse();
         }
-        
+
         [TestMethod]
         public void Given_TimeAndDateForSubmission_Set_Then_FormatTimeAndDateForSubmission_As_String()
         {
@@ -329,7 +329,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var actionResult = result as RedirectToActionResult;
             actionResult?.ActionName.Should().Be("SubmissionDetails");
         }
-        
+
         [TestMethod]
         public async Task GivenOnSubmissionDetailsPost_WhenJourneyTypeIsAccept_ThenRedirectToAcceptSubmission()
         {
@@ -345,7 +345,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectToActionResult = result as RedirectToActionResult;
             redirectToActionResult.ActionName.Should().Be("AcceptSubmission");
         }
-        
+
         [TestMethod]
         public async Task GivenOnSubmissionDetailsPost_WhenJourneyTypeIsReject_ThenSaveSession_AndRedirectToRejectSubmission()
         {
@@ -357,7 +357,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = SearchOrganisationName, SubmissionId = Guid.NewGuid(), SubmittedBy = UserName
             };
-            
+
             // Act
             var result = await _systemUnderTest.SubmissionDetails(submissionDetailsViewModel, JourneyType.Reject);
 
@@ -366,8 +366,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectToActionResult = result as RedirectToActionResult;
             redirectToActionResult.ActionName.Should().Be("RejectSubmission");
 
-            JourneySessionMock.RegulatorSubmissionSession.RejectSubmissionJourneyData.OrganisationName.Should().Be(submissionDetailsViewModel.OrganisationName);
-            JourneySessionMock.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmissionId.Should().Be(submissionDetailsViewModel.SubmissionId);
             JourneySessionMock.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmittedBy.Should().Be(submissionDetailsViewModel.SubmittedBy);
         }
 
@@ -376,10 +374,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionFiltersModel = new SubmissionFiltersModel { ClearFilters = true };
-            
+
             // Act
             _systemUnderTest.SetOrResetFilterValuesInSession(JourneySessionMock, submissionFiltersModel);
-            
+
             //Assert
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationName.Should().Be(string.Empty);
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationId.Should().Be(string.Empty);
@@ -390,7 +388,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             JourneySessionMock.RegulatorSubmissionSession.IsRejectedSubmissionChecked.Should().BeFalse();
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(DefaultPageNumber);
         }
-        
+
         [TestMethod]
         public async Task GivenSetOrResetFilterValuesInSession_WhenNotClearFilters_AndIsFilterable_ThenUpdatesFiltersInSession()
         {
@@ -401,10 +399,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 IsFilteredSearch = true,
                 SearchOrganisationName = SearchOrganisationName
             };
-            
+
             // Act
             _systemUnderTest.SetOrResetFilterValuesInSession(JourneySessionMock, submissionFiltersModel);
-            
+
             // Assert
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationName.Should().Be(SearchOrganisationName);
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationId.Should().Be(string.Empty);

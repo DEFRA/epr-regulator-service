@@ -4,11 +4,11 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
-using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -49,7 +49,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
             session.RegulatorSubmissionSession.RejectSubmissionJourneyData = null;
-            
+
             if (pageNumber == null)
             {
                 session.RegulatorSubmissionSession.CurrentPageNumber ??= 1;
@@ -58,12 +58,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             {
                 session.RegulatorSubmissionSession.CurrentPageNumber = pageNumber;
             }
-            
+
             SetCustomBackLink();
             EndpointResponseStatus? submissionResultAccept = TempData.TryGetValue(SubmissionResultAccept, out object? acceptSubmissionResult) ? (EndpointResponseStatus)acceptSubmissionResult : EndpointResponseStatus.NotSet;
             EndpointResponseStatus? submissionResultReject = TempData.TryGetValue(SubmissionResultReject, out object? rejectSubmissionResult) ? (EndpointResponseStatus)rejectSubmissionResult : EndpointResponseStatus.NotSet;
             string? submissionResultOrganisationName = TempData.TryGetValue(SubmissionResultOrganisationName, out object? organisationName) ? organisationName.ToString() : string.Empty;
-            
+
             var model = new SubmissionsViewModel
             {
                 SearchOrganisationName = session.RegulatorSubmissionSession.SearchOrganisationName,
@@ -96,12 +96,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             {
                 if (jsonSubmission == null)
                 {
-                    return RedirectToAction(PagePath.Error, "Error");  
+                    return RedirectToAction(PagePath.Error, "Error");
                 }
-                
+
                 var submission = JsonSerializer.Deserialize<Submission>(jsonSubmission);
                 session.RegulatorSubmissionSession.OrganisationSubmission = submission;
-                    
+
                 return await SaveSessionAndRedirect(
                     session,
                     nameof(SubmissionDetails),
@@ -109,7 +109,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                     PagePath.SubmissionDetails,
                     null);
             }
-            
+
             //if filtering
             if (filterType == FilterActions.ClearFilters)
             {
@@ -128,17 +128,17 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 IsFilteredSearch = viewModel.IsFilteredSearch,
                 ClearFilters = viewModel.ClearFilters
             };
-            
+
             SetOrResetFilterValuesInSession(session, submissionFiltersModel);
 
             return await SaveSessionAndRedirect(
                 session,
                 nameof(Submissions),
                 PagePath.Submissions,
-                PagePath.Submissions, 
+                PagePath.Submissions,
                 null);
         }
-        
+
         [HttpGet]
         [Route(PagePath.SubmissionDetails)]
         public async Task<IActionResult> SubmissionDetails()
@@ -186,14 +186,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                     PagePath.AcceptSubmission,
                     null);
             }
-            
+
             session.RegulatorSubmissionSession.RejectSubmissionJourneyData = new RejectSubmissionJourneyData
             {
-                OrganisationName = model.OrganisationName,
-                SubmissionId = model.SubmissionId,
                 SubmittedBy = model.SubmittedBy
             };
-            
+
             return await SaveSessionAndRedirect(
                 session,
                 nameof(RejectSubmission),
@@ -246,7 +244,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 
                 TempData[SubmissionResultAccept] = result;
                 TempData[SubmissionResultOrganisationName] = organisationName;
-                
+
                 return await SaveSessionAndRedirect(
                     session,
                     nameof(Submissions),
@@ -266,8 +264,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             var rejectSubmissionJourneyData = session.RegulatorSubmissionSession.RejectSubmissionJourneyData;
             var model = new RejectSubmissionViewModel
             {
-                OrganisationName = rejectSubmissionJourneyData.OrganisationName,
-                SubmissionId = rejectSubmissionJourneyData.SubmissionId,
                 SubmittedBy = rejectSubmissionJourneyData.SubmittedBy
             };
 
@@ -286,6 +282,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 
             if (!ModelState.IsValid)
             {
+                model.SubmittedBy = session.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmittedBy;
+
                 SetBackLink(session, PagePath.RejectSubmission);
                 return View(nameof(RejectSubmission), model);
             }
@@ -303,7 +301,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             };
 
             var result = await _facadeService.SubmitPoMDecision(request);
-            
+
             TempData[SubmissionResultReject] = result;
             TempData[SubmissionResultOrganisationName] = organisationName;
 
@@ -314,7 +312,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 PagePath.Submissions,
                 null);
         }
-        
+
         [HttpGet]
         [Route(PagePath.PrePageNotFound)]
         public async Task<IActionResult> PrePageNotFound()

@@ -19,6 +19,9 @@
   <data name="Title.ManagePackagingDataSubmissions" xml:space="preserve">
     <value>Rheoli cyflwyniadau data pecynwaith</value>
   </data>
+  <data name="Title.ManagePackagingDataSubmissionsDetails" xml:space="preserve">
+    <value>Rheoli manylion cyflwyniad data pecynwaith</value>
+  </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
     <value>Math o sefydliad</value>
   </data>

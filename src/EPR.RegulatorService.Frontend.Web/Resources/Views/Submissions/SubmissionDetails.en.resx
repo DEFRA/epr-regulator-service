@@ -19,6 +19,9 @@
   <data name="Title.ManagePackagingDataSubmissions" xml:space="preserve">
     <value>Manage packaging data submissions</value>
   </data>
+  <data name="Title.ManagePackagingDataSubmissionsDetails" xml:space="preserve">
+    <value>Manage packaging data submission details</value>
+  </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
     <value>Organisation type</value>
   </data>

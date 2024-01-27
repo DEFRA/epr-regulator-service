@@ -7,7 +7,6 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
         public List<string> Journey { get; set; } = new();
         public Submission OrganisationSubmission { get; set; }
         public RejectSubmissionJourneyData? RejectSubmissionJourneyData { get; set; }
-        public string OrganisationName { get; set; }
         public string? SearchOrganisationName { get; set; } = string.Empty;
         public string? SearchOrganisationId { get; set; } = string.Empty;
         public bool IsDirectProducerChecked { get; set; }
