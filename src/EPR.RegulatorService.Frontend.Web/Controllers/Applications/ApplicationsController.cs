@@ -73,7 +73,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                 TransferNationResult = transferNationResult.Value,
                 TransferredOrganisationName = transferredOrganisationName,
                 TransferredOrganisationAgency = transferredOrganisationAgency,
-                RejectedUserName = TempData.TryGetValue("RejectUserName", out object? rejectUserName) ? rejectUserName.ToString() : string.Empty
+                RejectedUserName = TempData.TryGetValue("RejectUserName", out object? rejectUserName) ? rejectUserName.ToString() : string.Empty,
+                RejectionStatus = TempData.TryGetValue("RejectResult", out object? rejectResult) ? (EndpointResponseStatus)rejectResult : EndpointResponseStatus.NotSet,
+                RejectedServiceRole = TempData.TryGetValue("RejectedRole", out object? rejectedRole) ? rejectedRole.ToString() : string.Empty
             };
 
             await SaveSessionAndJourney(session, PagePath.Applications, PagePath.Applications);
