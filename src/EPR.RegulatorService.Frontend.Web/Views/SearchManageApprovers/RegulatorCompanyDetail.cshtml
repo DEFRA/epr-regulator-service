@@ -1,4 +1,4 @@
-﻿@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
+@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorSearchPage
 
 @model RegulatorCompanyDetailViewModel
@@ -41,11 +41,11 @@
           <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.CompaniesHouseNumber"]</h3>
           @if (!string.IsNullOrEmpty(@Model.CompaniesHouseNumber))
           {
-            <p id="regulatorCompanyHouseNumber" class="govuk-body">@Model.CompaniesHouseNumber</p>
+            <p id="regulatorCompanyHouseNumber" class="govuk-body govuk-!-margin-bottom-0">@Model.CompaniesHouseNumber</p>
             <companies-house-link gov-value="@Model.CompaniesHouseNumber"
-                                  id="companyHouseLink"
-                                  class="govuk-link govuk-link--no-visited-state">
-              @Localizer["link.CompaniesHouseRegister"]
+                                    id="companyHouseLink"
+                                    class="govuk-link govuk-link--no-visited-state">
+                  @Localizer["link.CompaniesHouseRegister"]
             </companies-house-link>
           }
           else
