@@ -188,7 +188,7 @@ table.responsive-table {
         .govuk-table__header > .govuk-body,
         .govuk-table__cell > .govuk-body,
         .govuk-table__cell form button.govuk-link.link-button-destructive{
-            overflow-wrap: break-word;
+            word-break: break-word;
             max-inline-size: 200px;
             min-inline-size: 100px;
         }
@@ -223,7 +223,7 @@ table.responsive-table {
         .govuk-table__header > .govuk-body,
         .govuk-table__cell > .govuk-body,
         .govuk-table__cell form button.govuk-link.link-button-destructive {
-            overflow-wrap: break-word !important;
+            word-break: break-word;
             inline-size: 400px !important;
         }
     }
@@ -272,7 +272,7 @@ table.responsive-table {
         .govuk-table__header > .govuk-body,
         .govuk-table__cell > .govuk-body,
         .govuk-table__cell form button.govuk-link.link-button-destructive {
-            overflow-wrap: break-word !important;
+            word-break: break-word;
             inline-size: auto !important;
         }
     }

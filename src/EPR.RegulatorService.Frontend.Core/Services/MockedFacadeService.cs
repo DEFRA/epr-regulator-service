@@ -108,10 +108,28 @@ public class MockedFacadeService : IFacadeService
             var hasApprovedPending = random.Next(2) == 0;
             var hasDelegatedPending = !hasApprovedPending || random.Next(2) == 0;
 
+            string organisationName = string.Empty;
+
+            switch (i % 3)
+            {
+                case 0:
+                    // Regular name
+                    organisationName = $"Organisation {i} Ltd";
+                    break;
+                case 1:
+                    // Extra long unbroken name
+                    organisationName = $"Organisation{i}LtdReallyReallyReallyReallyReallyReallyReallyReallyLongName";
+                    break;
+                case 2:
+                    // Extra long name with spaces
+                    organisationName += $"Organisation{i}Ltd ReallyReallyReallyReallyReallyReallyReally Really Long Name";
+                    break;
+            }
+
             allItems.Add(new OrganisationApplications
             {
                 OrganisationId = Guid.NewGuid(),
-                OrganisationName = $"Organisation {i} Ltd",
+                OrganisationName = organisationName,
                 LastUpdate = DateTime.Now.AddDays(-random.Next(1, 15)),
                 Enrolments = new()
                 {
