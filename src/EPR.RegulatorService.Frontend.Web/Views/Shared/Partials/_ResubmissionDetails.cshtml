@@ -90,7 +90,7 @@
         </div>
       }
 
-      @if (Model.Status != SubmissionStatus.Accepted)
+      @if (Model.Status == SubmissionStatus.Rejected)
       {
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
