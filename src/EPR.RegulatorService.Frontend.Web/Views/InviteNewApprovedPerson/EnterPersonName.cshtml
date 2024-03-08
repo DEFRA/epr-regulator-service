@@ -28,9 +28,6 @@
                     </h1>
                   <div class="govuk-form-group">
                     
-                      <h1 class="govuk-label-wrapper">
-                      </h1>
-                    
                     <div class="govuk-form-group@(errorsViewModel.HasErrorKey(nameof(Model.FirstName)) ? " govuk-form-group--error" : "")">
                         <label class="govuk-label" asp-for="FirstName">
                             @Localizer["FirstName.Label"]
@@ -44,7 +41,7 @@
                     </div>
 
                     <div class="govuk-form-group@(errorsViewModel.HasErrorKey(nameof(Model.LastName)) ? " govuk-form-group--error" : "")">
-                      <label class="govuk-label" asp-for="FirstName">
+                      <label class="govuk-label" asp-for="LastName">
                           @Localizer["LastName.Label"]
                       </label>
                       @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(Model.LastName)])
