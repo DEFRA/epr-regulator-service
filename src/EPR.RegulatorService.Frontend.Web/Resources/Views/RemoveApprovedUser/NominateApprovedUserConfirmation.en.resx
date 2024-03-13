@@ -22,7 +22,7 @@
       <value>Check your answers before confirming nominated approved person</value>
   </data>
   <data name="Question.HasAnApprovedPersonBeenNominated" xml:space="preserve">
-      <value>Has an approved person been nominated?</value>
+      <value>Has a new approved person been nominated?</value>
   </data>
   <data name="Question.Name" xml:space="preserve">
       <value>Name</value>

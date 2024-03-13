@@ -144,13 +144,14 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         return RedirectToAction(PagePath.Error, "Error");
     }
 
-    private async Task<IActionResult> NominateOnly(AddRemoveApprovedUserSession addRemoveApprovedUserSession)
+    public async Task<IActionResult> NominateOnly(AddRemoveApprovedUserSession addRemoveApprovedUserSession)
     {
         var promotedApprovedUserModel = new RemovedNominatedUserViewModel()
         {
             PromotedUserName =
                 $"{addRemoveApprovedUserSession.NewApprovedUser.FirstName} " +
-                $"{addRemoveApprovedUserSession.NewApprovedUser.LastName}"
+                $"{addRemoveApprovedUserSession.NewApprovedUser.LastName}",
+            OrganisationName = addRemoveApprovedUserSession.OrganisationName
         };
         return RedirectToAction("EmailNominatedApprovedPerson", promotedApprovedUserModel);
     }
@@ -173,7 +174,7 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
     [Route(PagePath.EmailNominatedApprovedPerson)]
     public async Task<ActionResult> EmailNominatedApprovedPerson(RemovedNominatedUserViewModel model)
         => View("EmailSentToNominatedApprovedPerson", model);
-
+    
     [HttpGet]
     [Route(PagePath.AccountPermissionsChanged)]
     public async Task<ActionResult> AccountPermissionsChanged(RemovedNominatedUserViewModel model)

@@ -3,7 +3,7 @@
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:element name="root" msdata:IsDataSet="true">
-      
+
     </xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
@@ -28,7 +28,7 @@
     <value>Ebost</value>
   </data>
   <data name="Summary.RejectionMessage" xml:space="preserve">
-    <value>Os byddwch chi’n gwrthod y person a gymeradwywyd, byddwch chi hefyd yn gwrthod unrhyw bobl a ddirprwywyd ac yn cau cyfrif y sefydliad.</value>
+    <value>WIf you reject the approved person, the organisation will not be able to submit data.</value>
   </data>
   <data name="Summary.TransferComments" xml:space="preserve">
     <value>Sylwadau ar Drosglwyddo</value>

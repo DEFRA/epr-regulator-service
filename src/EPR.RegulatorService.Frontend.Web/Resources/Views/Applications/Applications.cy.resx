@@ -3,7 +3,7 @@
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:element name="root" msdata:IsDataSet="true">
-      
+
     </xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
@@ -32,7 +32,7 @@
     <value>Rydych chi wedi trosglwyddo {0} i {1}</value>
   </data>
   <data name="RejectedApprovedPerson" xml:space="preserve">
-    <value>Rydych chi wedi gwrthod {0} fel person a gymeradwywyd. Mae hyn hefyd yn golygu eich bod wedi gwrthod unrhyw bobl a ddirprwywyd.</value>
+    <value>WYou rejected {0} as an approved person. The organisation cannot submit data.</value>
   </data>
   <data name="Applications.Title" xml:space="preserve">
     <value>Asiantaeth yr Amgylchedd</value>

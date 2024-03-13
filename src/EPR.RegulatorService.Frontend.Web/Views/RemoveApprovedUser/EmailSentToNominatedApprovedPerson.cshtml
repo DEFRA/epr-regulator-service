@@ -1,4 +1,4 @@
-﻿@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
+@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
 
 @model EPR.RegulatorService.Frontend.Web.ViewModels.RemoveApprovedUser.RemovedNominatedUserViewModel;
 
@@ -12,7 +12,7 @@
           </h1>
         </div>
         <p id="pageTitle" class="govuk-body">
-          @Localizer["Page.CreateAccount", Model.PromotedUserName]
+                    @Localizer["Page.CreateAccount", Model.PromotedUserName, Model.OrganisationName]
           </p>
         <h2 class="govuk-heading-m">@Localizer["Page.Heading"]</h2>
 

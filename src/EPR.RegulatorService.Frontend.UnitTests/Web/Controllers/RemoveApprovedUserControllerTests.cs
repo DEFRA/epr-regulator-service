@@ -256,6 +256,37 @@ public class RemoveApprovedUserControllerTests
         result.ActionName.Should().Be("EmailNominatedApprovedPerson");
     }
 
+    [TestMethod]
+    public async Task NominateOnly_Returns_RedirectToAction_With_CorrectModel()
+    {
+        // Arrange
+        var addRemoveApprovedUserSession = new AddRemoveApprovedUserSession
+        {
+            NewApprovedUser = new OrganisationUser
+            {
+                FirstName = "John",
+                LastName = "Doe"
+            },
+            OrganisationName = "SampleOrg"
+        };
+
+
+        // Act
+        var result = await _controller.NominateOnly(addRemoveApprovedUserSession) as RedirectToActionResult;
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.AreEqual("EmailNominatedApprovedPerson", result.ActionName);
+               
+        result.RouteValues.Should().ContainKey("PromotedUserName");
+        result.RouteValues.Should().ContainKey("OrganisationName");
+        var promotedUserName = result.RouteValues["PromotedUserName"] as string;
+        var organisationName = result.RouteValues["OrganisationName"] as string;
+        Assert.AreEqual("John Doe", promotedUserName);
+        Assert.AreEqual("SampleOrg", organisationName);
+        
+
+    }
 
     [TestMethod]
     public async Task Submit_Returns_RemoveAndNominatedConfirmation_When_Response_Returns_Success()
