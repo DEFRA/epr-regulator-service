@@ -28,7 +28,7 @@
       <value>We use this information in an email to {0} {1}</value>
   </data>
   <data name="Reject.CommentsRequiredError" xml:space="preserve">
-      <value>Enter why you’re rejecting {0}</value>
+      <value>Enter your reason for rejecting {0}</value>
   </data>
   <data name="Reject.CommentsMaxLengthError" xml:space="preserve">
       <value>Your summary must be 200 characters or less</value>
