@@ -1,4 +1,3 @@
-using EPR.RegulatorService.Frontend.Web.Constants;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -73,11 +72,8 @@ public class AccountController : Controller
             return Ok();
         }
 
-        var selectedCulture = HttpContext.Session.GetString(Language.SessionLanguageKey);
-        var queryParams = !string.IsNullOrEmpty(selectedCulture) ? new { culture = selectedCulture } : null;
-
         scheme ??= OpenIdConnectDefaults.AuthenticationScheme;
-        var callbackUrl = Url.Action(action: "SignedOut", controller: "Home", values: queryParams, protocol: Request.Scheme);
+        var callbackUrl = Url.Action(action: "SignedOut", controller: "Home", values: null, protocol: Request.Scheme);
         return SignOut(
              new AuthenticationProperties
              {
