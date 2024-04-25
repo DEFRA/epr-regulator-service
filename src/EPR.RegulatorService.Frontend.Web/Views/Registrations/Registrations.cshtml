@@ -1,7 +1,7 @@
-@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
-@using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Core.Models
+@using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 
 @model RegistrationsViewModel
 
@@ -41,7 +41,7 @@
           @Localizer["Title.RegistrationsTitle"]
         </h2>
         <div id="contact-hint" class="govuk-hint">
-          @Localizer["Page.Registrations.Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@Localizer["PowerBILogin"]</a>.
+          @Localizer["Page.Registrations.Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
         </div>
 
         @await Component.InvokeAsync("RegistrationsList",

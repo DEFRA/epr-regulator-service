@@ -1,5 +1,6 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.MockedData;
 
+using Frontend.Core.Enums;
 using Frontend.Core.MockedData.Filters;
 using Frontend.Core.Models.Submissions;
 
@@ -29,9 +30,9 @@ public class MockedSubmissionFiltersTests
     }
 
     [TestMethod]
-    [DataRow(DirectProducer)]
-    [DataRow(ComplianceScheme)]
-    public async Task Test_Filter_By_Organisation_Type(string organisationType)
+    [DataRow(OrganisationType.DirectProducer)]
+    [DataRow(OrganisationType.ComplianceScheme)]
+    public async Task Test_Filter_By_Organisation_Type(OrganisationType organisationType)
     {
         var results = _allSubmissions
             .AsQueryable()
@@ -46,7 +47,7 @@ public class MockedSubmissionFiltersTests
     {
         var results = _allSubmissions
             .AsQueryable()
-            .FilterBySubmissionStatus(new []{ Accepted }).ToList();
+            .FilterByStatus(new []{ Accepted }).ToList();
 
         Assert.IsNotNull(results);
         results.Should().HaveCount(2);
@@ -57,7 +58,7 @@ public class MockedSubmissionFiltersTests
     {
         var results = _allSubmissions
             .AsQueryable()
-            .FilterBySubmissionStatus(new []{ Rejected }).ToList();
+            .FilterByStatus(new []{ Rejected }).ToList();
 
         Assert.IsNotNull(results);
         results.Should().HaveCount(2);
@@ -68,7 +69,7 @@ public class MockedSubmissionFiltersTests
     {
         var results = _allSubmissions
             .AsQueryable()
-            .FilterBySubmissionStatus(new []{ Pending }).ToList();
+            .FilterByStatus(new []{ Pending }).ToList();
 
         Assert.IsNotNull(results);
         results.Should().HaveCount(2);
@@ -79,7 +80,7 @@ public class MockedSubmissionFiltersTests
     {
         var results = _allSubmissions
             .AsQueryable()
-            .FilterBySubmissionStatus(new []{ Accepted, Pending }).ToList();
+            .FilterByStatus(new []{ Accepted, Pending }).ToList();
 
         Assert.IsNotNull(results);
         results.Should().HaveCount(4);
@@ -90,7 +91,7 @@ public class MockedSubmissionFiltersTests
     {
         var results = _allSubmissions
             .AsQueryable()
-            .FilterBySubmissionStatus(new []{ Rejected, Pending }).ToList();
+            .FilterByStatus(new []{ Rejected, Pending }).ToList();
 
         Assert.IsNotNull(results);
         results.Should().HaveCount(4);
@@ -104,42 +105,42 @@ public class MockedSubmissionFiltersTests
             {
                 OrganisationName = "DirectProducer_Accepted_111111",
                 OrganisationReference = "111 111",
-                OrganisationType = DirectProducer,
+                OrganisationType = OrganisationType.DirectProducer,
                 Decision = Accepted
             },
             new()
             {
                 OrganisationName = "ComplianceScheme_Accepted_123456",
                 OrganisationReference = "123 456",
-                OrganisationType = ComplianceScheme,
+                OrganisationType = OrganisationType.ComplianceScheme,
                 Decision = Accepted
             },
             new()
             {
                 OrganisationName = "DirectProducer_Rejected_222222",
                 OrganisationReference = "222 222",
-                OrganisationType = DirectProducer,
+                OrganisationType = OrganisationType.DirectProducer,
                 Decision = Rejected
             },
             new()
             {
                 OrganisationName = "ComplianceScheme_Rejected_333333",
                 OrganisationReference = "333 333",
-                OrganisationType = ComplianceScheme,
+                OrganisationType = OrganisationType.ComplianceScheme,
                 Decision = Rejected
             },
             new()
             {
                 OrganisationName = "DirectProducer_Pending_444444",
                 OrganisationReference = "444 444",
-                OrganisationType = DirectProducer,
+                OrganisationType = OrganisationType.DirectProducer,
                 Decision = Pending
             },
             new()
             {
                 OrganisationName = "ComplianceScheme_Pending_555555",
                 OrganisationReference = "555 555",
-                OrganisationType = ComplianceScheme,
+                OrganisationType = OrganisationType.ComplianceScheme,
                 Decision = Pending
             }
         };

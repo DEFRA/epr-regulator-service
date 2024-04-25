@@ -1,16 +1,21 @@
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Enums;
+using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
 using EPR.RegulatorService.Frontend.Core.Extensions;
+using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
+using System.Text.Json;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 {
@@ -18,36 +23,43 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
     [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
     public class RegistrationsController : Controller
     {
+        private const string DeclaredByComplianceScheme = "Not required (compliance scheme)";
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly string _pathBase;
         private readonly ExternalUrlsOptions _options;
+        private readonly IFacadeService _facadeService;
 
         public RegistrationsController(ISessionManager<JourneySession> sessionManager,
-            IConfiguration configuration, IOptions<ExternalUrlsOptions> options)
+            IConfiguration configuration, IOptions<ExternalUrlsOptions> options, IFacadeService facadeService)
         {
             _sessionManager = sessionManager;
             _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
             _options = options.Value;
+            _facadeService = facadeService;
         }
 
         [HttpGet]
         [Route(PagePath.Registrations)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Registrations(int? pageNumber, bool? clearFilters)
+        public async Task<IActionResult> Registrations(
+            RegistrationFiltersModel registrationFiltersModel,
+            int? pageNumber,
+            bool? clearFilters,
+            EndpointResponseStatus? rejectRegistrationResult = null,
+            string? organisationName = null)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             session ??= new JourneySession();
-            session.RegulatorRegistrationSession.RejectRegistrationJourneyData = null;
             session.RegulatorRegistrationSession.RegistrationFiltersModel ??= new RegistrationFiltersModel();
 
-            clearFilters = clearFilters ?? false;
-            if (clearFilters.Value)
+            if (clearFilters.HasValue && clearFilters.Value)
             {
                 ClearFilters(session);
             }
 
             SetCustomBackLink();
+            SetOrResetFilterValuesInSession(session, registrationFiltersModel);
 
             var model = new RegistrationsViewModel
             {
@@ -63,6 +75,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 },
                 PageNumber = pageNumber ?? 1,
                 PowerBiLogin = _options.PowerBiLogin,
+                RejectRegistrationResult = rejectRegistrationResult,
+                OrganisationName = organisationName
             };
 
             await SaveSessionAndJourney(session, PagePath.Registrations, PagePath.Registrations);
@@ -72,20 +86,132 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
         [HttpPost]
         [Route(PagePath.Registrations)]
-        public async Task<IActionResult> Registrations(
-            RegistrationFiltersModel registrationFiltersModel)
+        public async Task<IActionResult> Registrations(string jsonRegistration)
+        {
+            var registrationSubmission = JsonSerializer.Deserialize<Registration>(jsonRegistration);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            session ??= new JourneySession();
+            session.RegulatorRegistrationSession.OrganisationRegistration = registrationSubmission;
+
+            await SaveSession(session);
+            return RedirectToAction("RegistrationDetails", "Registrations");
+        }
+
+        [HttpGet]
+        [Route(PagePath.RegistrationDetails)]
+        public async Task<IActionResult> RegistrationDetails()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
+            ////////////////////////////////////////////////////////////////////////////////////////
+            var model = new RegistrationDetailsViewModel
+            {
+                OrganisationName = registration.OrganisationName,
+                BuildingName = registration.BuildingName,
+                SubBuildingName = registration.SubBuildingName,
+                BuildingNumber = registration.BuildingNumber,
+                Street = registration.Street,
+                Locality = registration.Locality,
+                DependantLocality = registration.DependantLocality,
+                Town = registration.Town,
+                County = registration.County,
+                Country = registration.Country,
+                PostCode = registration.PostCode,
+                OrganisationType = registration.OrganisationType.GetDescription(),
+                OrganisationReferenceNumber = registration.OrganisationReference,
+                FormattedTimeAndDateOfSubmission = DateTimeHelpers.FormatTimeAndDateForSubmission(registration.RegistrationDate),
+                SubmissionId = registration.SubmissionId,
+                SubmissionPeriod = registration.SubmissionPeriod,
+                SubmittedBy = $"{registration.FirstName} {registration.LastName}",
+                AccountRole = registration.ServiceRole,
+                Telephone = registration.Telephone,
+                Email = registration.Email,
+                Status = registration.Decision,
+                IsResubmission = registration.IsResubmission,
+                RejectionReason = registration.RejectionComments,
+                PreviousRejectionReason = registration.PreviousRejectionComments,
+                PowerBiLogin = _options.PowerBiLogin,
+                CompaniesHouseNumber = registration.CompaniesHouseNumber,
+                OrganisationDetailsFileId = registration.OrganisationDetailsFileId,
+                OrganisationDetailsFileName = registration.OrganisationDetailsFileName,
+                PartnershipDetailsFileId = registration.PartnershipDetailsFileId,
+                PartnershipDetailsFileName = registration.PartnershipDetailsFileName,
+                BrandDetailsFileId = registration.BrandDetailsFileId,
+                BrandDetailsFileName = registration.BrandDetailsFileName,
+                DeclaredBy = registration.OrganisationType == OrganisationType.ComplianceScheme
+                    ? DeclaredByComplianceScheme
+                    : $"{registration.FirstName} {registration.LastName}"
+            };
+
+            await SaveSessionAndJourney(session, PagePath.Registrations, PagePath.RegistrationDetails);
+            SetBackLink(session, PagePath.RegistrationDetails);
+
+            return View(nameof(RegistrationDetails), model);
+        }
+
+        [HttpGet]
+        [Route(PagePath.AcceptSubmission)]
+        public async Task<IActionResult> AcceptSubmission()
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Route(PagePath.RejectRegistration)]
+        public async Task<IActionResult> RejectRegistration()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var model = new RejectRegistrationViewModel();
+
+            await SaveSessionAndJourney(session, PagePath.RegistrationDetails, PagePath.RejectRegistration);
+            SetBackLink(session, PagePath.RejectRegistration);
+
+            return View(nameof(RejectRegistration), model);
+        }
+
+        [HttpPost]
+        [Route(PagePath.RejectRegistration)]////////////////////////////////////////////////////////////////////////// problem OrganisationDetailsFileId no value
+        public async Task<IActionResult> RejectRegistration(RejectRegistrationViewModel model)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-            SetOrResetFilterValuesInSession(session, registrationFiltersModel);
+            if (!ModelState.IsValid)
+            {
+                SetBackLink(session, PagePath.RejectRegistration);
+                return View(nameof(RejectRegistration), model);
+            }
+
+            var request = new RegulatorRegistrationDecisionCreateRequest
+            {
+                SubmissionId = session.RegulatorRegistrationSession.OrganisationRegistration.SubmissionId,
+                Decision = RegulatorDecision.Rejected,
+                Comments = model.ReasonForRejection,
+                FileId = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationDetailsFileId,
+                OrganisationId = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationId,
+                OrganisationName = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationName,
+                OrganisationNumber = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationReference
+            };
+
+            var result = await _facadeService.SubmitRegistrationDecision(request);
+
+            var organisationName = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationName;
+            session.RegulatorRegistrationSession.OrganisationRegistration = null;
 
             return await SaveSessionAndRedirect(
                 session,
                 nameof(Registrations),
+                PagePath.RejectRegistration,
                 PagePath.Registrations,
-                PagePath.Registrations,
-                null);
+                new
+                {
+                    rejectRegistrationResult = result,
+                    organisationName = organisationName
+                });
         }
+
+        private void SetBackLink(JourneySession session, string currentPagePath) =>
+            ViewBag.BackLinkToDisplay =
+                session.RegulatorRegistrationSession.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
 
         private static void SetOrResetFilterValuesInSession(JourneySession session, RegistrationFiltersModel registrationFiltersModel)
         {

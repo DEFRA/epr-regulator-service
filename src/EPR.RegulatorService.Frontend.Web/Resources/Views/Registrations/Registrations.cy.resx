@@ -31,7 +31,7 @@
   <data name="Page.Registrations.Subtitle" xml:space="preserve">
     <value>WThis list shows the current pending submissions and the latest actioned submissions. To view older submissions</value>
   </data>
-  <data name="PowerBILogin" xml:space="preserve">
-    <value>Wlog in to Power-BI</value>
+  <data name="Banner.Success.RejectedSubmission" xml:space="preserve">
+    <value>WYou have rejected {0}'s organisation details submission.</value>
   </data>
 </root>

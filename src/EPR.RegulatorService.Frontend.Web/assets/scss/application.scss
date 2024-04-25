@@ -377,6 +377,10 @@ button.epr-link-no-visited-state {
   width: 16%;
 }
 
+.epr-summary-list-download-link {
+  text-align: right;
+}
+
 table.cookies-table {
     @media (min-width: $narrow-media-width) {
         table-layout: auto;

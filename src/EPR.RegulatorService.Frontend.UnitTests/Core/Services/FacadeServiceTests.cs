@@ -1,19 +1,20 @@
+using AutoFixture;
 using EPR.RegulatorService.Frontend.Core.Configs;
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
-using AutoFixture;
-using Moq;
-using Moq.Protected;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
+using Moq;
+using Moq.Protected;
 using System.Net;
-using System.Text.Json;
 using System.Text;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-
+using System.Text.Json;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 {
@@ -56,11 +57,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["OrganisationsSearchPath"] = "organisations/search-organisations?currentPage={0}&pageSize={1}&searchTerm={2}",
                     ["OrganisationDetails"] = "organisations/organisation-details?externalId={0}",
                     ["GetOrganisationUsersByOrganisationExternalIdPath"] = "organisations/users-by-organisation-external-id?externalId={0}",
-                    ["PomSubmissions"] = "http://testurl.com",
+                    ["PomSubmissions"] = "http://testurl.com/PomSubmissions",
+                    ["RegistrationSubmissions"] = "http://testurl.com/RegistrationSubmissions",
                     ["OrganisationsSearchPath"] = "organisations/search-organisations?currentPage={0}&pageSize={1}&searchTerm={2}",
                     ["PomSubmissionDecision"] = "http://testurl.com",
                     ["OrganisationsRemoveApprovedUser"] = "organisations/remove-approved-users?connExternalId={0}&organisationId={1}&promotedPersonExternalId={2}",
-                    ["AddRemoveApprovedUser"] = "/accounts-management/add-remove-approved-users"
+                    ["AddRemoveApprovedUser"] = "/accounts-management/add-remove-approved-users",
+                    ["RegistrationSubmissionDecisionPath"] = "http://testurl.com"
                 }
             });
 
@@ -563,7 +566,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
-        public async Task GetOrganisationSubmissions_ShouldReturnPaginatedList_WhenRequestIsCorrect()
+        public async Task GetOrganisationPomSubmissions_ShouldReturnPaginatedList_WhenRequestIsCorrect()
         {
             // Arrange
             var testOrgAppList = _fixture.Create<PaginatedList<Submission>>();
@@ -583,10 +586,95 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ReturnsAsync(httpResponseMessage);
 
             // Act
-            var result = await _facadeService.GetOrganisationSubmissions(null, null, null,null, 1);
+            var result = await _facadeService.GetOrganisationSubmissions<Submission>(null, null, null,null, 1);
 
             // Assert
             result.Should().BeEquivalentTo(testOrgAppList);
+            _mockHandler.Protected()
+                .Verify<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    Times.Once(),
+                    ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.ToString().Contains("PomSubmissions")),
+                    ItExpr.IsAny<CancellationToken>());
+
+            httpResponseMessage.Dispose();
+        }
+
+        [TestMethod]
+        public async Task GetOrganisationRegistrationSubmissions_ShouldReturnPaginatedList_WhenRequestIsCorrect()
+        {
+            // Arrange
+            var testOrgAppList = _fixture.Create<PaginatedList<Registration>>();
+            string jsonContent = JsonSerializer.Serialize(testOrgAppList);
+
+            var httpResponseMessage = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(jsonContent, Encoding.UTF8, "application/json"),
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpResponseMessage);
+
+            // Act
+            var result = await _facadeService.GetOrganisationSubmissions<Registration>((string?) null, (string?) null, (OrganisationType?) null,null, 1);
+
+            // Assert
+            result.Should().BeEquivalentTo(testOrgAppList);
+            _mockHandler.Protected()
+                .Verify<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    Times.Once(),
+                    ItExpr.Is<HttpRequestMessage>(req => req.RequestUri.ToString().Contains("RegistrationSubmissions")),
+                    ItExpr.IsAny<CancellationToken>());
+
+            httpResponseMessage.Dispose();
+        }
+
+        [TestMethod]
+        public async Task GetOrganisationSubmissions_ParamsAdded_ShouldPassToFacade()
+        {
+            // Arrange
+            var testOrgAppList = _fixture.Create<PaginatedList<Registration>>();
+            string jsonContent = JsonSerializer.Serialize(testOrgAppList);
+
+            var httpResponseMessage = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(jsonContent, Encoding.UTF8, "application/json"),
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpResponseMessage);
+
+            var statuses = new[] {"Pending", "Accepted"};
+
+            // Act
+            var result =
+                await _facadeService.GetOrganisationSubmissions<Registration>("orgName", "orgRef", OrganisationType.ComplianceScheme, statuses, 2);
+
+            // Assert
+            result.Should().BeEquivalentTo(testOrgAppList);
+
+            var expectedQueryString =
+                "pageNumber=2&pageSize=10&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted";
+
+            _mockHandler.Protected()
+                .Verify<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    Times.Once(),
+                    ItExpr.Is<HttpRequestMessage>(
+                        req => req.RequestUri.ToString().Contains("RegistrationSubmissions")
+                         && req.RequestUri.ToString().Contains(expectedQueryString)),
+                    ItExpr.IsAny<CancellationToken>());
 
             httpResponseMessage.Dispose();
         }
@@ -857,6 +945,56 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Assert
             Assert.IsNotNull(result);
+            result.Should().Be(EndpointResponseStatus.Fail);
+        }
+
+        [TestMethod]
+        public async Task SubmitRegistrationDecision_WhenHttpStatusCodeOk_ThenReturnSuccess()
+        {
+            // Arrange
+            var request = new RegulatorRegistrationDecisionCreateRequest();
+
+            var httpTestHandler = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpTestHandler);
+
+            // Act
+            var result = await _facadeService.SubmitRegistrationDecision(request);
+
+            // Assert
+            result.Should().Be(EndpointResponseStatus.Success);
+        }
+
+        [TestMethod]
+        public async Task SubmitRegistrationDecision_WhenHttpStatusCodeBadRequest_ThenReturnFail()
+        {
+            // Arrange
+            var request = new RegulatorRegistrationDecisionCreateRequest();
+
+            var httpTestHandler = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadRequest
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpTestHandler);
+
+            // Act
+            var result = await _facadeService.SubmitRegistrationDecision(request);
+
+            // Assert
             result.Should().Be(EndpointResponseStatus.Fail);
         }
     }

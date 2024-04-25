@@ -1,0 +1,32 @@
+﻿<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SummaryList.SubTitle.OrganisationDetails" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SummaryList.SubTitle.DeclaredBy" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SummaryList.SubTitle.BrandDetails" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SummaryList.SubTitle.PartnerDetails" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SummaryList.SubTitle.SubmittedOnTime" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SummaryList.SubTitle.PreviousReasonForRejection" xml:space="preserve">
+    <value />
+  </data>
+</root>

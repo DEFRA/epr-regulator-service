@@ -1,24 +1,22 @@
-using System.Net;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using EPR.RegulatorService.Frontend.Core.Configs;
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Json;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
-
-using Enums;
 
 public class FacadeService : IFacadeService
 {
     private const string UpdateEnrolmentEndpointKey = "UpdateEnrolment";
     private const string PendingApplicationsEndpointKey = "PendingApplications";
-    private const string PomSubmissionsEndpointKey = "PomSubmissions";
     private const string PomSubmissionDecision = "PomSubmissionDecision";
     private const string SendEnrolmentUpdatedEmailsEndpointKey = "SendEnrolmentUpdatedEmails";
     private const string UserAccountEndpointKey = "UserAccounts";
@@ -31,6 +29,7 @@ public class FacadeService : IFacadeService
     private const string OrganisationsRemoveApprovedUserPath = "OrganisationsRemoveApprovedUser";
     private const string InviteNewApprovedPersonPath = "InviteNewApprovedPerson";
     private const string AddRemoveApprovedUserPath = "AddRemoveApprovedUser";
+    private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -50,6 +49,12 @@ public class FacadeService : IFacadeService
         _facadeApiConfig = facadeApiOptions.Value;
         _scopes = new[] {_facadeApiConfig.DownstreamScope};
     }
+
+    private static readonly Dictionary<Type, string> _typeToEndpointMap = new()
+    {
+        { typeof(Submission), "PomSubmissions" },
+        { typeof(Registration), "RegistrationSubmissions" }
+    };
 
     public async Task<string> GetTestMessageAsync()
     {
@@ -175,12 +180,12 @@ public class FacadeService : IFacadeService
         return response;
     }
 
-    public async Task<PaginatedList<Submission>> GetOrganisationSubmissions(
+    public async Task<PaginatedList<T>> GetOrganisationSubmissions<T>(
         string? organisationName,
         string? organisationReference,
-        string? organisationType,
+        OrganisationType? organisationType,
         string[]? status,
-        int currentPage = 1)
+        int currentPage = 1) where T : AbstractSubmission
     {
         await PrepareAuthenticatedClient();
 
@@ -199,22 +204,27 @@ public class FacadeService : IFacadeService
             query["organisationReference"] = organisationReference;
         }
 
-        if (!string.IsNullOrEmpty(organisationType))
+        if (organisationType.HasValue)
         {
-            query["organisationType"] = organisationType;
+            query["organisationType"] = organisationType.ToString();
+        }
+        else
+        {
+            query["organisationType"] = "All";
         }
 
-        if (status != null)
+        if (status is {Length: > 0})
         {
-            query["Statuses"] = string.Join(',', status);
+            query["statuses"] = string.Join(',', status);
         }
 
         var queryString = string.Join("&", query.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
-        var path = $"{_facadeApiConfig.Endpoints[PomSubmissionsEndpointKey]}?{queryString}";
+        var endpointKey = _typeToEndpointMap[typeof(T)];
+        var path = $"{_facadeApiConfig.Endpoints[endpointKey]}?{queryString}";
 
         var response = await _httpClient.GetAsync(path);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<PaginatedList<Submission>>();
+        return await response.Content.ReadFromJsonAsync<PaginatedList<T>>();
     }
 
     public async Task<EndpointResponseStatus> SubmitPoMDecision(RegulatorPoMDecisionCreateRequest request)
@@ -261,23 +271,22 @@ public class FacadeService : IFacadeService
 
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
-    public Task<EndpointResponseStatus> RejectSubmission() => throw new NotImplementedException();
-
-    public Task<EndpointResponseStatus> AcceptSubmission() => throw new NotImplementedException();
-
-    public Task<PaginatedList<Registration>> GetRegulatorRegistrations(
-        string? organisationName,
-        string? organisationReference,
-        OrganisationType? organisationType,
-        string[]? status,
-        int currentPage = 1) =>
-        throw new NotImplementedException();
 
     public async Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request)
     {
         await PrepareAuthenticatedClient();
         var path = _facadeApiConfig.Endpoints[AddRemoveApprovedUserPath];
 
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+
+        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+    }
+
+    public async Task<EndpointResponseStatus> SubmitRegistrationDecision(RegulatorRegistrationDecisionCreateRequest request)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = _facadeApiConfig.Endpoints[RegistrationSubmissionDecisionPath];
         var response = await _httpClient.PostAsJsonAsync(path, request);
 
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
