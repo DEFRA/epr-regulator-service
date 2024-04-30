@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,25 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Title.Registrations" xml:space="preserve">
-    <value>Manage organisation details submissions</value>
+  <data name="Error.AcceptSubmission" xml:space="preserve">
+    <value>Select yes if you want to accept this submission</value>
   </data>
-  <data name="Title.EnvironmentAgency" xml:space="preserve">
-    <value>Environment Agency</value>
+  <data name="Header.AreYouSure" xml:space="preserve">
+    <value>Are you sure you want to accept this submission?</value>
   </data>
-  <data name="Title.RegistrationsTitle" xml:space="preserve">
-    <value>Manage organisation details submissions</value>
-  </data>
-  <data name="Page.Registrations.Subtitle" xml:space="preserve">
-    <value>This list shows the current pending submissions and the latest actioned submissions. To view older submissions</value>
-  </data>
-  <data name="Banner.Success.RejectedSubmission" xml:space="preserve">
-    <value>You have rejected {0}'s organisation details submission.</value>
-  </data>
-  <data name="Banner.Success.AcceptedSubmission" xml:space="preserve">
-    <value>You have accepted {0}'s organisation details submission.</value>
-  </data>
-  <data name="PowerBILogin" xml:space="preserve">
-    <value>log in to Power-BI</value>
+  <data name="Title.AcceptSubmission" xml:space="preserve">
+    <value>Accept Submission</value>
   </data>
 </root>

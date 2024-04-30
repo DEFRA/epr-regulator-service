@@ -47,6 +47,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             int? pageNumber,
             bool? clearFilters,
             EndpointResponseStatus? rejectRegistrationResult = null,
+            EndpointResponseStatus? acceptRegistrationResult = null,
             string? organisationName = null)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
@@ -76,6 +77,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 PageNumber = pageNumber ?? 1,
                 PowerBiLogin = _options.PowerBiLogin,
                 RejectRegistrationResult = rejectRegistrationResult,
+                AcceptRegistrationResult = acceptRegistrationResult,
                 OrganisationName = organisationName
             };
 
@@ -103,7 +105,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
-            ////////////////////////////////////////////////////////////////////////////////////////
             var model = new RegistrationDetailsViewModel
             {
                 OrganisationName = registration.OrganisationName,
@@ -150,13 +151,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         }
 
         [HttpGet]
-        [Route(PagePath.AcceptSubmission)]
-        public async Task<IActionResult> AcceptSubmission()
-        {
-            throw new NotImplementedException();
-        }
-
-        [HttpGet]
         [Route(PagePath.RejectRegistration)]
         public async Task<IActionResult> RejectRegistration()
         {
@@ -170,7 +164,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         }
 
         [HttpPost]
-        [Route(PagePath.RejectRegistration)]////////////////////////////////////////////////////////////////////////// problem OrganisationDetailsFileId no value
+        [Route(PagePath.RejectRegistration)]
         public async Task<IActionResult> RejectRegistration(RejectRegistrationViewModel model)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
@@ -207,6 +201,70 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                     rejectRegistrationResult = result,
                     organisationName = organisationName
                 });
+        }
+      
+        [HttpGet]
+        [Route(PagePath.AcceptRegistrationSubmission)]
+        public async Task<IActionResult> AcceptRegistrationSubmission()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var model = new AcceptRegistrationSubmissionViewModel();
+
+
+            await SaveSessionAndJourney(session, PagePath.RegistrationDetails, PagePath.AcceptRegistrationSubmission);
+            SetBackLink(session, PagePath.AcceptRegistrationSubmission);
+
+            return View(nameof(AcceptRegistrationSubmission), model);
+        }
+
+        [HttpPost]
+        [Route(PagePath.AcceptRegistrationSubmission)]
+        public async Task<IActionResult> AcceptRegistrationSubmission(AcceptRegistrationSubmissionViewModel model)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+            if (!ModelState.IsValid)
+            {
+                SetBackLink(session, PagePath.AcceptRegistrationSubmission);
+                return View(nameof(AcceptRegistrationSubmission), model);
+            }
+
+            if (model.Accepted != true)
+            {
+                return await SaveSessionAndRedirect(
+                    session,
+                    nameof(Registrations),
+                    PagePath.AcceptRegistrationSubmission,
+                    PagePath.Registrations,
+                    new { });
+            }
+
+            var request = new RegulatorRegistrationDecisionCreateRequest
+            {
+                SubmissionId = session.RegulatorRegistrationSession.OrganisationRegistration.SubmissionId,
+                Decision = RegulatorDecision.Accepted,
+                FileId = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationDetailsFileId,
+                OrganisationId = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationId,
+                OrganisationName = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationName,
+                OrganisationNumber = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationReference
+
+            };
+            var result = await _facadeService.SubmitRegistrationDecision(request);
+
+            var organisationName = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationName;
+            session.RegulatorRegistrationSession.OrganisationRegistration = null;
+
+            return await SaveSessionAndRedirect(
+                session,
+                nameof(Registrations),
+                PagePath.AcceptRegistrationSubmission,
+                PagePath.Registrations,
+                new
+                {
+                    acceptRegistrationResult = result,
+                    organisationName = organisationName
+                });
+
         }
 
         private void SetBackLink(JourneySession session, string currentPagePath) =>
