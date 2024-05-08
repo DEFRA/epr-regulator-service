@@ -32,6 +32,7 @@ public static class MockedPendingSubmissions
                 ServiceRole = "Approved person",
                 SubmissionId = Guid.NewGuid(),
                 SubmittedDate = DateTime.Now.AddDays(-random.Next(2, 180)),
+                SubmissionPeriod = "July to December 2023",
                 IsResubmission = isResubmission,
                 Decision = "Pending",
                 IsResubmissionRequired = false,
