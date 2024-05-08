@@ -1,0 +1,107 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations
+@using Microsoft.Extensions.Options
+@using EPR.RegulatorService.Frontend.Web.Configs
+
+@inject IOptions<ExternalUrlsOptions> ExternalUrls
+
+@model RegistrationDetailsViewModel
+@{
+    ViewData["Title"] = Localizer["Title.ManageRegistrationDataSubmissions"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        @if (!ViewData.ModelState.IsValid)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+        }
+
+                <h1 class="govuk-caption-xl">@Localizer["Title.RegistrationsOrgTitle"]</h1>
+        <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">@Model.OrganisationName</h2>
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationType"]</h3>
+          <p class="govuk-body">@Model.OrganisationType</p>
+        </div>
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationId"]</h3>
+          <p class="govuk-body">@Model.OrganisationReferenceNumber</p>
+        </div>
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">
+            @if (string.IsNullOrEmpty(Model.CompaniesHouseNumber))
+            {
+              @Localizer["SubTitle.HeadOfficeAddress"]
+            }
+            else
+            {
+              @Localizer["SubTitle.RegisteredAddress"]
+            }
+          </h3>
+          <p class="govuk-body">
+            @if (!string.IsNullOrWhiteSpace(Model.BuildingName)){<span>@Model.BuildingName</span><br/>}
+            @if (!string.IsNullOrWhiteSpace(Model.SubBuildingName)){<span>@Model.SubBuildingName</span><br/>}
+            @if (!string.IsNullOrWhiteSpace(Model.BuildingNumber) && !string.IsNullOrWhiteSpace(Model.Street))
+            {
+              <span>@Model.BuildingNumber @Model.Street</span><br/>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Locality)){<span>@Model.Locality</span><br/>}
+            @if (!string.IsNullOrWhiteSpace(Model.DependantLocality)){<span>@Model.DependantLocality</span><br/>}
+            @if (!string.IsNullOrWhiteSpace(Model.Town)){<span>@Model.Town</span><br/>}
+            @if (!string.IsNullOrWhiteSpace(Model.County)){<span>@Model.County</span><br/>}
+            @if (!string.IsNullOrWhiteSpace(Model.Country)){<span>@Model.Country</span><br/>}
+            @if (!string.IsNullOrWhiteSpace(Model.PostCode)){<span>@Model.PostCode</span><br/>}
+          </p>
+        </div>
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.CompaniesHouseNumber"]</h3>
+          <p class="govuk-body">
+            @if (string.IsNullOrWhiteSpace(Model.CompaniesHouseNumber))
+            {
+              @SharedLocalizer["NotListed"]
+            }
+            else
+            {
+              @Model.CompaniesHouseNumber
+              <br/>
+              <a href="@ExternalUrls.Value.CompaniesHouseRegisterBaseUrl/@Model.CompaniesHouseNumber" class="govuk-link govuk-link--no-visited-state">@Localizer["Link.ViewOnCompaniesHouseRegister"]</a>
+            }
+          </p>
+        </div>
+        <div class="govuk-!-margin-bottom-4">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.PowerBI"]</h3>
+          <p class="govuk-body">@Localizer["SubTitle.PowerBIOrg.Text"]
+            <a href="@Model.PowerBiLogin" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        @if (!Model.IsResubmission)
+        {
+          <partial name="Partials/_RegistrationSubmissionDetails"/>
+        }
+        else
+        {
+          <partial name="Partials/_RegistrationResubmissionDetails"/>
+        }
+      </div>
+    </div>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        @Html.ActionLink(Localizer["Link.BackToRegistrations"].Value,
+               "Registrations",
+               "Registrations",
+               null,
+               new {@class = "govuk-body govuk-link govuk-link--no-visited-state"})
+      </div>
+    </div>
+  </main>
+</div>

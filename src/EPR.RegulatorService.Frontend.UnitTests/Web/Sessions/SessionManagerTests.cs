@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Text;
 using System.Text.Json;
+using EPR.RegulatorService.Frontend.Core.Enums;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Sessions;
 
@@ -30,7 +31,8 @@ public class SessionManagerTests
                 {
                     SubmissionId = Guid.NewGuid(),
                     OrganisationId = Guid.NewGuid(),
-                    OrganisationName = "Test Organisation"
+                    OrganisationName = "Test Organisation",
+                    OrganisationType = OrganisationType.ComplianceScheme
                 }
             },
             PermissionManagementSession = new PermissionManagementSession

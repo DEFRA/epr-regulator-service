@@ -1,15 +1,15 @@
 using EPR.RegulatorService.Frontend.Core.Configs;
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData;
 using EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 using EPR.RegulatorService.Frontend.Core.MockedData.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using EPR.RegulatorService.Frontend.Core.Enums;
 using System.Security.Cryptography;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
@@ -219,42 +219,6 @@ public class MockedFacadeService : IFacadeService
         return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
     }
 
-    public Task<PaginatedList<Submission>> GetOrganisationSubmissions(
-        string? organisationName,
-        string? organisationReference,
-        string? organisationType,
-        string[]? status,
-        int currentPage = 1)
-    {
-        if (currentPage > (int)Math.Ceiling(_allSubmissions.Count / (double)_config.PageSize))
-        {
-            currentPage = 1;
-        }
-
-        var results = _allSubmissions
-            .AsQueryable()
-            .FilterByOrganisationNameAndOrganisationReference(organisationName, organisationReference)
-            .FilterByOrganisationType(organisationType)
-            .FilterBySubmissionStatus(status).ToList();
-
-        var response = new PaginatedList<Submission>
-        {
-            Items = results
-                .OrderBy(x => x.Decision == Accepted)
-                .ThenBy(x => x.Decision == Rejected)
-                .ThenBy(x => x.Decision == Pending)
-                .ThenBy(x => x.IsResubmission)
-                .Skip((currentPage - 1) * _config.PageSize)
-                .Take(_config.PageSize)
-                .ToList(),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = _config.PageSize
-        };
-
-        return Task.FromResult(response);
-    }
-
     public async Task<EndpointResponseStatus> SubmitPoMDecision(RegulatorPoMDecisionCreateRequest request) => EndpointResponseStatus.Success;
 
     public Task<PaginatedList<OrganisationSearchResult>> GetOrganisationBySearchTerm(string searchTerm, int currentPage = 1)
@@ -304,9 +268,38 @@ public class MockedFacadeService : IFacadeService
 
     public async Task<EndpointResponseStatus> RemoveApprovedUser(RemoveApprovedUserRequest request) => EndpointResponseStatus.Success;
     public async Task<EndpointResponseStatus> RemoveApprovedUser(Guid connExternalId, Guid organisationId) => EndpointResponseStatus.Success;
-    public async Task<EndpointResponseStatus> RejectSubmission() => EndpointResponseStatus.Success;
 
-    public async Task<EndpointResponseStatus> AcceptSubmission() => EndpointResponseStatus.Success;
+    public async Task<EndpointResponseStatus> SubmitRegistrationDecision(
+        RegulatorRegistrationDecisionCreateRequest request) => EndpointResponseStatus.Success;
+
+    public async Task<PaginatedList<T>> GetOrganisationSubmissions<T>(string? organisationName, string? organisationReference,
+        OrganisationType? organisationType, string[]? status, int currentPage = 1) where T : AbstractSubmission
+    {
+        var items = typeof(T) == typeof(Submission)
+            ? _allSubmissions.Cast<AbstractSubmission>().ToList()
+            : _allRegistrations.Cast<AbstractSubmission>().ToList();
+
+        if (currentPage > (int)Math.Ceiling(_allSubmissions.Count / (double)_config.PageSize))
+        {
+            currentPage = 1;
+        }
+
+        var results = items
+            .AsQueryable()
+            .FilterByOrganisationNameAndOrganisationReference(organisationName, organisationReference)
+            .FilterByOrganisationType(organisationType)
+            .FilterByStatus(status).ToList();
+
+        var response = new PaginatedList<T>
+        {
+            Items = await FilterSubmissions<T>(results, currentPage),
+            CurrentPage = currentPage,
+            TotalItems = results.Count,
+            PageSize = _config.PageSize
+        };
+
+        return response;
+    }
 
     private static List<Registration> GenerateRegulatorRegistrations()
     {
@@ -319,27 +312,26 @@ public class MockedFacadeService : IFacadeService
         return allItems;
     }
 
-    public async Task<PaginatedList<Registration>> GetRegulatorRegistrations(
-        string? organisationName,
-        string? organisationReference,
-        OrganisationType? organisationType,
-        string[]? status,
-        int currentPage = 1)
+    public async Task<List<T>> FilterSubmissions<T>(
+        IList<AbstractSubmission> items, int currentPage) where T : AbstractSubmission
     {
-        if (currentPage > (int)Math.Ceiling(_allRegistrations.Count / (double)_config.PageSize))
+        if (typeof(T) == typeof(Submission))
         {
-            currentPage = 1;
+            var filteredItems = items.OfType<Submission>()
+                .OrderBy(x => x.Decision == Accepted)
+                .ThenBy(x => x.Decision == Rejected)
+                .ThenBy(x => x.Decision == Pending)
+                .ThenBy(x => x.IsResubmission)
+                .Skip((currentPage - 1) * _config.PageSize)
+                .Take(_config.PageSize)
+                .ToList();
+
+            return filteredItems.Cast<T>().ToList();
         }
 
-        var results = _allRegistrations
-            .AsQueryable()
-            .FilterByOrganisationNameAndOrganisationReference(organisationName, organisationReference)
-            .FilterByOrganisationType(organisationType)
-            .FilterByRegistrationStatus(status).ToList();
-
-        var response = new PaginatedList<Registration>
+        if (typeof(T) == typeof(Registration))
         {
-            Items = results
+            var filteredItems = items.OfType<Registration>()
                 .OrderBy(x => x.Decision == Accepted)
                 .ThenBy(x => x.Decision == Rejected)
                 .ThenBy(x => x.Decision == Pending)
@@ -347,13 +339,12 @@ public class MockedFacadeService : IFacadeService
                 .ThenBy(x => x.IsResubmission)
                 .Skip((currentPage - 1) * _config.PageSize)
                 .Take(_config.PageSize)
-                .ToList(),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = _config.PageSize
-        };
+                .ToList();
 
-        return response;
+            return filteredItems.Cast<T>().ToList();
+        }
+
+        return new List<T>();
     }
 
     public async Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request) => await Task.FromResult(EndpointResponseStatus.Success);

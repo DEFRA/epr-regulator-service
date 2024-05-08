@@ -1,12 +1,10 @@
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
-
-using Enums;
-
-using Models.Registrations;
 
 public interface IFacadeService
 {
@@ -31,13 +29,6 @@ public interface IFacadeService
 
     Task<HttpResponseMessage> GetUserAccountDetails();
 
-    Task<PaginatedList<Submission>> GetOrganisationSubmissions(
-        string? organisationName,
-        string? organisationReference,
-        string? organisationType,
-        string[]? status,
-        int currentPage = 1);
-
     Task<EndpointResponseStatus> SubmitPoMDecision(RegulatorPoMDecisionCreateRequest request);
 
     Task<PaginatedList<OrganisationSearchResult>> GetOrganisationBySearchTerm(string searchTerm, int currentPage = 1);
@@ -46,16 +37,14 @@ public interface IFacadeService
 
     Task<EndpointResponseStatus> RemoveApprovedUser(RemoveApprovedUserRequest request);
 
-    public Task<EndpointResponseStatus> RejectSubmission();
-    Task<EndpointResponseStatus> AcceptSubmission();
-
-    Task<PaginatedList<Registration>> GetRegulatorRegistrations(
+    Task<PaginatedList<T>> GetOrganisationSubmissions<T>(
         string? organisationName,
         string? organisationReference,
         OrganisationType? organisationType,
         string[]? status,
-        int currentPage = 1);
+        int currentPage = 1) where T : AbstractSubmission;
 
     Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request);
 
+    Task<EndpointResponseStatus> SubmitRegistrationDecision(RegulatorRegistrationDecisionCreateRequest request);
 }

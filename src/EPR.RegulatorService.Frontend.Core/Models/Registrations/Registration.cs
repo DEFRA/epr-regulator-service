@@ -1,30 +1,29 @@
-using EPR.RegulatorService.Frontend.Core.Enums;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EPR.RegulatorService.Frontend.Core.Models.Registrations;
 
 [ExcludeFromCodeCoverage]
-public class Registration
+public class Registration : AbstractSubmission
 {
-    public Guid RegistrationId { get; set; }
     public DateTime RegistrationDate { get; set; }
-    public string? Decision { get; set; } = string.Empty;
-    public bool IsResubmission { get; set; }
     public string RejectionComments { get; set; } = string.Empty;
-    public Guid OrganisationId { get; set; }
-    public string? OrganisationName { get; set; }
-    public OrganisationType OrganisationType { get; set; }
-    public string? OrganisationReference { get; set; }
-    public Guid? UserId { get; set; }
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-    public string? Email { get; set; }
-    public string? Telephone { get; set; }
-    public string? ServiceRole { get; set; }
-    public string CompanyDetailsField { get; set; }
+    public string? CompaniesHouseNumber { get; set; }
+    public string? BuildingName { get; set; }
+    public string? SubBuildingName { get; set; }
+    public string? BuildingNumber { get; set; }
+    public string? Street { get; set; }
+    public string? Locality { get; set; }
+    public string? DependantLocality { get; set; }
+    public string? Town { get; set; }
+    public string? County { get; set; }
+    public string? Country { get; set; }
+    public string? PostCode { get; set; }
+    public Guid OrganisationDetailsFileId { get; set; }
+    public string OrganisationDetailsFileName { get; set; }
+    public Guid CompanyDetailsFileId { get; set; }
     public string CompanyDetailsFileName { get; set; }
-    public string PartnershipFileName { get; set; }
-    public string PartnershipFileId { get; set; }
-    public string BrandsFileName { get; set; }
-    public string BrandsFileId { get; set; }
+    public Guid? PartnershipDetailsFileId { get; set; }
+    public string PartnershipDetailsFileName { get; set; }
+    public Guid? BrandDetailsFileId { get; set; }
+    public string BrandDetailsFileName { get; set; }
 }

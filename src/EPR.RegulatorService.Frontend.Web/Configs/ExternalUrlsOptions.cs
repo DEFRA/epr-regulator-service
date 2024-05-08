@@ -34,4 +34,8 @@ public class ExternalUrlsOptions
     public string PrivacyEnvironmentAgency { get; set; }
 
     public string PowerBiLogin { get; set; }
+
+    public string CompaniesHouseRegisterBaseUrl { get; set; }
+
+    public string RegistrationFileDownloadBaseUrl { get; set; }
 }
