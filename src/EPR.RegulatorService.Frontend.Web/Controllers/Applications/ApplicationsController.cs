@@ -530,12 +530,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                 return approvedUser.Enrolment.ExternalId;
             }
 
-            foreach (var delegatedUser in delegatedUsers.Where(x => x.Email.Equals(email)))
-            {
-                return delegatedUser.Enrolment.ExternalId;
-            }
-
-            return Guid.Empty;
+            return delegatedUsers.FirstOrDefault(x => x.Email.Equals(email))?.Enrolment.ExternalId ?? Guid.Empty;
         }
 
         private static void SetFilterValues(JourneySession session,
