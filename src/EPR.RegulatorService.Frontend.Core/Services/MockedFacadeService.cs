@@ -101,12 +101,11 @@ public class MockedFacadeService : IFacadeService
     private static List<OrganisationApplications> GenerateOrganisationApplications()
     {
         var allItems = new List<OrganisationApplications>();
-        var random = new Random();
-
+        
         for (int i = 1; i <= 1000; i++)
         {
-            var hasApprovedPending = random.Next(2) == 0;
-            var hasDelegatedPending = !hasApprovedPending || random.Next(2) == 0;
+            var hasApprovedPending = (i % 2) == 0; 
+            var hasDelegatedPending = (i % 4) < 2;
 
             string organisationName = string.Empty;
 
@@ -130,7 +129,7 @@ public class MockedFacadeService : IFacadeService
             {
                 OrganisationId = Guid.NewGuid(),
                 OrganisationName = organisationName,
-                LastUpdate = DateTime.Now.AddDays(-random.Next(1, 15)),
+                LastUpdate = DateTime.Now.AddDays(-(i % 15)),
                 Enrolments = new()
                 {
                     HasApprovedPending = hasApprovedPending, HasDelegatePending = hasDelegatedPending
