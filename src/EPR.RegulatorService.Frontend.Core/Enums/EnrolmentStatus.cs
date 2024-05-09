@@ -1,6 +1,6 @@
-﻿namespace EPR.RegulatorService.Frontend.Core.Enums;
+namespace EPR.RegulatorService.Frontend.Core.Enums;
 
-public enum EnrolmentStatusEnum
+public enum EnrolmentStatus
 {
     NotSet = 0,
     Enrolled = 1,
