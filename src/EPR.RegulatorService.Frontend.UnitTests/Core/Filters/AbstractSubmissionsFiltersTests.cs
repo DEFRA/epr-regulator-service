@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -22,7 +22,7 @@ public class AbstractSubmissionFiltersTests
             .AsQueryable();
     }
 
-    public string GetRandomStatus()
+    public static string GetRandomStatus()
     {
         string[] statuses = { "Pending", "Rejected", "Accepted" };
         Random random = new Random();
@@ -145,7 +145,7 @@ public class AbstractSubmissionFiltersTests
     {
         var result =
             _abstractSubmissions
-                .FilterByStatus(new string[]{});
+                .FilterByStatus(Array.Empty<string>());
 
         result.Should().BeEquivalentTo(_abstractSubmissions);
     }

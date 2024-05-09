@@ -14,8 +14,6 @@ using Core.Models.Submissions;
 
 public class SubmissionsListViewComponent : ViewComponent
 {
-    private const string DirectProducer = "Direct Producer";
-    private const string ComplianceScheme = "Compliance Scheme";
     private const string PendingStatus = "Pending";
     private const string AcceptedStatus = "Accepted";
     private const string RejectedStatus = "Rejected";

@@ -1,4 +1,4 @@
-﻿using EPR.RegulatorService.Frontend.Web.Configs;
+using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Privacy;
@@ -45,7 +45,7 @@ public class PrivacyController : Controller
             EnvironmentAgencyUrl = _urlOptions.PrivacyEnvironmentAgency,
             DataProtectionEmail = _emailOptions.DataProtection,
             DefraGroupProtectionOfficerEmail = _emailOptions.DefraGroupProtectionOfficer,
-            LastUpdated = _siteDateOptions.PrivacyLastUpdated.ToString(_siteDateOptions.DateFormat)
+            LastUpdated = _siteDateOptions.PrivacyLastUpdated.ToString(_siteDateOptions.DateFormat, System.Globalization.CultureInfo.InvariantCulture)
         };
         ViewBag.BackLinkToDisplay = returnUrl;
         ViewBag.CurrentPage = returnUrl;

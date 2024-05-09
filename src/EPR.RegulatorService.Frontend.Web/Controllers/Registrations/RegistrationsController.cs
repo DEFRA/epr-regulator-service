@@ -325,7 +325,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             await SaveSession(session);
         }
 
-        private void ClearRestOfJourney(JourneySession session, string currentPagePath)
+        private static void ClearRestOfJourney(JourneySession session, string currentPagePath)
         {
             var index = session.RegulatorRegistrationSession.Journey.IndexOf(currentPagePath);
 

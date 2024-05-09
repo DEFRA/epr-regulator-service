@@ -46,7 +46,7 @@ namespace EPR.RegulatorService.Frontend.Web.Attributes
                     continue;
                 }
 
-                var errorLink = agencyIndex.ToString().ToLower() + "-notes";
+                var errorLink = agencyIndex.ToString().ToLower(System.Globalization.CultureInfo.InvariantCulture) + "-notes";
                 if (string.IsNullOrEmpty(transferNote.Notes))
                 {
                     return new ValidationResult(_requiredErrorMessage, new []{ errorLink });
