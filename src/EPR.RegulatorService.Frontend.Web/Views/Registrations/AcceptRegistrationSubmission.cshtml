@@ -1,0 +1,77 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+
+@model AcceptRegistrationSubmissionViewModel
+@{
+    ViewData["Title"] = Localizer["Title.AcceptSubmission"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+@using (Html.BeginForm("AcceptRegistrationSubmission", "Registrations", FormMethod.Post))
+{
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                    }
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <div class="@(ViewData.ModelState.IsValid ? "" : "govuk-form-group--error")">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                    <h1 class="govuk-fieldset__heading">
+                                        @Localizer["Header.AreYouSure"]
+                                    </h1>
+                                </legend>
+                                <div class="govuk-radios" data-module="govuk-radios">
+                                    @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(AcceptRegistrationSubmissionViewModel.Accepted)])
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               aria-labelledby="radio-label-accepted-true"
+                                               gov-for="Accepted"
+                                               gov-first-option="true"
+                                               gov-value=true>
+                                        <label id="radio-label-accepted-true"
+                                               class="govuk-label govuk-radios__label"
+                                               gov-for="Accepted"
+                                               gov-first-option="true"
+                                               gov-value=true>
+                                            @SharedLocalizer["Yes"]
+                                        </label>
+                                    </div>
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               aria-labelledby="radio-label-accepted-false"
+                                               gov-for="Accepted"
+                                               gov-first-option="false"
+                                               gov-value=false>
+                                        <label id="radio-label-accepted-false"
+                                               class="govuk-label govuk-radios__label"
+                                               gov-for="Accepted"
+                                               gov-first-option="false"
+                                               gov-value=false>
+                                            @SharedLocalizer["No"]
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <button class="govuk-button" data-module="govuk-button">
+                        @SharedLocalizer["Continue"]
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+}

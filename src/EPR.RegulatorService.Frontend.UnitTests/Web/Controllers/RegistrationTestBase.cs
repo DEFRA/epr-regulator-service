@@ -57,7 +57,7 @@ public abstract class RegistrationTestBase
         _urlsOptionMock.Setup(mock => mock.Value).Returns(new ExternalUrlsOptions { PowerBiLogin = PowerBiLogin });
 
         _sut = new RegistrationsController(_sessionManagerMock.Object, _configurationMock.Object,
-            _urlsOptionMock.Object);
+            _urlsOptionMock.Object, _facadeServiceMock.Object);
 
         _sut.ControllerContext.HttpContext = _httpContextMock.Object;
     }
@@ -74,13 +74,14 @@ public abstract class RegistrationTestBase
         _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
     }
 
-    public void SetupJourneySession(RegistrationFiltersModel registrationFiltersModel)
+    public void SetupJourneySession(RegistrationFiltersModel registrationFiltersModel, Registration registration = null)
     {
         JourneySessionMock = new JourneySession()
         {
             RegulatorRegistrationSession = new RegulatorRegistrationSession()
             {
-                RegistrationFiltersModel = registrationFiltersModel, PageNumber = 1
+                RegistrationFiltersModel = registrationFiltersModel, PageNumber = 1,
+                OrganisationRegistration = registration
             }
         };
 

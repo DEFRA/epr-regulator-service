@@ -9,6 +9,9 @@ namespace EPR.RegulatorService.Frontend.Web.ViewComponents;
 
 using Constants;
 
+using Core.Enums;
+using Core.Models.Submissions;
+
 public class SubmissionsListViewComponent : ViewComponent
 {
     private const string DirectProducer = "Direct Producer";
@@ -29,7 +32,7 @@ public class SubmissionsListViewComponent : ViewComponent
     public async Task<ViewViewComponentResult> InvokeAsync(
         SubmissionListRequest request)
     {
-        string organisationType = SetFilteredOrganisationType(
+        var organisationType = SetFilteredOrganisationType(
             request.IsDirectProducerChecked,
             request.IsComplianceSchemeChecked);
 
@@ -39,7 +42,7 @@ public class SubmissionsListViewComponent : ViewComponent
             request.IsRejectedSubmissionChecked);
 
         var pagedOrganisationSubmissions
-            = await _facadeService.GetOrganisationSubmissions(
+            = await _facadeService.GetOrganisationSubmissions<Submission>(
                 request.SearchOrganisationName,
                 request.SearchOrganisationReference,
                 organisationType,
@@ -75,19 +78,19 @@ public class SubmissionsListViewComponent : ViewComponent
         return View(model);
     }
 
-    private static string SetFilteredOrganisationType(bool isDirectProducerSelected, bool isComplianceSchemeSelected)
+    private static OrganisationType? SetFilteredOrganisationType(bool isDirectProducerSelected, bool isComplianceSchemeSelected)
     {
         if (isDirectProducerSelected && !isComplianceSchemeSelected)
         {
-            return DirectProducer;
+            return OrganisationType.DirectProducer;
         }
 
         if (isComplianceSchemeSelected && !isDirectProducerSelected)
         {
-            return ComplianceScheme;
+            return OrganisationType.ComplianceScheme;
         }
 
-        return string.Empty;
+        return null;
     }
 
     private static string[] SetFilteredStatus(bool isPendingStatusSelected, bool isAcceptedStatusSelected, bool isRejectedStatusSelected)

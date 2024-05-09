@@ -1,10 +1,11 @@
+using EPR.RegulatorService.Frontend.Core.Enums;
+using  EPR.RegulatorService.Frontend.Core.Models;
+
 namespace EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 
-using Models.Submissions;
-
-public static class SubmissionsFilters
+public static class AbstractSubmissionFilters
 {
-    public static IQueryable<Submission> FilterByOrganisationNameAndOrganisationReference(this IQueryable<Submission> query,
+    public static IQueryable<AbstractSubmission> FilterByOrganisationNameAndOrganisationReference(this IQueryable<AbstractSubmission> query,
         string organisationName, string organisationReference)
     {
         bool organisationNameSet = !string.IsNullOrWhiteSpace(organisationName);
@@ -34,23 +35,25 @@ public static class SubmissionsFilters
         return query;
     }
 
-    public static IQueryable<Submission> FilterByOrganisationType(this IQueryable<Submission> query,
-        string organisationType)
+    public static IQueryable<AbstractSubmission> FilterByOrganisationType(this IQueryable<AbstractSubmission> query,
+        OrganisationType? organisationType)
     {
-        if (!string.IsNullOrWhiteSpace(organisationType))
+        if (organisationType != null)
         {
-            query = query.Where(o => o.OrganisationType.Contains(organisationType, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(o => o.OrganisationType == organisationType);
         }
+
         return query;
     }
 
-    public static IQueryable<Submission> FilterBySubmissionStatus(this IQueryable<Submission> query,
-        string[] submissionStatuses)
+    public static IQueryable<AbstractSubmission> FilterByStatus(this IQueryable<AbstractSubmission> query,
+        string[] registrationStatuses)
     {
-        if (submissionStatuses.Length != 0)
+        if (registrationStatuses != null && registrationStatuses.Length != 0)
         {
-            query = query.Where(o => submissionStatuses.Any(o.Decision.Contains));
+            query = query.Where(o => registrationStatuses.Any(o.Decision.Contains));
         }
+
         return query;
     }
 }

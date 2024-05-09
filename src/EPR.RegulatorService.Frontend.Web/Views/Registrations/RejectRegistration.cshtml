@@ -1,0 +1,64 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+
+@model RejectRegistrationViewModel
+@{
+    ViewData["Title"] = Localizer["Title.RejectSubmission"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer, nameof(Model.ReasonForRejection));
+    var reasonForRejection = string.IsNullOrEmpty(Model.ReasonForRejection) ? string.Empty : Model.ReasonForRejection;
+    var reasonForRejectionError = errorsViewModel.Errors.FirstOrDefault(x => x.Key == nameof(Model.ReasonForRejection));
+    var reasonForRejectionErrorExists = !string.IsNullOrEmpty(reasonForRejectionError.Key);
+}
+
+@using (Html.BeginForm("RejectRegistration", "Registrations", FormMethod.Post))
+{
+  <div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          @if (!ViewData.ModelState.IsValid)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+          }
+          <h1 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--l" for="@nameof(Model.ReasonForRejection)">
+              @Localizer["Title.RejectionReason"]
+            </label>
+          </h1>
+          <p class="govuk-body govuk-!-margin-bottom-4">@Localizer["Title.Description"]</p>
+        </div>
+      </div>
+
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+            <div class="govuk-form-group @(reasonForRejectionErrorExists ? "govuk-form-group--error" : string.Empty)">
+              @if (reasonForRejectionErrorExists)
+              {
+                @await Html.PartialAsync("Partials/Govuk/_InlineError", reasonForRejectionError)
+              }
+              <textarea class="govuk-textarea govuk-textarea--error govuk-js-character-count @(reasonForRejectionErrorExists ? "epr-textarea--error" : string.Empty)" id="@nameof(Model.ReasonForRejection)" name="@nameof(Model.ReasonForRejection)" rows="5" aria-describedby="@nameof(Model.ReasonForRejection)-info">@reasonForRejection</textarea>
+            </div>
+            <div id="@nameof(Model.ReasonForRejection)-info" class="govuk-hint govuk-character-count__message">
+              @SharedLocalizer["CharacterLimit.NoJavaScript"]
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <button class="govuk-button epr-horizontal-control epr-horizontal-control-button govuk-!-margin-right-6" data-module="govuk-button">
+            @SharedLocalizer["Continue"]
+          </button>
+          @Html.ActionLink(SharedLocalizer["Cancel"],
+            "RegistrationDetails",
+            "Registrations",
+            null,
+            new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-horizontal-control epr-horizontal-control-link" })
+        </div>
+      </div>
+    </main>
+  </div>
+}

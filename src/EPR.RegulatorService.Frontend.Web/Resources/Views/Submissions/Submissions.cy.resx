@@ -28,9 +28,6 @@
   <data name="Page.Submissions.Subtitle" xml:space="preserve">
     <value>Mae’r rhestr yma yn dangos y cyflwyniadau presennol sydd ar ddod a’r cyflwyniadau a weithredwyd dros y 6 mis diwethaf. I weld cyflwyniadau hŷn</value>
   </data>
-  <data name="PowerBILogin" xml:space="preserve">
-    <value>mewngofnodwch i Power-BI</value>
-  </data>
   <data name="Banner.Success.RejectedSubmission" xml:space="preserve">
     <value>Rydych chi wedi gwrthod cyflwyniad pecynwaith {0}.</value>
   </data>
@@ -38,4 +35,3 @@
     <value>Rydych chi wedi derbyn cyflwyniad data pecynwaith {0}.</value>
   </data>
 </root>
-

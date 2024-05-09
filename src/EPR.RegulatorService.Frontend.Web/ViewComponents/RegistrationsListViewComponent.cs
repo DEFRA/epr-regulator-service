@@ -9,6 +9,8 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents;
 
+using Core.Models.Registrations;
+
 public class RegistrationsListViewComponent : ViewComponent
 {
     private const string PendingStatus = "Pending";
@@ -38,7 +40,7 @@ public class RegistrationsListViewComponent : ViewComponent
             request.IsRejectedRegistrationChecked);
 
         var pagedOrganisationRegistrations
-            = await _facadeService.GetRegulatorRegistrations(
+            = await _facadeService.GetOrganisationSubmissions<Registration>(
                 request.SearchOrganisationName,
                 request.SearchOrganisationReference,
                 organisationType,
@@ -50,7 +52,14 @@ public class RegistrationsListViewComponent : ViewComponent
             _httpContextAccessor.HttpContext.Response.Redirect(PagePath.PageNotFoundPath);
         }
 
-        var model = new RegistrationsListViewModel()
+        foreach(Registration item in pagedOrganisationRegistrations.Items)
+       {
+           item.OrganisationDetailsFileId = item.CompanyDetailsFileId;
+           item.OrganisationDetailsFileName = item.CompanyDetailsFileName;
+            item.RejectionComments = item.Comments;
+       }
+      
+       var model = new RegistrationsListViewModel()
         {
             PagedOrganisationRegistrations = pagedOrganisationRegistrations.Items,
             PaginationNavigationModel = new PaginationNavigationModel

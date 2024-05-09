@@ -1,7 +1,7 @@
-@using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
-@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
-@using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Core.Models
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
 
 @model SubmissionsViewModel
 
@@ -39,7 +39,7 @@
           @Localizer["Title.SubmissionsTitle"]
         </h2>
         <div id="contact-hint" class="govuk-hint">
-          @Localizer["Page.Submissions.Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@Localizer["PowerBILogin"]</a>.
+          @Localizer["Page.Submissions.Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
         </div>
 
         @await Component.InvokeAsync("SubmissionsList",

@@ -23,19 +23,39 @@ public static class MockedPendingRegistrations
                 OrganisationName = $"Organisation {i} Ltd",
                 OrganisationType = (i % 2) == 0 ? OrganisationType.DirectProducer : OrganisationType.ComplianceScheme,
                 OrganisationReference = i.ToString().PadLeft(6,'0').Insert(3, " "),
+                CompaniesHouseNumber = RandomNumberGenerator.GetInt32(1000000000).ToString(),
+
+                BuildingName = "Building name",
+                SubBuildingName = "Sub-building name",
+                BuildingNumber = "Building number",
+                Street = "Street",
+                Locality = "Locality",
+                DependantLocality = "Dependant locality",
+                Town = "Town",
+                County = "County",
+                Country = "Country",
+                PostCode = "PostCode",
 
                 Email = "test@abc.com",
                 UserId = Guid.NewGuid(),
-                FirstName = "Test User",
-                LastName = "Test User",
+                FirstName = "Sally",
+                LastName = "Smith",
                 Telephone = "0123 456 789",
                 ServiceRole = "Approved person",
 
-                RegistrationId = Guid.NewGuid(),
+                SubmissionId = Guid.NewGuid(),
+                SubmissionPeriod = "January 2023 to June 2023",
                 RegistrationDate = DateTime.Now.AddDays(-RandomNumberGenerator.GetInt32(2, 180)),
                 IsResubmission = isResubmission,
                 Decision = "Pending",
-                RejectionComments = isResubmission ? "Missing data / wrong submission period" : String.Empty
+                PreviousRejectionComments = isResubmission ? "Missing data / wrong submission period" : String.Empty,
+
+                OrganisationDetailsFileId = Guid.NewGuid(),
+                OrganisationDetailsFileName = "OrgDetails.csv",
+                PartnershipDetailsFileId = Guid.NewGuid(),
+                BrandDetailsFileId = Guid.NewGuid(),
+                PartnershipDetailsFileName = "PartnerDetails.csv",
+                BrandDetailsFileName = "BrandDetails.csv"
             });
         }
 
