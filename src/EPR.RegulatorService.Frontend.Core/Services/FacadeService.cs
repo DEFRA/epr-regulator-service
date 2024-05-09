@@ -27,7 +27,6 @@ public class FacadeService : IFacadeService
     private const string OrganisationsSearchPath = "OrganisationsSearchPath";
     private const string GetOrganisationUsersByOrganisationExternalIdPath = "GetOrganisationUsersByOrganisationExternalIdPath";
     private const string OrganisationsRemoveApprovedUserPath = "OrganisationsRemoveApprovedUser";
-    private const string InviteNewApprovedPersonPath = "InviteNewApprovedPerson";
     private const string AddRemoveApprovedUserPath = "AddRemoveApprovedUser";
     private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
 
@@ -76,7 +75,7 @@ public class FacadeService : IFacadeService
 
         var query = new Dictionary<string, string>
         {
-            ["currentPage"] = currentPage.ToString(), ["pageSize"] = _paginationConfig.PageSize.ToString(),
+            ["currentPage"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture), ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
         };
         if (!string.IsNullOrEmpty(organisationName))
         {
@@ -191,8 +190,8 @@ public class FacadeService : IFacadeService
 
         var query = new Dictionary<string, string>
         {
-            ["pageNumber"] = currentPage.ToString(),
-            ["pageSize"] = _paginationConfig.PageSize.ToString(),
+            ["pageNumber"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
         };
         if (!string.IsNullOrEmpty(organisationName))
         {
@@ -241,7 +240,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        var path = string.Format(_facadeApiConfig.Endpoints[OrganisationsSearchPath], currentPage, _paginationConfig.PageSize, searchTerm);
+        var path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[OrganisationsSearchPath], currentPage, _paginationConfig.PageSize, searchTerm);
         var response = await _httpClient.GetAsync(path);
 
         response.EnsureSuccessStatusCode();
@@ -252,7 +251,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        var path = string.Format(_facadeApiConfig.Endpoints[GetOrganisationUsersByOrganisationExternalIdPath], externalId);
+        var path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[GetOrganisationUsersByOrganisationExternalIdPath], externalId);
 
         var response = await _httpClient.GetAsync(path);
 
@@ -264,7 +263,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        var path = string.Format(_facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath],
+        var path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath],
             request.RemovedConnectionExternalId, request.OrganisationId, request.PromotedPersonExternalId);
 
         var response = await _httpClient.PostAsJsonAsync(path, request);

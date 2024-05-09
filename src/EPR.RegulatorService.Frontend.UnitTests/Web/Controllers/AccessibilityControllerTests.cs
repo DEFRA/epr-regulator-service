@@ -91,8 +91,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expected: _accessibilityAbilityNet, actual: resultClass.AbilityNetUrl);
             Assert.AreEqual(expected: _accessibilityContactUs, actual: resultClass.ContactUsUrl);
             Assert.AreEqual(expected: _defraHelpline, actual: resultClass.DefraHelplineEmail);
-            Assert.AreEqual(expected: _accessibilitySiteTested.ToString(), actual: resultClass.SiteTestedDate);
-            Assert.AreEqual(expected: _accessibilityStatementReviewed.ToString(), actual: resultClass.StatementReviewedDate);
+            Assert.AreEqual(expected: _accessibilitySiteTested.ToString(System.Globalization.CultureInfo.InvariantCulture), actual: resultClass.SiteTestedDate);
+            Assert.AreEqual(expected: _accessibilityStatementReviewed.ToString(System.Globalization.CultureInfo.InvariantCulture), actual: resultClass.StatementReviewedDate);
         }
 
         [TestMethod]
@@ -122,8 +122,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expected: _accessibilityAbilityNet, actual: resultClass.AbilityNetUrl);
             Assert.AreEqual(expected: _accessibilityContactUs, actual: resultClass.ContactUsUrl);
             Assert.AreEqual(expected: _defraHelpline, actual: resultClass.DefraHelplineEmail);
-            Assert.AreEqual(expected: _accessibilitySiteTested.ToString(), actual: resultClass.SiteTestedDate);
-            Assert.AreEqual(expected: _accessibilityStatementReviewed.ToString(), actual: resultClass.StatementReviewedDate);
+            Assert.AreEqual(expected: _accessibilitySiteTested.ToString(System.Globalization.CultureInfo.InvariantCulture), actual: resultClass.SiteTestedDate);
+            Assert.AreEqual(expected: _accessibilityStatementReviewed.ToString(System.Globalization.CultureInfo.InvariantCulture), actual: resultClass.StatementReviewedDate);
         }
     }
 }

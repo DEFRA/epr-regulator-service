@@ -156,7 +156,7 @@ public class MockedFacadeService : IFacadeService
     {
         int number = RandomNumberGenerator.GetInt32(100000, 999999); // Generate a random 6-digit number
 
-        return number.ToString();
+        return number.ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 
     private static List<OrganisationSearchResult> GenerateOrganisationSearchResults()
@@ -267,7 +267,7 @@ public class MockedFacadeService : IFacadeService
     }
 
     public async Task<EndpointResponseStatus> RemoveApprovedUser(RemoveApprovedUserRequest request) => EndpointResponseStatus.Success;
-    public async Task<EndpointResponseStatus> RemoveApprovedUser(Guid connExternalId, Guid organisationId) => EndpointResponseStatus.Success;
+    public static async Task<EndpointResponseStatus> RemoveApprovedUser(Guid connExternalId, Guid organisationId) => EndpointResponseStatus.Success;
 
     public async Task<EndpointResponseStatus> SubmitRegistrationDecision(
         RegulatorRegistrationDecisionCreateRequest request) => EndpointResponseStatus.Success;
