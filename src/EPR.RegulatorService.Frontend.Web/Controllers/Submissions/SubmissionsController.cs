@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 using System.Globalization;
 using System.Text.Json;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
@@ -151,7 +152,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 OrganisationName = submission.OrganisationName,
                 OrganisationType = submission.OrganisationType,
                 OrganisationReferenceNumber = submission.OrganisationReference,
-                FormattedTimeAndDateOfSubmission = FormatTimeAndDateForSubmission(submission.SubmittedDate),
+                FormattedTimeAndDateOfSubmission = DateTimeHelpers.FormatTimeAndDateForSubmission(submission.SubmittedDate),
                 SubmissionId = submission.SubmissionId,
                 SubmittedBy = $"{submission.FirstName} {submission.LastName}",
                 AccountRole = submission.ServiceRole,

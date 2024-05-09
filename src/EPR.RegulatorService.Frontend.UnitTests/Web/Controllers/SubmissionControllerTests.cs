@@ -309,15 +309,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public void Given_TimeAndDateForSubmission_Set_Then_FormatTimeAndDateForSubmission_As_String()
-        {
-            DateTime timeAndDateOfSubmission = new(2023, 11, 11, 13, 11, 11);
-            string result = _systemUnderTest.FormatTimeAndDateForSubmission(timeAndDateOfSubmission);
-
-            result.Should().BeEquivalentTo("1:11pm on 11 November 2023");
-        }
-
-        [TestMethod]
         public async Task Submissions_WithNullSession_CreatesNewSessionAndRedirectsToSubmissionDetails()
         {
             // Act

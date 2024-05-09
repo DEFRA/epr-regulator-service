@@ -344,5 +344,10 @@
         **/_SubmissionDetails.cshtml
       </Value>
     </SonarQubeSetting>
+    <SonarQubeSetting Include="sonar.cpd.exclusions">
+      <Value>
+        **/RegistrationDetailsViewModel.cs
+      </Value>
+    </SonarQubeSetting>
   </ItemGroup>
 </Project>

@@ -74,7 +74,7 @@ public class MockedRegistrationFiltersTests
     {
         var results = _allRegistrations
             .AsQueryable()
-            .FilterByRegistrationStatus(new []{ Accepted }).ToList();
+            .FilterByStatus(new []{ Accepted }).ToList();
 
         Assert.IsNotNull(results);
         results.Should().HaveCount(2);
@@ -85,7 +85,7 @@ public class MockedRegistrationFiltersTests
     {
         var results = _allRegistrations
             .AsQueryable()
-            .FilterByRegistrationStatus(new []{ Rejected }).ToList();
+            .FilterByStatus(new []{ Rejected }).ToList();
 
         Assert.IsNotNull(results);
         results.Should().HaveCount(2);
@@ -96,7 +96,7 @@ public class MockedRegistrationFiltersTests
     {
         var results = _allRegistrations
             .AsQueryable()
-            .FilterByRegistrationStatus(new []{ Pending }).ToList();
+            .FilterByStatus(new []{ Pending }).ToList();
 
         Assert.IsNotNull(results);
         results.Should().HaveCount(2);
@@ -107,7 +107,7 @@ public class MockedRegistrationFiltersTests
     {
         var results = _allRegistrations
             .AsQueryable()
-            .FilterByRegistrationStatus(new []{ Accepted, Pending }).ToList();
+            .FilterByStatus(new []{ Accepted, Pending }).ToList();
 
         Assert.IsNotNull(results);
         results.Should().HaveCount(4);
@@ -118,7 +118,7 @@ public class MockedRegistrationFiltersTests
     {
         var results = _allRegistrations
             .AsQueryable()
-            .FilterByRegistrationStatus(new []{ Rejected, Pending }).ToList();
+            .FilterByStatus(new []{ Rejected, Pending }).ToList();
 
         Assert.IsNotNull(results);
         results.Should().HaveCount(4);

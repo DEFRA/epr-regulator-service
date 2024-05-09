@@ -17,6 +17,12 @@
   <data name="Table.Header.SubmissionDate" xml:space="preserve">
     <value>Date of submission</value>
   </data>
+  <data name="Table.Header.SubmissionDateAndTime" xml:space="preserve">
+    <value>Submission Date and Time</value>
+  </data>
+  <data name="Table.Header.SubmissionPeriod" xml:space="preserve">
+    <value>Submission Period</value>
+  </data>
   <data name="Table.Header.Status" xml:space="preserve">
     <value>Status</value>
   </data>

@@ -5,11 +5,12 @@ using EPR.RegulatorService.Frontend.Web.ViewComponents;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Moq;
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Web.Constants;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 {
+    using Frontend.Core.Enums;
+    using Frontend.Web.Constants;
+
     [TestClass]
     public class RegistrationsListViewComponentTests : ViewComponentsTestBase
     {
@@ -40,7 +41,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             {
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    SubmissionId = Guid.NewGuid(),
                     Decision = PendingStatus,
                     RegistrationDate = DateTime.Now,
                     IsResubmission = false,
@@ -57,7 +58,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                 },
                 new()
                 {
-                    RegistrationId = Guid.NewGuid(),
+                    SubmissionId = Guid.NewGuid(),
                     Decision = ApprovedStatus,
                     RegistrationDate = DateTime.Now,
                     IsResubmission = true,
@@ -76,44 +77,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         }
 
         [TestMethod]
-        public async Task InvokeAsync_InvalidPageNumber_SendsToErrorPage()
-        {
-            // Arrange
-            var registrations = _fixture.Build<PaginatedList<Registration>>()
-                .With(x => x.Items, _registrations)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
-                .Create();
-
-            _facadeServiceMock
-                .Setup(x => x.GetRegulatorRegistrations(It.IsAny<string?>(), It.IsAny<string?>(), null,
-                    It.IsAny<string[]>(), It.IsAny<int>()))
-                .Returns(Task.FromResult(registrations));
-
-            var viewComponent =
-                new RegistrationsListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
-            _httpContextMock.Setup(x => x.Response.Redirect(PagePath.PageNotFound));
-
-            SetViewComponentContext(PagePath.PageNotFound, viewComponent, null);
-
-            // Act
-            await viewComponent.InvokeAsync(new RegistrationListRequest()
-            {
-                SearchOrganisationName = string.Empty,
-                SearchOrganisationReference = string.Empty,
-                IsDirectProducerChecked = false,
-                IsComplianceSchemeChecked = false,
-                IsPendingRegistrationChecked = false,
-                IsAcceptedRegistrationChecked = false,
-                IsRejectedRegistrationChecked = false,
-                PageNumber = 9
-            });
-
-            // Assert
-            _httpContextMock.Verify(x => x.Response.Redirect(PagePath.PageNotFoundPath), Times.Once);
-        }
-
-        [TestMethod]
         public async Task InvokeAsync_ReturnsCorrectViewAndModel_Where_NoFiltersSet()
         {
             // Arrange
@@ -124,15 +87,18 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                 .Create();
 
             _facadeServiceMock
-                .Setup(x => x.GetRegulatorRegistrations(It.IsAny<string?>(), It.IsAny<string?>(), null,
-                    It.IsAny<string[]>(), It.IsAny<int>()))
+                .Setup(x => x.GetOrganisationSubmissions<Registration>(
+                    It.IsAny<string?>(),
+                    It.IsAny<string?>(),
+                    It.IsAny<OrganisationType?>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
-            var viewComponent =
-                new RegistrationsListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
+            var viewComponent = new RegistrationsListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
 
             // Act
-            var result = await viewComponent.InvokeAsync(new RegistrationListRequest()
+            var result = await viewComponent.InvokeAsync(new RegistrationListRequest
             {
                 SearchOrganisationName = string.Empty,
                 SearchOrganisationReference = string.Empty,
@@ -164,8 +130,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         }
 
         [TestMethod]
-        public async Task
-            InvokeAsync_ReturnsCorrectViewAndModel_Where_ApprovedStatus_ComplianceScheme_OrganisationNameSet()
+        public async Task InvokeAsync_ReturnsCorrectViewAndModel_Where_ApprovedStatus_ComplianceScheme_OrganisationNameSet()
         {
             // Arrange
             var registrations = _fixture.Build<PaginatedList<Registration>>()
@@ -177,13 +142,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             registrations.Items.RemoveAt(0);
 
             _facadeServiceMock
-                .Setup(x => x.GetRegulatorRegistrations(It.IsAny<string?>(), It.IsAny<string?>(),
+                .Setup(x => x.GetOrganisationSubmissions<Registration>(
+                    It.IsAny<string?>(),
+                    It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
-                    It.IsAny<string[]>(), It.IsAny<int>()))
+                    It.IsAny<string[]>(),
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
-            var viewComponent =
-                new RegistrationsListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
+            var viewComponent = new RegistrationsListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
 
             var registrationFiltersModel = new RegistrationFiltersModel()
             {
@@ -212,8 +179,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.Items);
             model.PagedOrganisationRegistrations.Count().Should().Be(1);
             model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationName.Should().Be(SweetsLtdCompanyName);
-            model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationType.Should()
-                .Be(OrganisationType.ComplianceScheme);
+            model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationType.Should().Be(OrganisationType.ComplianceScheme);
             model.PagedOrganisationRegistrations.FirstOrDefault().Decision.Should().Be(ApprovedStatus);
             model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.CurrentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(registrations.TotalPages);
@@ -223,6 +189,44 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.RegulatorRegistrationFiltersModel.IsPendingRegistrationChecked.Should().BeFalse();
             model.RegulatorRegistrationFiltersModel.IsAcceptedRegistrationChecked.Should().BeTrue();
             model.RegulatorRegistrationFiltersModel.IsRejectedRegistrationChecked.Should().BeFalse();
+        }
+
+        [TestMethod]
+        public async Task InvokeAsync_InvalidPageNumber_SendsToErrorPage()
+        {
+            // Arrange
+            var registrations = _fixture.Build<PaginatedList<Registration>>()
+                .With(x => x.Items, _registrations)
+                .With(x => x.CurrentPage, 1)
+                .With(x => x.TotalItems, 2)
+                .Create();
+
+            _facadeServiceMock
+                .Setup(x => x.GetOrganisationSubmissions<Registration>(It.IsAny<string?>(), It.IsAny<string?>(), null,
+                    It.IsAny<string[]>(), It.IsAny<int>()))
+                .Returns(Task.FromResult(registrations));
+
+            var viewComponent =
+                new RegistrationsListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
+            _httpContextMock.Setup(x => x.Response.Redirect(PagePath.PageNotFound));
+
+            SetViewComponentContext(PagePath.PageNotFound, viewComponent, null);
+
+            // Act
+            await viewComponent.InvokeAsync(new RegistrationListRequest()
+            {
+                SearchOrganisationName = string.Empty,
+                SearchOrganisationReference = string.Empty,
+                IsDirectProducerChecked = false,
+                IsComplianceSchemeChecked = false,
+                IsPendingRegistrationChecked = false,
+                IsAcceptedRegistrationChecked = false,
+                IsRejectedRegistrationChecked = false,
+                PageNumber = 9
+            });
+
+            // Assert
+            _httpContextMock.Verify(x => x.Response.Redirect(PagePath.PageNotFoundPath), Times.Once);
         }
 
         [TestMethod]
@@ -239,9 +243,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             registrations.Items.RemoveAt(0);
 
             _facadeServiceMock
-                .Setup(x => x.GetRegulatorRegistrations(It.IsAny<string?>(), It.IsAny<string?>(),
+                .Setup(x => x.GetOrganisationSubmissions<Registration>(
+                    It.IsAny<string?>(),
+                    It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
-                    It.IsAny<string[]>(), It.IsAny<int>()))
+                    It.IsAny<string[]>(),
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
             var viewComponent =
@@ -301,9 +308,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             registrations.Items.RemoveAt(0);
 
             _facadeServiceMock
-                .Setup(x => x.GetRegulatorRegistrations(It.IsAny<string?>(), It.IsAny<string?>(),
+                .Setup(x => x.GetOrganisationSubmissions<Registration>(
+                    It.IsAny<string?>(),
+                    It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
-                    It.IsAny<string[]>(), It.IsAny<int>()))
+                    It.IsAny<string[]>(),
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
             var viewComponent =
@@ -362,9 +372,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             registrations.Items.RemoveAt(0);
 
             _facadeServiceMock
-                .Setup(x => x.GetRegulatorRegistrations(It.IsAny<string?>(), It.IsAny<string?>(),
+                .Setup(x => x.GetOrganisationSubmissions<Registration>(
+                    It.IsAny<string?>(),
+                    It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
-                    It.IsAny<string[]>(), It.IsAny<int>()))
+                    It.IsAny<string[]>(),
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
             var viewComponent =

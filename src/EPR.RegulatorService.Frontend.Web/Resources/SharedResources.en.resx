@@ -133,6 +133,12 @@
   <data name="Regulator.CompanyDetail.JobTitle" xml:space="preserve">
     <value>Job title</value>
   </data>
+  <data name="Link.Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="NotListed" xml:space="preserve">
+    <value>Not listed</value>
+  </data>
   <data name="OrganisationType.DirectProducer" xml:space="preserve">
     <value>Direct Producer</value>
   </data>
@@ -144,5 +150,8 @@
   </data>
   <data name="Tag.DelegatedPerson" xml:space="preserve">
     <value>Delegated Person</value>
+  </data>
+  <data name="CharacterLimit.NoJavaScript" xml:space="preserve">
+    <value>You can enter up to 500 characters</value>
   </data>
 </root>

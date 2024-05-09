@@ -8,6 +8,8 @@ using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 {
+    using Frontend.Core.Enums;
+
     [TestClass]
     public class SubmissionsListViewComponentTests : ViewComponentsTestBase
     {
@@ -24,8 +26,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         private const string JohnDoeTelephone = "0011223344";
         private const string SweetsLtdCompanyName = "SweetsLtd";
         private const string SweetsLtdCompanyReference = "987654";
-        private const string DirectProducer = "Direct Producer";
-        private const string ComplianceScheme = "Compliance Scheme";
         private const string TonyStarkFirstName = "Tony";
         private const string TonyStarkLastName = "Stark";
         private const string TonyStarkEmail = "tony.stark@test.com";
@@ -47,7 +47,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     OrganisationId = Guid.NewGuid(),
                     OrganisationName = DrinksLtdCompanyName,
                     OrganisationReference = DrinksLtdCompanyReference,
-                    OrganisationType = DirectProducer,
+                    OrganisationType = OrganisationType.DirectProducer,
                     UserId = Guid.NewGuid(),
                     Email = JohnDoeEmail,
                     ServiceRole = JohnDoeServiceRole,
@@ -64,7 +64,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     OrganisationId = Guid.NewGuid(),
                     OrganisationName = SweetsLtdCompanyName,
                     OrganisationReference = SweetsLtdCompanyReference,
-                    OrganisationType = ComplianceScheme,
+                    OrganisationType = OrganisationType.ComplianceScheme,
                     UserId = Guid.NewGuid(),
                     Email = TonyStarkEmail,
                     ServiceRole = TonyStarkServiceRole,
@@ -86,7 +86,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                 .Create();
 
             _facadeServiceMock
-                .Setup(x => x.GetOrganisationSubmissions(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<string>(),
+                .Setup(x => x.GetOrganisationSubmissions<Submission>(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<OrganisationType?>(),
                     It.IsAny<string[]>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(submissions));
 
@@ -137,7 +137,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             submissions.Items.RemoveAt(0);
 
             _facadeServiceMock
-                .Setup(x => x.GetOrganisationSubmissions(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<string>(),
+                .Setup(x => x.GetOrganisationSubmissions<Submission>(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<OrganisationType>(),
                     It.IsAny<string[]>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(submissions));
 
@@ -170,7 +170,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.PagedOrganisationSubmissions.Should().BeEquivalentTo(submissions.Items);
             model.PagedOrganisationSubmissions.Count().Should().Be(1);
             model.PagedOrganisationSubmissions.FirstOrDefault().OrganisationName.Should().Be(SweetsLtdCompanyName);
-            model.PagedOrganisationSubmissions.FirstOrDefault().OrganisationType.Should().Be(ComplianceScheme);
+            model.PagedOrganisationSubmissions.FirstOrDefault().OrganisationType.Should().Be(OrganisationType.ComplianceScheme);
             model.PagedOrganisationSubmissions.FirstOrDefault().Decision.Should().Be(ApprovedStatus);
             model.PaginationNavigationModel.CurrentPage.Should().Be(submissions.CurrentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(submissions.TotalPages);

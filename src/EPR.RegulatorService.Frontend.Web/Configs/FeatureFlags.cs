@@ -12,4 +12,6 @@ public static class FeatureFlags
     public const string ManageRegistrations = "ManageRegistrations";
 
     public const string ManageApprovedUsers = "ManageApprovedUsers";
+
+    public const string PomDataPeriodAndTime = "PomDataPeriodAndTime";
 }
