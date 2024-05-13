@@ -353,5 +353,24 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
             return RedirectToAction(actionName, routeValues);
         }
+        [HttpGet]/////////////////////////////////////////// Working On 
+        [Route(PagePath.FileDownload)]
+        public async Task<IActionResult> FileDownload(Guid fileId)
+        {
+
+            // Working On
+
+            //var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+            var test = _facadeService.GetFileDownload(fileId);
+
+            // Working On
+
+
+
+
+
+            return RedirectToAction("", "");
+        }
     }
 }

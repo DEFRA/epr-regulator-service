@@ -109,7 +109,19 @@
           @Localizer["SummaryList.SubTitle.OrganisationDetails"]
         </dt>
         <dd class="govuk-summary-list__value">
-          @Model.OrganisationDetailsFileName
+                    @Model.OrganisationDetailsFileName
+
+                    @if (Model.OrganisationDetailsFileId != null)
+                    {
+                        @Html.ActionLink(SharedLocalizer["Link.Download"],
+                                 "FileDownload",
+                                 "Registrations",
+                                 new
+                                 {
+                                     fileId = Model.OrganisationDetailsFileId
+                                 },
+                                 new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-horizontal-control epr-horizontal-control-link" })
+                    }
         </dd>
         <dd class="govuk-summary-list__value epr-summary-list-download-link">
           @if (Model.BrandDetailsFileId.HasValue)

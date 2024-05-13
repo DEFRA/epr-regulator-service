@@ -32,6 +32,7 @@ public static class PagePath
     public const string InviteNewApprovedPersonSubmit = "invite-new-approved-person-submit";
     public const string EmailNominatedApprovedPerson = "email-nominated-approved-person";
     public const string AccountPermissionsChanged = "account-permissions-changed";
+    public const string FileDownload = "File-Download";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

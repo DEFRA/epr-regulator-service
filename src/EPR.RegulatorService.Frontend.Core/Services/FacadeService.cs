@@ -30,6 +30,7 @@ public class FacadeService : IFacadeService
     private const string InviteNewApprovedPersonPath = "InviteNewApprovedPerson";
     private const string AddRemoveApprovedUserPath = "AddRemoveApprovedUser";
     private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
+    private const string FileDownloadPath = "Filedownload";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -301,5 +302,12 @@ public class FacadeService : IFacadeService
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue(Constants.Bearer, accessToken);
         }
+    }
+    public async Task<HttpResponseMessage> GetFileDownload(Guid fileId)
+    {
+        await PrepareAuthenticatedClient();
+        var path = string.Format(_facadeApiConfig.Endpoints[FileDownloadPath], fileId);
+        var response = await _httpClient.GetAsync(path);
+        return await Task.FromResult<HttpResponseMessage>(response);
     }
 }

@@ -47,4 +47,5 @@ public interface IFacadeService
     Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request);
 
     Task<EndpointResponseStatus> SubmitRegistrationDecision(RegulatorRegistrationDecisionCreateRequest request);
+    Task<HttpResponseMessage> GetFileDownload(Guid fileId);
 }

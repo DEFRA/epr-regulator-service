@@ -348,4 +348,6 @@ public class MockedFacadeService : IFacadeService
     }
 
     public async Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+    public Task<HttpResponseMessage> GetFileDownload(Guid fieleId) => throw new NotImplementedException();
+
 }
