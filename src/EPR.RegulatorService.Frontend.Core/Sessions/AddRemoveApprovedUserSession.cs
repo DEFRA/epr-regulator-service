@@ -11,4 +11,5 @@ public class AddRemoveApprovedUserSession
     public Guid ExternalOrganisationId { get; set; }
     public EndpointResponseStatus? ResponseStatus { get; set; }
     public OrganisationUser? NewApprovedUser { get; set; }
+    public string CurrentApprovedUserEmail { get; set; }
 }

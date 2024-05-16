@@ -1,4 +1,4 @@
-﻿using EPR.Common.Authorization.Constants;
+using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -112,11 +112,13 @@ public class SearchManageApproversController : RegulatorSessionBaseController
         var organisationDetails = await _facadeService.GetRegulatorCompanyDetails(session.RegulatorSession.OrganisationId.Value);
 
         var model = GetCompanyDetailsRequest(organisationDetails, session.RegulatorSession.OrganisationId.Value);
+        var currentApprovedUser = model.ApprovedUsersInformation.ApprovedUsers.FirstOrDefault();
 
         session.AddRemoveApprovedUserSession = new AddRemoveApprovedUserSession
         {
             OrganisationName = model.OrganisationName,
-            ExternalOrganisationId = model.ExternalOrganisationId
+            ExternalOrganisationId = model.ExternalOrganisationId,
+            CurrentApprovedUserEmail = currentApprovedUser != null ? currentApprovedUser.Email : string.Empty
         };
 
         await AddCurrentPageAndSaveSession(session, PagePath.RegulatorCompanyDetail);
