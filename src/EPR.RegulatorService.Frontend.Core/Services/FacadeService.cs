@@ -1,9 +1,12 @@
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using System.Net;
@@ -303,11 +306,14 @@ public class FacadeService : IFacadeService
                 new AuthenticationHeaderValue(Constants.Bearer, accessToken);
         }
     }
-    public async Task<HttpResponseMessage> GetFileDownload(Guid fileId)
+    public async Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request)
     {
         await PrepareAuthenticatedClient();
-        var path = string.Format(_facadeApiConfig.Endpoints[FileDownloadPath], fileId);
-        var response = await _httpClient.GetAsync(path);
-        return await Task.FromResult<HttpResponseMessage>(response);
+      
+        var path = string.Format(_facadeApiConfig.Endpoints[FileDownloadPath]);
+        
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+
+        return response; //await Task.FromResult<HttpResponseMessage>(response);
     }
 }

@@ -1,0 +1,10 @@
+<h2 class="govuk-heading-m">There is a problem with this file</h2>
+<p class="govuk-body">This file can not be downloaded.</p>
+<h3 class="govuk-heading-m">What you need to do next</h3>
+<p class="govuk-body">You need to reject the organisation details submission and instruct the producer or compliance scheme to resubmit their organisation details.</p>
+
+<form class="govuk-!-display-inline-block" method="get" asp-controller="Registrations" asp-action="RejectRegistration">
+    <button class="govuk-button" data-module="govuk-button">
+        @SharedLocalizer["FileDownload.RejectSubmission"]
+    </button>
+</form>

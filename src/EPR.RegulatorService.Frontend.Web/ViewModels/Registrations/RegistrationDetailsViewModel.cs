@@ -38,5 +38,5 @@ public class RegistrationDetailsViewModel
     public string PartnershipDetailsFileName { get; set; }
     public Guid? PartnershipDetailsFileId { get; set; }
     public string BrandDetailsFileName { get; set; }
-    public Guid? BrandDetailsFileId { get; set; }
+    public Guid? BrandDetailsFileId { get; set; }   
 }

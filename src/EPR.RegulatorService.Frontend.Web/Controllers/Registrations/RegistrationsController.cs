@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 using System.Text.Json;
+using System.Reflection;
+using Azure.Core;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 {
@@ -267,6 +270,62 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
         }
 
+
+        [HttpGet]
+        [Route(PagePath.OrganisationDetailsFileDownload)]
+        public IActionResult OrganisationDetailsFileDownload(bool downloadFailed = false, bool hasVirus = false)
+        {
+            var model = new OrganisationDetailsFileDownloadViewModel
+            {
+                IsFileDownloading = !downloadFailed && !hasVirus,
+                DownloadFailed = downloadFailed,
+                HasVirus = hasVirus
+            };
+
+            return View(nameof(OrganisationDetailsFileDownload), model);
+        }
+
+        [HttpGet]
+        [Route(PagePath.FileDownload)]
+        public IActionResult FileDownload(Guid fileId)
+        {
+            TempData["FileId"] = fileId;
+            
+            return RedirectToAction("OrganisationDetailsFileDownload", "Registrations");
+        }
+
+        [HttpGet]        
+        public async Task<IActionResult> FileDownloadInProgress()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
+           
+            var fileDownloadModel = new FileDownloadRequest
+            {
+                FileId = registration.OrganisationDetailsFileId,
+                BlobName = "e1fb01bb-45ee-4e1e-a21d-788b8c140b42",
+                FileName = registration.OrganisationDetailsFileName,
+                SubmissionId = registration.SubmissionId,
+                SubmissionType = SubmissionType.Registration
+            };
+
+            var result = await _facadeService.GetFileDownload(fileDownloadModel);
+
+            //if (downloadSuccess)
+            //{
+            //    if (hasVirus)
+            //    {
+            //        return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { hasVirus = true });
+            //    }
+            //    return RedirectToAction("RegistrationDetails", "Registrations");
+            //}
+            //else
+            //{
+            //    return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { downloadFailed = true });
+            //}
+            return Ok(result);
+        }
+
         private void SetBackLink(JourneySession session, string currentPagePath) =>
             ViewBag.BackLinkToDisplay =
                 session.RegulatorRegistrationSession.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
@@ -352,25 +411,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             await SaveSessionAndJourney(session, currentPagePath, nextPagePath);
 
             return RedirectToAction(actionName, routeValues);
-        }
-        [HttpGet]/////////////////////////////////////////// Working On 
-        [Route(PagePath.FileDownload)]
-        public async Task<IActionResult> FileDownload(Guid fileId)
-        {
-
-            // Working On
-
-            //var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-            var test = _facadeService.GetFileDownload(fileId);
-
-            // Working On
-
-
-
-
-
-            return RedirectToAction("", "");
         }
     }
 }

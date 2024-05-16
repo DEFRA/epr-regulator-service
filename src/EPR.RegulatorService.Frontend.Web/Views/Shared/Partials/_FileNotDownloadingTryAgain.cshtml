@@ -1,0 +1,10 @@
+<h2 class="govuk-heading-m">There was a problem downloading this file</h2>
+<p class="govuk-body">This file has not been downloaded.</p>
+<h3 class="govuk-heading-m">What you need to do next</h3>
+<p class="govuk-body">You will need to download the file again.</p>
+
+<form class="govuk-!-display-inline-block" method="get" asp-controller="Registrations" asp-action="FileDownload">
+    <button class="govuk-button" data-module="govuk-button">
+        @SharedLocalizer["FileDownload.TryAgainButton"]
+    </button>
+</form>

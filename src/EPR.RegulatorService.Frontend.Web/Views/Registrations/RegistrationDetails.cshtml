@@ -83,14 +83,14 @@
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
-        @if (!Model.IsResubmission)
-        {
-          <partial name="Partials/_RegistrationSubmissionDetails"/>
-        }
-        else
-        {
+          @if(!Model.IsResubmission)
+          {
+            <partial name="Partials/_RegistrationSubmissionDetails"/>
+          }
+          else
+          {
           <partial name="Partials/_RegistrationResubmissionDetails"/>
-        }
+          }
       </div>
     </div>
 
