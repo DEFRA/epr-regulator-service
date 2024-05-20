@@ -41,6 +41,7 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
                 NominationDecision = null,
                 OrganisationName = organisationName,
                 ExternalOrganisationId = organisationId,
+                CurrentApprovedUserEmail = session.AddRemoveApprovedUserSession.CurrentApprovedUserEmail
             };
             await SaveSession(session);
         }
@@ -192,13 +193,7 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         var model = new OrganisationUsersModel
         {
             ExternalOrganisationId = session.AddRemoveApprovedUserSession.ExternalOrganisationId,
-            OrganisationUsers = results.Select(user => new OrganisationUser
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                PersonExternalId = user.PersonExternalId
-            }).ToList(),
+            OrganisationUsers = results.Where(user => user.Email != session.AddRemoveApprovedUserSession.CurrentApprovedUserEmail).ToList(),
             NewApprovedUserId = session.AddRemoveApprovedUserSession.NewApprovedUser?.PersonExternalId
         };
 
