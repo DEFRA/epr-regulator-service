@@ -1,8 +1,10 @@
+using System.IO;
+using System.Text.Json;
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
-using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -11,14 +13,13 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
-using System.Text.Json;
-using System.Reflection;
-using Azure.Core;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+
+using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 {
@@ -30,7 +31,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly string _pathBase;
         private readonly ExternalUrlsOptions _options;
-        private readonly IFacadeService _facadeService;
+        private readonly IFacadeService _facadeService;        
 
         public RegistrationsController(ISessionManager<JourneySession> sessionManager,
             IConfiguration configuration, IOptions<ExternalUrlsOptions> options, IFacadeService facadeService)
@@ -270,10 +271,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
         }
 
-
         [HttpGet]
         [Route(PagePath.OrganisationDetailsFileDownload)]
-        public IActionResult OrganisationDetailsFileDownload(bool downloadFailed = false, bool hasVirus = false)
+        public IActionResult OrganisationDetailsFileDownload(bool downloadFailed = false, bool hasVirus = false, bool hasFile = false)
         {
             var model = new OrganisationDetailsFileDownloadViewModel
             {
@@ -290,16 +290,16 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         public IActionResult FileDownload(Guid fileId)
         {
             TempData["FileId"] = fileId;
-            
+            TempData["DownloadCompleted"] = false;
             return RedirectToAction("OrganisationDetailsFileDownload", "Registrations");
         }
 
-        [HttpGet]        
+        [HttpGet]
         public async Task<IActionResult> FileDownloadInProgress()
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
-           
+
             var fileDownloadModel = new FileDownloadRequest
             {
                 FileId = registration.OrganisationDetailsFileId,
@@ -309,21 +309,36 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 SubmissionType = SubmissionType.Registration
             };
 
-            var result = await _facadeService.GetFileDownload(fileDownloadModel);
+            var response = await _facadeService.GetFileDownload(fileDownloadModel);
 
-            //if (downloadSuccess)
-            //{
-            //    if (hasVirus)
-            //    {
-            //        return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { hasVirus = true });
-            //    }
-            //    return RedirectToAction("RegistrationDetails", "Registrations");
-            //}
-            //else
-            //{
-            //    return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { downloadFailed = true });
-            //}
-            return Ok(result);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (responseContent.Contains("flagged as infected"))
+                {
+                    TempData["ErrorMessage"] = "The file was found but it was flagged as infected. It will not be downloaded.";
+                    return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { hasVirus = true });
+                }
+                
+                var fileStream = await response.Content.ReadAsStreamAsync();
+                var contentDisposition = response.Content.Headers.ContentDisposition;
+                var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.OrganisationDetailsFileName;
+                TempData["DownloadCompleted"] = true;              
+
+                return File(fileStream, "application/octet-stream", fileName);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "There was an issue downloading the file. Please try again.";
+                return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { downloadFailed = true });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult FileDownloadComplete()
+        {
+            return RedirectToAction("RegistrationDetails", "Registrations");
         }
 
         private void SetBackLink(JourneySession session, string currentPagePath) =>

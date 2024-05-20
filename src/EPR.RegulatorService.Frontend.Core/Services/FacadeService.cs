@@ -1,3 +1,8 @@
+using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json;
+
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -9,10 +14,6 @@ using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
@@ -314,6 +315,6 @@ public class FacadeService : IFacadeService
         
         var response = await _httpClient.PostAsJsonAsync(path, request);
 
-        return response; //await Task.FromResult<HttpResponseMessage>(response);
+        return await Task.FromResult<HttpResponseMessage>(response);
     }
 }
