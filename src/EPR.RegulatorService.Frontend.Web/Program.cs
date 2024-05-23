@@ -1,5 +1,6 @@
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Web.Extensions;
+using EPR.RegulatorService.Frontend.Web.FeatureManagement;
 using EPR.RegulatorService.Frontend.Web.HealthChecks;
 using EPR.RegulatorService.Frontend.Web.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -9,7 +10,8 @@ using Microsoft.IdentityModel.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddFeatureManagement();
+    .AddFeatureManagement().UseDisabledFeaturesHandler(new RedirectDisabledFeatureHandler());
+
 
 builder.Services
     .RegisterCoreComponents(builder.Configuration)
