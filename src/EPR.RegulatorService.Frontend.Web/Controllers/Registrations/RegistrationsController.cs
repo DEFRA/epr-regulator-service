@@ -1,4 +1,3 @@
-using System.IO;
 using System.Text.Json;
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -109,6 +108,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
+
             var model = new RegistrationDetailsViewModel
             {
                 OrganisationName = registration.OrganisationName,
@@ -139,10 +139,10 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 CompaniesHouseNumber = registration.CompaniesHouseNumber,
                 OrganisationDetailsFileId = registration.OrganisationDetailsFileId,
                 OrganisationDetailsFileName = registration.OrganisationDetailsFileName,
-                PartnershipDetailsFileId = registration.PartnershipDetailsFileId,
-                PartnershipDetailsFileName = registration.PartnershipDetailsFileName,
-                BrandDetailsFileId = registration.BrandDetailsFileId,
-                BrandDetailsFileName = registration.BrandDetailsFileName,
+                PartnershipDetailsFileId = registration.PartnershipFileId,
+                PartnershipDetailsFileName = registration.PartnershipFileName,
+                BrandDetailsFileId = registration.BrandsFileId,
+                BrandDetailsFileName = registration.BrandsFileName,
                 DeclaredBy = registration.OrganisationType == OrganisationType.ComplianceScheme
                     ? DeclaredByComplianceScheme
                     : $"{registration.FirstName} {registration.LastName}"
@@ -287,10 +287,13 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
         [HttpGet]
         [Route(PagePath.FileDownload)]
-        public IActionResult FileDownload(Guid fileId)
+        public async Task<IActionResult> FileDownload(string downloadType)
         {
-            TempData["FileId"] = fileId;
             TempData["DownloadCompleted"] = false;
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            session.RegulatorRegistrationSession.FileDownloadRequestType = downloadType;
+            await SaveSession(session);
+
             return RedirectToAction("OrganisationDetailsFileDownload", "Registrations");
         }
 
@@ -299,15 +302,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
+            var fileDownloadModel = CreateFileDownloadRequest(session, registration);
 
-            var fileDownloadModel = new FileDownloadRequest
+            if (fileDownloadModel == null)
             {
-                FileId = registration.OrganisationDetailsFileId,
-                BlobName = "e1fb01bb-45ee-4e1e-a21d-788b8c140b42",
-                FileName = registration.OrganisationDetailsFileName,
-                SubmissionId = registration.SubmissionId,
-                SubmissionType = SubmissionType.Registration
-            };
+                return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { downloadFailed = true });
+            }
 
             var response = await _facadeService.GetFileDownload(fileDownloadModel);
 
@@ -317,7 +317,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
                 if (responseContent.Contains("flagged as infected"))
                 {
-                    TempData["ErrorMessage"] = "The file was found but it was flagged as infected. It will not be downloaded.";
                     return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { hasVirus = true });
                 }
                 
@@ -330,7 +329,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             }
             else
             {
-                TempData["ErrorMessage"] = "There was an issue downloading the file. Please try again.";
                 return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { downloadFailed = true });
             }
         }
@@ -339,6 +337,43 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         public IActionResult FileDownloadComplete()
         {
             return RedirectToAction("RegistrationDetails", "Registrations");
+        }
+
+        private FileDownloadRequest CreateFileDownloadRequest(JourneySession session, Registration registration)
+        {
+            var fileDownloadModel = new FileDownloadRequest
+            {
+                SubmissionId = registration.SubmissionId,
+                SubmissionType = SubmissionType.Registration
+            };
+
+            switch (session.RegulatorRegistrationSession.FileDownloadRequestType)
+            {
+                case FileDownloadTypes.OrganisationDetails:
+                    fileDownloadModel.FileId = registration.OrganisationDetailsFileId;
+                    fileDownloadModel.BlobName = registration.CompanyDetailsBlobName;
+                    fileDownloadModel.FileName = registration.OrganisationDetailsFileName;
+                    break;
+                case FileDownloadTypes.BrandDetails:
+                    fileDownloadModel.FileId = registration.BrandsFileId;
+                    fileDownloadModel.BlobName = registration.BrandsBlobName;
+                    fileDownloadModel.FileName = registration.BrandsFileName;
+                    break;
+                case FileDownloadTypes.PartnershipDetails:
+                    fileDownloadModel.FileId = registration.PartnershipFileId;
+                    fileDownloadModel.BlobName = registration.PartnershipBlobName;
+                    fileDownloadModel.FileName = registration.PartnershipFileName;
+                    break;
+                default:
+                    return null;
+            }
+
+            if (fileDownloadModel.FileId == null || fileDownloadModel.BlobName == null || fileDownloadModel.FileName == null)
+            {
+                return null;
+            }
+
+            return fileDownloadModel;
         }
 
         private void SetBackLink(JourneySession session, string currentPagePath) =>

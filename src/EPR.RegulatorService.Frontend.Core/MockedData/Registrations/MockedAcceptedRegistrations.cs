@@ -52,10 +52,10 @@ public static class MockedAcceptedRegistrations
                 PreviousRejectionComments = isResubmission ? "Rejected because reasons" : string.Empty,
                 OrganisationDetailsFileId = Guid.NewGuid(),
                 OrganisationDetailsFileName = "OrgDetails.csv",
-                PartnershipDetailsFileId = Guid.NewGuid(),
-                PartnershipDetailsFileName = "PartnerDetails.csv",
-                BrandDetailsFileId = Guid.NewGuid(),
-                BrandDetailsFileName = "BrandDetails.csv"
+                PartnershipFileId = Guid.NewGuid(),
+                PartnershipFileName = "PartnerDetails.csv",
+                BrandsFileId = Guid.NewGuid(),
+                BrandsFileName = "BrandDetails.csv"
             });
         }
 

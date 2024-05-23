@@ -52,10 +52,10 @@ public static class MockedPendingRegistrations
 
                 OrganisationDetailsFileId = Guid.NewGuid(),
                 OrganisationDetailsFileName = "OrgDetails.csv",
-                PartnershipDetailsFileId = Guid.NewGuid(),
-                BrandDetailsFileId = Guid.NewGuid(),
-                PartnershipDetailsFileName = "PartnerDetails.csv",
-                BrandDetailsFileName = "BrandDetails.csv"
+                PartnershipFileId = Guid.NewGuid(),
+                BrandsFileId = Guid.NewGuid(),
+                PartnershipFileName = "PartnerDetails.csv",
+                BrandsFileName = "BrandDetails.csv"
             });
         }
 

@@ -53,10 +53,10 @@ public static class MockedRejectedRegistrations
 
                 OrganisationDetailsFileId = Guid.NewGuid(),
                 OrganisationDetailsFileName = "OrgDetails.csv",
-                PartnershipDetailsFileId = Guid.NewGuid(),
-                PartnershipDetailsFileName = "PartnerDetails.csv",
-                BrandDetailsFileId = Guid.NewGuid(),
-                BrandDetailsFileName = "BrandDetails.csv"
+                PartnershipFileId = Guid.NewGuid(),
+                PartnershipFileName = "PartnerDetails.csv",
+                BrandsFileId = Guid.NewGuid(),
+                BrandsFileName = "BrandDetails.csv"
             });
         }
 

@@ -23,10 +23,10 @@ public class Registration : AbstractSubmission
     public Guid CompanyDetailsFileId { get; set; }
     public string CompanyDetailsFileName { get; set; }
     public string CompanyDetailsBlobName { get; set; }
-    public Guid? PartnershipDetailsFileId { get; set; }
-    public string PartnershipDetailsFileName { get; set; }
+    public Guid? PartnershipFileId { get; set; }
+    public string PartnershipFileName { get; set; }
     public string PartnershipBlobName { get; set; }
-    public Guid? BrandDetailsFileId { get; set; }
-    public string BrandDetailsFileName { get; set; }
+    public Guid? BrandsFileId { get; set; }
+    public string BrandsFileName { get; set; }
     public string BrandsBlobName { get; set; }
 }
