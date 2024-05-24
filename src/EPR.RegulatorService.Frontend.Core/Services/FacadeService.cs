@@ -34,7 +34,7 @@ public class FacadeService : IFacadeService
     private const string OrganisationsRemoveApprovedUserPath = "OrganisationsRemoveApprovedUser";
     private const string AddRemoveApprovedUserPath = "AddRemoveApprovedUser";
     private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
-    private const string FileDownloadPath = "Filedownload";
+    private const string FileDownloadPath = "FileDownload";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;

@@ -230,7 +230,7 @@ public class RegistrationsControllerTests : RegistrationTestBase
     public void OrganisationDetailsFileDownload_ReturnsViewWithViewModel()
     {
         // Act
-        var result = _sut.OrganisationDetailsFileDownload(false, false, false);
+        var result = _sut.OrganisationDetailsFileDownload(false, false);
 
         // Assert
         result.Should().NotBeNull();
@@ -239,8 +239,7 @@ public class RegistrationsControllerTests : RegistrationTestBase
         var model = viewResult.Model as OrganisationDetailsFileDownloadViewModel;
         model.Should().NotBeNull();
         model.DownloadFailed.Should().BeFalse();
-        model.HasVirus.Should().BeFalse();
-        model.IsFileDownloading.Should().BeTrue();
+        model.HasIssue.Should().BeFalse();
     }
 
     [TestMethod]

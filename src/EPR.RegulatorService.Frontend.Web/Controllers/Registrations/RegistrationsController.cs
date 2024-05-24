@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -273,13 +274,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
         [HttpGet]
         [Route(PagePath.OrganisationDetailsFileDownload)]
-        public IActionResult OrganisationDetailsFileDownload(bool downloadFailed = false, bool hasVirus = false, bool hasFile = false)
+        public IActionResult OrganisationDetailsFileDownload(bool downloadFailed = false, bool hasIssue = false)
         {
             var model = new OrganisationDetailsFileDownloadViewModel
             {
-                IsFileDownloading = !downloadFailed && !hasVirus,
                 DownloadFailed = downloadFailed,
-                HasVirus = hasVirus
+                HasIssue = hasIssue
             };
 
             return View(nameof(OrganisationDetailsFileDownload), model);
@@ -317,7 +317,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
                 if (responseContent.Contains("flagged as infected"))
                 {
-                    return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { hasVirus = true });
+                    return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { hasVirus = true });                    
                 }
                 
                 var fileStream = await response.Content.ReadAsStreamAsync();
@@ -331,12 +331,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             {
                 return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { downloadFailed = true });
             }
-        }
-
-        [HttpGet]
-        public IActionResult FileDownloadComplete()
-        {
-            return RedirectToAction("RegistrationDetails", "Registrations");
         }
 
         private FileDownloadRequest CreateFileDownloadRequest(JourneySession session, Registration registration)

@@ -12,64 +12,49 @@
       <main class="govuk-main-wrapper" id="main-content" role="main">
           <div class="govuk-grid-row">
               <div class="govuk-grid-column-full">               
-                @if (Model.IsFileDownloading)
-                {
-                    <partial name="Partials/_FileIsDownloadingStatus" />
-                    <div class="govuk-grid-row">
-                        <div class="govuk-grid-column-full">
-                            @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
-                                     "RegistrationDetails",
-                                     "Registrations",
-                                     null,
-                                     new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
-                        </div>
-                    </div>
-                    @if (!downloadCompleted)
-                    {
-                        <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "Registrations")" />
-                    }
-                    else
-                    {
-                        <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadComplete", "Registrations")" />
-                    }
-                }
-                else if (Model.IsFileDownloading)
-                {
-                  <partial name="Partials/_FileIsDownloadingStatus" />
-                  <meta http-equiv="refresh" content="1; url=@Url.Action("FileDownloadInProgress", "Registrations")" />                    
-                }
+                  @if (!Model.HasIssue && !Model.DownloadFailed)
+                  {
+                      <partial name="Partials/_FileIsDownloadingStatus" />
+                      <div class="govuk-grid-row">
+                          <div class="govuk-grid-column-full">
+                              @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
+                                       "RegistrationDetails",
+                                       "Registrations",
+                                       null,
+                                       new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
+                          </div>
+                      </div>
+                      @if (!downloadCompleted)
+                      {
+                          <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "Registrations")" />
+                      }                    
+                  }
                   else if (Model.DownloadFailed)
                   {
                       <partial name="Partials/_FileNotDownloadingTryAgain" />
                       <div class="govuk-grid-row">
                           <div class="govuk-grid-column-full">
                               @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
-                                       "RegistrationDetails",
-                                       "Registrations",
-                                       null,
-                                       new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
+                                        "RegistrationDetails",
+                                        "Registrations",
+                                        null,
+                                        new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
                           </div>
                       </div>
                   }
-                  else if (Model.HasVirus)
+                  else if (Model.HasIssue)
                   {
                       <partial name="Partials/_FileIsDownloadingVirusError" />
                       <div class="govuk-grid-row">
                           <div class="govuk-grid-column-full">
                               @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
-                                       "RegistrationDetails",
-                                       "Registrations",
-                                       null,
-                                       new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
+                                        "RegistrationDetails",
+                                        "Registrations",
+                                        null,
+                                        new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
                           </div>
                       </div>
-                  }
-                  else
-                  {
-                      <div>
-                          <p>The file has been downloaded. Redirecting back to registrations...</p>
-                      </div>
-                  }
+                  }                 
               </div>
           </div>      
       </main>
