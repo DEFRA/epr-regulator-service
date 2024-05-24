@@ -269,6 +269,56 @@ public class RegistrationsControllerTests : RegistrationTestBase
     }
 
     [TestMethod]
+    public async Task FileDownload_RedirectsToBrandDetailsFileDownload()
+    {
+        // Arrange
+        var session = _fixture.Create<JourneySession>();
+        session.RegulatorRegistrationSession = new RegulatorRegistrationSession
+        {
+            FileDownloadRequestType = FileDownloadTypes.BrandDetails.ToString()
+        };
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _sessionManagerMock.Setup(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()))
+                           .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _sut.FileDownload(FileDownloadTypes.OrganisationDetails.ToString());
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<RedirectToActionResult>();
+        var redirectResult = result as RedirectToActionResult;
+        redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownload");
+        redirectResult.ControllerName.Should().Be("Registrations");
+    }
+
+    [TestMethod]
+    public async Task FileDownload_RedirectsToPartnershipDetailsFileDownload()
+    {
+        // Arrange
+        var session = _fixture.Create<JourneySession>();
+        session.RegulatorRegistrationSession = new RegulatorRegistrationSession
+        {
+            FileDownloadRequestType = FileDownloadTypes.PartnershipDetails.ToString()
+        };
+
+        _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+        _sessionManagerMock.Setup(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()))
+                           .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _sut.FileDownload(FileDownloadTypes.OrganisationDetails.ToString());
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<RedirectToActionResult>();
+        var redirectResult = result as RedirectToActionResult;
+        redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownload");
+        redirectResult.ControllerName.Should().Be("Registrations");
+    }
+
+    [TestMethod]
     public async Task FileDownloadInProgress_ValidRequest_ReturnsFile()
     {
         // Arrange
@@ -284,26 +334,28 @@ public class RegistrationsControllerTests : RegistrationTestBase
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
-        var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
+        using (var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
         {
             Content = new StringContent("file content")
-        };
-        response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+        })
         {
-            FileName = "testfile.txt"
-        };
+            response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+            {
+                FileName = "testfile.txt"
+            };
 
-        _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+            _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
-        // Act
-        var result = await _sut.FileDownloadInProgress();
+            // Act
+            var result = await _sut.FileDownloadInProgress();
 
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType<FileStreamResult>();
-        var fileResult = result as FileStreamResult;
-        fileResult.ContentType.Should().Be("application/octet-stream");
-        fileResult.FileDownloadName.Should().Be("testfile.txt");
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<FileStreamResult>();
+            var fileResult = result as FileStreamResult;
+            fileResult.ContentType.Should().Be("application/octet-stream");
+            fileResult.FileDownloadName.Should().Be("testfile.txt");
+        }
     }
 
     [TestMethod]
@@ -322,23 +374,24 @@ public class RegistrationsControllerTests : RegistrationTestBase
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
-        var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
+        using (var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
         {
             Content = new StringContent("flagged as infected")
-        };
+        })
+        {
+            _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
-        _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+            // Act
+            var result = await _sut.FileDownloadInProgress();
 
-        // Act
-        var result = await _sut.FileDownloadInProgress();
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType<RedirectToActionResult>();
-        var redirectResult = result as RedirectToActionResult;
-        redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownload");
-        redirectResult.ControllerName.Should().Be("Registrations");
-        redirectResult.RouteValues["hasVirus"].Should().Be(true);
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownload");
+            redirectResult.ControllerName.Should().Be("Registrations");
+            redirectResult.RouteValues["hasVirus"].Should().Be(true);
+        }
     }
 
     [TestMethod]
@@ -357,19 +410,20 @@ public class RegistrationsControllerTests : RegistrationTestBase
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
-        var response = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
+        using (var response = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest))
+        {
+            _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
-        _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+            // Act
+            var result = await _sut.FileDownloadInProgress();
 
-        // Act
-        var result = await _sut.FileDownloadInProgress();
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().BeOfType<RedirectToActionResult>();
-        var redirectResult = result as RedirectToActionResult;
-        redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownload");
-        redirectResult.ControllerName.Should().Be("Registrations");
-        redirectResult.RouteValues["downloadFailed"].Should().Be(true);
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownload");
+            redirectResult.ControllerName.Should().Be("Registrations");
+            redirectResult.RouteValues["downloadFailed"].Should().Be(true);
+        }
     }
 }

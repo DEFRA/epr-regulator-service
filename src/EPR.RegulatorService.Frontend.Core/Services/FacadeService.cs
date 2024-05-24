@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -309,9 +310,9 @@ public class FacadeService : IFacadeService
     public async Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request)
     {
         await PrepareAuthenticatedClient();
-      
-        var path = string.Format(_facadeApiConfig.Endpoints[FileDownloadPath]);
-        
+
+        var path = string.Format(CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[FileDownloadPath]);
+
         var response = await _httpClient.PostAsJsonAsync(path, request);
 
         return await Task.FromResult<HttpResponseMessage>(response);
