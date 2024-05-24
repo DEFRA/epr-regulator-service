@@ -121,9 +121,9 @@
     <value>Do not close the page and do not refresh it yourself.</value>
   </data>
   <data name="OrganisationDetailsFileDownload.Info" xml:space="preserve">
-    <value>This may take a few minutes.</value>
+    <value>Once that is complete, click the link below to go back</value>
   </data>
   <data name="OrganisationDetailsFileDownload.Title" xml:space="preserve">
-    <value>Downloading File</value>
+    <value>Your file is downloading. </value>
   </data>
 </root>
