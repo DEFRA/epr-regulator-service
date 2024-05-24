@@ -1,4 +1,5 @@
 using AutoFixture;
+
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData;
@@ -8,10 +9,13 @@ using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
+
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
+
 using Moq;
 using Moq.Protected;
+
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -41,7 +45,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         {
             _mockHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             _tokenAcquisitionMock = new Mock<ITokenAcquisition>();
-            _httpClient = new HttpClient(_mockHandler.Object){BaseAddress = new Uri("http://localhost")};
+            _httpClient = new HttpClient(_mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
             _paginationConfig = Options.Create(new PaginationConfig { PageSize = 10 });
             _facadeApiConfig = Options.Create(new FacadeApiConfig
             {
@@ -50,11 +54,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["PendingApplications"] = "http://testurl.com",
                     ["UpdateEnrolment"] = "http://testurl.com",
                     ["OrganisationEnrolmentsPath"] = "organisations/{0}/pending-applications",
-                    ["OrganisationTransferNationPath"]= "accounts/transfer-nation",
+                    ["OrganisationTransferNationPath"] = "accounts/transfer-nation",
                     ["SendEnrolmentUpdatedEmails"] = "regulators/accounts/govNotification",
                     ["EnrolInvitedUser"] = "accounts-management/enrol-invited-user",
                     ["UserAccounts"] = "user-accounts",
-                    ["OrganisationsSearchPath"] = "organisations/search-organisations?currentPage={0}&pageSize={1}&searchTerm={2}",
                     ["OrganisationDetails"] = "organisations/organisation-details?externalId={0}",
                     ["GetOrganisationUsersByOrganisationExternalIdPath"] = "organisations/users-by-organisation-external-id?externalId={0}",
                     ["PomSubmissions"] = "http://testurl.com/PomSubmissions",
@@ -180,7 +183,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var testOrgAppList = _fixture.Create<PaginatedList<OrganisationApplications>>();
             string jsonContent = JsonSerializer.Serialize(testOrgAppList);
 
-            var httpResponseMessage = new HttpResponseMessage {
+            var httpResponseMessage = new HttpResponseMessage
+            {
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent(jsonContent, Encoding.UTF8, "application/json"),
             };
@@ -586,7 +590,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ReturnsAsync(httpResponseMessage);
 
             // Act
-            var result = await _facadeService.GetOrganisationSubmissions<Submission>(null, null, null,null, 1);
+            var result = await _facadeService.GetOrganisationSubmissions<Submission>(null, null, null, null, 1);
 
             // Assert
             result.Should().BeEquivalentTo(testOrgAppList);
@@ -621,7 +625,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ReturnsAsync(httpResponseMessage);
 
             // Act
-            var result = await _facadeService.GetOrganisationSubmissions<Registration>((string?) null, (string?) null, (OrganisationType?) null,null, 1);
+            var result = await _facadeService.GetOrganisationSubmissions<Registration>((string?)null, (string?)null, (OrganisationType?)null, null, 1);
 
             // Assert
             result.Should().BeEquivalentTo(testOrgAppList);
@@ -655,7 +659,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(httpResponseMessage);
 
-            var statuses = new[] {"Pending", "Accepted"};
+            var statuses = new[] { "Pending", "Accepted" };
 
             // Act
             var result =
@@ -685,7 +689,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Arrange
             var request = new RegulatorPoMDecisionCreateRequest();
 
-            var httpTestHandler = new HttpResponseMessage
+            using var httpTestHandler = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK
             };
@@ -840,7 +844,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         public async Task RemoveApprovedUser_WhenHttpStatusCodeOk_ThenReturnSuccess()
         {
             // Arrange
-            var response = new HttpResponseMessage
+            using var response = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK
             };
@@ -902,7 +906,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Arrange
             var request = new AddRemoveApprovedUserRequest();
 
-            var response = new HttpResponseMessage
+            using var response = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK
             };
@@ -928,7 +932,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Arrange
             var request = new AddRemoveApprovedUserRequest();
 
-            var response = new HttpResponseMessage
+            using var response = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.BadRequest
             };
@@ -954,7 +958,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Arrange
             var request = new RegulatorRegistrationDecisionCreateRequest();
 
-            var httpTestHandler = new HttpResponseMessage
+            using var httpTestHandler = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK
             };
@@ -979,7 +983,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Arrange
             var request = new RegulatorRegistrationDecisionCreateRequest();
 
-            var httpTestHandler = new HttpResponseMessage
+            using var httpTestHandler = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.BadRequest
             };

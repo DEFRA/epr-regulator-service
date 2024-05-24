@@ -24,7 +24,7 @@ public class CookieService : ICookieService
         {
             if (!accept)
             {
-                var existingCookies = cookies?.Where(c => c.Key.StartsWith(_googleAnalyticsOptions.CookiePrefix)).ToList();
+                var existingCookies = cookies?.Where(c => c.Key.StartsWith(_googleAnalyticsOptions.CookiePrefix, StringComparison.InvariantCulture)).ToList();
 
                 if (existingCookies != null)
                 {

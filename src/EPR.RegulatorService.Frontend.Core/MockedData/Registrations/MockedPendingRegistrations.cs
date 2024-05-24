@@ -22,8 +22,8 @@ public static class MockedPendingRegistrations
                 OrganisationId = Guid.NewGuid(),
                 OrganisationName = $"Organisation {i} Ltd",
                 OrganisationType = (i % 2) == 0 ? OrganisationType.DirectProducer : OrganisationType.ComplianceScheme,
-                OrganisationReference = i.ToString().PadLeft(6,'0').Insert(3, " "),
-                CompaniesHouseNumber = RandomNumberGenerator.GetInt32(1000000000).ToString(),
+                OrganisationReference = i.ToString(System.Globalization.CultureInfo.InvariantCulture).PadLeft(6,'0').Insert(3, " "),
+                CompaniesHouseNumber = RandomNumberGenerator.GetInt32(1000000000).ToString(System.Globalization.CultureInfo.InvariantCulture),
 
                 BuildingName = "Building name",
                 SubBuildingName = "Sub-building name",

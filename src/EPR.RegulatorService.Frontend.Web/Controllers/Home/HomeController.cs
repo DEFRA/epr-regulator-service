@@ -88,7 +88,7 @@ public class HomeController : RegulatorSessionBaseController
         return View(nameof(LandingPage), viewModel);
     }
 
-    private bool IsRegulatorAdmin(UserData userData) =>
+    private static bool IsRegulatorAdmin(UserData userData) =>
         userData.ServiceRoleId == (int)Core.Enums.ServiceRole.RegulatorAdmin;
 
     private async Task SaveSessionAndJourney(JourneySession session, string currentPagePath)
@@ -98,9 +98,6 @@ public class HomeController : RegulatorSessionBaseController
         await SaveSession(session);
     }
 
-    private void ClearJourneyAndSetCurrent(JourneySession session, string currentPagePath) =>
+    private static void ClearJourneyAndSetCurrent(JourneySession session, string currentPagePath) =>
         session.RegulatorSession.Journey = new List<string> { currentPagePath };
-
-    private async Task SaveSession(JourneySession session) =>
-        await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
 }

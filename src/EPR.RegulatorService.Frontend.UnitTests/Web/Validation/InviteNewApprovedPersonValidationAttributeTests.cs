@@ -25,7 +25,7 @@ public class InviteNewApprovedPersonValidationAttributeTests
         
         // Assert
         Assert.AreEqual("ErrorTitle.FirstNameNull", requiredError.ErrorMessage);
-        Assert.AreEqual(isValid,false);
+        Assert.AreEqual(false, isValid);
     }
 
     [TestMethod]
@@ -81,7 +81,7 @@ public class InviteNewApprovedPersonValidationAttributeTests
         
         // Assert
         Assert.AreEqual("PersonEmail.MissingError", requiredError.ErrorMessage);
-        Assert.AreEqual(isValid,false);
+        Assert.AreEqual(false, isValid);
     }
 
     [TestMethod]

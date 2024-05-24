@@ -40,9 +40,9 @@ public class AccessibilityController : Controller
             EqualityAdvisorySupportServiceUrl = _urlOptions.AccessibilityEqualityAdvisorySupportService,
             WebContentAccessibilityUrl = _urlOptions.AccessibilityWebContentAccessibility,
             DefraHelplineEmail = _emailOptions.DefraHelpline,
-            SiteTestedDate = _siteDateOptions.AccessibilitySiteTested.ToString(_siteDateOptions.DateFormat),
-            StatementPreparedDate = _siteDateOptions.AccessibilityStatementPrepared.ToString(_siteDateOptions.DateFormat),
-            StatementReviewedDate = _siteDateOptions.AccessibilityStatementReviewed.ToString(_siteDateOptions.DateFormat)
+            SiteTestedDate = _siteDateOptions.AccessibilitySiteTested.ToString(_siteDateOptions.DateFormat, System.Globalization.CultureInfo.InvariantCulture),
+            StatementPreparedDate = _siteDateOptions.AccessibilityStatementPrepared.ToString(_siteDateOptions.DateFormat, System.Globalization.CultureInfo.InvariantCulture),
+            StatementReviewedDate = _siteDateOptions.AccessibilityStatementReviewed.ToString(_siteDateOptions.DateFormat, System.Globalization.CultureInfo.InvariantCulture)
         };
 
         ViewBag.BackLinkToDisplay = returnUrl;

@@ -6,24 +6,22 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 namespace EPR.RegulatorService.Frontend.Core.MockedData;
 
 [ExcludeFromCodeCoverage]
-[SuppressMessage("Major Code Smell", "S2245:Random should not be used for security-sensitive applications", Justification = "Used only for generating test data")]
 public static class MockedPendingSubmissions
 {
     public static List<Submission> GetMockedPendingSubmissions(int begin, int end)
     {
         var pendingSubmissions = new List<Submission>();
-        var random = new Random();
 
         for (int i = begin; i <= end; i++)
         {
-            bool isResubmission = random.Next(2) == 0;
+            bool isResubmission = (i % 2) == 0;
 
             pendingSubmissions.Add(new Submission
             {
                 OrganisationId = Guid.NewGuid(),
                 OrganisationName = $"Organisation {i} Ltd",
                 OrganisationType = (i % 2) == 0 ? OrganisationType.DirectProducer : OrganisationType.ComplianceScheme,
-                OrganisationReference = i.ToString().PadLeft(6, '0').Insert(3, " "),
+                OrganisationReference = i.ToString(System.Globalization.CultureInfo.InvariantCulture).PadLeft(6, '0').Insert(3, " "),
                 Email = "test@abc.com",
                 UserId = Guid.NewGuid(),
                 FirstName = "Test",
@@ -31,7 +29,8 @@ public static class MockedPendingSubmissions
                 Telephone = "0123 456 789",
                 ServiceRole = "Approved person",
                 SubmissionId = Guid.NewGuid(),
-                SubmittedDate = DateTime.Now.AddDays(-random.Next(2, 180)),
+                SubmittedDate = DateTime.Now.AddDays(-((i % 179) + 2)),
+                SubmissionPeriod = (i % 3) == 0 ? "July to December 2023" : "January to June 2023",
                 IsResubmission = isResubmission,
                 Decision = "Pending",
                 IsResubmissionRequired = false,

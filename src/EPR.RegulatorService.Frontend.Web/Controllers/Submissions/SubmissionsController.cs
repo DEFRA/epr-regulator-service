@@ -331,7 +331,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         public string FormatTimeAndDateForSubmission(DateTime timeAndDateOfSubmission)
         {
             string time = timeAndDateOfSubmission.ToString("h:mm", CultureInfo.CurrentCulture);
-            string ampm = timeAndDateOfSubmission.ToString("tt", CultureInfo.CurrentCulture).ToLower();
+            string ampm = timeAndDateOfSubmission.ToString("tt", CultureInfo.CurrentCulture).ToLower(System.Globalization.CultureInfo.InvariantCulture);
             string date = timeAndDateOfSubmission.ToString("dd MMMM yyyy", CultureInfo.CurrentCulture);
             return $"{time}{ampm} on {date}";
         }
@@ -419,7 +419,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             await SaveSession(session);
         }
 
-        private void ClearRestOfJourney(JourneySession session, string currentPagePath)
+        private static void ClearRestOfJourney(JourneySession session, string currentPagePath)
         {
             var index = session.RegulatorSubmissionSession.Journey.IndexOf(currentPagePath);
 

@@ -299,8 +299,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                         state.Errors.Remove(requiredError);
 
                         ResourceManager rm = new ResourceManager("EPR.RegulatorService.Frontend.Web.Resources.Views.Applications.EnrolmentDecision", Assembly.GetExecutingAssembly());
-                        string message = rm.GetString("Reject.CommentsRequiredError");
-                        state.Errors.Add(new ModelError(string.Format(message, model.RejectedUserFirstName + " " + model.RejectedUserLastName)));
+                        string message = rm.GetString("Reject.CommentsRequiredError", System.Globalization.CultureInfo.InvariantCulture);
+                        state.Errors.Add(new ModelError(string.Format(System.Globalization.CultureInfo.InvariantCulture, message, model.RejectedUserFirstName + " " + model.RejectedUserLastName)));
                     }
                 }
                 SetBackLink(session, PagePath.EnrolmentDecision);
@@ -522,7 +522,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             session.RegulatorSession.CurrentPageNumber = 1;
         }
 
-        private Guid GetEnrolmentId(string serviceRole, User approvedUser, IEnumerable<User> delegatedUsers,
+        private static Guid GetEnrolmentId(string serviceRole, User approvedUser, IEnumerable<User> delegatedUsers,
             string email)
         {
             if (serviceRole == ServiceRole.ApprovedPerson)
@@ -530,12 +530,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                 return approvedUser.Enrolment.ExternalId;
             }
 
-            foreach (var delegatedUser in delegatedUsers.Where(x => x.Email.Equals(email)))
-            {
-                return delegatedUser.Enrolment.ExternalId;
-            }
-
-            return Guid.Empty;
+            return delegatedUsers.FirstOrDefault(x => x.Email.Equals(email))?.Enrolment.ExternalId ?? Guid.Empty;
         }
 
         private static void SetFilterValues(JourneySession session,

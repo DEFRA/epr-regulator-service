@@ -100,7 +100,7 @@ public abstract class RegistrationTestBase
             .ReturnsAsync(JourneySessionMock);
     }
 
-    protected RegistrationFiltersModel GetRegistrationFiltersModel()
+    protected static RegistrationFiltersModel GetRegistrationFiltersModel()
     {
         return new RegistrationFiltersModel()
         {
