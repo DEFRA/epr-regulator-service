@@ -297,16 +297,6 @@ public class FacadeService : IFacadeService
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
-    private async Task PrepareAuthenticatedClient()
-    {
-        if (_httpClient.BaseAddress == null)
-        {
-            _httpClient.BaseAddress = new Uri(_facadeApiConfig.BaseUrl);
-            var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(_scopes);
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue(Constants.Bearer, accessToken);
-        }
-    }
     public async Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request)
     {
         await PrepareAuthenticatedClient();
@@ -317,4 +307,15 @@ public class FacadeService : IFacadeService
 
         return await Task.FromResult<HttpResponseMessage>(response);
     }
+
+    private async Task PrepareAuthenticatedClient()
+    {
+        if (_httpClient.BaseAddress == null)
+        {
+            _httpClient.BaseAddress = new Uri(_facadeApiConfig.BaseUrl);
+            var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(_scopes);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue(Constants.Bearer, accessToken);
+        }
+    }   
 }

@@ -5,6 +5,7 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
@@ -17,6 +18,7 @@ using Moq;
 using Moq.Protected;
 
 using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
@@ -30,6 +32,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         private const string DelegatedPerson = "DelegatedPerson";
         private Mock<HttpMessageHandler> _mockHandler;
         private Mock<ITokenAcquisition> _tokenAcquisitionMock;
+        private Mock<IOptions<PaginationConfig>> _mockPaginationOptions;
+        private Mock<IOptions<FacadeApiConfig>> _mockFacadeApiOptions;
         private HttpClient _httpClient;
         private IOptions<PaginationConfig> _paginationConfig;
         private IOptions<FacadeApiConfig> _facadeApiConfig;
@@ -45,6 +49,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         {
             _mockHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             _tokenAcquisitionMock = new Mock<ITokenAcquisition>();
+            _mockPaginationOptions = new Mock<IOptions<PaginationConfig>>();
+            _mockFacadeApiOptions = new Mock<IOptions<FacadeApiConfig>>();
             _httpClient = new HttpClient(_mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
             _paginationConfig = Options.Create(new PaginationConfig { PageSize = 10 });
             _facadeApiConfig = Options.Create(new FacadeApiConfig
@@ -66,8 +72,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["PomSubmissionDecision"] = "http://testurl.com",
                     ["OrganisationsRemoveApprovedUser"] = "organisations/remove-approved-users?connExternalId={0}&organisationId={1}&promotedPersonExternalId={2}",
                     ["AddRemoveApprovedUser"] = "/accounts-management/add-remove-approved-users",
-                    ["RegistrationSubmissionDecisionPath"] = "http://testurl.com"
-                }
+                    ["RegistrationSubmissionDecisionPath"] = "http://testurl.com",
+                    ["FileDownload"] = "https://api.example.com/file/download"
+                },
+                DownstreamScope = "api://default"
             });
 
             _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig);
@@ -1000,6 +1008,55 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Assert
             result.Should().Be(EndpointResponseStatus.Fail);
+        }
+
+        [TestMethod]
+        public async Task GetFileDownload_ReturnsHttpResponseMessage()
+        {
+            // Arrange
+            var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("This is a mock file content")
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("https://api.example.com/file/download")
+                    ),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(expectedResponse);
+
+            var request = new FileDownloadRequest
+            {
+                SubmissionId = Guid.Parse("9bdd8616-9155-438b-a00c-32b38e6b9aa5"),
+                FileId = Guid.Parse("f1e85000-165a-42c4-9d9d-48bc692a1e10"),
+                BlobName = "e1fb01bb-45ee-4e1e-a21d-788b8c140b42",
+                FileName = "RegData_OrgType_LLP.csv",
+                SubmissionType = SubmissionType.Registration
+            };
+
+            // Act
+            var response = await _facadeService.GetFileDownload(request);
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.AreEqual("This is a mock file content", content);
+
+            _mockHandler.Protected().Verify(
+                "SendAsync",
+                Times.Once(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.RequestUri == new Uri("https://api.example.com/file/download")
+                ),
+                ItExpr.IsAny<CancellationToken>()
+            );
         }
     }
 }
