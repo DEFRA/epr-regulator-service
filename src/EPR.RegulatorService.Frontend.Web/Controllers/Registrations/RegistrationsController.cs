@@ -343,7 +343,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             }
         }
 
-        private FileDownloadRequest CreateFileDownloadRequest(JourneySession session, Registration registration)
+        private static FileDownloadRequest CreateFileDownloadRequest(JourneySession session, Registration registration)
         {
             var fileDownloadModel = new FileDownloadRequest
             {

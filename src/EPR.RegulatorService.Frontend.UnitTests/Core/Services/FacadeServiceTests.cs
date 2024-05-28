@@ -1014,7 +1014,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         public async Task GetFileDownload_ReturnsHttpResponseMessage()
         {
             // Arrange
-            var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            using var expectedResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent("This is a mock file content")
             };
