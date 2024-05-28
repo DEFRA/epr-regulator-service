@@ -1,6 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using EPR.Common.Authorization.Interfaces;
 using EPR.Common.Authorization.Models;
-using System.Diagnostics.CodeAnalysis;
 
 namespace EPR.RegulatorService.Frontend.Core.Sessions;
 
@@ -15,5 +15,5 @@ public class JourneySession : IHasUserData
     public SearchManageApproversSession SearchManageApproversSession { get; set; } = new();
     public AddRemoveApprovedUserSession AddRemoveApprovedUserSession { get; set; } = new();
     public RegulatorRegistrationSession RegulatorRegistrationSession { get; set; } = new();
-    public InviteNewApprovedPersonSession InviteNewApprovedPersonSession { get; set; } = new();
+    public InviteNewApprovedPersonSession InviteNewApprovedPersonSession { get; set; } = new();    
 }

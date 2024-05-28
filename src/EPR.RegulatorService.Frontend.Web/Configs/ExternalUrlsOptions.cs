@@ -38,4 +38,5 @@ public class ExternalUrlsOptions
     public string CompaniesHouseRegisterBaseUrl { get; set; }
 
     public string RegistrationFileDownloadBaseUrl { get; set; }
+    public string FileDownload { get; set; }
 }

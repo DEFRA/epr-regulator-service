@@ -1,15 +1,20 @@
-using EPR.RegulatorService.Frontend.Core.Configs;
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Models;
-using EPR.RegulatorService.Frontend.Core.Models.Pagination;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-using Microsoft.Extensions.Options;
-using Microsoft.Identity.Web;
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+
+using EPR.RegulatorService.Frontend.Core.Configs;
+using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.Pagination;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.Identity.Web;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
@@ -29,6 +34,7 @@ public class FacadeService : IFacadeService
     private const string OrganisationsRemoveApprovedUserPath = "OrganisationsRemoveApprovedUser";
     private const string AddRemoveApprovedUserPath = "AddRemoveApprovedUser";
     private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
+    private const string FileDownloadPath = "FileDownload";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -291,6 +297,17 @@ public class FacadeService : IFacadeService
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
+    public async Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request)
+    {
+        await PrepareAuthenticatedClient();
+
+        var path = string.Format(CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[FileDownloadPath]);
+
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+
+        return await Task.FromResult<HttpResponseMessage>(response);
+    }
+
     private async Task PrepareAuthenticatedClient()
     {
         if (_httpClient.BaseAddress == null)
@@ -300,5 +317,5 @@ public class FacadeService : IFacadeService
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue(Constants.Bearer, accessToken);
         }
-    }
+    }   
 }

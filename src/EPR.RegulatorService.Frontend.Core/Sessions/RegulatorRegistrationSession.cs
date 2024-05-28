@@ -9,4 +9,5 @@ public class RegulatorRegistrationSession
     public Registration OrganisationRegistration { get; set; }
     public RegistrationFiltersModel? RegistrationFiltersModel { get; set; } = new();
     public int? PageNumber { get; set; }
+    public string FileDownloadRequestType { get; set; }
 }

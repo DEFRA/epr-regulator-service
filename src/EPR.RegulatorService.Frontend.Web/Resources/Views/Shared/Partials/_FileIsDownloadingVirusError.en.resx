@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,52 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SummaryList.Title" xml:space="preserve">
-    <value>Submission details</value>
+  <data name="OrganisationFileDownload.VirusPageInfo1" xml:space="preserve">
+    <value>This file can not be downloaded.</value>
   </data>
-  <data name="SummaryList.SubTitle.TimeAndDateOfSubmission" xml:space="preserve">
-    <value>Time and date of submission</value>
+  <data name="OrganisationFileDownload.VirusPageInfo2" xml:space="preserve">
+    <value>What you need to do next.</value>
   </data>
-  <data name="SummaryList.SubTitle.SubmittedBy" xml:space="preserve">
-    <value>Submitted by</value>
+  <data name="OrganisationFileDownload.VirusPageInfo3" xml:space="preserve">
+    <value>You need to reject the organisation details submission and instruct the producer or compliance scheme to resubmit their organisation details.</value>
   </data>
-  <data name="SummaryList.SubTitle.AccountRole" xml:space="preserve">
-    <value>Account role</value>
-  </data>
-  <data name="SummaryList.SubTitle.Telephone" xml:space="preserve">
-    <value>Telephone</value>
-  </data>
-  <data name="SummaryList.SubTitle.Email" xml:space="preserve">
-    <value>Email</value>
-  </data>
-  <data name="SummaryList.SubTitle.ReasonForRejection" xml:space="preserve">
-    <value>Reason for rejection</value>
-  </data>
-  <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
-    <value>Resubmission required</value>
-  </data>
-  <data name="SummaryList.Information.Text" xml:space="preserve">
-    <value>{0} cannot resubmit until this submission has been actioned.</value>
-  </data>
-  <data name="SummaryList.SubTitle.OrganisationDetails" xml:space="preserve">
-    <value>Organisation details</value>
-  </data>
-  <data name="SummaryList.SubTitle.DeclaredBy" xml:space="preserve">
-    <value>Declared by</value>
-  </data>
-  <data name="SummaryList.SubTitle.BrandDetails" xml:space="preserve">
-    <value>Brand details</value>
-  </data>
-  <data name="SummaryList.SubTitle.PartnerDetails" xml:space="preserve">
-    <value>Partner details</value>
-  </data>
-  <data name="SummaryList.SubTitle.SubmittedOnTime" xml:space="preserve">
-    <value>Submitted on time</value>
-  </data>
-  <data name="SummaryList.FileDownload" xml:space="preserve">
-    <value>This may take a few minutes. We will refresh the page automatically until it is done.</value>
-  </data>
-  <data name="SummaryList.FileDownloadWarning" xml:space="preserve">
-    <value>Do not close the page and do not refresh it yourself.</value>
+  <data name="OrganisationFileDownload.VirusPageTitle" xml:space="preserve">
+    <value>There is a problem with this file</value>
   </data>
 </root>

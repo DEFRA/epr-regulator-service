@@ -4,12 +4,14 @@ using EPR.RegulatorService.Frontend.Core.MockedData;
 using EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 using EPR.RegulatorService.Frontend.Core.MockedData.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
@@ -347,4 +349,19 @@ public class MockedFacadeService : IFacadeService
     }
 
     public async Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+    public async Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request)
+    {
+        var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("This is a mock file content")
+        };
+
+        response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+        {
+            FileName = "mockfile.txt"
+        };
+
+        return await Task.FromResult(response);
+    }
 }

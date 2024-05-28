@@ -21,6 +21,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 using Frontend.Core.MockedData.Filters;
 using Frontend.Core.Models.Registrations;
 
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
 public abstract class RegistrationTestBase
 {
     protected const string ModelErrorKey = "Error";
@@ -60,6 +62,15 @@ public abstract class RegistrationTestBase
             _urlsOptionMock.Object, _facadeServiceMock.Object);
 
         _sut.ControllerContext.HttpContext = _httpContextMock.Object;
+
+        _sut = new RegistrationsController(_sessionManagerMock.Object, _configurationMock.Object, _urlsOptionMock.Object, _facadeServiceMock.Object)
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = _httpContextMock.Object
+            },
+            TempData = new Mock<ITempDataDictionary>().Object
+        };
     }
 
     private void SetUpUserData(UserData? userData)

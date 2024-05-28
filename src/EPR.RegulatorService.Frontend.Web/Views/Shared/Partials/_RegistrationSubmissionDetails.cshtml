@@ -105,21 +105,26 @@
         </dd>
         <dd class="govuk-summary-list__value"></dd>
       </div>
-
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          @Localizer["SummaryList.SubTitle.OrganisationDetails"]
-        </dt>
-        <dd class="govuk-summary-list__value">
-          @Model.OrganisationDetailsFileName
-        </dd>
-        <dd class="govuk-summary-list__value epr-summary-list-download-link">
-          @if (Model.BrandDetailsFileId.HasValue)
-          {
-            <a href="@ExternalUrls.Value.RegistrationFileDownloadBaseUrl/@Model.OrganisationDetailsFileId/@Model.OrganisationDetailsFileId" target="_blank" rel="noopener" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.Download"]</a>
-          }
-        </dd>
-      </div>
+       @if (!string.IsNullOrEmpty(Model.OrganisationDetailsFileName))
+        {
+          <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                  @Localizer["SummaryList.SubTitle.OrganisationDetails"]
+              </dt>
+              <dd class="govuk-summary-list__value">
+                  @Model.OrganisationDetailsFileName
+              </dd>
+              <dd class="govuk-summary-list__value epr-summary-list-download-link">
+                  @Html.ActionLink(SharedLocalizer["Link.Download"],
+                  "FileDownload",
+                  "Registrations",
+                  new
+                  {
+                      downloadType = FileDownloadTypes.OrganisationDetails
+                  })
+              </dd>
+          </div>
+      }
 
       @if (!string.IsNullOrEmpty(Model.BrandDetailsFileName))
       {
@@ -131,10 +136,13 @@
             @Model.BrandDetailsFileName
           </dd>
           <dd class="govuk-summary-list__value epr-summary-list-download-link">
-            @if (Model.BrandDetailsFileId.HasValue)
-            {
-              <a href="@Model.BrandDetailsFileId" target="_blank" rel="noopener" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.Download"]</a>
-            }
+              @Html.ActionLink(SharedLocalizer["Link.Download"],
+              "FileDownload",
+              "Registrations",
+              new
+              {
+                downloadType = FileDownloadTypes.BrandDetails
+              })
             </dd>
         </div>
       }
@@ -149,10 +157,13 @@
             @Model.PartnershipDetailsFileName
           </dd>
           <dd class="govuk-summary-list__value epr-summary-list-download-link">
-            @if (Model.PartnershipDetailsFileId.HasValue)
-            {
-              <a href="@ExternalUrls.Value.RegistrationFileDownloadBaseUrl/@Model.OrganisationDetailsFileId" target="_blank" rel="noopener" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.Download"]</a>
-            }
+              @Html.ActionLink(SharedLocalizer["Link.Download"],
+                "FileDownload",
+                "Registrations",
+                new
+                {
+                  downloadType = FileDownloadTypes.PartnershipDetails
+                })
           </dd>
         </div>
       }
@@ -179,11 +190,11 @@
       <div class="govuk-inset-text">@Localizer["SummaryList.Information.Text", Model.OrganisationName]</div>
       <div class="govuk-button-group govuk-!-margin-top-2">
 
-                <form class="govuk-!-display-inline-block" method="get" asp-controller="Registrations" asp-action="AcceptRegistrationSubmission">
-                    <button class="govuk-button" data-module="govuk-button">
-                        @SharedLocalizer["Button.Accept"]
-                    </button>
-                </form>
+        <form class="govuk-!-display-inline-block" method="get" asp-controller="Registrations" asp-action="AcceptRegistrationSubmission">
+            <button class="govuk-button" data-module="govuk-button">
+                @SharedLocalizer["Button.Accept"]
+            </button>
+        </form>
 
         <form class="govuk-!-display-inline-block" method="get" asp-controller="Registrations" asp-action="RejectRegistration">
           <button class="govuk-button govuk-button--secondary govuk-button--warning" data-module="govuk-button">

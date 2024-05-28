@@ -1,8 +1,10 @@
+using System.Reflection;
+using System.Text.Json;
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
-using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -11,11 +13,13 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
-using System.Text.Json;
+
+using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 {
@@ -27,7 +31,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly string _pathBase;
         private readonly ExternalUrlsOptions _options;
-        private readonly IFacadeService _facadeService;
+        private readonly IFacadeService _facadeService;        
 
         public RegistrationsController(ISessionManager<JourneySession> sessionManager,
             IConfiguration configuration, IOptions<ExternalUrlsOptions> options, IFacadeService facadeService)
@@ -105,6 +109,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
+
             var model = new RegistrationDetailsViewModel
             {
                 OrganisationName = registration.OrganisationName,
@@ -135,10 +140,10 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 CompaniesHouseNumber = registration.CompaniesHouseNumber,
                 OrganisationDetailsFileId = registration.OrganisationDetailsFileId,
                 OrganisationDetailsFileName = registration.OrganisationDetailsFileName,
-                PartnershipDetailsFileId = registration.PartnershipDetailsFileId,
-                PartnershipDetailsFileName = registration.PartnershipDetailsFileName,
-                BrandDetailsFileId = registration.BrandDetailsFileId,
-                BrandDetailsFileName = registration.BrandDetailsFileName,
+                PartnershipDetailsFileId = registration.PartnershipFileId,
+                PartnershipDetailsFileName = registration.PartnershipFileName,
+                BrandDetailsFileId = registration.BrandsFileId,
+                BrandDetailsFileName = registration.BrandsFileName,
                 DeclaredBy = registration.OrganisationType == OrganisationType.ComplianceScheme
                     ? DeclaredByComplianceScheme
                     : $"{registration.FirstName} {registration.LastName}"
@@ -265,6 +270,114 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                     organisationName = organisationName
                 });
 
+        }
+
+        [HttpGet]
+        [Route(PagePath.OrganisationDetailsFileDownload)]
+        public IActionResult OrganisationDetailsFileDownload()
+        {
+            return View("OrganisationDetailsFileDownload");
+        }
+
+        [HttpGet]
+        [Route(PagePath.OrganisationDetailsFileDownloadFailed)]
+        public IActionResult OrganisationDetailsFileDownloadFailed()
+        {
+            var model = new OrganisationDetailsFileDownloadViewModel(true, false);
+            return View("OrganisationDetailsFileDownloadFailed", model);
+        }
+
+        [HttpGet]
+        [Route(PagePath.OrganisationDetailsFileDownloadSecurityWarning)]
+        public IActionResult OrganisationDetailsFileDownloadSecurityWarning()
+        {
+            var model = new OrganisationDetailsFileDownloadViewModel(true, true);
+            return View("OrganisationDetailsFileDownloadFailed", model);
+        }
+
+        [HttpGet]
+        [Route(PagePath.FileDownload)]
+        public async Task<IActionResult> FileDownload(string downloadType)
+        {
+            TempData["DownloadCompleted"] = false;
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            session.RegulatorRegistrationSession.FileDownloadRequestType = downloadType;
+            await SaveSession(session);
+
+            return RedirectToAction(nameof(OrganisationDetailsFileDownload), "Registrations");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FileDownloadInProgress()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
+            var fileDownloadModel = CreateFileDownloadRequest(session, registration);
+
+            if (fileDownloadModel == null)
+            {
+                return RedirectToAction(nameof(OrganisationDetailsFileDownloadFailed));
+            }
+
+            var response = await _facadeService.GetFileDownload(fileDownloadModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (responseContent.Contains("flagged as infected"))
+                {
+                    return RedirectToAction(nameof(OrganisationDetailsFileDownloadSecurityWarning));
+                }
+
+                var fileStream = await response.Content.ReadAsStreamAsync();
+                var contentDisposition = response.Content.Headers.ContentDisposition;
+                var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.OrganisationDetailsFileName;
+                TempData["DownloadCompleted"] = true;              
+
+                return File(fileStream, "application/octet-stream", fileName);
+            }
+            else
+            {
+                return RedirectToAction(nameof(OrganisationDetailsFileDownloadFailed));
+            }
+        }
+
+        private static FileDownloadRequest CreateFileDownloadRequest(JourneySession session, Registration registration)
+        {
+            var fileDownloadModel = new FileDownloadRequest
+            {
+                SubmissionId = registration.SubmissionId,
+                SubmissionType = SubmissionType.Registration
+            };
+
+            switch (session.RegulatorRegistrationSession.FileDownloadRequestType)
+            {
+                case FileDownloadTypes.OrganisationDetails:
+                    fileDownloadModel.FileId = registration.OrganisationDetailsFileId;
+                    fileDownloadModel.BlobName = registration.CompanyDetailsBlobName;
+                    fileDownloadModel.FileName = registration.OrganisationDetailsFileName;
+                    break;
+                case FileDownloadTypes.BrandDetails:
+                    fileDownloadModel.FileId = registration.BrandsFileId;
+                    fileDownloadModel.BlobName = registration.BrandsBlobName;
+                    fileDownloadModel.FileName = registration.BrandsFileName;
+                    break;
+                case FileDownloadTypes.PartnershipDetails:
+                    fileDownloadModel.FileId = registration.PartnershipFileId;
+                    fileDownloadModel.BlobName = registration.PartnershipBlobName;
+                    fileDownloadModel.FileName = registration.PartnershipFileName;
+                    break;
+                default:
+                    return null;
+            }
+
+            if (fileDownloadModel.FileId == null || fileDownloadModel.BlobName == null || fileDownloadModel.FileName == null)
+            {
+                return null;
+            }
+
+            return fileDownloadModel;
         }
 
         private void SetBackLink(JourneySession session, string currentPagePath) =>
