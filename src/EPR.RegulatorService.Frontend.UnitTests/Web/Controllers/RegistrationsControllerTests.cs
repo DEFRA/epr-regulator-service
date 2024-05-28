@@ -8,6 +8,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 
 using Frontend.Core.Enums;
 using Frontend.Core.Extensions;
@@ -230,16 +231,12 @@ public class RegistrationsControllerTests : RegistrationTestBase
     public void OrganisationDetailsFileDownload_ReturnsViewWithViewModel()
     {
         // Act
-        var result = _sut.OrganisationDetailsFileDownload(false, false);
+        var result = _sut.OrganisationDetailsFileDownload();
 
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<ViewResult>();
         var viewResult = result as ViewResult;
-        var model = viewResult.Model as OrganisationDetailsFileDownloadViewModel;
-        model.Should().NotBeNull();
-        model.DownloadFailed.Should().BeFalse();
-        model.HasIssue.Should().BeFalse();
     }
 
     [TestMethod]
@@ -387,9 +384,8 @@ public class RegistrationsControllerTests : RegistrationTestBase
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectToActionResult>();
             var redirectResult = result as RedirectToActionResult;
-            redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownload");
-            redirectResult.ControllerName.Should().Be("Registrations");
-            redirectResult.RouteValues["hasVirus"].Should().Be(true);
+            redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownloadSecurityWarning");
+            redirectResult.ControllerName.Should().BeNull();
         }
     }
 
@@ -420,9 +416,42 @@ public class RegistrationsControllerTests : RegistrationTestBase
             result.Should().NotBeNull();
             result.Should().BeOfType<RedirectToActionResult>();
             var redirectResult = result as RedirectToActionResult;
-            redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownload");
-            redirectResult.ControllerName.Should().Be("Registrations");
-            redirectResult.RouteValues["downloadFailed"].Should().Be(true);
+            redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownloadFailed");
+            redirectResult.ControllerName.Should().BeNull();
         }
+    }
+
+    [TestMethod]
+    public void OrganisationDetailsFileDownloadFailed_ReturnsViewWithViewModel()
+    {
+        // Act
+        var result = _sut.OrganisationDetailsFileDownloadFailed();
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = result as ViewResult;
+        viewResult.Model.Should().NotBeNull();
+        viewResult.Model.Should().BeOfType<OrganisationDetailsFileDownloadViewModel>();
+        var model = (OrganisationDetailsFileDownloadViewModel)viewResult.Model;
+        model.DownloadFailed.Should().BeTrue();
+        model.HasIssue.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void OrganisationDetailsFileDownloadSecurityWarning_ReturnsViewWithViewModel()
+    {
+        // Act
+        var result = _sut.OrganisationDetailsFileDownloadSecurityWarning();
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<ViewResult>();
+        var viewResult = result as ViewResult;
+        viewResult.Model.Should().NotBeNull();
+        viewResult.Model.Should().BeOfType<OrganisationDetailsFileDownloadViewModel>();
+        var model = (OrganisationDetailsFileDownloadViewModel)viewResult.Model;
+        model.DownloadFailed.Should().BeTrue();
+        model.HasIssue.Should().BeTrue();
     }
 }

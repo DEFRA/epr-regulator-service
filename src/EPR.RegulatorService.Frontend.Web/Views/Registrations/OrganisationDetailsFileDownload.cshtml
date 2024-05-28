@@ -2,7 +2,6 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 
-@model OrganisationDetailsFileDownloadViewModel
 @{
     ViewData["Title"] = Localizer["OrganisationDetailsFileDownload.Title"];    
     var downloadCompleted = TempData["DownloadCompleted"] != null && (bool)TempData["DownloadCompleted"];
@@ -12,8 +11,6 @@
       <main class="govuk-main-wrapper" id="main-content" role="main">
           <div class="govuk-grid-row">
               <div class="govuk-grid-column-full">               
-                  @if (!Model.HasIssue && !Model.DownloadFailed)
-                  {
                       <partial name="Partials/_FileIsDownloadingStatus" />
                       <div class="govuk-grid-row">
                           <div class="govuk-grid-column-full">
@@ -28,33 +25,7 @@
                       {
                           <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "Registrations")" />
                       }                    
-                  }
-                  else if (Model.DownloadFailed)
-                  {
-                      <partial name="Partials/_FileNotDownloadingTryAgain" />
-                      <div class="govuk-grid-row">
-                          <div class="govuk-grid-column-full">
-                              @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
-                                        "RegistrationDetails",
-                                        "Registrations",
-                                        null,
-                                        new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
-                          </div>
-                      </div>
-                  }
-                  else if (Model.HasIssue)
-                  {
-                      <partial name="Partials/_FileIsDownloadingVirusError" />
-                      <div class="govuk-grid-row">
-                          <div class="govuk-grid-column-full">
-                              @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
-                                        "RegistrationDetails",
-                                        "Registrations",
-                                        null,
-                                        new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
-                          </div>
-                      </div>
-                  }                 
+            
               </div>
           </div>      
       </main>

@@ -274,15 +274,25 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
         [HttpGet]
         [Route(PagePath.OrganisationDetailsFileDownload)]
-        public IActionResult OrganisationDetailsFileDownload(bool downloadFailed = false, bool hasIssue = false)
+        public IActionResult OrganisationDetailsFileDownload()
         {
-            var model = new OrganisationDetailsFileDownloadViewModel
-            {
-                DownloadFailed = downloadFailed,
-                HasIssue = hasIssue
-            };
+            return View("OrganisationDetailsFileDownload");
+        }
 
-            return View(nameof(OrganisationDetailsFileDownload), model);
+        [HttpGet]
+        [Route(PagePath.OrganisationDetailsFileDownloadFailed)]
+        public IActionResult OrganisationDetailsFileDownloadFailed()
+        {
+            var model = new OrganisationDetailsFileDownloadViewModel(true, false);
+            return View("OrganisationDetailsFileDownloadFailed", model);
+        }
+
+        [HttpGet]
+        [Route(PagePath.OrganisationDetailsFileDownloadSecurityWarning)]
+        public IActionResult OrganisationDetailsFileDownloadSecurityWarning()
+        {
+            var model = new OrganisationDetailsFileDownloadViewModel(true, true);
+            return View("OrganisationDetailsFileDownloadFailed", model);
         }
 
         [HttpGet]
@@ -294,7 +304,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             session.RegulatorRegistrationSession.FileDownloadRequestType = downloadType;
             await SaveSession(session);
 
-            return RedirectToAction("OrganisationDetailsFileDownload", "Registrations");
+            return RedirectToAction(nameof(OrganisationDetailsFileDownload), "Registrations");
         }
 
         [HttpGet]
@@ -306,7 +316,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
             if (fileDownloadModel == null)
             {
-                return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { downloadFailed = true });
+                return RedirectToAction(nameof(OrganisationDetailsFileDownloadFailed));
             }
 
             var response = await _facadeService.GetFileDownload(fileDownloadModel);
@@ -317,9 +327,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
                 if (responseContent.Contains("flagged as infected"))
                 {
-                    return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { hasVirus = true });                    
+                    return RedirectToAction(nameof(OrganisationDetailsFileDownloadSecurityWarning));
                 }
-                
+
                 var fileStream = await response.Content.ReadAsStreamAsync();
                 var contentDisposition = response.Content.Headers.ContentDisposition;
                 var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.OrganisationDetailsFileName;
@@ -329,7 +339,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             }
             else
             {
-                return RedirectToAction("OrganisationDetailsFileDownload", "Registrations", new { downloadFailed = true });
+                return RedirectToAction(nameof(OrganisationDetailsFileDownloadFailed));
             }
         }
 
