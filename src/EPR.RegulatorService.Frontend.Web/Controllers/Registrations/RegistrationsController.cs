@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json;
+
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
@@ -31,7 +32,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly string _pathBase;
         private readonly ExternalUrlsOptions _options;
-        private readonly IFacadeService _facadeService;        
+        private readonly IFacadeService _facadeService;
 
         public RegistrationsController(ISessionManager<JourneySession> sessionManager,
             IConfiguration configuration, IOptions<ExternalUrlsOptions> options, IFacadeService facadeService)
@@ -207,7 +208,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                     organisationName = organisationName
                 });
         }
-      
+
         [HttpGet]
         [Route(PagePath.AcceptRegistrationSubmission)]
         public async Task<IActionResult> AcceptRegistrationSubmission()
@@ -321,19 +322,16 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
             var response = await _facadeService.GetFileDownload(fileDownloadModel);
 
-            if (response.IsSuccessStatusCode)
+            if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-
-                if (responseContent.Contains("flagged as infected"))
-                {
-                    return RedirectToAction(nameof(OrganisationDetailsFileDownloadSecurityWarning));
-                }
-
+                return RedirectToAction(nameof(OrganisationDetailsFileDownloadSecurityWarning));
+            }
+            else if (response.IsSuccessStatusCode)
+            {
                 var fileStream = await response.Content.ReadAsStreamAsync();
                 var contentDisposition = response.Content.Headers.ContentDisposition;
                 var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.OrganisationDetailsFileName;
-                TempData["DownloadCompleted"] = true;              
+                TempData["DownloadCompleted"] = true;
 
                 return File(fileStream, "application/octet-stream", fileName);
             }
