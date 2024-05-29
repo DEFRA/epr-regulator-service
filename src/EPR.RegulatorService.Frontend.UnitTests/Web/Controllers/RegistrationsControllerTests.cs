@@ -14,6 +14,7 @@ using Frontend.Core.Enums;
 using Frontend.Core.Extensions;
 using Frontend.Core.Models.Registrations;
 using Frontend.Web.ViewModels.Registrations;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -24,7 +25,7 @@ using Moq;
 public class RegistrationsControllerTests : RegistrationTestBase
 {
     private Fixture _fixture;
-    
+
     [TestInitialize]
     public void Setup()
     {
@@ -370,23 +371,19 @@ public class RegistrationsControllerTests : RegistrationTestBase
 
         _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
-        using (var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
-        {
-            Content = new StringContent("flagged as infected")
-        })
-        {
-            _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+        using var response = new HttpResponseMessage(System.Net.HttpStatusCode.Forbidden);
 
-            // Act
-            var result = await _sut.FileDownloadInProgress();
+        _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
-            // Assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirectResult = result as RedirectToActionResult;
-            redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownloadSecurityWarning");
-            redirectResult.ControllerName.Should().BeNull();
-        }
+        // Act
+        var result = await _sut.FileDownloadInProgress();
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<RedirectToActionResult>();
+        var redirectResult = result as RedirectToActionResult;
+        redirectResult.ActionName.Should().Be("OrganisationDetailsFileDownloadSecurityWarning");
+        redirectResult.ControllerName.Should().BeNull();
     }
 
     [TestMethod]
