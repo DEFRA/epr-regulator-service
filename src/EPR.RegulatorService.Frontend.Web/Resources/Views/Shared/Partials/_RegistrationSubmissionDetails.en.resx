@@ -165,4 +165,7 @@
   <data name="SummaryList.FileDownloadWarning" xml:space="preserve">
     <value>Do not close the page and do not refresh it yourself.</value>
   </data>
+  <data name="SummayList.SubmissionPeriod" xml:space="preserve">
+    <value>submission period</value>
+  </data>
 </root>
