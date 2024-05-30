@@ -3,6 +3,7 @@ using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.FeatureManagement;
 using EPR.RegulatorService.Frontend.Web.HealthChecks;
 using EPR.RegulatorService.Frontend.Web.Middleware;
+
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
@@ -80,19 +81,22 @@ app.UseMiddleware<AnalyticsCookieMiddleware>();
 app.MapControllerRoute(
     name: "Default",
     pattern: "{controller}/{action}",
-    defaults: new {controller = "Applications", action = "Applications"});
+    defaults: new { controller = "Applications", action = "Applications" });
 
 app.MapHealthChecks(
     builder.Configuration.GetValue<string>("HealthCheckPath"),
     HealthCheckOptionBuilder.Build()).AllowAnonymous();
 
-app.MapHealthChecks("admin/error", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+if (builder.Configuration.GetValue<bool>("FeatureManagement:AllowAlertTestEndpoint"))
 {
-    ResultStatusCodes =
+    app.MapHealthChecks("/admin/error", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        ResultStatusCodes =
     {
         [HealthStatus.Healthy] = StatusCodes.Status500InternalServerError
     }
-}).AllowAnonymous();
+    }).AllowAnonymous();
+}
 
 app.MapRazorPages();
 
