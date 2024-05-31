@@ -162,7 +162,7 @@
   <data name="SummaryList.SubTitle.PreviousReasonForRejection" xml:space="preserve">
     <value>Reason for rejection of previous submission</value>
   </data>
-  <data name="SummayList.ReSubmissionPeriod" xml:space="preserve">
+  <data name="SummaryList.ReSubmissionPeriodSuffix" xml:space="preserve">
     <value>submission period</value>
   </data>
 </root>
