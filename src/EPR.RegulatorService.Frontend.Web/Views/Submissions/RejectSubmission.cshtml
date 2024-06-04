@@ -4,7 +4,7 @@
 
 @model RejectSubmissionViewModel
 @{
-    ViewData["Title"] = Localizer["Title.RejectSubmission"];
+    ViewData["Title"] = Localizer["RejectSubmission.Title"];
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer, nameof(Model.ReasonForRejection), nameof(Model.IsResubmissionRequired));
     var reasonForRejection = string.IsNullOrEmpty(Model.ReasonForRejection) ? string.Empty : Model.ReasonForRejection;
     var reasonForRejectionError = errorsViewModel.Errors.FirstOrDefault(x => x.Key == nameof(Model.ReasonForRejection));
@@ -23,8 +23,8 @@
           {
             @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
           }
-          <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@Localizer["Title.RejectSubmission"]</h1>
-          <p class="govuk-body govuk-!-margin-bottom-8">@Localizer["Title.Description", Model.SubmittedBy]</p>
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@Localizer["RejectSubmission.Title"]</h1>
+            <p class="govuk-body govuk-!-margin-bottom-8">@Localizer["Description.Title", Model.SubmittedBy]</p>
         </div>
       </div>
 

@@ -6,7 +6,7 @@
 @model SubmissionsViewModel
 
 @{
-  ViewData["Title"] = Localizer["Title.SubmissionsTitle"];
+    ViewData["Title"] = Localizer["Submissions.Title"];
 
   var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
@@ -32,11 +32,11 @@
       <div class="govuk-grid-column-full">
 
         <h1 class="govuk-caption-xl">
-          @Localizer["Title.EnvironmentAgency"]
+          @Localizer["EnvironmentAgency.Title"]
         </h1>
 
         <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">
-          @Localizer["Title.SubmissionsTitle"]
+          @Localizer["Submissions.Title"]
         </h2>
         <div id="contact-hint" class="govuk-hint">
           @Localizer["Page.Submissions.Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.

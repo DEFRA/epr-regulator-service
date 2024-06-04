@@ -117,13 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AcceptSubmission.Title" xml:space="preserve">
+    <value>Accept Submission</value>
+  </data>
   <data name="Error.AcceptSubmission" xml:space="preserve">
     <value>Select yes if you want to accept this submission</value>
   </data>
   <data name="Header.AreYouSure" xml:space="preserve">
     <value>Are you sure you want to accept this submission?</value>
-  </data>
-  <data name="Title.AcceptSubmission" xml:space="preserve">
-    <value>Accept Submission</value>
   </data>
 </root>
