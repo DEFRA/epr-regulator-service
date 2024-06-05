@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Title.ManageRegistrationDataSubmissions" xml:space="preserve">
+  <data name="ManageRegistrationDataSubmissions.Title" xml:space="preserve">
     <value>Rheoli cyflwyniadau data pecynwaith</value>
   </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
@@ -150,7 +150,7 @@
   <data name="SubTitle.PowerBIOrg.Text" xml:space="preserve">
     <value>I weld crynodeb o fanylion y sefydliad ac unrhyw gyflwyniadau blaenorol,</value>
   </data>
-  <data name="Title.RegistrationsOrgTitle" xml:space="preserve">
+  <data name="RegistrationOrganisationDetails.Title" xml:space="preserve">
     <value>WManage organisation details submissions</value>
   </data>
 </root>

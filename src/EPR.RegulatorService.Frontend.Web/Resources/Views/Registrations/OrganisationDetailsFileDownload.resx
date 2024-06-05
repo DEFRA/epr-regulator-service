@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,23 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Application.Title" xml:space="preserve">
-    <value>Gwasanaeth i Reoleiddwyr</value>
-  </data>
-  <data name="EnvironmentAgency.Title" xml:space="preserve">
-    <value>Asiantaeth yr Amgylchedd</value>
-    <comment>EnvironmentAgency</comment>
-  </data>
-  <data name="Subtitle.ApplicationsForApprovedDelegated" xml:space="preserve">
-    <value>Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd</value>
-  </data>
-  <data name="Success.NationTransferred" xml:space="preserve">
-    <value>Rydych chi wedi trosglwyddo {0} i {1}</value>
-  </data>
-  <data name="RejectedApprovedPerson" xml:space="preserve">
-    <value>WYou rejected {0} as an approved person. The organisation cannot submit data.</value>
-  </data>
-  <data name="Applications.Title" xml:space="preserve">
-    <value>Asiantaeth yr Amgylchedd</value>
+  <data name="OrganisationDetailsFileDownload.Title" xml:space="preserve">
+    <value>Organisation details file download</value>
   </data>
 </root>

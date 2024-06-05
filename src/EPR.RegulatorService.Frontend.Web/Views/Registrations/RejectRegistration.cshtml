@@ -4,7 +4,7 @@
 
 @model RejectRegistrationViewModel
 @{
-    ViewData["Title"] = Localizer["Title.RejectSubmission"];
+    ViewData["Title"] = Localizer["RejectSubmission.Title"];
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer, nameof(Model.ReasonForRejection));
     var reasonForRejection = string.IsNullOrEmpty(Model.ReasonForRejection) ? string.Empty : Model.ReasonForRejection;
     var reasonForRejectionError = errorsViewModel.Errors.FirstOrDefault(x => x.Key == nameof(Model.ReasonForRejection));
@@ -23,10 +23,10 @@
           }
           <h1 class="govuk-label-wrapper">
             <label class="govuk-label govuk-label--l" for="@nameof(Model.ReasonForRejection)">
-              @Localizer["Title.RejectionReason"]
+              @Localizer["RejectionReason.Title"]
             </label>
           </h1>
-          <p class="govuk-body govuk-!-margin-bottom-4">@Localizer["Title.Description"]</p>
+                    <p class="govuk-body govuk-!-margin-bottom-4">@Localizer["Description.Title"]</p>
         </div>
       </div>
 

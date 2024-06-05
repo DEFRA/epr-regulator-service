@@ -117,14 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AcceptSubmission.Title" xml:space="preserve">
+    <value>Derbyn y Cyflwyniad</value>
+  </data>
   <data name="Error.AcceptSubmission" xml:space="preserve">
     <value>Dewiswch ‘Hoffwn’ os hoffech chi dderbyn y cyflwyniad yma</value>
   </data>
   <data name="Header.AreYouSure" xml:space="preserve">
     <value>Ydych chi'n siŵr yr hoffech chi
 dderbyn y cyflwyniad yma?</value>
-  </data>
-  <data name="Title.AcceptSubmission" xml:space="preserve">
-    <value>Derbyn y Cyflwyniad</value>
   </data>
 </root>
