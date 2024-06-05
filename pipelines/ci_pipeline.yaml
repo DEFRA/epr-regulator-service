@@ -19,7 +19,8 @@ parameters:
   - 'SonarQube'
   - 'SonarQubeLatest'
 
-pool: DEFRA-COMMON-ubuntu2004-SSV3
+pool:
+  vmImage: ubuntu-latest
 
 variables:
   - template: vars/DEV4-development.yaml
