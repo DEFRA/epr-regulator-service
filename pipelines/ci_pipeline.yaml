@@ -42,7 +42,7 @@ resources:
       name: defra/epr-webapps-code-deploy-templates
       type: github
       endpoint: defra
-      ref: main
+      ref: a-pete-branch
 
 extends:
   template: epr-build-pipeline.yaml@CommonTemplates
