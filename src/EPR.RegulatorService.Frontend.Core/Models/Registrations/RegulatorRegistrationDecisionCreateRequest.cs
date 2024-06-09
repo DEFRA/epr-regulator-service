@@ -17,5 +17,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.Registrations
         public string OrganisationNumber { get; set; }
 
         public string OrganisationName { get; set; }
+
+        public string SubmissionPeriod { get; set; }
     }
 }

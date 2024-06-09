@@ -189,7 +189,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 FileId = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationDetailsFileId,
                 OrganisationId = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationId,
                 OrganisationName = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationName,
-                OrganisationNumber = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationReference
+                OrganisationNumber = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationReference,
+                SubmissionPeriod = session.RegulatorRegistrationSession.OrganisationRegistration.SubmissionPeriod
+
             };
 
             var result = await _facadeService.SubmitRegistrationDecision(request);
@@ -252,7 +254,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 FileId = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationDetailsFileId,
                 OrganisationId = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationId,
                 OrganisationName = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationName,
-                OrganisationNumber = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationReference
+                OrganisationNumber = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationReference,
+                SubmissionPeriod = session.RegulatorRegistrationSession.OrganisationRegistration.SubmissionPeriod
+                
 
             };
             var result = await _facadeService.SubmitRegistrationDecision(request);
