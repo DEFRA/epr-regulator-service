@@ -92,6 +92,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     It.IsAny<string?>(),
                     It.IsAny<OrganisationType?>(),
                     It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
+                    It.IsAny<string[]>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
@@ -146,6 +148,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     It.IsAny<string?>(),
                     It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
                     It.IsAny<string[]>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
@@ -202,8 +206,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                 .Create();
 
             _facadeServiceMock
-                .Setup(x => x.GetOrganisationSubmissions<Registration>(It.IsAny<string?>(), It.IsAny<string?>(), null,
-                    It.IsAny<string[]>(), It.IsAny<int>()))
+                .Setup(x => x.GetOrganisationSubmissions<Registration>(
+                    It.IsAny<string?>(),
+                    It.IsAny<string?>(),
+                    null,
+                    It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
             var viewComponent =
@@ -247,6 +257,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     It.IsAny<string?>(),
                     It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
                     It.IsAny<string[]>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
@@ -313,6 +325,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
                     It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
+                    It.IsAny<string[]>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
@@ -376,6 +390,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     It.IsAny<string?>(),
                     It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
                     It.IsAny<string[]>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));

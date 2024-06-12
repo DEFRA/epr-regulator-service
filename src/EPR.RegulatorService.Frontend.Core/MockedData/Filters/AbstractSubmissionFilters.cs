@@ -56,4 +56,24 @@ public static class AbstractSubmissionFilters
 
         return query;
     }
+
+    public static IQueryable<AbstractSubmission> FilterBySubmissionYears(this IQueryable<AbstractSubmission> query, int[] submissionYears)
+    {
+        if (submissionYears != null && submissionYears.Length != 0)
+        {
+            query = query.Where(x => submissionYears.Contains(int.Parse(x.SubmissionPeriod.Substring(x.SubmissionPeriod.Length - 4))));
+        }
+
+        return query;
+    }
+
+    public static IQueryable<AbstractSubmission> FilterBySubmissionPeriods(this IQueryable<AbstractSubmission> query, string[] submissionPeriods)
+    {
+        if (submissionPeriods != null && submissionPeriods.Length != 0)
+        {
+            query = query.Where(x => submissionPeriods.Contains(x.SubmissionPeriod));
+        }
+
+        return query;
+    }
 }

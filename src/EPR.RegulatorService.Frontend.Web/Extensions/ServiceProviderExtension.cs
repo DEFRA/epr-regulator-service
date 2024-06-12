@@ -62,6 +62,7 @@ public static class ServiceProviderExtension
         services.Configure<EprCookieOptions>(configuration.GetSection(EprCookieOptions.ConfigSection));
         services.Configure<AnalyticsOptions>(configuration.GetSection(AnalyticsOptions.ConfigSection));
         services.Configure<PhaseBannerOptions>(configuration.GetSection(PhaseBannerOptions.ConfigSection));
+        services.Configure<SubmissionFiltersOptions>(configuration.GetSection(SubmissionFiltersOptions.ConfigSection));
         services.Configure<ExternalUrlsOptions>(configuration.GetSection(ExternalUrlsOptions.ConfigSection));
         services.Configure<EmailAddressOptions>(configuration.GetSection(EmailAddressOptions.ConfigSection));
         services.Configure<SiteDateOptions>(configuration.GetSection(SiteDateOptions.ConfigSection));

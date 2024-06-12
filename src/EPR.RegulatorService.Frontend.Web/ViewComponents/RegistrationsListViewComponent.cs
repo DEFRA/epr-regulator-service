@@ -45,6 +45,8 @@ public class RegistrationsListViewComponent : ViewComponent
                 request.SearchOrganisationReference,
                 organisationType,
                 statuses,
+                null,
+                null,
                 request.PageNumber);
 
         if ((request.PageNumber > pagedOrganisationRegistrations.TotalPages && request.PageNumber > 1)|| request.PageNumber < 1)

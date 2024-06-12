@@ -45,6 +45,8 @@ public class SubmissionsListViewComponent : ViewComponent
                 request.SearchOrganisationReference,
                 organisationType,
                 statuses,
+                request.SearchSubmissionYears,
+                request.SearchSubmissionPeriods,
                 request.PageNumber);
         if ((request.PageNumber > pagedOrganisationSubmissions.TotalPages && request.PageNumber > 1) || request.PageNumber < 1)
         {
@@ -69,7 +71,11 @@ public class SubmissionsListViewComponent : ViewComponent
                 IsComplianceSchemeChecked = request.IsComplianceSchemeChecked,
                 IsPendingSubmissionChecked = request.IsPendingSubmissionChecked,
                 IsAcceptedSubmissionChecked = request.IsAcceptedSubmissionChecked,
-                IsRejectedSubmissionChecked = request.IsRejectedSubmissionChecked
+                IsRejectedSubmissionChecked = request.IsRejectedSubmissionChecked,
+                SearchSubmissionYears = request.SearchSubmissionYears,
+                SearchSubmissionPeriods = request.SearchSubmissionPeriods,
+                SubmissionYears = request.SubmissionYears,
+                SubmissionPeriods = request.SubmissionPeriods
             }
         };
 
