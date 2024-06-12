@@ -6,7 +6,13 @@
 {
 <div class="govuk-summary-card">
   <div class="govuk-summary-card__title-wrapper">
-    <h2 class="govuk-summary-card__title">@Localizer["SummaryList.Title"]</h2>
+            <h2 class="govuk-summary-card__title">
+                @Localizer["SummaryList.Title"]@if (!string.IsNullOrEmpty(Model.SubmissionPeriod))
+                {
+                    <span> - @Model.SubmissionPeriod</span>
+                    @Localizer["SummaryList.ReSubmissionPeriodSuffix"]
+                }
+            </h2>
     <ul class="govuk-summary-card__actions">
       <li class="govuk-summary-card__action">
         @switch (Model.Status)
