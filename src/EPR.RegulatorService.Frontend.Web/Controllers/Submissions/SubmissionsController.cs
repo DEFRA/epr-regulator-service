@@ -168,6 +168,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 FormattedTimeAndDateOfSubmission = DateTimeHelpers.FormatTimeAndDateForSubmission(submission.SubmittedDate),
                 SubmissionId = submission.SubmissionId,
                 SubmittedBy = $"{submission.FirstName} {submission.LastName}",
+                SubmissionPeriod = submission.SubmissionPeriod,
                 AccountRole = submission.ServiceRole,
                 Telephone = submission.Telephone,
                 Email = submission.Email,

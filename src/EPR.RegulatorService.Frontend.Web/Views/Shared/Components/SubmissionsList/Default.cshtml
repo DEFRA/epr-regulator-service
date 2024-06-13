@@ -35,21 +35,17 @@
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Organisation"]</span>
 
-                        @using (Html.BeginForm("Submissions", "Submissions", new { jsonSubmission = JsonSerializer.Serialize(submission) }, FormMethod.Post))
-                        {
-                            <button class="govuk-link link-button-active" type="submit">
-                                @submission.OrganisationName
-                            </button>
-                            <br />
-                            @if (submission.OrganisationType.Equals("Direct Producer"))
-                            {
-                                @SharedLocalizer["OrganisationType.DirectProducer"]
-                            }
-                            else
-                            {
-                                @SharedLocalizer["OrganisationType.ComplianceScheme"]
-                            }
-                        }
+                    @using (Html.BeginForm("Submissions", "Submissions", new { jsonSubmission = JsonSerializer.Serialize(submission) }, FormMethod.Post))
+                    {
+                        <button class="govuk-link link-button-active" type="submit">
+                            @submission.OrganisationName
+                        </button>
+                        <br />
+                        @(submission.OrganisationType == OrganisationType.DirectProducer
+                        || submission.OrganisationType.Equals("DirectProducer")
+                            ? SharedLocalizer["OrganisationType.DirectProducer"]
+                            : SharedLocalizer["OrganisationType.ComplianceScheme"])
+                    }
 
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
