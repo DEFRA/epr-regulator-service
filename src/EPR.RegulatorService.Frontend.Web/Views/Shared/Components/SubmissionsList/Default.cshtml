@@ -39,14 +39,10 @@
                             @submission.OrganisationName
                         </button>
                         <br />
-                        @if (submission.OrganisationType.Equals("Direct Producer"))
-                        {
-                            @SharedLocalizer["OrganisationType.DirectProducer"]
-                        }
-                        else
-                        {
-                            @SharedLocalizer["OrganisationType.ComplianceScheme"]
-                        }
+                        @(submission.OrganisationType == OrganisationType.DirectProducer
+                        || submission.OrganisationType.Equals("DirectProducer")
+                            ? SharedLocalizer["OrganisationType.DirectProducer"]
+                            : SharedLocalizer["OrganisationType.ComplianceScheme"])
                     }
 
                 </td>
