@@ -144,6 +144,9 @@
   <data name="Footer.Email" xml:space="preserve">
     <value>Email</value>
   </data>
+  <data name="Footer.GetHelp" xml:space="preserve">
+    <value>Get Help</value>
+  </data>
   <data name="Footer.Phone" xml:space="preserve">
     <value>Telephone</value>
   </data>

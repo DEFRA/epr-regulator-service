@@ -124,7 +124,7 @@
     <value>Cwcis</value>
   </data>
   <data name="Footer.AllContent" xml:space="preserve">
-    <value>Mae’r holl gynnwys ar gael o dan y</value>
+    <value>Mae’r holl gynnwys ar gael dan y</value>
   </data>
   <data name="Footer.CrownCopyright" xml:space="preserve">
     <value>Hawlfraint y Goron</value>
@@ -136,7 +136,7 @@
     <value>Drwydded Llywodraeth Agored, fersiwn 3.0</value>
   </data>
   <data name="Footer.Accessibility" xml:space="preserve">
-    <value>Datganiad hygyrchedd</value>
+    <value>Datganiad Hygyrchedd</value>
   </data>
   <data name="Footer.CustomerServiceTimes" xml:space="preserve">
     <value>Dydd Llun i ddydd Gwener, 8:30am i 4:30pm</value>
