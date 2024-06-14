@@ -220,17 +220,17 @@ public class FacadeService : IFacadeService
             query["organisationType"] = "All";
         }
 
-        if (status is {Length: > 0})
+        if (status?.Any() == true)
         {
             query["statuses"] = string.Join(',', status);
         }
 
-        if (submissionYears is { Length: > 0 })
+        if (submissionYears?.Any() == true)
         {
             query["submissionYears"] = string.Join(',', submissionYears);
         }
 
-        if (submissionPeriods is { Length: > 0 })
+        if (submissionPeriods?.Any() == true)
         {
             query["submissionPeriods"] = string.Join(',', submissionPeriods);
         }

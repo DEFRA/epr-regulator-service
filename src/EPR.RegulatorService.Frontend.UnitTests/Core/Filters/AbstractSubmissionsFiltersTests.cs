@@ -18,9 +18,24 @@ public class AbstractSubmissionFiltersTests
         _abstractSubmissions = _fixture
             .Build<AbstractSubmission>()
             .With(x => x.Decision, GetRandomStatus)
-            .With(x => x.SubmissionPeriod, GetRandomSubmissionPeriod)
             .CreateMany(30)
             .AsQueryable();
+
+        int i = 0;
+        string[] submissionPeriods = { "January to June 2023", "July to December 2023", "July to December 2024" };
+
+        foreach (var submission in _abstractSubmissions)
+        {
+            int periodIndex = i / 10;
+
+            if (periodIndex > submissionPeriods.Length)
+            {
+                periodIndex = submissionPeriods.Length;
+            }
+
+            submission.SubmissionPeriod = submissionPeriods[periodIndex];
+            i++;
+        }
     }
 
     public static string GetRandomStatus()
@@ -29,14 +44,6 @@ public class AbstractSubmissionFiltersTests
         Random random = new Random();
         int index = random.Next(statuses.Length);
         return statuses[index];
-    }
-
-    public static string GetRandomSubmissionPeriod()
-    {
-        string[] submissionPeriods = { "January to June 2023", "July to December 2023", "July to December 2024" };
-        Random random = new Random();
-        int index = random.Next(submissionPeriods.Length);
-        return submissionPeriods[index];
     }
 
     [TestMethod]
