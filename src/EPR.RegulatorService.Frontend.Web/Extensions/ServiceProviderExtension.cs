@@ -14,9 +14,11 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EPR.RegulatorService.Frontend.Web.Extensions;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceProviderExtension
 {
    public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
