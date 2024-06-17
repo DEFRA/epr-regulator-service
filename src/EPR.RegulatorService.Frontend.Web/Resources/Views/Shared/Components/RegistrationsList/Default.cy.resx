@@ -135,4 +135,7 @@
   <data name="Table.Header.SubmissionPeriod" xml:space="preserve">
     <value>Cyfnod y cyflwyniad</value>
   </data>
+  <data name="Body.NoResultsFound" xml:space="preserve">
+    <value>WNo results found</value>
+  </data>
 </root>

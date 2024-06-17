@@ -45,8 +45,8 @@ public class RegistrationsListViewComponent : ViewComponent
                 request.SearchOrganisationReference,
                 organisationType,
                 statuses,
-                null,
-                null,
+                request.SearchSubmissionYears,
+                request.SearchSubmissionPeriods,
                 request.PageNumber);
 
         if ((request.PageNumber > pagedOrganisationRegistrations.TotalPages && request.PageNumber > 1)|| request.PageNumber < 1)
@@ -75,11 +75,15 @@ public class RegistrationsListViewComponent : ViewComponent
             {
                 SearchOrganisationName = request.SearchOrganisationName,
                 SearchOrganisationId = request.SearchOrganisationReference,
+                SearchSubmissionYears = request.SearchSubmissionYears,
+                SearchSubmissionPeriods = request.SearchSubmissionPeriods,
                 IsDirectProducerChecked = request.IsDirectProducerChecked,
                 IsComplianceSchemeChecked = request.IsComplianceSchemeChecked,
                 IsPendingRegistrationChecked = request.IsPendingRegistrationChecked,
                 IsAcceptedRegistrationChecked = request.IsAcceptedRegistrationChecked,
                 IsRejectedRegistrationChecked = request.IsRejectedRegistrationChecked,
+                SubmissionYears = request.SubmissionYears,
+                SubmissionPeriods = request.SubmissionPeriods
             }
         };
 
