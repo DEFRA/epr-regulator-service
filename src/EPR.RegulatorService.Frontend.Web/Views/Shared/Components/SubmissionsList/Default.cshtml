@@ -73,7 +73,17 @@
                         <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                             <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.SubmissionPeriod"]</span>
                             <p class="govuk-body">
-                                @submission.SubmissionPeriod
+                                @if (!string.IsNullOrEmpty(submission.ActualSubmissionPeriod))
+                                {
+                                    foreach (var actualSubmissionPeriod in submission.ActualSubmissionPeriod.Split(','))
+                                    {
+                                        @actualSubmissionPeriod<br>
+                                    }
+                                }
+                                else
+                                {
+                                    @submission.SubmissionPeriod;
+                                }
                             </p>
                         </td>
                     }
