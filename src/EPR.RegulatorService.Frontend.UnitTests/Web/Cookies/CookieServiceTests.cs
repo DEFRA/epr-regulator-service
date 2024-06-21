@@ -28,20 +28,18 @@ public class CookieServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void SetCookieAcceptance_LogsError_WhenArgumentNullExceptionThrow()
+    public void SetCookieAcceptance_ShouldThrowArgumentNullException_WhenCookiePolicyCookieNameNotSet()
     {
         // Arrange
-        const string expectedLog = "Error setting cookie acceptance to 'True'";
         var requestCookieCollection = MockRequestCookieCollection("test", "test");
         HttpContext context = new DefaultHttpContext();
         MockService();
 
         // Act
-        _systemUnderTest.SetCookieAcceptance(true, requestCookieCollection, context.Response.Cookies);
+        var act = () => _systemUnderTest.SetCookieAcceptance(true, requestCookieCollection, context.Response.Cookies);
 
         // Assert
-        _loggerMock.VerifyLog(logger => logger.LogError(expectedLog), Times.Once);
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [TestMethod]
@@ -93,19 +91,17 @@ public class CookieServiceTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void HasUserAcceptedCookies_LogsError_WhenArgumentNullExceptionThrow()
+    public void HasUserAcceptedCookies_ShouldThrowArgumentNullException_WhenCookiePolicyCookieNameNotSet()
     {
         // Arrange
-        const string expectedLog = "Error reading cookie acceptance";
         var requestCookieCollection = MockRequestCookieCollection("test", "test");
         MockService();
 
         // Act
-        _systemUnderTest.HasUserAcceptedCookies(requestCookieCollection);
+        var act = () => _systemUnderTest.HasUserAcceptedCookies(requestCookieCollection);
 
         // Assert
-        _loggerMock.VerifyLog(logger => logger.LogError(expectedLog), Times.Once);
+        act.Should().Throw<ArgumentNullException>();
     }
 
     [TestMethod]

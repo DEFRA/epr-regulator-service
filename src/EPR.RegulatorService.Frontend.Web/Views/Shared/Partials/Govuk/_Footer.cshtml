@@ -1,9 +1,35 @@
 @model string
+
+@{
+	var email = "eprcustomerservice@defra.gov.uk";
+	var privacyLink = "https://www.gov.uk/guidance/extended-producer-responsibility-for-packaging-privacy-policy";
+	var accessibilityLink = "https://www.gov.uk/guidance/extended-producer-responsibility-for-packaging-accessibility-statement";
+
+	string DecorateUrl(string url)
+	{
+		var cultureCode = this.Output.FormatProvider.ToString() switch
+		{
+			"en" => string.Empty,
+			_ => $".{this.Output.FormatProvider.ToString()}",
+		};
+
+		return $"{url}{cultureCode}";
+	}
+}
+
 <footer class="govuk-footer" role="contentinfo">
     <div class="govuk-width-container ">
         <div class="govuk-footer__meta">
             <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
-                <h2 class="govuk-visually-hidden">Support links</h2>
+
+				<h2 class="govuk-!-margin-top-3">@Localizer["Footer.GetHelp"]</h2>
+				<ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-7">
+					<li>@Localizer["Footer.Email"]: <a href="mailto: @email">@email</a></li>
+					<li>@Localizer["Footer.Phone"]: 0300 060 0002</li>
+					<li>@Localizer["Footer.CustomerServiceTimes"]</li>
+				</ul>
+
+				<h2 class="govuk-visually-hidden">Support links</h2>
                 <ul class="govuk-footer__inline-list">
                     <li class="govuk-footer__inline-list-item">
                         <a class="govuk-footer__link" asp-controller="Cookies" asp-action="Detail" asp-route-returnurl="@Model">
@@ -11,13 +37,13 @@
                         </a>
                     </li>
                     <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link" asp-controller="Privacy" asp-action="Detail" asp-route-returnurl="@Model">
-                            @Localizer["Footer.Privacy"]
+						<a class="govuk-footer__link" href="@DecorateUrl(privacyLink)" target="_blank">
+							@Localizer["Footer.Privacy"]
                         </a>
                     </li>
                     <li class="govuk-footer__inline-list-item">
-                        <a class="govuk-footer__link" asp-controller="Accessibility" asp-action="Detail" asp-route-returnurl="@Model">
-                            @Localizer["Footer.Accessibility"]
+						<a class="govuk-footer__link" href="@DecorateUrl(accessibilityLink)" target="_blank">
+							@Localizer["Footer.Accessibility"]
                         </a>
                     </li>
                 </ul>
@@ -26,11 +52,11 @@
                 </svg>
                 <span class="govuk-footer__licence-description">
                     @Localizer["Footer.AllContent"] 
-                    <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">@Localizer["Footer.OpenGovernment"]</a>@Localizer["Footer.ExceptWhere"]
+                    <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">@Localizer["Footer.OpenGovernment"]</a>, @Localizer["Footer.ExceptWhere"]
                 </span>
             </div>
             <div class="govuk-footer__meta-item">
-                <a class="govuk-footer__link govuk-footer__copyright-logo" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">@Localizer["Footer.CrownCopyright"]</a>
+				<a class="govuk-footer__link govuk-footer__copyright-logo" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">&copy @Localizer["Footer.CrownCopyright"]</a>
             </div>
         </div>
     </div>
