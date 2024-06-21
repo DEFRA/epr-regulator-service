@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
@@ -22,14 +23,10 @@
         <div class="govuk-!-margin-bottom-4">
           <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationType"]</h3>
           <p class="govuk-body">
-            @if(@Model.OrganisationType.Equals("Direct Producer"))
-            {
-              @SharedLocalizer["OrganisationType.DirectProducer"]
-            }
-            else
-            {
-              @SharedLocalizer["OrganisationType.ComplianceScheme"]
-            }
+              @(Model.OrganisationType == OrganisationType.DirectProducer
+              || Model.OrganisationType.Equals("DirectProducer")
+              ? SharedLocalizer["OrganisationType.DirectProducer"]
+              : SharedLocalizer["OrganisationType.ComplianceScheme"])
           </p>
         </div>
         <div class="govuk-!-margin-bottom-4">
