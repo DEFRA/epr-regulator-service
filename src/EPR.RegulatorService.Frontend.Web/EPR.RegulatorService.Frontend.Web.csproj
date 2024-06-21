@@ -349,7 +349,7 @@
     </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.cpd.exclusions">
       <Value>
-        **/RegistrationDetailsViewModel.cs
+        **/RegistrationDetailsViewModel.cs, Views/**/*.cshtml
       </Value>
     </SonarQubeSetting>
   </ItemGroup>

@@ -10,6 +10,7 @@ public class SubmissionDetailsViewModel
     public string FormattedTimeAndDateOfSubmission { get; set; }
     public Guid SubmissionId { get; set; }
     public string SubmittedBy { get; set; }
+    public string SubmissionPeriod { get; set; }
     public string AccountRole { get; set; }
     public string Telephone { get; set; }
     public string Email { get; set; }
