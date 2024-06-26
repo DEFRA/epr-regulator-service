@@ -7,6 +7,8 @@ public class SubmissionsViewModel
 {
     public int? PageNumber { get; set; }
     public string PowerBiLogin { get; set; }
+    public int[] SubmissionYears { get; set; }
+    public string[] SubmissionPeriods { get; set; }
     public EndpointResponseStatus? RejectSubmissionResult { get; set; } = EndpointResponseStatus.NotSet;
     public EndpointResponseStatus? AcceptSubmissionResult { get; set; } = EndpointResponseStatus.NotSet;
     public string? OrganisationName { get; set; }
@@ -17,4 +19,6 @@ public class SubmissionsViewModel
     public bool IsPendingSubmissionChecked { get; set; }
     public bool IsAcceptedSubmissionChecked { get; set; }
     public bool IsRejectedSubmissionChecked { get; set; }
+    public int[] SearchSubmissionYears { get; set; }
+    public string[] SearchSubmissionPeriods { get; set; }
 }

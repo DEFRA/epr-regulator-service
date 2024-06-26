@@ -92,13 +92,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     It.IsAny<string?>(),
                     It.IsAny<OrganisationType?>(),
                     It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
+                    It.IsAny<string[]>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
             var viewComponent = new RegistrationsListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
 
-            // Act
-            var result = await viewComponent.InvokeAsync(new RegistrationListRequest
+            var viewModel = new RegistrationListRequest
             {
                 SearchOrganisationName = string.Empty,
                 SearchOrganisationReference = string.Empty,
@@ -106,8 +107,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                 IsComplianceSchemeChecked = false,
                 IsPendingRegistrationChecked = false,
                 IsAcceptedRegistrationChecked = false,
-                IsRejectedRegistrationChecked = false
-            });
+                IsRejectedRegistrationChecked = false,
+                SubmissionYears = Array.Empty<int>(),
+                SubmissionPeriods = Array.Empty<string>(),
+                SearchSubmissionYears = Array.Empty<int>(),
+                SearchSubmissionPeriods = Array.Empty<string>()
+            };
+
+            // Act
+            var result = await viewComponent.InvokeAsync(viewModel);
 
             // Assert
             Assert.IsNotNull(result);
@@ -127,6 +135,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.RegulatorRegistrationFiltersModel.IsPendingRegistrationChecked.Should().BeFalse();
             model.RegulatorRegistrationFiltersModel.IsAcceptedRegistrationChecked.Should().BeFalse();
             model.RegulatorRegistrationFiltersModel.IsRejectedRegistrationChecked.Should().BeFalse();
+            model.RegulatorRegistrationFiltersModel.SubmissionYears.Should().BeEmpty();
+            model.RegulatorRegistrationFiltersModel.SearchSubmissionYears.Should().BeEmpty();
+            model.RegulatorRegistrationFiltersModel.SubmissionPeriods.Should().BeEmpty();
+            model.RegulatorRegistrationFiltersModel.SearchSubmissionPeriods.Should().BeEmpty();
         }
 
         [TestMethod]
@@ -146,6 +158,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     It.IsAny<string?>(),
                     It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
                     It.IsAny<string[]>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
@@ -202,8 +216,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                 .Create();
 
             _facadeServiceMock
-                .Setup(x => x.GetOrganisationSubmissions<Registration>(It.IsAny<string?>(), It.IsAny<string?>(), null,
-                    It.IsAny<string[]>(), It.IsAny<int>()))
+                .Setup(x => x.GetOrganisationSubmissions<Registration>(
+                    It.IsAny<string?>(),
+                    It.IsAny<string?>(),
+                    null,
+                    It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
             var viewComponent =
@@ -247,6 +267,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     It.IsAny<string?>(),
                     It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
                     It.IsAny<string[]>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
@@ -313,6 +335,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
                     It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
+                    It.IsAny<string[]>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
@@ -377,6 +401,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                     It.IsAny<string?>(),
                     It.IsAny<OrganisationType>(),
                     It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
+                    It.IsAny<string[]>(),
                     It.IsAny<int>()))
                 .Returns(Task.FromResult(registrations));
 
@@ -421,6 +447,71 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.RegulatorRegistrationFiltersModel.IsPendingRegistrationChecked.Should().BeFalse();
             model.RegulatorRegistrationFiltersModel.IsAcceptedRegistrationChecked.Should().BeTrue();
             model.RegulatorRegistrationFiltersModel.IsRejectedRegistrationChecked.Should().BeFalse();
+        }
+
+        [TestMethod]
+        public async Task InvokeAsync_ReturnsCorrectViewAndModel_Where_SubmissionYearAndPeriodFilterSet()
+        {
+            // Arrange
+            var registrations = _fixture.Build<PaginatedList<Registration>>()
+                .With(x => x.Items, _registrations)
+                .With(x => x.CurrentPage, 1)
+                .With(x => x.TotalItems, 2)
+                .Create();
+
+            _facadeServiceMock
+                .Setup(x => x.GetOrganisationSubmissions<Registration>(
+                    It.IsAny<string?>(),
+                    It.IsAny<string?>(),
+                    It.IsAny<OrganisationType?>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<int[]>(),
+                    It.IsAny<string[]>(),
+                    It.IsAny<int>()))
+                .Returns(Task.FromResult(registrations));
+
+            var viewComponent = new RegistrationsListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
+
+            var viewModel = new RegistrationListRequest
+            {
+                SearchOrganisationName = string.Empty,
+                SearchOrganisationReference = string.Empty,
+                IsDirectProducerChecked = false,
+                IsComplianceSchemeChecked = false,
+                IsPendingRegistrationChecked = false,
+                IsAcceptedRegistrationChecked = false,
+                IsRejectedRegistrationChecked = false,
+                SubmissionYears = new[] { 2023, 2024 },
+                SubmissionPeriods = new[] { "Jan to Jun 2023", "Jan to Jun 2024" },
+                SearchSubmissionYears = new[] { 2023 },
+                SearchSubmissionPeriods = new[] { "Jan to Jun 2023" }
+            };
+
+            // Act
+            var result = await viewComponent.InvokeAsync(viewModel);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.ViewData);
+            Assert.IsNotNull(result.ViewData.Model);
+            result.Should().NotBeNull().And.BeOfType<ViewViewComponentResult>();
+
+            var model = result.ViewData.Model as RegistrationsListViewModel;
+            model.Should().NotBeNull();
+            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.Items);
+            model.PagedOrganisationRegistrations.Count().Should().Be(2);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.CurrentPage);
+            model.PaginationNavigationModel.PageCount.Should().Be(registrations.TotalPages);
+            model.RegulatorRegistrationFiltersModel.SearchOrganisationName.Should().BeEmpty();
+            model.RegulatorRegistrationFiltersModel.IsDirectProducerChecked.Should().BeFalse();
+            model.RegulatorRegistrationFiltersModel.IsComplianceSchemeChecked.Should().BeFalse();
+            model.RegulatorRegistrationFiltersModel.IsPendingRegistrationChecked.Should().BeFalse();
+            model.RegulatorRegistrationFiltersModel.IsAcceptedRegistrationChecked.Should().BeFalse();
+            model.RegulatorRegistrationFiltersModel.IsRejectedRegistrationChecked.Should().BeFalse();
+            model.RegulatorRegistrationFiltersModel.SubmissionYears.Should().BeEquivalentTo(viewModel.SubmissionYears);
+            model.RegulatorRegistrationFiltersModel.SearchSubmissionYears.Should().BeEquivalentTo(viewModel.SearchSubmissionYears);
+            model.RegulatorRegistrationFiltersModel.SubmissionPeriods.Should().BeEquivalentTo(viewModel.SubmissionPeriods);
+            model.RegulatorRegistrationFiltersModel.SearchSubmissionPeriods.Should().BeEquivalentTo(viewModel.SearchSubmissionPeriods);
         }
     }
 }

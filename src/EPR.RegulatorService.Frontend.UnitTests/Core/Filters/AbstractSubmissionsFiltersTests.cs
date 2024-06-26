@@ -20,6 +20,22 @@ public class AbstractSubmissionFiltersTests
             .With(x => x.Decision, GetRandomStatus)
             .CreateMany(30)
             .AsQueryable();
+
+        int i = 0;
+        string[] submissionPeriods = { "January to June 2023", "July to December 2023", "July to December 2024" };
+
+        foreach (var submission in _abstractSubmissions)
+        {
+            int periodIndex = i / 10;
+
+            if (periodIndex > submissionPeriods.Length)
+            {
+                periodIndex = submissionPeriods.Length;
+            }
+
+            submission.SubmissionPeriod = submissionPeriods[periodIndex];
+            i++;
+        }
     }
 
     public static string GetRandomStatus()
@@ -166,6 +182,63 @@ public class AbstractSubmissionFiltersTests
         var result =
             _abstractSubmissions
                 .FilterByStatus(statusArray);
+
+        result.Should().BeEquivalentTo(expectedSubmissions);
+    }
+
+    [TestMethod]
+    public void FilterBySubmissionYears_Null_ReturnsAll()
+    {
+        var result = _abstractSubmissions.FilterBySubmissionYears(null);
+
+        result.Should().BeEquivalentTo(_abstractSubmissions);
+    }
+
+    [TestMethod]
+    public void FilterBySubmissionYears_EmptyArray_ReturnsAll()
+    {
+        var result = _abstractSubmissions.FilterBySubmissionYears(Array.Empty<int>());
+
+        result.Should().BeEquivalentTo(_abstractSubmissions);
+    }
+
+    [TestMethod]
+    public void FilterBySubmissionYears_SubmissionYearsPassed_ReturnsOnlyMatches()
+    {
+        var submissionYears = new[] { 2023 };
+
+        var expectedSubmissions = _abstractSubmissions.Where(
+            x => submissionYears.Contains(int.Parse(x.SubmissionPeriod.Substring(x.SubmissionPeriod.Length - 4))));
+
+        var result = _abstractSubmissions.FilterBySubmissionYears(submissionYears);
+
+        result.Should().BeEquivalentTo(expectedSubmissions);
+    }
+
+    [TestMethod]
+    public void FilterBySubmissionPeriods_Null_ReturnsAll()
+    {
+        var result = _abstractSubmissions.FilterBySubmissionPeriods(null);
+
+        result.Should().BeEquivalentTo(_abstractSubmissions);
+    }
+
+    [TestMethod]
+    public void FilterBySubmissionPeriods_EmptyArray_ReturnsAll()
+    {
+        var result = _abstractSubmissions.FilterBySubmissionPeriods(Array.Empty<string>());
+
+        result.Should().BeEquivalentTo(_abstractSubmissions);
+    }
+
+    [TestMethod]
+    public void FilterBySubmissionPeriods_SubmissionPeriodsPassed_ReturnsOnlyMatches()
+    {
+        var submissionPeriods = new[] { "January to June 2023" };
+
+        var expectedSubmissions = _abstractSubmissions.Where(x => submissionPeriods.Contains(x.SubmissionPeriod));
+
+        var result = _abstractSubmissions.FilterBySubmissionPeriods(submissionPeriods);
 
         result.Should().BeEquivalentTo(expectedSubmissions);
     }
