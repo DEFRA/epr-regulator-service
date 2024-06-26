@@ -109,6 +109,8 @@ public class RegistrationsControllerTests : RegistrationTestBase
         registrationFiltersModelFromSession.IsPendingRegistrationChecked.Should().BeTrue();
         registrationFiltersModelFromSession.IsAcceptedRegistrationChecked.Should().BeTrue();
         registrationFiltersModelFromSession.IsRejectedRegistrationChecked.Should().BeTrue();
+        registrationFiltersModelFromSession.SearchSubmissionYears.Should().BeEquivalentTo(new[] { 2023 });
+        registrationFiltersModelFromSession.SearchSubmissionPeriods.Should().BeEquivalentTo(new[] { "January to June 2023" });
     }
 
     [TestMethod]
@@ -135,6 +137,8 @@ public class RegistrationsControllerTests : RegistrationTestBase
         registrationFiltersModel.IsPendingRegistrationChecked.Should().BeFalse();
         registrationFiltersModel.IsAcceptedRegistrationChecked.Should().BeFalse();
         registrationFiltersModel.IsRejectedRegistrationChecked.Should().BeFalse();
+        registrationFiltersModel.SearchSubmissionYears.Should().BeEmpty();
+        registrationFiltersModel.SearchSubmissionPeriods.Should().BeEmpty();
     }
 
     [TestMethod]
@@ -161,6 +165,8 @@ public class RegistrationsControllerTests : RegistrationTestBase
         registrationFiltersModel.IsPendingRegistrationChecked.Should().BeFalse();
         registrationFiltersModel.IsAcceptedRegistrationChecked.Should().BeFalse();
         registrationFiltersModel.IsRejectedRegistrationChecked.Should().BeFalse();
+        registrationFiltersModel.SearchSubmissionYears.Should().BeEmpty();
+        registrationFiltersModel.SearchSubmissionPeriods.Should().BeEmpty();
     }
 
     [TestMethod]
