@@ -138,4 +138,10 @@
   <data name="Checkbox.OrganisationType.ComplianceScheme" xml:space="preserve">
     <value>Cynllun cydymffurfio</value>
   </data>
+  <data name="SubTitle.SubmissionYear" xml:space="preserve">
+    <value>Submission year</value>
+  </data>
+  <data name="SubTitle.SubmissionPeriod" xml:space="preserve">
+    <value>Submission period</value>
+  </data>
 </root>

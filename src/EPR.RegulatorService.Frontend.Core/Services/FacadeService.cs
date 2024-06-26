@@ -190,6 +190,8 @@ public class FacadeService : IFacadeService
         string? organisationReference,
         OrganisationType? organisationType,
         string[]? status,
+        int[]? submissionYears,
+        string[]? submissionPeriods,
         int currentPage = 1) where T : AbstractSubmission
     {
         await PrepareAuthenticatedClient();
@@ -218,9 +220,19 @@ public class FacadeService : IFacadeService
             query["organisationType"] = "All";
         }
 
-        if (status is {Length: > 0})
+        if (status?.Any() == true)
         {
             query["statuses"] = string.Join(',', status);
+        }
+
+        if (submissionYears?.Any() == true)
+        {
+            query["submissionYears"] = string.Join(',', submissionYears);
+        }
+
+        if (submissionPeriods?.Any() == true)
+        {
+            query["submissionPeriods"] = string.Join(',', submissionPeriods);
         }
 
         var queryString = string.Join("&", query.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
