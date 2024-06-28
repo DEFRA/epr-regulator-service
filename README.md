@@ -9,11 +9,11 @@ The Regulator Service contains the front end for the regulator portal. This is t
 
 #### Required software
 
-- Dotnet SDK 6.0
+- Dotnet SDK 8.0
 
 ```sh
 $ dotnet --version
-6.0.413
+8.0
 ```
 
 #### epr-packaging-common
