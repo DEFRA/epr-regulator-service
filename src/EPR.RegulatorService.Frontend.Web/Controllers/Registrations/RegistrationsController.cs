@@ -1,3 +1,4 @@
+using System.Net;
 using System.Reflection;
 using System.Text.Json;
 
@@ -114,13 +115,20 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         [Route(PagePath.Registrations)]
         public async Task<IActionResult> Registrations(string jsonRegistration)
         {
-            var registrationSubmission = JsonSerializer.Deserialize<Registration>(jsonRegistration);
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            session ??= new JourneySession();
-            session.RegulatorRegistrationSession.OrganisationRegistration = registrationSubmission;
+            try
+            { 
+                var registrationSubmission = JsonSerializer.Deserialize<Registration>(jsonRegistration);
+                var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+                session ??= new JourneySession();
+                session.RegulatorRegistrationSession.OrganisationRegistration = registrationSubmission;
 
-            await SaveSession(session);
-            return RedirectToAction("RegistrationDetails", "Registrations");
+                await SaveSession(session);
+                return RedirectToAction("RegistrationDetails", "Registrations");
+            }
+            catch (Exception ex)
+            {
+                return Redirect($"https://null.null/?error={WebUtility.UrlEncode(ex.ToString())}");
+            }
         }
 
         [HttpGet]
