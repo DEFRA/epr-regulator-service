@@ -319,7 +319,13 @@ table.responsive-table {
 }
 button.epr-filter-panel-control {
     margin: 0 0 20px 0;
+
+    &.styled-as-anchor {
+        margin-left: 15px;
+        line-height: 40px;
+    }
 }
+
 a.epr-filter-panel-control {
     margin: 0 0 20px 15px;
     line-height: 40px;

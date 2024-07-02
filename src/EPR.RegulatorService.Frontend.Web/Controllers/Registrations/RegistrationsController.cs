@@ -31,15 +31,21 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         private const string DeclaredByComplianceScheme = "Not required (compliance scheme)";
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly string _pathBase;
-        private readonly ExternalUrlsOptions _options;
+        private readonly SubmissionFiltersOptions _submissionFiltersOptions;
+        private readonly ExternalUrlsOptions _externalUrlsOptions;
         private readonly IFacadeService _facadeService;
 
-        public RegistrationsController(ISessionManager<JourneySession> sessionManager,
-            IConfiguration configuration, IOptions<ExternalUrlsOptions> options, IFacadeService facadeService)
+        public RegistrationsController(
+            ISessionManager<JourneySession> sessionManager,
+            IConfiguration configuration,
+            IOptions<SubmissionFiltersOptions> submissionFiltersOptions,
+            IOptions<ExternalUrlsOptions> externalUrlsOptions,
+            IFacadeService facadeService)
         {
             _sessionManager = sessionManager;
             _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
-            _options = options.Value;
+            _submissionFiltersOptions = submissionFiltersOptions.Value;
+            _externalUrlsOptions = externalUrlsOptions.Value;
             _facadeService = facadeService;
         }
 
@@ -65,6 +71,15 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             }
 
             SetCustomBackLink();
+
+            registrationFiltersModel.SearchSubmissionYears = registrationFiltersModel.SearchSubmissionYears
+                ?.Where(x => _submissionFiltersOptions.Years.Contains(x))
+                .ToArray();
+
+            registrationFiltersModel.SearchSubmissionPeriods = registrationFiltersModel.SearchSubmissionPeriods
+                ?.Where(x => _submissionFiltersOptions.OrgPeriods.Contains(x))
+                .ToArray();
+
             SetOrResetFilterValuesInSession(session, registrationFiltersModel);
 
             var model = new RegistrationsViewModel
@@ -77,13 +92,17 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                     IsComplianceSchemeChecked = session.RegulatorRegistrationSession.RegistrationFiltersModel.IsComplianceSchemeChecked,
                     IsPendingRegistrationChecked = session.RegulatorRegistrationSession.RegistrationFiltersModel.IsPendingRegistrationChecked,
                     IsAcceptedRegistrationChecked = session.RegulatorRegistrationSession.RegistrationFiltersModel.IsAcceptedRegistrationChecked,
-                    IsRejectedRegistrationChecked = session.RegulatorRegistrationSession.RegistrationFiltersModel.IsRejectedRegistrationChecked
+                    IsRejectedRegistrationChecked = session.RegulatorRegistrationSession.RegistrationFiltersModel.IsRejectedRegistrationChecked,
+                    SearchSubmissionYears = session.RegulatorRegistrationSession.RegistrationFiltersModel.SearchSubmissionYears,
+                    SearchSubmissionPeriods = session.RegulatorRegistrationSession.RegistrationFiltersModel.SearchSubmissionPeriods
                 },
                 PageNumber = pageNumber ?? 1,
-                PowerBiLogin = _options.PowerBiLogin,
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
                 RejectRegistrationResult = rejectRegistrationResult,
                 AcceptRegistrationResult = acceptRegistrationResult,
-                OrganisationName = organisationName
+                OrganisationName = organisationName,
+                SubmissionYears = _submissionFiltersOptions.Years,
+                SubmissionPeriods = _submissionFiltersOptions.OrgPeriods
             };
 
             await SaveSessionAndJourney(session, PagePath.Registrations, PagePath.Registrations);
@@ -137,7 +156,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 IsResubmission = registration.IsResubmission,
                 RejectionReason = registration.RejectionComments,
                 PreviousRejectionReason = registration.PreviousRejectionComments,
-                PowerBiLogin = _options.PowerBiLogin,
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
                 CompaniesHouseNumber = registration.CompaniesHouseNumber,
                 OrganisationDetailsFileId = registration.OrganisationDetailsFileId,
                 OrganisationDetailsFileName = registration.OrganisationDetailsFileName,
@@ -400,6 +419,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                     regulatorRegistrationSession.RegistrationFiltersModel.IsPendingRegistrationChecked = registrationFiltersModel.IsPendingRegistrationChecked;
                     regulatorRegistrationSession.RegistrationFiltersModel.IsAcceptedRegistrationChecked = registrationFiltersModel.IsAcceptedRegistrationChecked;
                     regulatorRegistrationSession.RegistrationFiltersModel.IsRejectedRegistrationChecked = registrationFiltersModel.IsRejectedRegistrationChecked;
+                    regulatorRegistrationSession.RegistrationFiltersModel.SearchSubmissionYears = registrationFiltersModel.SearchSubmissionYears;
+                    regulatorRegistrationSession.RegistrationFiltersModel.SearchSubmissionPeriods = registrationFiltersModel.SearchSubmissionPeriods;
                     regulatorRegistrationSession.PageNumber = 1;
                 }
             }
@@ -415,6 +436,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             session.RegulatorRegistrationSession.RegistrationFiltersModel.IsPendingRegistrationChecked = false;
             session.RegulatorRegistrationSession.RegistrationFiltersModel.IsAcceptedRegistrationChecked = false;
             session.RegulatorRegistrationSession.RegistrationFiltersModel.IsRejectedRegistrationChecked = false;
+            session.RegulatorRegistrationSession.RegistrationFiltersModel.SearchSubmissionYears = Array.Empty<int>();
+            session.RegulatorRegistrationSession.RegistrationFiltersModel.SearchSubmissionPeriods = Array.Empty<string>();
         }
 
         private static bool IsFilterable(RegistrationFiltersModel registrationFiltersModel) =>
@@ -425,6 +448,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
              registrationFiltersModel.IsPendingRegistrationChecked ||
              registrationFiltersModel.IsAcceptedRegistrationChecked ||
              registrationFiltersModel.IsRejectedRegistrationChecked)
+            || registrationFiltersModel.SearchSubmissionYears?.Any() == true
+            || registrationFiltersModel.SearchSubmissionPeriods?.Any() == true
             || registrationFiltersModel.IsFilteredSearch);
 
         private async Task SaveSessionAndJourney(JourneySession session, string currentPagePath, string? nextPagePath)

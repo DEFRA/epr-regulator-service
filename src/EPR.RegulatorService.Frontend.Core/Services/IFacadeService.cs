@@ -43,6 +43,8 @@ public interface IFacadeService
         string? organisationReference,
         OrganisationType? organisationType,
         string[]? status,
+        int[]? submissionYears,
+        string[]? submissionPeriods,
         int currentPage = 1) where T : AbstractSubmission;
 
     Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request);

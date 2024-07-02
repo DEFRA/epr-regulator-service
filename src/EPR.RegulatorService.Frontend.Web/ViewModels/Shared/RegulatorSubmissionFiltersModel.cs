@@ -9,4 +9,8 @@ public class RegulatorSubmissionFiltersModel
     public bool IsPendingSubmissionChecked { get; set; }
     public bool IsAcceptedSubmissionChecked { get; set; }
     public bool IsRejectedSubmissionChecked { get; set; }
+    public int[] SearchSubmissionYears { get; set; }
+    public string[] SearchSubmissionPeriods { get; set; }
+    public int[] SubmissionYears { get; set; }
+    public string[] SubmissionPeriods { get; set; }
 }

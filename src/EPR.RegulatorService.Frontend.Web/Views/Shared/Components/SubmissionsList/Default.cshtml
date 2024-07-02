@@ -6,32 +6,34 @@
 @inject Microsoft.FeatureManagement.IFeatureManager FeatureManager;
 @await Html.PartialAsync("Partials/_RegulatorSubmissionFilters", Model.RegulatorSubmissionFiltersModel)
 
-<table class="govuk-table responsive-table" aria-label="Organisation Submission Listing">
-    <thead role="rowgroup" class="govuk-table__head">
-        <tr role="row" class="govuk-table__row">
-            @if (await FeatureManager.IsEnabledAsync(FeatureFlags.PomDataPeriodAndTime))
-            {
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-two-percent">@Localizer["Table.Header.Organisation"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-two-percent">@Localizer["Table.Header.OrganisationId"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-two-percent">@Localizer["Table.Header.SubmissionDateAndTime"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-two-percent">@Localizer["Table.Header.SubmissionPeriod"]</th>
-            }
-            else
-            {
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-eight-percent">@Localizer["Table.Header.Organisation"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-eight-percent">@Localizer["Table.Header.OrganisationId"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-eight-percent">@Localizer["Table.Header.SubmissionDate"]</th>
-            }
-            <th role="columnheader" scope="col" class="govuk-table__header epr-width-sixteen-percent">@Localizer["Table.Header.Status"]</th>
-        </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-
-        @foreach (var submission in Model.PagedOrganisationSubmissions)
-        {
+@if (Model.PagedOrganisationSubmissions?.Count() > 0)
+{
+    <table class="govuk-table responsive-table" aria-label="Organisation Submission Listing">
+        <thead role="rowgroup" class="govuk-table__head">
             <tr role="row" class="govuk-table__row">
-                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                    <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Organisation"]</span>
+                @if (await FeatureManager.IsEnabledAsync(FeatureFlags.PomDataPeriodAndTime))
+                {
+                    <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-two-percent">@Localizer["Table.Header.Organisation"]</th>
+                    <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-two-percent">@Localizer["Table.Header.OrganisationId"]</th>
+                    <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-two-percent">@Localizer["Table.Header.SubmissionDateAndTime"]</th>
+                    <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-two-percent">@Localizer["Table.Header.SubmissionPeriod"]</th>
+                }
+                else
+                {
+                    <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-eight-percent">@Localizer["Table.Header.Organisation"]</th>
+                    <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-eight-percent">@Localizer["Table.Header.OrganisationId"]</th>
+                    <th role="columnheader" scope="col" class="govuk-table__header epr-width-twenty-eight-percent">@Localizer["Table.Header.SubmissionDate"]</th>
+                }
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-sixteen-percent">@Localizer["Table.Header.Status"]</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+
+            @foreach (var submission in Model.PagedOrganisationSubmissions)
+            {
+                <tr role="row" class="govuk-table__row">
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Organisation"]</span>
 
                     @using (Html.BeginForm("Submissions", "Submissions", new { jsonSubmission = JsonSerializer.Serialize(submission) }, FormMethod.Post))
                     {
@@ -45,56 +47,72 @@
                             : SharedLocalizer["OrganisationType.ComplianceScheme"])
                     }
 
-                </td>
-                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                    <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.OrganisationId"]</span>
-                    <p class="govuk-body">
-                        @submission.OrganisationReference
-                    </p>
-                </td>
-                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                    <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.SubmissionDate"]</span>
-                    <p class="govuk-body">
-                        @if (await FeatureManager.IsEnabledAsync(FeatureFlags.PomDataPeriodAndTime))
-                        {
-
-                            @submission.SubmittedDate.ToString("d MMMM yyyy HH:mm:ss")
-                        }
-                        else
-                        {
-                            @submission.SubmittedDate.ToString("d MMMM yyyy")
-                        }
-                    </p>
-                </td>
-                @if (await FeatureManager.IsEnabledAsync(FeatureFlags.PomDataPeriodAndTime))
-                {
+                    </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.SubmissionPeriod"]</span>
+                        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.OrganisationId"]</span>
                         <p class="govuk-body">
-                            @submission.SubmissionPeriod
+                            @submission.OrganisationReference
                         </p>
                     </td>
-                }
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.SubmissionDate"]</span>
+                        <p class="govuk-body">
+                            @if (await FeatureManager.IsEnabledAsync(FeatureFlags.PomDataPeriodAndTime))
+                            {
 
-                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                    <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Status"]</span>
-                    <p class="govuk-body">
-                        @if (@submission.Decision.Equals("Pending", StringComparison.OrdinalIgnoreCase))
-                        {
-                            <strong class="govuk-tag govuk-tag--blue">@SharedLocalizer["Tag.Pending"]</strong>
-                        }
-                        else if (@submission.Decision.Equals("Accepted", StringComparison.OrdinalIgnoreCase))
-                        {
-                            <strong class="govuk-tag govuk-tag--green">@SharedLocalizer["Tag.Accepted"]</strong>
-                        }
-                        else
-                        {
-                            <strong class="govuk-tag govuk-tag--red">@SharedLocalizer["Tag.Rejected"]</strong>
-                        }
-                    </p>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-@await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel)
+                                @submission.SubmittedDate.ToString("d MMMM yyyy HH:mm:ss")
+                            }
+                            else
+                            {
+                                @submission.SubmittedDate.ToString("d MMMM yyyy")
+                            }
+                        </p>
+                    </td>
+                    @if (await FeatureManager.IsEnabledAsync(FeatureFlags.PomDataPeriodAndTime))
+                    {
+                        <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                            <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.SubmissionPeriod"]</span>
+                            <p class="govuk-body">
+                                @if (!string.IsNullOrEmpty(submission.ActualSubmissionPeriod))
+                                {
+                                    foreach (var actualSubmissionPeriod in submission.ActualSubmissionPeriod.Split(','))
+                                    {
+                                        @actualSubmissionPeriod<br>
+                                    }
+                                }
+                                else
+                                {
+                                    @submission.SubmissionPeriod;
+                                }
+                            </p>
+                        </td>
+                    }
+
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Status"]</span>
+                        <p class="govuk-body">
+                            @if (@submission.Decision.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <strong class="govuk-tag govuk-tag--blue">@SharedLocalizer["Tag.Pending"]</strong>
+                            }
+                            else if (@submission.Decision.Equals("Accepted", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <strong class="govuk-tag govuk-tag--green">@SharedLocalizer["Tag.Accepted"]</strong>
+                            }
+                            else
+                            {
+                                <strong class="govuk-tag govuk-tag--red">@SharedLocalizer["Tag.Rejected"]</strong>
+                            }
+                        </p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel)
+} else
+{
+    <p class="govuk-body govuk-!-text-align-centre govuk-!-static-margin-9">@Localizer["Body.NoResultsFound"]</p>
+}
+
+
