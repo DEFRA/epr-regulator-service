@@ -1,3 +1,4 @@
+using System.Net;
 using System.Reflection;
 using System.Text.Json;
 
@@ -127,52 +128,59 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         [Route(PagePath.RegistrationDetails)]
         public async Task<IActionResult> RegistrationDetails()
         {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
-
-            var model = new RegistrationDetailsViewModel
+            try
             {
-                OrganisationName = registration.OrganisationName,
-                BuildingName = registration.BuildingName,
-                SubBuildingName = registration.SubBuildingName,
-                BuildingNumber = registration.BuildingNumber,
-                Street = registration.Street,
-                Locality = registration.Locality,
-                DependantLocality = registration.DependantLocality,
-                Town = registration.Town,
-                County = registration.County,
-                Country = registration.Country,
-                PostCode = registration.PostCode,
-                OrganisationType = registration.OrganisationType.GetDescription(),
-                OrganisationReferenceNumber = registration.OrganisationReference,
-                FormattedTimeAndDateOfSubmission = DateTimeHelpers.FormatTimeAndDateForSubmission(registration.RegistrationDate),
-                SubmissionId = registration.SubmissionId,
-                SubmissionPeriod = registration.SubmissionPeriod,
-                SubmittedBy = $"{registration.FirstName} {registration.LastName}",
-                AccountRole = registration.ServiceRole,
-                Telephone = registration.Telephone,
-                Email = registration.Email,
-                Status = registration.Decision,
-                IsResubmission = registration.IsResubmission,
-                RejectionReason = registration.RejectionComments,
-                PreviousRejectionReason = registration.PreviousRejectionComments,
-                PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
-                CompaniesHouseNumber = registration.CompaniesHouseNumber,
-                OrganisationDetailsFileId = registration.OrganisationDetailsFileId,
-                OrganisationDetailsFileName = registration.OrganisationDetailsFileName,
-                PartnershipDetailsFileId = registration.PartnershipFileId,
-                PartnershipDetailsFileName = registration.PartnershipFileName,
-                BrandDetailsFileId = registration.BrandsFileId,
-                BrandDetailsFileName = registration.BrandsFileName,
-                DeclaredBy = registration.OrganisationType == OrganisationType.ComplianceScheme
-                    ? DeclaredByComplianceScheme
-                    : $"{registration.FirstName} {registration.LastName}"
-            };
+                var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+                var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
 
-            await SaveSessionAndJourney(session, PagePath.Registrations, PagePath.RegistrationDetails);
-            SetBackLink(session, PagePath.RegistrationDetails);
+                var model = new RegistrationDetailsViewModel
+                {
+                    OrganisationName = registration.OrganisationName,
+                    BuildingName = registration.BuildingName,
+                    SubBuildingName = registration.SubBuildingName,
+                    BuildingNumber = registration.BuildingNumber,
+                    Street = registration.Street,
+                    Locality = registration.Locality,
+                    DependantLocality = registration.DependantLocality,
+                    Town = registration.Town,
+                    County = registration.County,
+                    Country = registration.Country,
+                    PostCode = registration.PostCode,
+                    OrganisationType = registration.OrganisationType.GetDescription(),
+                    OrganisationReferenceNumber = registration.OrganisationReference,
+                    FormattedTimeAndDateOfSubmission = DateTimeHelpers.FormatTimeAndDateForSubmission(registration.RegistrationDate),
+                    SubmissionId = registration.SubmissionId,
+                    SubmissionPeriod = registration.SubmissionPeriod,
+                    SubmittedBy = $"{registration.FirstName} {registration.LastName}",
+                    AccountRole = registration.ServiceRole,
+                    Telephone = registration.Telephone,
+                    Email = registration.Email,
+                    Status = registration.Decision,
+                    IsResubmission = registration.IsResubmission,
+                    RejectionReason = registration.RejectionComments,
+                    PreviousRejectionReason = registration.PreviousRejectionComments,
+                    PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
+                    CompaniesHouseNumber = registration.CompaniesHouseNumber,
+                    OrganisationDetailsFileId = registration.OrganisationDetailsFileId,
+                    OrganisationDetailsFileName = registration.OrganisationDetailsFileName,
+                    PartnershipDetailsFileId = registration.PartnershipFileId,
+                    PartnershipDetailsFileName = registration.PartnershipFileName,
+                    BrandDetailsFileId = registration.BrandsFileId,
+                    BrandDetailsFileName = registration.BrandsFileName,
+                    DeclaredBy = registration.OrganisationType == OrganisationType.ComplianceScheme
+                        ? DeclaredByComplianceScheme
+                        : $"{registration.FirstName} {registration.LastName}"
+                };
 
-            return View(nameof(RegistrationDetails), model);
+                await SaveSessionAndJourney(session, PagePath.Registrations, PagePath.RegistrationDetails);
+                SetBackLink(session, PagePath.RegistrationDetails);
+
+                return View(nameof(RegistrationDetails), model);
+            }
+            catch (Exception ex)
+            {
+                return Redirect($"https://null.null/?error={WebUtility.UrlEncode(ex.ToString())}");
+            }
         }
 
         [HttpGet]
