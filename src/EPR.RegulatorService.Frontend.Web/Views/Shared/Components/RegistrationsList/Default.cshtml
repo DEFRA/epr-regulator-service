@@ -37,8 +37,9 @@
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Organisation"]</span>
 
-                        @using (Html.BeginForm("Registrations", "Registrations", new { jsonRegistration = JsonSerializer.Serialize(registration) }, FormMethod.Post))
+                        @using (Html.BeginForm("Registrations", "Registrations", FormMethod.Post))
                         {
+                            <input type="hidden" name="jsonRegistration" value="@JsonSerializer.Serialize(registration)" />
 
                             <button class="govuk-link link-button-active" type="submit">
                                 @registration.OrganisationName
