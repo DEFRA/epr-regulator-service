@@ -96,6 +96,64 @@
                 </div>
               </fieldset>
             </div>
+            @if(Model.SubmissionYears?.Any() == true)
+            {
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend>
+                            <span class="govuk-label govuk-label--m">@Localizer["SubTitle.SubmissionYear"]</span>
+                        </legend>
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            @for (int i = 0; i < Model.SubmissionYears.Length; i++)
+                            {
+                                <div class="epr-filter-panel-checkbox-layout">
+                                    <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                                        <input class="govuk-checkboxes__input"
+                                                id="@($"submission-year-{i}-check")"
+                                                name="searchSubmissionYears"
+                                                type="checkbox"
+                                                value="@Model.SubmissionYears[i]"
+                                                @(Model.SearchSubmissionYears?.Contains(Model.SubmissionYears[i]) == true ? "checked" : "")>
+
+                                        <label class="govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label" for="@($"submission-year-{i}-check")">
+                                            @Model.SubmissionYears[i]
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </fieldset>
+                </div>
+            }
+            @if (Model.SubmissionPeriods?.Any() == true)
+            {
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend>
+                            <span class="govuk-label govuk-label--m">@Localizer["SubTitle.SubmissionPeriod"]</span>
+                        </legend>
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            @for (int i = 0; i < Model.SubmissionPeriods.Length; i++)
+                            {
+                                <div class="epr-filter-panel-checkbox-layout">
+                                    <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                                        <input class="govuk-checkboxes__input"
+                                                id="@($"submission-period-{i}-check")"
+                                                name="searchSubmissionPeriods"
+                                                type="checkbox"
+                                                value="@Model.SubmissionPeriods[i]"
+                                                @(Model.SearchSubmissionPeriods?.Contains(Model.SubmissionPeriods[i]) == true ? "checked" : "")>
+
+                                        <label class="govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label" for="@($"submission-period-{i}-check")">
+                                            @Localizer[Model.SubmissionPeriods[i]]
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </fieldset>
+                </div>
+            }
             @Html.Hidden("isFilteredSearch", true)
             <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button">@SharedLocalizer["ApplyFilters"].Value</button>
             @Html.ActionLink(SharedLocalizer["ClearFilters"].Value,

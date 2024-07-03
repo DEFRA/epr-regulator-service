@@ -598,7 +598,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ReturnsAsync(httpResponseMessage);
 
             // Act
-            var result = await _facadeService.GetOrganisationSubmissions<Submission>(null, null, null, null, 1);
+            var result = await _facadeService.GetOrganisationSubmissions<Submission>(null, null, null, null, null, null, 1);
 
             // Assert
             result.Should().BeEquivalentTo(testOrgAppList);
@@ -633,7 +633,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ReturnsAsync(httpResponseMessage);
 
             // Act
-            var result = await _facadeService.GetOrganisationSubmissions<Registration>((string?)null, (string?)null, (OrganisationType?)null, null, 1);
+            var result = await _facadeService.GetOrganisationSubmissions<Registration>((string?)null, (string?)null, (OrganisationType?)null, null, null, null, 1);
 
             // Assert
             result.Should().BeEquivalentTo(testOrgAppList);
@@ -668,24 +668,26 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ReturnsAsync(httpResponseMessage);
 
             var statuses = new[] { "Pending", "Accepted" };
+            var submissionYears = new[] { 2023, 2024 };
+            var submissionPeriods = new[] { "January to June 2023", "January to June 2024" };
 
             // Act
             var result =
-                await _facadeService.GetOrganisationSubmissions<Registration>("orgName", "orgRef", OrganisationType.ComplianceScheme, statuses, 2);
+                await _facadeService.GetOrganisationSubmissions<Registration>("orgName", "orgRef", OrganisationType.ComplianceScheme, statuses, submissionYears, submissionPeriods, 2);
 
             // Assert
             result.Should().BeEquivalentTo(testOrgAppList);
 
             var expectedQueryString =
-                "pageNumber=2&pageSize=10&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted";
+                "pageNumber=2&pageSize=10&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024";
 
             _mockHandler.Protected()
                 .Verify<Task<HttpResponseMessage>>(
                     "SendAsync",
                     Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(
-                        req => req.RequestUri.ToString().Contains("RegistrationSubmissions")
-                         && req.RequestUri.ToString().Contains(expectedQueryString)),
+                        req => req.RequestUri.AbsoluteUri.Contains("RegistrationSubmissions")
+                         && req.RequestUri.AbsoluteUri.Contains(expectedQueryString)),
                     ItExpr.IsAny<CancellationToken>());
 
             httpResponseMessage.Dispose();

@@ -274,7 +274,7 @@ public class MockedFacadeService : IFacadeService
         RegulatorRegistrationDecisionCreateRequest request) => EndpointResponseStatus.Success;
 
     public async Task<PaginatedList<T>> GetOrganisationSubmissions<T>(string? organisationName, string? organisationReference,
-        OrganisationType? organisationType, string[]? status, int currentPage = 1) where T : AbstractSubmission
+        OrganisationType? organisationType, string[]? status, int[]? submissionYears, string[]? submissionPeriods, int currentPage = 1) where T : AbstractSubmission
     {
         var items = typeof(T) == typeof(Submission)
             ? _allSubmissions.Cast<AbstractSubmission>().ToList()
@@ -289,7 +289,10 @@ public class MockedFacadeService : IFacadeService
             .AsQueryable()
             .FilterByOrganisationNameAndOrganisationReference(organisationName, organisationReference)
             .FilterByOrganisationType(organisationType)
-            .FilterByStatus(status).ToList();
+            .FilterByStatus(status)
+            .FilterBySubmissionYears(submissionYears)
+            .FilterBySubmissionPeriods(submissionPeriods)
+            .ToList();
 
         var response = new PaginatedList<T>
         {

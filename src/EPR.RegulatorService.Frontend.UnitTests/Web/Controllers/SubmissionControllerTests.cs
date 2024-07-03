@@ -93,6 +93,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             viewModel.AcceptSubmissionResult.Should().Be(EndpointResponseStatus.Success);
             viewModel.RejectSubmissionResult.Should().Be(EndpointResponseStatus.NotSet);
             viewModel.OrganisationName.Should().Be(SearchOrganisationName);
+            viewModel.SubmissionYears.Should().BeEquivalentTo(_submissionFiltersMock.Object.Value.Years);
+            viewModel.SubmissionPeriods.Should().BeEquivalentTo(_submissionFiltersMock.Object.Value.PomPeriods);
+            viewModel.SearchSubmissionYears.Should().BeNull();
+            viewModel.SearchSubmissionPeriods.Should().BeNull();
             viewResult.ViewData.Should().ContainKey("CustomBackLinkToDisplay");
             viewResult.ViewData["CustomBackLinkToDisplay"].Should().Be($"/regulators/{PagePath.Home}");
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(DefaultPageNumber);
@@ -122,6 +126,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             viewModel.RejectSubmissionResult.Should().Be(EndpointResponseStatus.Success);
             viewModel.AcceptSubmissionResult.Should().Be(EndpointResponseStatus.NotSet);
             viewModel.OrganisationName.Should().Be(SearchOrganisationName);
+            viewModel.SubmissionYears.Should().BeEquivalentTo(_submissionFiltersMock.Object.Value.Years);
+            viewModel.SubmissionPeriods.Should().BeEquivalentTo(_submissionFiltersMock.Object.Value.PomPeriods);
+            viewModel.SearchSubmissionYears.Should().BeNull();
+            viewModel.SearchSubmissionPeriods.Should().BeNull();
             viewResult.ViewData.Should().ContainKey("CustomBackLinkToDisplay");
             viewResult.ViewData["CustomBackLinkToDisplay"].Should().Be($"/regulators/{PagePath.Home}");
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(DefaultPageNumber);
@@ -144,6 +152,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewModel = viewResult.Model as SubmissionsViewModel;
             viewModel.Should().NotBeNull();
             viewModel.PageNumber.Should().Be(PageNumberTwo);
+            viewModel.SubmissionYears.Should().BeEquivalentTo(_submissionFiltersMock.Object.Value.Years);
+            viewModel.SubmissionPeriods.Should().BeEquivalentTo(_submissionFiltersMock.Object.Value.PomPeriods);
+            viewModel.SearchSubmissionYears.Should().BeNull();
+            viewModel.SearchSubmissionPeriods.Should().BeNull();
             viewResult.ViewData.Should().ContainKey("CustomBackLinkToDisplay");
             viewResult.ViewData["CustomBackLinkToDisplay"].Should().Be($"/regulators/{PagePath.Home}");
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(PageNumberTwo);
@@ -160,6 +172,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
+            var searchedSubmissionYears = new[] { 2023 };
+            var searchedSubmissionPeriods = new[] { "Jan to June 2023" };
+
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationName = SearchOrganisationName;
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationId = string.Empty;
             JourneySessionMock.RegulatorSubmissionSession.IsDirectProducerChecked = false;
@@ -167,6 +182,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             JourneySessionMock.RegulatorSubmissionSession.IsPendingSubmissionChecked = false;
             JourneySessionMock.RegulatorSubmissionSession.IsAcceptedSubmissionChecked = false;
             JourneySessionMock.RegulatorSubmissionSession.IsRejectedSubmissionChecked = false;
+            JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionYears = searchedSubmissionYears;
+            JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionPeriods = searchedSubmissionPeriods;
 
             // Act
             var result = await _systemUnderTest.Submissions();
@@ -183,6 +200,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             viewModel.IsPendingSubmissionChecked.Should().BeFalse();
             viewModel.IsAcceptedSubmissionChecked.Should().BeFalse();
             viewModel.IsRejectedSubmissionChecked.Should().BeFalse();
+            viewModel.SubmissionYears.Should().BeEquivalentTo(_submissionFiltersMock.Object.Value.Years);
+            viewModel.SubmissionPeriods.Should().BeEquivalentTo(_submissionFiltersMock.Object.Value.PomPeriods);
+            viewModel.SearchSubmissionYears.Should().BeEquivalentTo(searchedSubmissionYears);
+            viewModel.SearchSubmissionPeriods.Should().BeEquivalentTo(searchedSubmissionPeriods);
         }
 
         [TestMethod]
@@ -377,6 +398,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             JourneySessionMock.RegulatorSubmissionSession.IsPendingSubmissionChecked.Should().BeFalse();
             JourneySessionMock.RegulatorSubmissionSession.IsAcceptedSubmissionChecked.Should().BeFalse();
             JourneySessionMock.RegulatorSubmissionSession.IsRejectedSubmissionChecked.Should().BeFalse();
+            JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionYears.Should().BeEmpty();
+            JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionPeriods.Should().BeEmpty();
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(DefaultPageNumber);
         }
 
@@ -388,7 +411,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 ClearFilters = false,
                 IsFilteredSearch = true,
-                SearchOrganisationName = SearchOrganisationName
+                SearchOrganisationName = SearchOrganisationName,
+                SearchSubmissionYears = new[] { 2023 },
+                SearchSubmissionPeriods = new[] { "Jan to June 2023" }
             };
 
             // Act
@@ -402,6 +427,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             JourneySessionMock.RegulatorSubmissionSession.IsPendingSubmissionChecked.Should().BeFalse();
             JourneySessionMock.RegulatorSubmissionSession.IsAcceptedSubmissionChecked.Should().BeFalse();
             JourneySessionMock.RegulatorSubmissionSession.IsRejectedSubmissionChecked.Should().BeFalse();
+            JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionYears.Should().BeEquivalentTo(submissionFiltersModel.SearchSubmissionYears);
+            JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionPeriods.Should().BeEquivalentTo(submissionFiltersModel.SearchSubmissionPeriods);
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(DefaultPageNumber);
         }
     }

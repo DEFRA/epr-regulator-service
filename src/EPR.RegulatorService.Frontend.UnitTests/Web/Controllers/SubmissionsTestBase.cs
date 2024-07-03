@@ -27,6 +27,7 @@ public abstract class SubmissionsTestBase
     protected Mock<ISessionManager<JourneySession>> _sessionManagerMock = null!;
     protected Mock<IFacadeService> _facadeServiceMock = null!;
     protected JourneySession JourneySessionMock { get; set; }
+    protected Mock<IOptions<SubmissionFiltersOptions>> _submissionFiltersMock = null!;
     protected Mock<IOptions<ExternalUrlsOptions>> _urlsOptionMock = null!;
     protected Mock<IConfiguration> _configurationMock = null!;
     protected ITempDataDictionary _tempDataDictionary = null!;
@@ -37,6 +38,7 @@ public abstract class SubmissionsTestBase
         _httpContextMock = new Mock<HttpContext>();
         _userMock = new Mock<ClaimsPrincipal>();
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
+        _submissionFiltersMock = new Mock<IOptions<SubmissionFiltersOptions>>();
         _urlsOptionMock = new Mock<IOptions<ExternalUrlsOptions>>();
         _tempDataDictionary = new TempDataDictionary(_httpContextMock.Object, Mock.Of<ITempDataProvider>());
         _facadeServiceMock = new Mock<IFacadeService>();
@@ -51,13 +53,23 @@ public abstract class SubmissionsTestBase
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
             .Returns(Task.FromResult(new JourneySession()));
 
+        _submissionFiltersMock.Setup(mock => mock.Value).Returns(new SubmissionFiltersOptions
+        {
+            Years = new int[] { 2023, 2024 },
+            PomPeriods = new string[] { "January to June 2023", "July to December 2023", "January to June 2024", "July to December 2024" }
+        });
+
         _urlsOptionMock.Setup(mock => mock.Value).Returns(new ExternalUrlsOptions
         {
             PowerBiLogin = PowerBiLogin
         });
         
-        _systemUnderTest = new SubmissionsController(_sessionManagerMock.Object, _configurationMock.Object,
-            _urlsOptionMock.Object, _facadeServiceMock.Object);
+        _systemUnderTest = new SubmissionsController(
+            _sessionManagerMock.Object,
+            _configurationMock.Object,
+            _submissionFiltersMock.Object,
+            _urlsOptionMock.Object,
+            _facadeServiceMock.Object);
 
         _systemUnderTest.ControllerContext.HttpContext = _httpContextMock.Object;
         _systemUnderTest.TempData = _tempDataDictionary;

@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Text.Json;
 using EPR.RegulatorService.Frontend.Web.Helpers;
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
+using System.Linq;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 {
@@ -26,18 +27,24 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
     {
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly string _pathBase;
-        private readonly ExternalUrlsOptions _options;
+        private readonly SubmissionFiltersOptions _submissionFiltersOptions;
+        private readonly ExternalUrlsOptions _externalUrlsOptions;
         private readonly IFacadeService _facadeService;
         private const string SubmissionResultAccept = "SubmissionResultAccept";
         private const string SubmissionResultReject = "SubmissionResultReject";
         private const string SubmissionResultOrganisationName = "SubmissionResultOrganisationName";
 
-        public SubmissionsController(ISessionManager<JourneySession> sessionManager,
-            IConfiguration configuration, IOptions<ExternalUrlsOptions> options, IFacadeService facadeService)
+        public SubmissionsController(
+            ISessionManager<JourneySession> sessionManager,
+            IConfiguration configuration,
+            IOptions<SubmissionFiltersOptions> submissionFiltersOptions,
+            IOptions<ExternalUrlsOptions> externalUrlsOptions,
+            IFacadeService facadeService)
         {
             _sessionManager = sessionManager;
             _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
-            _options = options.Value;
+            _submissionFiltersOptions = submissionFiltersOptions.Value;
+            _externalUrlsOptions = externalUrlsOptions.Value;
             _facadeService = facadeService;
         }
 
@@ -67,6 +74,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 
             var model = new SubmissionsViewModel
             {
+                SearchSubmissionYears = session.RegulatorSubmissionSession.SearchSubmissionYears,
+                SearchSubmissionPeriods = session.RegulatorSubmissionSession.SearchSubmissionPeriods,
                 SearchOrganisationName = session.RegulatorSubmissionSession.SearchOrganisationName,
                 SearchOrganisationId = session.RegulatorSubmissionSession.SearchOrganisationId,
                 IsDirectProducerChecked = session.RegulatorSubmissionSession.IsDirectProducerChecked,
@@ -75,7 +84,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 IsAcceptedSubmissionChecked = session.RegulatorSubmissionSession.IsAcceptedSubmissionChecked,
                 IsRejectedSubmissionChecked = session.RegulatorSubmissionSession.IsRejectedSubmissionChecked,
                 PageNumber =  session.RegulatorSubmissionSession.CurrentPageNumber,
-                PowerBiLogin = _options.PowerBiLogin,
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
+                SubmissionYears = _submissionFiltersOptions.Years,
+                SubmissionPeriods = _submissionFiltersOptions.PomPeriods,
                 AcceptSubmissionResult = submissionResultAccept,
                 RejectSubmissionResult = submissionResultReject,
                 OrganisationName = submissionResultOrganisationName
@@ -126,6 +137,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 IsPendingSubmissionChecked = viewModel.IsPendingSubmissionChecked,
                 IsAcceptedSubmissionChecked = viewModel.IsAcceptedSubmissionChecked,
                 IsRejectedSubmissionChecked = viewModel.IsRejectedSubmissionChecked,
+                SearchSubmissionYears = viewModel.SearchSubmissionYears?.Where(x => _submissionFiltersOptions.Years.Contains(x)).ToArray(),
+                SearchSubmissionPeriods = viewModel.SearchSubmissionPeriods?.Where(x => _submissionFiltersOptions.PomPeriods.Contains(x)).ToArray(),
                 IsFilteredSearch = viewModel.IsFilteredSearch,
                 ClearFilters = viewModel.ClearFilters
             };
@@ -155,6 +168,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 FormattedTimeAndDateOfSubmission = DateTimeHelpers.FormatTimeAndDateForSubmission(submission.SubmittedDate),
                 SubmissionId = submission.SubmissionId,
                 SubmittedBy = $"{submission.FirstName} {submission.LastName}",
+                SubmissionPeriod = submission.SubmissionPeriod,
                 AccountRole = submission.ServiceRole,
                 Telephone = submission.Telephone,
                 Email = submission.Email,
@@ -162,7 +176,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 IsResubmission = submission.IsResubmission,
                 RejectionReason = submission.Comments,
                 ResubmissionRequired = submission.IsResubmissionRequired,
-                PowerBiLogin = _options.PowerBiLogin,
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
                 PreviousRejectionComments = submission.PreviousRejectionComments
             };
 
@@ -353,6 +367,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             session.RegulatorSubmissionSession.IsPendingSubmissionChecked = false;
             session.RegulatorSubmissionSession.IsAcceptedSubmissionChecked = false;
             session.RegulatorSubmissionSession.IsRejectedSubmissionChecked = false;
+            session.RegulatorSubmissionSession.SearchSubmissionYears = Array.Empty<int>();
+            session.RegulatorSubmissionSession.SearchSubmissionPeriods = Array.Empty<string>();
         }
 
         public void SetOrResetFilterValuesInSession(JourneySession session, SubmissionFiltersModel submissionFiltersModel)
@@ -373,6 +389,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                     regulatorSubmissionSession.IsPendingSubmissionChecked = submissionFiltersModel.IsPendingSubmissionChecked;
                     regulatorSubmissionSession.IsAcceptedSubmissionChecked = submissionFiltersModel.IsAcceptedSubmissionChecked;
                     regulatorSubmissionSession.IsRejectedSubmissionChecked = submissionFiltersModel.IsRejectedSubmissionChecked;
+                    regulatorSubmissionSession.SearchSubmissionYears = submissionFiltersModel.SearchSubmissionYears;
+                    regulatorSubmissionSession.SearchSubmissionPeriods = submissionFiltersModel.SearchSubmissionPeriods;
                     regulatorSubmissionSession.CurrentPageNumber = 1;
                 }
             }
@@ -386,6 +404,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                  submissionFiltersModel.IsPendingSubmissionChecked ||
                  submissionFiltersModel.IsAcceptedSubmissionChecked ||
                  submissionFiltersModel.IsRejectedSubmissionChecked)
+             || submissionFiltersModel.SearchSubmissionYears?.Length > 0
+             || submissionFiltersModel.SearchSubmissionPeriods?.Length > 0
              || submissionFiltersModel.IsFilteredSearch);
 
         private async Task<RedirectToActionResult> SaveSessionAndRedirect(

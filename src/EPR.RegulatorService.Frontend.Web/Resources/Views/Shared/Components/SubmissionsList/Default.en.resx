@@ -135,4 +135,7 @@
   <data name="Table.Header.Organisation" xml:space="preserve">
     <value>Organisation</value>
   </data>
+  <data name="Body.NoResultsFound" xml:space="preserve">
+    <value>No results found</value>
+  </data>
 </root>

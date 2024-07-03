@@ -8,4 +8,5 @@ public class Submission : AbstractSubmission
     public Guid FileId { get; set; }
     public string? ProducerType { get; set; }
     public Guid? ComplianceSchemeId { get; set; }
+    public string? ActualSubmissionPeriod { get; set; }
 }

@@ -14,6 +14,8 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
         public bool IsPendingSubmissionChecked { get; set; }
         public bool IsAcceptedSubmissionChecked { get; set; }
         public bool IsRejectedSubmissionChecked { get; set; }
-        public int? CurrentPageNumber { get; set; }
+        public int[] SearchSubmissionYears { get; set; }
+        public string[] SearchSubmissionPeriods { get; set; }
+        public int? CurrentPageNumber { get; set; }   
     }
 }

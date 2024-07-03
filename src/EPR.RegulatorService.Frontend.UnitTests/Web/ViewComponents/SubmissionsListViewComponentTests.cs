@@ -79,6 +79,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         public async Task InvokeAsync_ReturnsCorrectViewAndModel_Where_NoFiltersSet()
         {
             // Arrange
+            var submissionYears = new[] { 2023, 2024 };
+            var submissionPeriods = new[] { "January to June 2023", "January to June 2024" };
+
             var submissions = _fixture.Build<PaginatedList<Submission>>()
                 .With(x => x.Items, _submissions)
                 .With(x => x.CurrentPage, 1)
@@ -87,13 +90,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 
             _facadeServiceMock
                 .Setup(x => x.GetOrganisationSubmissions<Submission>(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<OrganisationType?>(),
-                    It.IsAny<string[]>(), It.IsAny<int>()))
+                    It.IsAny<string[]>(), It.IsAny<int[]>(), It.IsAny<string[]>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(submissions));
 
             var viewComponent = new SubmissionsListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
 
-            // Act
-            var result = await viewComponent.InvokeAsync(new SubmissionListRequest
+            var viewModel = new SubmissionListRequest
             {
                 SearchOrganisationName = string.Empty,
                 SearchOrganisationReference = string.Empty,
@@ -101,8 +103,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                 IsComplianceSchemeChecked = false,
                 IsPendingSubmissionChecked = false,
                 IsAcceptedSubmissionChecked = false,
-                IsRejectedSubmissionChecked = false
-            });
+                IsRejectedSubmissionChecked = false,
+                SearchSubmissionYears = submissionYears.Take(1).ToArray(),
+                SearchSubmissionPeriods = submissionPeriods.Take(1).ToArray(),
+                SubmissionYears = submissionYears,
+                SubmissionPeriods = submissionPeriods
+            };
+
+            // Act
+            var result = await viewComponent.InvokeAsync(viewModel);
 
             // Assert
             Assert.IsNotNull(result);
@@ -122,12 +131,19 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.RegulatorSubmissionFiltersModel.IsPendingSubmissionChecked.Should().BeFalse();
             model.RegulatorSubmissionFiltersModel.IsAcceptedSubmissionChecked.Should().BeFalse();
             model.RegulatorSubmissionFiltersModel.IsRejectedSubmissionChecked.Should().BeFalse();
+            model.RegulatorSubmissionFiltersModel.SearchSubmissionYears.Should().BeEquivalentTo(viewModel.SearchSubmissionYears);
+            model.RegulatorSubmissionFiltersModel.SearchSubmissionPeriods.Should().BeEquivalentTo(viewModel.SearchSubmissionPeriods);
+            model.RegulatorSubmissionFiltersModel.SubmissionYears.Should().BeEquivalentTo(viewModel.SubmissionYears);
+            model.RegulatorSubmissionFiltersModel.SubmissionPeriods.Should().BeEquivalentTo(viewModel.SubmissionPeriods);
         }
 
         [TestMethod]
         public async Task InvokeAsync_ReturnsCorrectViewAndModel_Where_ApprovedStatus_ComplianceScheme_OrganisationNameSet()
         {
             // Arrange
+            var submissionYears = new[] { 2023, 2024 };
+            var submissionPeriods = new[] { "January to June 2023", "January to June 2024" };
+
             var submissions = _fixture.Build<PaginatedList<Submission>>()
                 .With(x => x.Items, _submissions)
                 .With(x => x.CurrentPage, 1)
@@ -138,7 +154,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 
             _facadeServiceMock
                 .Setup(x => x.GetOrganisationSubmissions<Submission>(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<OrganisationType>(),
-                    It.IsAny<string[]>(), It.IsAny<int>()))
+                    It.IsAny<string[]>(), It.IsAny<int[]>(), It.IsAny<string[]>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(submissions));
 
             var viewComponent = new SubmissionsListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
@@ -150,8 +166,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                 IsAcceptedSubmissionChecked = true
             };
 
-            // Act
-            var result = await viewComponent.InvokeAsync( new SubmissionListRequest
+            var viewModel = new SubmissionListRequest
             {
                 SearchOrganisationName = submissionFiltersModel.SearchOrganisationName,
                 SearchOrganisationReference = string.Empty,
@@ -160,7 +175,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                 IsPendingSubmissionChecked = false,
                 IsAcceptedSubmissionChecked = true,
                 IsRejectedSubmissionChecked = false,
-            });
+                SearchSubmissionYears = submissionYears.Take(1).ToArray(),
+                SearchSubmissionPeriods = submissionPeriods.Take(1).ToArray(),
+                SubmissionYears = submissionYears,
+                SubmissionPeriods = submissionPeriods
+            };
+
+            // Act
+            var result = await viewComponent.InvokeAsync(viewModel);
 
             var model = result.ViewData.Model as SubmissionsListViewModel;
 
@@ -180,6 +202,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.RegulatorSubmissionFiltersModel.IsPendingSubmissionChecked.Should().BeFalse();
             model.RegulatorSubmissionFiltersModel.IsAcceptedSubmissionChecked.Should().BeTrue();
             model.RegulatorSubmissionFiltersModel.IsRejectedSubmissionChecked.Should().BeFalse();
+            model.RegulatorSubmissionFiltersModel.SearchSubmissionYears.Should().BeEquivalentTo(viewModel.SearchSubmissionYears);
+            model.RegulatorSubmissionFiltersModel.SearchSubmissionPeriods.Should().BeEquivalentTo(viewModel.SearchSubmissionPeriods);
+            model.RegulatorSubmissionFiltersModel.SubmissionYears.Should().BeEquivalentTo(viewModel.SubmissionYears);
+            model.RegulatorSubmissionFiltersModel.SubmissionPeriods.Should().BeEquivalentTo(viewModel.SubmissionPeriods);
         }
     }
 }

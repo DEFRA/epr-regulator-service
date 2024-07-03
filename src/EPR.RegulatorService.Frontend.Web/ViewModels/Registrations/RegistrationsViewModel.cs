@@ -12,5 +12,7 @@ public class RegistrationsViewModel
     public EndpointResponseStatus? RejectRegistrationResult { get; set; } = EndpointResponseStatus.NotSet;
     public EndpointResponseStatus? AcceptRegistrationResult { get; set; } = EndpointResponseStatus.NotSet;
     public string? OrganisationName { get; set; }
+    public int[] SubmissionYears { get; set; }
+    public string[] SubmissionPeriods { get; set; }
     public RegistrationFiltersModel RegistrationFilters { get; set; }
 }
