@@ -253,7 +253,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                     OrganisationId = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationId,
                     OrganisationName = organisationName,
                     OrganisationNumber = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationReference,
-                    IsResubmissionRequired = false
+                    IsResubmissionRequired = false,
+                    SubmissionPeriod = session.RegulatorSubmissionSession.OrganisationSubmission.SubmissionPeriod
+
                 };
                 var result = await _facadeService.SubmitPoMDecision(request);
 
@@ -312,7 +314,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 OrganisationId = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationId,
                 OrganisationName = organisationName,
                 OrganisationNumber = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationReference,
-                IsResubmissionRequired = model.IsResubmissionRequired
+                IsResubmissionRequired = model.IsResubmissionRequired,
+                SubmissionPeriod = session.RegulatorSubmissionSession.OrganisationSubmission.SubmissionPeriod
             };
 
             var result = await _facadeService.SubmitPoMDecision(request);
