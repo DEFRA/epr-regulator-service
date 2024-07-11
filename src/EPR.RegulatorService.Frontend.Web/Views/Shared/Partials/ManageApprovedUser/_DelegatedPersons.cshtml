@@ -5,7 +5,6 @@
 {
   <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper">
-      @* <h2 class="govuk-summary-card__title">@user.FirstName @user.LastName</h2> *@
       <h2 class="govuk-summary-card__title">
           <span class="govuk-summary-card__title"> @user.FirstName @user.LastName </span>
           @if (user.UserEnrolments.Any(e =>
