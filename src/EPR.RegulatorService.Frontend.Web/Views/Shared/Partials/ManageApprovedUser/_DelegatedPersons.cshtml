@@ -8,7 +8,7 @@
       <h2 class="govuk-summary-card__title">
           <span class="govuk-summary-card__title"> @user.FirstName @user.LastName </span>
           @if (user.UserEnrolments.Any(e =>
-          e.EnrolmentStatusId is (int)EnrolmentStatus.Invited or (int)EnrolmentStatus.Nominated))
+          e.EnrolmentStatusId == (int)EnrolmentStatus.Invited || e.EnrolmentStatusId == (int)EnrolmentStatus.Nominated))
           {
               <span class="govuk-summary-card__title govuk-tag--yellow">
                   @Localizer["Enrolment.Status.Pending"]
