@@ -354,17 +354,25 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
             if (fileDownloadModel == null)
             {
+                _logger.LogInformation("PETE: fileDownloadModel == null");
+
                 return RedirectToAction(nameof(OrganisationDetailsFileDownloadFailed));
             }
+
+            _logger.LogInformation("PETE: fileDownloadModel: " + fileDownloadModel.FileName + ", " + fileDownloadModel.BlobName + ", " + fileDownloadModel.SubmissionId + ", " + fileDownloadModel.SubmissionType + ", " + fileDownloadModel.FileId);
 
             var response = await _facadeService.GetFileDownload(fileDownloadModel);
 
             if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
+                _logger.LogInformation("PETE: response.StatusCode == System.Net.HttpStatusCode.Forbidden");
+
                 return RedirectToAction(nameof(OrganisationDetailsFileDownloadSecurityWarning));
             }
             else if (response.IsSuccessStatusCode)
             {
+                _logger.LogInformation("PETE: response.IsSuccessStatusCode");
+
                 var fileStream = await response.Content.ReadAsStreamAsync();
                 var contentDisposition = response.Content.Headers.ContentDisposition;
                 var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.OrganisationDetailsFileName;
@@ -374,6 +382,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             }
             else
             {
+                _logger.LogInformation("PETE: response else");
+                _logger.LogInformation("Code = " + response.StatusCode + " : " + response.Content);
+
                 return RedirectToAction(nameof(OrganisationDetailsFileDownloadFailed));
             }
         }
