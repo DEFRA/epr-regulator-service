@@ -119,6 +119,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         [Route(PagePath.Registrations)]
         public async Task<IActionResult> Registrations(string jsonRegistration)
         {
+            _logger.LogInformation("PETE2: Registrations: " + jsonRegistration);
+
             var registrationSubmission = JsonSerializer.Deserialize<Registration>(jsonRegistration);
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             session ??= new JourneySession();
