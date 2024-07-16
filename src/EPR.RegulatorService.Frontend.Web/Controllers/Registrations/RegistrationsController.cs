@@ -11,6 +11,7 @@ using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.Controllers.RegulatorEnrolment;
 using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
@@ -28,6 +29,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
     [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
     public class RegistrationsController : Controller
     {
+        private readonly ILogger<RegistrationsController> _logger;
         private const string DeclaredByComplianceScheme = "Not required (compliance scheme)";
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly string _pathBase;
@@ -36,12 +38,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         private readonly IFacadeService _facadeService;
 
         public RegistrationsController(
+            ILogger<RegistrationsController> logger,
             ISessionManager<JourneySession> sessionManager,
             IConfiguration configuration,
             IOptions<SubmissionFiltersOptions> submissionFiltersOptions,
             IOptions<ExternalUrlsOptions> externalUrlsOptions,
             IFacadeService facadeService)
         {
+            _logger = logger;
             _sessionManager = sessionManager;
             _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
             _submissionFiltersOptions = submissionFiltersOptions.Value;
@@ -300,6 +304,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         [Route(PagePath.OrganisationDetailsFileDownload)]
         public IActionResult OrganisationDetailsFileDownload()
         {
+            _logger.LogInformation("PETE: Entering OrganisationDetailsFileDownload");
+
             return View("OrganisationDetailsFileDownload");
         }
 
@@ -307,6 +313,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         [Route(PagePath.OrganisationDetailsFileDownloadFailed)]
         public IActionResult OrganisationDetailsFileDownloadFailed()
         {
+            _logger.LogInformation("PETE: Entering OrganisationDetailsFileDownloadFailed");
+
             var model = new OrganisationDetailsFileDownloadViewModel(true, false);
             return View("OrganisationDetailsFileDownloadFailed", model);
         }
@@ -315,6 +323,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         [Route(PagePath.OrganisationDetailsFileDownloadSecurityWarning)]
         public IActionResult OrganisationDetailsFileDownloadSecurityWarning()
         {
+            _logger.LogInformation("PETE: Entering OrganisationDetailsFileDownloadSecurityWarning");
+
             var model = new OrganisationDetailsFileDownloadViewModel(true, true);
             return View("OrganisationDetailsFileDownloadFailed", model);
         }
@@ -323,6 +333,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         [Route(PagePath.FileDownload)]
         public async Task<IActionResult> FileDownload(string downloadType)
         {
+            _logger.LogInformation("PETE: Entering FileDownload");
+
             TempData["DownloadCompleted"] = false;
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             session.RegulatorRegistrationSession.FileDownloadRequestType = downloadType;
@@ -334,6 +346,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         [HttpGet]
         public async Task<IActionResult> FileDownloadInProgress()
         {
+            _logger.LogInformation("PETE: Entering FileDownloadInProgress");
+
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
             var fileDownloadModel = CreateFileDownloadRequest(session, registration);

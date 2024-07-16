@@ -18,10 +18,14 @@ using System.Security.Claims;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
+using EPR.RegulatorService.Frontend.Web.Controllers.Applications;
+
 using Frontend.Core.MockedData.Filters;
 using Frontend.Core.Models.Registrations;
 
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 public abstract class RegistrationTestBase
 {
@@ -38,6 +42,7 @@ public abstract class RegistrationTestBase
     protected Mock<IOptions<ExternalUrlsOptions>> _urlsOptionMock = null!;
     protected Mock<IConfiguration> _configurationMock = null!;
     private const string PowerBiLogin = "https://app.powerbi.com/";
+    private readonly NullLogger<RegistrationsController> _nullLogger = new();
 
     protected void SetupBase(UserData userData = null)
     {
@@ -53,7 +58,8 @@ public abstract class RegistrationTestBase
         _configurationMock.Setup(config => config.GetSection(ConfigKeys.PathBase))
             .Returns(configurationSectionMock.Object);
 
-        SetUpUserData(userData);
+
+    SetUpUserData(userData);
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
             .Returns(Task.FromResult(new JourneySession()));
@@ -66,12 +72,12 @@ public abstract class RegistrationTestBase
 
         _urlsOptionMock.Setup(mock => mock.Value).Returns(new ExternalUrlsOptions { PowerBiLogin = PowerBiLogin });
 
-        _sut = new RegistrationsController(_sessionManagerMock.Object, _configurationMock.Object,
+        _sut = new RegistrationsController(_nullLogger, _sessionManagerMock.Object, _configurationMock.Object,
             _submissionFiltersMock.Object, _urlsOptionMock.Object, _facadeServiceMock.Object);
 
         _sut.ControllerContext.HttpContext = _httpContextMock.Object;
 
-        _sut = new RegistrationsController(_sessionManagerMock.Object, _configurationMock.Object, _submissionFiltersMock.Object, _urlsOptionMock.Object, _facadeServiceMock.Object)
+        _sut = new RegistrationsController(_nullLogger, _sessionManagerMock.Object, _configurationMock.Object, _submissionFiltersMock.Object, _urlsOptionMock.Object, _facadeServiceMock.Object)
         {
             ControllerContext = new ControllerContext
             {
