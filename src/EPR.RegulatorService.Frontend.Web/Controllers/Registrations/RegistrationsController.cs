@@ -18,6 +18,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -350,7 +351,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             var registration = session.RegulatorRegistrationSession.OrganisationRegistration;
-            var fileDownloadModel = CreateFileDownloadRequest(session, registration);
+            var fileDownloadModel = CreateFileDownloadRequest(session, registration, _logger);
 
             if (fileDownloadModel == null)
             {
@@ -389,7 +390,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             }
         }
 
-        private static FileDownloadRequest CreateFileDownloadRequest(JourneySession session, Registration registration)
+        private static FileDownloadRequest CreateFileDownloadRequest(JourneySession session, Registration registration, ILogger<RegistrationsController> _logger)
         {
             var fileDownloadModel = new FileDownloadRequest
             {
@@ -400,28 +401,40 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             switch (session.RegulatorRegistrationSession.FileDownloadRequestType)
             {
                 case FileDownloadTypes.OrganisationDetails:
+                    _logger.LogInformation("PETE: FileDownloadTypes.OrganisationDetails");
+
                     fileDownloadModel.FileId = registration.OrganisationDetailsFileId;
                     fileDownloadModel.BlobName = registration.CompanyDetailsBlobName;
                     fileDownloadModel.FileName = registration.OrganisationDetailsFileName;
                     break;
                 case FileDownloadTypes.BrandDetails:
+                    _logger.LogInformation("PETE: FileDownloadTypes.BrandDetails");
+
                     fileDownloadModel.FileId = registration.BrandsFileId;
                     fileDownloadModel.BlobName = registration.BrandsBlobName;
                     fileDownloadModel.FileName = registration.BrandsFileName;
                     break;
                 case FileDownloadTypes.PartnershipDetails:
+                    _logger.LogInformation("PETE: FileDownloadTypes.PartnershipDetails");
+
                     fileDownloadModel.FileId = registration.PartnershipFileId;
                     fileDownloadModel.BlobName = registration.PartnershipBlobName;
                     fileDownloadModel.FileName = registration.PartnershipFileName;
                     break;
                 default:
+                    _logger.LogInformation("PETE: FileDownloadTypes default: " + session.RegulatorRegistrationSession.FileDownloadRequestType);
+
                     return null;
             }
 
             if (fileDownloadModel.FileId == null || fileDownloadModel.BlobName == null || fileDownloadModel.FileName == null)
             {
+                _logger.LogInformation("PETE: fileDownloadModel issue: " + fileDownloadModel.FileId + ", " + fileDownloadModel.BlobName + ", " + fileDownloadModel.FileName);
+
                 return null;
             }
+
+            _logger.LogInformation("PETE: ok");
 
             return fileDownloadModel;
         }
