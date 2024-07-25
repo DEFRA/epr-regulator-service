@@ -1,10 +1,26 @@
-﻿@model List<EPR.RegulatorService.Frontend.Core.Models.CompanyDetails.CompanyUserInformation>
+@using EPR.RegulatorService.Frontend.Core.Enums
+@model List<EPR.RegulatorService.Frontend.Core.Models.CompanyDetails.CompanyUserInformation>
 
 @foreach (var user in Model)
 {
   <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper">
-      <h2 class="govuk-summary-card__title">@user.FirstName @user.LastName</h2>
+      <h2 class="govuk-summary-card__title">
+          <span class="govuk-summary-card__title"> @user.FirstName @user.LastName </span>
+          @if (user.UserEnrolments.Any(e =>
+          e.EnrolmentStatusId == (int)EnrolmentStatus.Invited || e.EnrolmentStatusId == (int)EnrolmentStatus.Nominated))
+          {
+              <span class="govuk-summary-card__title govuk-tag--yellow">
+                  @Localizer["Enrolment.Status.Pending"]
+              </span>
+          }
+          @if (user.UserEnrolments.Any(e => e.EnrolmentStatusId == (int)EnrolmentStatus.Pending))
+          {
+              <span class="govuk-summary-card__title govuk-tag--yellow">
+                  @Localizer["Enrolment.Status.Awaiting"]
+              </span>
+          }
+      </h2>
     </div>
     <div class="govuk-summary-card__content">
       <dl class="govuk-summary-list">
