@@ -80,9 +80,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             Assert.IsNotNull(result);
             result.ViewName.Should().Be(RejectRegistrationViewName);
-            Assert.AreEqual(
-                expected: result.ViewData.ModelState[ModelErrorKey]!.Errors[0].ErrorMessage,
-                actual: ModelError
+            Assert.AreEqual(result.ViewData.ModelState[ModelErrorKey]!.Errors[0].ErrorMessage, ModelError
             );
 
             _facadeServiceMock.Verify(x => x.SubmitRegistrationDecision(It.IsAny<RegulatorRegistrationDecisionCreateRequest>()),

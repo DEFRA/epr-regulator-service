@@ -77,9 +77,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ViewName);
             result.ViewName.Should().Be(ViewName);
-            Assert.AreEqual(
-                expected: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage,
-                actual: AcceptSubmissionDetails.ModelErrorValueAcceptVerificationNotSelected
+            Assert.AreEqual(result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage,
+                            AcceptSubmissionDetails.ModelErrorValueAcceptVerificationNotSelected
             );
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Never);
         }
