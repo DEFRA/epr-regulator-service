@@ -27,7 +27,7 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="EPR.Common.Authorization" Version="1.0.15" />
+    <PackageReference Include="EPR.Common.Authorization" Version="1.0.15-rc.633781" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.7" />
