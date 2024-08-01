@@ -10,7 +10,6 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Home;
 
@@ -55,7 +54,8 @@ public class HomeController : RegulatorSessionBaseController
             UserData = HttpContext.User.GetUserData()
         };
 
-        if (session.UserData.Organisations.IsNullOrEmpty())
+        if (session.UserData.Organisations == null
+            || !session.UserData.Organisations.Any())
         {
             return RedirectToAction(PagePath.Error, "Error");
         }
