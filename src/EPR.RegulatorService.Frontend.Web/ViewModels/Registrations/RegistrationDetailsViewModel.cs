@@ -20,7 +20,6 @@ public class RegistrationDetailsViewModel
     public string OrganisationReferenceNumber { get; set; }
     public string CompaniesHouseNumber { get; set; }
     public string FormattedTimeAndDateOfSubmission { get; set; }
-    public bool SubmittedOnTime { get; set; }
     public Guid SubmissionId { get; set; }
     public string SubmittedBy { get; set; }
     public string SubmissionPeriod { get; set; }
