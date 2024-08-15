@@ -1,4 +1,4 @@
-﻿<root>
+<root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -21,9 +21,6 @@
     <value />
   </data>
   <data name="SummaryList.SubTitle.PartnerDetails" xml:space="preserve">
-    <value />
-  </data>
-  <data name="SummaryList.SubTitle.SubmittedOnTime" xml:space="preserve">
     <value />
   </data>
 </root>

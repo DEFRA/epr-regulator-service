@@ -156,9 +156,6 @@
   <data name="SummaryList.SubTitle.PartnerDetails" xml:space="preserve">
     <value>Partner details</value>
   </data>
-  <data name="SummaryList.SubTitle.SubmittedOnTime" xml:space="preserve">
-    <value>Submitted on time</value>
-  </data>
   <data name="SummaryList.FileDownload" xml:space="preserve">
     <value>This may take a few minutes. We will refresh the page automatically until it is done.</value>
   </data>
