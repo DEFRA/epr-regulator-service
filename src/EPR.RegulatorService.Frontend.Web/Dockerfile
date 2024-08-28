@@ -24,7 +24,7 @@ RUN dotnet restore "./EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Fro
 # Install NPM
 USER root
 RUN apk update && apk add --no-cache npm
-USER dotnet
+
 ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/internal-ca.crt
 
 # Build and publish a release
@@ -36,6 +36,7 @@ RUN dotnet publish -c Release -o out
 
 # Build runtime image
 FROM defradigital/dotnetcore:dotnet8.0
+USER dotnet
 COPY --from=build-env /home/dotnet/EPR.RegulatorService.Frontend.Web/out .
 
 # Add internationalisation support
