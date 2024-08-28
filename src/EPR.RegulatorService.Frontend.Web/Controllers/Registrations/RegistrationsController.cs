@@ -452,8 +452,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
              registrationFiltersModel.IsPendingRegistrationChecked ||
              registrationFiltersModel.IsAcceptedRegistrationChecked ||
              registrationFiltersModel.IsRejectedRegistrationChecked)
-            || registrationFiltersModel.SearchSubmissionYears?.Any() == true
-            || registrationFiltersModel.SearchSubmissionPeriods?.Any() == true
+            || registrationFiltersModel.SearchSubmissionYears?.Length > 0
+            || registrationFiltersModel.SearchSubmissionPeriods?.Length > 0
             || registrationFiltersModel.IsFilteredSearch);
 
         private async Task SaveSessionAndJourney(JourneySession session, string currentPagePath, string? nextPagePath)

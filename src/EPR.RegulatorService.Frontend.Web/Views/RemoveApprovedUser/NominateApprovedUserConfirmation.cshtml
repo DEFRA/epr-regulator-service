@@ -7,8 +7,6 @@
 
 @{
   ViewData["Title"] = @Localizer["Page.Title"];
-  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
-  const string errorClass = "govuk-input--error";
 }
 
 <form id="removeUserForm" action="@Url.Action("Submit", "RemoveApprovedUser", Model)"

@@ -87,8 +87,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             result.ViewName.Should().Be(ViewName);
             Assert.AreEqual(
-                expected: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage,
-                actual: RejectSubmissionDetails.ModelErrorValueNoRejectionReason
+                expected: RejectSubmissionDetails.ModelErrorValueNoRejectionReason,
+                actual: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage
             );
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Never);
         }
@@ -114,8 +114,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             result.ViewName.Should().Be(ViewName);
             Assert.AreEqual(
-                expected: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage,
-                actual: RejectSubmissionDetails.ModelErrorValueRejectionReasonTooLong
+                expected: RejectSubmissionDetails.ModelErrorValueRejectionReasonTooLong,
+                actual: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage
             );
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Never);
         }
@@ -141,8 +141,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             result.ViewName.Should().Be(ViewName);
             Assert.AreEqual(
-                expected: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage,
-                actual: RejectSubmissionDetails.ModelErrorValueNoResubmissionOptionSelected
+                expected: RejectSubmissionDetails.ModelErrorValueNoResubmissionOptionSelected,
+                actual: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage
             );
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Never);
         }

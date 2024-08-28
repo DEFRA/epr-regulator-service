@@ -18,12 +18,10 @@
         @if (Model.RejectRegistrationResult == EndpointResponseStatus.Success)
         {
           @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["Banner.Success.RejectedSubmission", Model.OrganisationName])
-          ;
         }
         @if (Model.AcceptRegistrationResult == EndpointResponseStatus.Success)
         {
           @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["Banner.Success.AcceptedSubmission", Model.OrganisationName])
-          ;
         }
         @if (!ViewData.ModelState.IsValid)
         {

@@ -216,7 +216,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                 return View(nameof(TransferApplication), model);
             }
 
-            var transferNote = model.TransferNotes.FirstOrDefault(x => x.AgencyIndex == model.AgencyIndex) ?? new();
+            var transferNote = model.TransferNotes.Find(x => x.AgencyIndex == model.AgencyIndex) ?? new();
 
             OrganisationTransferNationRequest organisationNationTransfer = new OrganisationTransferNationRequest()
             {
@@ -258,7 +258,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             {
                 var organisationDetails = await _facadeService.GetOrganisationEnrolments(organisationId);
 
-                var approvedUser = organisationDetails.Users.FirstOrDefault(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
+                var approvedUser = organisationDetails.Users.Find(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
                 rejectedJourneyData.ApprovedUserFirstName = approvedUser.FirstName;
                 rejectedJourneyData.ApprovedUserLastName = approvedUser.LastName;
             }
@@ -312,7 +312,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             SetBackLink(session, PagePath.EnrolmentDecision);
 
             var organisationDetails = await _facadeService.GetOrganisationEnrolments(session.RegulatorSession.OrganisationId.Value);
-            var approvedUser = organisationDetails.Users.FirstOrDefault(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
+            var approvedUser = organisationDetails.Users.Find(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
 
             var delegatedUsers = organisationDetails.Users.Where(x => x.Enrolment.ServiceRole == ServiceRole.DelegatedPerson);
 
@@ -398,7 +398,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             var organisationDetails =
                 await _facadeService.GetOrganisationEnrolments(session.RegulatorSession.OrganisationId.Value);
             var approvedUser = organisationDetails.Users
-                .FirstOrDefault(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson);
+                .Find(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson);
             var delegatedUsers = organisationDetails.Users
                 .Where(x => x.Enrolment.ServiceRole == ServiceRole.DelegatedPerson);
 
@@ -419,9 +419,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                     OrganisationName = organisationDetails.OrganisationName,
                     ApprovedUser = new EmailDetails()
                     {
-                        UserFirstName = approvedUser.FirstName,
-                        UserSurname = approvedUser.LastName,
-                        Email = approvedUser.Email
+                        UserFirstName = approvedUser?.FirstName,
+                        UserSurname = approvedUser?.LastName,
+                        Email = approvedUser?.Email
                     },
                     DelegatedUsers = delegatedUsers.Select(x => new EmailDetails()
                     {
@@ -473,7 +473,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
 
         private EnrolmentRequestsViewModel GetEnrolmentRequestsViewModel(OrganisationEnrolments organisationDetails)
         {
-            var approvedUser = organisationDetails.Users.FirstOrDefault(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
+            var approvedUser = organisationDetails.Users.Find(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
 
             var delegatedUsers = organisationDetails.Users.Where(x => x.Enrolment.ServiceRole == ServiceRole.DelegatedPerson);
 

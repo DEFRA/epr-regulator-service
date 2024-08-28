@@ -146,8 +146,8 @@ public class SessionManagerTests
         Assert.IsNotNull(savedSession);
         savedSession.Should().BeOfType<JourneySession>();
         Assert.AreEqual(
-            expected: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName,
-            actual: OrganisationName
+            expected: OrganisationName,
+            actual: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
         );
         _sessionMock.Verify(x => x.LoadAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
         _sessionMock.Verify(x => x.Set(_sessionKey, It.IsAny<byte[]>()), Times.Exactly(2));
@@ -170,8 +170,8 @@ public class SessionManagerTests
         Assert.IsNotNull(savedSession);
         savedSession.Should().BeOfType<JourneySession>();
         Assert.AreEqual(
-            expected: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName,
-            actual: OrganisationName
+            expected: OrganisationName,
+            actual: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
         );
         _sessionMock.Verify(x => x.LoadAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
         _sessionMock.Verify(x => x.Set(_sessionKey, It.IsAny<byte[]>()), Times.Exactly(2));

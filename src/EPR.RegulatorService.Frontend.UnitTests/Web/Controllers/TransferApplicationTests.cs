@@ -71,8 +71,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             result.ViewName.Should().Be(ViewName);
 
             Assert.AreEqual(
-                expected: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage,
-                actual: TransferDetails.ModelErrorValueNoAgencyIndexSelected
+                expected: TransferDetails.ModelErrorValueNoAgencyIndexSelected,
+                actual: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage
             );
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Never);
         }
@@ -96,8 +96,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             result.ViewName.Should().Be(ViewName);
 
             Assert.AreEqual(
-                expected: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage,
-                actual: TransferDetails.ModelErrorValueNoTransferDetails
+                expected: TransferDetails.ModelErrorValueNoTransferDetails,
+                actual: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage
             );
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Never);
         }
@@ -126,9 +126,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.ViewName);
             result.ViewName.Should().Be(ViewName);
-            Assert.AreEqual(expected:
-                result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage,
-                actual: TransferDetails.ModelErrorValueSummaryTooLong
+            Assert.AreEqual(expected: TransferDetails.ModelErrorValueSummaryTooLong,
+                actual: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage
             );
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Never);
         }

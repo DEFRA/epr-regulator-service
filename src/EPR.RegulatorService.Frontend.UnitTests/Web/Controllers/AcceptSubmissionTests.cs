@@ -78,8 +78,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result.ViewName);
             result.ViewName.Should().Be(ViewName);
             Assert.AreEqual(
-                expected: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage,
-                actual: AcceptSubmissionDetails.ModelErrorValueAcceptVerificationNotSelected
+             expected: AcceptSubmissionDetails.ModelErrorValueAcceptVerificationNotSelected,
+             actual: result.ViewData.ModelState["Error"]!.Errors[0].ErrorMessage
             );
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Never);
         }
@@ -129,7 +129,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(SubmissionsController.Submissions));
-            
+
             _systemUnderTest.TempData["SubmissionResultAccept"].Should().Be(EndpointResponseStatus.Success);
             _systemUnderTest.TempData["SubmissionResultOrganisationName"].Should().Be("Test Org Ltd.");
 

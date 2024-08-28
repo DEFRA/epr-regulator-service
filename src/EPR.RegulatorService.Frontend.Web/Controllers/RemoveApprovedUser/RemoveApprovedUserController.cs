@@ -220,7 +220,7 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
                 return RedirectToAction("EnterPersonName", "InviteNewApprovedPerson");
             }
 
-            var selectedUser = results.FirstOrDefault(r => r.PersonExternalId == model.NewApprovedUserId);
+            var selectedUser = results.Find(r => r.PersonExternalId == model.NewApprovedUserId);
             if (selectedUser != null)
             {
                 session.AddRemoveApprovedUserSession.NewApprovedUser = selectedUser;

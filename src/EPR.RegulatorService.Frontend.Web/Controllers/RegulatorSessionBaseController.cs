@@ -19,10 +19,7 @@ public abstract class RegulatorSessionBaseController : Controller
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _sessionManager = sessionManager ?? throw new ArgumentNullException(nameof(sessionManager));
-        if (configuration == null)
-        {
-            throw new ArgumentNullException(nameof(configuration));
-        }
+        ArgumentNullException.ThrowIfNull(configuration);
         _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
     }
 
