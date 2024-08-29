@@ -1,9 +1,8 @@
 using EPR.RegulatorService.Frontend.Web.Handlers;
-using FluentAssertions;
+
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using EPR.RegulatorService.Frontend.Core.Configs;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Handlers;
 

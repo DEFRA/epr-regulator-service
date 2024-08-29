@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moq;
+
 using System.Security.Claims;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers

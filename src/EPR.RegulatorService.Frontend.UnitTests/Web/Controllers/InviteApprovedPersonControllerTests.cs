@@ -7,8 +7,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.InviteNewApprovedPerson;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Moq;
+
 using EPR.RegulatorService.Frontend.Core.Models;
 using Microsoft.AspNetCore.Mvc.Routing;
 
@@ -20,19 +19,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 public class InviteApprovedPersonControllerTests
 {
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
-    private Mock<ILogger<InviteNewApprovedPersonController>> _mockLogger;
     private Mock<IConfiguration> _mockConfiguration;
     private Mock<IFacadeService> _mockFacade = null!;
     private InviteNewApprovedPersonController _controller;
     private Mock<HttpContext> _httpContextMock = null!;
-    private string _backLink = "Some back link";
+    private readonly string _backLink = "Some back link";
 
     [TestInitialize]
     public void Setup()
     {
         _httpContextMock = new Mock<HttpContext>();
         _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
-        _mockLogger = new Mock<ILogger<InviteNewApprovedPersonController>>();
         _mockConfiguration = new Mock<IConfiguration>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
 
@@ -60,7 +57,7 @@ public class InviteApprovedPersonControllerTests
             .Returns(_backLink);
 
         _controller = new InviteNewApprovedPersonController(
-            _mockSessionManager.Object, _mockLogger.Object, _mockConfiguration.Object,
+            _mockSessionManager.Object, _mockConfiguration.Object,
             _mockFacade.Object)
         {
             Url = urlHelperMock.Object

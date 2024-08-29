@@ -12,10 +12,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Home;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
@@ -99,8 +96,7 @@ public class HomeControllerTests
             _sessionManagerMock.Object,
             _configMock.Object,
             _cookieConfig.Object,
-            configurationMock.Object,
-            new Mock<ILogger<HomeController>>().Object);
+            configurationMock.Object);
         _systemUnderTest.ControllerContext.HttpContext = _httpContextMock.Object;
     }
 
@@ -135,7 +131,7 @@ public class HomeControllerTests
         _httpContextMock.Verify(x => x.User, Times.Never);
 
         _journeySession.RegulatorSession.Journey.Should().HaveCount(1);
-        _journeySession.RegulatorSession.Journey.First().Should().Be(PagePath.Home);
+        _journeySession.RegulatorSession.Journey[0].Should().Be(PagePath.Home);
     }
 
     [TestMethod]
@@ -239,7 +235,7 @@ public class HomeControllerTests
 
         var viewModel = (LandingPageViewModel) result.Model;
         Assert.IsNotNull(viewModel);
-        Assert.AreEqual(expected: viewModel.OrganisationName, actual: _userData.Organisations.First().Name);
+        Assert.AreEqual(expected: viewModel.OrganisationName, actual: _userData.Organisations[0].Name);
         Assert.AreEqual(expected: viewModel.PersonName, actual: $"{_userData.FirstName} {_userData.LastName}");
         Assert.IsFalse(viewModel.IsRegulatorAdmin);
 

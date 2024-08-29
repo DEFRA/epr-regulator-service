@@ -87,7 +87,7 @@ app.MapHealthChecks(
 
 app.MapRazorPages();
 
-app.Run();
+await app.RunAsync();
 
 namespace EPR.RegulatorService
 {

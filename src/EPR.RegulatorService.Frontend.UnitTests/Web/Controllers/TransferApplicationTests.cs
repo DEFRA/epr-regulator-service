@@ -6,7 +6,6 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using EPR.RegulatorService.Frontend.UnitTests.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {

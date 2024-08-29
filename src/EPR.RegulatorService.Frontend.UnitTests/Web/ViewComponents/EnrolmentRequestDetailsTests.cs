@@ -19,7 +19,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         {
             _component = new EnrolmentRequestDetailsViewComponent();
             _organisationEnrolments = MockedEnrolmentRequestDetails.GetMockedEnrolmentRequestDetails();
-            _approvedUser = _organisationEnrolments.Users.FirstOrDefault(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson)!;
+            _approvedUser = _organisationEnrolments.Users.Find(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson)!;
             _delegatedUsers = _organisationEnrolments.Users.Where(x => x.Enrolment.ServiceRole == ServiceRole.DelegatedPerson).ToList();
         } 
 

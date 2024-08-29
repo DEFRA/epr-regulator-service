@@ -1,7 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Core.Models;
-using Core.Models.Submissions;
 
 public class SubmissionsViewModel
 {

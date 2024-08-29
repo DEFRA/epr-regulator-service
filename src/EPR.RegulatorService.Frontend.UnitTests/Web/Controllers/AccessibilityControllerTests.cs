@@ -3,7 +3,6 @@ using EPR.RegulatorService.Frontend.Web.Controllers.Accessibility;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Accessibility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {

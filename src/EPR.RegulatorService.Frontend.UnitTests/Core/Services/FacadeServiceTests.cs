@@ -1,5 +1,3 @@
-using AutoFixture;
-
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData;
@@ -14,11 +12,9 @@ using EPR.RegulatorService.Frontend.Core.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
-using Moq;
 using Moq.Protected;
 
 using System.Net;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
@@ -32,8 +28,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         private const string DelegatedPerson = "DelegatedPerson";
         private Mock<HttpMessageHandler> _mockHandler;
         private Mock<ITokenAcquisition> _tokenAcquisitionMock;
-        private Mock<IOptions<PaginationConfig>> _mockPaginationOptions;
-        private Mock<IOptions<FacadeApiConfig>> _mockFacadeApiOptions;
         private HttpClient _httpClient;
         private IOptions<PaginationConfig> _paginationConfig;
         private IOptions<FacadeApiConfig> _facadeApiConfig;
@@ -49,8 +43,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         {
             _mockHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             _tokenAcquisitionMock = new Mock<ITokenAcquisition>();
-            _mockPaginationOptions = new Mock<IOptions<PaginationConfig>>();
-            _mockFacadeApiOptions = new Mock<IOptions<FacadeApiConfig>>();
             _httpClient = new HttpClient(_mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
             _paginationConfig = Options.Create(new PaginationConfig { PageSize = 10 });
             _facadeApiConfig = Options.Create(new FacadeApiConfig

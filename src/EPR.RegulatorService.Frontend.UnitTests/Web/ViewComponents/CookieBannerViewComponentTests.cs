@@ -4,13 +4,12 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.ViewComponents;
 
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using Microsoft.AspNetCore.Mvc.Rendering;
+
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
+
 using EPR.RegulatorService.Frontend.Web.ViewModels.Cookies;
 using AutoFixture.AutoMoq;
 using Microsoft.AspNetCore.Routing;

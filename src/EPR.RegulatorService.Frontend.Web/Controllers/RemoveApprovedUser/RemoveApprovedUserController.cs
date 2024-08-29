@@ -16,9 +16,8 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
 {
     private readonly IFacadeService _facadeService;
     public RemoveApprovedUserController(ISessionManager<JourneySession> sessionManager,
-        ILogger<RemoveApprovedUserController> logger,
         IConfiguration configuration,
-        IFacadeService facadeService) : base(sessionManager, logger, configuration)
+        IFacadeService facadeService) : base(sessionManager, configuration)
     {
         _facadeService = facadeService;
     }

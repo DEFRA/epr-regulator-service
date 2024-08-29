@@ -25,9 +25,8 @@ public class HomeController : RegulatorSessionBaseController
         ISessionManager<JourneySession> sessionManager,
         IOptions<LandingPageConfig> landingPageConfig,
         IOptions<EprCookieOptions> cookieOptions,
-        IConfiguration configuration,
-        ILogger<HomeController> logger)
-        : base(sessionManager, logger, configuration)
+        IConfiguration configuration)
+        : base(sessionManager, configuration)
     {
         _sessionManager = sessionManager;
         _landingPageConfig = landingPageConfig.Value;

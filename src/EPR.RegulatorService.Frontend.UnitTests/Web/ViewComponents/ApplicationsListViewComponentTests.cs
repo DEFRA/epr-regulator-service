@@ -1,10 +1,8 @@
-using AutoFixture;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Web.ViewComponents;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 {
@@ -86,7 +84,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         public async Task InvokeAsync_ReturnsCorrectViewAndModel_Where_Organisation_Is_DrinksLtd_And_Delegated_Persons_Only()
         {
             // Arrange
-            _organisationApplications.FirstOrDefault(x => x.OrganisationName == DrinksLtdCompanyName)
+            _organisationApplications.Find(x => x.OrganisationName == DrinksLtdCompanyName)
                 .Enrolments
                 .HasDelegatePending = true;
             var userApplications = _fixture.Build<PaginatedList<OrganisationApplications>>()

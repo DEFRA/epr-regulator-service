@@ -2,7 +2,6 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK;
 using EPR.RegulatorService.Frontend.Web;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.Extensions.Localization;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
 {

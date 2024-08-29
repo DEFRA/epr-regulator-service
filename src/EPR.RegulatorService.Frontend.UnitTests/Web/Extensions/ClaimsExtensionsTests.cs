@@ -1,9 +1,8 @@
 using System.Security.Claims;
 using System.Text.Json;
-using AutoFixture;
+
 using EPR.Common.Authorization.Models;
 using EPR.RegulatorService.Frontend.Web.Extensions;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Extensions;
 

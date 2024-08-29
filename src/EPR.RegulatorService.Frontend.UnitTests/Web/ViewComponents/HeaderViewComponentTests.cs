@@ -2,7 +2,6 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.ViewComponents;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Options;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 {

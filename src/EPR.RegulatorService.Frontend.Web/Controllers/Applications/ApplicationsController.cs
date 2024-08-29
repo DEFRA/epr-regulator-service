@@ -19,17 +19,10 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
     public class ApplicationsController : RegulatorSessionBaseController
     {
         private const string CommentsFieldRequiredErrorMessage = "The Comments field is required.";
-        private const string LogOrganisationIdNull = "OrganisationIdNull";
-        private const string ErrorAcceptingApplication = "ErrorAcceptingApplication";
+
         private readonly IFacadeService _facadeService;
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly TransferOrganisationConfig _transferOrganisationConfig;
-
-        private static readonly Action<ILogger, Exception?> _logOrganisationIdNull =
-            LoggerMessage.Define(LogLevel.Error, new EventId(1, nameof(LogOrganisationIdNull)), "Organisation id was null.");
-
-        private static readonly Action<ILogger, string, Guid, Exception?> _logErrorAcceptingApplication =
-            LoggerMessage.Define<string, Guid>(LogLevel.Error, new EventId(2, nameof(ErrorAcceptingApplication)), "Error accepting application for: {AcceptedUserEmail} in organisation {OrganisationId}");
 
         private readonly ILogger<ApplicationsController> _logger;
 
@@ -39,7 +32,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             IOptions<TransferOrganisationConfig> transferOrganisationOptions,
             IConfiguration configuration,
             ILogger<ApplicationsController> logger)
-        : base(sessionManager, logger, configuration)
+        : base(sessionManager, configuration)
         {
             _sessionManager = sessionManager;
             _facadeService = facadeService;
@@ -105,7 +98,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             {
                 if (organisationId == null)
                 {
-                    _logOrganisationIdNull(_logger, null);
+                    _logger.LogError("Organisation id was null.");
                     return RedirectToAction(PagePath.Error, "Error");
                 }
 
@@ -473,7 +466,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             }
             catch (Exception e)
             {
-                _logErrorAcceptingApplication(_logger, acceptedUserEmail, organisationDetails.OrganisationId, e);
+                _logger.LogError(e, "Error accepting application for: {AcceptedUserEmail} in organisation {OrganisationId}", acceptedUserEmail, organisationDetails.OrganisationId);
             }
 
             ModelState.AddModelError("Update failed", "Update failed");

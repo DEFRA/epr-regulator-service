@@ -6,7 +6,6 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.Controllers.InviteNewApprovedPerson;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorSearchPage;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
@@ -26,10 +25,9 @@ public class SearchManageApproversController : RegulatorSessionBaseController
 
     public SearchManageApproversController(
         ISessionManager<JourneySession> sessionManager,
-        ILogger<SearchManageApproversController> logger,
         IConfiguration configuration,
         IFacadeService facadeService)
-        : base(sessionManager, logger, configuration)
+        : base(sessionManager, configuration)
     {
         _facadeService = facadeService;
     }
