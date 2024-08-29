@@ -42,6 +42,11 @@ public class FacadeService : IFacadeService
     private readonly PaginationConfig _paginationConfig;
     private readonly FacadeApiConfig _facadeApiConfig;
 
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public FacadeService(
         HttpClient httpClient,
         ITokenAcquisition tokenAcquisition,
@@ -124,10 +129,7 @@ public class FacadeService : IFacadeService
         response.EnsureSuccessStatusCode();
 
         string result = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<RegulatorCompanyDetailsModel>(result, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        return JsonSerializer.Deserialize<RegulatorCompanyDetailsModel>(result, _jsonSerializerOptions);
     }
 
     public async Task<EndpointResponseStatus> TransferOrganisationNation(

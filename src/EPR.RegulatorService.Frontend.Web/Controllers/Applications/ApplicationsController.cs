@@ -19,9 +19,19 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
     public class ApplicationsController : RegulatorSessionBaseController
     {
         private const string CommentsFieldRequiredErrorMessage = "The Comments field is required.";
+        private const string LogOrganisationIdNull = "OrganisationIdNull";
+        private const string ErrorAcceptingApplication = "ErrorAcceptingApplication";
         private readonly IFacadeService _facadeService;
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly TransferOrganisationConfig _transferOrganisationConfig;
+
+        private static readonly Action<ILogger, Exception?> _logOrganisationIdNull =
+            LoggerMessage.Define(LogLevel.Error, new EventId(1, nameof(LogOrganisationIdNull)), "Organisation id was null.");
+
+        private static readonly Action<ILogger, string, Guid, Exception?> _logErrorAcceptingApplication =
+            LoggerMessage.Define<string, Guid>(LogLevel.Error, new EventId(2, nameof(ErrorAcceptingApplication)), "Error accepting application for: {AcceptedUserEmail} in organisation {OrganisationId}");
+
+        private readonly ILogger<ApplicationsController> _logger;
 
         public ApplicationsController(
             ISessionManager<JourneySession> sessionManager,
@@ -34,6 +44,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             _sessionManager = sessionManager;
             _facadeService = facadeService;
             _transferOrganisationConfig = transferOrganisationOptions.Value;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -94,7 +105,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             {
                 if (organisationId == null)
                 {
-                    _logger.LogError($"Organisation id was null.");
+                    _logOrganisationIdNull(_logger, null);
                     return RedirectToAction(PagePath.Error, "Error");
                 }
 
@@ -164,8 +175,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
 
             if (journeyType == JourneyType.Accept)
             {
-               return await AcceptApplication(userEnrolment.User.FirstName, userEnrolment.User.LastName, userEnrolment.User.Email,
-                    userEnrolment.User.Enrolment.ServiceRole);
+                return await AcceptApplication(userEnrolment.User.FirstName, userEnrolment.User.LastName, userEnrolment.User.Email,
+                     userEnrolment.User.Enrolment.ServiceRole);
             }
 
             session.RegulatorSession.RejectUserJourneyData = new()
@@ -462,7 +473,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error accepting application for: {acceptedUserEmail} in organisation {organisationDetails.OrganisationId}");
+                _logErrorAcceptingApplication(_logger, acceptedUserEmail, organisationDetails.OrganisationId, e);
             }
 
             ModelState.AddModelError("Update failed", "Update failed");
