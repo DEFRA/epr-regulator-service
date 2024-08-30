@@ -17,7 +17,6 @@ using System.Globalization;
 using System.Text.Json;
 using EPR.RegulatorService.Frontend.Web.Helpers;
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
-using System.Linq;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 {

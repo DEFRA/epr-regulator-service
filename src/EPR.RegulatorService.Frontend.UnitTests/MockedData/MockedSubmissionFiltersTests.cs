@@ -10,8 +10,6 @@ public class MockedSubmissionFiltersTests
 {
     private const string OrganisationName = "DirectProducer_Accepted_111111";
     private const string OrganisationReference = "123 456";
-    private const string DirectProducer = "Direct producer";
-    private const string ComplianceScheme = "Compliance scheme";
     private const string Accepted = "Accepted";
     private const string Rejected = "Rejected";
     private const string Pending = "Pending";

@@ -5,7 +5,6 @@ using EPR.RegulatorService.Frontend.Web.Controllers.Applications;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
@@ -558,8 +557,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             resultModel.Should().BeOfType<EnrolmentDecisionViewModel>();
             Assert.AreEqual(expected: session.RegulatorSession.OrganisationId, actual: _acceptedUserOrganisationId);
             Assert.AreEqual(expected: session.RegulatorSession.RejectUserJourneyData.ServiceRole, actual: serviceRole);
-            Assert.AreEqual(expected: session.RegulatorSession.RejectUserJourneyData.FirstName, actual: RejectedUserFirstName);
-            Assert.AreEqual(expected: session.RegulatorSession.RejectUserJourneyData.LastName, actual: RejectedUserLastName);
+            Assert.AreEqual(expected: RejectedUserFirstName, actual: session.RegulatorSession.RejectUserJourneyData.FirstName);
+            Assert.AreEqual(expected: RejectedUserLastName, actual: session.RegulatorSession.RejectUserJourneyData.LastName);
             Assert.AreEqual(expected: session.RegulatorSession.RejectUserJourneyData.Decision, actual: decision);
         }
         
@@ -623,9 +622,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             resultModel.Should().BeOfType<EnrolmentDecisionViewModel>();
             Assert.AreEqual(expected: session.RegulatorSession.OrganisationId, actual: _acceptedUserOrganisationId);
             Assert.AreEqual(expected: session.RegulatorSession.RejectUserJourneyData.ServiceRole, actual: serviceRole);
-            Assert.AreEqual(expected: approvedUser.FirstName, actual: AcceptedUserFirstName);
-            Assert.AreEqual(expected: approvedUser.LastName, actual: AcceptedUserLastName);
-            Assert.AreEqual(expected: session.RegulatorSession.RejectUserJourneyData.Decision, actual: RejectedDecision);
+            Assert.AreEqual(expected: AcceptedUserFirstName, actual: approvedUser.FirstName);
+            Assert.AreEqual(expected: AcceptedUserLastName, actual: approvedUser.LastName);
+            Assert.AreEqual(expected: RejectedDecision, actual: session.RegulatorSession.RejectUserJourneyData.Decision);
         }
         
         [TestMethod]

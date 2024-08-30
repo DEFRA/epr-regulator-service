@@ -1,5 +1,4 @@
 using EPR.Common.Authorization.Models;
-using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Moq;
+
 using System.Security.Claims;
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 

@@ -1,6 +1,3 @@
-﻿using EPR.RegulatorService.Frontend.Web.Configs;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Options;

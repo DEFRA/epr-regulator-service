@@ -36,7 +36,7 @@ public class ErrorControllerTests
         // Assert
         Assert.IsNotNull(result);
         result.Should().BeOfType<ViewResult>();
-        result?.ViewName.Should().Be(expected);
+        result.ViewName.Should().Be(expected);
     }
 
     [TestMethod]
@@ -53,6 +53,6 @@ public class ErrorControllerTests
         // Assert
         Assert.IsNotNull(result);
         result.Should().BeOfType<ViewResult>();
-        result?.ViewName.Should().Be(expected);
+        result.ViewName.Should().Be(expected);
     }
 }

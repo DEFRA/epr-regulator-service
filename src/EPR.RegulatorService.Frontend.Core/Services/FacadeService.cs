@@ -12,7 +12,6 @@ using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
@@ -41,6 +40,11 @@ public class FacadeService : IFacadeService
     private readonly ITokenAcquisition _tokenAcquisition;
     private readonly PaginationConfig _paginationConfig;
     private readonly FacadeApiConfig _facadeApiConfig;
+
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     public FacadeService(
         HttpClient httpClient,
@@ -124,10 +128,7 @@ public class FacadeService : IFacadeService
         response.EnsureSuccessStatusCode();
 
         string result = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<RegulatorCompanyDetailsModel>(result, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        return JsonSerializer.Deserialize<RegulatorCompanyDetailsModel>(result, _jsonSerializerOptions);
     }
 
     public async Task<EndpointResponseStatus> TransferOrganisationNation(
@@ -220,17 +221,17 @@ public class FacadeService : IFacadeService
             query["organisationType"] = "All";
         }
 
-        if (status?.Any() == true)
+        if (status?.Length > 0)
         {
             query["statuses"] = string.Join(',', status);
         }
 
-        if (submissionYears?.Any() == true)
+        if (submissionYears?.Length > 0)
         {
             query["submissionYears"] = string.Join(',', submissionYears);
         }
 
-        if (submissionPeriods?.Any() == true)
+        if (submissionPeriods?.Length > 0)
         {
             query["submissionPeriods"] = string.Join(',', submissionPeriods);
         }

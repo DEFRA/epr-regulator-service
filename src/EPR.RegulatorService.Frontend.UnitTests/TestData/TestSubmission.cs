@@ -4,7 +4,6 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 namespace EPR.RegulatorService.Frontend.UnitTests.TestData
 {
     using Frontend.Core.Enums;
-    using Frontend.Core.Extensions;
 
     public static class TestSubmission
     {

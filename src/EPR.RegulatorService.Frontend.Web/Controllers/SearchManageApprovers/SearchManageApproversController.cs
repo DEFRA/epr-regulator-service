@@ -6,7 +6,6 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.Controllers.InviteNewApprovedPerson;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorSearchPage;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
@@ -26,10 +25,9 @@ public class SearchManageApproversController : RegulatorSessionBaseController
 
     public SearchManageApproversController(
         ISessionManager<JourneySession> sessionManager,
-        ILogger<SearchManageApproversController> logger,
         IConfiguration configuration,
         IFacadeService facadeService)
-        : base(sessionManager, logger, configuration)
+        : base(sessionManager, configuration)
     {
         _facadeService = facadeService;
     }
@@ -145,19 +143,19 @@ public class SearchManageApproversController : RegulatorSessionBaseController
             },
             AdminUsers = organisationDetails.CompanyUserInformation.Where( u=>
                 u.PersonRoleId == (int)PersonRole.Admin &&
-                u.UserEnrolments.Any(e => e.ServiceRoleId == (int)ServiceRole.ProducerOther)
+                u.UserEnrolments.Exists(e => e.ServiceRoleId == (int)ServiceRole.ProducerOther)
             ).ToList(),
             BasicUsers = organisationDetails.CompanyUserInformation.Where( u=>
                 u.PersonRoleId == (int)PersonRole.Employee &&
-                u.UserEnrolments.Any(e => e.ServiceRoleId == (int)ServiceRole.ProducerOther)
+                u.UserEnrolments.Exists(e => e.ServiceRoleId == (int)ServiceRole.ProducerOther)
             ).ToList(),
             DelegatedUsers = organisationDetails.CompanyUserInformation.Where( u=>
-                u.UserEnrolments.Any(e => e.ServiceRoleId == (int)ServiceRole.DelegatedPerson)
+                u.UserEnrolments.Exists(e => e.ServiceRoleId == (int)ServiceRole.DelegatedPerson)
             ).ToList(),
             ApprovedUsersInformation = new ApprovedUserInformation()
             {
                 ApprovedUsers = organisationDetails.CompanyUserInformation.Where( u=>
-                    u.UserEnrolments.Any(e => e.ServiceRoleId == (int)ServiceRole.ApprovedPerson)
+                    u.UserEnrolments.Exists(e => e.ServiceRoleId == (int)ServiceRole.ApprovedPerson)
                 ).ToList(),
                 OrganisationName = organisationDetails.Company.OrganisationName,
                 OrganisationExternalId = organisationId

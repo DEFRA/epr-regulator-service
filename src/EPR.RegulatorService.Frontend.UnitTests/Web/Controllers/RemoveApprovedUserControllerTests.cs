@@ -10,8 +10,6 @@ using EPR.RegulatorService.Frontend.Web.Sessions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
@@ -20,7 +18,6 @@ public class RemoveApprovedUserControllerTests
 {
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
-    private Mock<ILogger<RemoveApprovedUserController>> _mockLogger;
     private Mock<IConfiguration> _mockConfiguration;
     private Mock<IFacadeService> _mockFacade = null!;
     private RemoveApprovedUserController _controller;
@@ -39,7 +36,6 @@ public class RemoveApprovedUserControllerTests
 
         _httpContextMock = new Mock<HttpContext>();
         _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
-        _mockLogger = new Mock<ILogger<RemoveApprovedUserController>>();
         _mockConfiguration = new Mock<IConfiguration>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
         configurationSectionMock.Setup(section => section.Value).Returns("/regulators");
@@ -51,7 +47,7 @@ public class RemoveApprovedUserControllerTests
             .Setup(x => x.GetProducerOrganisationUsersByOrganisationExternalId(It.IsAny<Guid>()))
             .ReturnsAsync(new List<OrganisationUser>() { _userJohn, _userJames });
 
-        _controller = new RemoveApprovedUserController(_mockSessionManager.Object, _mockLogger.Object, _mockConfiguration.Object, _mockFacade.Object);
+        _controller = new RemoveApprovedUserController(_mockSessionManager.Object, _mockConfiguration.Object, _mockFacade.Object);
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
 

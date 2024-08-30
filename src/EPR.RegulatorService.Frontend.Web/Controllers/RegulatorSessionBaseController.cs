@@ -9,20 +9,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers;
 public abstract class RegulatorSessionBaseController : Controller
 {
     protected readonly ISessionManager<JourneySession> _sessionManager;
-    protected readonly ILogger _logger;
     private readonly string _pathBase;
 
     protected RegulatorSessionBaseController(
         ISessionManager<JourneySession> sessionManager,
-        ILogger logger,
         IConfiguration configuration)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _sessionManager = sessionManager ?? throw new ArgumentNullException(nameof(sessionManager));
-        if (configuration == null)
-        {
-            throw new ArgumentNullException(nameof(configuration));
-        }
+        ArgumentNullException.ThrowIfNull(configuration);
         _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
     }
 

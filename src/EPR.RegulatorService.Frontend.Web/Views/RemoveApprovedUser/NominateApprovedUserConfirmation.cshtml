@@ -1,14 +1,9 @@
 @addTagHelper *, Microsoft.FeatureManagement.AspNetCore
 
-@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
-@using EPR.RegulatorService.Frontend.Web.Extensions
-
 @model EPR.RegulatorService.Frontend.Core.Sessions.AddRemoveApprovedUserSession
 
 @{
   ViewData["Title"] = @Localizer["Page.Title"];
-  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
-  const string errorClass = "govuk-input--error";
 }
 
 <form id="removeUserForm" action="@Url.Action("Submit", "RemoveApprovedUser", Model)"
