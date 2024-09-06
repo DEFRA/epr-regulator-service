@@ -12,7 +12,6 @@ using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
@@ -35,6 +34,10 @@ public class FacadeService : IFacadeService
     private const string AddRemoveApprovedUserPath = "AddRemoveApprovedUser";
     private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
     private const string FileDownloadPath = "FileDownload";
+    private const string ApproveOrRejectChangeRequestEndpointKey = "ApproveOrRejectChangeRequest";
+    private const string PendingUserDetailChangeRequestsEndpointKey = "PendingUserDetailChangeRequests";
+    private const string GetUserDetailChangeRequestEndpointKey = "GetUserDetailChangeRequest";
+
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -52,7 +55,7 @@ public class FacadeService : IFacadeService
         _tokenAcquisition = tokenAcquisition;
         _paginationConfig = paginationOptions.Value;
         _facadeApiConfig = facadeApiOptions.Value;
-        _scopes = new[] {_facadeApiConfig.DownstreamScope};
+        _scopes = new[] { _facadeApiConfig.DownstreamScope };
     }
 
     private static readonly Dictionary<Type, string> _typeToEndpointMap = new()
@@ -81,7 +84,8 @@ public class FacadeService : IFacadeService
 
         var query = new Dictionary<string, string>
         {
-            ["currentPage"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture), ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["currentPage"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
         };
         if (!string.IsNullOrEmpty(organisationName))
         {
@@ -320,6 +324,58 @@ public class FacadeService : IFacadeService
         return await Task.FromResult<HttpResponseMessage>(response);
     }
 
+    public async Task<PaginatedList<OrganisationUserDetailChangeRequest>> GetUserDetailChangeRequestsByOrganisation(
+        string? applicationType,
+        string? organisationName,
+        int currentPage = 1)
+    {
+        await PrepareAuthenticatedClient();
+
+        var query = new Dictionary<string, string>
+        {
+            ["currentPage"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
+        };
+        if (!string.IsNullOrEmpty(organisationName))
+        {
+            query["organisationName"] = organisationName;
+        }
+
+        if (!string.IsNullOrEmpty(applicationType))
+        {
+            query["applicationType"] = applicationType;
+        }
+
+        var queryString = string.Join("&", query.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
+        var path = $"{_facadeApiConfig.Endpoints[PendingUserDetailChangeRequestsEndpointKey]}?{queryString}";
+
+        var response = await _httpClient.GetAsync(path);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<PaginatedList<OrganisationUserDetailChangeRequest>>();
+    }
+
+    public async Task<ChangeHistoryModel> GetUserDetailChangeRequest(Guid organisationId, Guid externalId)
+    {
+        await PrepareAuthenticatedClient();
+
+        var path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[GetUserDetailChangeRequestEndpointKey], organisationId, externalId);
+
+        var response = await _httpClient.GetAsync(path);
+
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<ChangeHistoryModel>();
+    }
+
+    public async Task<RegulatorUserDetailsUpdateResponse> AcceptOrRejectUserDetailChangeRequest(ManageUserDetailsChangeRequest request)
+    {
+        await PrepareAuthenticatedClient();
+        string path = _facadeApiConfig.Endpoints[ApproveOrRejectChangeRequestEndpointKey];
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<RegulatorUserDetailsUpdateResponse>();
+    }
+
     private async Task PrepareAuthenticatedClient()
     {
         if (_httpClient.BaseAddress == null)
@@ -329,5 +385,5 @@ public class FacadeService : IFacadeService
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue(Constants.Bearer, accessToken);
         }
-    }   
+    }
 }

@@ -367,4 +367,8 @@ public class MockedFacadeService : IFacadeService
 
         return await Task.FromResult(response);
     }
+
+    public Task<PaginatedList<OrganisationUserDetailChangeRequest>> GetUserDetailChangeRequestsByOrganisation(string? applicationType, string? organisationName, int currentPage = 1) => throw new NotImplementedException();
+    public Task<ChangeHistoryModel> GetUserDetailChangeRequest(Guid organisationId, Guid externalId) => throw new NotImplementedException();
+    public Task<RegulatorUserDetailsUpdateResponse> AcceptOrRejectUserDetailChangeRequest(ManageUserDetailsChangeRequest request) => throw new NotImplementedException();
 }

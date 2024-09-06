@@ -1,4 +1,4 @@
-﻿namespace EPR.RegulatorService.Frontend.Core.Configs;
+namespace EPR.RegulatorService.Frontend.Core.Configs;
 
 public class LandingPageConfig
 {
@@ -8,4 +8,6 @@ public class LandingPageConfig
     public string SubmissionsUrl { get; set; } = string.Empty;
     public string RegistrationsUrl { get; set; } = string.Empty;
     public string ManageApprovedPersonUrl { get; set; } = string.Empty;
+    public string ManageUserChangesUrl { get; set; } = string.Empty;
+    
 }

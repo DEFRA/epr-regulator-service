@@ -80,7 +80,8 @@ public class HomeController : RegulatorSessionBaseController
             ApplicationsUrl = _landingPageConfig.ApplicationsUrl,
             SubmissionsUrl = _landingPageConfig.SubmissionsUrl,
             RegistrationsUrl = _landingPageConfig.RegistrationsUrl,
-            ManageApprovedPersonUrl = _landingPageConfig.ManageApprovedPersonUrl
+            ManageApprovedPersonUrl = _landingPageConfig.ManageApprovedPersonUrl,
+            ManageUserChangesUrl = _landingPageConfig.ManageUserChangesUrl
         };
 
         await SaveSessionAndJourney(session, PagePath.Home);

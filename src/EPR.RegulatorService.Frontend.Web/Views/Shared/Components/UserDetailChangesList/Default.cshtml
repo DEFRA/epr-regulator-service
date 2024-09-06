@@ -1,0 +1,62 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
+@using EPR.RegulatorService.Frontend.Web.ViewModels.UserDetailChanges;
+@model UserDetailChangesListViewModel
+
+@await Html.PartialAsync("Partials/_RegulatorUserDetailChangeRequestFilters", Model.UserDetailChangeRequestFiltersModel)
+
+<table class="govuk-table responsive-table" aria-label="Organisation Application Listing">
+    <thead role="rowgroup" class="govuk-table__head">
+        <tr role="row" class="govuk-table__row">
+            <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.Company"]</th>
+            <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.DeclarationDate"]</th>
+            <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.Type"]</th>
+            <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.Action"]</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+
+        @foreach (var changeRequest in Model.PagedPendingUserRequests)
+        {
+            @using (Html.BeginForm(EPR.RegulatorService.Frontend.Web.Constants.PagePath.ManageUserDetailChanges, EPR.RegulatorService.Frontend.Web.Constants.PagePath.ManageUserDetailChanges, new { organisationId = changeRequest.OrganisationId, externalId = changeRequest.ChangeHistoryExternalId }, FormMethod.Post))
+            {
+                <tr role="row" class="govuk-table__row">
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Company"]</span>
+                        <p class="govuk-body">
+                            <b>@changeRequest.OrganisationName</b>
+                        </p>
+                    </td>
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.DeclarationDate"]</span>
+                        <p class="govuk-body">
+                            @changeRequest.DeclarationDate.ToString("d MMMM yyyy")
+                        </p>
+                    </td>
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Type"]</span>
+                        <p class="govuk-body">
+                            @if (changeRequest.ServiceRoleId == (int)ServiceRole.ApprovedPerson)
+                            {
+                                @Localizer["ApprovedPerson"]
+                                <br />
+                            }
+                            @if (changeRequest.ServiceRoleId == (int)ServiceRole.DelegatedPerson)
+                            {
+                                @Localizer["DelegatedPerson"]
+                                <br />
+                            }
+                        </p>
+                    </td>
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Action"]</span>
+                        <p class="govuk-body">
+                            <button type="submit" class="govuk-body govuk-link epr-link-no-visited-state" data-module="govuk-button">@SharedLocalizer["View"].Value</button>
+                        </p>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel)

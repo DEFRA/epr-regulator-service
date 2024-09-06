@@ -1,4 +1,4 @@
-﻿namespace EPR.RegulatorService.Frontend.Web.ViewModels.Home;
+namespace EPR.RegulatorService.Frontend.Web.ViewModels.Home;
 
 public class LandingPageViewModel
 {
@@ -10,4 +10,6 @@ public class LandingPageViewModel
     public string SubmissionsUrl { get; set; }
     public string RegistrationsUrl { get; set; }
     public string ManageApprovedPersonUrl { get; set; }
+    public string ManageUserChangesUrl { get; set; }
+    
 }

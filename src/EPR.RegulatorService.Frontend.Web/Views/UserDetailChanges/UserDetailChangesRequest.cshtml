@@ -1,0 +1,234 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.TagHelpers
+@using EPR.RegulatorService.Frontend.Web.ViewModels.UserDetailChanges
+@using EPR.RegulatorService.Frontend.Core.Models
+@using EPR.RegulatorService.Frontend.Web.Constants
+
+@model UserDetailChangesRequestViewModel
+@{
+    ViewData["Title"] = Localizer["Page.Title"];
+
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+@functions
+{
+    private static string GetNationTag(string nation) => nation switch
+    {
+        "Scotland" => "Nation.Scotland",
+        "Wales" => "Nation.Wales",
+        "Northern Ireland" => "Nation.NorthernIreland",
+        _ => "Nation.England"
+    };
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        @using (Html.BeginForm("UserDetailChangesRequest", PagePath.ManageUserDetailChanges, FormMethod.Post))
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                    }
+
+                    @*         @if(Model.RejectionStatus == EndpointResponseStatus.Success && Model.RejectedServiceRole == ServiceRole.DelegatedPerson)
+                {
+                @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["RejectedDelegatedPerson", Model.RejectedUserName]);
+                }
+
+                @if(Model.AcceptStatus == EndpointResponseStatus.Success)
+                {
+                @await Html.PartialAsync("Partials/Govuk/_ApplicationAccept", Model);
+                } *@
+
+                    <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@Model.ChangeHistoryModel.OrganisationName</h1>
+
+                    <div class="govuk-!-margin-bottom-4">
+                        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationType"]</h3>
+                        <p class="govuk-body">@Model.ChangeHistoryModel.OrganisationType</p>
+                    </div>
+
+                    <div class="govuk-!-margin-bottom-4">
+                        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.RegisteredAddress"]</h3>
+                        <p class="govuk-body govuk-!-margin-bottom-0">@Model.ChangeHistoryModel.BusinessAddress?.BuildingNumber @Model.ChangeHistoryModel.BusinessAddress?.BuildingName</p>
+                        <p class="govuk-body govuk-!-margin-bottom-0">@Model.ChangeHistoryModel.BusinessAddress?.Street</p>
+                        <p class="govuk-body govuk-!-margin-bottom-0">@Model.ChangeHistoryModel.BusinessAddress?.Town</p>
+                        <p class="govuk-body govuk-!-margin-bottom-0">@Model.ChangeHistoryModel.BusinessAddress?.County</p>
+                        <p class="govuk-body">@Model.ChangeHistoryModel.BusinessAddress?.Postcode</p>
+                    </div>
+
+                    <div class="govuk-!-margin-bottom-4">
+                        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.CompaniesHouseNumber"]</h3>
+                        @if (!string.IsNullOrEmpty(Model.ChangeHistoryModel.CompaniesHouseNumber))
+                        {
+                            <p class="govuk-body">@Model.ChangeHistoryModel.CompaniesHouseNumber</p>
+                            <companies-house-link gov-value="@Model.ChangeHistoryModel.CompaniesHouseNumber" class="govuk-link govuk-link--no-visited-state">
+                                @Localizer["link.CompaniesHouseRegister"]
+                            </companies-house-link>
+                        }
+                        else
+                        {
+                            <p class="govuk-body">@Localizer["Text.NotListed"]</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-half govuk-!-text-align-left">
+                    <span class="govuk-body">
+                        <b>@Localizer["Subheading.RegisteredNation"]</b>
+                        @SharedLocalizer[GetNationTag(@Model.ChangeHistoryModel.Nation)]
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@Localizer["Heading.Changes"]</h2>
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">@Model.ChangeHistoryModel.ServiceRole</h2>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            <dl class="govuk-summary-list">
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        @Localizer["Summary.Telephone"]
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.ChangeHistoryModel.Telephone
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        @Localizer["Summary.Email"]
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.ChangeHistoryModel.EmailAddress
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">@Localizer["Summary.PreviousDetails"]</h2>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            <dl class="govuk-summary-list">
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        @Localizer["Summary.FirstName"]
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.ChangeHistoryModel.OldValues?.FirstName
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        @Localizer["Summary.LastName"]
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.ChangeHistoryModel.OldValues?.LastName
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        @Localizer["Summary.JobTitle"]
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.ChangeHistoryModel.OldValues?.JobTitle
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <div class="govuk-summary-card">
+                        <div class="govuk-summary-card__title-wrapper">
+                            <h2 class="govuk-summary-card__title">@Localizer["Summary.NewDetails"]</h2>
+                        </div>
+                        <div class="govuk-summary-card__content">
+                            <dl class="govuk-summary-list">
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        @Localizer["Summary.FirstName"]
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.ChangeHistoryModel.NewValues?.FirstName
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        @Localizer["Summary.LastName"]
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.ChangeHistoryModel.NewValues?.LastName
+                                    </dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">
+                                        @Localizer["Summary.JobTitle"]
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @Model.ChangeHistoryModel.NewValues?.JobTitle
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <div class="govuk-button-group govuk-!-margin-top-2">
+                        @Html.HiddenFor(x => x.ChangeHistoryModel.ExternalId)
+                        @Html.HiddenFor(x => x.ChangeHistoryModel.OrganisationId)
+                        <button class="govuk-button" data-module="govuk-button" name="journeyType" value="@JourneyType.Accept">
+                            @SharedLocalizer["Button.Accept"]
+                        </button>
+                        <button class="govuk-button govuk-button--warning" data-module="govuk-button" name="journeyType" value="@JourneyType.Reject">
+                            @SharedLocalizer["Button.Reject"]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                @Html.ActionLink(@Localizer["link.BackToAllChanges"].Value,
+                         PagePath.ManageUserDetailChanges,
+                         PagePath.ManageUserDetailChanges,
+                         null,
+                         new { @class = "govuk-link govuk-link--no-visited-state" })
+            </div>
+        </div>
+    </main>
+</div>

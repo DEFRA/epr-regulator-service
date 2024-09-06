@@ -1,4 +1,4 @@
-﻿@using EPR.RegulatorService.Frontend.Web.ViewModels.Home
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Home
 @addTagHelper *, Microsoft.FeatureManagement.AspNetCore
 
 @model LandingPageViewModel
@@ -76,6 +76,19 @@
                       @Localizer["LandingPage.ManageApprovedPersonDescription"]
                     </p>
                   </feature>
+
+                <feature name="ManageUserChanges">
+                    <div class="govuk-!-margin-bottom-2">
+                        <a id="manageApprovedUsersLink" class="govuk-link govuk-link--no-visited-state govuk-body-l govuk-!-font-weight-bold" href="@Model.ManageUserChangesUrl">
+                            @Localizer["LandingPage.ManageUserChanges"]
+                        </a>
+                    </div>
+                    <p id="manageApprovedUsersHelpText" class="govuk-body">
+                        @Localizer["LandingPage.ManageUserChangesDescription"]
+                    </p>
+                </feature>
+
+
             </div>
         </div>
     </main>

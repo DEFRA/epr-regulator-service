@@ -36,6 +36,8 @@ public static class PagePath
     public const string OrganisationDetailsFileDownload = "organisation-details-file-download";
     public const string OrganisationDetailsFileDownloadFailed = "organisation-details-file-download-failed";
     public const string OrganisationDetailsFileDownloadSecurityWarning = "organisation-details-file-download-security-warning";
+    public const string ManageUserDetailChanges = "userdetailchanges";
+    public const string UserDetailChangesRequest = "user-detail-change-request";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

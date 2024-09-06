@@ -51,4 +51,11 @@ public interface IFacadeService
 
     Task<EndpointResponseStatus> SubmitRegistrationDecision(RegulatorRegistrationDecisionCreateRequest request);
     Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request);
+    Task<PaginatedList<OrganisationUserDetailChangeRequest>> GetUserDetailChangeRequestsByOrganisation(
+        string? applicationType,
+        string? organisationName,
+        int currentPage = 1);
+    Task<ChangeHistoryModel> GetUserDetailChangeRequest(Guid organisationId, Guid externalId);
+    Task<RegulatorUserDetailsUpdateResponse> AcceptOrRejectUserDetailChangeRequest(ManageUserDetailsChangeRequest request);
+
 }

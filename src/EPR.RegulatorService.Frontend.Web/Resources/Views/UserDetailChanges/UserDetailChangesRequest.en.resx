@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,46 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LandingPage.Title" xml:space="preserve">
-    <value>pEPR: Gwasanaeth i Reoleiddwyr</value>
+  <data name="Page.Title" xml:space="preserve">
+    <value>User detail changes Request</value>
   </data>
-  <data name="LandingPage.ManageAccount" xml:space="preserve">
-    <value>Rheoli’ch cyfrif</value>
+  <data name="Page.ApprovedPerson" xml:space="preserve">
+    <value>Approved person</value>
   </data>
-  <data name="LandingPage.ManageAccountDescription" xml:space="preserve">
-    <value>Ychwanegu neu dynnu aelodau tîm o’ch cyfrif</value>
+  <data name="Subheading.OrganisationType" xml:space="preserve">
+    <value>Organisation type</value>
   </data>
-  <data name="LandingPage.ManageApplications" xml:space="preserve">
-    <value>Rheoli ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd</value>
+  <data name="Subheading.RegisteredAddress" xml:space="preserve">
+    <value>Registered address</value>
   </data>
-  <data name="LandingPage.ManageApplicationsDescription" xml:space="preserve">
-    <value>Gweld, derbyn neu wrthod ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd</value>
+  <data name="Subheading.CompaniesHouseNumber" xml:space="preserve">
+    <value>Companies House number</value>
   </data>
-  <data name="LandingPage.ManageSubmissions" xml:space="preserve">
-    <value>Rheoli cyflwyniadau data pecynwaith</value>
+  <data name="Subheading.RegisteredNation" xml:space="preserve">
+    <value>Registered nation: </value>
   </data>
-  <data name="LandingPage.ManageSubmissionsDescription" xml:space="preserve">
-    <value>Gweld, derbyn neu wrthod cyflwyniadau data pecynwaith</value>
+  <data name="Text.NotListed" xml:space="preserve">
+    <value>Not listed</value>
   </data>
-  <data name="LandingPage.ManageRegistrations" xml:space="preserve">
-    <value>WManage organisation details submissions</value>
+  <data name="link.CompaniesHouseRegister" xml:space="preserve">
+    <value>View on Companies House register</value>
   </data>
-  <data name="LandingPage.ManageRegistrationsDescription" xml:space="preserve">
-    <value>WView, accept or reject organisation details submissions</value>
+  <data name="link.BackToAllChanges" xml:space="preserve">
+    <value>Go back to all changes</value>
   </data>
-  <data name="Regulator.Home" xml:space="preserve">
-    <value>Hafan Rheoleiddwyr - {0}</value>
+  <data name="Page.DelegatedPerson" xml:space="preserve">
+    <value>Delegated person</value>
   </data>
-  <data name="LandingPage.ManageApprovedPerson" xml:space="preserve">
-    <value>WManage organisations and their approved person</value>
+  <data name="Summary.Email" xml:space="preserve">
+    <value>Email</value>
   </data>
-  <data name="LandingPage.ManageApprovedPersonDescription" xml:space="preserve">
-    <value>WRemove or invite approved persons</value>
+  <data name="Summary.FirstName" xml:space="preserve">
+    <value>First Name</value>
   </data>
-  <data name="LandingPage.ManageUserChanges" xml:space="preserve">
-    <value>[Wales] Manage changes to approved and delegated persons details</value>
+  <data name="Summary.JobTitle" xml:space="preserve">
+    <value>Job title</value>
   </data>
-  <data name="LandingPage.ManageUserChangesDescription" xml:space="preserve">
-    <value>[Wales] View, accept or reject changes to approved and delegated persons details</value>
+  <data name="Summary.LastName" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="Summary.NewDetails" xml:space="preserve">
+    <value>New details</value>
+  </data>
+  <data name="Summary.PreviousDetails" xml:space="preserve">
+    <value>Previous details</value>
+  </data>
+  <data name="Summary.Telephone" xml:space="preserve">
+    <value>Telephone</value>
+  </data>
+  <data name="Heading.Changes" xml:space="preserve">
+    <value>Changes</value>
   </data>
 </root>
