@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using EPR.RegulatorService.Frontend.Web.Attributes;
-using System.ComponentModel;
 using EPR.RegulatorService.Frontend.Core.Models;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.Applications

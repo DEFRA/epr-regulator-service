@@ -7,6 +7,7 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Home;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -24,9 +25,8 @@ public class HomeController : RegulatorSessionBaseController
         ISessionManager<JourneySession> sessionManager,
         IOptions<LandingPageConfig> landingPageConfig,
         IOptions<EprCookieOptions> cookieOptions,
-        IConfiguration configuration,
-        ILogger<HomeController> logger)
-        : base(sessionManager, logger, configuration)
+        IConfiguration configuration)
+        : base(sessionManager, configuration)
     {
         _sessionManager = sessionManager;
         _landingPageConfig = landingPageConfig.Value;
@@ -55,12 +55,12 @@ public class HomeController : RegulatorSessionBaseController
         };
 
         if (session.UserData.Organisations == null
-            || !session.UserData.Organisations.Any())
+            || session.UserData.Organisations.Count == 0)
         {
             return RedirectToAction(PagePath.Error, "Error");
         }
 
-        string organisationName = session.UserData.Organisations.First().Name!;
+        string organisationName = session.UserData.Organisations[0].Name!;
 
         if (string.IsNullOrEmpty(session.UserData.FirstName) && string.IsNullOrEmpty(session.UserData.LastName))
         {

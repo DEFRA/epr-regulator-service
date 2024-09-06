@@ -1,4 +1,3 @@
-using AutoFixture;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -8,7 +7,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
+
 using System.Text.Json;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers

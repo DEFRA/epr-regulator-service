@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-using System.Diagnostics.CodeAnalysis;
 using EPR.RegulatorService.Frontend.Core.Enums;
 
 namespace EPR.RegulatorService.Frontend.Core.MockedData;

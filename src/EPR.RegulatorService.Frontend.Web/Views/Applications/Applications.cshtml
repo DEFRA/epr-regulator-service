@@ -27,7 +27,7 @@
 
         @if(Model.RejectionStatus == EndpointResponseStatus.Success && Model.RejectedServiceRole == ServiceRole.ApprovedPerson)
         {
-          @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["RejectedApprovedPerson", Model.RejectedUserName]);
+          @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["RejectedApprovedPerson", Model.RejectedUserName])
         }
 
           @if(Model != null && Model.TransferNationResult == EndpointResponseStatus.Success)

@@ -3,12 +3,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 using AutoFixture;
 
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
-using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.Controllers.Registrations;
-using EPR.RegulatorService.Frontend.Web.Sessions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 
 using Frontend.Core.Enums;
 using Frontend.Core.Extensions;
@@ -17,7 +13,6 @@ using Frontend.Web.ViewModels.Registrations;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 using Moq;
 
@@ -110,7 +105,7 @@ public class RegistrationsControllerTests : RegistrationTestBase
         registrationFiltersModelFromSession.IsAcceptedRegistrationChecked.Should().BeTrue();
         registrationFiltersModelFromSession.IsRejectedRegistrationChecked.Should().BeTrue();
         registrationFiltersModelFromSession.SearchSubmissionYears.Should().BeEquivalentTo(new[] { 2023 });
-        registrationFiltersModelFromSession.SearchSubmissionPeriods.Should().BeEquivalentTo(new[] { "January to June 2023" });
+        registrationFiltersModelFromSession.SearchSubmissionPeriods.Should().BeEquivalentTo("January to June 2023");
     }
 
     [TestMethod]
@@ -243,7 +238,6 @@ public class RegistrationsControllerTests : RegistrationTestBase
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<ViewResult>();
-        var viewResult = result as ViewResult;
     }
 
     [TestMethod]

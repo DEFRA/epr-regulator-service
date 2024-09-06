@@ -1,4 +1,4 @@
-﻿@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.TagHelpers
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Applications
@@ -33,12 +33,12 @@
 
         @if(Model.RejectionStatus == EndpointResponseStatus.Success && Model.RejectedServiceRole == ServiceRole.DelegatedPerson)
         {
-          @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["RejectedDelegatedPerson", Model.RejectedUserName]);
+          @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["RejectedDelegatedPerson", Model.RejectedUserName])
         }
 
         @if(Model.AcceptStatus == EndpointResponseStatus.Success)
         {
-          @await Html.PartialAsync("Partials/Govuk/_ApplicationAccept", Model);
+          @await Html.PartialAsync("Partials/Govuk/_ApplicationAccept", Model)
         }
 
         @if (Model.Transfer != null)

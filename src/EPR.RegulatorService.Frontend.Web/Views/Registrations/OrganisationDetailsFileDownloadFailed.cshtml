@@ -1,11 +1,8 @@
-@using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations
-@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 
 @model OrganisationDetailsFileDownloadViewModel
 @{
     ViewData["Title"] = Localizer["OrganisationDetailsFileDownloadFailed.Title"];
-    var downloadCompleted = TempData["DownloadCompleted"] != null && (bool)TempData["DownloadCompleted"];
 }
 
     <div class="govuk-width-container">

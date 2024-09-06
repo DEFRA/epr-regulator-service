@@ -3,7 +3,6 @@ using EPR.RegulatorService.Frontend.Web.Controllers.Culture;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-using Moq;
 using System.Text;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;

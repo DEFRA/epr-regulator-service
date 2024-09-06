@@ -16,9 +16,8 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
 {
     private readonly IFacadeService _facadeService;
     public RemoveApprovedUserController(ISessionManager<JourneySession> sessionManager,
-        ILogger<RemoveApprovedUserController> logger,
         IConfiguration configuration,
-        IFacadeService facadeService) : base(sessionManager, logger, configuration)
+        IFacadeService facadeService) : base(sessionManager, configuration)
     {
         _facadeService = facadeService;
     }
@@ -220,7 +219,7 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
                 return RedirectToAction("EnterPersonName", "InviteNewApprovedPerson");
             }
 
-            var selectedUser = results.FirstOrDefault(r => r.PersonExternalId == model.NewApprovedUserId);
+            var selectedUser = results.Find(r => r.PersonExternalId == model.NewApprovedUserId);
             if (selectedUser != null)
             {
                 session.AddRemoveApprovedUserSession.NewApprovedUser = selectedUser;

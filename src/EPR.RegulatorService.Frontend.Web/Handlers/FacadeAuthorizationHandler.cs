@@ -1,5 +1,5 @@
-﻿using System.Net.Http.Headers;
-using EPR.RegulatorService.Frontend.Web.Configs;
+using System.Net.Http.Headers;
+
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 

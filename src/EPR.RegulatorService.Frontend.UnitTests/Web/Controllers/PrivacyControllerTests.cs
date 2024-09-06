@@ -5,7 +5,6 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Privacy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 

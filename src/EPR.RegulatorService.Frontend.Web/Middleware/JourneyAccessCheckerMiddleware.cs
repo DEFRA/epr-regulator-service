@@ -74,7 +74,7 @@ public class JourneyAccessCheckerMiddleware
         var sessionValue = await sessionManager.GetSessionAsync(httpContext.Session);
         var permissionManagementSession = sessionValue?.PermissionManagementSession;
 
-        var permissionManagementSessionItem = permissionManagementSession?.Items.FirstOrDefault(x => x.Id == id);
+        var permissionManagementSessionItem = permissionManagementSession?.Items.Find(x => x.Id == id);
 
         if (permissionManagementSessionItem == null || permissionManagementSessionItem.Journey.Count == 0)
         {
@@ -82,7 +82,8 @@ public class JourneyAccessCheckerMiddleware
         }
         else if (!permissionManagementSessionItem.Journey.Contains($"{attribute.PagePath}/{id}"))
         {
-            pageToRedirect = permissionManagementSessionItem.Journey.Last();
+            var journeyList = permissionManagementSessionItem.Journey;
+            pageToRedirect = journeyList[^1];
         }
 
         return pageToRedirect;
@@ -100,7 +101,8 @@ public class JourneyAccessCheckerMiddleware
         }
         else if (!accountManagementSessionValue.Journey.Contains(attribute.PagePath))
         {
-            pageToRedirect = accountManagementSessionValue.Journey.Last();
+            var journeyList = accountManagementSessionValue.Journey;
+            pageToRedirect = journeyList[^1];
         }
 
         return pageToRedirect;
