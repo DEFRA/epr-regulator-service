@@ -9,6 +9,11 @@
     <NoWarn>S3903, S6967, S6964, S6934</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup> 
+    <!-- SonarCloud does not recognise file-scoped namespaces in current version. -->
+    <NoWarn>S3903</NoWarn>
+  </PropertyGroup>
+
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'EPR.RegulatorService.Frontend' " />
 
   <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
@@ -44,6 +49,13 @@
     <EmbeddedResource Update="Resources\Views\RegulatorEnrolment\FullName.en.resx" />
     <EmbeddedResource Update="Resources\Views\SearchManageApprovers\RegulatorSearchPage.cy.resx" />
     <EmbeddedResource Update="Resources\Views\SearchManageApprovers\RegulatorSearchPage.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\ManageApprovedUser\_DelegatedPersons.cy.resx">
+      <LastGenOutput>_ApprovedPerson.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\ManageApprovedUser\_DelegatedPersons.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_EnrolmentRequestApprovedUser.en.resx" />
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_EnrolmentRequestApprovedUser.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_EnrolmentRequestDelegatedUser.cy.resx" />
