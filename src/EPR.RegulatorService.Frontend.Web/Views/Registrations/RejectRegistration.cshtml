@@ -7,7 +7,7 @@
     ViewData["Title"] = Localizer["RejectSubmission.Title"];
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer, nameof(Model.ReasonForRejection));
     var reasonForRejection = string.IsNullOrEmpty(Model.ReasonForRejection) ? string.Empty : Model.ReasonForRejection;
-    var reasonForRejectionError = errorsViewModel.Errors.FirstOrDefault(x => x.Key == nameof(Model.ReasonForRejection));
+    var reasonForRejectionError = errorsViewModel.Errors.Find(x => x.Key == nameof(Model.ReasonForRejection));
     var reasonForRejectionErrorExists = !string.IsNullOrEmpty(reasonForRejectionError.Key);
 }
 

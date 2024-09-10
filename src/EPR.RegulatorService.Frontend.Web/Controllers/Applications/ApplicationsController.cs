@@ -19,9 +19,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
     public class ApplicationsController : RegulatorSessionBaseController
     {
         private const string CommentsFieldRequiredErrorMessage = "The Comments field is required.";
+
         private readonly IFacadeService _facadeService;
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly TransferOrganisationConfig _transferOrganisationConfig;
+
+        private readonly ILogger<ApplicationsController> _logger;
 
         public ApplicationsController(
             ISessionManager<JourneySession> sessionManager,
@@ -29,11 +32,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             IOptions<TransferOrganisationConfig> transferOrganisationOptions,
             IConfiguration configuration,
             ILogger<ApplicationsController> logger)
-        : base(sessionManager, logger, configuration)
+        : base(sessionManager, configuration)
         {
             _sessionManager = sessionManager;
             _facadeService = facadeService;
             _transferOrganisationConfig = transferOrganisationOptions.Value;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -94,7 +98,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             {
                 if (organisationId == null)
                 {
-                    _logger.LogError($"Organisation id was null.");
+                    _logger.LogError("Organisation id was null.");
                     return RedirectToAction(PagePath.Error, "Error");
                 }
 
@@ -164,8 +168,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
 
             if (journeyType == JourneyType.Accept)
             {
-               return await AcceptApplication(userEnrolment.User.FirstName, userEnrolment.User.LastName, userEnrolment.User.Email,
-                    userEnrolment.User.Enrolment.ServiceRole);
+                return await AcceptApplication(userEnrolment.User.FirstName, userEnrolment.User.LastName, userEnrolment.User.Email,
+                     userEnrolment.User.Enrolment.ServiceRole);
             }
 
             session.RegulatorSession.RejectUserJourneyData = new()
@@ -216,7 +220,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                 return View(nameof(TransferApplication), model);
             }
 
-            var transferNote = model.TransferNotes.FirstOrDefault(x => x.AgencyIndex == model.AgencyIndex) ?? new();
+            var transferNote = model.TransferNotes.Find(x => x.AgencyIndex == model.AgencyIndex) ?? new();
 
             OrganisationTransferNationRequest organisationNationTransfer = new OrganisationTransferNationRequest()
             {
@@ -258,7 +262,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             {
                 var organisationDetails = await _facadeService.GetOrganisationEnrolments(organisationId);
 
-                var approvedUser = organisationDetails.Users.FirstOrDefault(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
+                var approvedUser = organisationDetails.Users.Find(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
                 rejectedJourneyData.ApprovedUserFirstName = approvedUser.FirstName;
                 rejectedJourneyData.ApprovedUserLastName = approvedUser.LastName;
             }
@@ -312,7 +316,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             SetBackLink(session, PagePath.EnrolmentDecision);
 
             var organisationDetails = await _facadeService.GetOrganisationEnrolments(session.RegulatorSession.OrganisationId.Value);
-            var approvedUser = organisationDetails.Users.FirstOrDefault(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
+            var approvedUser = organisationDetails.Users.Find(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
 
             var delegatedUsers = organisationDetails.Users.Where(x => x.Enrolment.ServiceRole == ServiceRole.DelegatedPerson);
 
@@ -398,7 +402,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             var organisationDetails =
                 await _facadeService.GetOrganisationEnrolments(session.RegulatorSession.OrganisationId.Value);
             var approvedUser = organisationDetails.Users
-                .FirstOrDefault(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson);
+                .Find(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson);
             var delegatedUsers = organisationDetails.Users
                 .Where(x => x.Enrolment.ServiceRole == ServiceRole.DelegatedPerson);
 
@@ -419,9 +423,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                     OrganisationName = organisationDetails.OrganisationName,
                     ApprovedUser = new EmailDetails()
                     {
-                        UserFirstName = approvedUser.FirstName,
-                        UserSurname = approvedUser.LastName,
-                        Email = approvedUser.Email
+                        UserFirstName = approvedUser?.FirstName,
+                        UserSurname = approvedUser?.LastName,
+                        Email = approvedUser?.Email
                     },
                     DelegatedUsers = delegatedUsers.Select(x => new EmailDetails()
                     {
@@ -462,7 +466,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error accepting application for: {acceptedUserEmail} in organisation {organisationDetails.OrganisationId}");
+                _logger.LogError(e, "Error accepting application for: {AcceptedUserEmail} in organisation {OrganisationId}", acceptedUserEmail, organisationDetails.OrganisationId);
             }
 
             ModelState.AddModelError("Update failed", "Update failed");
@@ -473,7 +477,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
 
         private EnrolmentRequestsViewModel GetEnrolmentRequestsViewModel(OrganisationEnrolments organisationDetails)
         {
-            var approvedUser = organisationDetails.Users.FirstOrDefault(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
+            var approvedUser = organisationDetails.Users.Find(x => x.Enrolment.ServiceRole == ServiceRole.ApprovedPerson) ?? new();
 
             var delegatedUsers = organisationDetails.Users.Where(x => x.Enrolment.ServiceRole == ServiceRole.DelegatedPerson);
 

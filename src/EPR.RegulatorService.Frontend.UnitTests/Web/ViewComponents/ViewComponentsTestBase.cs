@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Moq;
+
 using System.Security.Claims;
 using EPR.Common.Authorization.Models;
 using EPR.RegulatorService.Frontend.Core.Sessions;

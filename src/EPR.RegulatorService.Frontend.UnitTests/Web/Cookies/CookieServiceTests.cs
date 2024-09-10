@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Cookies;
 
@@ -153,7 +152,7 @@ public class CookieServiceTests
         requestFeature.Headers = new HeaderDictionary();
         if (key != string.Empty && value != string.Empty)
         {
-            requestFeature.Headers.Add(HeaderNames.Cookie, new StringValues(key + "=" + value));
+            requestFeature.Headers.Append(HeaderNames.Cookie, new StringValues(key + "=" + value));
         }
 
         featureCollection.Set<IHttpRequestFeature>(requestFeature);

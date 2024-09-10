@@ -18,10 +18,9 @@ public class InviteNewApprovedPersonController : RegulatorSessionBaseController
 
     public InviteNewApprovedPersonController(
         ISessionManager<JourneySession> sessionManager,
-        ILogger<InviteNewApprovedPersonController> logger,
         IConfiguration configuration,
         IFacadeService facadeService)
-        : base(sessionManager, logger, configuration)
+        : base(sessionManager, configuration)
     {
         _facadeService = facadeService;
     }

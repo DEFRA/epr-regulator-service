@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
-using Moq;
+
 using System.Text.Json;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers

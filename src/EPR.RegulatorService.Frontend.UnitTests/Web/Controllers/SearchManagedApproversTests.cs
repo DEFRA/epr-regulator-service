@@ -7,9 +7,8 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
-using Moq;
+
 using EPR.RegulatorService.Frontend.Core.MockedData;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
@@ -24,7 +23,6 @@ public class SearchManagedApproversTests
     protected Mock<HttpContext> _httpContextMock = null!;
     private SearchManageApproversController _systemUnderTest = null!;
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
-    private Mock<ILogger<SearchManageApproversController>> _mockLogger;
     private Mock<IConfiguration> _mockConfiguration;
     private readonly string _pathBase = "/path/base";
     private readonly int _pageSize = 20;
@@ -38,7 +36,6 @@ public class SearchManagedApproversTests
             .Returns(Task.FromResult(false));
 
         _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
-        _mockLogger = new Mock<ILogger<SearchManageApproversController>>();
         _mockConfiguration = new Mock<IConfiguration>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
         configurationSectionMock.Setup(section => section.Value).Returns(_pathBase);
@@ -60,7 +57,6 @@ public class SearchManagedApproversTests
 
         _systemUnderTest = new SearchManageApproversController(
             _mockSessionManager.Object,
-            _mockLogger.Object,
             _mockConfiguration.Object,
             _facadeServiceMock.Object);
         _systemUnderTest.ControllerContext.HttpContext = _httpContextMock.Object;
@@ -72,31 +68,19 @@ public class SearchManagedApproversTests
     [TestMethod]
     public async Task RegulatorSearchPage_NullSessionManager_ExpectNullArgumentException()
     {
-        var mockLogger = new Mock<ILogger<SearchManageApproversController>>();
         var mockConfiguration = new Mock<IConfiguration>();
         var mockFacade = new Mock<IFacadeService>();
         Assert.ThrowsException<ArgumentNullException>(() =>
-            new SearchManageApproversController(null, mockLogger.Object, mockConfiguration.Object, mockFacade.Object));
-    }
-
-    [TestMethod]
-    public async Task RegulatorSearchPage_NullLogger_ExpectNullArgumentException()
-    {
-        var sessionManager = new Mock<ISessionManager<JourneySession>>();
-        var mockConfiguration = new Mock<IConfiguration>();
-        var mockFacade = new Mock<IFacadeService>();
-        Assert.ThrowsException<ArgumentNullException>(() =>
-            new SearchManageApproversController(sessionManager.Object, null, mockConfiguration.Object, mockFacade.Object));
+            new SearchManageApproversController(null, mockConfiguration.Object, mockFacade.Object));
     }
 
     [TestMethod]
     public async Task RegulatorSearchPage_NullConfig_ExpectNullArgumentException()
     {
         var sessionManager = new Mock<ISessionManager<JourneySession>>();
-        var mockLogger = new Mock<ILogger<SearchManageApproversController>>();
         var mockFacade = new Mock<IFacadeService>();
         Assert.ThrowsException<ArgumentNullException>(() =>
-            new SearchManageApproversController(sessionManager.Object, mockLogger.Object, null, mockFacade.Object));
+            new SearchManageApproversController(sessionManager.Object, null, mockFacade.Object));
     }
 
     [TestMethod]

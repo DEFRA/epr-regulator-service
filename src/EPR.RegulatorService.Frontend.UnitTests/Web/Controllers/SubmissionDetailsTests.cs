@@ -2,7 +2,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
+
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
 

@@ -1,7 +1,5 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
-using Enums;
-
 public class Submission : AbstractSubmission
 {
     public bool IsResubmissionRequired { get; set; }

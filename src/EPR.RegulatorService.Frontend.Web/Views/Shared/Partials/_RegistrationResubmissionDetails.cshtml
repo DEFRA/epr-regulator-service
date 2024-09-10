@@ -1,5 +1,3 @@
-@using EPR.RegulatorService.Frontend.Core.Extensions
-@using EPR.RegulatorService.Frontend.Core.Models.FileDownload
 @using EPR.RegulatorService.Frontend.Web.Configs
 @using EPR.RegulatorService.Frontend.Web.Constants
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations
@@ -42,16 +40,6 @@
         </dt>
         <dd class="govuk-summary-list__value">
           @Model.FormattedTimeAndDateOfSubmission
-        </dd>
-        <dd class="govuk-summary-list__value"></dd>
-      </div>
-
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          @Localizer["SummaryList.SubTitle.SubmittedOnTime"]
-        </dt>
-        <dd class="govuk-summary-list__value">
-          @Model.SubmittedOnTime.ToYesNo()
         </dd>
         <dd class="govuk-summary-list__value"></dd>
       </div>

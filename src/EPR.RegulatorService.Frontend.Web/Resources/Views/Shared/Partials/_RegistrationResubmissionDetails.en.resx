@@ -156,9 +156,6 @@
   <data name="SummaryList.SubTitle.PartnerDetails" xml:space="preserve">
     <value>Partner details</value>
   </data>
-  <data name="SummaryList.SubTitle.SubmittedOnTime" xml:space="preserve">
-    <value>Submitted on time</value>
-  </data>
   <data name="SummaryList.SubTitle.PreviousReasonForRejection" xml:space="preserve">
     <value>Reason for rejection of previous submission</value>
   </data>

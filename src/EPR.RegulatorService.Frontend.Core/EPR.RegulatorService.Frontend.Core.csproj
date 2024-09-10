@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>EPR.RegulatorService.Frontend.Core</AssemblyName>
@@ -14,12 +14,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPR.Common.Authorization" Version="1.0.13" />
-    <PackageReference Include="libphonenumber-csharp" Version="8.13.4" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="2.19.1" />
+    <PackageReference Include="EPR.Common.Authorization" Version="1.0.17" />
+    <PackageReference Include="libphonenumber-csharp" Version="8.13.44" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +33,11 @@
         **/MockedAcceptedRegistrations.cs,**/MockedPendingRegistrations.cs,**/MockedRejectedRegistrations.cs,**/ServiceProviderExtension.cs,**/MockedAcceptedSubmissions.cs,**/MockedPendingSubmissions.cs,**/MockedRejectedSubmissions.cs,**/OrganisationResponse.cs,**/TransferDetails.cs,**/User.cs,**/UserDataResponse.cs,**/UserDetails.cs,**/UserEnrolment.cs,**/MockedFacadeService.cs,**/JourneySession.cs,**/PermissionManagementSessionItem.cs,**/RejectUserJourneyData.cs,**/MockedAcceptedRegistrations.cs,**/RegistrationFilters.cs,**/Registration.cs
       </Value>
     </SonarQubeSetting>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
   </ItemGroup>
 
 </Project>

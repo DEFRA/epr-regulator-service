@@ -2,7 +2,7 @@ using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using Microsoft.AspNetCore.Http;
-using Moq;
+
 using System.Text;
 using System.Text.Json;
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -18,7 +18,7 @@ public class SessionManagerTests
     private string _serializedTestSession;
     private byte[] _sessionBytes;
     private Mock<ISession> _sessionMock;
-    private ISessionManager<JourneySession> _sessionManager;
+    private JourneySessionManager _sessionManager;
 
     [TestInitialize]
     public void Setup()
@@ -146,8 +146,8 @@ public class SessionManagerTests
         Assert.IsNotNull(savedSession);
         savedSession.Should().BeOfType<JourneySession>();
         Assert.AreEqual(
-            expected: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName,
-            actual: OrganisationName
+            expected: OrganisationName,
+            actual: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
         );
         _sessionMock.Verify(x => x.LoadAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
         _sessionMock.Verify(x => x.Set(_sessionKey, It.IsAny<byte[]>()), Times.Exactly(2));
@@ -170,8 +170,8 @@ public class SessionManagerTests
         Assert.IsNotNull(savedSession);
         savedSession.Should().BeOfType<JourneySession>();
         Assert.AreEqual(
-            expected: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName,
-            actual: OrganisationName
+            expected: OrganisationName,
+            actual: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
         );
         _sessionMock.Verify(x => x.LoadAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
         _sessionMock.Verify(x => x.Set(_sessionKey, It.IsAny<byte[]>()), Times.Exactly(2));

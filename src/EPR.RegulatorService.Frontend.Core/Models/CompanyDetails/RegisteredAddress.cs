@@ -1,6 +1,4 @@
-﻿namespace EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
-
-using System.Text.Json.Serialization;
+namespace EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
 
 public class RegisteredAddress
 {

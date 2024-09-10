@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
-using Moq;
+
 using System.Globalization;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;

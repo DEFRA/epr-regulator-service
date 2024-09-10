@@ -14,7 +14,7 @@ parameters:
 - name: sonarqubeInstance
   displayName: 'Select SonarQube for v9.9 or SonarQubeLatest for 10.4'
   type: string
-  default: 'SonarQube'
+  default: 'SonarQubeLatest'
   values:
   - 'SonarQube'
   - 'SonarQubeLatest'
@@ -35,6 +35,8 @@ variables:
     value: epr-regulator-service
   - name: runNugetTasks
     value: true
+  - name: dotnetVersion
+    value: dotnetVersion8
 
 resources:
   repositories:
@@ -60,3 +62,4 @@ extends:
     runNugetTasks: ${{ variables.runNugetTasks }}
     serviceName: $(serviceName)
     sonarqubeInstance: ${{ parameters.sonarqubeInstance }}
+    dotnetVersion: ${{ variables.dotnetVersion }}

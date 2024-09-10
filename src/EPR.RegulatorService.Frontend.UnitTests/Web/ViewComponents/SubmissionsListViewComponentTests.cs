@@ -1,10 +1,8 @@
-using AutoFixture;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewComponents;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 {

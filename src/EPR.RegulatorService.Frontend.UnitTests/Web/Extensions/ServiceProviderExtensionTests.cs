@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
-using Moq;
+
 using System.Text.Json;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Extensions;
@@ -31,7 +31,7 @@ public class ServiceProviderExtensionTests
 
         // Assert
         mockServiceProvider.Verify(m => m.Add(It.IsAny<ServiceDescriptor>()), Times.AtLeastOnce);
-        Assert.IsTrue(descriptors.Any(d => d.ServiceType == typeof(IConfigureOptions<MsalDistributedTokenCacheAdapterOptions>)));
+        Assert.IsTrue(descriptors.Exists(d => d.ServiceType == typeof(IConfigureOptions<MsalDistributedTokenCacheAdapterOptions>)));
     }
 
     [TestMethod]
@@ -71,9 +71,6 @@ public class ServiceProviderExtensionTests
     [ExpectedException(typeof(ArgumentNullException))]
     public void GivenRegisterWebComponents_WithNotSession_ThenShouldThrowError()
     {
-        // Test method is failing due to being unable to retrive need to work out how to enable this as the code below does not work
-        //_configuration.GetSection("ConnectionStrings")["REDIS_CONNECTION"];
-
         // Arrange
         var services = new ServiceCollection();
         var connectionStrings = new Dictionary<string, string> { { "REDIS_CONNECTION", "localhost:6379" } };
