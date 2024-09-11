@@ -30,7 +30,6 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
 
         if (connExternalId != Guid.Empty
             && organisationId != Guid.Empty
-            && !string.IsNullOrWhiteSpace(userName)
             && !string.IsNullOrWhiteSpace(organisationName))
         {
             session.AddRemoveApprovedUserSession = new AddRemoveApprovedUserSession
