@@ -13,6 +13,11 @@
     <NoWarn>S3903, S6967, S6964, S6934</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup> 
+    <!-- SonarCloud does not recognise file-scoped namespaces in current version. -->
+    <NoWarn>S3903</NoWarn>
+  </PropertyGroup>
+
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'EPR.RegulatorService.Frontend' " />
 
   <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
