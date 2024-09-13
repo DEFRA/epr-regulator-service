@@ -259,9 +259,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             {
                 return await SaveSessionAndRedirect(
                     session,
-                    nameof(Registrations),
+                    nameof(RegistrationDetails),
                     PagePath.AcceptRegistrationSubmission,
-                    PagePath.Registrations,
+                    PagePath.RegistrationDetails,
                     new { });
             }
 
