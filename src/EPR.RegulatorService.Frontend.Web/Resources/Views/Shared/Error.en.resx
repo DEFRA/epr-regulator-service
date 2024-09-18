@@ -121,7 +121,7 @@
     <value>Error</value>
   </data>
   <data name="Error.Title" xml:space="preserve">
-    <value>Something went wrong.</value>
+    <value>Something went wrong</value>
   </data>
   <data name="Error.TryAgainLater" xml:space="preserve">
     <value>Please try again in a few minutes. If the problem persists, please contact us using the contact details below and provide the following timestamp of when the issue occurred.</value>
