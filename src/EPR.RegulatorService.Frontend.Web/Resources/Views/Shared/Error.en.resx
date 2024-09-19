@@ -121,10 +121,10 @@
     <value>Error</value>
   </data>
   <data name="Error.Title" xml:space="preserve">
-    <value>Something went wrong</value>
+    <value>Something has gone wrong</value>
   </data>
   <data name="Error.TryAgainLater" xml:space="preserve">
-    <value>Please try again in a few minutes. If the problem persists, please contact us using the contact details below and provide the following timestamp of when the issue occurred.</value>
+    <value>Go back and try again, making sure you've entered your information correctly. If you keep seeing this error, copy the following timestamp and contact the service desk. Give them the timestamp and the details of your issue - for example, what you were trying to do when you saw this error.</value>
   </data>
   <data name="Error.WeHaveNotSaved" xml:space="preserve">
     <value>We have not saved your answers. When the service is available, you will have to start again.</value>
