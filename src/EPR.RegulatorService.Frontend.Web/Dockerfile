@@ -1,4 +1,4 @@
-﻿FROM defradigital/dotnetcore-development:dotnet6.0 AS build-env
+FROM defradigital/dotnetcore-development:dotnet6.0 AS build-env
 
 # Expose the app on a defined port, configurable via a build argument
 ARG PORT=3000
@@ -39,7 +39,7 @@ COPY --from=build-env --chown=dotnet /home/dotnet/EPR.RegulatorService.Frontend.
 
 # Add internationalisation support
 USER root
-RUN apk add icu-libs icu-data-full libintl
+RUN apk add icu-libs icu-data-full libintl tzdata
 USER dotnet
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0
