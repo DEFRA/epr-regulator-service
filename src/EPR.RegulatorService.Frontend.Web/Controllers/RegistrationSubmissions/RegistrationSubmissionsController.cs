@@ -1,12 +1,15 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 {
+    using EPR.Common.Authorization.Constants;
     using EPR.RegulatorService.Frontend.Web.Configs;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
 
+    [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
     public class RegistrationSubmissionsController : Controller
     {
         private readonly string _pathBase;
