@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <h1 class="govuk-caption-xl">
+                    @Localizer["EnvironmentAgency.Title"]
+                </h1>
+                <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">
+                    @Localizer["PageHeading"]
+                </h2>
+                <div id="contact-hint" class="govuk-hint">
+                    @Localizer["Subtitle"] <a href="/" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
