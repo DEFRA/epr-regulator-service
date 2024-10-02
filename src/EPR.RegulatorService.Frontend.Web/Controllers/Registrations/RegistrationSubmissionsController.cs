@@ -1,17 +1,23 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 {
+    using EPR.RegulatorService.Frontend.Web.Configs;
     using EPR.RegulatorService.Frontend.Web.Constants;
+    using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
 
     public class RegistrationSubmissionsController : Controller
     {
         private readonly string _pathBase;
+        private readonly ExternalUrlsOptions _externalUrlsOptions;
 
         public RegistrationSubmissionsController(
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IOptions<ExternalUrlsOptions> externalUrlsOptions)
         {
             _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
+            _externalUrlsOptions = externalUrlsOptions.Value;
         }
 
         [HttpGet]
@@ -20,7 +26,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         {
             SetCustomBackLink();
 
-            return View();
+            var model = new RegistrationSubmissionsViewModel
+            {
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin
+            };
+
+            return View(model);
         }
 
         private void SetCustomBackLink()

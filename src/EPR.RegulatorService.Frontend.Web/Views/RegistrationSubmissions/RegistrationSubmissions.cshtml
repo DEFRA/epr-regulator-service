@@ -1,3 +1,7 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+
+@model RegistrationSubmissionsViewModel
+
 @{
     ViewData["Title"] = Localizer["PageTitle"];
 }
@@ -13,7 +17,7 @@
                     @Localizer["PageHeading"]
                 </h2>
                 <div id="contact-hint" class="govuk-hint">
-                    @Localizer["Subtitle"] <a href="/" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
+                    @Localizer["Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
                 </div>
             </div>
         </div>
