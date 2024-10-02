@@ -1,4 +1,4 @@
-namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
+namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 {
     using EPR.RegulatorService.Frontend.Web.Configs;
     using EPR.RegulatorService.Frontend.Web.Constants;
