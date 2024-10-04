@@ -13,6 +13,8 @@ using EPR.RegulatorService.Frontend.Core.MockedData;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
+using EPR.RegulatorService.Frontend.Core.Enums;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
@@ -122,7 +124,7 @@ public class SearchManagedApproversTests
             SearchManageApproversSession = new SearchManageApproversSession { SearchTerm = searchTerm }
         };
         _mockSessionManager
-            .Setup(sm =>sm.GetSessionAsync(It.IsAny<ISession>()))
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
         var result = await _systemUnderTest.RegulatorSearchResult(pageNumber) as ViewResult;
@@ -154,7 +156,8 @@ public class SearchManagedApproversTests
                 },
             SearchManageApproversSession = new SearchManageApproversSession
             {
-                SearchTerm = searchTermFromSession, CurrentPageNumber = pageNumberFromSession
+                SearchTerm = searchTermFromSession,
+                CurrentPageNumber = pageNumberFromSession
             }
         };
 
@@ -179,19 +182,7 @@ public class SearchManagedApproversTests
     [TestMethod]
     public async Task RegulatorCompanyDetails_ReturnsViewWithModel()
     {
-        var session = new JourneySession
-        {
-            RegulatorSession =
-                new RegulatorSession
-                {
-                    Journey = new List<string> { PagePath.RegulatorSearchPage, PagePath.RegulatorSearchResult, PagePath.RegulatorCompanyDetail },
-                    OrganisationId = _organisationId
-                }
-        };
-        _mockSessionManager
-            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(session);
-
+        SetupRegulatorCompanyDetailsTest();
 
         var result = await _systemUnderTest.RegulatorCompanyDetail(_organisationId) as ViewResult;
         Assert.IsNotNull(result);
@@ -203,21 +194,81 @@ public class SearchManagedApproversTests
     [TestMethod]
     public async Task RegulatorCompanyDetails_ModelHasIsComplianceScheme()
     {
+        SetupRegulatorCompanyDetailsTest();
+
+        var result = await _systemUnderTest.RegulatorCompanyDetail(_organisationId) as ViewResult;
+        (result.Model as RegulatorCompanyDetailViewModel).IsComplianceScheme.Should().BeTrue();
+    }
+
+    /// <summary>
+    /// Specifically tests the scenario where a basic user has been promoted to a delegate user by the AP.
+    /// Before the user accepts the invitation to be a delegate, the regulator should see the user in their Delegate User list only
+    /// </summary>
+    /// <returns>Task</returns>
+    [TestMethod]
+    public async Task RegulatorCompanyDetails_DelegatedAdminUser_OnlyShowsInDelegatedTab()
+    {
+        SetupRegulatorCompanyDetailsTest();
+
+        _facadeServiceMock
+            .Setup(a => a.GetRegulatorCompanyDetails(_organisationId))
+            .ReturnsAsync(new RegulatorCompanyDetailsModel
+            {
+                Company = new Company { OrganisationName = "Test Org", RegisteredAddress = new RegisteredAddress { BuildingNumber = "Test House" } },
+                CompanyUserInformation = new List<CompanyUserInformation>
+                {
+                    new CompanyUserInformation
+                    {
+                        Email = "test1@test.com",
+                        PersonRoleId = (int)PersonRole.Admin,
+                        IsEmployee = false,
+                        UserEnrolments = new List<CompanyEnrolments>
+                        {
+                            new CompanyEnrolments
+                            {
+                                EnrolmentStatusId = (int)Frontend.Core.Enums.EnrolmentStatus.Enrolled,
+                                ServiceRoleId = (int)Frontend.Core.Enums.ServiceRole.ProducerOther
+                            }
+                        }
+                    },
+                    new CompanyUserInformation
+                    {
+                        Email = "test1@test.com",
+                        PersonRoleId = (int)PersonRole.Admin,
+                        IsEmployee = true,
+                        UserEnrolments = new List<CompanyEnrolments>
+                        {
+                            new CompanyEnrolments
+                            {
+                                EnrolmentStatusId = (int)Frontend.Core.Enums.EnrolmentStatus.Nominated,
+                                ServiceRoleId = (int)Frontend.Core.Enums.ServiceRole.DelegatedPerson
+                            }
+                        }
+                    },
+                }
+            });
+
+        var result = await _systemUnderTest.RegulatorCompanyDetail(_organisationId) as ViewResult;
+        var resultModel = result.Model as RegulatorCompanyDetailViewModel;
+
+        resultModel.AdminUsers.Count.Should().Be(0);
+        resultModel.DelegatedUsers.Count.Should().Be(1);
+        resultModel.DelegatedUsers[0].IsEmployee.Should().BeTrue();
+    }
+    private void SetupRegulatorCompanyDetailsTest()
+    {
         var session = new JourneySession
         {
-            RegulatorSession =
-                new RegulatorSession
-                {
-                    Journey = new List<string> { PagePath.RegulatorSearchPage, PagePath.RegulatorSearchResult, PagePath.RegulatorCompanyDetail },
-                    OrganisationId = _organisationId
-                }
+            RegulatorSession = new RegulatorSession
+            {
+                Journey = new List<string> { PagePath.RegulatorSearchPage, PagePath.RegulatorSearchResult, PagePath.RegulatorCompanyDetail },
+                OrganisationId = _organisationId
+            }
         };
+
         _mockSessionManager
             .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(session);
 
-
-        var result = await _systemUnderTest.RegulatorCompanyDetail(_organisationId) as ViewResult;
-        (result.Model as RegulatorCompanyDetailViewModel).IsComplianceScheme.Should().BeTrue();
     }
 }
