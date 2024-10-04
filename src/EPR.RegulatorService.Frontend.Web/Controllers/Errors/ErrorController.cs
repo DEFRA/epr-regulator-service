@@ -1,5 +1,6 @@
 using System.Net;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,6 @@ public class ErrorController : Controller
             ViewBag.BackLinkToDisplay = backLink;
         }
 
-        return View(errorView);
+        return View(errorView, new ErrorViewModel());
     }
 }

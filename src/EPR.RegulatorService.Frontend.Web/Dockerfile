@@ -41,7 +41,7 @@ COPY --from=build-env /home/dotnet/EPR.RegulatorService.Frontend.Web/out .
 
 # Add internationalisation support
 USER root
-RUN apk add --no-cache icu-libs icu-data-full libintl
+RUN apk add --no-cache icu-libs icu-data-full libintl tzdata
 USER dotnet
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0
