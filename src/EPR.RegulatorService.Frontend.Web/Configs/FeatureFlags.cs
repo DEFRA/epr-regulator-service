@@ -16,4 +16,6 @@ public static class FeatureFlags
     public const string PomDataPeriodAndTime = "PomDataPeriodAndTime";
 
     public const string RegistrationDataPeriodAndTime = "RegistrationDataPeriodAndTime";
+
+    public const string ManageRegistrationSubmissions = "ManageRegistrationSubmissions";
 }
