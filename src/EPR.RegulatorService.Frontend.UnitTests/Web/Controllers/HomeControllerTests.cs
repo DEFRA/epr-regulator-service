@@ -301,6 +301,7 @@ public class HomeControllerTests
         Assert.AreEqual(ApplicationsUrl, viewModel.ApplicationsUrl);
 
         _httpContextMock.Verify(x => x.User, Times.Never);
+        _mockFeatureManager.Verify(fm => fm.IsEnabledAsync(It.IsAny<string>()), Times.Once);
     }
 
     [TestMethod]
@@ -334,5 +335,6 @@ public class HomeControllerTests
         Assert.AreEqual(ApplicationsUrl, viewModel.ApplicationsUrl);
 
         _httpContextMock.Verify(x => x.User, Times.Never);
+        _mockFeatureManager.Verify(fm => fm.IsEnabledAsync(It.IsAny<string>()), Times.Once);
     }
 }
