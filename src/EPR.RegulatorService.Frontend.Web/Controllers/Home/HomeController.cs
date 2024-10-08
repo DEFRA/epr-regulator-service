@@ -11,6 +11,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Home;
 
@@ -18,17 +19,20 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Home;
 public class HomeController : RegulatorSessionBaseController
 {
     private readonly ISessionManager<JourneySession> _sessionManager;
+    private readonly IFeatureManager _featureManager;
     private readonly LandingPageConfig _landingPageConfig;
     private readonly EprCookieOptions _cookieOptions;
 
     public HomeController(
         ISessionManager<JourneySession> sessionManager,
+        IFeatureManager featureManager,
         IOptions<LandingPageConfig> landingPageConfig,
         IOptions<EprCookieOptions> cookieOptions,
         IConfiguration configuration)
         : base(sessionManager, configuration)
     {
         _sessionManager = sessionManager;
+        _featureManager = featureManager;
         _landingPageConfig = landingPageConfig.Value;
         _cookieOptions = cookieOptions.Value;
     }
@@ -80,7 +84,10 @@ public class HomeController : RegulatorSessionBaseController
             ApplicationsUrl = _landingPageConfig.ApplicationsUrl,
             SubmissionsUrl = _landingPageConfig.SubmissionsUrl,
             RegistrationsUrl = _landingPageConfig.RegistrationsUrl,
-            ManageApprovedPersonUrl = _landingPageConfig.ManageApprovedPersonUrl
+            ManageApprovedPersonUrl = _landingPageConfig.ManageApprovedPersonUrl,
+            ManageRegistrationSubmissionsUrl = await _featureManager.IsEnabledAsync(FeatureFlags.ManageRegistrationSubmissions)
+            ? _landingPageConfig.ManageRegistrationSubmissionsUrl
+            : string.Empty
         };
 
         await SaveSessionAndJourney(session, PagePath.Home);
