@@ -1,0 +1,71 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+
+@model QueryRegistrationSubmissionViewModel
+@{
+    ViewData["Title"] = Localizer["QueryRegistrationSubmission.Title"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer, nameof(Model.Query));
+    var query = string.IsNullOrEmpty(Model.Query) ? string.Empty : Model.Query;
+    var queryError = errorsViewModel.Errors.Find(x => x.Key == nameof(Model.Query));
+    var queryErrorExists = !string.IsNullOrEmpty(queryError.Key);
+}
+
+@using (Html.BeginForm("QueryRegistrationSubmission", "RegistrationSubmissions", FormMethod.Post))
+{
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                    }
+                    <span class="govuk-caption-xl">
+                      @Localizer["QueryRegistrationSubmission.Caption"]
+                    </span>
+                    <h1 class="govuk-heading-xl govuk-!-margin-bottom-4" for="@nameof(Model.Query)">
+                        @Localizer["QueryRegistrationSubmission.Heading"]
+                    </h1>
+                    <p class="govuk-body govuk-!-margin-bottom-4">
+                      @Localizer["QueryRegistrationSubmission.Description"]
+                    </p>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="400">
+                        <div class="govuk-form-group @(queryErrorExists ? "govuk-form-group--error" : string.Empty)">
+                            @if (queryErrorExists)
+                            {
+                                @await Html.PartialAsync("Partials/Govuk/_InlineError", queryError)
+                            }
+                            <textarea
+                              class="govuk-textarea govuk-textarea--error govuk-js-character-count @(queryErrorExists ? "epr-textarea--error" : string.Empty)"
+                              id="@nameof(Model.Query)"
+                              name="@nameof(Model.Query)"
+                              rows="5"
+                              aria-describedby="@nameof(Model.Query)-info">@query</textarea>
+                        </div>
+                        <div id="@nameof(Model.Query)-info" class="govuk-hint govuk-character-count__message">
+                            @SharedLocalizer["CharacterLimit.NoJavaScript"]
+                        </div>
+                    </div>
+                </div>
+                <div class="govuk-grid-column-full">
+                    <button
+                      class="govuk-button govuk-button--secondary epr-horizontal-control epr-horizontal-control-button govuk-!-margin-right-6"
+                      data-module="govuk-button">
+                        @SharedLocalizer["Continue"]
+                    </button>
+                </div>
+                <div class="govuk-grid-column-full">
+                    <a href="/manage-registration-submissions" class="govuk-link govuk-link--no-visited-state">
+                        @Localizer["QueryRegistrationSubmission.BackToAllSubmissions"]
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+}
