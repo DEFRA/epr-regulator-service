@@ -132,4 +132,22 @@
   <data name="Subtitle" xml:space="preserve">
     <value>This list shows the current pending submissions and the latest actioned submissions. To view older submissions</value>
   </data>
+  <data name="FilterResults.Title" xml:space="preserve">
+    <value>Filtered results:</value>
+  </data>
+  <data name="Table.Header.Company" xml:space="preserve">
+    <value>Organisation</value>
+  </data>
+  <data name="Table.Header.CompanyId" xml:space="preserve">
+    <value>Organisation ID</value>
+  </data>
+  <data name="Table.Header.ApplicationDate" xml:space="preserve">
+    <value>Submission date and time</value>
+  </data>
+  <data name="Table.Header.Year" xml:space="preserve">
+    <value>Submission year</value>
+  </data>
+  <data name="Table.Header.Status" xml:space="preserve">
+    <value>Submission Status</value>
+  </data>
 </root>
