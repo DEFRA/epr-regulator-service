@@ -13,6 +13,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
@@ -30,6 +31,7 @@ public class HomeControllerTests
     private Mock<IOptions<EprCookieOptions>> _cookieConfig;
     private Mock<IResponseCookies> _responseCookiesMock;
     private Mock<ISession> _sessionMock;
+    private Mock<IFeatureManager> _mockFeatureManager;
     private HomeController _systemUnderTest;
     private JourneySession _journeySession;
     private UserData _userData;
@@ -40,8 +42,12 @@ public class HomeControllerTests
     private const string ManageAccountUrl = "/manage-account/manage";
     private const string ApplicationsUrl = "/regulators/applications";
     private const string SessionCookieName = "SessionCookieName";
+    private const string ManageRegistraionSubmissionsUrl = "/manage-registration-submissions";
 
-    public void Setup(ServiceRole serviceRole, bool getUserDataFromClaimsPrinciple = false)
+    public void Setup(
+        ServiceRole serviceRole,
+        LandingPageConfig landingPageConfig = null,
+        bool getUserDataFromClaimsPrinciple = false)
     {
         _httpContextMock = new Mock<HttpContext>();
         _httpResponseMock = new Mock<HttpResponse>();
@@ -50,7 +56,7 @@ public class HomeControllerTests
         _configMock = new Mock<IOptions<LandingPageConfig>>();
         _cookieConfig = new Mock<IOptions<EprCookieOptions>>();
         _sessionMock = new Mock<ISession>();
-
+        _mockFeatureManager = new Mock<IFeatureManager>();
 
         _userData = new UserData()
         {
@@ -76,12 +82,20 @@ public class HomeControllerTests
                 .ReturnsAsync(_journeySession);
         }
 
-        _configMock.Setup(mock => mock.Value).Returns(new LandingPageConfig
+        if (landingPageConfig != null)
         {
-            ApplicationsUrl = ApplicationsUrl, ManageAccountUrl = ManageAccountUrl
-        });
+            _configMock.Setup(mock => mock.Value).Returns(landingPageConfig);
+        }
+        else
+        {
+            _configMock.Setup(mock => mock.Value).Returns(new LandingPageConfig
+            {
+                ManageAccountUrl = ManageAccountUrl,
+                ApplicationsUrl = ApplicationsUrl
+            });
+        }
 
-        _cookieConfig.Setup(m => m.Value).Returns(new EprCookieOptions { SessionCookieName = "SessionCookieName"});
+        _cookieConfig.Setup(m => m.Value).Returns(new EprCookieOptions { SessionCookieName = "SessionCookieName" });
         _httpContextMock.Setup(m => m.Response).Returns(_httpResponseMock.Object);
         _httpContextMock.Setup(m => m.Session).Returns(_sessionMock.Object);
         _httpResponseMock.Setup(m => m.Cookies).Returns(_responseCookiesMock.Object);
@@ -94,6 +108,7 @@ public class HomeControllerTests
 
         _systemUnderTest = new HomeController(
             _sessionManagerMock.Object,
+            _mockFeatureManager.Object,
             _configMock.Object,
             _cookieConfig.Object,
             configurationMock.Object);
@@ -223,7 +238,7 @@ public class HomeControllerTests
         GivenOnLandingPage_AndTheUserIsABasicUser_ThenShouldHaveValidUserData()
     {
         // Arrange
-        Setup(ServiceRole.RegulatorBasic, true);
+        Setup(ServiceRole.RegulatorBasic, null, true);
 
         // Act
         var result = (await _systemUnderTest.LandingPage()) as ViewResult;
@@ -233,7 +248,7 @@ public class HomeControllerTests
         Assert.IsNotNull(result.Model);
         result.Model.Should().BeOfType<LandingPageViewModel>();
 
-        var viewModel = (LandingPageViewModel) result.Model;
+        var viewModel = (LandingPageViewModel)result.Model;
         Assert.IsNotNull(viewModel);
         Assert.AreEqual(expected: viewModel.OrganisationName, actual: _userData.Organisations[0].Name);
         Assert.AreEqual(expected: viewModel.PersonName, actual: $"{_userData.FirstName} {_userData.LastName}");
@@ -246,12 +261,80 @@ public class HomeControllerTests
     public void OnSignOut_DeleteUserSessionCookie()
     {
         // Arrange
-        Setup(ServiceRole.RegulatorBasic, true);
+        Setup(ServiceRole.RegulatorBasic, null, true);
 
         // Act
         _systemUnderTest.SignedOut();
 
         // Assert
         _responseCookiesMock.Verify(x => x.Delete(SessionCookieName), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task LandingPage_ShouldIncludeManageRegistrationSubmissionsUrl_WhenManageRegistrationSubmissionsFeatureFlagIsEnabled()
+    {
+        // Arrange
+        var landingPageConfig = new LandingPageConfig
+        {
+            ManageRegistrationSubmissionsUrl = ManageRegistraionSubmissionsUrl, // Expected URL when feature flag is enabled
+            ManageAccountUrl = ManageAccountUrl,
+            ApplicationsUrl = ApplicationsUrl
+        };
+
+        Setup(ServiceRole.RegulatorAdmin, landingPageConfig);
+
+        _mockFeatureManager.Setup(fm =>
+            fm.IsEnabledAsync(FeatureFlags.ManageRegistrationSubmissions))
+            .ReturnsAsync(true); // Mock feature flag enabled
+
+        // Act
+        var result = await _systemUnderTest.LandingPage() as ViewResult;
+
+        // Assert
+        Assert.IsNotNull(result);
+        var viewModel = result.Model as LandingPageViewModel;
+        Assert.IsNotNull(viewModel);
+
+        // Verify the URL is included when the feature flag is enabled
+        Assert.AreEqual(ManageRegistraionSubmissionsUrl, viewModel.ManageRegistrationSubmissionsUrl);
+        Assert.AreEqual(ManageAccountUrl, viewModel.ManageAccountUrl);
+        Assert.AreEqual(ApplicationsUrl, viewModel.ApplicationsUrl);
+
+        _httpContextMock.Verify(x => x.User, Times.Never);
+        _mockFeatureManager.Verify(fm => fm.IsEnabledAsync(It.IsAny<string>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task LandingPage_ShouldNotIncludeManageRegistrationSubmissionsUrl_WhenManageRegistrationSubmissionsFeatureFlagIsDisabled()
+    {
+        // Arrange
+        var landingPageConfig = new LandingPageConfig
+        {
+            ManageRegistrationSubmissionsUrl = string.Empty,
+            ManageAccountUrl = ManageAccountUrl,
+            ApplicationsUrl = ApplicationsUrl
+        };
+
+        Setup(ServiceRole.RegulatorAdmin, landingPageConfig);
+
+        _mockFeatureManager.Setup(fm =>
+            fm.IsEnabledAsync(FeatureFlags.ManageRegistrationSubmissions))
+            .ReturnsAsync(false); // Mock feature flag disabled
+
+        // Act
+        var result = await _systemUnderTest.LandingPage() as ViewResult;
+
+        // Assert
+        Assert.IsNotNull(result);
+        var viewModel = result.Model as LandingPageViewModel;
+        Assert.IsNotNull(viewModel);
+
+        // Verify the URL is NOT included when the feature flag is disabled
+        Assert.AreEqual(string.Empty, viewModel.ManageRegistrationSubmissionsUrl);
+        Assert.AreEqual(ManageAccountUrl, viewModel.ManageAccountUrl);
+        Assert.AreEqual(ApplicationsUrl, viewModel.ApplicationsUrl);
+
+        _httpContextMock.Verify(x => x.User, Times.Never);
+        _mockFeatureManager.Verify(fm => fm.IsEnabledAsync(It.IsAny<string>()), Times.Once);
     }
 }

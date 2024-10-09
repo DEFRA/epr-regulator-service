@@ -1,4 +1,4 @@
-﻿@using EPR.RegulatorService.Frontend.Web.ViewModels.Home
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Home
 @addTagHelper *, Microsoft.FeatureManagement.AspNetCore
 
 @model LandingPageViewModel
@@ -43,7 +43,18 @@
                 <p class="govuk-body">
                   @Localizer["LandingPage.ManageApplicationsDescription"]
                 </p>
-                
+
+                <feature name="ManageRegistrationSubmissions">
+                    <div class="govuk-!-margin-bottom-2">
+                        <a class="govuk-link govuk-link--no-visited-state govuk-body-l govuk-!-font-weight-bold" href="@Model.ManageRegistrationSubmissionsUrl">
+                            @Localizer["LandingPage.ManageRegistrationSubmissions"]
+                        </a>
+                    </div>
+                    <p class="govuk-body">
+                        @Localizer["LandingPage.ManageRegistrationSubmissionsDescription"]
+                    </p>
+                </feature>
+
                 <feature name="ManagePoMSubmissions">
                   <div class="govuk-!-margin-bottom-2">
                     <a class="govuk-link govuk-link--no-visited-state govuk-body-l govuk-!-font-weight-bold" href="@Model.SubmissionsUrl">
