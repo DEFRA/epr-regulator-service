@@ -50,6 +50,19 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return View(nameof(QueryRegistrationSubmission), model);
         }
 
+        [HttpPost]
+        [Route(PagePath.QueryRegistrationSubmission)]
+        public async Task<IActionResult> QueryRegistrationSubmission(QueryRegistrationSubmissionViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                SetBackLink(PagePath.RegistrationSubmissions);
+                return View(nameof(QueryRegistrationSubmission), model);
+            }
+
+            return Redirect(PagePath.RegistrationSubmissions);
+        }
+
         private void SetCustomBackLink()
         {
             string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
