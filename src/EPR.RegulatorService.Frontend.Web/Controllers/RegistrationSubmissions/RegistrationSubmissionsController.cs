@@ -8,7 +8,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
+    using Microsoft.FeatureManagement.Mvc;
 
+    [FeatureGate(FeatureFlags.ManageRegistrationSubmissions)]
     [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
     public class RegistrationSubmissionsController : Controller
     {
