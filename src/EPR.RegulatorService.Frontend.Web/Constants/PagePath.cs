@@ -38,6 +38,7 @@ public static class PagePath
     public const string OrganisationDetailsFileDownloadSecurityWarning = "organisation-details-file-download-security-warning";
     public const string RegistrationSubmissions = "manage-registration-submissions";
     public const string QueryRegistrationSubmission = "manage-registration-submissions-query";
+    public const string RejectRegistrationSubmission = "manage-registration-submissions-reject";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

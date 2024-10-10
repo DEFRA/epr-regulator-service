@@ -105,5 +105,74 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             Assert.AreEqual(PagePath.RegistrationSubmissions, result.Url);
         }
+
+        [TestMethod]
+        public async Task RejectRegistrationSubmission_ReturnsView_WithCorrectModel()
+        {
+            // Arrange
+            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissions;
+
+            var expectedViewModel = new RejectRegistrationSubmissionViewModel
+            {
+                BackToAllSubmissionsUrl = expectedBacktoAllSubmissionsUrl
+            };
+
+            // Act
+            var result = await _controller.RejectRegistrationSubmission() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName);
+            Assert.IsInstanceOfType(result.Model, typeof(RejectRegistrationSubmissionViewModel));
+            var resultViewModel = result.Model as RejectRegistrationSubmissionViewModel;
+            Assert.AreEqual(expectedViewModel.RejectReason, resultViewModel.RejectReason);
+            Assert.AreEqual(expectedViewModel.BackToAllSubmissionsUrl, resultViewModel.BackToAllSubmissionsUrl);
+        }
+
+        [TestMethod]
+        public async Task RejectRegistrationSubmission_SetsCorrectBackLinkInViewData()
+        {
+            // Act
+            var result = await _controller.RejectRegistrationSubmission() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            // Check that the back link is correctly set in the ViewData
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+        }
+
+        [TestMethod]
+        public async Task RejectRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            var model = new RejectRegistrationSubmissionViewModel();
+            _controller.ModelState.AddModelError("TestError", "Model state is invalid");
+
+            // Act
+            var result = await _controller.RejectRegistrationSubmission(model) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName);
+            Assert.AreEqual(model, result.Model);
+
+            // Check that the back link is correctly set in the ViewData
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+        }
+
+        [TestMethod]
+        public async Task RejectRegistrationSubmission_Post_Redirects_WhenModelStateIsValid()
+        {
+            // Arrange
+            var model = new RejectRegistrationSubmissionViewModel();
+
+            // Act
+            var result = await _controller.RejectRegistrationSubmission(model) as RedirectResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(PagePath.RegistrationSubmissions, result.Url);
+        }
     }
 }

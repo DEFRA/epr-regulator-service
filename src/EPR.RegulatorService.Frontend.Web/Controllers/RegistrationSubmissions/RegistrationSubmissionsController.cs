@@ -63,6 +63,30 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return Redirect(PagePath.RegistrationSubmissions);
         }
 
+        [HttpGet]
+        [Route(PagePath.RejectRegistrationSubmission)]
+        public async Task<IActionResult> RejectRegistrationSubmission()
+        {
+            SetBackLink(PagePath.RegistrationSubmissions);
+
+            var model = new RejectRegistrationSubmissionViewModel();
+
+            return View(nameof(RejectRegistrationSubmission), model);
+        }
+
+        [HttpPost]
+        [Route(PagePath.RejectRegistrationSubmission)]
+        public async Task<IActionResult> RejectRegistrationSubmission(RejectRegistrationSubmissionViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                SetBackLink(PagePath.RegistrationSubmissions);
+                return View(nameof(RejectRegistrationSubmission), model);
+            }
+
+            return Redirect(PagePath.RegistrationSubmissions);
+        }
+
         private void SetCustomBackLink()
         {
             string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
