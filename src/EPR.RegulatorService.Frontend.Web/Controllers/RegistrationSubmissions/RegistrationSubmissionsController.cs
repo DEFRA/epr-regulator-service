@@ -8,7 +8,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
+    using Microsoft.FeatureManagement.Mvc;
 
+    [FeatureGate(FeatureFlags.ManageRegistrationSubmissions)]
     [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
     public class RegistrationSubmissionsController : Controller
     {
@@ -37,10 +39,40 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return View(model);
         }
 
+        [HttpGet]
+        [Route(PagePath.QueryRegistrationSubmission)]
+        public async Task<IActionResult> QueryRegistrationSubmission()
+        {
+            SetBackLink(PagePath.RegistrationSubmissions);
+
+            var model = new QueryRegistrationSubmissionViewModel();
+
+            return View(nameof(QueryRegistrationSubmission), model);
+        }
+
+        [HttpPost]
+        [Route(PagePath.QueryRegistrationSubmission)]
+        public async Task<IActionResult> QueryRegistrationSubmission(QueryRegistrationSubmissionViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                SetBackLink(PagePath.RegistrationSubmissions);
+                return View(nameof(QueryRegistrationSubmission), model);
+            }
+
+            return Redirect(PagePath.RegistrationSubmissions);
+        }
+
         private void SetCustomBackLink()
         {
             string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
             ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
+        }
+
+        private void SetBackLink(string path)
+        {
+            string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
+            ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
         }
     }
 }
