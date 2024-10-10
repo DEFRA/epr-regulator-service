@@ -1,5 +1,49 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
-@if (true)   @* Model.PagedOrganisationRegistrations.Any()) *@
+@model RegistrationSubmissionsViewModel
+
+@if (Model.FilteredDataList.PagedRegistrationSubmissionList.Any()) 
 { 
-<p>show component</p> 
+    <table class="govuk-table responsive-table" aria-label="Organisation Application Listing">
+        <thead role="rowgroup" class="govuk-table__head">
+            <tr role="row" class="govuk-table__row">
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.Company"]</th>
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.CompanyId"]</th>
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.ApplicationDate"]</th>
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.Year"]</th>
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.Status"]</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+             @foreach (var organisation in Model.FilteredDataList.PagedRegistrationSubmissionList)
+              {       
+        <tr role="row" class="govuk-table__row">
+                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                    <a href="../#" class="govuk-link">
+                        @organisation.OrganisationName 
+                    </a>
+                    <br />
+                        <span class="orgNameFilter Large producer">@organisation.ProducerType</span>
+                    </td>
+                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        @organisation.OrganisationId
+                    <br />
+                        Ref No: @organisation.RefNumber
+                    </td>
+                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        @organisation.SubmissionDateTime.ToLongDateString()
+                        <br />
+                    @organisation.SubmissionDateTime.ToLongTimeString() 
+                </td>
+                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        @organisation.SubmissionYear
+                    </td>
+                <td role="gridcell" class="govuk-table__cell vertical-middle-align"> 
+                    <strong class="govuk-tag @Model.FilteredDataList.GetStyleNameFromStatus(organisation.Status)">@organisation.Status</strong>
+                </td>
+            </tr>
+            } 
+        </tbody>
+    </table>
+
 }

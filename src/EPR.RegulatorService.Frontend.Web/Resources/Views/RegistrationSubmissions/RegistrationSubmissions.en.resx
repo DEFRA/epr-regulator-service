@@ -135,19 +135,4 @@
   <data name="FilterResults.Title" xml:space="preserve">
     <value>Filtered results:</value>
   </data>
-  <data name="Table.Header.Company" xml:space="preserve">
-    <value>Organisation</value>
-  </data>
-  <data name="Table.Header.CompanyId" xml:space="preserve">
-    <value>Organisation ID</value>
-  </data>
-  <data name="Table.Header.ApplicationDate" xml:space="preserve">
-    <value>Submission date and time</value>
-  </data>
-  <data name="Table.Header.Year" xml:space="preserve">
-    <value>Submission year</value>
-  </data>
-  <data name="Table.Header.Status" xml:space="preserve">
-    <value>Submission Status</value>
-  </data>
 </root>
