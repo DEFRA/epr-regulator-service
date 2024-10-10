@@ -50,6 +50,18 @@
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentRequests.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.en.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RejectRegistrationSubmission.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RejectRegistrationSubmission.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\QueryRegistrationSubmission.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\QueryRegistrationSubmission.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissions.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
