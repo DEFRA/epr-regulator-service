@@ -51,6 +51,9 @@
                 <h2 class="govuk-heading-m govuk-!-margin-bottom-5">
                     @Localizer["FilterResults.Title"].Value 
                 </h2>
+                
+                @await Component.InvokeAsync("RegistrationSubmissionList", null)
+
                 <table class="govuk-table responsive-table" aria-label="Organisation Application Listing">
                     <thead role="rowgroup" class="govuk-table__head">
                         <tr role="row" class="govuk-table__row">
