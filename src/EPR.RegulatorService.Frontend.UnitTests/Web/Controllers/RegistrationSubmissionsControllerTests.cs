@@ -136,9 +136,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(model, result.Model);
 
             // Verify the error is correctly added to the model state
-            Assert.IsTrue(_controller.ModelState[nameof(model.Query)]?.Errors.Count > 0);
+            Assert.IsTrue(_controller.ModelState[nameof(model.Query)].Errors.Count > 0);
             Assert.AreEqual("Reason for querying application must be 400 characters or less",
-                _controller.ModelState[nameof(model.Query)]?.Errors[0].ErrorMessage);
+                _controller.ModelState[nameof(model.Query)].Errors[0].ErrorMessage);
 
             // Verify the back link is set correctly
             AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
@@ -165,9 +165,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(model, result.Model);
 
             // Verify the error is correctly added to the model state
-            Assert.IsTrue(_controller.ModelState[nameof(model.Query)]?.Errors.Count > 0);
+            Assert.IsTrue(_controller.ModelState[nameof(model.Query)].Errors.Count > 0);
             Assert.AreEqual("Enter the reason you are querying this registration application",
-                _controller.ModelState[nameof(model.Query)]?.Errors[0].ErrorMessage);
+                _controller.ModelState[nameof(model.Query)].Errors[0].ErrorMessage);
 
             // Verify the back link is set correctly
             AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
@@ -270,9 +270,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(model, result.Model);
 
             // Verify the error is correctly added to the model state
-            Assert.IsTrue(_controller.ModelState[nameof(model.RejectReason)]?.Errors.Count > 0);
+            Assert.IsTrue(_controller.ModelState[nameof(model.RejectReason)].Errors.Count > 0);
             Assert.AreEqual("Reason for rejecting application must be 400 characters or less",
-                _controller.ModelState[nameof(model.RejectReason)]?.Errors[0].ErrorMessage);
+                _controller.ModelState[nameof(model.RejectReason)].Errors[0].ErrorMessage);
 
             // Verify the back link is set correctly
             AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
@@ -299,9 +299,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(model, result.Model);
 
             // Verify the error is correctly added to the model state
-            Assert.IsTrue(_controller.ModelState[nameof(model.RejectReason)]?.Errors.Count > 0);
+            Assert.IsTrue(_controller.ModelState[nameof(model.RejectReason)].Errors.Count > 0);
             Assert.AreEqual("Enter the reason you are rejecting this registration application",
-                _controller.ModelState[nameof(model.RejectReason)]?.Errors[0].ErrorMessage);
+                _controller.ModelState[nameof(model.RejectReason)].Errors[0].ErrorMessage);
 
             // Verify the back link is set correctly
             AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
