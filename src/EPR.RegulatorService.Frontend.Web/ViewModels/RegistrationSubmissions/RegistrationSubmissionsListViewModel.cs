@@ -1,5 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
+    using System.Diagnostics.CodeAnalysis;
+
+    [ExcludeFromCodeCoverage]
     public class RegistrationSubmissionsListViewModel
     {
         // TODO : Data should come from the page and passed to the component
