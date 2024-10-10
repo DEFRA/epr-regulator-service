@@ -110,6 +110,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
     // TODO : Replace with actual data model class.
     // TODO : Remove dummy class
+    [ExcludeFromCodeCoverage]
     public class Organisation
     {
         public string OrganisationName { get; set; }
