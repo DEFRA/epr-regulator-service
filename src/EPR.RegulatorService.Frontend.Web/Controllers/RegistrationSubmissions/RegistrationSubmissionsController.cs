@@ -33,7 +33,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
             var model = new RegistrationSubmissionsViewModel
             {
-                PowerBiLogin = _externalUrlsOptions.PowerBiLogin
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
+                FilteredDataList = new RegistrationSubmissionsListViewModel()
             };
 
             return View(model);
