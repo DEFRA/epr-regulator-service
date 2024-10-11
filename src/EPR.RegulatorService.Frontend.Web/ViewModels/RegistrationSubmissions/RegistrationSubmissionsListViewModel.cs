@@ -9,96 +9,45 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public RegistrationSubmissionsListViewModel()
         {
             // To Do; Remove dummy data
-            PagedRegistrationSubmissionList =
-            [
-                new Organisation { OrganisationId = "215 148",
-                    OrganisationName = "A148 org Ltd",
-                    ProducerType = "Small producer",
-                    RefNumber = "11 ### ##",
-                    SubmissionDateTime = DateTime.Now,
-                    SubmissionYear = "2222",
-                    Status = "GRANTED" },
-                new Organisation
-                {
-                    OrganisationId = "215 149",
-                    OrganisationName = "A149 Ltd",
-                    ProducerType = "Large producer",
-                    RefNumber = "33 ### ##",
-                    SubmissionDateTime = DateTime.Now,
-                    SubmissionYear = "3333",
-                    Status = "REFUSED"
-                },
-                new Organisation
-                {
-                    OrganisationId = "215 150",
-                    OrganisationName = "B150 Ltd",
-                    ProducerType = "Small producer",
-                    RefNumber = "44 ### ##",
-                    SubmissionDateTime = DateTime.Now,
-                    SubmissionYear = "4444",
-                    Status = "QUERIED"
-                },
-                new Organisation
-                {
-                    OrganisationId = "215 151",
-                    OrganisationName = "Aceme org Ltd",
-                    ProducerType = "Small producer",
-                    RefNumber = "## ### ##",
-                    SubmissionDateTime = DateTime.Now,
-                    SubmissionYear = "5555",
-                    Status = "PENDING"
-                },
-                new Organisation
-                {
-                    OrganisationId = "215 152",
-                    OrganisationName = "Aceme org Ltd",
-                    ProducerType = "Small producer",
-                    RefNumber = "## ### ##",
-                    SubmissionDateTime = DateTime.Now,
-                    SubmissionYear = "6666",
-                    Status = "UPDATED"
-                },
-                new Organisation
-                {
-                    OrganisationId = "215 153",
-                    OrganisationName = "Aceme org Ltd",
-                    ProducerType = "Small producer",
-                    RefNumber = "## ### ##",
-                    SubmissionDateTime = DateTime.Now,
-                    SubmissionYear = "7777",
-                    Status = "CANCELED"
-                },
-            ];
+            PagedRegistrationSubmissionList = new List<Organisation>
+            {
+                CreateOrganisation("215 148", "A148 org Ltd", "Small producer", "11 ### ##", "2222", "GRANTED"),
+                CreateOrganisation("215 149", "A149 Ltd", "Large producer", "33 ### ##", "3333", "REFUSED"),
+                CreateOrganisation("215 150", "B150 Ltd", "Small producer", "44 ### ##", "4444", "QUERIED"),
+                CreateOrganisation("215 151", "Aceme org Ltd", "Small producer", "## ### ##", "5555", "PENDING"),
+                CreateOrganisation("215 152", "Aceme org Ltd", "Small producer", "## ### ##", "6666", "UPDATED"),
+                CreateOrganisation("215 153", "Aceme org Ltd", "Small producer", "## ### ##", "7777", "CANCELED")
+            };
         }
         public List<Organisation> PagedRegistrationSubmissionList { get; set; }
+
+        private Organisation CreateOrganisation(string id, string name, string type, string refNumber, string year, string status)
+        {
+            return new Organisation
+            {
+                OrganisationId = id,
+                OrganisationName = name,
+                ProducerType = type,
+                RefNumber = refNumber,
+                SubmissionDateTime = DateTime.Now,
+                SubmissionYear = year,
+                Status = status
+            };
+        }
 
         // To Do; Use ENUMS from common data instead of strings here
         public string GetStyleNameFromStatus(string status)
         {
-            switch (status)
+            return status switch
             {
-                case "GRANTED":
-                    return "govuk-tag--green";
-                    break;
-                case "REFUSED":
-                    return "govuk-tag--red";
-                    break;
-                case "QUERIED":
-                    return "govuk-tag--purple";
-                    break;
-                case "PENDING":
-                    return "govuk-tag--blue";
-                    break;
-                case "UPDATED":
-                    return "govuk-tag--yellow";
-                    break;
-                case "CANCELED":
-                    return "govuk-tag--grey";
-                    break;
-                default:
-                    return "govuk-tag--purple";
-                    break;
-            }
+                "GRANTED" => "govuk-tag--green",
+                "REFUSED" => "govuk-tag--red",
+                "QUERIED" => "govuk-tag--purple",
+                "PENDING" => "govuk-tag--blue",
+                "UPDATED" => "govuk-tag--yellow",
+                "CANCELED" => "govuk-tag--grey",
+                _ => "govuk-tag--purple"
+            };
 
         }
     }
@@ -116,4 +65,4 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public string Status { get; set; }
     }
 }
- 
+
