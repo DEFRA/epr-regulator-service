@@ -2,8 +2,8 @@
 
 @model RegistrationSubmissionsViewModel
 
-@if (Model.FilteredDataList.PagedRegistrationSubmissionList.Any()) 
-{ 
+@if (Model.FilteredDataList.PagedRegistrationSubmissionList.Any())
+{
     <table class="govuk-table responsive-table" aria-label="Organisation Application Listing">
         <thead role="rowgroup" class="govuk-table__head">
             <tr role="row" class="govuk-table__row">
@@ -15,34 +15,49 @@
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-             @foreach (var organisation in Model.FilteredDataList.PagedRegistrationSubmissionList)
-              {       
-        <tr role="row" class="govuk-table__row">
-                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                    <a href="../#" class="govuk-link">
-                        @organisation.OrganisationName 
-                    </a>
-                    <br />
-                        <span class="orgNameFilter Large producer">@organisation.ProducerType</span>
+            @foreach (var organisation in Model.FilteredDataList.PagedRegistrationSubmissionList)
+            {
+                <tr role="row" class="govuk-table__row">
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">
+                            @Localizer["Table.Header.Company"]
+                        </span>
+                        <a href="../#" class="govuk-link">
+                            @organisation.OrganisationName
+                        </a> 
+                        <br />
+                        <span class="orgNameFilter">@organisation.ProducerType</span>
                     </td>
-                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">
+                            @Localizer["Table.Header.CompanyId"]
+                        </span>
                         @organisation.OrganisationId
-                    <br />
+                        <br />
                         Ref No: @organisation.RefNumber
                     </td>
-                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">
+                            @Localizer["Table.Header.ApplicationDate"]
+                        </span>
                         @organisation.SubmissionDateTime.ToLongDateString()
                         <br />
-                    @organisation.SubmissionDateTime.ToLongTimeString() 
-                </td>
-                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        @organisation.SubmissionDateTime.ToLongTimeString()
+                    </td>
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">
+                            @Localizer["Table.Header.Year"]
+                        </span>
                         @organisation.SubmissionYear
                     </td>
-                <td role="gridcell" class="govuk-table__cell vertical-middle-align"> 
-                    <strong class="govuk-tag @Model.FilteredDataList.GetStyleNameFromStatus(organisation.Status)">@organisation.Status</strong>
-                </td>
-            </tr>
-            } 
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">
+                            @Localizer["Table.Header.Status"]
+                        </span>
+                        <strong class="govuk-tag @Model.FilteredDataList.GetStyleNameFromStatus(organisation.Status)">@organisation.Status</strong>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 
