@@ -5,25 +5,25 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     [ExcludeFromCodeCoverage]
     public class RegistrationSubmissionsListViewModel
     {
-        // TODO : Data should come from the page and passed to the component
+        // To Do; Data should come from the page and passed to the component
         public RegistrationSubmissionsListViewModel()
         {
-                // TODO: Remove dummy data
+            // To Do; Remove dummy data
             PagedRegistrationSubmissionList =
             [
                 new Organisation { OrganisationId = "215 148",
-                    OrganisationName = "Aceme org Ltd",
+                    OrganisationName = "A148 org Ltd",
                     ProducerType = "Small producer",
-                    RefNumber = "## ### ##",
+                    RefNumber = "11 ### ##",
                     SubmissionDateTime = DateTime.Now,
                     SubmissionYear = "2222",
                     Status = "GRANTED" },
                 new Organisation
                 {
                     OrganisationId = "215 149",
-                    OrganisationName = "Aceme org Ltd",
-                    ProducerType = "Small producer",
-                    RefNumber = "## ### ##",
+                    OrganisationName = "A149 Ltd",
+                    ProducerType = "Large producer",
+                    RefNumber = "33 ### ##",
                     SubmissionDateTime = DateTime.Now,
                     SubmissionYear = "3333",
                     Status = "REFUSED"
@@ -31,9 +31,9 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                 new Organisation
                 {
                     OrganisationId = "215 150",
-                    OrganisationName = "Aceme org Ltd",
+                    OrganisationName = "B150 Ltd",
                     ProducerType = "Small producer",
-                    RefNumber = "## ### ##",
+                    RefNumber = "44 ### ##",
                     SubmissionDateTime = DateTime.Now,
                     SubmissionYear = "4444",
                     Status = "QUERIED"
@@ -72,7 +72,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         }
         public List<Organisation> PagedRegistrationSubmissionList { get; set; }
 
-        // TODO : Use ENUMS from common data instead of strings here
+        // To Do; Use ENUMS from common data instead of strings here
         public string GetStyleNameFromStatus(string status)
         {
             switch (status)
@@ -103,7 +103,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         }
     }
 
-    // TODO : Replace with actual data model class. Remove dummy class
+    // To Do; Replace with actual data model class. Remove dummy class
     [ExcludeFromCodeCoverage]
     public class Organisation
     {
