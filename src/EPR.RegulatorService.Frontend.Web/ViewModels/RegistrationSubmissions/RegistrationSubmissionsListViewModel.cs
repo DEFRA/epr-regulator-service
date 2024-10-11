@@ -8,18 +8,16 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         // TODO : Data should come from the page and passed to the component
         public RegistrationSubmissionsListViewModel()
         {
-            PagedRegistrationSubmissionList = new List<Organisation>();
-
-            // TODO: Remove dummy data
-            PagedRegistrationSubmissionList.Add(
+                // TODO: Remove dummy data
+            PagedRegistrationSubmissionList =
+            [
                 new Organisation { OrganisationId = "215 148",
                     OrganisationName = "Aceme org Ltd",
                     ProducerType = "Small producer",
                     RefNumber = "## ### ##",
                     SubmissionDateTime = DateTime.Now,
                     SubmissionYear = "2222",
-                    Status = "GRANTED" });
-            PagedRegistrationSubmissionList.Add(
+                    Status = "GRANTED" },
                 new Organisation
                 {
                     OrganisationId = "215 149",
@@ -29,8 +27,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                     SubmissionDateTime = DateTime.Now,
                     SubmissionYear = "3333",
                     Status = "REFUSED"
-                });
-            PagedRegistrationSubmissionList.Add(
+                },
                 new Organisation
                 {
                     OrganisationId = "215 150",
@@ -40,8 +37,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                     SubmissionDateTime = DateTime.Now,
                     SubmissionYear = "4444",
                     Status = "QUERIED"
-                });
-            PagedRegistrationSubmissionList.Add(
+                },
                 new Organisation
                 {
                     OrganisationId = "215 151",
@@ -51,8 +47,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                     SubmissionDateTime = DateTime.Now,
                     SubmissionYear = "5555",
                     Status = "PENDING"
-                });
-            PagedRegistrationSubmissionList.Add(
+                },
                 new Organisation
                 {
                     OrganisationId = "215 152",
@@ -62,8 +57,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                     SubmissionDateTime = DateTime.Now,
                     SubmissionYear = "6666",
                     Status = "UPDATED"
-                });
-            PagedRegistrationSubmissionList.Add(
+                },
                 new Organisation
                 {
                     OrganisationId = "215 153",
@@ -73,7 +67,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                     SubmissionDateTime = DateTime.Now,
                     SubmissionYear = "7777",
                     Status = "CANCELED"
-                });
+                },
+            ];
         }
         public List<Organisation> PagedRegistrationSubmissionList { get; set; }
 
@@ -108,8 +103,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         }
     }
 
-    // TODO : Replace with actual data model class.
-    // TODO : Remove dummy class
+    // TODO : Replace with actual data model class. Remove dummy class
     [ExcludeFromCodeCoverage]
     public class Organisation
     {
