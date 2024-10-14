@@ -28,16 +28,16 @@
                                 <div class="govuk-grid-column-full">
                                     <div class="epr-filter-panel-full">
                                         <h2 class="govuk-heading-m govuk-!-margin-bottom-5">
-                                          @Localizer["FilterOptions.Title"].Value
+                                            @Localizer["FilterOptions.Title"].Value
                                         </h2>
                                         <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button">
-                                          @SharedLocalizer["ApplyFilters"].Value
+                                            @SharedLocalizer["ApplyFilters"].Value
                                         </button>
                                         @Html.ActionLink(SharedLocalizer["ClearFilters"].Value,
-                                        "RegistrationSubmissions",
-                                        "RegistrationSubmissions",
-                                        new { clearFilters = true },
-                                        new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-filter-panel-control" })
+                                                 "RegistrationSubmissions",
+                                                 "RegistrationSubmissions",
+                                                 new { clearFilters = true },
+                                                 new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-filter-panel-control" })
                                     </div>
                                 </div>
                             </div>
@@ -45,6 +45,14 @@
                     </div>
                 }
             </div>
+
+
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-5">
+                @Localizer["FilterResults.Title"].Value
+            </h2>
+
+            @await Component.InvokeAsync("RegistrationSubmissionList", Model)
+
         </div>
     </main>
 </div>
