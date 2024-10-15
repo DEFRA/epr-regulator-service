@@ -7,7 +7,7 @@ public static class PagePath
     public const string Applications = "applications";
     public const string EnrolmentRequests = "enrolment-requests";
     public const string TransferApplication = "transfer-application";
-    public const string EnrolmentDecision= "enrolment-decision";
+    public const string EnrolmentDecision = "enrolment-decision";
     public const string LandingPage = "LandingPage";
     public const string Submissions = "manage-packaging-data-submissions";
     public const string SubmissionDetails = "packaging-data-submission";
@@ -36,6 +36,9 @@ public static class PagePath
     public const string OrganisationDetailsFileDownload = "organisation-details-file-download";
     public const string OrganisationDetailsFileDownloadFailed = "organisation-details-file-download-failed";
     public const string OrganisationDetailsFileDownloadSecurityWarning = "organisation-details-file-download-security-warning";
+    public const string RegistrationSubmissions = "manage-registration-submissions";
+    public const string QueryRegistrationSubmission = "manage-registration-submissions-query";
+    public const string RejectRegistrationSubmission = "manage-registration-submissions-reject";
 
     // Non journey paths
     public const string Accessibility = "accessibility";
