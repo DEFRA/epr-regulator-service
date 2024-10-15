@@ -23,9 +23,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.UserDetailChanges
         public UserDetailChangesController(
             ISessionManager<JourneySession> sessionManager,
             IFacadeService facadeService,
-            IConfiguration configuration,
-            ILogger<UserDetailChangesController> logger)
-        : base(sessionManager, logger, configuration)
+            IConfiguration configuration)
+        : base(sessionManager, configuration)
         {
             _sessionManager = sessionManager;
             _facadeService = facadeService;
@@ -99,7 +98,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.UserDetailChanges
             {
                 if (externalId == null)
                 {
-                    _logger.LogError($"Change History ExternalId was null.");
+                    //_logger.LogError($"Change History ExternalId was null.");
                     return RedirectToAction(PagePath.Error, "Error");
                 }
                 session.RegulatorManageUserDetailChangeSession.OrganisationId = organisationId;
