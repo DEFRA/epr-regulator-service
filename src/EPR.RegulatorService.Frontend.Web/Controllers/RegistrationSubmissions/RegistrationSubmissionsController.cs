@@ -88,6 +88,34 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return Redirect(PagePath.RegistrationSubmissions);
         }
 
+        [HttpGet]
+        [Route(PagePath.OrganisationRegistrationDetails)]
+        public async Task<IActionResult> OrganisationRegistrationDetails()
+        {
+            SetBackLink(PagePath.RegistrationSubmissions);
+
+            var model = new OrganisationRegistrationDetailsViewModel
+            {
+                OrganisationId = Guid.NewGuid(),
+                OrganisationName = "Shehzad Ltd.",
+                RegistrationReferenceNumber = "REF001",
+                OrganisationType = "Large Producer",
+                BusinessAddress = new Core.Models.BusinessAddress
+                {
+                    BuildingName = string.Empty,
+                    BuildingNumber = "10",
+                    Street = "High Street",
+                    County = "Randomshire",
+                    PostCode = "A12 3BC"
+                },
+                CompaniesHouseNumber = string.Empty,
+                RegisteredNation = "Scotland",
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin
+            };
+
+            return View(nameof(OrganisationRegistrationDetails), model);
+        }
+
         private void SetCustomBackLink()
         {
             string pathBase = _pathBase.TrimStart('/').TrimEnd('/');

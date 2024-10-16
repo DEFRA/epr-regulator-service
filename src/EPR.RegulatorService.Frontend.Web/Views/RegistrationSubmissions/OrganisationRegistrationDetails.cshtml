@@ -1,0 +1,67 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+
+@model OrganisationRegistrationDetailsViewModel
+
+@{
+    ViewData["Title"] = Localizer["Submission Details"];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <span class="govuk-caption-xl">
+                    @Localizer["OrganisationRegistrationDetails.Caption"]
+                </span>
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-4" for="@nameof(Model.OrganisationName)">
+                    @Model.OrganisationName
+                </h1>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationType"]</h3>
+                    <p class="govuk-body">@Model.OrganisationType</p>
+                </div>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationId"]</h3>
+                    <p class="govuk-body">@Model.OrganisationId</p>
+                </div>
+
+                <div style="padding: 6px 0px; margin: 30px 0px; background-color: #cce2d8; padding: 15px;  width: 350px;">
+                    <h3 class="govuk-heading-s" style="padding: 6px 0px; margin: 0px; color: #005a30;">
+                        Registration reference number
+                    </h3>
+                    <p class="govuk-body">@Model.RegistrationReferenceNumber</p>
+                </div>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.RegisteredAddress"]</h3>
+                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.BuildingNumber @Model.BusinessAddress.BuildingName</p>
+                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.Street</p>
+                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.County</p>
+                    <p class="govuk-body">@Model.BusinessAddress.PostCode</p>
+                </div>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.CompaniesHouseNumber"]</h3>
+                    @if (!string.IsNullOrEmpty(Model.CompaniesHouseNumber))
+                    {
+                        <p class="govuk-body">@Model.CompaniesHouseNumber</p>
+                        <companies-house-link gov-value="@Model.CompaniesHouseNumber" class="govuk-link govuk-link--no-visited-state">
+                            @Localizer["link.CompaniesHouseRegister"]
+                        </companies-house-link>
+                    }
+                    else
+                    {
+                        <p class="govuk-body">@Localizer["Text.NotListed"]</p>
+                    }
+                </div>
+
+                <div id="contact-hint" class="govuk-hint">
+                    @Localizer["Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
