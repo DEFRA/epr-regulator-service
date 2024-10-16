@@ -6,6 +6,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     {
         public Guid OrganisationId { get; set; }
 
+        public string OrganisationReference { get; set; }
+
         public string OrganisationName { get; set; }
 
         public string RegistrationReferenceNumber { get; set; }

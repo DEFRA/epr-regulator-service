@@ -4,6 +4,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Web.Configs;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Core.Models;
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -97,10 +98,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             var model = new OrganisationRegistrationDetailsViewModel
             {
                 OrganisationId = Guid.NewGuid(),
-                OrganisationName = "Shehzad Ltd.",
+                OrganisationReference = "215 148",
+                OrganisationName = "Acme org Ltd.",
                 RegistrationReferenceNumber = "REF001",
                 OrganisationType = "Large Producer",
-                BusinessAddress = new Core.Models.BusinessAddress
+                BusinessAddress = new BusinessAddress
                 {
                     BuildingName = string.Empty,
                     BuildingNumber = "10",
@@ -108,7 +110,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                     County = "Randomshire",
                     PostCode = "A12 3BC"
                 },
-                CompaniesHouseNumber = string.Empty,
+                CompaniesHouseNumber = "0123456",
                 RegisteredNation = "Scotland",
                 PowerBiLogin = _externalUrlsOptions.PowerBiLogin
             };
