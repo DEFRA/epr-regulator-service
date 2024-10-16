@@ -132,7 +132,7 @@ public class SearchManageApproversController : RegulatorSessionBaseController
     /// (as opposed to the original list of multiples of the same users with a single enrolment record)
     /// </summary>
     /// <param name="companyUserInformationList">Reshaped lits of CompanyUserInformation objects</param>
-    private List<CompanyUserInformation> ReshapeData(List<CompanyUserInformation> companyUserInformationList)
+    private static List<CompanyUserInformation> ReshapeData(List<CompanyUserInformation> companyUserInformationList)
     {
         var newUserList = new List<CompanyUserInformation>();
 
