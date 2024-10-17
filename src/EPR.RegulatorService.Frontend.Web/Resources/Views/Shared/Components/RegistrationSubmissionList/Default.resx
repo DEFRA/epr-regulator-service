@@ -117,46 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LandingPage.Title" xml:space="preserve">
-    <value>pEPR: Gwasanaeth i Reoleiddwyr</value>
+  <data name="Table.Header.Year" xml:space="preserve">
+    <value />
   </data>
-  <data name="LandingPage.ManageAccount" xml:space="preserve">
-    <value>Rheoli’ch cyfrif</value>
+  <data name="Table.Header.Status" xml:space="preserve">
+    <value />
   </data>
-  <data name="LandingPage.ManageAccountDescription" xml:space="preserve">
-    <value>Ychwanegu neu dynnu aelodau tîm o’ch cyfrif</value>
+  <data name="Table.Header.CompanyId" xml:space="preserve">
+    <value />
   </data>
-  <data name="LandingPage.ManageApplications" xml:space="preserve">
-    <value>Rheoli ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd</value>
+  <data name="Table.Header.Company" xml:space="preserve">
+    <value />
   </data>
-  <data name="LandingPage.ManageApplicationsDescription" xml:space="preserve">
-    <value>Gweld, derbyn neu wrthod ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd</value>
-  </data>
-  <data name="LandingPage.ManageSubmissions" xml:space="preserve">
-    <value>Rheoli cyflwyniadau data pecynwaith</value>
-  </data>
-  <data name="LandingPage.ManageSubmissionsDescription" xml:space="preserve">
-    <value>Gweld, derbyn neu wrthod cyflwyniadau data pecynwaith</value>
-  </data>
-  <data name="LandingPage.ManageRegistrations" xml:space="preserve">
-    <value>WManage organisation details submissions</value>
-  </data>
-  <data name="LandingPage.ManageRegistrationsDescription" xml:space="preserve">
-    <value>WView, accept or reject organisation details submissions</value>
-  </data>
-  <data name="Regulator.Home" xml:space="preserve">
-    <value>Hafan Rheoleiddwyr - {0}</value>
-  </data>
-  <data name="LandingPage.ManageApprovedPerson" xml:space="preserve">
-    <value>WManage organisations and their approved person</value>
-  </data>
-  <data name="LandingPage.ManageApprovedPersonDescription" xml:space="preserve">
-    <value>WRemove or invite approved persons</value>
-  </data>
-  <data name="LandingPage.ManageRegistrationSubmissions" xml:space="preserve">
-    <value>[Welsh]Manage registration submissions</value>
-  </data>
-  <data name="LandingPage.ManageRegistrationSubmissionsDescription" xml:space="preserve">
-    <value>[Welsh]View, accept or reject registration application submissions</value>
+  <data name="Table.Header.ApplicationDate" xml:space="preserve">
+    <value />
   </data>
 </root>
