@@ -90,12 +90,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         }
 
         [HttpGet]
-        [Route(PagePath.OrganisationRegistrationDetails)]
-        public async Task<IActionResult> OrganisationRegistrationDetails()
+        [Route(PagePath.RegistrationSubmissionDetails)]
+        public async Task<IActionResult> RegistrationSubmissionDetails()
         {
             SetBackLink(PagePath.RegistrationSubmissions);
 
-            var model = new OrganisationRegistrationDetailsViewModel
+            var model = new RegistrationSubmissionDetailsViewModel
             {
                 OrganisationId = Guid.NewGuid(),
                 OrganisationReference = "215 148",
@@ -115,7 +115,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 PowerBiLogin = _externalUrlsOptions.PowerBiLogin
             };
 
-            return View(nameof(OrganisationRegistrationDetails), model);
+            return View(nameof(RegistrationSubmissionDetails), model);
         }
 
         private void SetCustomBackLink()

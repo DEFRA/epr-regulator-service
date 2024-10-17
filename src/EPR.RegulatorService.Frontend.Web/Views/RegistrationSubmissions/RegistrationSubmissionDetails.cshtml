@@ -1,9 +1,9 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
-@model OrganisationRegistrationDetailsViewModel
+@model RegistrationSubmissionDetailsViewModel
 
 @{
-    ViewData["Title"] = Localizer["OrganisationRegistrationDetails.PageTitle"];
+    ViewData["Title"] = Localizer["RegistrationSubmissionDetails.PageTitle"];
 }
 
 <div class="govuk-width-container">
@@ -11,31 +11,31 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 <span class="govuk-caption-xl">
-                    @Localizer["OrganisationRegistrationDetails.Caption"]
+                    @Localizer["RegistrationSubmissionDetails.Caption"]
                 </span>
                 <h1 class="govuk-heading-xl govuk-!-margin-bottom-4" for="@nameof(Model.OrganisationName)">
                     @Model.OrganisationName
                 </h1>
 
                 <div class="govuk-!-margin-bottom-4">
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["OrganisationRegistrationDetails.OrganisationType"]</h3>
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.OrganisationType"]</h3>
                     <p class="govuk-body">@Model.OrganisationType</p>
                 </div>
 
                 <div class="govuk-!-margin-bottom-4">
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["OrganisationRegistrationDetails.OrganisationIdTitle"]</h3>
-                    <p class="govuk-body">@Localizer["OrganisationRegistrationDetails.OrganisationIdSubTitle"] @Model.OrganisationReference</p>
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.OrganisationIdTitle"]</h3>
+                    <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.OrganisationIdSubTitle"] @Model.OrganisationReference</p>
                 </div>
 
                 <div style="padding: 6px 0px; margin: 30px 0px; background-color: #cce2d8; padding: 15px;  width: 350px;">
                     <h3 class="govuk-heading-s" style="padding: 6px 0px; margin: 0px; color: #005a30;">
-                        @Localizer["OrganisationRegistrationDetails.ApplicationReferenceNumber"]
+                        @Localizer["RegistrationSubmissionDetails.ApplicationReferenceNumber"]
                     </h3>
                     <p class="govuk-body">@Model.RegistrationReferenceNumber</p>
                 </div>
 
                 <div class="govuk-!-margin-bottom-4">
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["OrganisationRegistrationDetails.RegisteredAddress"]</h3>
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.RegisteredAddress"]</h3>
                     <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.BuildingNumber @Model.BusinessAddress.BuildingName</p>
                     <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.Street</p>
                     <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.County</p>
@@ -43,24 +43,24 @@
                 </div>
 
                 <div class="govuk-!-margin-bottom-4">
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["OrganisationRegistrationDetails.CompaniesHouseNumber"]</h3>
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.CompaniesHouseNumber"]</h3>
                     @if (!string.IsNullOrEmpty(Model.CompaniesHouseNumber))
                     {
                         <p class="govuk-body govuk-!-margin-bottom-0">@Model.CompaniesHouseNumber</p>
                         <companies-house-link gov-value="@Model.CompaniesHouseNumber" class="govuk-body govuk-link--no-visited-state">
-                            @Localizer["OrganisationRegistrationDetails.CompaniesHouseRegister"]
+                            @Localizer["RegistrationSubmissionDetails.CompaniesHouseRegister"]
                         </companies-house-link>
                     }
                     else
                     {
-                        <p class="govuk-body">@Localizer["OrganisationRegistrationDetails.NotListed"]</p>
+                        <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.NotListed"]</p>
                     }
                 </div>
 
                 <div class="govuk-!-margin-bottom-4">
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["OrganisationRegistrationDetails.PowerBiTitle"]</h3>
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.PowerBiTitle"]</h3>
                     <p class="govuk-body">
-                      @Localizer["OrganisationRegistrationDetails.PowerBiSubTitle"]
+                        @Localizer["RegistrationSubmissionDetails.PowerBiSubTitle"]
                         <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.</p>
                 </div>
 

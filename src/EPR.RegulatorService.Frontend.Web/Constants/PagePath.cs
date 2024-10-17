@@ -39,7 +39,7 @@ public static class PagePath
     public const string RegistrationSubmissions = "manage-registration-submissions";
     public const string QueryRegistrationSubmission = "manage-registration-submissions-query";
     public const string RejectRegistrationSubmission = "manage-registration-submissions-reject";
-    public const string OrganisationRegistrationDetails = "manage-registration-submissions-organisation-details";
+    public const string RegistrationSubmissionDetails = "manage-registration-submissions-submission-details";
 
     // Non journey paths
     public const string Accessibility = "accessibility";
