@@ -90,14 +90,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         }
 
         [HttpGet]
-        [Route(PagePath.RegistrationSubmissionDetails)]
-        public async Task<IActionResult> RegistrationSubmissionDetails()
+        [Route(PagePath.RegistrationSubmissionDetails + "/{organisationId:guid}")]
+        public async Task<IActionResult> RegistrationSubmissionDetails(Guid organisationId)
         {
             SetBackLink(PagePath.RegistrationSubmissions);
 
             var model = new RegistrationSubmissionDetailsViewModel
             {
-                OrganisationId = Guid.NewGuid(),
+                OrganisationId = organisationId,
                 OrganisationReference = "215 148",
                 OrganisationName = "Acme org Ltd.",
                 RegistrationReferenceNumber = "REF001",

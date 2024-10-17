@@ -1,7 +1,10 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
+    using System.Diagnostics.CodeAnalysis;
+
     using EPR.RegulatorService.Frontend.Core.Models;
 
+    [ExcludeFromCodeCoverage]
     public class RegistrationSubmissionDetailsViewModel
     {
         public Guid OrganisationId { get; set; }
@@ -10,7 +13,9 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public string OrganisationName { get; set; }
 
-        public string RegistrationReferenceNumber { get; set; }
+        public string? ApplicationReferenceNumber { get; set; }
+
+        public string? RegistrationReferenceNumber { get; set; }
 
         public string OrganisationType { get; set; }
 
@@ -21,5 +26,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public string RegisteredNation { get; set; }
 
         public string PowerBiLogin { get; set; }
+
+        public string Status { get; set; }
     }
 }
