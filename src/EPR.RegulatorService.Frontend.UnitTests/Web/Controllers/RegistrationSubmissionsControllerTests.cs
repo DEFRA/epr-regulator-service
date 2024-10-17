@@ -366,6 +366,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.OrganisationId, model.OrganisationId);
             Assert.AreEqual(expectedViewModel.OrganisationReference, model.OrganisationReference);
             Assert.AreEqual(expectedViewModel.OrganisationName, model.OrganisationName);
+            Assert.AreEqual(expectedViewModel.ApplicationReferenceNumber, model.ApplicationReferenceNumber);
             Assert.AreEqual(expectedViewModel.RegistrationReferenceNumber, model.RegistrationReferenceNumber);
             Assert.AreEqual(expectedViewModel.OrganisationType, model.OrganisationType);
 
@@ -378,6 +379,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             Assert.AreEqual(expectedViewModel.CompaniesHouseNumber, model.CompaniesHouseNumber);
             Assert.AreEqual(expectedViewModel.RegisteredNation, model.RegisteredNation);
+            Assert.AreEqual(expectedViewModel.PowerBiLogin, model.PowerBiLogin);
+            Assert.AreEqual(expectedViewModel.Status, model.Status);
         }
 
         [TestMethod]

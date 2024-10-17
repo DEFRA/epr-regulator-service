@@ -4,7 +4,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
     using EPR.RegulatorService.Frontend.Core.Models;
 
-    [ExcludeFromCodeCoverage]
     public class RegistrationSubmissionDetailsViewModel
     {
         public Guid OrganisationId { get; set; }
