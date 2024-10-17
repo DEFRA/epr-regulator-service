@@ -1,5 +1,6 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
+    using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
@@ -305,6 +306,92 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _controller.ModelState[nameof(model.RejectReason)].Errors[0].ErrorMessage);
 
             // Verify the back link is set correctly
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+        }
+
+        #endregion
+
+        #region RegistrationSubmissionDetails
+
+        [TestMethod]
+        public async Task RegistrationSubmissionDetails_ReturnsViewResult()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(organisationId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissionDetails_ReturnsCorrectViewModel_ForValidOrganisationId()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid(); // Simulate a valid Organisation ID
+            string expectedViewName = nameof(_controller.RegistrationSubmissionDetails);
+            var expectedViewModel = new RegistrationSubmissionDetailsViewModel
+            {
+                OrganisationId = organisationId,
+                OrganisationReference = "215 148",
+                OrganisationName = "Acme org Ltd.",
+                RegistrationReferenceNumber = "REF001",
+                OrganisationType = "Large Producer",
+                BusinessAddress = new BusinessAddress
+                {
+                    BuildingName = string.Empty,
+                    BuildingNumber = "10",
+                    Street = "High Street",
+                    County = "Randomshire",
+                    PostCode = "A12 3BC"
+                },
+                CompaniesHouseNumber = "0123456",
+                RegisteredNation = "Scotland",
+                PowerBiLogin = "https://app.powerbi.com/"
+            };
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(organisationId) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(expectedViewName, result.ViewName);
+            var model = result.Model as RegistrationSubmissionDetailsViewModel;
+            Assert.IsNotNull(model);
+
+            // Assert model properties
+            Assert.AreEqual(expectedViewModel.OrganisationId, model.OrganisationId);
+            Assert.AreEqual(expectedViewModel.OrganisationReference, model.OrganisationReference);
+            Assert.AreEqual(expectedViewModel.OrganisationName, model.OrganisationName);
+            Assert.AreEqual(expectedViewModel.RegistrationReferenceNumber, model.RegistrationReferenceNumber);
+            Assert.AreEqual(expectedViewModel.OrganisationType, model.OrganisationType);
+
+            // Assert business address
+            Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingName, model.BusinessAddress.BuildingName);
+            Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingNumber, model.BusinessAddress.BuildingNumber);
+            Assert.AreEqual(expectedViewModel.BusinessAddress.Street, model.BusinessAddress.Street);
+            Assert.AreEqual(expectedViewModel.BusinessAddress.County, model.BusinessAddress.County);
+            Assert.AreEqual(expectedViewModel.BusinessAddress.PostCode, model.BusinessAddress.PostCode);
+
+            Assert.AreEqual(expectedViewModel.CompaniesHouseNumber, model.CompaniesHouseNumber);
+            Assert.AreEqual(expectedViewModel.RegisteredNation, model.RegisteredNation);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissionDetails_SetsCorrectBackLink()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(organisationId) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            // Check that the back link is correctly set in the ViewData
             AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
         }
 
