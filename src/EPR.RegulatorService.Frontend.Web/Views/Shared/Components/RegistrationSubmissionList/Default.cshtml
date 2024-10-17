@@ -1,9 +1,11 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
 
 @model RegistrationSubmissionsViewModel
 
 @if (Model.FilteredDataList.PagedRegistrationSubmissionList.Any())
 {
+            <div class="govuk-grid-column-full">
     <table class="govuk-table responsive-table" aria-label="Organisation Application Listing">
         <thead role="rowgroup" class="govuk-table__head">
             <tr role="row" class="govuk-table__row">
@@ -59,6 +61,8 @@
                 </tr>
             }
         </tbody>
-    </table>
+        </table>
+        @await Html.PartialAsync("Partials/_PaginationNavigation", new PaginationNavigationModel()) @*  Model.PagedRegistrationSubmissionList) *@
 
+    </div>
 }

@@ -121,7 +121,7 @@
     <value>Submission year</value>
   </data>
   <data name="Table.Header.Status" xml:space="preserve">
-    <value>Submission Status</value>
+    <value>Submission status</value>
   </data>
   <data name="Table.Header.CompanyId" xml:space="preserve">
     <value>Organisation ID</value>
