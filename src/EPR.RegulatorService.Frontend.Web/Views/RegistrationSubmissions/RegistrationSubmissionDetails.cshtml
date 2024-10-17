@@ -21,7 +21,7 @@
 
                 <div class="govuk-!-margin-bottom-4">
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.OrganisationType"]</h3>
-                    <p class="govuk-body">@Model.OrganisationType.GetDescription()</p>
+                    <p class="govuk-body">@SharedLocalizer[Model.OrganisationType.GetDescription()]</p>
                 </div>
 
                 <div class="govuk-!-margin-bottom-4">
@@ -31,7 +31,7 @@
 
                 <status-panel heading="@Localizer[ReferenceNumberPanelHelper.GetPanelTitle(Model)].Value"
                               content="@ReferenceNumberPanelHelper.GetPanelContent(Model)"
-                              status="@Model.Status.ToString()">
+                              status="@SharedLocalizer[Model.Status.ToString()]">
                 </status-panel>
 
                 <div class="govuk-!-margin-bottom-4">

@@ -1,16 +1,15 @@
-
 using System.ComponentModel;
 
 namespace EPR.RegulatorService.Frontend.Core.Enums;
 
 public enum RegistrationSubmissionOrganisationType
 {
-    [Description("Not specified")]
+    [Description("RegistrationSubmissionOrganisationType.NotSpecified")]
     none = 0,
-    [Description("Compliance scheme")]
+    [Description("RegistrationSubmissionOrganisationType.ComplianceScheme")]
     compliance = 1,
-    [Description("Large producer")]
+    [Description("RegistrationSubmissionOrganisationType.LargeProducer")]
     large = 10,
-    [Description("Small producer")]
+    [Description("RegistrationSubmissionOrganisationType.SmallProducer")]
     small = 20
 }
