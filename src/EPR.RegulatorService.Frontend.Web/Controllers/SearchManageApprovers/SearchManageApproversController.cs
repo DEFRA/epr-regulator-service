@@ -108,6 +108,7 @@ public class SearchManageApproversController : RegulatorSessionBaseController
             session.RegulatorSession.OrganisationId = organisationId;
         }
         var organisationDetails = await _facadeService.GetRegulatorCompanyDetails(session.RegulatorSession.OrganisationId.Value);
+        organisationDetails.CompanyUserInformation = ReshapeData(organisationDetails.CompanyUserInformation);
 
         var model = GetCompanyDetailsRequest(organisationDetails, session.RegulatorSession.OrganisationId.Value);
         var currentApprovedUser = model.ApprovedUsersInformation.ApprovedUsers.FirstOrDefault();
@@ -122,6 +123,33 @@ public class SearchManageApproversController : RegulatorSessionBaseController
         await AddCurrentPageAndSaveSession(session, PagePath.RegulatorCompanyDetail);
         SetBackLink(session, PagePath.RegulatorCompanyDetail);
         return View(model);
+    }
+
+
+    /// <summary>
+    /// This method reshapes the company user information list.
+    /// It essentially ensures that only single users exist, but could _actually_ have multiple enrolment records
+    /// (as opposed to the original list of multiples of the same users with a single enrolment record)
+    /// </summary>
+    /// <param name="companyUserInformationList">Reshaped lits of CompanyUserInformation objects</param>
+    private static List<CompanyUserInformation> ReshapeData(List<CompanyUserInformation> companyUserInformationList)
+    {
+        var newUserList = new List<CompanyUserInformation>();
+
+        foreach (var companyUser in companyUserInformationList)
+        {
+            if (newUserList.Exists(a => a.Email == companyUser.Email))
+            {
+                newUserList.First(a => a.Email == companyUser.Email).UserEnrolments.AddRange(companyUser.UserEnrolments);
+                newUserList.First(a => a.Email == companyUser.Email).IsEmployee = companyUser.IsEmployee;
+                newUserList.First(a => a.Email == companyUser.Email).JobTitle = companyUser.JobTitle;
+                continue;
+            }
+
+            newUserList.Add(companyUser);
+        }
+
+        return newUserList;
     }
 
     private static RegulatorCompanyDetailViewModel GetCompanyDetailsRequest(RegulatorCompanyDetailsModel organisationDetails, Guid organisationId) =>
@@ -141,20 +169,21 @@ public class SearchManageApproversController : RegulatorSessionBaseController
                 County = organisationDetails.Company.RegisteredAddress.County,
                 PostCode = organisationDetails.Company.RegisteredAddress.Postcode,
             },
-            AdminUsers = organisationDetails.CompanyUserInformation.Where( u=>
+            AdminUsers = organisationDetails.CompanyUserInformation.Where(u =>
                 u.PersonRoleId == (int)PersonRole.Admin &&
-                u.UserEnrolments.Exists(e => e.ServiceRoleId == (int)ServiceRole.ProducerOther)
+                u.UserEnrolments.Exists(e => e.ServiceRoleId == (int)ServiceRole.ProducerOther) &&
+                !u.UserEnrolments.Exists(e => e.EnrolmentStatusId == (int)Core.Enums.EnrolmentStatus.Nominated)
             ).ToList(),
-            BasicUsers = organisationDetails.CompanyUserInformation.Where( u=>
+            BasicUsers = organisationDetails.CompanyUserInformation.Where(u =>
                 u.PersonRoleId == (int)PersonRole.Employee &&
                 u.UserEnrolments.Exists(e => e.ServiceRoleId == (int)ServiceRole.ProducerOther)
             ).ToList(),
-            DelegatedUsers = organisationDetails.CompanyUserInformation.Where( u=>
+            DelegatedUsers = organisationDetails.CompanyUserInformation.Where(u =>
                 u.UserEnrolments.Exists(e => e.ServiceRoleId == (int)ServiceRole.DelegatedPerson)
             ).ToList(),
             ApprovedUsersInformation = new ApprovedUserInformation()
             {
-                ApprovedUsers = organisationDetails.CompanyUserInformation.Where( u=>
+                ApprovedUsers = organisationDetails.CompanyUserInformation.Where(u =>
                     u.UserEnrolments.Exists(e => e.ServiceRoleId == (int)ServiceRole.ApprovedPerson)
                 ).ToList(),
                 OrganisationName = organisationDetails.Company.OrganisationName,
