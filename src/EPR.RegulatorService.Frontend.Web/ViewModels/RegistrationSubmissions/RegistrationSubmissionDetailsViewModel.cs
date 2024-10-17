@@ -1,7 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
-    using System.Diagnostics.CodeAnalysis;
-
+    using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
 
     public class RegistrationSubmissionDetailsViewModel
@@ -16,7 +15,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public string? RegistrationReferenceNumber { get; set; }
 
-        public string OrganisationType { get; set; }
+        public RegistrationSubmissionOrganisationType OrganisationType { get; set; }
 
         public BusinessAddress BusinessAddress { get; set; }
 
@@ -26,6 +25,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public string PowerBiLogin { get; set; }
 
-        public string Status { get; set; }
+        public RegistrationSubmissionStatus Status { get; set; }
     }
 }

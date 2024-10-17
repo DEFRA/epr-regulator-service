@@ -5,6 +5,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Core.Enums;
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -101,7 +102,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 OrganisationReference = "215 148",
                 OrganisationName = "Acme org Ltd.",
                 RegistrationReferenceNumber = "REF001",
-                OrganisationType = "Large Producer",
+                ApplicationReferenceNumber = "REF002",
+                OrganisationType = RegistrationSubmissionOrganisationType.large,
                 BusinessAddress = new BusinessAddress
                 {
                     BuildingName = string.Empty,
@@ -112,7 +114,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 },
                 CompaniesHouseNumber = "0123456",
                 RegisteredNation = "Scotland",
-                PowerBiLogin = _externalUrlsOptions.PowerBiLogin
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
+                Status = RegistrationSubmissionStatus.queried
             };
 
             return View(nameof(RegistrationSubmissionDetails), model);
