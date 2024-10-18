@@ -9,9 +9,9 @@
             <tr role="row" class="govuk-table__row">
                 <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.Company"]</th>
                 <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.CompanyId"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.ApplicationDate"]</th>
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.ApplicationDate"]</th>
                 <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.Year"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.Status"]</th>
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent tag">@Localizer["Table.Header.Status"]</th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -50,7 +50,7 @@
                         </span>
                         @organisation.SubmissionYear
                     </td>
-                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align tag">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.Status"]
                         </span>

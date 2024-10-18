@@ -46,13 +46,9 @@
                 }
             </div>
 
-
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-5">
-                @Localizer["FilterResults.Title"].Value
-            </h2>
-
-            @await Component.InvokeAsync("RegistrationSubmissionList", Model)
-
+            <div class="govuk-grid-column-full">
+                @await Component.InvokeAsync("RegistrationSubmissionList", Model)
+            </div>
         </div>
     </main>
 </div>
