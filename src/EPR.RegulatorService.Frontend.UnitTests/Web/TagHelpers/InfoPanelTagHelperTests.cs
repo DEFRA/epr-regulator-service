@@ -9,7 +9,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
     [TestClass]
     public class InfoPanelTagHelperTests
     {
-        private TagHelperContext MakeTagHelperContext()
+        private static TagHelperContext MakeTagHelperContext()
         {
             return new TagHelperContext(
                 tagName: "status-panel",
@@ -19,7 +19,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
             );
         }
 
-        private TagHelperOutput MakeTagHelperOutput()
+        private static TagHelperOutput MakeTagHelperOutput()
         {
             return new TagHelperOutput("status-panel",
                 new TagHelperAttributeList(),

@@ -66,6 +66,7 @@ div.info-panel {
   h3 {
     @extend %govuk-heading-s;
     padding: govuk-spacing(1) 0px;
+    margin-bottom: 0px;
   }
 
   p {
