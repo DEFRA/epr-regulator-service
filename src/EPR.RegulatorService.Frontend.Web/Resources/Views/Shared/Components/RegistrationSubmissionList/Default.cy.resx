@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -121,7 +121,7 @@
     <value>[Welsh]Submission year</value>
   </data>
   <data name="Table.Header.Status" xml:space="preserve">
-    <value>[Welsh]Submission Status</value>
+    <value>[Welsh]Submission status</value>
   </data>
   <data name="Table.Header.CompanyId" xml:space="preserve">
     <value>[Welsh]Organisation ID</value>

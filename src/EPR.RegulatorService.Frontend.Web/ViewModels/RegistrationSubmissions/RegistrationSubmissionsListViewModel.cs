@@ -16,7 +16,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                 CreateOrganisation("215 150", "B150 Ltd", "Small producer", "44 ### ##", "4444", "QUERIED"),
                 CreateOrganisation("215 151", "Aceme org Ltd", "Small producer", "## ### ##", "5555", "PENDING"),
                 CreateOrganisation("215 152", "Aceme org Ltd", "Small producer", "## ### ##", "6666", "UPDATED"),
-                CreateOrganisation("215 153", "Aceme org Ltd", "Small producer", "## ### ##", "7777", "CANCELED")
+                CreateOrganisation("215 153", "Aceme org Ltd", "Small producer", "## ### ##", "7777", "CANCELLED")
             };
         }
         public List<Organisation> PagedRegistrationSubmissionList { get; set; }
@@ -45,7 +45,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                 "QUERIED" => "govuk-tag--purple",
                 "PENDING" => "govuk-tag--blue",
                 "UPDATED" => "govuk-tag--yellow",
-                "CANCELED" => "govuk-tag--grey",
+                "CANCELLED" => "govuk-tag--grey",
                 _ => "govuk-tag--purple"
             };
 
