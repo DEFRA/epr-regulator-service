@@ -1064,6 +1064,21 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        public void PrepareAuthenticateClient_WillContructURL_When_HttpClientIsNull()
+        {
+            var httpClient = new HttpClient(_mockHandler.Object);
+            var facadeApiConfig = Options.Create(new FacadeApiConfig
+            {
+                BaseUrl = "http://localhost/"
+            });
+
+            var sut = new FacadeService(httpClient, _tokenAcquisitionMock.Object, _paginationConfig, facadeApiConfig);
+
+            sut.GetRegistrationSubmissions(1);
+            httpClient.DefaultRequestHeaders.Authorization.Should().NotBeNull();
+        }
+
+        [TestMethod]
         public async Task GetRegistrationSubmissions_ShouldReturnPaginatedList_WhenRequestSucceeds ()
         {
             var result = await _facadeService.GetRegistrationSubmissions(1);

@@ -42,6 +42,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     PowerBiLogin = PowerBiLogin
                 });
 
+            SetupJourneySession(null, null);
+
             _controller = new RegistrationSubmissionsController(
                 _mockSessionManager.Object,
                 _mockConfiguration.Object,

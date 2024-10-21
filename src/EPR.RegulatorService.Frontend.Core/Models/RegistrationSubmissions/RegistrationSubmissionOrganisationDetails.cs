@@ -1,7 +1,10 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
+using System.Diagnostics.CodeAnalysis;
+
 using EPR.RegulatorService.Frontend.Core.Enums;
 
+[ExcludeFromCodeCoverage]
 public class RegistrationSubmissionOrganisationDetails
 {
     public Guid OrganisationID { get; set; }
@@ -10,7 +13,6 @@ public class RegistrationSubmissionOrganisationDetails
     public RegistrationSubmissionOrganisationType OrganisationType { get; set; }
     public int NationID { get; set; }
     public int RegistrationYear { get; set; }
-    public string Period { get; set; }
     public DateTime RegistrationDateTime { get; set; }
     public RegistrationSubmissionStatus RegistrationStatus { get; set; }
     public string? RegulatorComments { get; set; } = string.Empty;

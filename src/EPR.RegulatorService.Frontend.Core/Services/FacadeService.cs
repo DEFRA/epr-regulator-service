@@ -333,10 +333,12 @@ public class FacadeService : IFacadeService
 
     public Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(int currentPage = 1)
     {
-        IOptions<PaginationConfig> options = Options.Create(new PaginationConfig()
+        var options = Options.Create(new PaginationConfig()
         {
             PageSize = _paginationConfig.PageSize
         });
+
+        PrepareAuthenticatedClient();
 
         var mockedFacade = new MockedFacadeService(options);
 
