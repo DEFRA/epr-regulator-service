@@ -291,4 +291,19 @@
   <data name="RegistrationSubmissionStatus.Updated" xml:space="preserve">
     <value>[Welsh]Updated</value>
   </data>
+  <data name="ServiceRole.ApprovedPerson" xml:space="preserve">
+    <value>[Welsh]Approved person</value>
+  </data>
+  <data name="ServiceRole.DelegatedPerson" xml:space="preserve">
+    <value>[Welsh]Delegated person</value>
+  </data>
+  <data name="ServiceRole.ProducerOther" xml:space="preserve">
+    <value>[Welsh]Producer other</value>
+  </data>
+  <data name="ServiceRole.RegulatorAdmin" xml:space="preserve">
+    <value>[Welsh]Regulator admin</value>
+  </data>
+  <data name="ServiceRole.RegulatorBasic" xml:space="preserve">
+    <value>[Welsh]Regulator basic</value>
+  </data>
 </root>

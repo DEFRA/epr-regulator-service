@@ -10,7 +10,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public DateTime TimeAndDateOfSubmission { get; set; }
         public bool SubmittedOnTime { get; set; }
         public string SubmittedBy { get; set; }
-        public string AccountRole { get; set; }
+        public ServiceRole AccountRole { get; set; }
         public string Telephone { get; set; }
         public string Email { get; set; }
         public string DeclaredBy { get; set; }

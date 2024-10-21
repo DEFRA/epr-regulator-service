@@ -11,6 +11,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Microsoft.FeatureManagement.Mvc;
+    using ServiceRole = Core.Enums.ServiceRole;
 
     [FeatureGate(FeatureFlags.ManageRegistrationSubmissions)]
     [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
@@ -123,7 +124,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                     TimeAndDateOfSubmission = DateTime.SpecifyKind(new DateTime(2025, 10, 22, 9, 30, 5), DateTimeKind.Utc),
                     SubmittedOnTime = true,
                     SubmittedBy = "Sally Smith",
-                    AccountRole = "Approved person",
+                    AccountRole = ServiceRole.ApprovedPerson,
                     Telephone = "07553 937 831",
                     Email = "sally.smith@email.com",
                     DeclaredBy = "Sally Smith",
