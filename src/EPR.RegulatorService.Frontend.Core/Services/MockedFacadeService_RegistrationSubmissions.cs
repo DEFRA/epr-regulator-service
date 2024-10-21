@@ -48,11 +48,13 @@ public partial class MockedFacadeService : IFacadeService
         return objRet;
     }
 
-    public async Task<List<RegistrationSubmissionOrganisationDetails>> FilterAndOrderRegistrations(List<RegistrationSubmissionOrganisationDetails> items, RegistrationSubmissionsFilterModel filters)
+    public Tuple<int,List<RegistrationSubmissionOrganisationDetails>> FilterAndOrderRegistrations(List<RegistrationSubmissionOrganisationDetails> items, RegistrationSubmissionsFilterModel filters)
     {
         var rawItems = items.AsQueryable();
 
         var filteredItems = rawItems.Filter(filters);
+
+        int totalItems = filteredItems.Count();
 
         var sortedItems = filteredItems
                 .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
@@ -66,7 +68,7 @@ public partial class MockedFacadeService : IFacadeService
                 .Take(_config.PageSize)
                 .ToList();
 
-        return [.. sortedItems];
+        return Tuple.Create(totalItems, sortedItems);
     }
 
 

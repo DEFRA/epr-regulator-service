@@ -1111,6 +1111,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        [DataRow(24)]
+        [DataRow(90)]
+        public async Task GetRegistrationSubmission_WithFilter_ShouldReturnCorrectPaginationInformation(int byIndex)
+        {
+            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var expectedResult = expectedDataSet[byIndex];
+
+            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationName = expectedDataSet[byIndex].OrganisationName };
+            var results = await _facadeService.GetRegistrationSubmissions(filter);
+
+            results.Items.Should().Contain(expectedResult);
+            Assert.AreEqual(results.Items.Count, results.TotalItems);
+        }
+
+        [TestMethod]
+        public async Task GetRegistrationSubmission_WithoutFilter_ShouldReturnCorrectPaginationInformation()
+        {
+            var filter = new RegistrationSubmissionsFilterModel() { Page = 1 };
+            var results = await _facadeService.GetRegistrationSubmissions(filter);
+
+            Assert.AreNotEqual(results.Items.Count, results.TotalItems);
+        }
+
+        [TestMethod]
         [DataRow(14)]
         [DataRow(45)]
         public async Task GetRegisrationSubmission_FilterByOrgRef_ShouldReturnSuccess_And_1Org(int byIndex)
