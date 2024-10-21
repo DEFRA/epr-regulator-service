@@ -10,6 +10,7 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 using Microsoft.Extensions.Options;
@@ -56,7 +57,7 @@ public class FacadeService : IFacadeService
         _tokenAcquisition = tokenAcquisition;
         _paginationConfig = paginationOptions.Value;
         _facadeApiConfig = facadeApiOptions.Value;
-        _scopes = new[] {_facadeApiConfig.DownstreamScope};
+        _scopes = new[] { _facadeApiConfig.DownstreamScope };
     }
 
     private static readonly Dictionary<Type, string> _typeToEndpointMap = new()
@@ -85,7 +86,8 @@ public class FacadeService : IFacadeService
 
         var query = new Dictionary<string, string>
         {
-            ["currentPage"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture), ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["currentPage"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
         };
         if (!string.IsNullOrEmpty(organisationName))
         {
@@ -330,5 +332,17 @@ public class FacadeService : IFacadeService
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue(Constants.Bearer, accessToken);
         }
-    }   
+    }
+
+    public Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(int currentPage = 1)
+    {
+        IOptions<PaginationConfig> options = Options.Create(new PaginationConfig()
+        {
+            PageSize = 20
+        });
+
+        var mockedFacade = new MockedFacadeService(options);
+
+        return mockedFacade.GetRegistrationSubmissions(currentPage);
+    }
 }

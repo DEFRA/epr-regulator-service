@@ -24,7 +24,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedBackLink = "/regulators/home";
 
             // Act
-            var result = _controller.RegistrationSubmissions();
+            var result = await _controller.RegistrationSubmissions(1);
 
             // Assert
             result.Should().NotBeNull();

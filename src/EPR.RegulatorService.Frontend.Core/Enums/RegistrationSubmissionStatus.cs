@@ -1,7 +1,7 @@
 using System.ComponentModel;
 
 namespace EPR.RegulatorService.Frontend.Core.Enums;
-
+ 
 public enum RegistrationSubmissionStatus
 {
     [Description("Not specified")]

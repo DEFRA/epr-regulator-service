@@ -7,6 +7,7 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
@@ -17,7 +18,7 @@ using System.Security.Cryptography;
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 [ExcludeFromCodeCoverage]
-public class MockedFacadeService : IFacadeService
+public partial class MockedFacadeService : IFacadeService
 {
     private const string ApprovedPerson = "ApprovedPerson";
     private const string DelegatedPerson = "DelegatedPerson";
@@ -29,6 +30,7 @@ public class MockedFacadeService : IFacadeService
     private static List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
     private static List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
     private static List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
+    private static readonly List<RegistrationSubmissionOrganisationDetails> _registrationSubmissions = GenerateRegistrationSubmission();
 
     public MockedFacadeService(IOptions<PaginationConfig> options)
     {
@@ -366,5 +368,24 @@ public class MockedFacadeService : IFacadeService
         };
 
         return await Task.FromResult(response);
+    }
+
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(int currentPage = 1) {
+        if (currentPage > (int)Math.Ceiling(_allSubmissions.Count / (double)_config.PageSize))
+        {
+            currentPage = 1;
+        }
+
+        var results = _registrationSubmissions.ToList();
+
+        var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+        {
+            Items = await OrderRegistrations(results, currentPage),
+            CurrentPage = currentPage,
+            TotalItems = results.Count,
+            PageSize = _config.PageSize
+        };
+
+        return response;
     }
 }
