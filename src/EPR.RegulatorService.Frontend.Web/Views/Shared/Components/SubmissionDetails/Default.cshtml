@@ -1,5 +1,6 @@
 @using EPR.RegulatorService.Frontend.Core.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+@using System.Globalization
 
 @model SubmissionDetailsViewModel
 
@@ -8,7 +9,9 @@
         <h2 class="govuk-summary-card__title">@Localizer["SubmissionDetails.Title"]</h2>
         <div style="padding-top: 20px;">
             <govuk-tag status="@Model.Status" content="@SharedLocalizer[Model.Status.GetDescription()]" />
-            <p style="font-size: 16px; color:#505a5f; text-align: right;padding-top:10px;">@Model.DecisionDate</p>
+            <p style="font-size: 16px; color:#505a5f; text-align: right;padding-top:10px;">
+              @Model.DecisionDate.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)
+            </p>
         </div>
         <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">
@@ -17,14 +20,16 @@
     </div>
     <div class="govuk-summary-card__content" style="padding-bottom: 0px;">
         <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
                     <strong>@Localizer["SubmissionDetails.TimeAndDateOfSubmission"]</strong>
                 </dd>
                 <dd class="govuk-summary-list__value">
-                    @Model.TimeAndDateOfSubmission
+                    @Model.TimeAndDateOfSubmission.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)
                 </dd>
             </div>
+
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
                     <strong>@Localizer["SubmissionDetails.SubmittedOnTime"]</strong>
@@ -33,6 +38,7 @@
                     @(Model.SubmittedOnTime ? @SharedLocalizer["Yes"] : @SharedLocalizer["No"])
                 </dd>
             </div>
+
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
                     <strong>@Localizer["SubmissionDetails.SubmittedBy"]</strong>
@@ -41,6 +47,7 @@
                     @Model.SubmittedBy
                 </dd>
             </div>
+
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
                     <strong>@Localizer["SubmissionDetails.AccountRole"]</strong>
@@ -49,6 +56,7 @@
                     @SharedLocalizer[Model.AccountRole.GetDescription()]
                 </dd>
             </div>
+
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
                     <strong>@Localizer["SubmissionDetails.Telephone"]</strong>
@@ -57,6 +65,7 @@
                     @Model.Telephone
                 </dd>
             </div>
+
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
                     <strong>@Localizer["SubmissionDetails.Email"]</strong>
@@ -65,6 +74,7 @@
                     @Model.Email
                 </dd>
             </div>
+
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
                     <strong>@Localizer["SubmissionDetails.DeclaredBy"]</strong>

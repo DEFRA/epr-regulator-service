@@ -120,8 +120,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 SubmissionDetails = new SubmissionDetailsViewModel
                 {
                     Status = RegistrationSubmissionStatus.queried,
-                    DecisionDate = DateTime.SpecifyKind(new DateTime(2025, 11, 14, 14, 0, 0), DateTimeKind.Utc),
-                    TimeAndDateOfSubmission = DateTime.SpecifyKind(new DateTime(2025, 10, 22, 9, 30, 5), DateTimeKind.Utc),
+                    DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
+                    TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
                     SubmittedOnTime = true,
                     SubmittedBy = "Sally Smith",
                     AccountRole = ServiceRole.ApprovedPerson,
