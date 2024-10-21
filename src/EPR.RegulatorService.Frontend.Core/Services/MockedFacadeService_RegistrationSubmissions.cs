@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 public partial class MockedFacadeService : IFacadeService
@@ -17,6 +16,7 @@ public partial class MockedFacadeService : IFacadeService
         {
             string[] fields = line.Split('\t');
 
+            var dateTime = DateTime.Parse(fields[8], new CultureInfo("en-GB"));
             objRet.Add(new RegistrationSubmissionOrganisationDetails
             {
                 OrganisationReference = fields[0],
@@ -25,7 +25,8 @@ public partial class MockedFacadeService : IFacadeService
                 RegistrationStatus = Enum.Parse<RegistrationSubmissionStatus>(fields[3]),
                 ApplicationReferenceNumber = fields[4],
                 RegistrationReferenceNumber = fields[5],
-                RegistrationDateTime = DateTime.Parse(fields[8], new CultureInfo("en-GB")),
+                RegistrationDateTime = dateTime,
+                RegistrationYear = dateTime.Year, 
                 CompaniesHouseNumber = fields[9],
                 BuildingName = fields[10],
                 SubBuildingName = fields[11],
@@ -38,7 +39,7 @@ public partial class MockedFacadeService : IFacadeService
                 Country = fields[18],
                 Postcode = fields[19],
                 OrganisationID = Guid.Parse(fields[22]),
-                NationID = int.Parse(fields[23]),
+                NationID = int.Parse(fields[23], CultureInfo.InvariantCulture),
             });
         }
 

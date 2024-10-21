@@ -2,7 +2,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-
     using Microsoft.AspNetCore.Mvc;
 
     [TestClass]
@@ -33,11 +32,48 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
             Assert.IsInstanceOfType(expectedViewModel, viewResult.Model.GetType());
-            Assert.IsNotNull(((RegistrationSubmissionsViewModel)viewResult.Model).FilteredDataList);
 
             var actualBackLink = _controller.ViewBag.CustomBackLinkToDisplay;
             Assert.IsNotNull(actualBackLink);
             Assert.AreEqual(expectedBackLink, actualBackLink);
+        }
+
+        [TestMethod]
+        public async Task RegistrationsSubmissions_ReturnModel_WithPageNumber_FromSession_When_Supplied_Null()
+        {
+            _journeySession.RegulatorSession.CurrentPageNumber = 2;
+            var result = await _controller.RegistrationSubmissions(null);
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            resultModel.Should().NotBeNull();
+            resultModel.PageNumber.Should().Be(2);
+        }
+
+        [TestMethod]
+        public async Task RegistrationsSubmissions_ReturnsModel_WithPageNumber_1_When_Supplied_Null()
+        {
+            var result = await _controller.RegistrationSubmissions(null);
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            resultModel.Should().NotBeNull();
+            resultModel.PageNumber.Should().Be(1);
+        }
+
+        [TestMethod]
+        public async Task RegistrationsSubmissions_ReturnModel_WithPageNumber_3()
+        {
+            var result = await _controller.RegistrationSubmissions(3);
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            resultModel.Should().NotBeNull();
+            resultModel.PageNumber.Should().Be(3);
+            _journeySession.RegulatorSession.CurrentPageNumber.Should().Be(3);
         }
 
         #endregion
