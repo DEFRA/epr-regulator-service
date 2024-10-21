@@ -127,12 +127,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                     Telephone = "07553 937 831",
                     Email = "sally.smith@email.com",
                     DeclaredBy = "Sally Smith",
-                    Files = new List<FileDetails>
-                    {
-                        new() { Label = "Organisation details", FileName = "org.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "Brand details", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "Partner details", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
-                    }
+                    Files =
+                    [
+                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
+                    ]
                 }
             };
 

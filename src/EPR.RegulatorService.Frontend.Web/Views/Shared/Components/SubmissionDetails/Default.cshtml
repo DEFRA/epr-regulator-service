@@ -5,7 +5,7 @@
 
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
-        <h2 class="govuk-summary-card__title">Submission details</h2>
+        <h2 class="govuk-summary-card__title">@Localizer["SubmissionDetails.Title"]</h2>
         <div style="padding-top: 20px;">
             <govuk-tag status="@Model.Status" content="@SharedLocalizer[Model.Status.GetDescription()]" />
             <p style="font-size: 16px; color:#505a5f; text-align: right;padding-top:10px;">@Model.DecisionDate</p>
@@ -19,7 +19,7 @@
         <dl class="govuk-summary-list govuk-!-margin-bottom-4">
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
-                    <strong>Time and date of submission</strong>
+                    <strong>@Localizer["SubmissionDetails.TimeAndDateOfSubmission"]</strong>
                 </dd>
                 <dd class="govuk-summary-list__value">
                     @Model.TimeAndDateOfSubmission
@@ -28,7 +28,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
-                    <strong>Submitted on time</strong>
+                    <strong>@Localizer["SubmissionDetails.SubmittedOnTime"]</strong>
                 </dd>
                 <dd class="govuk-summary-list__value">
                     @(Model.SubmittedOnTime ? @SharedLocalizer["Yes"] : @SharedLocalizer["No"])
@@ -37,7 +37,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
-                    <strong>Submitted by</strong>
+                    <strong>@Localizer["SubmissionDetails.SubmittedBy"]</strong>
                 </dd>
                 <dd class="govuk-summary-list__value">
                     @Model.SubmittedBy
@@ -45,7 +45,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
-                    <strong>Account role</strong>
+                    <strong>@Localizer["SubmissionDetails.AccountRole"]</strong>
                 </dd>
                 <dd class="govuk-summary-list__value">
                     @Model.AccountRole
@@ -53,7 +53,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
-                    <strong>Telephone</strong>
+                    <strong>@Localizer["SubmissionDetails.Telephone"]</strong>
                 </dd>
                 <dd class="govuk-summary-list__value">
                     @Model.Telephone
@@ -61,7 +61,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
-                    <strong>Email</strong>
+                    <strong>@Localizer["SubmissionDetails.Email"]</strong>
                 </dd>
                 <dd class="govuk-summary-list__value">
                     @Model.Email
@@ -69,7 +69,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
-                    <strong>Declared by</strong>
+                    <strong>@Localizer["SubmissionDetails.DeclaredBy"]</strong>
                 </dd>
                 <dd class="govuk-summary-list__value">
                     @Model.DeclaredBy
@@ -80,7 +80,7 @@
             {
                 <div class="govuk-summary-list__row">
                     <dd class="govuk-summary-list__value">
-                        <strong>@file.Label</strong>
+                        <strong>@Localizer[file.Label]</strong>
                     </dd>
                     <dd class="govuk-summary-list__value">
                         @file.FileName
