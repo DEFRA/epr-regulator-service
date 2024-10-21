@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 public partial class MockedFacadeService : IFacadeService
@@ -38,7 +37,7 @@ public partial class MockedFacadeService : IFacadeService
                 Country = fields[18],
                 Postcode = fields[19],
                 OrganisationID = Guid.Parse(fields[22]),
-                NationID = int.Parse(fields[23]),
+                NationID = int.Parse(fields[23], NumberStyles.Number),
             });
         }
 
