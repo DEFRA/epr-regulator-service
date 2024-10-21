@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Core.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 @model RegistrationSubmissionsViewModel
@@ -24,37 +25,35 @@
                         </span>
                         <a href="../#" class="govuk-link">
                             @organisation.OrganisationName
-                        </a> 
+                        </a>
                         <br />
-                        <span class="orgNameFilter">@organisation.ProducerType</span>
+                        <span class="orgNameFilter">@Localizer[organisation.OrganisationType.GetDescription()]</span>
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.CompanyId"]
                         </span>
-                        @organisation.OrganisationId
-                        <br />
-                        Ref No: @organisation.RefNumber
+                        Ref No: @organisation.OrganisationReference
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.ApplicationDate"]
                         </span>
-                        @organisation.SubmissionDateTime.ToLongDateString()
+                        @organisation.RegistrationDateTime.ToLongDateString()
                         <br />
-                        @organisation.SubmissionDateTime.ToLongTimeString()
+                        @organisation.RegistrationDateTime.ToLongTimeString()
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.Year"]
                         </span>
-                        @organisation.SubmissionYear
+                        @organisation.RegistrationDateTime.Year
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align tag">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.Status"]
                         </span>
-                        <strong class="govuk-tag @Model.FilteredDataList.GetStyleNameFromStatus(organisation.Status)">@organisation.Status</strong>
+                        <govuk-tag status="@organisation.Status" content="@organisation.Status.GetDescription()" />
                     </td>
                 </tr>
             }
