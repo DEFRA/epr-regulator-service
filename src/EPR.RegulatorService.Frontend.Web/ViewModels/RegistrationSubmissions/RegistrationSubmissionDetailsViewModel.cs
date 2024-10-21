@@ -26,5 +26,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public string PowerBiLogin { get; set; }
 
         public RegistrationSubmissionStatus Status { get; set; }
+
+        public SubmissionDetailsViewModel SubmissionDetails { get; set; }
     }
 }

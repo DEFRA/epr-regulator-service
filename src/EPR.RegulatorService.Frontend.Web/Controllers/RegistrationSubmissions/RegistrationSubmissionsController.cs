@@ -115,7 +115,25 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 CompaniesHouseNumber = "0123456",
                 RegisteredNation = "Scotland",
                 PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
-                Status = RegistrationSubmissionStatus.queried
+                Status = RegistrationSubmissionStatus.queried,
+                SubmissionDetails = new SubmissionDetailsViewModel
+                {
+                    Status = RegistrationSubmissionStatus.queried,
+                    DecisionDate = DateTime.SpecifyKind(new DateTime(2025, 11, 14, 14, 0, 0), DateTimeKind.Utc),
+                    TimeAndDateOfSubmission = DateTime.SpecifyKind(new DateTime(2025, 10, 22, 9, 30, 5), DateTimeKind.Utc),
+                    SubmittedOnTime = true,
+                    SubmittedBy = "Sally Smith",
+                    AccountRole = "Approved person",
+                    Telephone = "07553 937 831",
+                    Email = "sally.smith@email.com",
+                    DeclaredBy = "Sally Smith",
+                    Files = new List<FileDetails>
+                    {
+                        new() { Label = "Organisation details", FileName = "org.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "Brand details", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "Partner details", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
+                    }
+                }
             };
 
             return View(nameof(RegistrationSubmissionDetails), model);

@@ -1,0 +1,100 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+
+@model SubmissionDetailsViewModel
+
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
+        <h2 class="govuk-summary-card__title">Submission details</h2>
+        <div style="padding-top: 20px;">
+            <strong class="govuk-tag govuk-tag--green" style="margin-left: 279px; justify-content: none">
+                @SharedLocalizer[Model.Status.ToString()]
+            </strong>
+            <p style="font-size: 16px; color:#505a5f; text-align: right;padding-top:10px;">@Model.DecisionDate</p>
+        </div>
+        <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+            </li>
+        </ul>
+    </div>
+    <div class="govuk-summary-card__content" style="padding-bottom: 0px;">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>Time and date of submission</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @Model.TimeAndDateOfSubmission
+                </dd>
+
+            </div>
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>Submitted on time</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @(Model.SubmittedOnTime ? @SharedLocalizer["Yes"] : @SharedLocalizer["No"])
+                </dd>
+
+            </div>
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>Submitted by</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubmittedBy
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>Account role</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @Model.AccountRole
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>Telephone</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @Model.Telephone
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>Email</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @Model.Email
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>Declared by</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @Model.DeclaredBy
+                </dd>
+            </div>
+
+            @foreach (var file in Model.Files)
+            {
+                <div class="govuk-summary-list__row">
+                    <dd class="govuk-summary-list__value">
+                        <strong>@file.Label</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value">
+                        @file.FileName
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link--no-visited-state" href="#">
+                            @SharedLocalizer["Link.Download"]
+                        </a>
+                    </dd>
+                </div>
+            }
+
+        </dl>
+
+    </div>
+</div>
