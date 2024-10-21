@@ -6,6 +6,7 @@ using EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 
@@ -38,13 +39,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         private readonly Guid _connExternalId = Guid.NewGuid();
         private readonly Guid _promotedPersonExternalId = Guid.NewGuid();
 
+        private const int PAGE_SIZE = 10;
+
         [TestInitialize]
         public void Setup()
         {
             _mockHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             _tokenAcquisitionMock = new Mock<ITokenAcquisition>();
             _httpClient = new HttpClient(_mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
-            _paginationConfig = Options.Create(new PaginationConfig { PageSize = 10 });
+            _paginationConfig = Options.Create(new PaginationConfig { PageSize = PAGE_SIZE });
             _facadeApiConfig = Options.Create(new FacadeApiConfig
             {
                 Endpoints = new Dictionary<string, string>
@@ -65,7 +68,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["OrganisationsRemoveApprovedUser"] = "organisations/remove-approved-users?connExternalId={0}&organisationId={1}&promotedPersonExternalId={2}",
                     ["AddRemoveApprovedUser"] = "/accounts-management/add-remove-approved-users",
                     ["RegistrationSubmissionDecisionPath"] = "http://testurl.com",
-                    ["FileDownload"] = "https://api.example.com/file/download"
+                    ["FileDownload"] = "https://api.example.com/file/download",
+                    ["OrganisationRegistrationSubmissions"] = "registrations/get-organisations&currentPage={0}&pageSize={1}"
                 },
                 DownstreamScope = "api://default"
             });
@@ -262,7 +266,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ReturnsAsync(httpResponseMessage);
 
             // Act
-            var result = await _facadeService.GetTestMessageAsync();
+            string result = await _facadeService.GetTestMessageAsync();
 
             // Assert
             Assert.IsNotNull(result);
@@ -625,7 +629,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ReturnsAsync(httpResponseMessage);
 
             // Act
-            var result = await _facadeService.GetOrganisationSubmissions<Registration>((string?)null, (string?)null, (OrganisationType?)null, null, null, null, 1);
+            var result = await _facadeService.GetOrganisationSubmissions<Registration>(null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                1);
 
             // Assert
             result.Should().BeEquivalentTo(testOrgAppList);
@@ -659,9 +669,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(httpResponseMessage);
 
-            var statuses = new[] { "Pending", "Accepted" };
-            var submissionYears = new[] { 2023, 2024 };
-            var submissionPeriods = new[] { "January to June 2023", "January to June 2024" };
+            string[] statuses = new[] { "Pending", "Accepted" };
+            int[] submissionYears = new[] { 2023, 2024 };
+            string[] submissionPeriods = new[] { "January to June 2023", "January to June 2024" };
 
             // Act
             var result =
@@ -670,7 +680,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Assert
             result.Should().BeEquivalentTo(testOrgAppList);
 
-            var expectedQueryString =
+            string expectedQueryString =
                 "pageNumber=2&pageSize=10&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024";
 
             _mockHandler.Protected()
@@ -1039,7 +1049,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Assert
             Assert.IsNotNull(response);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            var content = await response.Content.ReadAsStringAsync();
+            string content = await response.Content.ReadAsStringAsync();
             Assert.AreEqual("This is a mock file content", content);
 
             _mockHandler.Protected().Verify(
@@ -1051,6 +1061,21 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 ),
                 ItExpr.IsAny<CancellationToken>()
             );
+        }
+
+        [TestMethod]
+        public async Task GetRegistrationSubmissions_ShouldReturnPaginatedList_WhenRequestSucceeds ()
+        {
+            var result = await _facadeService.GetRegistrationSubmissions(1);
+            result.Should().BeOfType<PaginatedList<RegistrationSubmissionOrganisationDetails>>();
+            result.Items.Should().HaveCount(PAGE_SIZE);
+        }
+
+        [TestMethod]
+        public async Task GetRegistrationSubmission_ShouldReturnPageTwo_WhenRequestSucceeds()
+        {
+            var result = await _facadeService.GetRegistrationSubmissions(2);
+            result.CurrentPage.Should().Be(2);
         }
     }
 }

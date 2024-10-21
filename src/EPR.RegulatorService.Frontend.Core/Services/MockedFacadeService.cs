@@ -108,8 +108,8 @@ public partial class MockedFacadeService : IFacadeService
         
         for (int i = 1; i <= 1000; i++)
         {
-            var hasApprovedPending = (i % 2) == 0; 
-            var hasDelegatedPending = (i % 4) < 2;
+            bool hasApprovedPending = (i % 2) == 0;
+            bool hasDelegatedPending = (i % 4) < 2;
 
             string organisationName = string.Empty;
 
@@ -126,6 +126,9 @@ public partial class MockedFacadeService : IFacadeService
                 case 2:
                     // Extra long name with spaces
                     organisationName += $"Organisation{i}Ltd ReallyReallyReallyReallyReallyReallyReally Really Long Name";
+                    break;
+                default:
+                    organisationName = $"Organisation {i} Ltd With an even more and even longer meaningless name that will never fit in any view";
                     break;
             }
 
@@ -165,7 +168,7 @@ public partial class MockedFacadeService : IFacadeService
     private static List<OrganisationSearchResult> GenerateOrganisationSearchResults()
     {
         var allItems = new List<OrganisationSearchResult>();
-        var random = RandomNumberGenerator.GetInt32(0, 2);
+        int random = RandomNumberGenerator.GetInt32(0, 2);
 
         for (int i = 1; i <= 1000; i++)
         {
