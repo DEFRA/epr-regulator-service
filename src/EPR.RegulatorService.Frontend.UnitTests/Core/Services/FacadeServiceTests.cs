@@ -1066,7 +1066,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [TestMethod]
         public void PrepareAuthenticateClient_WillContructURL_When_HttpClientIsNull()
         {
-            var httpClient = new HttpClient(_mockHandler.Object);
+            using var httpClient = new HttpClient(_mockHandler.Object);
             var facadeApiConfig = Options.Create(new FacadeApiConfig
             {
                 BaseUrl = "http://localhost/"

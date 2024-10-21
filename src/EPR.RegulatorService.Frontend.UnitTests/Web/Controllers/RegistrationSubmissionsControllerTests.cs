@@ -63,20 +63,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             resultModel.PageNumber.Should().Be(1);
         }
 
-
-        [TestMethod]
-        public async Task RegistrationsSubmissions_ReturnModel_WithPageNumber_1_WhenSession_When_Supplied_Null()
-        {
-            //_mockSessionManager.Setup(x => x.GetSessionAsync(null)).Returns(null);
-            var result = await _controller.RegistrationSubmissions(null);
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-
-            var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
-            resultModel.Should().NotBeNull();
-            resultModel.PageNumber.Should().Be(1);
-        }
-
         [TestMethod]
         public async Task RegistrationsSubmissions_ReturnModel_WithPageNumber_3()
         {
@@ -87,6 +73,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             resultModel.Should().NotBeNull();
             resultModel.PageNumber.Should().Be(3);
+            _journeySession.RegulatorSession.CurrentPageNumber.Should().Be(3);
         }
 
         #endregion
