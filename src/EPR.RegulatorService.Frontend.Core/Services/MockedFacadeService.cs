@@ -26,10 +26,10 @@ public partial class MockedFacadeService : IFacadeService
     private const string Accepted = "Accepted";
     private const string Rejected = "Rejected";
     private readonly PaginationConfig _config;
-    private static List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
-    private static List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
-    private static List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
-    private static List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
+    private static readonly List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
+    private static readonly List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
+    private static readonly List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
+    private static readonly List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
     private static readonly List<RegistrationSubmissionOrganisationDetails> _registrationSubmissions = GenerateRegistrationSubmission();
 
     public MockedFacadeService(IOptions<PaginationConfig> options)

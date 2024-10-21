@@ -33,7 +33,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
             Assert.IsInstanceOfType(expectedViewModel, viewResult.Model.GetType());
-            Assert.IsNotNull(((RegistrationSubmissionsViewModel)viewResult.Model).FilteredDataList);
 
             var actualBackLink = _controller.ViewBag.CustomBackLinkToDisplay;
             Assert.IsNotNull(actualBackLink);

@@ -8,6 +8,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
+    using EPR.RegulatorService.Frontend.Core.Sessions;
+    using EPR.RegulatorService.Frontend.Web.Sessions;
+    using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 
     public abstract class RegistrationSubmissionsTestBase
     {
@@ -17,6 +20,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         protected Mock<HttpContext> _mockHttpContext = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _mockUrlsOptions = null!;
         protected Mock<IConfiguration> _mockConfiguration = null!;
+        protected Mock<ISessionManager<JourneySession>>  _mockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
+        protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
 
         protected void SetupBase()
@@ -38,12 +43,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 });
 
             _controller = new RegistrationSubmissionsController(
+                _mockSessionManager.Object,
                 _mockConfiguration.Object,
-                _mockUrlsOptions.Object);
-
-            _controller.ControllerContext.HttpContext = _mockHttpContext.Object;
-
-            _controller = new RegistrationSubmissionsController(_mockConfiguration.Object, _mockUrlsOptions.Object)
+                _mockUrlsOptions.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -51,6 +53,22 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 },
                 TempData = new Mock<ITempDataDictionary>().Object
             };
+        }
+
+        public void SetupJourneySession(RegistrationFiltersModel registrationFiltersModel, Registration registration = null)
+        {
+            _journeySession = new JourneySession()
+            {
+                RegulatorRegistrationSession = new RegulatorRegistrationSession()
+                {
+                    RegistrationFiltersModel = registrationFiltersModel,
+                    PageNumber = 1,
+                    OrganisationRegistration = registration
+                }
+            };
+
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(_journeySession);
         }
 
         protected static void AssertBackLink(ViewResult viewResult, string expectedBackLink)

@@ -6,7 +6,6 @@
 
 @if (Model.PagedRegistrationSubmissions.Any())
 {
-    <div class="govuk-grid-column-full">
     <table class="govuk-table responsive-table" aria-label="Organisation Application Listing">
         <thead role="rowgroup" class="govuk-table__head">
             <tr role="row" class="govuk-table__row">
@@ -18,7 +17,7 @@
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-                @foreach (var organisation in Model.PagedRegistrationSubmissions)
+            @foreach (var organisation in Model.PagedRegistrationSubmissions)
             {
                 <tr role="row" class="govuk-table__row">
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
@@ -35,7 +34,7 @@
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.CompanyId"]
                         </span>
-                            @organisation.OrganisationReference
+                        @organisation.OrganisationReference
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
@@ -61,8 +60,7 @@
             }
         </tbody>
     </table>
-        @await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel) @*  Model.PagedRegistrationSubmissionList) *@
-    </div>
+    @await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel) @*  Model.PagedRegistrationSubmissionList) *@
 }
 else
 {

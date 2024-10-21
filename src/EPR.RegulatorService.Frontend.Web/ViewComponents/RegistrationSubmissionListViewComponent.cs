@@ -2,15 +2,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Xml.Schema;
-
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.Controllers.Registrations;
 using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 
