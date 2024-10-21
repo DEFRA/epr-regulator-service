@@ -18,29 +18,21 @@ using System.Security.Cryptography;
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 [ExcludeFromCodeCoverage]
-public partial class MockedFacadeService : IFacadeService
+public partial class MockedFacadeService(IOptions<PaginationConfig> options) : IFacadeService
 {
     private const string ApprovedPerson = "ApprovedPerson";
     private const string DelegatedPerson = "DelegatedPerson";
     private const string Pending = "Pending";
     private const string Accepted = "Accepted";
     private const string Rejected = "Rejected";
-    private readonly PaginationConfig _config;
+    private readonly PaginationConfig _config = options.Value;
     private static readonly List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
     private static readonly List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
     private static readonly List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
     private static readonly List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
-    private static readonly List<RegistrationSubmissionOrganisationDetails> _registrationSubmissions = GenerateRegistrationSubmission();
+    private static readonly List<RegistrationSubmissionOrganisationDetails> _registrationSubmissions = GenerateRegistrationSubmissionDataCollection();
 
-    public MockedFacadeService(IOptions<PaginationConfig> options)
-    {
-        _config = options.Value;
-    }
-
-    public async Task<string> GetTestMessageAsync()
-    {
-        return await Task.FromResult("Dummy test message from MockedFacadeService");
-    }
+    public async Task<string> GetTestMessageAsync() => await Task.FromResult("Dummy test message from MockedFacadeService");
 
     public Task<PaginatedList<OrganisationApplications>> GetUserApplicationsByOrganisation(
         string? applicationType,
@@ -202,28 +194,16 @@ public partial class MockedFacadeService : IFacadeService
         return await Task.FromResult(organisationDetails);
     }
 
-    public async Task<EndpointResponseStatus> UpdateEnrolment(UpdateEnrolment updateEnrolment)
-    {
-        return await Task.FromResult(EndpointResponseStatus.Success);
-    }
+    public async Task<EndpointResponseStatus> UpdateEnrolment(UpdateEnrolment updateEnrolment) => await Task.FromResult(EndpointResponseStatus.Success);
 
-    public async Task<EndpointResponseStatus> SendEnrolmentEmails(EnrolmentDecisionRequest request)
-    {
-        return await Task.FromResult(EndpointResponseStatus.Success);
-    }
+    public async Task<EndpointResponseStatus> SendEnrolmentEmails(EnrolmentDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 
     public async Task<EndpointResponseStatus> TransferOrganisationNation(
         OrganisationTransferNationRequest organisationNationTransfer) => EndpointResponseStatus.Success;
 
-    public async Task<EndpointResponseStatus> EnrolInvitedUser(EnrolInvitedUserRequest request)
-    {
-        return await Task.FromResult(EndpointResponseStatus.Success);
-    }
+    public async Task<EndpointResponseStatus> EnrolInvitedUser(EnrolInvitedUserRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 
-    public Task<HttpResponseMessage> GetUserAccountDetails()
-    {
-        return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
-    }
+    public Task<HttpResponseMessage> GetUserAccountDetails() => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
 
     public async Task<EndpointResponseStatus> SubmitPoMDecision(RegulatorPoMDecisionCreateRequest request) => EndpointResponseStatus.Success;
 
@@ -373,20 +353,23 @@ public partial class MockedFacadeService : IFacadeService
         return await Task.FromResult(response);
     }
 
-    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(int currentPage = 1) {
-        if (currentPage > (int)Math.Ceiling(_allSubmissions.Count / (double)_config.PageSize))
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters) {
+        if (filters.Page > (int)Math.Ceiling(_allSubmissions.Count / (double)_config.PageSize))
         {
-            currentPage = 1;
+            filters.Page = 1;
         }
 
-        var results = _registrationSubmissions.ToList();
+        filters.PageSize ??= _config.PageSize;
+
+        // this is where the Facade is actually called
+        var results = await FilterAndOrderRegistrations([.. _registrationSubmissions], filters) ;
 
         var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
         {
-            Items = await OrderRegistrations(results, currentPage),
-            CurrentPage = currentPage,
+            Items = results,
+            CurrentPage = filters.Page.Value,
             TotalItems = results.Count,
-            PageSize = _config.PageSize
+            PageSize = filters.PageSize.Value
         };
 
         return response;

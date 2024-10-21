@@ -1075,15 +1075,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             });
 
             var sut = new FacadeService(httpClient, _tokenAcquisitionMock.Object, _paginationConfig, facadeApiConfig);
-
-            sut.GetRegistrationSubmissions(1);
+            sut.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { Page = 1 });
             httpClient.DefaultRequestHeaders.Authorization.Should().NotBeNull();
         }
 
         [TestMethod]
         public async Task GetRegistrationSubmissions_ShouldReturnPaginatedList_WhenRequestSucceeds ()
         {
-            var result = await _facadeService.GetRegistrationSubmissions(1);
+            var filter = new RegistrationSubmissionsFilterModel { Page = 1 };
+
+            var result = await _facadeService.GetRegistrationSubmissions(filter);
             result.Should().BeOfType<PaginatedList<RegistrationSubmissionOrganisationDetails>>();
             result.Items.Should().HaveCount(PAGE_SIZE);
         }
@@ -1091,8 +1092,67 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [TestMethod]
         public async Task GetRegistrationSubmission_ShouldReturnPageTwo_WhenRequestSucceeds()
         {
-            var result = await _facadeService.GetRegistrationSubmissions(2);
+            var result = await _facadeService.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { Page = 2 });
             result.CurrentPage.Should().Be(2);
+        }
+
+        [TestMethod]
+        [DataRow(24)]
+        [DataRow(90)]
+        public async Task GetRegisrationSubmission_FilterByOrgName_ShouldReturnSuccess_And_1Org(int byIndex)
+        {
+            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var expectedResult = expectedDataSet[byIndex];
+
+            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationName = expectedDataSet[byIndex].OrganisationName };
+            var results = await _facadeService.GetRegistrationSubmissions(filter);
+
+            results.Items.Should().Contain(expectedResult);
+        }
+
+        [TestMethod]
+        [DataRow(14)]
+        [DataRow(45)]
+        public async Task GetRegisrationSubmission_FilterByOrgRef_ShouldReturnSuccess_And_1Org(int byIndex)
+        {
+            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var expectedResult = expectedDataSet[byIndex];
+
+            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationRef = expectedDataSet[byIndex].OrganisationReference};
+            var results = await _facadeService.GetRegistrationSubmissions(filter);
+
+            results.Items.Should().Contain(expectedResult);
+        }
+
+        [TestMethod]
+        [DataRow(8)]
+        [DataRow(15)]
+        [DataRow(19)]
+        [DataRow(23)]
+        [DataRow(44)]
+        public async Task FilterByNameSizeStatusAndYear_ReturnsTheCorrectSet(int byIndex)
+        {
+            var item = MockedFacadeService.GenerateRegistrationSubmissionDataCollection()[byIndex];
+            var expectedItems = new List<RegistrationSubmissionOrganisationDetails>
+                                {
+                                    item
+                                };
+
+            string expectedName = item.OrganisationName[3..6];
+            var expectedSize = item.OrganisationType;
+            var expectedStatus = item.RegistrationStatus;
+            int expectedYear = item.RegistrationYear;
+
+            var filter = new RegistrationSubmissionsFilterModel
+            {
+                OrganisationName = expectedName,
+                OrganisationType = expectedSize,
+                SubmissionStatus = expectedStatus,
+                RelevantYear = expectedYear
+            };
+
+            var result = await _facadeService.GetRegistrationSubmissions(filter);
+            result.Items.Should().BeEquivalentTo(expectedItems);
         }
     }
 }

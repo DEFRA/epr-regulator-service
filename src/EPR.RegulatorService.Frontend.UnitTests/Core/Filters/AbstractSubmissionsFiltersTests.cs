@@ -204,7 +204,7 @@ public class AbstractSubmissionFiltersTests
     [TestMethod]
     public void FilterBySubmissionYears_SubmissionYearsPassed_ReturnsOnlyMatches()
     {
-        var submissionYears = new[] { 2023 };
+        int[] submissionYears = new[] { 2023 };
 
         var expectedSubmissions = _abstractSubmissions.Where(
             x => submissionYears.Contains(int.Parse(x.SubmissionPeriod.Substring(x.SubmissionPeriod.Length - 4))));
@@ -233,7 +233,7 @@ public class AbstractSubmissionFiltersTests
     [TestMethod]
     public void FilterBySubmissionPeriods_SubmissionPeriodsPassed_ReturnsOnlyMatches()
     {
-        var submissionPeriods = new[] { "January to June 2023" };
+        string[] submissionPeriods = ["January to June 2023"];
 
         var expectedSubmissions = _abstractSubmissions.Where(x => submissionPeriods.Contains(x.SubmissionPeriod));
 

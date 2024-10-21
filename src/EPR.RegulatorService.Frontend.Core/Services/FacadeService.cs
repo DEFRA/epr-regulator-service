@@ -69,12 +69,7 @@ public class FacadeService : IFacadeService
     public async Task<string> GetTestMessageAsync()
     {
         var response = await _httpClient.GetAsync("/api/test");
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        return response.ToString();
+        return response.StatusCode == HttpStatusCode.OK ? await response.Content.ReadAsStringAsync() : response.ToString();
     }
 
     public async Task<PaginatedList<OrganisationApplications>> GetUserApplicationsByOrganisation(
@@ -211,14 +206,7 @@ public class FacadeService : IFacadeService
             query["organisationReference"] = organisationReference;
         }
 
-        if (organisationType.HasValue)
-        {
-            query["organisationType"] = organisationType.ToString();
-        }
-        else
-        {
-            query["organisationType"] = "All";
-        }
+        query["organisationType"] = organisationType.HasValue ? organisationType.ToString() : "All";
 
         if (status?.Length > 0)
         {
@@ -331,7 +319,7 @@ public class FacadeService : IFacadeService
         }
     }
 
-    public Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(int currentPage = 1)
+    public Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
     {
         var options = Options.Create(new PaginationConfig()
         {
@@ -342,6 +330,6 @@ public class FacadeService : IFacadeService
 
         var mockedFacade = new MockedFacadeService(options);
 
-        return mockedFacade.GetRegistrationSubmissions(currentPage);
+        return mockedFacade.GetRegistrationSubmissions(filters);
     }
 }

@@ -5,11 +5,12 @@ using System.Globalization;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 public partial class MockedFacadeService : IFacadeService
 {
-    private static List<RegistrationSubmissionOrganisationDetails> GenerateRegistrationSubmission()
+    public static List<RegistrationSubmissionOrganisationDetails> GenerateRegistrationSubmissionDataCollection()
     {
         List<RegistrationSubmissionOrganisationDetails> objRet = new();
 
@@ -47,10 +48,13 @@ public partial class MockedFacadeService : IFacadeService
         return objRet;
     }
 
-    private async Task<List<RegistrationSubmissionOrganisationDetails>> OrderRegistrations(List<RegistrationSubmissionOrganisationDetails> items, int currentPage)
+    public async Task<List<RegistrationSubmissionOrganisationDetails>> FilterAndOrderRegistrations(List<RegistrationSubmissionOrganisationDetails> items, RegistrationSubmissionsFilterModel filters)
     {
-        // to do: the ordering is getting it wrong
-        var filteredItems = items
+        var rawItems = items.AsQueryable();
+
+        var filteredItems = rawItems.Filter(filters);
+
+        var sortedItems = filteredItems
                 .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
@@ -62,7 +66,7 @@ public partial class MockedFacadeService : IFacadeService
                 .Take(_config.PageSize)
                 .ToList();
 
-        return [.. filteredItems];
+        return [.. sortedItems];
     }
 
 

@@ -1,11 +1,16 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 
+/// <summary>
+/// The Frontend representation of the Results from the Facade for
+/// the registrations/get-organisations endpoint
+/// </summary>
 [ExcludeFromCodeCoverage]
-public class RegistrationSubmissionOrganisationDetails
+public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<RegistrationSubmissionOrganisationDetails?>
 {
     public Guid OrganisationID { get; set; }
     public string OrganisationReference { get; set; }
@@ -30,4 +35,11 @@ public class RegistrationSubmissionOrganisationDetails
     public string County { get; set; }
     public string Country { get; set; }
     public string Postcode { get; set; }
+
+    public override bool Equals(object? obj) => Equals(obj as RegistrationSubmissionOrganisationDetails);
+    public bool Equals(RegistrationSubmissionOrganisationDetails? other) => other is not null && OrganisationID.Equals(other.OrganisationID);
+    public override int GetHashCode() => HashCode.Combine(OrganisationID);
+
+    public static bool operator ==(RegistrationSubmissionOrganisationDetails? left, RegistrationSubmissionOrganisationDetails? right) => EqualityComparer<RegistrationSubmissionOrganisationDetails>.Default.Equals(left, right);
+    public static bool operator !=(RegistrationSubmissionOrganisationDetails? left, RegistrationSubmissionOrganisationDetails? right) => !(left == right);
 }

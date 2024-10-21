@@ -10,7 +10,7 @@ public static class ServiceProviderExtension
 {
     public static IServiceCollection RegisterCoreComponents(this IServiceCollection services, IConfiguration configuration)
     {
-        var useMockData = configuration.GetValue<bool>("FacadeApi:UseMockData");
+        bool useMockData = configuration.GetValue<bool>("FacadeApi:UseMockData");
         if (useMockData)
         {
             services.AddSingleton<IFacadeService, MockedFacadeService>();

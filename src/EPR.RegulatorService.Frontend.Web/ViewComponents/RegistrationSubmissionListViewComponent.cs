@@ -2,6 +2,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
@@ -18,10 +20,7 @@ public class RegistrationSubmissionListViewComponent(IFacadeService facadeServic
     [ExcludeFromCodeCoverage]
     public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionsListRequest request)
     {
-        // to do: set filters here
-
-        var pagedOrganisationRegistrations
-            = await facadeService.GetRegistrationSubmissions(request.PageNumber);
+        var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { Page = request.PageNumber });
 
         if ((request.PageNumber > pagedOrganisationRegistrations.TotalPages && request.PageNumber > 1) || request.PageNumber < 1)
         {
