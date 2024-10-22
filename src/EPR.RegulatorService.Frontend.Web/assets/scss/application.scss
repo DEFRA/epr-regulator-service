@@ -143,6 +143,13 @@ table.responsive-table {
         min-width: 1px;
         text-align: right;
     }
+    tbody tr td:last-child {
+        &.tag {
+          align-items: center;
+          vertical-align: middle;
+          text-align: right 
+        }
+    }
 }
 
 @media all and (-ms-high-contrast: none) { /* IE11 flex fix */
@@ -369,22 +376,27 @@ button.epr-link-no-visited-state {
 
 .epr-width-thirty-percent {
     width: 30%;
+    text-wrap: balance;
 }
 
 .epr-width-ten-percent {
-    width: 10%;
+  text-wrap: balance;
+  width: 10%;
 }
 
 .epr-width-twenty-eight-percent {
   width: 28%;
+  text-wrap: balance;
 }
 
 .epr-width-twenty-two-percent {
   width: 22%;
+  text-wrap: balance;
 }
 
 .epr-width-sixteen-percent {
   width: 16%;
+  text-wrap: balance;
 }
 
 .epr-summary-list-download-link {
