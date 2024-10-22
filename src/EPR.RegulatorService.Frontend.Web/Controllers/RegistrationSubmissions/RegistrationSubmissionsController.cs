@@ -134,6 +134,16 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                         new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
                         new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
                     ]
+                },
+                PaymentDetails = new PaymentDetailsViewModel
+                {
+                    SubmissionPeriod = "January to June 2025 submission period",
+                    ApplicationProcessingFee = 12.56M,
+                    OnlineMarketplaceFee = 234.23M,
+                    SubsidiaryFee = 1.34M,
+                    TotalChargeableItems = 12.56M + 234.23M + 1.34M,
+                    PreviousPaymentsReceived = 20M,
+                    TotalOutstanding = 12.56M + 234.23M + 1.34M - 20M
                 }
             };
 
