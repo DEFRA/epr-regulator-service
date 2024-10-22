@@ -1,6 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -10,6 +11,7 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 /// the registrations/get-organisations endpoint
 /// </summary>
 [ExcludeFromCodeCoverage]
+[DebuggerDisplay("{OrganisationName}, {OrganisationReference}, {RegistrationYear}, {RegistrationStatus},{OrganisationType}")]
 public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<RegistrationSubmissionOrganisationDetails?>
 {
     public Guid OrganisationID { get; set; }
@@ -17,7 +19,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public string OrganisationName { get; set; }
     public RegistrationSubmissionOrganisationType OrganisationType { get; set; }
     public int NationID { get; set; }
-    public int RegistrationYear { get; set; }
+    public string RegistrationYear { get; set; }
     public DateTime RegistrationDateTime { get; set; }
     public RegistrationSubmissionStatus RegistrationStatus { get; set; }
     public string? RegulatorComments { get; set; } = string.Empty;

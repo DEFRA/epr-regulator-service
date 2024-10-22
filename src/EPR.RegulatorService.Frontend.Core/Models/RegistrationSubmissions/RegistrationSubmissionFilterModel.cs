@@ -15,24 +15,35 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 /// </summary>
 public  class RegistrationSubmissionsFilterModel
 {
-    public string? OrganisationName { get; set; } = string.Empty;
+    private string? _organisationName = string.Empty;
+
+    public string? OrganisationName
+    {
+        get => _organisationName;
+        set
+        {
+            if (null == value)
+            {
+                _organisationName = null;
+            }
+            else
+            {
+                string[] articlesToExclude = ["-", "the", "a", "an", "and", "&", "or", "of", "for", "in", "'n", "+"];
+                string filteredName = String.Join(" ", value
+                                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                                    .Where(part => !articlesToExclude.Contains(part.ToLower())));
+
+                _organisationName = filteredName;
+            }
+        }
+    }
+
     public string? OrganisationRef { get; set; } = string.Empty;
 
-    public RegistrationSubmissionOrganisationType? OrganisationType { get; set; } = RegistrationSubmissionOrganisationType.none;
-    public bool IsOrganisationComplianceChecked { get; set; }
-    public bool IsOrganisationSmallChecked { get; set; }
-    public bool IsOrganisationLargeChecked { get; set; }
+    public string? OrganisationType { get; set; }
+    public string? SubmissionStatus { get; set; }
 
-    public RegistrationSubmissionStatus? SubmissionStatus { get; set; } = RegistrationSubmissionStatus.none;
-    public bool IsStatusGrantedChecked { get; set; }
-    public bool IsStatusRefusedChecked { get; set; }
-    public bool IsStatusPendingChecked { get; set; }
-    public bool IsStatusQueriedChecked { get; set; }
-    public bool IsStatusUpdatedChecked { get; set; }
-    public bool IsStatusCancelledChecked { get; set; }
-
-    public int? RelevantYear { get; set; }
-    public bool Is2025Checked { get; set; }
+    public string? RelevantYear { get; set; }
 
     public int? Page { get; set; } = 1;
     public int? PageSize { get; set; } = 20;

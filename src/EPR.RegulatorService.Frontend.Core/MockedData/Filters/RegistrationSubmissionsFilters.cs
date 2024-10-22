@@ -2,6 +2,7 @@ namespace EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,8 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 public static class RegistrationSubmissionsFilters
 {
-    public static IQueryable<RegistrationSubmissionOrganisationDetails> Filter(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, RegistrationSubmissionsFilterModel filters) => queryable
+    public static IQueryable<RegistrationSubmissionOrganisationDetails> Filter(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable,
+                                                                                RegistrationSubmissionsFilterModel filters) => queryable
                         .FilterByOrganisationName(filters.OrganisationName)
                         .FilterByOrganisationRef(filters.OrganisationRef)
                         .FilterByOrganisationType(filters.OrganisationType)
@@ -22,11 +24,18 @@ public static class RegistrationSubmissionsFilters
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByOrganisationName(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? organisationName)
     {
-        if (!String.IsNullOrEmpty(organisationName))
+        if (!string.IsNullOrEmpty(organisationName))
         {
-            queryable = from q in queryable
-                        where q.OrganisationName.Contains(organisationName, StringComparison.OrdinalIgnoreCase)
-                        select q;
+            string[] nameParts = organisationName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var completeQueryable = from q in queryable
+                                    where nameParts.All(part => q.OrganisationName.Contains(part, StringComparison.OrdinalIgnoreCase))
+                                    select q;
+
+            queryable = completeQueryable.Any()
+                ? completeQueryable
+                : (from q in queryable
+                            where nameParts.Any(part => q.OrganisationName.Contains(part, StringComparison.OrdinalIgnoreCase))
+                            select q);
         }
 
         return queryable;
@@ -34,46 +43,48 @@ public static class RegistrationSubmissionsFilters
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByOrganisationRef(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? organisationRef)
     {
-        if (!String.IsNullOrEmpty(organisationRef))
+        if (!string.IsNullOrEmpty(organisationRef))
         {
+            string[] nameParts = organisationRef.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
             queryable = from q in queryable
-                        where q.OrganisationReference.Contains(organisationRef, StringComparison.OrdinalIgnoreCase)
+                        where nameParts.Any(part => q.OrganisationReference.Contains(part, StringComparison.OrdinalIgnoreCase))
                         select q;
         }
 
         return queryable;
     }
 
-    public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByOrganisationType(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, RegistrationSubmissionOrganisationType? organisationType)
+    public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByOrganisationType(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? organisationType)
     {
-        if (organisationType.HasValue && organisationType.Value != RegistrationSubmissionOrganisationType.none)
+        if (!string.IsNullOrEmpty(organisationType) && organisationType != "none")
         {
             queryable = from q in queryable
-                        where q.OrganisationType.Equals(organisationType.Value)
+                        where organisationType.Contains(q.OrganisationType.ToString())
                         select q;
         }
 
         return queryable;
     }
 
-    public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterBySubmissionStatus(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, RegistrationSubmissionStatus? submissionStatus)
+    public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterBySubmissionStatus(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? submissionStatus)
     {
-        if (submissionStatus.HasValue && submissionStatus.Value != RegistrationSubmissionStatus.none)
+        if (!string.IsNullOrEmpty(submissionStatus) && submissionStatus != "none")
         {
             queryable = from q in queryable
-                        where q.RegistrationStatus.Equals(submissionStatus.Value)
+                        where submissionStatus.Contains(q.RegistrationStatus.ToString())
                         select q;
         }
 
         return queryable;
     }
 
-    public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByRelevantYear(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, int? relevantYear)
+    public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByRelevantYear(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? relevantYear)
     {
-        if (relevantYear.HasValue)
+        if (!string.IsNullOrEmpty(relevantYear))
         {
             queryable = from q in queryable
-                        where q.RegistrationYear.Equals(relevantYear.Value)
+                        where relevantYear.Contains(q.RegistrationYear)
                         select q;
         }
 

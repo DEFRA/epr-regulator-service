@@ -82,7 +82,7 @@ public class RegistrationSubmissionFiltersTests
     {
         var expectedResult = _abstractRegistrations.Where(x => x.OrganisationType == byType);
 
-        var result = _abstractRegistrations.FilterByOrganisationType(byType);
+        var result = _abstractRegistrations.FilterByOrganisationType(byType.ToString());
         result.Should().BeEquivalentTo(expectedResult);
     }
 
@@ -92,7 +92,7 @@ public class RegistrationSubmissionFiltersTests
         var result = _abstractRegistrations.FilterByOrganisationType(null);
         result.Count().Should().Be(_abstractRegistrations.Count());
 
-        result = _abstractRegistrations.FilterByOrganisationType(RegistrationSubmissionOrganisationType.none);
+        result = _abstractRegistrations.FilterByOrganisationType(RegistrationSubmissionOrganisationType.none.ToString());
         result.Count().Should().Be(_abstractRegistrations.Count());
     }
 
@@ -106,7 +106,7 @@ public class RegistrationSubmissionFiltersTests
     {
         var expectedResult = _abstractRegistrations.Where(x=>x.RegistrationStatus == byStatus);
 
-        var result = _abstractRegistrations.FilterBySubmissionStatus(byStatus);
+        var result = _abstractRegistrations.FilterBySubmissionStatus(byStatus.ToString());
         result.Should().BeEquivalentTo(expectedResult);
     }
 
@@ -116,7 +116,7 @@ public class RegistrationSubmissionFiltersTests
         var result = _abstractRegistrations.FilterBySubmissionStatus (null);
         result.Count().Should().Be(_abstractRegistrations.Count());
 
-        result = _abstractRegistrations.FilterBySubmissionStatus(RegistrationSubmissionStatus.none);
+        result = _abstractRegistrations.FilterBySubmissionStatus(RegistrationSubmissionStatus.none.ToString());
         result.Count().Should().Be(_abstractRegistrations.Count());
     }
 
@@ -128,10 +128,10 @@ public class RegistrationSubmissionFiltersTests
     [DataRow(44)]
     public void FilterByRegistrationYear_ReturnsOnlyThatYear(int byIndex)
     {
-        int expectedYear = _abstractRegistrations.ToArray()[byIndex].RegistrationYear;
+        string expectedYear = _abstractRegistrations.ToArray()[byIndex].RegistrationYear;
         var expectedResult = _abstractRegistrations.Where(x=>x.RegistrationYear == expectedYear);
 
-        var result = _abstractRegistrations.FilterByRelevantYear(expectedYear);
+        var result = _abstractRegistrations.FilterByRelevantYear(expectedYear.ToString());
         result.Should().BeEquivalentTo(expectedResult);
     }
 
@@ -152,14 +152,14 @@ public class RegistrationSubmissionFiltersTests
         string expectedName = item.OrganisationName[3..6];
         var expectedSize = item.OrganisationType;
         var expectedStatus = item.RegistrationStatus;
-        int expectedYear = item.RegistrationYear;
+        string expectedYear = item.RegistrationYear;
 
         var filter = new RegistrationSubmissionsFilterModel
         {
             OrganisationName = expectedName,
-            OrganisationType = expectedSize,
-            SubmissionStatus = expectedStatus,
-            RelevantYear = expectedYear
+            OrganisationType = expectedSize.ToString(),
+            SubmissionStatus = expectedStatus.ToString(),
+            RelevantYear = expectedYear.ToString()
         };
 
         var result = _abstractRegistrations.Filter(filter).ToList();
