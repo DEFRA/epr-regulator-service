@@ -63,7 +63,7 @@
                     <strong>Total chargeable items</strong>
                 </dd>
                 <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
-                <payment-amount amount="@Model.TotalChargeableItems"></payment-amount>
+                <payment-amount amount="@Model.TotalChargeableItems" property-name="TotalChargeableItems"></payment-amount>
             </div>
             <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                 <dd class="govuk-summary-list__value" style="width: 285px;">
@@ -72,14 +72,14 @@
                 <dd class="govuk-summary-list__value" style="width: 410px;">
                     Total previous payments received by the regulator
                 </dd>
-                <payment-amount amount="@Model.PreviousPaymentsReceived"></payment-amount>
+                <payment-amount amount="@Model.PreviousPaymentsReceived" property-name="PreviousPaymentsReceived"></payment-amount>
             </div>
             <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                 <dd class="govuk-summary-list__value" style="width: 285px;">
                     <strong>Total outstanding</strong>
                 </dd>
                 <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
-                <payment-amount amount="@Model.TotalOutstanding"></payment-amount>
+                <payment-amount amount="@Model.TotalOutstanding" property-name="TotalOutstanding"></payment-amount>
             </div>
         </dl>
     </div>

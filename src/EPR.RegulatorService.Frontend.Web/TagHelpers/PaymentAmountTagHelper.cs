@@ -8,6 +8,7 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
     public class PaymentAmountTagHelper : TagHelper
     {
         public decimal Amount { get; set; }
+        public string? PropertyName { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -19,8 +20,15 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
             // Format the amount as currency with commas and 2 decimal places
             string formattedAmount = string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", Amount);
 
-            // Set the content to the formatted amount
-            output.Content.SetContent(formattedAmount);
+            // Apply bold formatting conditionally using pattern matching on the property name
+            if (PropertyName is "TotalChargeableItems" or "PreviousPaymentsReceived" or "TotalOutstanding")
+            {
+                output.Content.SetHtmlContent($"<strong>{formattedAmount}</strong>");
+            }
+            else
+            {
+                output.Content.SetContent(formattedAmount);
+            }
         }
     }
 }

@@ -1,12 +1,11 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
 {
-    using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using EPR.RegulatorService.Frontend.Web.TagHelpers;
 
     using Microsoft.AspNetCore.Razor.TagHelpers;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
     public class PaymentAmountTagHelperTests
@@ -94,6 +93,50 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
 
             // Check that the numeric part is as expected
             Assert.IsTrue(outputContent.Contains(expectedNumericPart), $"Output should contain the numeric part '{expectedNumericPart}'.");
+        }
+
+        [TestMethod]
+        [DataRow("TotalChargeableItems")]
+        [DataRow("PreviousPaymentsReceived")]
+        [DataRow("TotalOutstanding")]
+        public void Process_BoldsAmountForSpecificProperties(string propertyName)
+        {
+            // Arrange
+            var tagHelper = new PaymentAmountTagHelper
+            {
+                Amount = 100.50m,
+                PropertyName = propertyName
+            };
+            var context = MakeTagHelperContext();
+            var output = MakeTagHelperOutput();
+
+            // Act
+            tagHelper.Process(context, output);
+
+            // Assert
+            string outputContent = output.Content.GetContent();
+            Assert.IsTrue(outputContent.Contains("<strong>"), "Output should contain <strong> tag.");
+            Assert.IsTrue(outputContent.Contains("</strong>"), "Output should contain closing </strong> tag.");
+        }
+
+        [TestMethod]
+        public void Process_DoesNotBoldAmountForOtherProperties()
+        {
+            // Arrange
+            var tagHelper = new PaymentAmountTagHelper
+            {
+                Amount = 100.50m,
+                PropertyName = "OtherProperty"
+            };
+            var context = MakeTagHelperContext();
+            var output = MakeTagHelperOutput();
+
+            // Act
+            tagHelper.Process(context, output);
+
+            // Assert
+            string outputContent = output.Content.GetContent();
+            Assert.IsFalse(outputContent.Contains("<strong>"), "Output should not contain <strong> tag.");
         }
     }
 }
