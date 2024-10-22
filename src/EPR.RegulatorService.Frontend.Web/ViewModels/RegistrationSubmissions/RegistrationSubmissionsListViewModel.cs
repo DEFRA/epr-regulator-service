@@ -13,6 +13,8 @@ public class RegistrationSubmissionsListViewModel
 
     public PaginationNavigationModel PaginationNavigationModel { get; set; }
 
+    public RegistrationSubmissionsFilterModel RegistrationsFilterModel { get; set; } = new RegistrationSubmissionsFilterModel();
+
     public RegistrationSubmissionsListViewModel()
     {
     }

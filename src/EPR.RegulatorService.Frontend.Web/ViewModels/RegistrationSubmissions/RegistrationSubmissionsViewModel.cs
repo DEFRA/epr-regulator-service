@@ -9,8 +9,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     {
         public int? PageNumber { get; set; }
 
-        public RegistrationSubmissionsFilterModel RegistrationsFilterModel { get; set; } = new RegistrationSubmissionsFilterModel();
-
         public string PowerBiLogin { get; set; }
     }
 }
