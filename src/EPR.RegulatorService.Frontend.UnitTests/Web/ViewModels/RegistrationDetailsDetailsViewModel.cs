@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;

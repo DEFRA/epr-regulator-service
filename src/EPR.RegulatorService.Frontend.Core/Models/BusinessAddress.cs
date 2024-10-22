@@ -1,3 +1,5 @@
+namespace EPR.RegulatorService.Frontend.Core.Models;
+
 public class BusinessAddress
 {
     public string BuildingName { get; set; }

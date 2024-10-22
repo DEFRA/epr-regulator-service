@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
