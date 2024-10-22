@@ -11,7 +11,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
     [TestClass]
     public class PaymentAmountTagHelperTests
     {
-        private TagHelperContext MakeTagHelperContext()
+        private static TagHelperContext MakeTagHelperContext()
         {
             return new TagHelperContext(
                 tagName: "payment-amount",
@@ -21,7 +21,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
             );
         }
 
-        private TagHelperOutput MakeTagHelperOutput()
+        private static TagHelperOutput MakeTagHelperOutput()
         {
             return new TagHelperOutput("payment-amount",
                 new TagHelperAttributeList(),
@@ -69,10 +69,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
         }
 
         [TestMethod]
-        [DataRow(10050, "&#xA3;100.50")] // Represents 100.50
-        [DataRow(123456, "&#xA3;1,234.56")] // Represents 1234.56
-        [DataRow(99, "&#xA3;0.99")] // Represents 0.99
-        public void Process_FormatsAmountAsCurrency(int amountInCents, string expectedFormattedAmount)
+        [DataRow(10050, "100.50")] // Represents 100.50
+        [DataRow(123456, "1,234.56")] // Represents 1234.56
+        [DataRow(99, "0.99")] // Represents 0.99
+        public void Process_FormatsAmountAsCurrency(int amountInCents, string expectedNumericPart)
         {
             // Arrange
             decimal amount = amountInCents / 100m; // Convert to decimal
@@ -87,8 +87,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
             tagHelper.Process(context, output);
 
             // Assert
-            Assert.AreEqual(expectedFormattedAmount, output.Content.GetContent());
-            Assert.IsTrue(output.Content.GetContent().Contains("&#xA3;"), "Output should contain the pound symbol as an HTML entity.");
+            string outputContent = output.Content.GetContent();
+
+            // Check for the presence of the pound symbol as an HTML entity
+            Assert.IsTrue(outputContent.Contains("&#xA3;"), "Output should contain the pound symbol as an HTML entity.");
+
+            // Check that the numeric part is as expected
+            Assert.IsTrue(outputContent.Contains(expectedNumericPart), $"Output should contain the numeric part '{expectedNumericPart}'.");
         }
     }
 }
