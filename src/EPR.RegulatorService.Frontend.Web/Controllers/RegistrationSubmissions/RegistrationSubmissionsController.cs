@@ -4,11 +4,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Web.Configs;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Core.Enums;
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Microsoft.FeatureManagement.Mvc;
+    using ServiceRole = Core.Enums.ServiceRole;
 
     [FeatureGate(FeatureFlags.ManageRegistrationSubmissions)]
     [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
@@ -86,6 +89,55 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             }
 
             return Redirect(PagePath.RegistrationSubmissions);
+        }
+
+        [HttpGet]
+        [Route(PagePath.RegistrationSubmissionDetails + "/{organisationId:guid}")]
+        public async Task<IActionResult> RegistrationSubmissionDetails(Guid organisationId)
+        {
+            SetBackLink(PagePath.RegistrationSubmissions);
+
+            var model = new RegistrationSubmissionDetailsViewModel
+            {
+                OrganisationId = organisationId,
+                OrganisationReference = "215 148",
+                OrganisationName = "Acme org Ltd.",
+                RegistrationReferenceNumber = "REF001",
+                ApplicationReferenceNumber = "REF002",
+                OrganisationType = RegistrationSubmissionOrganisationType.large,
+                BusinessAddress = new BusinessAddress
+                {
+                    BuildingName = string.Empty,
+                    BuildingNumber = "10",
+                    Street = "High Street",
+                    County = "Randomshire",
+                    PostCode = "A12 3BC"
+                },
+                CompaniesHouseNumber = "0123456",
+                RegisteredNation = "Scotland",
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
+                Status = RegistrationSubmissionStatus.queried,
+                SubmissionDetails = new SubmissionDetailsViewModel
+                {
+                    Status = RegistrationSubmissionStatus.queried,
+                    DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
+                    TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
+                    SubmittedOnTime = true,
+                    SubmittedBy = "Sally Smith",
+                    AccountRole = ServiceRole.ApprovedPerson,
+                    Telephone = "07553 937 831",
+                    Email = "sally.smith@email.com",
+                    DeclaredBy = "Sally Smith",
+                    Files =
+                    [
+                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
+                    ]
+                }
+            };
+
+            return View(nameof(RegistrationSubmissionDetails), model);
         }
 
         private void SetCustomBackLink()

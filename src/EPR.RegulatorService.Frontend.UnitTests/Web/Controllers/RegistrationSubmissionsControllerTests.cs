@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
+    using EPR.RegulatorService.Frontend.Core.Enums;
+    using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
@@ -305,6 +307,127 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _controller.ModelState[nameof(model.RejectReason)].Errors[0].ErrorMessage);
 
             // Verify the back link is set correctly
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+        }
+
+        #endregion
+
+        #region RegistrationSubmissionDetails
+
+        [TestMethod]
+        public async Task RegistrationSubmissionDetails_ReturnsViewResult()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(organisationId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissionDetails_ReturnsCorrectViewModel_ForValidOrganisationId()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid(); // Simulate a valid Organisation ID
+            string expectedViewName = nameof(_controller.RegistrationSubmissionDetails);
+            var expectedViewModel = new RegistrationSubmissionDetailsViewModel
+            {
+                OrganisationId = organisationId,
+                OrganisationReference = "215 148",
+                OrganisationName = "Acme org Ltd.",
+                RegistrationReferenceNumber = "REF001",
+                ApplicationReferenceNumber = "REF002",
+                OrganisationType = RegistrationSubmissionOrganisationType.large,
+                BusinessAddress = new BusinessAddress
+                {
+                    BuildingName = string.Empty,
+                    BuildingNumber = "10",
+                    Street = "High Street",
+                    County = "Randomshire",
+                    PostCode = "A12 3BC"
+                },
+                CompaniesHouseNumber = "0123456",
+                RegisteredNation = "Scotland",
+                PowerBiLogin = "https://app.powerbi.com/",
+                Status = RegistrationSubmissionStatus.queried,
+                SubmissionDetails = new SubmissionDetailsViewModel
+                {
+                    Status = RegistrationSubmissionStatus.queried,
+                    DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
+                    TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
+                    SubmittedOnTime = true,
+                    SubmittedBy = "Sally Smith",
+                    AccountRole = Frontend.Core.Enums.ServiceRole.ApprovedPerson,
+                    Telephone = "07553 937 831",
+                    Email = "sally.smith@email.com",
+                    DeclaredBy = "Sally Smith",
+                    Files =
+                    [
+                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
+                    ]
+                }
+            };
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(organisationId) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(expectedViewName, result.ViewName);
+            var model = result.Model as RegistrationSubmissionDetailsViewModel;
+            Assert.IsNotNull(model);
+
+            // Assert model properties
+            Assert.AreEqual(expectedViewModel.OrganisationId, model.OrganisationId);
+            Assert.AreEqual(expectedViewModel.OrganisationReference, model.OrganisationReference);
+            Assert.AreEqual(expectedViewModel.OrganisationName, model.OrganisationName);
+            Assert.AreEqual(expectedViewModel.ApplicationReferenceNumber, model.ApplicationReferenceNumber);
+            Assert.AreEqual(expectedViewModel.RegistrationReferenceNumber, model.RegistrationReferenceNumber);
+            Assert.AreEqual(expectedViewModel.OrganisationType, model.OrganisationType);
+
+            // Assert SubmissionDetailsViewModel properties
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.Status, model.SubmissionDetails.Status);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.DecisionDate, model.SubmissionDetails.DecisionDate);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.TimeAndDateOfSubmission, model.SubmissionDetails.TimeAndDateOfSubmission);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.SubmittedOnTime, model.SubmissionDetails.SubmittedOnTime);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.SubmittedBy, model.SubmissionDetails.SubmittedBy);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.AccountRole, model.SubmissionDetails.AccountRole);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.Telephone, model.SubmissionDetails.Telephone);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.Email, model.SubmissionDetails.Email);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.DeclaredBy, model.SubmissionDetails.DeclaredBy);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.Files.Count, model.SubmissionDetails.Files.Count);
+
+            // Assert business address
+            Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingName, model.BusinessAddress.BuildingName);
+            Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingNumber, model.BusinessAddress.BuildingNumber);
+            Assert.AreEqual(expectedViewModel.BusinessAddress.Street, model.BusinessAddress.Street);
+            Assert.AreEqual(expectedViewModel.BusinessAddress.County, model.BusinessAddress.County);
+            Assert.AreEqual(expectedViewModel.BusinessAddress.PostCode, model.BusinessAddress.PostCode);
+
+            Assert.AreEqual(expectedViewModel.CompaniesHouseNumber, model.CompaniesHouseNumber);
+            Assert.AreEqual(expectedViewModel.RegisteredNation, model.RegisteredNation);
+            Assert.AreEqual(expectedViewModel.PowerBiLogin, model.PowerBiLogin);
+            Assert.AreEqual(expectedViewModel.Status, model.Status);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissionDetails_SetsCorrectBackLink()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(organisationId) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            // Check that the back link is correctly set in the ViewData
             AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
         }
 
