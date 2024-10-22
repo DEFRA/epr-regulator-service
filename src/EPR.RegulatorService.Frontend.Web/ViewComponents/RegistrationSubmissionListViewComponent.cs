@@ -1,5 +1,3 @@
-
-
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
@@ -12,33 +10,31 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents;
 
 public class RegistrationSubmissionListViewComponent(IFacadeService facadeService, IHttpContextAccessor httpContextAccessor) : ViewComponent
 {
     [ExcludeFromCodeCoverage]
-    public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionsListRequest request)
+    public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionsListViewModel request)
     {
-        var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { Page = request.PageNumber });
+        var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(request.CreateFilterModel(request.PaginationNavigationModel.CurrentPage));
 
-        if ((request.PageNumber > pagedOrganisationRegistrations.TotalPages && request.PageNumber > 1) || request.PageNumber < 1)
+        if ((request.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages && request.PaginationNavigationModel.CurrentPage > 1) || request.PaginationNavigationModel.CurrentPage < 1)
         {
             httpContextAccessor.HttpContext.Response.Redirect(PagePath.PageNotFoundPath);
         }
 
-        var model = new RegistrationSubmissionsListViewModel
+        request.PagedRegistrationSubmissions = pagedOrganisationRegistrations.Items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
+        request.PaginationNavigationModel = new PaginationNavigationModel
         {
-            PagedRegistrationSubmissions = pagedOrganisationRegistrations.Items.Select(x=>(RegistrationSubmissionDetailsViewModel)x),
-            PaginationNavigationModel = new PaginationNavigationModel
-            {
-                CurrentPage = pagedOrganisationRegistrations.CurrentPage,
-                PageCount = pagedOrganisationRegistrations.TotalPages,
-                ControllerName = "RegistrationSubmissions",
-                ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
-            }
+            CurrentPage = pagedOrganisationRegistrations.CurrentPage,
+            PageCount = pagedOrganisationRegistrations.TotalPages,
+            ControllerName = "RegistrationSubmissions",
+            ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
         };
 
-        return View(model);
+        return View(request);
     }
 }

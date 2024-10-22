@@ -44,7 +44,7 @@ public class RegistrationSubmissionsController(
 
         var model = new RegistrationSubmissionsViewModel
         {
-            PageNumber = pageNumber ?? session.RegulatorSession.CurrentPageNumber,
+            ListViewModel = new RegistrationSubmissionsListViewModel { PaginationNavigationModel = new ViewModels.Shared.PaginationNavigationModel { CurrentPage = session.RegulatorSession.CurrentPageNumber.Value} },
             PowerBiLogin = _externalUrlsOptions.PowerBiLogin
         };
 

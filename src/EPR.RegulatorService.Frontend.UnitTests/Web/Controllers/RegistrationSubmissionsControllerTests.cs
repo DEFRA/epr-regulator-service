@@ -50,7 +50,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             resultModel.Should().NotBeNull();
-            resultModel.PageNumber.Should().Be(2);
+            resultModel.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(2);
         }
 
         [TestMethod]
@@ -62,7 +62,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             resultModel.Should().NotBeNull();
-            resultModel.PageNumber.Should().Be(1);
+            resultModel.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(1);
         }
 
         [TestMethod]
@@ -74,7 +74,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             resultModel.Should().NotBeNull();
-            resultModel.PageNumber.Should().Be(3);
+            resultModel.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(3);
             _journeySession.RegulatorSession.CurrentPageNumber.Should().Be(3);
         }
 
