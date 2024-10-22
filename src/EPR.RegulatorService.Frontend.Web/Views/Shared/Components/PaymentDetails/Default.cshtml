@@ -38,9 +38,7 @@
                 <dd class="govuk-summary-list__value" style="width: 410px;">
                     Fee for producer size
                 </dd>
-                <dd class="govuk-summary-list__actions" style="text-align: right; flex-grow: 1;">
-                    £@Model.ApplicationProcessingFee
-                </dd>
+                <payment-amount amount="@Model.ApplicationProcessingFee"></payment-amount>
             </div>
             <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                 <dd class="govuk-summary-list__value" style="width: 285px;">
@@ -49,9 +47,7 @@
                 <dd class="govuk-summary-list__value" style="width: 410px;">
                     Fee for owning an online marketplace
                 </dd>
-                <dd class="govuk-summary-list__actions" style="text-align: right; flex-grow: 1;">
-                    £@Model.OnlineMarketplaceFee
-                </dd>
+                <payment-amount amount="@Model.OnlineMarketplaceFee"></payment-amount>
             </div>
             <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                 <dd class="govuk-summary-list__value" style="width: 285px;">
@@ -60,18 +56,14 @@
                 <dd class="govuk-summary-list__value" style="width: 410px;">
                     Fee for the 25 subsidiaries of which 0 are an online marketplace
                 </dd>
-                <dd class="govuk-summary-list__actions" style="text-align: right; flex-grow: 1;">
-                    £@Model.SubsidiaryFee
-                </dd>
+                <payment-amount amount="@Model.SubsidiaryFee"></payment-amount>
             </div>
             <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                 <dd class="govuk-summary-list__value" style="width: 285px;">
                     <strong>Total chargeable items</strong>
                 </dd>
                 <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
-                <dd class="govuk-summary-list__actions" style="text-align: right; flex-grow: 1;">
-                    <strong>£@Model.TotalChargeableItems</strong>
-                </dd>
+                <payment-amount amount="@Model.TotalChargeableItems"></payment-amount>
             </div>
             <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                 <dd class="govuk-summary-list__value" style="width: 285px;">
@@ -80,18 +72,14 @@
                 <dd class="govuk-summary-list__value" style="width: 410px;">
                     Total previous payments received by the regulator
                 </dd>
-                <dd class="govuk-summary-list__actions" style="text-align: right; flex-grow: 1;">
-                    <strong>£@Model.PreviousPaymentsReceived</strong>
-                </dd>
+                <payment-amount amount="@Model.PreviousPaymentsReceived"></payment-amount>
             </div>
             <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                 <dd class="govuk-summary-list__value" style="width: 285px;">
                     <strong>Total outstanding</strong>
                 </dd>
                 <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
-                <dd class="govuk-summary-list__actions" style="text-align: right; flex-grow: 1;">
-                    <strong>£@Model.TotalOutstanding</strong>
-                </dd>
+                <payment-amount amount="@Model.TotalOutstanding"></payment-amount>
             </div>
         </dl>
     </div>
