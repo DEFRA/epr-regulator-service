@@ -10,10 +10,10 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public decimal SubsidiaryFee { get; set; }
 
-        public decimal TotalChargeableItems { get; set; }
+        public decimal TotalChargeableItems => ApplicationProcessingFee + OnlineMarketplaceFee + SubsidiaryFee;
 
         public decimal PreviousPaymentsReceived { get; set; }
 
-        public decimal TotalOutstanding { get; set; }
+        public decimal TotalOutstanding => TotalChargeableItems - PreviousPaymentsReceived;
     }
 }
