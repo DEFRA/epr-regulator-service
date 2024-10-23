@@ -123,6 +123,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(JourneySessionManager));
+
+            sut.Dispose();
         }
 
         #endregion

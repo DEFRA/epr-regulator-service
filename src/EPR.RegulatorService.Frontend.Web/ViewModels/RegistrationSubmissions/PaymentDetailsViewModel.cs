@@ -1,5 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
+    using System.Diagnostics.CodeAnalysis;
+
+    [ExcludeFromCodeCoverage]
     public class PaymentDetailsViewModel
     {
         public decimal ApplicationProcessingFee { get; set; }
