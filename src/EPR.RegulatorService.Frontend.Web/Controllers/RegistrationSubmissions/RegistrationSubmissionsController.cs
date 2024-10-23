@@ -28,6 +28,8 @@ public class RegistrationSubmissionsController(
     private readonly ExternalUrlsOptions _externalUrlsOptions = externalUrlsOptions.Value;
     private readonly ISessionManager<JourneySession> _sessionManager = sessionManager ?? new JourneySessionManager();
 
+    public ISessionManager<JourneySession> SessionManager => _sessionManager;
+
     [HttpGet]
     [Consumes("application/json")]
     [Route(PagePath.RegistrationSubmissions)]
