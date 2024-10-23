@@ -5,30 +5,30 @@ using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 public class RegistrationSubmissionsFilterViewModel
 {
-    private bool? _clearFilters = false;
+    private bool _clearFilters = false;
 
     public string? OrganisationName { get; set; } = string.Empty;
     public string? OrganisationRef { get; set; } = string.Empty;
 
-    public bool? IsOrganisationComplianceChecked { get; set; }
-    public bool? IsOrganisationSmallChecked { get; set; }
-    public bool? IsOrganisationLargeChecked { get; set; }
-    public bool? IsStatusGrantedChecked { get; set; }
-    public bool? IsStatusRefusedChecked { get; set; }
-    public bool? IsStatusPendingChecked { get; set; }
-    public bool? IsStatusQueriedChecked { get; set; }
-    public bool? IsStatusUpdatedChecked { get; set; }
-    public bool? IsStatusCancelledChecked { get; set; }
-    public bool? Is2025Checked { get; set; }
+    public bool IsOrganisationComplianceChecked { get; set; }
+    public bool IsOrganisationSmallChecked { get; set; }
+    public bool IsOrganisationLargeChecked { get; set; }
+    public bool IsStatusGrantedChecked { get; set; }
+    public bool IsStatusRefusedChecked { get; set; }
+    public bool IsStatusPendingChecked { get; set; }
+    public bool IsStatusQueriedChecked { get; set; }
+    public bool IsStatusUpdatedChecked { get; set; }
+    public bool IsStatusCancelledChecked { get; set; }
+    public bool Is2025Checked { get; set; }
 
     public int PageNumber { get; set; }
-    public bool? ClearFilters
+    public bool ClearFilters
     {
         get => _clearFilters;
         set
         {
-            _clearFilters = value;
-            if (value.HasValue)
+            _clearFilters = true;
+            if (value)
             {
                 OrganisationName = OrganisationRef = null;
                 IsOrganisationComplianceChecked = IsOrganisationLargeChecked = IsOrganisationSmallChecked = false;
@@ -37,28 +37,28 @@ public class RegistrationSubmissionsFilterViewModel
             }
         }
     }
-    public bool? IsFilterApplied { get; set; }
+    public bool IsFilterApplied { get; set; }
 
     public static implicit operator RegistrationSubmissionsFilterModel(RegistrationSubmissionsFilterViewModel viewModel) => new RegistrationSubmissionsFilterModel
     {
         Page = viewModel.PageNumber,
-        RelevantYear = (bool)viewModel.Is2025Checked ? "2025" : null,
+        RelevantYear = viewModel.Is2025Checked ? "2025" : null,
         OrganisationRef = !string.IsNullOrEmpty(viewModel.OrganisationRef) ? viewModel.OrganisationRef : null,
         OrganisationName = !string.IsNullOrEmpty(viewModel.OrganisationName) ? viewModel.OrganisationName : null,
         OrganisationType = string.Join(" ", new[]
                                {
-                                   (bool)viewModel.IsOrganisationComplianceChecked ? Core.Enums.RegistrationSubmissionOrganisationType.compliance.ToString() : null,
-                                   (bool)viewModel.IsOrganisationLargeChecked ? Core.Enums.RegistrationSubmissionOrganisationType.large.ToString() : null,
-                                   (bool)viewModel.IsOrganisationSmallChecked ? Core.Enums.RegistrationSubmissionOrganisationType.small.ToString() : null
+                                   viewModel.IsOrganisationComplianceChecked ? Core.Enums.RegistrationSubmissionOrganisationType.compliance.ToString() : null,
+                                   viewModel.IsOrganisationLargeChecked ? Core.Enums.RegistrationSubmissionOrganisationType.large.ToString() : null,
+                                   viewModel.IsOrganisationSmallChecked ? Core.Enums.RegistrationSubmissionOrganisationType.small.ToString() : null
                                }.Where(x => !string.IsNullOrEmpty(x))),
         SubmissionStatus = string.Join(" ", new[]
                                {
-                                    (bool)viewModel.IsStatusCancelledChecked ? Core.Enums.RegistrationSubmissionStatus.cancelled.ToString() : null,
-                                    (bool)viewModel.IsStatusGrantedChecked ? Core.Enums.RegistrationSubmissionStatus.granted.ToString() : null,
-                                    (bool)viewModel.IsStatusPendingChecked ? Core.Enums.RegistrationSubmissionStatus.pending.ToString() : null,
-                                    (bool)viewModel.IsStatusQueriedChecked ? Core.Enums.RegistrationSubmissionStatus.queried.ToString() : null,
-                                    (bool)viewModel.IsStatusRefusedChecked ? Core.Enums.RegistrationSubmissionStatus.refused.ToString() : null,
-                                    (bool)viewModel.IsStatusUpdatedChecked ? Core.Enums.RegistrationSubmissionStatus.updated.ToString() : null
+                                    viewModel.IsStatusCancelledChecked ? Core.Enums.RegistrationSubmissionStatus.cancelled.ToString() : null,
+                                    viewModel.IsStatusGrantedChecked ? Core.Enums.RegistrationSubmissionStatus.granted.ToString() : null,
+                                    viewModel.IsStatusPendingChecked ? Core.Enums.RegistrationSubmissionStatus.pending.ToString() : null,
+                                    viewModel.IsStatusQueriedChecked ? Core.Enums.RegistrationSubmissionStatus.queried.ToString() : null,
+                                    viewModel.IsStatusRefusedChecked ? Core.Enums.RegistrationSubmissionStatus.refused.ToString() : null,
+                                    viewModel.IsStatusUpdatedChecked ? Core.Enums.RegistrationSubmissionStatus.updated.ToString() : null
                                }.Where(x => !string.IsNullOrEmpty(x)))
     };
 

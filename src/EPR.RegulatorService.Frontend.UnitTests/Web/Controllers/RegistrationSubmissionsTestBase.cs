@@ -25,7 +25,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         protected Mock<HttpContext> _mockHttpContext = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _mockUrlsOptions = null!;
         protected Mock<IConfiguration> _mockConfiguration = null!;
-        protected Mock<ISessionManager<JourneySession>> MockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
+        protected Mock<ISessionManager<JourneySession>> _mockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
         protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
 
@@ -51,7 +51,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, null);
 
             _controller = new RegistrationSubmissionsController(
-                MockSessionManager.Object,
+                _mockSessionManager.Object,
                 _loggerMock.Object,
                 _mockConfiguration.Object,
                 _mockUrlsOptions.Object)
@@ -77,7 +77,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 }
             };
 
-            MockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(_journeySession);
         }
 
