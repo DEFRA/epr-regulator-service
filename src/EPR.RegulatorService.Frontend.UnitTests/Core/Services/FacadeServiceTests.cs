@@ -1216,7 +1216,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                                                      .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.updated)
                                                      .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
                                                      .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
-                                                     .ThenByDescending(x => x.RegistrationDateTime)
+                                                     .ThenBy(x => x.RegistrationDateTime)
                                                      .Skip((1 - 1) * PAGE_SIZE)
                                                      .Take(PAGE_SIZE)
                                                      .ToList();

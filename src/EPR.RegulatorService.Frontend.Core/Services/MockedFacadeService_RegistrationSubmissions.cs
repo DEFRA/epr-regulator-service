@@ -28,7 +28,7 @@ public partial class MockedFacadeService : IFacadeService
                 ApplicationReferenceNumber = fields[4],
                 RegistrationReferenceNumber = fields[5],
                 RegistrationDateTime = dateTime,
-                RegistrationYear = dateTime.Year,
+                RegistrationYear = dateTime.Year.ToString(),
                 CompaniesHouseNumber = fields[9],
                 BuildingName = fields[10],
                 SubBuildingName = fields[11],
@@ -64,7 +64,7 @@ public partial class MockedFacadeService : IFacadeService
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
                 .ThenBy(x => x.RegistrationDateTime)
-                .Skip((currentPage - 1) * _config.PageSize)
+                .Skip((filters.Page.Value - 1) * _config.PageSize)
                 .Take(_config.PageSize)
                 .ToList();
 

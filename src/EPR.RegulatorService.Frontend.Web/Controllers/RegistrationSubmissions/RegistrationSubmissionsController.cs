@@ -111,8 +111,8 @@ public partial class RegistrationSubmissionsController(
 
         SetBacklinkToHome();
 
-        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissions, PagePath.RegistrationSubmissions);
-        return RedirectToAction(PagePath.PageNotFoundPath, "Error", new { statusCode = 404, backLink = PagePath.RegistrationSubmissions });
+        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissions, PagePath.PageNotFound);
+        return RedirectToAction(PagePath.Error, "Error", new { statusCode = 404, backLink = PagePath.RegistrationSubmissions });
     }
 
     [HttpGet]
@@ -217,18 +217,6 @@ public partial class RegistrationSubmissionsController(
         };
 
         return View(nameof(RegistrationSubmissionDetails), model);
-    }
-
-    private void SetCustomBackLink()
-    {
-        string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
-        ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
-    }
-
-    private void SetBackLink(string path)
-    {
-        string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
-        ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
     }
 
     private async Task SaveSessionAndJourney(RegulatorRegistrationSubmissionSession session, string currentPagePath, string? nextPagePath)

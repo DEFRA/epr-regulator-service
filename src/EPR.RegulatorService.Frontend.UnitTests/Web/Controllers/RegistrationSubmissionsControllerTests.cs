@@ -130,8 +130,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewModel = new RegistrationSubmissionsFilterViewModel();
             var result = await _controller.RegistrationSubmissions(viewModel, null);
             Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToPageResult>();
-            (result as RedirectToPageResult).PageName.Should().Be(PagePath.PageNotFoundPath);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.PageNotFound);
         }
 
         [TestMethod]
@@ -140,8 +140,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewModel = new RegistrationSubmissionsFilterViewModel();
             var result = await _controller.RegistrationSubmissions(viewModel, "anything");
             Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToPageResult>();
-            (result as RedirectToPageResult).PageName.Should().Be(PagePath.PageNotFoundPath);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.PageNotFound);
         }
 
         [TestMethod]
@@ -149,8 +149,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             var result = await _controller.RegistrationSubmissions(null, FilterActions.SubmitFilters);
             Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToPageResult>();
-            (result as RedirectToPageResult).PageName.Should().Be(PagePath.PageNotFoundPath);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.PageNotFound);
         }
 
         [TestMethod]
@@ -158,8 +158,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             var result = await _controller.RegistrationSubmissions(null, null);
             Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToPageResult>();
-            (result as RedirectToPageResult).PageName.Should().Be(PagePath.PageNotFoundPath);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.PageNotFound);
         }
 
         [TestMethod]
