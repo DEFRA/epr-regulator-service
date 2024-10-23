@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 
-[ExcludeFromCodeCoverage]
 /// <summary>
 /// Used to filter results from the Facade API for RegistrationSubmissions
 /// </summary>
+[ExcludeFromCodeCoverage]
 public  class RegistrationSubmissionsFilterModel
 {
     private string? _organisationName = string.Empty;

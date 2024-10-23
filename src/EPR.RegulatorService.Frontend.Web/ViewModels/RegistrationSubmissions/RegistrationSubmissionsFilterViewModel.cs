@@ -1,7 +1,12 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+
 public class RegistrationSubmissionsFilterViewModel
 {
+    private bool _clearFilters = false;
+
     public string? OrganisationName { get; set; } = string.Empty;
     public string? OrganisationRef { get; set; } = string.Empty;
 
@@ -15,4 +20,62 @@ public class RegistrationSubmissionsFilterViewModel
     public bool IsStatusUpdatedChecked { get; set; }
     public bool IsStatusCancelledChecked { get; set; }
     public bool Is2025Checked { get; set; }
+
+    public int PageNumber { get; set; }
+    public bool ClearFilters
+    {
+        get => _clearFilters;
+        set
+        {
+            _clearFilters = true;
+            if (value)
+            {
+                OrganisationName = OrganisationRef = null;
+                IsOrganisationComplianceChecked = IsOrganisationLargeChecked = IsOrganisationSmallChecked = false;
+                IsStatusCancelledChecked = IsStatusGrantedChecked = IsStatusPendingChecked = IsStatusQueriedChecked = IsStatusRefusedChecked = IsStatusUpdatedChecked = false;
+                Is2025Checked = false;
+            }
+        }
+    }
+    public bool IsFilterApplied { get; set; }
+
+    public static implicit operator RegistrationSubmissionsFilterModel(RegistrationSubmissionsFilterViewModel viewModel) => new RegistrationSubmissionsFilterModel
+    {
+        Page = viewModel.PageNumber,
+        RelevantYear = viewModel.Is2025Checked ? "2025" : null,
+        OrganisationRef = !string.IsNullOrEmpty(viewModel.OrganisationRef) ? viewModel.OrganisationRef : null,
+        OrganisationName = !string.IsNullOrEmpty(viewModel.OrganisationName) ? viewModel.OrganisationName : null,
+        OrganisationType = string.Join(" ", new[]
+                               {
+                                   viewModel.IsOrganisationComplianceChecked ? Core.Enums.RegistrationSubmissionOrganisationType.compliance.ToString() : null,
+                                   viewModel.IsOrganisationLargeChecked ? Core.Enums.RegistrationSubmissionOrganisationType.large.ToString() : null,
+                                   viewModel.IsOrganisationSmallChecked ? Core.Enums.RegistrationSubmissionOrganisationType.small.ToString() : null
+                               }.Where(x => !string.IsNullOrEmpty(x))),
+        SubmissionStatus = string.Join(" ", new[]
+                               {
+                                    viewModel.IsStatusCancelledChecked ? Core.Enums.RegistrationSubmissionStatus.cancelled.ToString() : null,
+                                    viewModel.IsStatusGrantedChecked ? Core.Enums.RegistrationSubmissionStatus.granted.ToString() : null,
+                                    viewModel.IsStatusPendingChecked ? Core.Enums.RegistrationSubmissionStatus.pending.ToString() : null,
+                                    viewModel.IsStatusQueriedChecked ? Core.Enums.RegistrationSubmissionStatus.queried.ToString() : null,
+                                    viewModel.IsStatusRefusedChecked ? Core.Enums.RegistrationSubmissionStatus.refused.ToString() : null,
+                                    viewModel.IsStatusUpdatedChecked ? Core.Enums.RegistrationSubmissionStatus.updated.ToString() : null
+                               }.Where(x => !string.IsNullOrEmpty(x)))
+    };
+
+    public static implicit operator RegistrationSubmissionsFilterViewModel(RegistrationSubmissionsFilterModel model) => new RegistrationSubmissionsFilterViewModel
+    {
+        OrganisationName = model.OrganisationName,
+        OrganisationRef = model.OrganisationRef,
+        IsOrganisationComplianceChecked = model.OrganisationType != null && model.OrganisationType.ToLower().Contains("compliance"),
+        IsOrganisationSmallChecked = model.OrganisationType != null && model.OrganisationType.ToLower().Contains("small"),
+        IsOrganisationLargeChecked = model.OrganisationType != null && model.OrganisationType.ToLower().Contains("large"),
+        IsStatusGrantedChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("granted"),
+        IsStatusRefusedChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("refused"),
+        IsStatusPendingChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("pending"),
+        IsStatusQueriedChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("queried"),
+        IsStatusUpdatedChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("updated"),
+        IsStatusCancelledChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("cancelled"),
+        Is2025Checked = model.RelevantYear != null && model.RelevantYear.ToLower().Contains("2025"),
+        PageNumber = model.Page ?? 1
+    };
 }

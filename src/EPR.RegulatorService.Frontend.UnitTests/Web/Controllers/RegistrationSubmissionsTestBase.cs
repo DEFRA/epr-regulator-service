@@ -11,16 +11,21 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Sessions;
     using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+    using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+    using Castle.Core.Logging;
+    using EPR.RegulatorService.Frontend.Web.Controllers.Applications;
+    using Microsoft.Extensions.Logging;
 
     public abstract class RegistrationSubmissionsTestBase
     {
         private const string BackLinkViewDataKey = "BackLinkToDisplay";
 
+        protected Mock<ILogger<RegistrationSubmissionsController>> _loggerMock = null!;
         protected RegistrationSubmissionsController _controller = null!;
         protected Mock<HttpContext> _mockHttpContext = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _mockUrlsOptions = null!;
         protected Mock<IConfiguration> _mockConfiguration = null!;
-        protected Mock<ISessionManager<JourneySession>>  _mockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
+        protected Mock<ISessionManager<JourneySession>> _mockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
         protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
 
@@ -29,6 +34,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockHttpContext = new Mock<HttpContext>();
             _mockUrlsOptions = new Mock<IOptions<ExternalUrlsOptions>>();
             _mockConfiguration = new Mock<IConfiguration>();
+            _loggerMock = new Mock<ILogger<RegistrationSubmissionsController>>();
 
             var mockConfigurationSection = new Mock<IConfigurationSection>();
             mockConfigurationSection.Setup(section => section.Value).Returns("/regulators");
@@ -46,6 +52,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _controller = new RegistrationSubmissionsController(
                 _mockSessionManager.Object,
+                _loggerMock.Object,
                 _mockConfiguration.Object,
                 _mockUrlsOptions.Object)
             {
@@ -57,15 +64,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
         }
 
-        public void SetupJourneySession(RegistrationFiltersModel registrationFiltersModel, Registration registration = null)
+        public void SetupJourneySession(RegistrationSubmissionsFilterModel filtersModel,
+                                        RegistrationSubmissionOrganisationDetails selectedSubmission)
         {
             _journeySession = new JourneySession()
             {
-                RegulatorRegistrationSession = new RegulatorRegistrationSession()
+                RegulatorRegistrationSubmissionSession = new()
                 {
-                    RegistrationFiltersModel = registrationFiltersModel,
-                    PageNumber = 1,
-                    OrganisationRegistration = registration
+                    LatestFilterChoices = filtersModel,
+                    CurrentPageNumber = 1,
+                    SelectedRegistration = selectedSubmission
                 }
             };
 
