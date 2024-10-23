@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = Localizer["Error.PageTitle"];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l govuk-!-margin-bottom-4">
+                    @ViewData["Title"]
+                </h1>
+                <p class="govuk-body">@Localizer["PageNotFound.IncorrectWebAddressTyped"]</p>
+                <p class="govuk-body">@Localizer["PageNotFound.IncorrectWebAddressPasted"]</p>
+                <p class="govuk-body">@Localizer["PageNotFound.StillHavingIssues"]</p>
+            </div>
+        </div>
+    </main>
+</div>

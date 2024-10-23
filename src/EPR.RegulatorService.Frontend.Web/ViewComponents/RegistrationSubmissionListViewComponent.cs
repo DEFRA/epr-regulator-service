@@ -21,11 +21,6 @@ public class RegistrationSubmissionListViewComponent(IFacadeService facadeServic
     {
         var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(request.CreateFilterModel(request.PaginationNavigationModel.CurrentPage));
 
-        if ((request.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages && request.PaginationNavigationModel.CurrentPage > 1) || request.PaginationNavigationModel.CurrentPage < 1)
-        {
-            httpContextAccessor.HttpContext.Response.Redirect(PagePath.PageNotFoundPath);
-        }
-
         request.PagedRegistrationSubmissions = pagedOrganisationRegistrations.Items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
         request.PaginationNavigationModel = new PaginationNavigationModel
         {
@@ -34,6 +29,12 @@ public class RegistrationSubmissionListViewComponent(IFacadeService facadeServic
             ControllerName = "RegistrationSubmissions",
             ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
         };
+
+        if ((request.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
+            request.PaginationNavigationModel.CurrentPage > 1) || request.PaginationNavigationModel.CurrentPage < 1)
+        {
+            request.PaginationNavigationModel.CurrentPage = 1;
+        }
 
         return View(request);
     }

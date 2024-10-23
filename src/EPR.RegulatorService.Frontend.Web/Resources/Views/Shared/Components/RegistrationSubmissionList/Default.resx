@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -130,6 +130,9 @@
     <value />
   </data>
   <data name="Table.Header.ApplicationDate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Body.NoResultsFound" xml:space="preserve">
     <value />
   </data>
 </root>

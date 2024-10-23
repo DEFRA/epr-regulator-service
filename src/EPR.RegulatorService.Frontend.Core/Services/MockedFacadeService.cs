@@ -354,15 +354,15 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
     }
 
     public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters) {
-        if (filters.Page > (int)Math.Ceiling(_allSubmissions.Count / (double)_config.PageSize))
-        {
-            filters.Page = 1;
-        }
-
         filters.PageSize ??= _config.PageSize;
 
         // this is where the Facade is actually called
         var results = FilterAndOrderRegistrations([.. _registrationSubmissions], filters) ;
+
+        if (filters.Page > (int)Math.Ceiling(results.Item1 / (double)_config.PageSize))
+        {
+            filters.Page = (int)Math.Ceiling(results.Item1 / (double)_config.PageSize);
+        }
 
         var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
         {

@@ -132,4 +132,7 @@
   <data name="Table.Header.ApplicationDate" xml:space="preserve">
     <value>[Welsh]Submission date and time</value>
   </data>
+  <data name="Body.NoResultsFound" xml:space="preserve">
+    <value>[Welsh]No results found</value>
+  </data>
 </root>
