@@ -1189,7 +1189,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 OrganisationName = expectedName,
                 OrganisationType = expectedSize.ToString(),
                 SubmissionStatus = expectedStatus.ToString(),
-                RelevantYear = expectedYear
+                RelevantYear = expectedYear,
+                PageSize=5000
             };
 
             var result = await _facadeService.GetRegistrationSubmissions(filter);

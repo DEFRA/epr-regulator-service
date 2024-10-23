@@ -65,7 +65,7 @@ public partial class MockedFacadeService : IFacadeService
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
                 .ThenBy(x => x.RegistrationDateTime)
                 .Skip((filters.Page.Value - 1) * _config.PageSize)
-                .Take(_config.PageSize)
+                .Take(filters.PageSize ?? _config.PageSize)
                 .ToList();
 
         return Tuple.Create(totalItems, sortedItems);
