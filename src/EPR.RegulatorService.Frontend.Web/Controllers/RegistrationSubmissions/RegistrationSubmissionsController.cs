@@ -134,6 +134,13 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                         new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
                         new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
                     ]
+                },
+                PaymentDetails = new PaymentDetailsViewModel
+                {
+                    ApplicationProcessingFee = 134522.56M,
+                    OnlineMarketplaceFee = 2534534.23M,
+                    SubsidiaryFee = 1.34M,
+                    PreviousPaymentsReceived = 20M
                 }
             };
 
