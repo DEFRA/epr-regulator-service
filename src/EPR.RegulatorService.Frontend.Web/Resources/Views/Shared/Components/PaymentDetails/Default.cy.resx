@@ -141,6 +141,15 @@
   <data name="PaymentDetails.Items" xml:space="preserve">
     <value>[Welsh]Items</value>
   </data>
+  <data name="PaymentDetails.OfflinePaymentDetailsHint" xml:space="preserve">
+    <value>[Welsh]Adjustments can also be added, including for negative amounts.</value>
+  </data>
+  <data name="PaymentDetails.OfflinePaymentDetailsSubmit" xml:space="preserve">
+    <value>[Welsh]Submit offline payment</value>
+  </data>
+  <data name="PaymentDetails.OfflinePaymentDetailsTitle" xml:space="preserve">
+    <value>[Welsh]Offline payment details</value>
+  </data>
   <data name="PaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
     <value>[Welsh]Online marketplace fee</value>
   </data>

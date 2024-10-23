@@ -13,5 +13,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public decimal PreviousPaymentsReceived { get; set; }
 
         public decimal TotalOutstanding => TotalChargeableItems - PreviousPaymentsReceived;
+
+        public decimal OfflinePayment { get; set; }
     }
 }
