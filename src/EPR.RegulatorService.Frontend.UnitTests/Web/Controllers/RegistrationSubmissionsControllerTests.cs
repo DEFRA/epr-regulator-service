@@ -165,7 +165,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task PostingTo_RegistrationSubmissions_Return_ErrorPage_When_Exception_Received()
         {
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
+            MockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
             var result = await _controller.RegistrationSubmissions(null, null);
             Assert.IsNotNull(result);
             result.Should().BeOfType<RedirectToPageResult>();
@@ -175,7 +175,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task GettingFrom_RegistrationSubmissions_Return_ErrorPage_When_Exception_Received()
         {
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
+            MockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
             var result = await _controller.RegistrationSubmissions(1);
             Assert.IsNotNull(result);
             result.Should().BeOfType<RedirectToPageResult>();
@@ -185,7 +185,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task PostTo_RegistrationSubmissions_Logs_Error_When_Exception_Received()
         {
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
+            MockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
             var result = await _controller.RegistrationSubmissions(null,null);
             Assert.IsNotNull(result);
             result.Should().BeOfType<RedirectToPageResult>();
@@ -203,7 +203,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task GettingFrom_RegistrationSubmissions_Logs_Error_When_Exception_Received()
         {
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
+            MockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
             var result = await _controller.RegistrationSubmissions(1);
             Assert.IsNotNull(result);
             result.Should().BeOfType<RedirectToPageResult>();

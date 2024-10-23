@@ -37,7 +37,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 return;
             }
 
-            session.ClearFilters = filters.ClearFilters = true;
+            filters.ClearFilters = session.ClearFilters = true;
             session.LatestFilterChoices = filters;
         }
 
