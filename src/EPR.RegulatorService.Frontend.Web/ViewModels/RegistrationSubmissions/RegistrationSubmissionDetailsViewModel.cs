@@ -28,5 +28,9 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public RegistrationSubmissionStatus Status { get; set; }
 
         public SubmissionDetailsViewModel SubmissionDetails { get; set; }
+
+        public string? ProducerComments { get; set; } = "yes";
+
+        public string? RegulatorComments { get; set; } = "yes";
     }
 }
