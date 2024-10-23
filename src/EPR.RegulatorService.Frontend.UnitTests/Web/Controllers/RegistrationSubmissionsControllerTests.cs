@@ -2,8 +2,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
+    using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Web.Sessions;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     [TestClass]
@@ -76,6 +81,50 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             resultModel.Should().NotBeNull();
             resultModel.PageNumber.Should().Be(3);
             _journeySession.RegulatorSession.CurrentPageNumber.Should().Be(3);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_ShouldHandleNullSession()
+        {
+            // Arrange
+            _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync((JourneySession)null);
+            int pageNumber = 1;
+
+            // Act
+            var result = await _controller.RegistrationSubmissions(pageNumber);
+
+            // Assert
+            _mockSessionManager.Verify(sm => sm.GetSessionAsync(It.IsAny<ISession>()), Times.Once);
+
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+
+            var model = viewResult.Model as RegistrationSubmissionsViewModel;
+            Assert.IsNotNull(model);
+
+            // Since session was null, it should use default page number logic
+            Assert.AreEqual(pageNumber, model.PageNumber);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_ShouldCreateANewJourneySession_WhenSessionManagerNull()
+        {
+            // Arrange
+            var sut = new RegistrationSubmissionsController(
+                null,
+                _mockConfiguration.Object,
+                _mockUrlsOptions.Object
+                );
+
+            // Act
+            var result = sut.SessionManager;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(JourneySessionManager));
+
+            sut.Dispose();
         }
 
         #endregion
@@ -480,6 +529,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             // Check that the back link is correctly set in the ViewData
             AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+        }
+
+        [TestMethod]
+        public async Task SubmitOfflinePayment_Post_RedirectsToRegistrationSubmissions_WhenCalled()
+        {
+            // Arrange
+            var model = new PaymentDetailsViewModel();
+
+            // Act
+            var result = await _controller.SubmitOfflinePayment(model) as RedirectResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(PagePath.RegistrationSubmissions, result.Url);
         }
 
         #endregion

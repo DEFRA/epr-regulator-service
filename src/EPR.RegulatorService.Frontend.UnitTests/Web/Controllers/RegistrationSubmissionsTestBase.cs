@@ -20,7 +20,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         protected Mock<HttpContext> _mockHttpContext = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _mockUrlsOptions = null!;
         protected Mock<IConfiguration> _mockConfiguration = null!;
-        protected Mock<ISessionManager<JourneySession>>  _mockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
+        protected Mock<ISessionManager<JourneySession>> _mockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
         protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
 
