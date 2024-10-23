@@ -364,8 +364,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
 **/.idea/
 **/.idea/
+**/.vshistory/
+
 src/certs/kainos-chain.pem
 src/certs/kainos-chain.p7b
 /src/EPR.RegulatorService.Frontend.Web/appsettings.development.json
