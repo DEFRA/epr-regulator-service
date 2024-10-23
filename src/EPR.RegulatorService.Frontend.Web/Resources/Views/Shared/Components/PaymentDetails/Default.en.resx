@@ -142,7 +142,7 @@
     <value>Items</value>
   </data>
   <data name="PaymentDetails.OfflinePaymentDetailsHint" xml:space="preserve">
-    <value>Adjustments can also be added, including for negative amounts.</value>
+    <value>Include details of any offline payments, for example, £600.00 or £193.54. Adjustments can also be added, including for negative amounts.</value>
   </data>
   <data name="PaymentDetails.OfflinePaymentDetailsSubmit" xml:space="preserve">
     <value>Submit offline payment</value>

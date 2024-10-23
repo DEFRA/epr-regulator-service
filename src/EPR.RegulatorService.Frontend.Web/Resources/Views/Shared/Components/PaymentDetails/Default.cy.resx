@@ -142,7 +142,7 @@
     <value>[Welsh]Items</value>
   </data>
   <data name="PaymentDetails.OfflinePaymentDetailsHint" xml:space="preserve">
-    <value>[Welsh]Adjustments can also be added, including for negative amounts.</value>
+    <value>[Welsh]Include details of any offline payments, for example, £600.00 or £193.54. Adjustments can also be added, including for negative amounts.</value>
   </data>
   <data name="PaymentDetails.OfflinePaymentDetailsSubmit" xml:space="preserve">
     <value>[Welsh]Submit offline payment</value>
