@@ -5,10 +5,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     [ExcludeFromCodeCoverage]
     public class RegistrationSubmissionsViewModel
     {
-        public string PowerBiLogin { get; set; }
+        public int? PageNumber { get; set; }
 
-        // TO DO ; Data to be populated from applied filters.
-        // TO DO ; Check naming standards 
-        public RegistrationSubmissionsListViewModel FilteredDataList { get; set; }
+        public string PowerBiLogin { get; set; }
     }
 }

@@ -67,6 +67,8 @@
 
                 @await Component.InvokeAsync("SubmissionDetails", new { model = Model.SubmissionDetails })
 
+                @await Component.InvokeAsync("PaymentDetails", new { model = Model.PaymentDetails })
+
                 @if (!string.IsNullOrEmpty(Model.ProducerComments))
                 {
                     @await Component.InvokeAsync("SubmissionComments", new { Comments = Model.ProducerComments, title = Localizer["RegistrationSubmissionDetails.ProducerComments"] })

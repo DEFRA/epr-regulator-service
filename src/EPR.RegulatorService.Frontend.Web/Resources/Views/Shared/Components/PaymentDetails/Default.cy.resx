@@ -117,19 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Table.Header.Year" xml:space="preserve">
-    <value>[Welsh]Submission year</value>
+  <data name="PaymentDetails.Amount" xml:space="preserve">
+    <value>[Welsh]Amount</value>
   </data>
-  <data name="Table.Header.Status" xml:space="preserve">
-    <value>[Welsh]Submission status</value>
+  <data name="PaymentDetails.ApplicationProcessingFee" xml:space="preserve">
+    <value>[Welsh]Application processing fee</value>
   </data>
-  <data name="Table.Header.CompanyId" xml:space="preserve">
-    <value>[Welsh]Organisation ID</value>
+  <data name="PaymentDetails.ChargeableItems" xml:space="preserve">
+    <value>[Welsh]Chargeable items</value>
   </data>
-  <data name="Table.Header.Company" xml:space="preserve">
-    <value>[Welsh]Organisation</value>
+  <data name="PaymentDetails.Description" xml:space="preserve">
+    <value>[Welsh]Description</value>
   </data>
-  <data name="Table.Header.ApplicationDate" xml:space="preserve">
-    <value>[Welsh]Submission date and time</value>
+  <data name="PaymentDetails.FeeForOwningAnOnlineMarketplace" xml:space="preserve">
+    <value>[Welsh]Fee for owning an online marketplace</value>
+  </data>
+  <data name="PaymentDetails.FeeForProducerSize" xml:space="preserve">
+    <value>[Welsh]Fee for producer size</value>
+  </data>
+  <data name="PaymentDetails.FeeForSubsidiaryOnlineMarketPlace" xml:space="preserve">
+    <value>[Welsh]Fee for the 25 subsidiaries of which 0 are an online marketplace</value>
+  </data>
+  <data name="PaymentDetails.Items" xml:space="preserve">
+    <value>[Welsh]Items</value>
+  </data>
+  <data name="PaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
+    <value>[Welsh]Online marketplace fee</value>
+  </data>
+  <data name="PaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
+    <value>[Welsh]Previous payments received</value>
+  </data>
+  <data name="PaymentDetails.SubsidiaryFee" xml:space="preserve">
+    <value>[Welsh]Subsidiary fee</value>
+  </data>
+  <data name="PaymentDetails.Title" xml:space="preserve">
+    <value>[Welsh]Payment details</value>
+  </data>
+  <data name="PaymentDetails.TotalChargeableItems" xml:space="preserve">
+    <value>[Welsh]Total chargeable items</value>
+  </data>
+  <data name="PaymentDetails.TotalOutstanding" xml:space="preserve">
+    <value>[Welsh]Total outstanding</value>
+  </data>
+  <data name="PaymentDetails.TotalPaymentsReceived" xml:space="preserve">
+    <value>[Welsh]Total previous payments received by the regulator</value>
   </data>
 </root>

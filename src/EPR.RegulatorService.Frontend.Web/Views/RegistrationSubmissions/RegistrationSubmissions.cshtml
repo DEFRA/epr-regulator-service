@@ -44,15 +44,11 @@
                         </div>
                     </div>
                 }
+                @await Component.InvokeAsync("RegistrationSubmissionList", new RegistrationSubmissionsListRequest()
+           {
+               PageNumber = (int)Model.PageNumber
+           })
             </div>
-
-
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-5">
-                @Localizer["FilterResults.Title"].Value
-            </h2>
-
-            @await Component.InvokeAsync("RegistrationSubmissionList", Model)
-
         </div>
     </main>
 </div>

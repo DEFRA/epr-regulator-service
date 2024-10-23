@@ -4,7 +4,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-
     using Microsoft.AspNetCore.Mvc;
 
     [TestClass]
@@ -26,7 +25,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedBackLink = "/regulators/home";
 
             // Act
-            var result = _controller.RegistrationSubmissions();
+            var result = await _controller.RegistrationSubmissions(1);
 
             // Assert
             result.Should().NotBeNull();
@@ -35,11 +34,48 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
             Assert.IsInstanceOfType(expectedViewModel, viewResult.Model.GetType());
-            Assert.IsNotNull(((RegistrationSubmissionsViewModel)viewResult.Model).FilteredDataList);
 
             var actualBackLink = _controller.ViewBag.CustomBackLinkToDisplay;
             Assert.IsNotNull(actualBackLink);
             Assert.AreEqual(expectedBackLink, actualBackLink);
+        }
+
+        [TestMethod]
+        public async Task RegistrationsSubmissions_ReturnModel_WithPageNumber_FromSession_When_Supplied_Null()
+        {
+            _journeySession.RegulatorSession.CurrentPageNumber = 2;
+            var result = await _controller.RegistrationSubmissions(null);
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            resultModel.Should().NotBeNull();
+            resultModel.PageNumber.Should().Be(2);
+        }
+
+        [TestMethod]
+        public async Task RegistrationsSubmissions_ReturnsModel_WithPageNumber_1_When_Supplied_Null()
+        {
+            var result = await _controller.RegistrationSubmissions(null);
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            resultModel.Should().NotBeNull();
+            resultModel.PageNumber.Should().Be(1);
+        }
+
+        [TestMethod]
+        public async Task RegistrationsSubmissions_ReturnModel_WithPageNumber_3()
+        {
+            var result = await _controller.RegistrationSubmissions(3);
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            resultModel.Should().NotBeNull();
+            resultModel.PageNumber.Should().Be(3);
+            _journeySession.RegulatorSession.CurrentPageNumber.Should().Be(3);
         }
 
         #endregion
@@ -371,6 +407,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                         new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
                         new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
                     ]
+                },
+                PaymentDetails = new PaymentDetailsViewModel
+                {
+                    ApplicationProcessingFee = 134522.56M,
+                    OnlineMarketplaceFee = 2534534.23M,
+                    SubsidiaryFee = 1.34M,
+                    PreviousPaymentsReceived = 20M
                 }
             };
 
@@ -402,6 +445,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Email, model.SubmissionDetails.Email);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.DeclaredBy, model.SubmissionDetails.DeclaredBy);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Files.Count, model.SubmissionDetails.Files.Count);
+
+            // Assert PaymentDetailsViewModel properties
+            Assert.AreEqual(expectedViewModel.PaymentDetails.ApplicationProcessingFee, model.PaymentDetails.ApplicationProcessingFee);
+            Assert.AreEqual(expectedViewModel.PaymentDetails.OnlineMarketplaceFee, model.PaymentDetails.OnlineMarketplaceFee);
+            Assert.AreEqual(expectedViewModel.PaymentDetails.SubsidiaryFee, model.PaymentDetails.SubsidiaryFee);
+            Assert.AreEqual(expectedViewModel.PaymentDetails.TotalChargeableItems, model.PaymentDetails.TotalChargeableItems);
+            Assert.AreEqual(expectedViewModel.PaymentDetails.PreviousPaymentsReceived, model.PaymentDetails.PreviousPaymentsReceived);
+            Assert.AreEqual(expectedViewModel.PaymentDetails.TotalOutstanding, model.PaymentDetails.TotalOutstanding);
 
             // Assert business address
             Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingName, model.BusinessAddress.BuildingName);
