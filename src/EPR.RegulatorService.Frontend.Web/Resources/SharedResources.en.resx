@@ -297,4 +297,19 @@
   <data name="RegistrationSubmissionStatus.Updated" xml:space="preserve">
     <value>Updated</value>
   </data>
+  <data name="ServiceRole.ApprovedPerson" xml:space="preserve">
+    <value>Approved person</value>
+  </data>
+  <data name="ServiceRole.DelegatedPerson" xml:space="preserve">
+    <value>Delegated person</value>
+  </data>
+  <data name="ServiceRole.ProducerOther" xml:space="preserve">
+    <value>Producer other</value>
+  </data>
+  <data name="ServiceRole.RegulatorAdmin" xml:space="preserve">
+    <value>Regulator admin</value>
+  </data>
+  <data name="ServiceRole.RegulatorBasic" xml:space="preserve">
+    <value>Regulator basic</value>
+  </data>
 </root>

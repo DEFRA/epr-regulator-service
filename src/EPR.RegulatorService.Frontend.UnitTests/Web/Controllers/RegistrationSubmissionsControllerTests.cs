@@ -353,7 +353,25 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 CompaniesHouseNumber = "0123456",
                 RegisteredNation = "Scotland",
                 PowerBiLogin = "https://app.powerbi.com/",
-                Status = RegistrationSubmissionStatus.queried
+                Status = RegistrationSubmissionStatus.queried,
+                SubmissionDetails = new SubmissionDetailsViewModel
+                {
+                    Status = RegistrationSubmissionStatus.queried,
+                    DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
+                    TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
+                    SubmittedOnTime = true,
+                    SubmittedBy = "Sally Smith",
+                    AccountRole = Frontend.Core.Enums.ServiceRole.ApprovedPerson,
+                    Telephone = "07553 937 831",
+                    Email = "sally.smith@email.com",
+                    DeclaredBy = "Sally Smith",
+                    Files =
+                    [
+                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
+                    ]
+                }
             };
 
             // Act
@@ -372,6 +390,18 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.ApplicationReferenceNumber, model.ApplicationReferenceNumber);
             Assert.AreEqual(expectedViewModel.RegistrationReferenceNumber, model.RegistrationReferenceNumber);
             Assert.AreEqual(expectedViewModel.OrganisationType, model.OrganisationType);
+
+            // Assert SubmissionDetailsViewModel properties
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.Status, model.SubmissionDetails.Status);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.DecisionDate, model.SubmissionDetails.DecisionDate);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.TimeAndDateOfSubmission, model.SubmissionDetails.TimeAndDateOfSubmission);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.SubmittedOnTime, model.SubmissionDetails.SubmittedOnTime);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.SubmittedBy, model.SubmissionDetails.SubmittedBy);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.AccountRole, model.SubmissionDetails.AccountRole);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.Telephone, model.SubmissionDetails.Telephone);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.Email, model.SubmissionDetails.Email);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.DeclaredBy, model.SubmissionDetails.DeclaredBy);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.Files.Count, model.SubmissionDetails.Files.Count);
 
             // Assert business address
             Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingName, model.BusinessAddress.BuildingName);

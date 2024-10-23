@@ -65,6 +65,8 @@
                     </p>
                 </div>
 
+                @await Component.InvokeAsync("SubmissionDetails", new { model = Model.SubmissionDetails })
+
             </div>
         </div>
     </main>

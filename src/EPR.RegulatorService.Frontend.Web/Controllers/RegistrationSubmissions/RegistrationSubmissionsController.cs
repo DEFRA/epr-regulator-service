@@ -11,6 +11,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
     using Microsoft.FeatureManagement.Mvc;
+    using ServiceRole = Core.Enums.ServiceRole;
 
     [FeatureGate(FeatureFlags.ManageRegistrationSubmissions)]
     [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
@@ -115,7 +116,25 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 CompaniesHouseNumber = "0123456",
                 RegisteredNation = "Scotland",
                 PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
-                Status = RegistrationSubmissionStatus.queried
+                Status = RegistrationSubmissionStatus.queried,
+                SubmissionDetails = new SubmissionDetailsViewModel
+                {
+                    Status = RegistrationSubmissionStatus.queried,
+                    DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
+                    TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
+                    SubmittedOnTime = true,
+                    SubmittedBy = "Sally Smith",
+                    AccountRole = ServiceRole.ApprovedPerson,
+                    Telephone = "07553 937 831",
+                    Email = "sally.smith@email.com",
+                    DeclaredBy = "Sally Smith",
+                    Files =
+                    [
+                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
+                    ]
+                }
             };
 
             return View(nameof(RegistrationSubmissionDetails), model);
