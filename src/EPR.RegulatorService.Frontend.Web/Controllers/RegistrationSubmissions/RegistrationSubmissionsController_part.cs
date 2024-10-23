@@ -57,9 +57,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         private IActionResult? ReturnIfAppropriate(RegistrationSubmissionsFilterViewModel? filters, string? filterType) =>
                 (filters, filterType) switch
                 {
-                    (null, null) => RedirectToPage(PagePath.PageNotFoundPath),
-                    (null, FilterActions.SubmitFilters) => RedirectToPage(PagePath.PageNotFoundPath),
-                    (_, not FilterActions.ClearFilters and not FilterActions.SubmitFilters) => RedirectToPage(PagePath.PageNotFoundPath),
+                    (null, null) => RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions"),
+                    (null, FilterActions.SubmitFilters) => RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions"),
+                    (_, not FilterActions.ClearFilters and not FilterActions.SubmitFilters) => RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions"),
                     _ => null
                 };
 
