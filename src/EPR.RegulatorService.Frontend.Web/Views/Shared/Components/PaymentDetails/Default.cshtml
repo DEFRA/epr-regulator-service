@@ -93,7 +93,7 @@
                 </div>
             </dl>
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-            <div class="govuk-form-group" style="margin-top: 70px !important; width: 400px !important;">
+            <div class="govuk-!-width-one-half govuk-form-group">
                 <p class="govuk-body" for="@nameof(Model.OfflinePayment)">
                     @Localizer["PaymentDetails.OfflinePaymentDetailsTitle"]
                 </p>
@@ -108,7 +108,7 @@
                            name="@nameof(Model.OfflinePayment)"
                            type="text"
                            spellcheck="false"
-                           aria-describedby="currency-hint">
+                           aria-describedby="@nameof(Model.OfflinePayment)-hint">
                 </div>
                 <button type="submit"
                         class="govuk-button epr-horizontal-control epr-horizontal-control-button govuk-!-margin-right-6"
