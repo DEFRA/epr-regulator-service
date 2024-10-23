@@ -137,7 +137,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 },
                 PaymentDetails = new PaymentDetailsViewModel
                 {
-                    SubmissionPeriod = "January to June 2025 submission period",
                     ApplicationProcessingFee = 134522.56M,
                     OnlineMarketplaceFee = 2534534.23M,
                     SubsidiaryFee = 1.34M,

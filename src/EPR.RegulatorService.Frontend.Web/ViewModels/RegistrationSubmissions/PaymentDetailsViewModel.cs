@@ -2,8 +2,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
     public class PaymentDetailsViewModel
     {
-        public string SubmissionPeriod { get; set; }
-
         public decimal ApplicationProcessingFee { get; set; }
 
         public decimal OnlineMarketplaceFee { get; set; }

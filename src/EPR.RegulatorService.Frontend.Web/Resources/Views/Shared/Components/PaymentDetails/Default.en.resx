@@ -147,11 +147,11 @@
   <data name="PaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
     <value>Previous payments received</value>
   </data>
-  <data name="PaymentDetails.SubmissionPeriod" xml:space="preserve">
-    <value>Payment details - </value>
-  </data>
   <data name="PaymentDetails.SubsidiaryFee" xml:space="preserve">
     <value>Subsidiary fee</value>
+  </data>
+  <data name="PaymentDetails.Title" xml:space="preserve">
+    <value>Payment details</value>
   </data>
   <data name="PaymentDetails.TotalChargeableItems" xml:space="preserve">
     <value>Total chargeable items</value>

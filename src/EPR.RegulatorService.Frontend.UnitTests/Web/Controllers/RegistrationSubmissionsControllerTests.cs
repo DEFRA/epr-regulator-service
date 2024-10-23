@@ -374,7 +374,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 },
                 PaymentDetails = new PaymentDetailsViewModel
                 {
-                    SubmissionPeriod = "January to June 2025 submission period",
                     ApplicationProcessingFee = 134522.56M,
                     OnlineMarketplaceFee = 2534534.23M,
                     SubsidiaryFee = 1.34M,
@@ -412,7 +411,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Files.Count, model.SubmissionDetails.Files.Count);
 
             // Assert PaymentDetailsViewModel properties
-            Assert.AreEqual(expectedViewModel.PaymentDetails.SubmissionPeriod, model.PaymentDetails.SubmissionPeriod);
             Assert.AreEqual(expectedViewModel.PaymentDetails.ApplicationProcessingFee, model.PaymentDetails.ApplicationProcessingFee);
             Assert.AreEqual(expectedViewModel.PaymentDetails.OnlineMarketplaceFee, model.PaymentDetails.OnlineMarketplaceFee);
             Assert.AreEqual(expectedViewModel.PaymentDetails.SubsidiaryFee, model.PaymentDetails.SubsidiaryFee);
