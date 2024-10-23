@@ -71,11 +71,23 @@
 
                 @if (!string.IsNullOrEmpty(Model.ProducerComments))
                 {
-                    @await Component.InvokeAsync("SubmissionComments", new { Comments = Model.ProducerComments, title = Localizer["RegistrationSubmissionDetails.ProducerComments"] })
+                    @await Component.InvokeAsync("RegistrationSubmissionComments",
+                             new
+                             {
+                                 Comments = Model.ProducerComments,
+                                 Title = Localizer["RegistrationSubmission.ProducerTitle"]
+                             }
+                             )
                 }
                 @if (!string.IsNullOrEmpty(Model.RegulatorComments))
                 {
-                    @await Component.InvokeAsync("SubmissionComments", new { Comments = Model.RegulatorComments, title = Localizer["RegistrationSubmissionDetails.RegulatorComments"] })
+                    @await Component.InvokeAsync("RegistrationSubmissionComments",
+                             new
+                             {
+                                 Comments = Model.RegulatorComments,
+                                 Title = Localizer["RegistrationSubmission.RegulatorTitle"]
+                             }
+                             )
                 }
 
             </div>

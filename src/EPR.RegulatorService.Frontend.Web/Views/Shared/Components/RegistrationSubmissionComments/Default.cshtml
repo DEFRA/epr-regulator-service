@@ -1,10 +1,12 @@
- 
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
+@model RegistrationSubmissionComment
 
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
-        <h2 class="govuk-summary-card__title ">@Title</h2>
+        <h2 class="govuk-summary-card__title ">@Model.Title</h2>
     </div>
     <div class="govuk-summary-card__content" style="padding:30px;">
-        <p class=" govuk-body" style="margin:0px;">@Comments</p>
+        <p class=" govuk-body" style="margin:0px;">@Model.Comment</p>
     </div>
 </div>
