@@ -7,6 +7,7 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
@@ -17,7 +18,7 @@ using System.Security.Cryptography;
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 [ExcludeFromCodeCoverage]
-public class MockedFacadeService : IFacadeService
+public partial class MockedFacadeService : IFacadeService
 {
     private const string ApprovedPerson = "ApprovedPerson";
     private const string DelegatedPerson = "DelegatedPerson";
@@ -25,10 +26,11 @@ public class MockedFacadeService : IFacadeService
     private const string Accepted = "Accepted";
     private const string Rejected = "Rejected";
     private readonly PaginationConfig _config;
-    private static List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
-    private static List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
-    private static List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
-    private static List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
+    private static readonly List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
+    private static readonly List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
+    private static readonly List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
+    private static readonly List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
+    private static readonly List<RegistrationSubmissionOrganisationDetails> _registrationSubmissions = GenerateRegistrationSubmission();
 
     public MockedFacadeService(IOptions<PaginationConfig> options)
     {
@@ -106,8 +108,8 @@ public class MockedFacadeService : IFacadeService
         
         for (int i = 1; i <= 1000; i++)
         {
-            var hasApprovedPending = (i % 2) == 0; 
-            var hasDelegatedPending = (i % 4) < 2;
+            bool hasApprovedPending = (i % 2) == 0;
+            bool hasDelegatedPending = (i % 4) < 2;
 
             string organisationName = string.Empty;
 
@@ -124,6 +126,9 @@ public class MockedFacadeService : IFacadeService
                 case 2:
                     // Extra long name with spaces
                     organisationName += $"Organisation{i}Ltd ReallyReallyReallyReallyReallyReallyReally Really Long Name";
+                    break;
+                default:
+                    organisationName = $"Organisation {i} Ltd With an even more and even longer meaningless name that will never fit in any view";
                     break;
             }
 
@@ -163,7 +168,7 @@ public class MockedFacadeService : IFacadeService
     private static List<OrganisationSearchResult> GenerateOrganisationSearchResults()
     {
         var allItems = new List<OrganisationSearchResult>();
-        var random = RandomNumberGenerator.GetInt32(0, 2);
+        int random = RandomNumberGenerator.GetInt32(0, 2);
 
         for (int i = 1; i <= 1000; i++)
         {
@@ -366,5 +371,24 @@ public class MockedFacadeService : IFacadeService
         };
 
         return await Task.FromResult(response);
+    }
+
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(int currentPage = 1) {
+        if (currentPage > (int)Math.Ceiling(_allSubmissions.Count / (double)_config.PageSize))
+        {
+            currentPage = 1;
+        }
+
+        var results = _registrationSubmissions.ToList();
+
+        var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+        {
+            Items = await OrderRegistrations(results, currentPage),
+            CurrentPage = currentPage,
+            TotalItems = results.Count,
+            PageSize = _config.PageSize
+        };
+
+        return response;
     }
 }

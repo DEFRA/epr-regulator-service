@@ -1,8 +1,10 @@
+@using EPR.RegulatorService.Frontend.Core.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
 
-@model RegistrationSubmissionsViewModel
+@model RegistrationSubmissionsListViewModel
 
-@if (Model.FilteredDataList.PagedRegistrationSubmissionList.Any())
+@if (Model.PagedRegistrationSubmissions.Any())
 {
     <table class="govuk-table responsive-table" aria-label="Organisation Application Listing">
         <thead role="rowgroup" class="govuk-table__head">
@@ -15,7 +17,7 @@
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            @foreach (var organisation in Model.FilteredDataList.PagedRegistrationSubmissionList)
+            @foreach (var organisation in Model.PagedRegistrationSubmissions)
             {
                 <tr role="row" class="govuk-table__row">
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
@@ -24,41 +26,43 @@
                         </span>
                         <a href="../#" class="govuk-link">
                             @organisation.OrganisationName
-                        </a> 
+                        </a>
                         <br />
-                        <span class="orgNameFilter">@organisation.ProducerType</span>
+                        <span class="orgNameFilter">@SharedLocalizer[organisation.OrganisationType.GetDescription()]</span>
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.CompanyId"]
                         </span>
-                        @organisation.OrganisationId
-                        <br />
-                        Ref No: @organisation.RefNumber
+                        @organisation.OrganisationReference
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.ApplicationDate"]
                         </span>
-                        @organisation.SubmissionDateTime.ToLongDateString()
+                        @organisation.RegistrationDateTime.ToLongDateString()
                         <br />
-                        @organisation.SubmissionDateTime.ToLongTimeString()
+                        @organisation.RegistrationDateTime.ToLongTimeString()
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.Year"]
                         </span>
-                        @organisation.SubmissionYear
+                        @organisation.RegistrationDateTime.Year
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align tag">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.Status"]
                         </span>
-                        <strong class="govuk-tag @Model.FilteredDataList.GetStyleNameFromStatus(organisation.Status)">@organisation.Status</strong>
+                        <govuk-tag status="@organisation.Status" content="@SharedLocalizer[organisation.Status.GetDescription()]" />
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
+    @await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel)
+}
+else
+{
+    <p class="govuk-body govuk-!-text-align-centre govuk-!-static-margin-9">@Localizer["Body.NoResultsFound"]</p>
 }

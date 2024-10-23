@@ -44,10 +44,10 @@
                         </div>
                     </div>
                 }
-            </div>
-
-            <div class="govuk-grid-column-full">
-                @await Component.InvokeAsync("RegistrationSubmissionList", Model)
+                @await Component.InvokeAsync("RegistrationSubmissionList", new RegistrationSubmissionsListRequest()
+           {
+               PageNumber = (int)Model.PageNumber
+           })
             </div>
         </div>
     </main>

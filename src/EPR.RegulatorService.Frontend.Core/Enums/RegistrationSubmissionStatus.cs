@@ -8,7 +8,7 @@ public enum RegistrationSubmissionStatus
     none = 0,
     [Description("RegistrationSubmissionStatus.Pending")]
     pending = 1,
-    [Description(".RegistrationSubmissionStatus.Granted")]
+    [Description("RegistrationSubmissionStatus.Granted")]
     granted = 10,
     [Description("RegistrationSubmissionStatus.Refused")]
     refused = 20,

@@ -11,7 +11,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.TestData
             new()
             {
                 SubmissionId = Guid.NewGuid(),
-                SubmittedDate = new DateTime(2023, 03, 03, 03, 03, 33),
+                SubmittedDate = new DateTime(2023, 03, 03, 03, 03, 33, DateTimeKind.Unspecified),
                 Decision = SubmissionStatus.Pending,
                 IsResubmission = false,
                 IsResubmissionRequired = false,
