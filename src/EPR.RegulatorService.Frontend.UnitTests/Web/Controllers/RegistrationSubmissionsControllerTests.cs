@@ -4,6 +4,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
     using Microsoft.AspNetCore.Mvc;
 
     [TestClass]
@@ -480,6 +481,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             // Check that the back link is correctly set in the ViewData
             AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+        }
+
+        [TestMethod]
+        public async Task SubmitOfflinePayment_Post_RedirectsToRegistrationSubmissions_WhenCalled()
+        {
+            // Arrange
+            var model = new PaymentDetailsViewModel();
+
+            // Act
+            var result = await _controller.SubmitOfflinePayment(model) as RedirectResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(PagePath.RegistrationSubmissions, result.Url);
         }
 
         #endregion
