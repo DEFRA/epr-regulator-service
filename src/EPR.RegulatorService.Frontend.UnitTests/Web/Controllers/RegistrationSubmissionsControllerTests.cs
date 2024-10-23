@@ -228,7 +228,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task QueryRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
             // Arrange
-            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissions;
+            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissionsRoute;
 
             var expectedViewModel = new QueryRegistrationSubmissionViewModel
             {
@@ -257,7 +257,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
 
             // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
         [TestMethod]
@@ -276,7 +276,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(model, result.Model);
 
             // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
         [TestMethod]
@@ -293,7 +293,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert
             Assert.IsNotNull(result); // Ensure the result is not null
-            Assert.AreEqual(PagePath.RegistrationSubmissions, result.Url); // Ensure the user is redirected to the correct URL
+            Assert.AreEqual(PagePath.RegistrationSubmissionsRoute, result.Url); // Ensure the user is redirected to the correct URL
         }
 
         [TestMethod]
@@ -322,7 +322,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _controller.ModelState[nameof(model.Query)].Errors[0].ErrorMessage);
 
             // Verify the back link is set correctly
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
         [TestMethod]
@@ -351,7 +351,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _controller.ModelState[nameof(model.Query)].Errors[0].ErrorMessage);
 
             // Verify the back link is set correctly
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
         #endregion
@@ -362,7 +362,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task RejectRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
             // Arrange
-            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissions;
+            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissionsRoute;
 
             var expectedViewModel = new RejectRegistrationSubmissionViewModel
             {
@@ -391,7 +391,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
 
             // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
         [TestMethod]
@@ -410,7 +410,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(model, result.Model);
 
             // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
         [TestMethod]
@@ -427,7 +427,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert
             Assert.IsNotNull(result); // Ensure the result is not null
-            Assert.AreEqual(PagePath.RegistrationSubmissions, result.Url); // Ensure the user is redirected to the correct URL
+            Assert.AreEqual(PagePath.RegistrationSubmissionsRoute, result.Url); // Ensure the user is redirected to the correct URL
         }
 
         [TestMethod]
@@ -456,7 +456,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _controller.ModelState[nameof(model.RejectReason)].Errors[0].ErrorMessage);
 
             // Verify the back link is set correctly
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
         [TestMethod]
@@ -485,7 +485,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _controller.ModelState[nameof(model.RejectReason)].Errors[0].ErrorMessage);
 
             // Verify the back link is set correctly
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
         #endregion
@@ -621,7 +621,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             Assert.IsNotNull(result);
             // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
         #endregion

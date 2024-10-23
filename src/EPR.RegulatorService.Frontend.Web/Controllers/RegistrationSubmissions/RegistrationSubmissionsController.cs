@@ -38,7 +38,7 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Consumes("application/json")]
-    [Route(PagePath.RegistrationSubmissions)]
+    [Route(PagePath.RegistrationSubmissionsRoute)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RegistrationSubmissions(int? pageNumber)
@@ -55,7 +55,7 @@ public partial class RegistrationSubmissionsController(
 
             var viewModel = InitialiseOrCreateViewModel(_currentSession.RegulatorRegistrationSubmissionSession);
 
-            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissions, PagePath.RegistrationSubmissions);
+            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
             return View(viewModel);
         }
@@ -68,11 +68,12 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpPost]
-    [Route(PagePath.RegistrationSubmissions)]
+    [Route(PagePath.RegistrationSubmissionsRoute)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status302Found)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RegistrationSubmissions(RegistrationSubmissionsFilterViewModel? filters = null, string? filterType = null)
+    public async Task<IActionResult> RegistrationSubmissions([FromForm]RegistrationSubmissionsFilterViewModel? filters = null,
+                                                             [FromForm]string? filterType = null)
     {
         try
         {
@@ -89,7 +90,7 @@ public partial class RegistrationSubmissionsController(
             UpdateRegistrationSubmissionFiltersInSession(_currentSession.RegulatorRegistrationSubmissionSession,
                                filters,
                                filterType == FilterActions.SubmitFilters);
-            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissions, PagePath.RegistrationSubmissions);
+            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
         }
         catch (Exception ex)
         {
@@ -98,7 +99,7 @@ public partial class RegistrationSubmissionsController(
             return RedirectToPage(PagePath.Error, "Error");
         }
 
-        return RedirectToAction(PagePath.RegistrationSubmissions);
+        return RedirectToAction(PagePath.RegistrationSubmissionsAction);
     }
 
     [HttpGet]
@@ -111,15 +112,15 @@ public partial class RegistrationSubmissionsController(
 
         SetBacklinkToHome();
 
-        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissions, PagePath.PageNotFound);
-        return RedirectToAction(PagePath.Error, "Error", new { statusCode = 404, backLink = PagePath.RegistrationSubmissions });
+        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.PageNotFound);
+        return RedirectToAction(PagePath.Error, "Error", new { statusCode = 404, backLink = PagePath.RegistrationSubmissionsRoute });
     }
 
     [HttpGet]
     [Route(PagePath.QueryRegistrationSubmission)]
     public async Task<IActionResult> QueryRegistrationSubmission()
     {
-        SetBackLink(PagePath.RegistrationSubmissions);
+        SetBackLink(PagePath.RegistrationSubmissionsRoute);
 
         var model = new QueryRegistrationSubmissionViewModel();
 
@@ -132,18 +133,18 @@ public partial class RegistrationSubmissionsController(
     {
         if (!ModelState.IsValid)
         {
-            SetBackLink(PagePath.RegistrationSubmissions);
+            SetBackLink(PagePath.RegistrationSubmissionsRoute);
             return View(nameof(QueryRegistrationSubmission), model);
         }
 
-        return Redirect(PagePath.RegistrationSubmissions);
+        return Redirect(PagePath.RegistrationSubmissionsRoute);
     }
 
     [HttpGet]
     [Route(PagePath.RejectRegistrationSubmission)]
     public async Task<IActionResult> RejectRegistrationSubmission()
     {
-        SetBackLink(PagePath.RegistrationSubmissions);
+        SetBackLink(PagePath.RegistrationSubmissionsRoute);
 
         var model = new RejectRegistrationSubmissionViewModel();
 
@@ -156,18 +157,18 @@ public partial class RegistrationSubmissionsController(
     {
         if (!ModelState.IsValid)
         {
-            SetBackLink(PagePath.RegistrationSubmissions);
+            SetBackLink(PagePath.RegistrationSubmissionsRoute);
             return View(nameof(RejectRegistrationSubmission), model);
         }
 
-        return Redirect(PagePath.RegistrationSubmissions);
+        return Redirect(PagePath.RegistrationSubmissionsRoute);
     }
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionDetails + "/{organisationId:guid}")]
     public async Task<IActionResult> RegistrationSubmissionDetails(Guid organisationId)
     {
-        SetBackLink(PagePath.RegistrationSubmissions);
+        SetBackLink(PagePath.RegistrationSubmissionsRoute);
 
         var model = new RegistrationSubmissionDetailsViewModel
         {
