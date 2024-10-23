@@ -1,0 +1,75 @@
+@using EPR.RegulatorService.Frontend.Core.Extensions
+@using EPR.RegulatorService.Frontend.Web.Helpers
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+
+@model RegistrationSubmissionDetailsViewModel
+
+@{
+    ViewData["Title"] = Localizer["RegistrationSubmissionDetails.PageTitle"];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <span class="govuk-caption-xl">
+                    @Localizer["RegistrationSubmissionDetails.Caption"]
+                </span>
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-4" for="@nameof(Model.OrganisationName)">
+                    @Model.OrganisationName
+                </h1>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.OrganisationType"]</h3>
+                    <p class="govuk-body">@SharedLocalizer[Model.OrganisationType.GetDescription()]</p>
+                </div>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.OrganisationIdTitle"]</h3>
+                    <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.OrganisationIdSubTitle"] @Model.OrganisationReference</p>
+                </div>
+
+                <status-panel heading="@Localizer[ReferenceNumberPanelHelper.GetPanelTitle(Model)].Value"
+                              content="@ReferenceNumberPanelHelper.GetPanelContent(Model)"
+                              status="@SharedLocalizer[Model.Status.ToString()]">
+                </status-panel>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.RegisteredAddress"]</h3>
+                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.BuildingNumber @Model.BusinessAddress.BuildingName</p>
+                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.Street</p>
+                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.County</p>
+                    <p class="govuk-body">@Model.BusinessAddress.PostCode</p>
+                </div>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.CompaniesHouseNumber"]</h3>
+                    @if (!string.IsNullOrEmpty(Model.CompaniesHouseNumber))
+                    {
+                        <p class="govuk-body govuk-!-margin-bottom-0">@Model.CompaniesHouseNumber</p>
+                        <companies-house-link gov-value="@Model.CompaniesHouseNumber" class="govuk-body govuk-link--no-visited-state">
+                            @Localizer["RegistrationSubmissionDetails.CompaniesHouseRegister"]
+                        </companies-house-link>
+                    }
+                    else
+                    {
+                        <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.NotListed"]</p>
+                    }
+                </div>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.PowerBiTitle"]</h3>
+                    <p class="govuk-body">
+                        @Localizer["RegistrationSubmissionDetails.PowerBiSubTitle"]
+                        <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
+                    </p>
+                </div>
+
+                @await Component.InvokeAsync("SubmissionDetails", new { model = Model.SubmissionDetails })
+
+                @await Component.InvokeAsync("PaymentDetails", new { model = Model.PaymentDetails })
+
+            </div>
+        </div>
+    </main>
+</div>
