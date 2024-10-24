@@ -1,5 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
+    using System.Diagnostics.CodeAnalysis;
+
+    [ExcludeFromCodeCoverage]
     public class PaymentDetailsViewModel
     {
         public decimal ApplicationProcessingFee { get; set; }
@@ -13,5 +16,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public decimal PreviousPaymentsReceived { get; set; }
 
         public decimal TotalOutstanding => TotalChargeableItems - PreviousPaymentsReceived;
+
+        public decimal OfflinePayment { get; set; }
     }
 }

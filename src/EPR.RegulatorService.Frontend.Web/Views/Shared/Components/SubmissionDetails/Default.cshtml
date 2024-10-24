@@ -8,7 +8,7 @@
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
         <h2 class="govuk-summary-card__title govuk-!-padding-top-4">@Localizer["SubmissionDetails.Title"]</h2>
         <div>
-            <div class="govuk-!-padding-top-4" style="flex-basis: auto;text-align:right !important;">
+            <div class="govuk-!-padding-top-4 govuk-summary-list__actions">
                 <govuk-tag status="@Model.Status" content="@SharedLocalizer[Model.Status.GetDescription()]" />
                 <p class="govuk-!-padding-top-1 govuk-body-s">
                     @Model.DecisionDate.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)

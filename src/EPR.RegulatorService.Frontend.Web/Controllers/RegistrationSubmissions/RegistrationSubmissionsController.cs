@@ -20,14 +20,15 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 [FeatureGate(FeatureFlags.ManageRegistrationSubmissions)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 public class RegistrationSubmissionsController(
-                ISessionManager<JourneySession> sessionManager,
-                IConfiguration configuration,
-                IOptions<ExternalUrlsOptions> externalUrlsOptions
-                    ) : Controller
+    ISessionManager<JourneySession> sessionManager,
+    IConfiguration configuration,
+    IOptions<ExternalUrlsOptions> externalUrlsOptions) : Controller
 {
     private readonly string _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
     private readonly ExternalUrlsOptions _externalUrlsOptions = externalUrlsOptions.Value;
     private readonly ISessionManager<JourneySession> _sessionManager = sessionManager ?? new JourneySessionManager();
+
+    public ISessionManager<JourneySession> SessionManager => _sessionManager;
 
     [HttpGet]
     [Consumes("application/json")]
@@ -141,8 +142,8 @@ public class RegistrationSubmissionsController(
                 Files =
                 [
                     new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
+                    new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
+                    new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
                 ]
             },
             PaymentDetails = new PaymentDetailsViewModel
@@ -156,6 +157,10 @@ public class RegistrationSubmissionsController(
 
         return View(nameof(RegistrationSubmissionDetails), model);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> SubmitOfflinePayment(PaymentDetailsViewModel model) =>
+        Redirect(PagePath.RegistrationSubmissions);
 
     private void SetCustomBackLink()
     {
