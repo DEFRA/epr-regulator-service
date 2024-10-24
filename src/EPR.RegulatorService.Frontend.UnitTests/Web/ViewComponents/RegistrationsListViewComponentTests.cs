@@ -142,7 +142,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.RegulatorRegistrationFiltersModel.SearchSubmissionPeriods.Should().BeEmpty();
         }
 
-        public void RegistrationSubmissionComment_PropertyTest()
+        public static void RegistrationSubmissionComment_PropertyTest()
         {
             // Arrange
             string title = "title";
