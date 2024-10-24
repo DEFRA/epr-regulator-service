@@ -10,7 +10,6 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents;
 
