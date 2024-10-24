@@ -4,6 +4,7 @@ $govuk-assets-path: '/regulators/';
 // Components
 $narrow-media-width: 40.0625em;
 
+@import './components/_govuk-list-extensions.scss';
 @import './components/info_panel.scss';
 @import './components/language_toggle';
 @import './components/ordered_list';
