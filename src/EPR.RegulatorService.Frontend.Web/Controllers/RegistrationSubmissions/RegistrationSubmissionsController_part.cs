@@ -12,7 +12,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
         private RegistrationSubmissionsViewModel InitialiseOrCreateViewModel(RegulatorRegistrationSubmissionSession session)
         {
-            var existingSessionFilters = session.LatestFilterChoices ?? new RegistrationSubmissionsFilterViewModel();
+            var existingSessionFilters = session.LatestFilterChoices ?? new RegistrationSubmissionsFilterViewModel()
+            {
+                PageNumber = 1
+            };
+            existingSessionFilters.Page = session.CurrentPageNumber;
 
             return new RegistrationSubmissionsViewModel
             {
@@ -37,8 +41,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 return;
             }
 
-            session.ClearFilters = filters.ClearFilters = true;
-            session.LatestFilterChoices = filters;
+            session.ClearFilters = true;
+            if (null != filters)
+            {
+                filters.ClearFilters = true;
+            }
         }
 
         private void UpdateRegistrationSubmissionFiltersInSession(

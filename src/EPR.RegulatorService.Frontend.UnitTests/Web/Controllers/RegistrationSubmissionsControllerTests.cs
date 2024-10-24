@@ -2,6 +2,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
@@ -89,23 +91,167 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task RegistrationSubmissions_Initialises_ListViewModel_When_New()
         {
+            // Arrange
+            RegistrationSubmissionsFilterModel latestFilterChoices = new()
+            {
+                OrganisationName = "braun",
+                OrganisationType = "small",
+                RelevantYear = "2025",
+                Page = 1,
+                PageSize = 500,
+                SubmissionStatus = "pending"
+            };
 
+            SetupJourneySession(latestFilterChoices, null);
+     
+            // Act
+            var result = await _controller.RegistrationSubmissions(null);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+
+            var session = _journeySession.RegulatorRegistrationSubmissionSession;
+            session.Should().NotBeNull();
+            session.CurrentPageNumber.Should().Be(1);
+            session.LatestFilterChoices.OrganisationName.Should().Be("braun");
+            session.LatestFilterChoices.OrganisationType.Should().Be("small");
+            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
+            session.LatestFilterChoices.Page.Should().Be(1);
+            session.LatestFilterChoices.PageSize.Should().Be(500);
+            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+
+            var model = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            model.Should().NotBeNull();
+            model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
+            model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(1);
+            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(1);
+            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissions_Retrieves_ListViewModel_After_Postback()
+        public async Task RegistrationSubmissions_Updates_ListViewModel_When_New_Page_Requested()
+        {
+            // Arrange
+            int new_page_number = 4;
+
+            RegistrationSubmissionsFilterModel latestFilterChoices = new()
+            {
+                OrganisationName = "braun",
+                OrganisationType = "small",
+                RelevantYear = "2025",
+                Page = 2,
+                PageSize = 500,
+                SubmissionStatus = "pending"
+            };
+
+            SetupJourneySession(latestFilterChoices, null, 2);
+
+            // Act
+            var result = await _controller.RegistrationSubmissions(new_page_number);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+
+            var session = _journeySession.RegulatorRegistrationSubmissionSession;
+            session.Should().NotBeNull();
+            session.CurrentPageNumber.Should().Be(new_page_number);
+            session.LatestFilterChoices.OrganisationName.Should().Be("braun");
+            session.LatestFilterChoices.OrganisationType.Should().Be("small");
+            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
+            session.LatestFilterChoices.Page.Should().Be(new_page_number);
+            session.LatestFilterChoices.PageSize.Should().Be(500);
+            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+
+            var model = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            model.Should().NotBeNull();
+            model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
+            model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(new_page_number);
+            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(new_page_number);
+            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_Retrieves_ListViewModel_And_Adjusts_Filter_And_Model_After_Postback()
+        {
+            int expected_page_number = 2;
+
+            RegistrationSubmissionsFilterModel emptyFilterChoices = new()
+            {};
+
+            RegistrationSubmissionsFilterModel latestFilterChoices = new()
+            {
+                OrganisationName = "braun",
+                OrganisationType = "small",
+                RelevantYear = "2025",
+                Page = expected_page_number,
+                PageSize = 500,
+                SubmissionStatus = "pending"
+            };
+
+            SetupJourneySession(emptyFilterChoices, null);
+
+            // Act
+            var get_result = await _controller.RegistrationSubmissions(null);
+
+            // Assert
+            get_result.Should().BeOfType<ViewResult>();
+            var model = (get_result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            model.Should().NotBeNull();
+
+
+            var session = _journeySession.RegulatorRegistrationSubmissionSession;
+            session.LatestFilterChoices.OrganisationName.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.OrganisationType.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.RelevantYear.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.Page.Should().Be(1);
+            session.LatestFilterChoices.SubmissionStatus.Should().BeNullOrEmpty();
+
+            session.Should().NotBeNull();
+            session.CurrentPageNumber.Should().Be(1);
+
+            // Act again
+            var result = await _controller.RegistrationSubmissions(latestFilterChoices, FilterActions.SubmitFilters);
+
+            result.Should().BeOfType(typeof(RedirectToActionResult));
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.RegistrationSubmissionsAction);
+
+            // Act Again
+
+            get_result = await _controller.RegistrationSubmissions(4);
+
+            // Test final session and viewmodel state
+            session.LatestFilterChoices.OrganisationName.Should().Be("braun");
+            session.LatestFilterChoices.OrganisationType.Should().Be("small");
+            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
+            session.LatestFilterChoices.Page.Should().Be(4);
+            session.LatestFilterChoices.PageSize.Should().Be(500);
+            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+
+            model = (get_result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            model.Should().NotBeNull();
+            model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
+            model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(4);
+            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(4);
+            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_Maintains_PageNumber_When_Filters_Posted_And_Less_Than_New_Max()
         {
 
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissions_Updates_ListViewModel_When_Filters_Posted()
-        {
-
-        }
-
-        [TestMethod]
-        public async Task RegistrationSubmissions_Resets_PageNumber_When_Filters_Posted()
+        public async Task RegistrationSubmissions_Lowers_PageNumber_To_Max_When_Filters_Posted_And_Less_Than_Old_Max()
         {
 
         }
@@ -119,7 +265,55 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task RegistrationSubmissions_Updates_Clears_ListViewModel_And_Session_Filters_When_ClearFilters_Recevied()
         {
+            RegistrationSubmissionsFilterModel latestFilterChoices = new()
+            {
+                OrganisationName = "braun",
+                OrganisationType = "small",
+                RelevantYear = "2025",
+                Page = 2,
+                PageSize = 200,
+                SubmissionStatus = "pending"
+            };
 
+            SetupJourneySession(latestFilterChoices, null, 2);
+
+            // Act
+            var get_result = await _controller.RegistrationSubmissions(null);
+
+            // Assert
+            get_result.Should().BeOfType<ViewResult>();
+            var model = (get_result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            model.Should().NotBeNull();
+            model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(2);
+            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(2);
+            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+
+            var session = _journeySession.RegulatorRegistrationSubmissionSession;
+            session.LatestFilterChoices.OrganisationName.Should().Be("braun");
+            session.LatestFilterChoices.OrganisationType.Should().Be("small");
+            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
+            session.LatestFilterChoices.Page.Should().Be(2);
+            session.LatestFilterChoices.PageSize.Should().Be(200);
+            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+
+
+            // Act again
+            var result = await _controller.RegistrationSubmissions(null, FilterActions.ClearFilters);
+
+            result.Should().BeOfType(typeof(RedirectToActionResult));
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.RegistrationSubmissionsAction);
+
+            // Test final session and viewmodel state
+
+            session.LatestFilterChoices.OrganisationName.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.OrganisationType.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.RelevantYear.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.Page.Should().Be(1);
+            session.LatestFilterChoices.SubmissionStatus.Should().BeNullOrEmpty();
+            model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
         }
         #endregion Happy Path
 

@@ -65,14 +65,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         public void SetupJourneySession(RegistrationSubmissionsFilterModel filtersModel,
-                                        RegistrationSubmissionOrganisationDetails selectedSubmission)
+                                        RegistrationSubmissionOrganisationDetails selectedSubmission, int currentPageNumber = 1)
         {
             _journeySession = new JourneySession()
             {
                 RegulatorRegistrationSubmissionSession = new()
                 {
                     LatestFilterChoices = filtersModel,
-                    CurrentPageNumber = 1,
+                    CurrentPageNumber = currentPageNumber,
                     SelectedRegistration = selectedSubmission
                 }
             };

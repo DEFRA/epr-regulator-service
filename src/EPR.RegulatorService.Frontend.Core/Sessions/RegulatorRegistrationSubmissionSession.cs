@@ -5,11 +5,29 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
 {
     public class RegulatorRegistrationSubmissionSession
     {
+        private bool _clearFilters = false;
         public List<string> Journey { get; set; } = new();
         public RegistrationSubmissionOrganisationDetails SelectedRegistration { get; set; }
         public int? CurrentPageNumber { get; set; }
         public RegistrationSubmissionsFilterModel LatestFilterChoices { get; set; }
 
-        public bool ClearFilters { get; set; }
+        public bool ClearFilters
+        {
+            get => _clearFilters;
+            set
+            {
+                _clearFilters = value;
+                if (value)
+                {
+                    CurrentPageNumber = 1;
+                    if (null != LatestFilterChoices)
+                    {
+                        LatestFilterChoices.Page = 1;
+                        LatestFilterChoices.OrganisationName = LatestFilterChoices.OrganisationRef = null;
+                        LatestFilterChoices.OrganisationType = LatestFilterChoices.RelevantYear = LatestFilterChoices.SubmissionStatus = null;
+                    }
+                }
+            }
+        }
     }
 }

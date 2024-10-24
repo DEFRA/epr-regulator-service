@@ -56,6 +56,11 @@ public partial class MockedFacadeService : IFacadeService
 
         int totalItems = filteredItems.Count();
 
+        if (filters.Page > (int)Math.Ceiling(totalItems / (double)_config.PageSize))
+        {
+            filters.Page = (int)Math.Ceiling(totalItems / (double)_config.PageSize);
+        }
+
         var sortedItems = filteredItems
                 .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)

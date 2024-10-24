@@ -22,12 +22,14 @@ public class RegistrationSubmissionsFilterViewModel
     public bool Is2025Checked { get; set; }
 
     public int PageNumber { get; set; }
+    public int? PageSize { get; set; }
+
     public bool ClearFilters
     {
         get => _clearFilters;
         set
         {
-            _clearFilters = true;
+            _clearFilters = value;
             if (value)
             {
                 OrganisationName = OrganisationRef = null;
@@ -37,11 +39,13 @@ public class RegistrationSubmissionsFilterViewModel
             }
         }
     }
+
     public bool IsFilterApplied { get; set; }
 
     public static implicit operator RegistrationSubmissionsFilterModel(RegistrationSubmissionsFilterViewModel viewModel) => new RegistrationSubmissionsFilterModel
     {
         Page = viewModel.PageNumber,
+        PageSize = viewModel.PageSize,
         RelevantYear = viewModel.Is2025Checked ? "2025" : null,
         OrganisationRef = !string.IsNullOrEmpty(viewModel.OrganisationRef) ? viewModel.OrganisationRef : null,
         OrganisationName = !string.IsNullOrEmpty(viewModel.OrganisationName) ? viewModel.OrganisationName : null,
@@ -76,6 +80,7 @@ public class RegistrationSubmissionsFilterViewModel
         IsStatusUpdatedChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("updated"),
         IsStatusCancelledChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("cancelled"),
         Is2025Checked = model.RelevantYear != null && model.RelevantYear.ToLower().Contains("2025"),
-        PageNumber = model.Page ?? 1
+        PageNumber = model.Page ?? 1,
+        PageSize = model.PageSize ?? 20
     };
 }
