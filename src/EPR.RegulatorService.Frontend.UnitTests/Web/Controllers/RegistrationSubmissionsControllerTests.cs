@@ -245,24 +245,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissions_Maintains_PageNumber_When_Filters_Posted_And_Less_Than_New_Max()
-        {
-
-        }
-
-        [TestMethod]
-        public async Task RegistrationSubmissions_Lowers_PageNumber_To_Max_When_Filters_Posted_And_Less_Than_Old_Max()
-        {
-
-        }
-
-        [TestMethod]
-        public async Task RegistrationSubmissions_Updates_ListViewModel_And_Session_When_NewPage_Wanted()
-        {
-
-        }
-
-        [TestMethod]
         public async Task RegistrationSubmissions_Updates_Clears_ListViewModel_And_Session_Filters_When_ClearFilters_Recevied()
         {
             RegistrationSubmissionsFilterModel latestFilterChoices = new()
@@ -362,8 +344,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
             var result = await _controller.RegistrationSubmissions(null, null);
             Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToPageResult>();
-            (result as RedirectToPageResult).PageName.Should().Be(PagePath.Error);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
         }
 
         [TestMethod]
@@ -372,8 +354,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
             var result = await _controller.RegistrationSubmissions(1);
             Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToPageResult>();
-            (result as RedirectToPageResult).PageName.Should().Be(PagePath.Error);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
         }
 
         [TestMethod]
@@ -382,13 +364,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
             var result = await _controller.RegistrationSubmissions(null,null);
             Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToPageResult>();
-            (result as RedirectToPageResult).PageName.Should().Be(PagePath.Error);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
             _loggerMock.Verify(
                         x => x.Log(
                             It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
-                            It.IsAny<EventId>(),
-                            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received processing POST to RegistrationSubmissionsController.RegistrationSubmissions")),
+                            It.Is<EventId>((eid) => eid == 1001),
+                            It.IsAny<It.IsAnyType>(),
                             It.Is<Exception>((v, t)=> v.ToString().Contains("Test")),
                             It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                         Times.Once);
@@ -400,13 +382,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
             var result = await _controller.RegistrationSubmissions(1);
             Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToPageResult>();
-            (result as RedirectToPageResult).PageName.Should().Be(PagePath.Error);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
             _loggerMock.Verify(
                         x => x.Log(
                             It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
                             It.IsAny<EventId>(),
-                            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received processing GET to RegistrationSubmissionsController.RegistrationSubmissions")),
+                            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("An error occurred while processing a message: Exception received processing GET to RegistrationSubmissionsController.RegistrationSubmissions")),
                             It.IsAny<Exception>(),
                             It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                         Times.Once);

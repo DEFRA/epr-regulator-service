@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
+using System.Globalization;
+
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
@@ -70,16 +72,16 @@ public class RegistrationSubmissionsFilterViewModel
     {
         OrganisationName = model.OrganisationName,
         OrganisationRef = model.OrganisationRef,
-        IsOrganisationComplianceChecked = model.OrganisationType != null && model.OrganisationType.ToLower().Contains("compliance"),
-        IsOrganisationSmallChecked = model.OrganisationType != null && model.OrganisationType.ToLower().Contains("small"),
-        IsOrganisationLargeChecked = model.OrganisationType != null && model.OrganisationType.ToLower().Contains("large"),
-        IsStatusGrantedChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("granted"),
-        IsStatusRefusedChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("refused"),
-        IsStatusPendingChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("pending"),
-        IsStatusQueriedChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("queried"),
-        IsStatusUpdatedChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("updated"),
-        IsStatusCancelledChecked = model.SubmissionStatus != null && model.SubmissionStatus.ToLower().Contains("cancelled"),
-        Is2025Checked = model.RelevantYear != null && model.RelevantYear.ToLower().Contains("2025"),
+        IsOrganisationComplianceChecked = model.OrganisationType != null && model.OrganisationType.Contains("compliance", StringComparison.OrdinalIgnoreCase),
+        IsOrganisationSmallChecked = model.OrganisationType != null && model.OrganisationType.Contains("small", StringComparison.OrdinalIgnoreCase),
+        IsOrganisationLargeChecked = model.OrganisationType != null && model.OrganisationType.Contains("large", StringComparison.OrdinalIgnoreCase),
+        IsStatusGrantedChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("granted", StringComparison.OrdinalIgnoreCase),
+        IsStatusRefusedChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("refused", StringComparison.OrdinalIgnoreCase),
+        IsStatusPendingChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("pending", StringComparison.OrdinalIgnoreCase),
+        IsStatusQueriedChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("queried", StringComparison.OrdinalIgnoreCase),
+        IsStatusUpdatedChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("updated", StringComparison.OrdinalIgnoreCase),
+        IsStatusCancelledChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("cancelled", StringComparison.OrdinalIgnoreCase),
+        Is2025Checked = model.RelevantYear != null && model.RelevantYear.Contains("2025", StringComparison.OrdinalIgnoreCase),
         PageNumber = model.Page ?? 1,
         PageSize = model.PageSize ?? 20
     };

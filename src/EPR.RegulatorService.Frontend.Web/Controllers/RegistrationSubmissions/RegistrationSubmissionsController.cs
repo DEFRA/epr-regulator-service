@@ -33,8 +33,13 @@ public partial class RegistrationSubmissionsController(
     private readonly string _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
     private readonly ExternalUrlsOptions _externalUrlsOptions = externalUrlsOptions.Value;
     private readonly ISessionManager<JourneySession> _sessionManager = sessionManager ?? new JourneySessionManager();
-
     private JourneySession _currentSession;
+
+    private static readonly Action<ILogger, string, Exception?> _logControllerError =
+        LoggerMessage.Define<string>(
+            LogLevel.Error,
+            new EventId(1001, nameof(RegistrationSubmissionsController)),
+            "An error occurred while processing a message: {ErrorMessage}");
 
     [HttpGet]
     [Consumes("application/json")]
@@ -62,8 +67,8 @@ public partial class RegistrationSubmissionsController(
         catch (Exception ex)
         {
             Debug.WriteLine(ex);
-            logger.LogError(ex, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}");
-            return RedirectToPage(PagePath.Error, "Error");
+            _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
+            return RedirectToAction(PagePath.Error, "Error");
         }
     }
 
@@ -95,8 +100,8 @@ public partial class RegistrationSubmissionsController(
         catch (Exception ex)
         {
             Debug.WriteLine(ex);
-            logger.LogError(ex, $"Exception received processing POST to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}");
-            return RedirectToPage(PagePath.Error, "Error");
+            _logControllerError.Invoke(logger, $"Exception received processing POST to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
+            return RedirectToAction(PagePath.Error, "Error");
         }
 
         return RedirectToAction(PagePath.RegistrationSubmissionsAction);

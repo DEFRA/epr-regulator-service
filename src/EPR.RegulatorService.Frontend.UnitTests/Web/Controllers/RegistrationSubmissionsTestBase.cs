@@ -36,6 +36,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockConfiguration = new Mock<IConfiguration>();
             _loggerMock = new Mock<ILogger<RegistrationSubmissionsController>>();
 
+            _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
             var mockConfigurationSection = new Mock<IConfigurationSection>();
             mockConfigurationSection.Setup(section => section.Value).Returns("/regulators");
             _mockConfiguration.Setup(config => config.GetSection(ConfigKeys.PathBase))

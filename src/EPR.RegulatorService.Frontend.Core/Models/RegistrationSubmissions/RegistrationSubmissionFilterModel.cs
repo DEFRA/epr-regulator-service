@@ -31,8 +31,7 @@ public  class RegistrationSubmissionsFilterModel
                 string[] articlesToExclude = ["-", "the", "a", "an", "and", "&", "or", "of", "for", "in", "'n", "+"];
                 string filteredName = String.Join(" ", value
                                     .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                                    .Where(part => !articlesToExclude.Contains(part.ToLower())));
-
+                                    .Where(part => !articlesToExclude.Contains(part.ToLowerInvariant())));
                 _organisationName = filteredName;
             }
         }

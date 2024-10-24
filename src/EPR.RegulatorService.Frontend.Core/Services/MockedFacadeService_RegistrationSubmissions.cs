@@ -28,7 +28,7 @@ public partial class MockedFacadeService : IFacadeService
                 ApplicationReferenceNumber = fields[4],
                 RegistrationReferenceNumber = fields[5],
                 RegistrationDateTime = dateTime,
-                RegistrationYear = dateTime.Year.ToString(),
+                RegistrationYear = dateTime.Year.ToString(CultureInfo.InvariantCulture),
                 CompaniesHouseNumber = fields[9],
                 BuildingName = fields[10],
                 SubBuildingName = fields[11],

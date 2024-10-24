@@ -7,7 +7,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
     public partial class RegistrationSubmissionsController
     {
-        public void InitialiseOrContinuePaging(RegulatorRegistrationSubmissionSession session,
+        public static void InitialiseOrContinuePaging(RegulatorRegistrationSubmissionSession session,
                                                 int? pageNumber) => session.CurrentPageNumber = pageNumber ?? session.CurrentPageNumber ?? 1;
 
         private RegistrationSubmissionsViewModel InitialiseOrCreateViewModel(RegulatorRegistrationSubmissionSession session)
@@ -32,12 +32,17 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             };
         }
 
-        private void ClearFilters(RegulatorRegistrationSubmissionSession session,
+        private static void ClearFilters(RegulatorRegistrationSubmissionSession session,
                                   RegistrationSubmissionsFilterViewModel filters,
                                   bool performClearance)
         {
             if (!performClearance)
             {
+                session.ClearFilters = false;
+                if (null != filters)
+                {
+                    filters.ClearFilters = false;
+                }
                 return;
             }
 
@@ -48,7 +53,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             }
         }
 
-        private void UpdateRegistrationSubmissionFiltersInSession(
+        private static void UpdateRegistrationSubmissionFiltersInSession(
                             RegulatorRegistrationSubmissionSession session,
                             RegistrationSubmissionsFilterViewModel filters,
                             bool performUpdate)

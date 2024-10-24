@@ -28,7 +28,7 @@ public static class RegistrationSubmissionsFilters
         {
             string[] nameParts = organisationName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             var completeQueryable = from q in queryable
-                                    where nameParts.All(part => q.OrganisationName.Contains(part, StringComparison.OrdinalIgnoreCase))
+                                    where Array.TrueForAll(nameParts, part => q.OrganisationName.Contains(part, StringComparison.OrdinalIgnoreCase))
                                     select q;
 
             queryable = completeQueryable.Any()
