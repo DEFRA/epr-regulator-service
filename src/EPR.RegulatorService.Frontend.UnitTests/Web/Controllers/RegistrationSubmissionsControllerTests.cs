@@ -519,7 +519,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             Assert.AreEqual(expectedViewModel.ProducerComments, model.ProducerComments);
             Assert.AreEqual(expectedViewModel.RegulatorComments, model.RegulatorComments);
-        }
+        } 
 
         [TestMethod]
         public async Task RegistrationSubmissionDetails_SetsCorrectBackLink()

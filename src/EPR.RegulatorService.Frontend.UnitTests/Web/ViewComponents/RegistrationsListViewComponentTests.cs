@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 {
+    using System.Reflection;
+    using EPR.RegulatorService.FronRegistrationSubmissionCommenttend.Web.ViewModels.RegistrationSubmissions;
+
     using Frontend.Core.Enums;
     using Frontend.Web.Constants;
 
@@ -137,6 +140,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.RegulatorRegistrationFiltersModel.SearchSubmissionYears.Should().BeEmpty();
             model.RegulatorRegistrationFiltersModel.SubmissionPeriods.Should().BeEmpty();
             model.RegulatorRegistrationFiltersModel.SearchSubmissionPeriods.Should().BeEmpty();
+        }
+
+        public void RegistrationSubmissionComment_PropertyTest()
+        {
+            // Arrange
+            string title = "title";
+            string comment = "comment";
+
+            // Act
+            var result = new RegistrationSubmissionComment { Comment = comment, Title = title };
+
+            // Assert
+            Assert.AreEqual(title, result.Title);
+            Assert.AreEqual(comment, result.Comment);
         }
 
         [TestMethod]

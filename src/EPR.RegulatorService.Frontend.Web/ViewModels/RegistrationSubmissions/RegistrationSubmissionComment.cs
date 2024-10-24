@@ -3,8 +3,7 @@ namespace EPR.RegulatorService.FronRegistrationSubmissionCommenttend.Web.ViewMod
 using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.AspNetCore.Mvc.Localization;
-
-[ExcludeFromCodeCoverage]
+ 
 public class RegistrationSubmissionComment
 {
     public string Title { get; set; }
