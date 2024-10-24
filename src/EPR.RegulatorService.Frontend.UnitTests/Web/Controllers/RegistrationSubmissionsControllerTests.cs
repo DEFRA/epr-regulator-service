@@ -465,8 +465,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     PreviousPaymentsReceived = 20M
                 },
                 ProducerComments = "producer comment",
-                RegulatorComments = "regulator comment"
-                },
+                RegulatorComments = "regulator comment", 
                 BackToAllSubmissionsUrl = "/regulators/manage-registration-submissions"
             };
 

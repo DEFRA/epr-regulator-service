@@ -154,9 +154,9 @@ public class RegistrationSubmissionsController(
                 PreviousPaymentsReceived = 20M
             },
             ProducerComments = "producer comment",
-            RegulatorComments = "regulator comment"
-            },
+            RegulatorComments = "regulator comment",
             BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissions)
+            
         };
 
         return View(nameof(RegistrationSubmissionDetails), model);
