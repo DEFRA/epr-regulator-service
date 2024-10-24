@@ -140,9 +140,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.RegulatorRegistrationFiltersModel.SearchSubmissionYears.Should().BeEmpty();
             model.RegulatorRegistrationFiltersModel.SubmissionPeriods.Should().BeEmpty();
             model.RegulatorRegistrationFiltersModel.SearchSubmissionPeriods.Should().BeEmpty();
-        }
+        } 
 
-        public static void RegistrationSubmissionComment_PropertyTest()
+        [TestMethod]
+        public async Task RegistrationSubmissionComment_PropertyTest()
         {
             // Arrange
             string title = "title";
