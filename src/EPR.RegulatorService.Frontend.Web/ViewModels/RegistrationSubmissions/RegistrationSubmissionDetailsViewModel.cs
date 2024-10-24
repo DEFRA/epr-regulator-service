@@ -3,6 +3,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Web.Constants;
 
     public class RegistrationSubmissionDetailsViewModel
     {
@@ -33,6 +34,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public PaymentDetailsViewModel PaymentDetails { get; set; }
 
         public DateTime RegistrationDateTime { get; set; }
+
+        public string BackToAllSubmissionsUrl { get; set; }
 
         // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
         public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details)

@@ -463,7 +463,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     OnlineMarketplaceFee = 2534534.23M,
                     SubsidiaryFee = 1.34M,
                     PreviousPaymentsReceived = 20M
-                }
+                },
+                BackToAllSubmissionsUrl = "/regulators/manage-registration-submissions"
             };
 
             // Act
@@ -482,6 +483,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.ApplicationReferenceNumber, model.ApplicationReferenceNumber);
             Assert.AreEqual(expectedViewModel.RegistrationReferenceNumber, model.RegistrationReferenceNumber);
             Assert.AreEqual(expectedViewModel.OrganisationType, model.OrganisationType);
+            Assert.AreEqual(expectedViewModel.BackToAllSubmissionsUrl, model.BackToAllSubmissionsUrl);
 
             // Assert SubmissionDetailsViewModel properties
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Status, model.SubmissionDetails.Status);

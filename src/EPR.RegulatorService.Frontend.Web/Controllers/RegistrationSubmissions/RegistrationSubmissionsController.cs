@@ -152,7 +152,8 @@ public class RegistrationSubmissionsController(
                 OnlineMarketplaceFee = 2534534.23M,
                 SubsidiaryFee = 1.34M,
                 PreviousPaymentsReceived = 20M
-            }
+            },
+            BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissions)
         };
 
         return View(nameof(RegistrationSubmissionDetails), model);
@@ -166,6 +167,12 @@ public class RegistrationSubmissionsController(
     {
         string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
         ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
+    }
+
+    private string GetCustomBackLink(string path)
+    {
+        string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
+        return $"/{pathBase}/{path}";
     }
 
     private void SetBackLink(string path)
