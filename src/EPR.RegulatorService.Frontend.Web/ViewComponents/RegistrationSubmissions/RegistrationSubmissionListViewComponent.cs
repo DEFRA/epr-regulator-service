@@ -2,6 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
@@ -30,7 +31,7 @@ public class RegistrationSubmissionListViewComponent(IFacadeService facadeServic
 
         var model = new RegistrationSubmissionsListViewModel
         {
-            PagedRegistrationSubmissions = pagedOrganisationRegistrations.Items.Select(x=>(RegistrationSubmissionDetailsViewModel)x),
+            PagedRegistrationSubmissions = pagedOrganisationRegistrations.Items.Select(x => (RegistrationSubmissionDetailsViewModel)x),
             PaginationNavigationModel = new PaginationNavigationModel
             {
                 CurrentPage = pagedOrganisationRegistrations.CurrentPage,

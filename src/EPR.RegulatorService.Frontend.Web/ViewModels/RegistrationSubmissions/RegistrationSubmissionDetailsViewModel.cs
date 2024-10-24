@@ -65,5 +65,9 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                 }
             };
         }
+
+        public string? ProducerComments { get; set; } 
+
+        public string? RegulatorComments { get; set; }  
     }
 }

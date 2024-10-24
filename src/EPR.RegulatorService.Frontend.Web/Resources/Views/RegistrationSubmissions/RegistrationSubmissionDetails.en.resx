@@ -159,4 +159,10 @@
   <data name="RegistrationSubmissionDetails.RegistrationReferenceNumber" xml:space="preserve">
     <value>Registration reference number</value>
   </data>
+  <data name="RegistrationSubmissionDetails.ProducerTitle" xml:space="preserve">
+    <value>Producer Comment</value>
+  </data>
+  <data name="RegistrationSubmissionDetails.RegulatorTitle" xml:space="preserve">
+    <value>Regulator Comment</value>
+  </data>
 </root>

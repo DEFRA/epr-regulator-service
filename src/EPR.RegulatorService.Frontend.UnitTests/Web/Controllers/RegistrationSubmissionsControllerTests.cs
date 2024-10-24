@@ -464,6 +464,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     SubsidiaryFee = 1.34M,
                     PreviousPaymentsReceived = 20M
                 },
+                ProducerComments = "producer comment",
+                RegulatorComments = "regulator comment", 
                 BackToAllSubmissionsUrl = "/regulators/manage-registration-submissions"
             };
 
@@ -516,7 +518,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.RegisteredNation, model.RegisteredNation);
             Assert.AreEqual(expectedViewModel.PowerBiLogin, model.PowerBiLogin);
             Assert.AreEqual(expectedViewModel.Status, model.Status);
-        }
+
+            Assert.AreEqual(expectedViewModel.ProducerComments, model.ProducerComments);
+            Assert.AreEqual(expectedViewModel.RegulatorComments, model.RegulatorComments);
+        } 
 
         [TestMethod]
         public async Task RegistrationSubmissionDetails_SetsCorrectBackLink()

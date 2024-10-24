@@ -153,7 +153,10 @@ public class RegistrationSubmissionsController(
                 SubsidiaryFee = 1.34M,
                 PreviousPaymentsReceived = 20M
             },
+            ProducerComments = "producer comment",
+            RegulatorComments = "regulator comment",
             BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissions)
+            
         };
 
         return View(nameof(RegistrationSubmissionDetails), model);

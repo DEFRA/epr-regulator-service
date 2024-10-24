@@ -1,0 +1,22 @@
+@using EPR.RegulatorService.FronRegistrationSubmissionCommenttend.Web.ViewModels.RegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
+@model RegistrationSubmissionCommentViewModel
+
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
+        <h2 class="govuk-summary-card__title ">@Localizer[Model.Title]</h2>
+    </div>
+    <div class="govuk-summary-card__content" style="padding:30px;">
+        @if (string.IsNullOrEmpty(Model.Comment))
+        {
+            <p class=" govuk-body" style="margin:0px;">
+                @Localizer["RegistrationSubmissionDetails.NoComments"]
+            </p>
+        }
+        else
+        {
+            <p class=" govuk-body" style="margin:0px;">@Model.Comment</p>
+        }
+    </div>
+</div>
