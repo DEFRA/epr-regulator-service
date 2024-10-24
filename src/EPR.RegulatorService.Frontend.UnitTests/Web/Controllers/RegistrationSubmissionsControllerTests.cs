@@ -517,8 +517,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.PowerBiLogin, model.PowerBiLogin);
             Assert.AreEqual(expectedViewModel.Status, model.Status);
 
-            Assert.IsNull( model.ProducerComments);
-            Assert.IsNull( model.RegulatorComments);
+            Assert.AreEqual(expectedViewModel.ProducerComments, model.ProducerComments);
+            Assert.AreEqual(expectedViewModel.RegulatorComments, model.RegulatorComments);
         }
 
         [TestMethod]

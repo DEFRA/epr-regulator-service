@@ -152,7 +152,9 @@ public class RegistrationSubmissionsController(
                 OnlineMarketplaceFee = 2534534.23M,
                 SubsidiaryFee = 1.34M,
                 PreviousPaymentsReceived = 20M
-            }
+            },
+            ProducerComments = "producer comment",
+            RegulatorComments = "regulator comment"
         };
 
         return View(nameof(RegistrationSubmissionDetails), model);
