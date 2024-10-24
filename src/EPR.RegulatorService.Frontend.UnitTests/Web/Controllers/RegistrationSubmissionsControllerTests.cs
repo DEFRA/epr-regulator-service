@@ -463,7 +463,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     OnlineMarketplaceFee = 2534534.23M,
                     SubsidiaryFee = 1.34M,
                     PreviousPaymentsReceived = 20M
-                }
+                },
+                ProducerComments = "producer comment",
+                RegulatorComments = "regulator comment"
             };
 
             // Act
@@ -514,6 +516,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.RegisteredNation, model.RegisteredNation);
             Assert.AreEqual(expectedViewModel.PowerBiLogin, model.PowerBiLogin);
             Assert.AreEqual(expectedViewModel.Status, model.Status);
+
+            Assert.IsNull( model.ProducerComments);
+            Assert.IsNull( model.RegulatorComments);
         }
 
         [TestMethod]
