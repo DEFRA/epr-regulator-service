@@ -35,7 +35,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public DateTime RegistrationDateTime { get; set; }
 
-        public string BackToAllSubmissionsUrl { get; set; } = PagePath.RegistrationSubmissions;
+        public string BackToAllSubmissionsUrl { get; set; }
 
         // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
         public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details)
