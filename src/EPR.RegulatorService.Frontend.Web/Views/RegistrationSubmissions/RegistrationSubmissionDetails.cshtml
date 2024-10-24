@@ -70,31 +70,8 @@
 
                 @await Component.InvokeAsync("PaymentDetails", new { model = Model.PaymentDetails })
 
-                <div class="govuk-button-group">
-                    @if (Model.Status == RegistrationSubmissionStatus.queried ||
-                    Model.Status != RegistrationSubmissionStatus.granted &&
-                    Model.Status != RegistrationSubmissionStatus.refused)
-                    {
-                        <a class="govuk-button" href="">
-                            @Localizer["RegistrationSubmissionDetails.GrantRegistration"]
-                        </a>
+                @await Html.PartialAsync("Partials/_RegistrationSubmissionActionButtons", Model)
 
-                        <a class="govuk-button govuk-button--secondary" style="background-color: #ffffff; border: 1px solid #00703c; color: #00703c; margin-left: 10px;" href="">
-                            @Localizer["RegistrationSubmissionDetails.QueryRegistration"]
-                        </a>
-
-                        <a class="govuk-button govuk-button--warning govuk-!-margin-left-7" href="">
-                            @Localizer["RegistrationSubmissionDetails.RefuseRegistration"]
-                        </a>
-                    }
-
-                    @if (Model.Status == RegistrationSubmissionStatus.granted)
-                    {
-                        <a class="govuk-button govuk-button--secondary" href="">
-                            @Localizer["RegistrationSubmissionDetails.CancelRegistration"]
-                        </a>
-                    }
-                </div>
             </div>
             <div class="govuk-grid-column-full">
                 <a href="@Model.BackToAllSubmissionsUrl" class="govuk-link govuk-link--no-visited-state">

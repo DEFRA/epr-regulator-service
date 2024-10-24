@@ -123,9 +123,6 @@
   <data name="RegistrationSubmissionDetails.BackToAllSubmissions" xml:space="preserve">
     <value>[Welsh]Go back to all submissions</value>
   </data>
-  <data name="RegistrationSubmissionDetails.CancelRegistration" xml:space="preserve">
-    <value>[Welsh]Cancel registration</value>
-  </data>
   <data name="RegistrationSubmissionDetails.Caption" xml:space="preserve">
     <value>[Welsh]Manage registration submissions</value>
   </data>
@@ -134,9 +131,6 @@
   </data>
   <data name="RegistrationSubmissionDetails.CompaniesHouseRegister" xml:space="preserve">
     <value>[Welsh]View on Companies House register</value>
-  </data>
-  <data name="RegistrationSubmissionDetails.GrantRegistration" xml:space="preserve">
-    <value>[Welsh]Grant registration</value>
   </data>
   <data name="RegistrationSubmissionDetails.NotListed" xml:space="preserve">
     <value>[Welsh]Not listed</value>
@@ -158,12 +152,6 @@
   </data>
   <data name="RegistrationSubmissionDetails.PowerBiTitle" xml:space="preserve">
     <value>[Welsh]Power BI</value>
-  </data>
-  <data name="RegistrationSubmissionDetails.QueryRegistration" xml:space="preserve">
-    <value>[Welsh]Query registration</value>
-  </data>
-  <data name="RegistrationSubmissionDetails.RefuseRegistration" xml:space="preserve">
-    <value>[Welsh]Refuse registration</value>
   </data>
   <data name="RegistrationSubmissionDetails.RegisteredAddress" xml:space="preserve">
     <value>[Welsh]Registered address</value>
