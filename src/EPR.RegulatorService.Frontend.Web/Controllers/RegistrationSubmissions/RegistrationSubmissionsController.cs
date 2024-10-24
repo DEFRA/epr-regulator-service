@@ -155,6 +155,8 @@ public class RegistrationSubmissionsController(
             },
             ProducerComments = "producer comment",
             RegulatorComments = "regulator comment"
+            },
+            BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissions)
         };
 
         return View(nameof(RegistrationSubmissionDetails), model);
@@ -168,6 +170,12 @@ public class RegistrationSubmissionsController(
     {
         string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
         ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
+    }
+
+    private string GetCustomBackLink(string path)
+    {
+        string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
+        return $"/{pathBase}/{path}";
     }
 
     private void SetBackLink(string path)

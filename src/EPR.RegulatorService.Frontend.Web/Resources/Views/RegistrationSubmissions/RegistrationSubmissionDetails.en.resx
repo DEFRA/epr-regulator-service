@@ -120,6 +120,9 @@
   <data name="RegistrationSubmissionDetails.ApplicationReferenceNumber" xml:space="preserve">
     <value>Application reference number</value>
   </data>
+  <data name="RegistrationSubmissionDetails.BackToAllSubmissions" xml:space="preserve">
+    <value>Go back to all submissions</value>
+  </data>
   <data name="RegistrationSubmissionDetails.Caption" xml:space="preserve">
     <value>Manage registration submissions</value>
   </data>

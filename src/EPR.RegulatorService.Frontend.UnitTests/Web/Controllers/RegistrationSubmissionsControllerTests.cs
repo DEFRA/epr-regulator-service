@@ -466,6 +466,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 },
                 ProducerComments = "producer comment",
                 RegulatorComments = "regulator comment"
+                },
+                BackToAllSubmissionsUrl = "/regulators/manage-registration-submissions"
             };
 
             // Act
@@ -484,6 +486,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.ApplicationReferenceNumber, model.ApplicationReferenceNumber);
             Assert.AreEqual(expectedViewModel.RegistrationReferenceNumber, model.RegistrationReferenceNumber);
             Assert.AreEqual(expectedViewModel.OrganisationType, model.OrganisationType);
+            Assert.AreEqual(expectedViewModel.BackToAllSubmissionsUrl, model.BackToAllSubmissionsUrl);
 
             // Assert SubmissionDetailsViewModel properties
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Status, model.SubmissionDetails.Status);

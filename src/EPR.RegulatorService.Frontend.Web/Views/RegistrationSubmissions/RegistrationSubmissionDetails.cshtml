@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
 @using EPR.RegulatorService.FronRegistrationSubmissionCommenttend.Web.ViewModels.RegistrationSubmissions
 @using EPR.RegulatorService.Frontend.Core.Extensions
 @using EPR.RegulatorService.Frontend.Web.Helpers
@@ -89,6 +90,13 @@
                              )
                 
 
+                @await Html.PartialAsync("Partials/_RegistrationSubmissionActionButtons", Model)
+
+            </div>
+            <div class="govuk-grid-column-full">
+                <a href="@Model.BackToAllSubmissionsUrl" class="govuk-link govuk-link--no-visited-state">
+                    @Localizer["RegistrationSubmissionDetails.BackToAllSubmissions"]
+                </a>
             </div>
         </div>
     </main>
