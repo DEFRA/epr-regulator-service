@@ -18,24 +18,19 @@ using System.Security.Cryptography;
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 [ExcludeFromCodeCoverage]
-public partial class MockedFacadeService : IFacadeService
+public partial class MockedFacadeService(IOptions<PaginationConfig> options) : IFacadeService
 {
     private const string ApprovedPerson = "ApprovedPerson";
     private const string DelegatedPerson = "DelegatedPerson";
     private const string Pending = "Pending";
     private const string Accepted = "Accepted";
     private const string Rejected = "Rejected";
-    private readonly PaginationConfig _config;
+    private readonly PaginationConfig _config = options.Value;
     private static readonly List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
     private static readonly List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
     private static readonly List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
     private static readonly List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
-    private static readonly List<RegistrationSubmissionOrganisationDetails> _registrationSubmissions = GenerateRegistrationSubmission();
-
-    public MockedFacadeService(IOptions<PaginationConfig> options)
-    {
-        _config = options.Value;
-    }
+    private static readonly List<RegistrationSubmissionOrganisationDetails> _registrationSubmissions = GenerateRegistrationSubmissionDataCollection();
 
     public async Task<string> GetTestMessageAsync()
     {
@@ -373,20 +368,23 @@ public partial class MockedFacadeService : IFacadeService
         return await Task.FromResult(response);
     }
 
-    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(int currentPage = 1) {
-        if (currentPage > (int)Math.Ceiling(_allSubmissions.Count / (double)_config.PageSize))
-        {
-            currentPage = 1;
-        }
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters) {
+        filters.PageSize ??= _config.PageSize;
 
-        var results = _registrationSubmissions.ToList();
+        // this is where the Facade is actually called
+        var results = FilterAndOrderRegistrations([.. _registrationSubmissions], filters) ;
+
+        if (filters.Page > (int)Math.Ceiling(results.Item1 / (double)_config.PageSize))
+        {
+            filters.Page = (int)Math.Ceiling(results.Item1 / (double)_config.PageSize);
+        }
 
         var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
         {
-            Items = await OrderRegistrations(results, currentPage),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = _config.PageSize
+            Items = results.Item2,
+            CurrentPage = filters.Page.Value,
+            TotalItems = results.Item1,
+            PageSize = filters.PageSize.Value
         };
 
         return response;

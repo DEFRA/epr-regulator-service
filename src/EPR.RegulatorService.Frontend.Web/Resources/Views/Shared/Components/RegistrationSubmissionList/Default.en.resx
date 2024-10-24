@@ -124,12 +124,15 @@
     <value>Submission status</value>
   </data>
   <data name="Table.Header.CompanyId" xml:space="preserve">
-    <value>Organisation ID</value>
+    <value>Organisation Ref</value>
   </data>
   <data name="Table.Header.Company" xml:space="preserve">
     <value>Organisation</value>
   </data>
   <data name="Table.Header.ApplicationDate" xml:space="preserve">
     <value>Submission date and time</value>
+  </data>
+  <data name="Body.NoResultsFound" xml:space="preserve">
+    <value>No results found</value>
   </data>
 </root>

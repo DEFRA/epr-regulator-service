@@ -132,4 +132,7 @@
   <data name="Table.Header.ApplicationDate" xml:space="preserve">
     <value />
   </data>
+  <data name="Body.NoResultsFound" xml:space="preserve">
+    <value />
+  </data>
 </root>
