@@ -120,6 +120,12 @@
   <data name="RegistrationSubmissionDetails.ApplicationReferenceNumber" xml:space="preserve">
     <value>Application reference number</value>
   </data>
+  <data name="RegistrationSubmissionDetails.BackToAllSubmissions" xml:space="preserve">
+    <value>Go back to all submissions</value>
+  </data>
+  <data name="RegistrationSubmissionDetails.CancelRegistration" xml:space="preserve">
+    <value>Cancel registration</value>
+  </data>
   <data name="RegistrationSubmissionDetails.Caption" xml:space="preserve">
     <value>Manage registration submissions</value>
   </data>
@@ -128,6 +134,9 @@
   </data>
   <data name="RegistrationSubmissionDetails.CompaniesHouseRegister" xml:space="preserve">
     <value>View on Companies House register</value>
+  </data>
+  <data name="RegistrationSubmissionDetails.GrantRegistration" xml:space="preserve">
+    <value>Grant registration</value>
   </data>
   <data name="RegistrationSubmissionDetails.NotListed" xml:space="preserve">
     <value>Not listed</value>
@@ -149,6 +158,12 @@
   </data>
   <data name="RegistrationSubmissionDetails.PowerBiTitle" xml:space="preserve">
     <value>Power BI</value>
+  </data>
+  <data name="RegistrationSubmissionDetails.QueryRegistration" xml:space="preserve">
+    <value>Query registration</value>
+  </data>
+  <data name="RegistrationSubmissionDetails.RefuseRegistration" xml:space="preserve">
+    <value>Refuse registration</value>
   </data>
   <data name="RegistrationSubmissionDetails.RegisteredAddress" xml:space="preserve">
     <value>Registered address</value>
