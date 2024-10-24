@@ -23,7 +23,7 @@ public class RegistrationSubmissionCommentsViewComponent : ViewComponent
     [ExcludeFromCodeCoverage]
     public async Task<ViewViewComponentResult> InvokeAsync( string comment, string title)
     {
-        var model = new RegistrationSubmissionComment { Title = title, Comment = comment };
+        var model = new RegistrationSubmissionCommentViewModel { Title = title, Comment = comment };
 
         return View(model);
     } 

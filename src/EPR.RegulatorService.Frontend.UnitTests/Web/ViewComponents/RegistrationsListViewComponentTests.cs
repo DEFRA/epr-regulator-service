@@ -149,7 +149,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             string comment = "comment";
 
             // Act
-            var result = new RegistrationSubmissionComment { Comment = comment, Title = title };
+            var result = new RegistrationSubmissionCommentViewModel { Comment = comment, Title = title };
 
             // Assert
             Assert.AreEqual(title, result.Title);
