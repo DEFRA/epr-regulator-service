@@ -142,6 +142,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             model.RegulatorRegistrationFiltersModel.SearchSubmissionPeriods.Should().BeEmpty();
         }
 
+        public static void RegistrationSubmissionComment_PropertyTest()
+        {
+            // Arrange
+            string title = "title";
+            string comment = "comment";
+
+            // Act
+            var result = new RegistrationSubmissionCommentViewModel { Comment = comment, Title = title };
+
+            // Assert
+            Assert.AreEqual(title, result.Title);
+            Assert.AreEqual(comment, result.Comment);
+        }
+
         [TestMethod]
         public async Task RegistrationSubmissionComment_PropertyTest()
         {
