@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents;
 
-public class RegistrationSubmissionListViewComponent(IFacadeService facadeService, IHttpContextAccessor httpContextAccessor) : ViewComponent
+public class ExpiredRegistrationSubmissionListViewComponent(IFacadeService facadeService, IHttpContextAccessor httpContextAccessor) : ViewComponent
 {
     [ExcludeFromCodeCoverage]
     public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionsListViewModel request)

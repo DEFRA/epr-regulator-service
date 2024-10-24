@@ -331,7 +331,7 @@ public class FacadeService : IFacadeService
         }
     }
 
-    public Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(int currentPage = 1)
+    public Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
     {
         var options = Options.Create(new PaginationConfig()
         {
@@ -342,6 +342,6 @@ public class FacadeService : IFacadeService
 
         var mockedFacade = new MockedFacadeService(options);
 
-        return mockedFacade.GetRegistrationSubmissions(currentPage);
+        return mockedFacade.GetRegistrationSubmissions(filters);
     }
 }

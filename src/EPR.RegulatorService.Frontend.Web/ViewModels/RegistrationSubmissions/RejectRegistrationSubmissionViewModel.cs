@@ -8,6 +8,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         [CharacterCount("Error.Reject", "Error.RejectReasonTooLong", 400)]
         public string? RejectReason { get; set; }
 
-        public string BackToAllSubmissionsUrl { get; set; } = PagePath.RegistrationSubmissions;
+        public string BackToAllSubmissionsUrl { get; set; } = PagePath.RegistrationSubmissionsRoute;
     }
 }

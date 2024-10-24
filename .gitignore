@@ -380,3 +380,4 @@ src/certs/kainos-chain.p7b
 # these should be redundant
 /src/EPR.RegulatorService.Frontend.Web/appsettings.Development.json
 /src/EPR.RegulatorService.Frontend.Web/appsettings.development.json
+/src/EPR.RegulatorService.Frontend.Web/out

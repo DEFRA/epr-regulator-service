@@ -8,6 +8,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         [CharacterCount("Error.Query", "Error.QueryTooLong", 400)]
         public string? Query { get; set; }
 
-        public string BackToAllSubmissionsUrl { get; set; } = PagePath.RegistrationSubmissions;
+        public string BackToAllSubmissionsUrl { get; set; } = PagePath.RegistrationSubmissionsRoute;
     }
 }
