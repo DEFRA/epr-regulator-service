@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.FronRegistrationSubmissionCommenttend.Web.ViewModels.RegistrationSubmissions
 @using EPR.RegulatorService.Frontend.Core.Extensions
 @using EPR.RegulatorService.Frontend.Web.Helpers
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
@@ -69,26 +70,24 @@
 
                 @await Component.InvokeAsync("PaymentDetails", new { model = Model.PaymentDetails })
 
-                @if (!string.IsNullOrEmpty(Model.ProducerComments))
-                {
+                
                     @await Component.InvokeAsync("RegistrationSubmissionComments",
-                             new
+                         new 
                              {
-                                 Comments = Model.ProducerComments,
-                                 Title = Localizer["RegistrationSubmission.ProducerTitle"].Value
+                                 Comment = Model.ProducerComments,
+                             Title = "RegistrationSubmissionDetails.ProducerTitle"
                              }
                              )
-                }
-                @if (!string.IsNullOrEmpty(Model.RegulatorComments))
-                {
+                
+                
                     @await Component.InvokeAsync("RegistrationSubmissionComments",
-                             new
+                         new 
                              {
-                                 Comments = Model.RegulatorComments,
-                                 Title = Localizer["RegistrationSubmission.RegulatorTitle"].Value
+                                 Comment = Model.RegulatorComments,
+                             Title = "RegistrationSubmissionDetails.RegulatorTitle"
                              }
                              )
-                }
+                
 
             </div>
         </div>

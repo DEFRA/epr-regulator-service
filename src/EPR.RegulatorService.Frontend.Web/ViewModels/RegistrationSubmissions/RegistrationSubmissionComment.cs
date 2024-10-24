@@ -1,4 +1,6 @@
-namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+namespace EPR.RegulatorService.FronRegistrationSubmissionCommenttend.Web.ViewModels.RegistrationSubmissions;
+
+using Microsoft.AspNetCore.Mvc.Localization;
 
 public class RegistrationSubmissionComment
 {
