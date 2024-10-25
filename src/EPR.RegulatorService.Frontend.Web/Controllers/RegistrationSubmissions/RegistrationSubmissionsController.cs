@@ -58,7 +58,7 @@ public class RegistrationSubmissionsController(
     [Route(PagePath.QueryRegistrationSubmission)]
     public async Task<IActionResult> QueryRegistrationSubmission()
     {
-        SetBackLink(PagePath.RegistrationSubmissions);
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
 
         var model = new QueryRegistrationSubmissionViewModel();
 
@@ -82,7 +82,7 @@ public class RegistrationSubmissionsController(
     [Route(PagePath.RejectRegistrationSubmission)]
     public async Task<IActionResult> RejectRegistrationSubmission()
     {
-        SetBackLink(PagePath.RegistrationSubmissions);
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
 
         var model = new RejectRegistrationSubmissionViewModel();
 
@@ -156,7 +156,7 @@ public class RegistrationSubmissionsController(
             ProducerComments = "producer comment",
             RegulatorComments = "regulator comment",
             BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissions)
-            
+
         };
 
         return View(nameof(RegistrationSubmissionDetails), model);
