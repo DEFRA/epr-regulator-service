@@ -1,6 +1,5 @@
 namespace EPR.RegulatorService.Frontend.Web.Attributes;
 
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -11,7 +10,7 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
 {
     private const int MAX_CHARACTER_COUNT = 17;
     private readonly bool _validateSpecialCharacters;
-    private readonly bool _validationNonNumericCharacters;
+    private readonly bool _validateNonNumericCharacters;
     private readonly string _requiredErrorMessage;
     private readonly string _valueExceededMessage;
     private readonly string _invalidFormatMessage;
@@ -27,7 +26,7 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
                                         string nonNumericMessage = null)
     {
         _validateSpecialCharacters = !string.IsNullOrEmpty(specialCharactersMessage);
-        _validationNonNumericCharacters = !string.IsNullOrEmpty(nonNumericMessage);
+        _validateNonNumericCharacters = !string.IsNullOrEmpty(nonNumericMessage);
         _requiredErrorMessage = requiredErrorMessage;
         _valueExceededMessage = valueExceededMessage;
         _invalidFormatMessage = invalidFormatMessage;
@@ -68,7 +67,7 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
         _validateSpecialCharacters && SpecialCharRegex().IsMatch(text);
 
     private bool ContainsNonNumericCharacters(string text) =>
-        _validationNonNumericCharacters && AlphaRegex().IsMatch(text);
+        _validateNonNumericCharacters && AlphaRegex().IsMatch(text);
 
     private bool ExceedsMaxValue(decimal value) => value > _maxValue;
 

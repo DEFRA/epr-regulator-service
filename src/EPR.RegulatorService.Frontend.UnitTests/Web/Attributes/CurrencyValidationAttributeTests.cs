@@ -148,4 +148,21 @@ public class CurrencyValidationAttributeTests
         bool result = _sut.IsValid("!43");
         result.Should().BeFalse();
     }
+
+    [TestMethod]
+    public void CurrencyWontTestSpecialChars()
+    {
+        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue.ToString(), "", "nonNumeric");
+        bool result = _sut.IsValid("!43");
+        result.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void CurrencyWontTestAlphaChars()
+    {
+        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue.ToString(), "specialChar", "");
+        bool result = _sut.IsValid("abc");
+        result.Should().BeFalse();
+    }
+
 }
