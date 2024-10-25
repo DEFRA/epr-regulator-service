@@ -2,6 +2,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
@@ -10,6 +11,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
 
     [TestClass]
     public class RegistrationSubmissionsControllerTests : RegistrationSubmissionsTestBase
@@ -22,6 +24,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #region RegistrationSubmissions
 
+        #region Initialisation and Basic Session state
         [TestMethod]
         public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel()
         {
@@ -48,14 +51,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task RegistrationsSubmissions_ReturnModel_WithPageNumber_FromSession_When_Supplied_Null()
         {
-            _journeySession.RegulatorSession.CurrentPageNumber = 2;
+            _journeySession.RegulatorRegistrationSubmissionSession.CurrentPageNumber = 2;
             var result = await _controller.RegistrationSubmissions(null);
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
 
             var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             resultModel.Should().NotBeNull();
-            resultModel.PageNumber.Should().Be(2);
+            resultModel.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(2);
         }
 
         [TestMethod]
@@ -67,7 +70,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             resultModel.Should().NotBeNull();
-            resultModel.PageNumber.Should().Be(1);
+            resultModel.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(1);
+            _journeySession.RegulatorRegistrationSubmissionSession.CurrentPageNumber.Should().Be(1);
         }
 
         [TestMethod]
@@ -79,11 +83,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var resultModel = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             resultModel.Should().NotBeNull();
-            resultModel.PageNumber.Should().Be(3);
-            _journeySession.RegulatorSession.CurrentPageNumber.Should().Be(3);
+            resultModel.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(3);
+            _journeySession.RegulatorRegistrationSubmissionSession.CurrentPageNumber.Should().Be(3);
         }
+        #endregion Initialisation and Basic Session state
 
-        [TestMethod]
+        #region Session Models and Filter states between gets and posts
+        #region Happy Path
+[TestMethod]
         public async Task RegistrationSubmissions_ShouldHandleNullSession()
         {
             // Arrange
@@ -104,7 +111,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(model);
 
             // Since session was null, it should use default page number logic
-            Assert.AreEqual(pageNumber, model.PageNumber);
+            Assert.AreEqual(pageNumber, model.ListViewModel.PaginationNavigationModel.CurrentPage);
         }
 
         [TestMethod]
@@ -113,6 +120,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var sut = new RegistrationSubmissionsController(
                 null,
+                _loggerMock.Object,
                 _mockConfiguration.Object,
                 _mockUrlsOptions.Object
                 );
@@ -127,7 +135,315 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             sut.Dispose();
         }
 
-        #endregion
+        [TestMethod]
+        public async Task RegistrationSubmissions_Initialises_ListViewModel_When_New()
+        {
+            // Arrange
+            RegistrationSubmissionsFilterModel latestFilterChoices = new()
+            {
+                OrganisationName = "braun",
+                OrganisationType = "small",
+                RelevantYear = "2025",
+                Page = 1,
+                PageSize = 500,
+                SubmissionStatus = "pending"
+            };
+
+            SetupJourneySession(latestFilterChoices, null);
+        
+            // Act
+            var result = await _controller.RegistrationSubmissions(null);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+
+            var session = _journeySession.RegulatorRegistrationSubmissionSession;
+            session.Should().NotBeNull();
+            session.CurrentPageNumber.Should().Be(1);
+            session.LatestFilterChoices.OrganisationName.Should().Be("braun");
+            session.LatestFilterChoices.OrganisationType.Should().Be("small");
+            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
+            session.LatestFilterChoices.Page.Should().Be(1);
+            session.LatestFilterChoices.PageSize.Should().Be(500);
+            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+
+            var model = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            model.Should().NotBeNull();
+            model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
+            model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(1);
+            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(1);
+            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_Updates_ListViewModel_When_New_Page_Requested()
+        {
+            // Arrange
+            int new_page_number = 4;
+
+            RegistrationSubmissionsFilterModel latestFilterChoices = new()
+            {
+                OrganisationName = "braun",
+                OrganisationType = "small",
+                RelevantYear = "2025",
+                Page = 2,
+                PageSize = 500,
+                SubmissionStatus = "pending"
+            };
+
+            SetupJourneySession(latestFilterChoices, null, 2);
+
+            // Act
+            var result = await _controller.RegistrationSubmissions(new_page_number);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+
+            var session = _journeySession.RegulatorRegistrationSubmissionSession;
+            session.Should().NotBeNull();
+            session.CurrentPageNumber.Should().Be(new_page_number);
+            session.LatestFilterChoices.OrganisationName.Should().Be("braun");
+            session.LatestFilterChoices.OrganisationType.Should().Be("small");
+            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
+            session.LatestFilterChoices.Page.Should().Be(new_page_number);
+            session.LatestFilterChoices.PageSize.Should().Be(500);
+            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+
+            var model = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            model.Should().NotBeNull();
+            model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
+            model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(new_page_number);
+            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(new_page_number);
+            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_Retrieves_ListViewModel_And_Adjusts_Filter_And_Model_After_Postback()
+        {
+            int expected_page_number = 2;
+
+            RegistrationSubmissionsFilterModel emptyFilterChoices = new()
+            {};
+
+            RegistrationSubmissionsFilterModel latestFilterChoices = new()
+            {
+                OrganisationName = "braun",
+                OrganisationType = "small",
+                RelevantYear = "2025",
+                Page = expected_page_number,
+                PageSize = 500,
+                SubmissionStatus = "pending"
+            };
+
+            SetupJourneySession(emptyFilterChoices, null);
+
+            // Act
+            var get_result = await _controller.RegistrationSubmissions(null);
+
+            // Assert
+            get_result.Should().BeOfType<ViewResult>();
+            var model = (get_result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            model.Should().NotBeNull();
+
+
+            var session = _journeySession.RegulatorRegistrationSubmissionSession;
+            session.LatestFilterChoices.OrganisationName.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.OrganisationType.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.RelevantYear.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.Page.Should().Be(1);
+            session.LatestFilterChoices.SubmissionStatus.Should().BeNullOrEmpty();
+
+            session.Should().NotBeNull();
+            session.CurrentPageNumber.Should().Be(1);
+
+            // Act again
+            var result = await _controller.RegistrationSubmissions(latestFilterChoices, FilterActions.SubmitFilters);
+
+            result.Should().BeOfType(typeof(RedirectToActionResult));
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.RegistrationSubmissionsAction);
+
+            // Act Again
+
+            get_result = await _controller.RegistrationSubmissions(4);
+
+            // Test final session and viewmodel state
+            session.LatestFilterChoices.OrganisationName.Should().Be("braun");
+            session.LatestFilterChoices.OrganisationType.Should().Be("small");
+            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
+            session.LatestFilterChoices.Page.Should().Be(4);
+            session.LatestFilterChoices.PageSize.Should().Be(500);
+            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+
+            model = (get_result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            model.Should().NotBeNull();
+            model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
+            model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(4);
+            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(4);
+            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_Updates_Clears_ListViewModel_And_Session_Filters_When_ClearFilters_Recevied()
+        {
+            RegistrationSubmissionsFilterModel latestFilterChoices = new()
+            {
+                OrganisationName = "braun",
+                OrganisationType = "small",
+                RelevantYear = "2025",
+                Page = 2,
+                PageSize = 200,
+                SubmissionStatus = "pending"
+            };
+
+            SetupJourneySession(latestFilterChoices, null, 2);
+
+            // Act
+            var get_result = await _controller.RegistrationSubmissions(null);
+
+            // Assert
+            get_result.Should().BeOfType<ViewResult>();
+            var model = (get_result as ViewResult).Model as RegistrationSubmissionsViewModel;
+            model.Should().NotBeNull();
+            model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(2);
+            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(2);
+            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+
+            var session = _journeySession.RegulatorRegistrationSubmissionSession;
+            session.LatestFilterChoices.OrganisationName.Should().Be("braun");
+            session.LatestFilterChoices.OrganisationType.Should().Be("small");
+            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
+            session.LatestFilterChoices.Page.Should().Be(2);
+            session.LatestFilterChoices.PageSize.Should().Be(200);
+            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+
+
+            // Act again
+            var result = await _controller.RegistrationSubmissions(null, FilterActions.ClearFilters);
+
+            result.Should().BeOfType(typeof(RedirectToActionResult));
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.RegistrationSubmissionsAction);
+
+            // Test final session and viewmodel state
+
+            session.LatestFilterChoices.OrganisationName.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.OrganisationType.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.RelevantYear.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.Page.Should().Be(1);
+            session.LatestFilterChoices.SubmissionStatus.Should().BeNullOrEmpty();
+            model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
+        }
+        #endregion Happy Path
+
+        #region Sad Path
+        [TestMethod]
+        public async Task RegistrationSubmissions_Return_PageNot_Found_When_FilterAction_IsEmpty()
+        {
+            var viewModel = new RegistrationSubmissionsFilterViewModel();
+            var result = await _controller.RegistrationSubmissions(viewModel, null);
+            Assert.IsNotNull(result);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.PageNotFound);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_Return_PageNot_Found_When_FilterAction_IsInvalid()
+        {
+            var viewModel = new RegistrationSubmissionsFilterViewModel();
+            var result = await _controller.RegistrationSubmissions(viewModel, "anything");
+            Assert.IsNotNull(result);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.PageNotFound);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_Return_PageNot_Found_When_FilterAction_IsSubmitFilter_And_No_Filters_Supplied()
+        {
+            var result = await _controller.RegistrationSubmissions(null, FilterActions.SubmitFilters);
+            Assert.IsNotNull(result);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.PageNotFound);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_Return_PageNot_Found_When_No_Filter_Or_Query_Supplied()
+        {
+            var result = await _controller.RegistrationSubmissions(null, null);
+            Assert.IsNotNull(result);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.PageNotFound);
+        }
+
+        [TestMethod]
+        public async Task PostingTo_RegistrationSubmissions_Return_ErrorPage_When_Exception_Received()
+        {
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
+            var result = await _controller.RegistrationSubmissions(null, null);
+            Assert.IsNotNull(result);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
+        }
+
+        [TestMethod]
+        public async Task GettingFrom_RegistrationSubmissions_Return_ErrorPage_When_Exception_Received()
+        {
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
+            var result = await _controller.RegistrationSubmissions(1);
+            Assert.IsNotNull(result);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
+        }
+
+        [TestMethod]
+        public async Task PostTo_RegistrationSubmissions_Logs_Error_When_Exception_Received()
+        {
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
+            var result = await _controller.RegistrationSubmissions(null,null);
+            Assert.IsNotNull(result);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
+            _loggerMock.Verify(
+                        x => x.Log(
+                            It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
+                            It.Is<EventId>((eid) => eid == 1001),
+                            It.IsAny<It.IsAnyType>(),
+                            It.Is<Exception>((v, t)=> v.ToString().Contains("Test")),
+                            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                        Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GettingFrom_RegistrationSubmissions_Logs_Error_When_Exception_Received()
+        {
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
+            var result = await _controller.RegistrationSubmissions(1);
+            Assert.IsNotNull(result);
+            result.Should().BeOfType<RedirectToActionResult>();
+            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
+            _loggerMock.Verify(
+                        x => x.Log(
+                            It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
+                            It.IsAny<EventId>(),
+                            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("An error occurred while processing a message: Exception received processing GET to RegistrationSubmissionsController.RegistrationSubmissions")),
+                            It.IsAny<Exception>(),
+                            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                        Times.Once);
+        }
+        #endregion Sad Path
+
+        #endregion Session Models and Filter states between gets and posts
+        #endregion RegistrationSubmissions
 
         #region QueryRegistrationSubmission
 
@@ -135,7 +451,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task QueryRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
             // Arrange
-            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissions;
+            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissionsRoute;
 
             var expectedViewModel = new QueryRegistrationSubmissionViewModel
             {
@@ -219,7 +535,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert
             Assert.IsNotNull(result); // Ensure the result is not null
-            Assert.AreEqual(PagePath.RegistrationSubmissions, result.Url); // Ensure the user is redirected to the correct URL
+            Assert.AreEqual(PagePath.RegistrationSubmissionsRoute, result.Url); // Ensure the user is redirected to the correct URL
         }
 
         [TestMethod]
@@ -300,7 +616,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task RejectRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
             // Arrange
-            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissions;
+            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissionsRoute;
 
             var expectedViewModel = new RejectRegistrationSubmissionViewModel
             {
@@ -384,7 +700,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert
             Assert.IsNotNull(result); // Ensure the result is not null
-            Assert.AreEqual(PagePath.RegistrationSubmissions, result.Url); // Ensure the user is redirected to the correct URL
+            Assert.AreEqual(PagePath.RegistrationSubmissionsRoute, result.Url); // Ensure the user is redirected to the correct URL
         }
 
         [TestMethod]
@@ -597,7 +913,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             Assert.IsNotNull(result);
             // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
         [TestMethod]
@@ -611,7 +927,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(PagePath.RegistrationSubmissions, result.Url);
+            Assert.AreEqual(PagePath.RegistrationSubmissionsRoute, result.Url);
         }
 
         #endregion

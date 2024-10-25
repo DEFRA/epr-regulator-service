@@ -117,22 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Table.Header.Year" xml:space="preserve">
-    <value>[Welsh]Submission year</value>
+  <data name="FilterOptions.Title" xml:space="preserve">
+    <value>Filter options</value>
   </data>
-  <data name="Table.Header.Status" xml:space="preserve">
-    <value>[Welsh]Submission status</value>
+  <data name="FilterResults.Title" xml:space="preserve">
+    <value>Filtered results:</value>
   </data>
-  <data name="Table.Header.CompanyId" xml:space="preserve">
-    <value>[Welsh]Organisation ID</value>
+  <data name="SubTitle.OrganisationName" xml:space="preserve">
+    <value>Organisation name</value>
   </data>
-  <data name="Table.Header.Company" xml:space="preserve">
-    <value>[Welsh]Organisation</value>
+  <data name="SubTitle.OrganisationReference" xml:space="preserve">
+    <value>Organisation ID</value>
   </data>
-  <data name="Table.Header.ApplicationDate" xml:space="preserve">
-    <value>[Welsh]Submission date and time</value>
+  <data name="SubTitle.OrganisationType" xml:space="preserve">
+    <value>Organisation Type</value>
   </data>
-  <data name="Body.NoResultsFound" xml:space="preserve">
-    <value>[Welsh]No results found</value>
+  <data name="SubTitle.SubmissionStatus" xml:space="preserve">
+    <value>Submission status</value>
+  </data>
+  <data name="SubTitle.RelevantYear" xml:space="preserve">
+    <value>Relevant year</value>
+  </data>
+  <data name="Checkbox.OrganisationType.Compliance" xml:space="preserve">
+    <value>Compliance Scheme</value>
+  </data>
+  <data name="Checkbox.OrganisationType.LargeProducer" xml:space="preserve">
+    <value>Large producer</value>
+  </data>
+  <data name="Checkbox.OrganisationType.SmallProducer" xml:space="preserve">
+    <value>Small producer</value>
+  </data>
+  <data name="Checkbox.SubmissionStatus.Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Checkbox.SubmissionStatus.Granted" xml:space="preserve">
+    <value>Granted</value>
+  </data>
+  <data name="Checkbox.SubmissionStatus.Refused" xml:space="preserve">
+    <value>Refused</value>
+  </data>
+  <data name="Checkbox.SubmissionStatus.Queried" xml:space="preserve">
+    <value>Queried</value>
+  </data>
+  <data name="Checkbox.SubmissionStatus.Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="Checkbox.SubmissionStatus.Updated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="Checkbox.Year-2025" xml:space="preserve">
+    <value>2025</value>
   </data>
 </root>

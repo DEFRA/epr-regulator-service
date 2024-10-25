@@ -171,8 +171,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
-            var searchedSubmissionYears = new[] { 2023 };
-            var searchedSubmissionPeriods = new[] { "Jan to June 2023" };
+            int[] searchedSubmissionYears = new[] { 2023 };
+            string[] searchedSubmissionPeriods = new[] { "Jan to June 2023" };
 
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationName = SearchOrganisationName;
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationId = string.Empty;
@@ -229,7 +229,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(JourneySessionMock);
 
             var submission = _fixture.Create<Submission>();
-            var submissionString =  JsonSerializer.Serialize(submission);
+            string submissionString =  JsonSerializer.Serialize(submission);
 
             // Act
             var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel(), null, submissionString);
