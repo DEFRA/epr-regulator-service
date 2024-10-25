@@ -8,12 +8,12 @@ using EPR.RegulatorService.Frontend.Web.Attributes;
 public class CurrencyValidationAttributeTests
 {
     CurrencyValidationAttribute _sut;
-    private const string MaxValue = "100000000000";
+    private const decimal MaxValue = 10000000.00M;
 
     [TestInitialize]
     public void Setup()
     {
-        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue);
+        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue.ToString(), "specialChar", "nonNumeric");
     }
 
     [TestMethod]
@@ -110,7 +110,7 @@ public class CurrencyValidationAttributeTests
 
     [TestMethod]
     public void CurrencyCantExceedSuppliedValue() {
-        bool result = _sut.IsValid((decimal.Parse(MaxValue) + 100.00M).ToString());
+        bool result = _sut.IsValid((MaxValue + 100.00M).ToString());
         result.Should().BeFalse();
     }
 
@@ -118,6 +118,20 @@ public class CurrencyValidationAttributeTests
     public void CurrencyCantbeBlank()
     {
         bool result = _sut.IsValid("");
+        result.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void CurrencyCantContainChars()
+    {
+        bool result = _sut.IsValid("122abc");
+        result.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void CurrencyCantContainSpecialChars()
+    {
+        bool result = _sut.IsValid("!43");
         result.Should().BeFalse();
     }
 }

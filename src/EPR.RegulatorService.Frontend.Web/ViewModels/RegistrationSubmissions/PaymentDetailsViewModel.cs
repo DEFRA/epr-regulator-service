@@ -22,7 +22,11 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         [CurrencyValidation(requiredErrorMessage:"PaymentValidation.TheAmountIsRequired",
                             invalidFormatMessage:"PaymentValidation.FormatIsInvalid",
-                            valueExceededMessage:"PaymentValidation.ValueTooHigh", maxValue:"10000000")]
+                            valueExceededMessage:"PaymentValidation.ValueTooHigh",
+                            maxValue:"10000000.00M",
+                            specialCharactersMessage:"PaymentValidation.InvalidCharacters",
+                            nonNumericMessage:"PaymentValidation.NonNumericCharacters"
+                            )]
         public string? OfflinePayment { get; set; }
     }
 }

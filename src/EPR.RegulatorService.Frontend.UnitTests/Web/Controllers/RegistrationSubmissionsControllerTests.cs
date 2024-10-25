@@ -545,11 +545,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new PaymentDetailsViewModel();
 
             // Act
-            var result = await _controller.SubmitOfflinePayment(model, Guid.NewGuid()) as RedirectResult;
+            var result = await _controller.SubmitOfflinePayment(model, Guid.NewGuid()) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(PagePath.RegistrationSubmissions, result.Url);
         }
 
         #endregion
