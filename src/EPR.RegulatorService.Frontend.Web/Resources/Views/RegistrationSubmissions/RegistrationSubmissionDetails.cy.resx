@@ -165,4 +165,13 @@
   <data name="RegistrationSubmissionDetails.RegulatorTitle" xml:space="preserve">
     <value>[Welsh]Regulator Comment</value>
   </data>
+  <data name="PaymentValidation.ValidationIsTooHigh" xml:space="preserve">
+    <value>[Welsh]The amount is too high</value>
+  </data>
+  <data name="PaymentValidation.FormatIsInvalid" xml:space="preserve">
+    <value>[Welsh]The correct the amount to be a valid number with a maximum of 2 decimal places.</value>
+  </data>
+  <data name="PaymentValidation.TheAmountIsRequired" xml:space="preserve">
+    <value>[Welsh]The amount is required</value>
+  </data>
 </root>
