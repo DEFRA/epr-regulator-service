@@ -23,7 +23,7 @@ public class RegistrationSubmissionsFilterViewModel
     public bool IsStatusCancelledChecked { get; set; }
     public bool Is2025Checked { get; set; }
 
-    public int PageNumber { get; set; }
+    public int PageNumber { get; set; } = 1;
     public int? PageSize { get; set; }
 
     public bool ClearFilters

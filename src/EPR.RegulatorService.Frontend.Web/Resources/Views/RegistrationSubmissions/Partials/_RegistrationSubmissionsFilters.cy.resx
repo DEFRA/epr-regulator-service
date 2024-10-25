@@ -127,7 +127,7 @@
     <value>[Welsh]Organisation name</value>
   </data>
   <data name="SubTitle.OrganisationReference" xml:space="preserve">
-    <value>[Welsh]Organisation Reference</value>
+    <value>[Welsh]Organisation ID</value>
   </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
     <value>[Welsh]Organisation Type</value>

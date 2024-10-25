@@ -6,6 +6,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
     using System.Text;
     using System.Threading.Tasks;
 
+    using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -36,7 +37,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
 
             _sut.RegistrationsFilterModel = emptyFilterViewModel;
 
-            var result = _sut.CreateFilterModel(1);
+            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
             result.OrganisationName.Should().BeNull();
             result.OrganisationRef.Should().BeNull();
             result.OrganisationType.Should().BeEmpty();
@@ -64,7 +65,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
             };
 
             _sut.RegistrationsFilterModel = emptyFilterViewModel;
-            var result = _sut.CreateFilterModel(null);
+            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
             result.Page.Should().Be(1);
         }
 
@@ -84,11 +85,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
                 IsStatusRefusedChecked = false,
                 IsStatusUpdatedChecked = false,
                 OrganisationName = null,
-                OrganisationRef = null
+                OrganisationRef = null,
+                PageNumber = 2
             };
 
             _sut.RegistrationsFilterModel = emptyFilterViewModel;
-            var result = _sut.CreateFilterModel(2);
+            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
             result.Page.Should().Be(2);
         }
 
@@ -108,12 +110,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
                 IsStatusRefusedChecked = false,
                 IsStatusUpdatedChecked = true,
                 OrganisationName = "Org name",
-                OrganisationRef = "Org ref"
+                OrganisationRef = "Org ref",
+                PageNumber = 2
             };
 
             _sut.RegistrationsFilterModel = emptyFilterViewModel;
 
-            var result = _sut.CreateFilterModel(2);
+            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
 
             result.OrganisationName.Should().Be("Org name");
             result.OrganisationRef.Should().Be("Org ref");
