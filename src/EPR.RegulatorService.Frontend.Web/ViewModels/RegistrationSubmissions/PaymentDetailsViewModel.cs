@@ -20,12 +20,12 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public decimal TotalOutstanding => TotalChargeableItems - PreviousPaymentsReceived;
 
-        [CurrencyValidation(requiredErrorMessage:"PaymentValidation.TheAmountIsRequired",
-                            invalidFormatMessage:"PaymentValidation.FormatIsInvalid",
-                            valueExceededMessage:"PaymentValidation.ValueTooHigh",
-                            maxValue:"10000000.00M",
-                            specialCharactersMessage:"PaymentValidation.InvalidCharacters",
-                            nonNumericMessage:"PaymentValidation.NonNumericCharacters"
+        [CurrencyValidation(requiredErrorMessage: "PaymentValidation.TheAmountIsRequired",
+                            invalidFormatMessage: "PaymentValidation.FormatIsInvalid",
+                            valueExceededMessage: "PaymentValidation.ValueIsTooHigh",
+                            maxValue: "10000000.00",
+                            specialCharactersMessage: "PaymentValidation.InvalidCharacters",
+                            nonNumericMessage: "PaymentValidation.NonNumericCharacters"
                             )]
         public string? OfflinePayment { get; set; }
     }

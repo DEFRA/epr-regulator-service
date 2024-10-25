@@ -166,10 +166,10 @@
     <value>Regulator Comment</value>
   </data>
   <data name="PaymentValidation.FormatIsInvalid" xml:space="preserve">
-    <value>[Welsh]Amount can only include pounds and pence</value>
+    <value>Amount can only include pounds and pence</value>
   </data>
   <data name="PaymentValidation.ValueIsTooHigh" xml:space="preserve">
-    <value>[Welsh]Amount must be less than £10,000,000</value>
+    <value>Amount must be less than £10,000,000</value>
   </data>
   <data name="PaymentValidation.TheAmountIsRequired" xml:space="preserve">
     <value>Enter an amount</value>

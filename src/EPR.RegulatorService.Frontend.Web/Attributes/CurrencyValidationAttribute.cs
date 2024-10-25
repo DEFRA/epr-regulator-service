@@ -19,7 +19,7 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
     private readonly string _nonNumericMessage;
     private readonly decimal _maxValue;
 
-    public CurrencyValidationAttribute( string requiredErrorMessage,
+    public CurrencyValidationAttribute(string requiredErrorMessage,
                                         string valueExceededMessage,
                                         string invalidFormatMessage,
                                         string maxValue,
@@ -54,15 +54,18 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
             return new ValidationResult(GetValidationErrorMessage(text));
         }
 
-        return !IsValidCurrency(text, out decimal theValue) || ExceedsMaxValue(theValue)
-            ? new ValidationResult(GetValidationErrorMessageForCurrency(theValue))
-            : ValidationResult.Success;
+        if (!IsValidCurrency(text, out decimal theValue))
+        {
+            return new ValidationResult(_invalidFormatMessage);
+        }
+
+        return ExceedsMaxValue(theValue) ? new ValidationResult(_valueExceededMessage) : ValidationResult.Success;
     }
 
     private bool ExceedsMaxCharacterCount(string text) => text.Length > MAX_CHARACTER_COUNT;
 
     private bool ContainsSpecialCharacters(string text) =>
-        _validateSpecialCharacters && Regex.IsMatch(text, @"[!@#\$%\^&\*\(\)\?:{}|<>]");
+        _validateSpecialCharacters && Regex.IsMatch(text, @"[!@#\$%\^&\*\(\)\?:{}|<>/;\[\]'~=`¬]");
 
     private bool ContainsNonNumericCharacters(string text) =>
         _validationNonNumericCharacters && Regex.IsMatch(text, @"[a-zA-Z]");
