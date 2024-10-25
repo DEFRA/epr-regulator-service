@@ -71,7 +71,7 @@ public class RegistrationSubmissionsController(
     {
         if (!ModelState.IsValid)
         {
-            SetBackLink(PagePath.RegistrationSubmissions);
+            SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
             return View(nameof(QueryRegistrationSubmission), model);
         }
 
@@ -95,7 +95,7 @@ public class RegistrationSubmissionsController(
     {
         if (!ModelState.IsValid)
         {
-            SetBackLink(PagePath.RegistrationSubmissions);
+            SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
             return View(nameof(RejectRegistrationSubmission), model);
         }
 
