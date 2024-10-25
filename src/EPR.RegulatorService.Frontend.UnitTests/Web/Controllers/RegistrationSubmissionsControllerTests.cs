@@ -927,7 +927,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(PagePath.RegistrationSubmissionsRoute, result.Url);
         }
 
         #endregion

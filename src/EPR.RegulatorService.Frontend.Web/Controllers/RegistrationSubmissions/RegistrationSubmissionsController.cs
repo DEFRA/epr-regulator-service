@@ -183,56 +183,6 @@ public partial class RegistrationSubmissionsController(
         ViewBag.Action = PagePath.RegistrationSubmissionDetails;
         ViewBag.Postback = GetCustomBackLink(PagePath.RegistrationSubmissionDetails);
 
-        var model = new RegistrationSubmissionDetailsViewModel
-        {
-            OrganisationId = organisationId,
-            OrganisationReference = "215 148",
-            OrganisationName = "Acme org Ltd.",
-            RegistrationReferenceNumber = "REF001",
-            ApplicationReferenceNumber = "REF002",
-            OrganisationType = RegistrationSubmissionOrganisationType.large,
-            BusinessAddress = new BusinessAddress
-            {
-                BuildingName = string.Empty,
-                BuildingNumber = "10",
-                Street = "High Street",
-                County = "Randomshire",
-                PostCode = "A12 3BC"
-            },
-            CompaniesHouseNumber = "0123456",
-            RegisteredNation = "Scotland",
-            PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
-            Status = RegistrationSubmissionStatus.queried,
-            SubmissionDetails = new SubmissionDetailsViewModel
-            {
-                Status = RegistrationSubmissionStatus.queried,
-                DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
-                TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
-                SubmittedOnTime = true,
-                SubmittedBy = "Sally Smith",
-                AccountRole = ServiceRole.ApprovedPerson,
-                Telephone = "07553 937 831",
-                Email = "sally.smith@email.com",
-                DeclaredBy = "Sally Smith",
-                Files =
-                [
-                    new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
-                    new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
-                    new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
-                ]
-            },
-            PaymentDetails = new PaymentDetailsViewModel
-            {
-                ApplicationProcessingFee = 134522.56M,
-                OnlineMarketplaceFee = 2534534.23M,
-                SubsidiaryFee = 1.34M,
-                PreviousPaymentsReceived = 20M
-            },
-            ProducerComments = "producer comment",
-            RegulatorComments = "regulator comment",
-            BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissionsRoute)
-        };
-
         return View(nameof(RegistrationSubmissionDetails), model);
     }
 
@@ -248,24 +198,6 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(RegistrationSubmissionDetails), existingModel);
         }
         return View(nameof(RegistrationSubmissionDetails), existingModel);
-    }
-
-    private void SetCustomBackLink()
-    {
-        string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
-        ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
-    }
-
-    private string GetCustomBackLink(string path)
-    {
-        string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
-        return $"/{pathBase}/{path}";
-    }
-
-    private void SetBackLink(string path)
-    {
-        string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
-        ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
     }
 
     private async Task SaveSessionAndJourney(RegulatorRegistrationSubmissionSession session, string currentPagePath, string? nextPagePath)
@@ -333,6 +265,6 @@ public partial class RegistrationSubmissionsController(
         },
         ProducerComments = "producer comment",
         RegulatorComments = "regulator comment",
-        BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissions)
+        BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissionsRoute)
     };
 }
