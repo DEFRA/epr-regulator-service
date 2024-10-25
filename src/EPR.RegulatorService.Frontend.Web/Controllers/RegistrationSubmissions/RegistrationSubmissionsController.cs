@@ -222,7 +222,7 @@ public partial class RegistrationSubmissionsController(
             },
             ProducerComments = "producer comment",
             RegulatorComments = "regulator comment",
-            BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissions)
+            BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissionsRoute)
         };
 
         return View(nameof(RegistrationSubmissionDetails), model);
