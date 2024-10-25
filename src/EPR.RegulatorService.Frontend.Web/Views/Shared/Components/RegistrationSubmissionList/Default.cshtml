@@ -4,6 +4,7 @@
 
 @model RegistrationSubmissionsListViewModel
 
+@await Html.PartialAsync("Partials/_RegistrationSubmissionsFilters", Model.RegistrationsFilterModel)
 @if (Model.PagedRegistrationSubmissions.Any())
 {
     <table class="govuk-table responsive-table" aria-label="Organisation Application Listing">

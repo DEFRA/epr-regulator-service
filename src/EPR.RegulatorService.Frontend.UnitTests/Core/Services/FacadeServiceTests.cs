@@ -1,6 +1,7 @@
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData;
+using EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
@@ -15,6 +16,7 @@ using Microsoft.Identity.Web;
 
 using Moq.Protected;
 
+using System.Globalization;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -1075,15 +1077,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             });
 
             var sut = new FacadeService(httpClient, _tokenAcquisitionMock.Object, _paginationConfig, facadeApiConfig);
-
-            sut.GetRegistrationSubmissions(1);
+            sut.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { Page = 1 });
             httpClient.DefaultRequestHeaders.Authorization.Should().NotBeNull();
         }
 
         [TestMethod]
-        public async Task GetRegistrationSubmissions_ShouldReturnPaginatedList_WhenRequestSucceeds ()
+        public async Task GetRegistrationSubmissions_ShouldReturnPaginatedList_WhenRequestSucceeds()
         {
-            var result = await _facadeService.GetRegistrationSubmissions(1);
+            var filter = new RegistrationSubmissionsFilterModel { Page = 1 };
+
+            var result = await _facadeService.GetRegistrationSubmissions(filter);
             result.Should().BeOfType<PaginatedList<RegistrationSubmissionOrganisationDetails>>();
             result.Items.Should().HaveCount(PAGE_SIZE);
         }
@@ -1091,8 +1094,150 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [TestMethod]
         public async Task GetRegistrationSubmission_ShouldReturnPageTwo_WhenRequestSucceeds()
         {
-            var result = await _facadeService.GetRegistrationSubmissions(2);
+            var result = await _facadeService.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { Page = 2 });
             result.CurrentPage.Should().Be(2);
+        }
+
+        [TestMethod]
+        [DataRow(24)]
+        [DataRow(90)]
+        public async Task GetRegisrationSubmission_FilterByOrgName_ShouldReturnSuccess_And_1Org(int byIndex)
+        {
+            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var expectedResult = expectedDataSet[byIndex];
+
+            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationName = expectedDataSet[byIndex].OrganisationName };
+            var results = await _facadeService.GetRegistrationSubmissions(filter);
+
+            results.Items.Should().Contain(expectedResult);
+        }
+
+        [TestMethod]
+        [DataRow(24)]
+        [DataRow(90)]
+        public async Task GetRegistrationSubmission_WithFilter_ShouldReturnCorrectPaginationInformation_1Page(int byIndex)
+        {
+            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var expectedResult = expectedDataSet[byIndex];
+
+            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationName = expectedResult.OrganisationName };
+            var results = await _facadeService.GetRegistrationSubmissions(filter);
+
+            results.TotalPages.Should().Be(1);
+            results.TotalItems.Should().Be(1);
+        }
+
+        [TestMethod]
+        [DataRow(24)]
+        [DataRow(90)]
+        public async Task GetRegistrationSubmission_WithFilter_ShouldReturnCorrectPaginationInformation_MoreThan1Page(int byIndex)
+        {
+            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var expectedResult = expectedDataSet[byIndex];
+
+            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationType = expectedResult.OrganisationType.ToString()};
+            var results = await _facadeService.GetRegistrationSubmissions(filter);
+
+            results.TotalPages.Should().BeGreaterThan(1);
+            results.TotalItems.Should().BeGreaterThan(1);
+        }
+
+        [TestMethod]
+        public async Task GetRegistrationSubmission_WithoutFilter_ShouldReturnCorrectPaginationInformation()
+        {
+            var filter = new RegistrationSubmissionsFilterModel() { Page = 1 };
+            var results = await _facadeService.GetRegistrationSubmissions(filter);
+
+            Assert.AreNotEqual(results.Items.Count, results.TotalItems);
+        }
+
+        [TestMethod]
+        [DataRow(14)]
+        [DataRow(45)]
+        public async Task GetRegisrationSubmission_FilterByOrgRef_ShouldReturnSuccess_And_1Org(int byIndex)
+        {
+            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var expectedResult = expectedDataSet[byIndex];
+
+            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationRef = expectedDataSet[byIndex].OrganisationReference };
+            var results = await _facadeService.GetRegistrationSubmissions(filter);
+
+            results.Items.Should().Contain(expectedResult);
+        }
+
+        [TestMethod]
+        [DataRow(8)]
+        [DataRow(15)]
+        [DataRow(19)]
+        [DataRow(23)]
+        [DataRow(44)]
+        public async Task FilterByNameSizeStatusAndYear_ReturnsTheCorrectSet(int byIndex)
+        {
+            var item = MockedFacadeService.GenerateRegistrationSubmissionDataCollection()[byIndex];
+            var expectedItems = new List<RegistrationSubmissionOrganisationDetails>
+                                {
+                                    item
+                                };
+
+            string expectedName = item.OrganisationName[3..6];
+            var expectedSize = item.OrganisationType;
+            var expectedStatus = item.RegistrationStatus;
+            string expectedYear = item.RegistrationYear.ToString(CultureInfo.InvariantCulture);
+
+            var filter = new RegistrationSubmissionsFilterModel
+            {
+                OrganisationName = expectedName,
+                OrganisationType = expectedSize.ToString(),
+                SubmissionStatus = expectedStatus.ToString(),
+                RelevantYear = expectedYear,
+                PageSize=5000
+            };
+
+            var result = await _facadeService.GetRegistrationSubmissions(filter);
+            result.Items.Should().Contain(expectedItems);
+        }
+
+        [TestMethod]
+        [DataRow(53, 66)]
+        [DataRow(15, 117)]
+        [DataRow(115, 76)]
+        public async Task FilterByMultipleNameSizeStatusAndYear_ReturnsACompleteSet(int byIndex, int byOtherIndex)
+        {
+            var alldata = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+
+            var item = alldata[byIndex];
+            var item2 = alldata[byOtherIndex];
+
+            var expectedItems = alldata.AsQueryable().FilterByOrganisationType($"{item.OrganisationType.ToString()} {item2.OrganisationType.ToString()}")
+                                                     .FilterBySubmissionStatus($"{item.RegistrationStatus.ToString()} {item2.RegistrationStatus.ToString()}")
+                                                     .FilterByRelevantYear($"{item.RegistrationYear} {item2.RegistrationYear}")
+                                                     .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
+                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
+                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
+                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.updated)
+                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
+                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
+                                                     .ThenBy(x => x.RegistrationDateTime)
+                                                     .Skip((1 - 1) * PAGE_SIZE)
+                                                     .Take(PAGE_SIZE)
+                                                     .ToList();
+
+            var expectedSize1 = item.OrganisationType;
+            var expectedStatus1 = item.RegistrationStatus;
+            string expectedYear1 = item.RegistrationYear;
+            var expectedSize2 = item2.OrganisationType;
+            var expectedStatus2 = item2.RegistrationStatus;
+            string expectedYear2 = item2.RegistrationYear;
+
+            var filter = new RegistrationSubmissionsFilterModel
+            {
+                OrganisationType = $"{expectedSize1.ToString()} {expectedSize2.ToString()}",
+                SubmissionStatus = $"{expectedStatus1.ToString()} {expectedStatus2.ToString()}",
+                RelevantYear = $"{expectedYear1} {expectedYear2}"
+            };
+
+            var result = await _facadeService.GetRegistrationSubmissions(filter);
+            result.Items.Should().BeEquivalentTo(expectedItems);
         }
     }
 }
