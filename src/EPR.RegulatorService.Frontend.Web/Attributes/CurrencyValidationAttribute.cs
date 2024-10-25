@@ -34,7 +34,7 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
         _specialCharactersMessage = specialCharactersMessage;
         _nonNumericMessage = nonNumericMessage;
 
-        if (!decimal.TryParse(maxValue, out _maxValue))
+        if (!decimal.TryParse(maxValue, NumberStyles.Currency, CultureInfo.CurrentCulture, out _maxValue))
         {
             throw new ArgumentOutOfRangeException(nameof(maxValue));
         }
@@ -62,13 +62,13 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
         return ExceedsMaxValue(theValue) ? new ValidationResult(_valueExceededMessage) : ValidationResult.Success;
     }
 
-    private bool ExceedsMaxCharacterCount(string text) => text.Length > MAX_CHARACTER_COUNT;
+    private static bool ExceedsMaxCharacterCount(string text) => text.Length > MAX_CHARACTER_COUNT;
 
     private bool ContainsSpecialCharacters(string text) =>
-        _validateSpecialCharacters && Regex.IsMatch(text, @"[!@#\$%\^&\*\(\)\?:{}|<>/;\[\]'~=`¬]");
+        _validateSpecialCharacters && SpecialCharRegex().IsMatch(text);
 
     private bool ContainsNonNumericCharacters(string text) =>
-        _validationNonNumericCharacters && Regex.IsMatch(text, @"[a-zA-Z]");
+        _validationNonNumericCharacters && AlphaRegex().IsMatch(text);
 
     private bool ExceedsMaxValue(decimal value) => value > _maxValue;
 
@@ -81,9 +81,6 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
             _ => _nonNumericMessage
         };
     }
-
-    private string GetValidationErrorMessageForCurrency(decimal value) =>
-        !IsValidCurrency(value.ToString(), out _) ? _invalidFormatMessage : _valueExceededMessage;
 
     private static bool IsValidCurrency(string input, out decimal theValue)
     {
@@ -99,6 +96,12 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
 
         return decimal.TryParse(cleanedInput, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out theValue);
     }
+
+    [GeneratedRegex(@"[a-zA-Z]")]
+    private static partial Regex AlphaRegex();
+
+    [GeneratedRegex(@"[!@#\$%\^&\*\(\)\?:{}|<>/;\[\]'~=`¬]")]
+    private static partial Regex SpecialCharRegex();
 
     [GeneratedRegex(@"^-?(\d{1,3})(,\d{3})*(\.\d{1,2})?$")]
     private static partial Regex TestRegex();

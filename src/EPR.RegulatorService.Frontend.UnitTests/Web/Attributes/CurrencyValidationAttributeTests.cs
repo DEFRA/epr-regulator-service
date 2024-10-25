@@ -17,6 +17,19 @@ public class CurrencyValidationAttributeTests
     }
 
     [TestMethod]
+    public void CurrencyWillNotConstructWithBadMaxValue()
+    {
+        Assert.ThrowsException<ArgumentOutOfRangeException>(() => new CurrencyValidationAttribute("requireMessage", "valueTooBig", "invalidFormat", "baddecimal", "specialChar", "nonNumeric"));
+    }
+
+    [TestMethod]
+    public void CurrencyCannotBeANullString()
+    {
+        bool result = _sut.IsValid(null);
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
     public void CurrencyCanHaveAMinusSign()
     {
         bool result = _sut.IsValid("-100");
@@ -109,7 +122,8 @@ public class CurrencyValidationAttributeTests
     }
 
     [TestMethod]
-    public void CurrencyCantExceedSuppliedValue() {
+    public void CurrencyCantExceedSuppliedValue()
+    {
         bool result = _sut.IsValid((MaxValue + 100.00M).ToString());
         result.Should().BeFalse();
     }
