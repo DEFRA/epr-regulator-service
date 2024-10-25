@@ -158,13 +158,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task QueryRegistrationSubmission_SetsCorrectBackLinkInViewData()
         {
             // Act
-            var result = await _controller.QueryRegistrationSubmission() as ViewResult;
+            var result = await _controller.QueryRegistrationSubmission();
 
             // Assert
-            Assert.IsNotNull(result);
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Extract the GUID part using indexing and check for validity
+            string[] segments = backLink.Split('/');
+            Assert.IsNotNull(segments, "The back link should contain URL segments.");
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
@@ -289,16 +296,23 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RejectRegistrationSubmission_SetsCorrectBackLinkInViewData()
+        public async Task RejectRegistrationSubmission_ShouldSetCorrectBackLink()
         {
             // Act
-            var result = await _controller.RejectRegistrationSubmission() as ViewResult;
+            var result = await _controller.RejectRegistrationSubmission();
 
             // Assert
-            Assert.IsNotNull(result);
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissions}");
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Extract the GUID part using indexing and check for validity
+            string[] segments = backLink.Split('/');
+            Assert.IsNotNull(segments, "The back link should contain URL segments.");
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
@@ -465,7 +479,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     PreviousPaymentsReceived = 20M
                 },
                 ProducerComments = "producer comment",
-                RegulatorComments = "regulator comment", 
+                RegulatorComments = "regulator comment",
                 BackToAllSubmissionsUrl = "/regulators/manage-registration-submissions"
             };
 
@@ -521,7 +535,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             Assert.AreEqual(expectedViewModel.ProducerComments, model.ProducerComments);
             Assert.AreEqual(expectedViewModel.RegulatorComments, model.RegulatorComments);
-        } 
+        }
 
         [TestMethod]
         public async Task RegistrationSubmissionDetails_SetsCorrectBackLink()
