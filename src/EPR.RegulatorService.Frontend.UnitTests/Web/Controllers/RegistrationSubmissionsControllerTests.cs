@@ -474,13 +474,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task QueryRegistrationSubmission_SetsCorrectBackLinkInViewData()
         {
             // Act
-            var result = await _controller.QueryRegistrationSubmission() as ViewResult;
+            var result = await _controller.QueryRegistrationSubmission();
 
             // Assert
-            Assert.IsNotNull(result);
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Extract the GUID part using indexing and check for validity
+            string[] segments = backLink.Split('/');
+            Assert.IsNotNull(segments, "The back link should contain URL segments.");
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
@@ -488,18 +495,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var model = new QueryRegistrationSubmissionViewModel();
+
+            // Simulate an error in ModelState
             _controller.ModelState.AddModelError("TestError", "Model state is invalid");
 
             // Act
             var result = await _controller.QueryRegistrationSubmission(model) as ViewResult;
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName);
-            Assert.AreEqual(model, result.Model);
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
 
-            // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
+            // Verify that ModelState has errors
+            Assert.IsTrue(_controller.ModelState.ErrorCount > 0, "ModelState should contain errors.");
+            Assert.AreEqual("Model state is invalid", _controller.ModelState["TestError"].Errors[0].ErrorMessage, "The error message should match the expected message.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
@@ -525,31 +544,37 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var model = new QueryRegistrationSubmissionViewModel
             {
-                Query = new string('A', 401) // 401 characters
+                Query = new string('A', 401) // Exceeds 400 character limit
             };
 
-            // Add a validation rule that the maximum length is 400 for the RejectReason property
+            // Simulate model state error for the Query property
             _controller.ModelState.AddModelError(nameof(model.Query), "Reason for querying application must be 400 characters or less");
 
             // Act
             var result = await _controller.QueryRegistrationSubmission(model) as ViewResult;
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName);
-            Assert.AreEqual(model, result.Model);
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
 
-            // Verify the error is correctly added to the model state
-            Assert.IsTrue(_controller.ModelState[nameof(model.Query)].Errors.Count > 0);
+            // Verify ModelState error for Query property
+            Assert.IsTrue(_controller.ModelState[nameof(model.Query)].Errors.Count > 0, "ModelState should contain an error for the Query property.");
             Assert.AreEqual("Reason for querying application must be 400 characters or less",
-                _controller.ModelState[nameof(model.Query)].Errors[0].ErrorMessage);
+                _controller.ModelState[nameof(model.Query)].Errors[0].ErrorMessage, "The error message should match the expected validation message.");
 
-            // Verify the back link is set correctly
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
-        public async Task QueryRegistrationSubmission_Post_ReturnsExpectedError_WhenNoQueryIsProvided()
+        public async Task QueryRegistrationSubmission_Post_ReturnsViewWithErrors_WhenNoQueryIsProvided()
         {
             // Arrange
             var model = new QueryRegistrationSubmissionViewModel
@@ -557,24 +582,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 Query = null // No query provided
             };
 
-            // Simulate the model validation error for required Query field
+            // Simulate the required field validation error for the Query property
             _controller.ModelState.AddModelError(nameof(model.Query), "Enter the reason you are querying this registration application");
 
             // Act
             var result = await _controller.QueryRegistrationSubmission(model) as ViewResult;
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName);
-            Assert.AreEqual(model, result.Model);
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
 
-            // Verify the error is correctly added to the model state
-            Assert.IsTrue(_controller.ModelState[nameof(model.Query)].Errors.Count > 0);
+            // Verify ModelState error for Query property
+            Assert.IsTrue(_controller.ModelState[nameof(model.Query)].Errors.Count > 0, "ModelState should contain an error for the Query property.");
             Assert.AreEqual("Enter the reason you are querying this registration application",
-                _controller.ModelState[nameof(model.Query)].Errors[0].ErrorMessage);
+                _controller.ModelState[nameof(model.Query)].Errors[0].ErrorMessage, "The error message should match the expected validation message.");
 
-            // Verify the back link is set correctly
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         #endregion
@@ -605,16 +636,23 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RejectRegistrationSubmission_SetsCorrectBackLinkInViewData()
+        public async Task RejectRegistrationSubmission_ShouldSetCorrectBackLink()
         {
             // Act
-            var result = await _controller.RejectRegistrationSubmission() as ViewResult;
+            var result = await _controller.RejectRegistrationSubmission();
 
             // Assert
-            Assert.IsNotNull(result);
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Extract the GUID part using indexing and check for validity
+            string[] segments = backLink.Split('/');
+            Assert.IsNotNull(segments, "The back link should contain URL segments.");
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
@@ -622,18 +660,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var model = new RejectRegistrationSubmissionViewModel();
+
+            // Simulate an error in ModelState
             _controller.ModelState.AddModelError("TestError", "Model state is invalid");
 
             // Act
             var result = await _controller.RejectRegistrationSubmission(model) as ViewResult;
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName);
-            Assert.AreEqual(model, result.Model);
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
 
-            // Check that the back link is correctly set in the ViewData
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
+            // Verify that ModelState has errors
+            Assert.IsTrue(_controller.ModelState.ErrorCount > 0, "ModelState should contain errors.");
+            Assert.AreEqual("Model state is invalid", _controller.ModelState["TestError"].Errors[0].ErrorMessage, "The error message should match the expected message.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
@@ -659,27 +709,33 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var model = new RejectRegistrationSubmissionViewModel
             {
-                RejectReason = new string('A', 401) // 401 characters
+                RejectReason = new string('A', 401) // Exceeds 400 character limit
             };
 
-            // Add a validation rule that the maximum length is 400 for the RejectReason property
+            // Simulate model state error for the RejectReason property
             _controller.ModelState.AddModelError(nameof(model.RejectReason), "Reason for rejecting application must be 400 characters or less");
 
             // Act
             var result = await _controller.RejectRegistrationSubmission(model) as ViewResult;
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName);
-            Assert.AreEqual(model, result.Model);
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
 
-            // Verify the error is correctly added to the model state
-            Assert.IsTrue(_controller.ModelState[nameof(model.RejectReason)].Errors.Count > 0);
+            // Verify ModelState error for RejectReason property
+            Assert.IsTrue(_controller.ModelState[nameof(model.RejectReason)].Errors.Count > 0, "ModelState should contain an error for the RejectReason property.");
             Assert.AreEqual("Reason for rejecting application must be 400 characters or less",
-                _controller.ModelState[nameof(model.RejectReason)].Errors[0].ErrorMessage);
+                _controller.ModelState[nameof(model.RejectReason)].Errors[0].ErrorMessage, "The error message should match the expected validation message.");
 
-            // Verify the back link is set correctly
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
@@ -691,24 +747,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 RejectReason = null // No rejection reason provided
             };
 
-            // Simulate the model validation error for required RejectionReason property
+            // Simulate required field validation error for the RejectReason property
             _controller.ModelState.AddModelError(nameof(model.RejectReason), "Enter the reason you are rejecting this registration application");
 
             // Act
             var result = await _controller.RejectRegistrationSubmission(model) as ViewResult;
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName);
-            Assert.AreEqual(model, result.Model);
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
 
-            // Verify the error is correctly added to the model state
-            Assert.IsTrue(_controller.ModelState[nameof(model.RejectReason)].Errors.Count > 0);
+            // Verify ModelState error for RejectReason property
+            Assert.IsTrue(_controller.ModelState[nameof(model.RejectReason)].Errors.Count > 0, "ModelState should contain an error for the RejectReason property.");
             Assert.AreEqual("Enter the reason you are rejecting this registration application",
-                _controller.ModelState[nameof(model.RejectReason)].Errors[0].ErrorMessage);
+                _controller.ModelState[nameof(model.RejectReason)].Errors[0].ErrorMessage, "The error message should match the expected validation message.");
 
-            // Verify the back link is set correctly
-            AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         #endregion
@@ -781,7 +843,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     PreviousPaymentsReceived = 20M
                 },
                 ProducerComments = "producer comment",
-                RegulatorComments = "regulator comment", 
+                RegulatorComments = "regulator comment",
                 BackToAllSubmissionsUrl = "/regulators/manage-registration-submissions"
             };
 
@@ -837,7 +899,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             Assert.AreEqual(expectedViewModel.ProducerComments, model.ProducerComments);
             Assert.AreEqual(expectedViewModel.RegulatorComments, model.RegulatorComments);
-        } 
+        }
 
         [TestMethod]
         public async Task RegistrationSubmissionDetails_SetsCorrectBackLink()

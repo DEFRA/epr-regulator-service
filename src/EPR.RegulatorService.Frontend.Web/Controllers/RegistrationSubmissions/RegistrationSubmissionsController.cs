@@ -125,7 +125,7 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.QueryRegistrationSubmission)]
     public async Task<IActionResult> QueryRegistrationSubmission()
     {
-        SetBackLink(PagePath.RegistrationSubmissionsRoute);
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
 
         var model = new QueryRegistrationSubmissionViewModel();
 
@@ -138,7 +138,7 @@ public partial class RegistrationSubmissionsController(
     {
         if (!ModelState.IsValid)
         {
-            SetBackLink(PagePath.RegistrationSubmissionsRoute);
+            SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
             return View(nameof(QueryRegistrationSubmission), model);
         }
 
@@ -149,7 +149,7 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RejectRegistrationSubmission)]
     public async Task<IActionResult> RejectRegistrationSubmission()
     {
-        SetBackLink(PagePath.RegistrationSubmissionsRoute);
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
 
         var model = new RejectRegistrationSubmissionViewModel();
 
@@ -162,7 +162,7 @@ public partial class RegistrationSubmissionsController(
     {
         if (!ModelState.IsValid)
         {
-            SetBackLink(PagePath.RegistrationSubmissionsRoute);
+            SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
             return View(nameof(RejectRegistrationSubmission), model);
         }
 
@@ -222,8 +222,7 @@ public partial class RegistrationSubmissionsController(
             },
             ProducerComments = "producer comment",
             RegulatorComments = "regulator comment",
-            BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissionsRoute)
-
+            BackToAllSubmissionsUrl = GetCustomBackLink(PagePath.RegistrationSubmissions)
         };
 
         return View(nameof(RegistrationSubmissionDetails), model);
