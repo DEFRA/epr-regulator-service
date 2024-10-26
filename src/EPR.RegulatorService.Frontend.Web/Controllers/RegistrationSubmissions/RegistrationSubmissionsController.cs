@@ -136,6 +136,8 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionDetails + "/{organisationId:guid}", Name = "SubmitPaymentInfo")]
     public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel model, [FromRoute] Guid? organisationid)
     {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
         if (!GetAndRememberOrganisationDetails(organisationid, out RegistrationSubmissionDetailsViewModel existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
@@ -156,6 +158,8 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.QueryRegistrationSubmission)]
     public async Task<IActionResult> QueryRegistrationSubmission()
     {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
         SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
 
         var model = new QueryRegistrationSubmissionViewModel();
@@ -167,6 +171,8 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.QueryRegistrationSubmission)]
     public async Task<IActionResult> QueryRegistrationSubmission(QueryRegistrationSubmissionViewModel model)
     {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
         if (!ModelState.IsValid)
         {
             SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
@@ -180,6 +186,8 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RejectRegistrationSubmission)]
     public async Task<IActionResult> RejectRegistrationSubmission()
     {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
         SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
 
         var model = new RejectRegistrationSubmissionViewModel();
@@ -191,6 +199,8 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RejectRegistrationSubmission)]
     public async Task<IActionResult> RejectRegistrationSubmission(RejectRegistrationSubmissionViewModel model)
     {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
         if (!ModelState.IsValid)
         {
             SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
