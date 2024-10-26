@@ -77,24 +77,24 @@
 
                 @await Component.InvokeAsync("PaymentDetails", new { model = Model.PaymentDetails })
 
-                
-                    @await Component.InvokeAsync("RegistrationSubmissionComments",
-                         new 
-                             {
-                                 Comment = Model.ProducerComments,
+
+                @await Component.InvokeAsync("RegistrationSubmissionComments",
+                         new
+                         {
+                             Comment = Model.ProducerComments,
                              Title = "RegistrationSubmissionDetails.ProducerTitle"
-                             }
-                             )
-                
-                
-                    @await Component.InvokeAsync("RegistrationSubmissionComments",
-                         new 
-                             {
-                                 Comment = Model.RegulatorComments,
+                         }
+                         )
+
+
+                @await Component.InvokeAsync("RegistrationSubmissionComments",
+                         new
+                         {
+                             Comment = Model.RegulatorComments,
                              Title = "RegistrationSubmissionDetails.RegulatorTitle"
-                             }
-                             )
-                
+                         }
+                         )
+
 
                 @await Html.PartialAsync("Partials/_RegistrationSubmissionActionButtons", Model)
 

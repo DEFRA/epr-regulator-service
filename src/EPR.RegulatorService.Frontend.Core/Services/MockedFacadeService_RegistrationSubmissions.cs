@@ -21,7 +21,7 @@ public partial class MockedFacadeService : IFacadeService
             var dateTime = DateTime.Parse(fields[8], new CultureInfo("en-GB"));
             objRet.Add(new RegistrationSubmissionOrganisationDetails
             {
-                OrganisationReference = fields[0],
+                OrganisationReference = fields[0][..10],
                 OrganisationName = fields[1],
                 OrganisationType = Enum.Parse<RegistrationSubmissionOrganisationType>(fields[2]),
                 RegistrationStatus = Enum.Parse<RegistrationSubmissionStatus>(fields[3]),

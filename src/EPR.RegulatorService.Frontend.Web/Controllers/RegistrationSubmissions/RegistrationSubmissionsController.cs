@@ -127,6 +127,8 @@ public partial class RegistrationSubmissionsController(
         SetBackLink(PagePath.RegistrationSubmissionsRoute);
         ViewBag.OrganisationId = model.OrganisationId;
 
+        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
+
         return View(nameof(RegistrationSubmissionDetails), model);
     }
 
