@@ -38,6 +38,9 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public string Country { get; set; }
     public string Postcode { get; set; }
 
+    public RegistrationSubmissionOrganisationSubmissionSummaryDetails SubmissionDetails { get; set; }
+    public RegistrationSubmissionsOrganisationPaymentDetails PaymentDetails { get; set; }
+
     public override bool Equals(object? obj) => Equals(obj as RegistrationSubmissionOrganisationDetails);
     public bool Equals(RegistrationSubmissionOrganisationDetails? other) => other is not null && OrganisationID.Equals(other.OrganisationID);
     public override int GetHashCode() => HashCode.Combine(OrganisationID);

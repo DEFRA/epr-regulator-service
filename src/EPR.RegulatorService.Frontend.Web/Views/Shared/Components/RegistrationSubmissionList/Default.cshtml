@@ -25,6 +25,7 @@
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.Company"]
                         </span>
+                        @(Html.RouteLink(@organisation.OrganisationName, "SubmissionDetails", new { organisationid = @organisation.OrganisationId }))
                         <a href="../#" class="govuk-link">
                             @organisation.OrganisationName
                         </a>

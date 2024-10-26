@@ -120,6 +120,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var sut = new RegistrationSubmissionsController(
                 null,
+                null,
                 _loggerMock.Object,
                 _mockConfiguration.Object,
                 _mockUrlsOptions.Object

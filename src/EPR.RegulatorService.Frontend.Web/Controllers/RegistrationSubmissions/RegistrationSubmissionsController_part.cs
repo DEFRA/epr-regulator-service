@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 {
+    using EPR.RegulatorService.Frontend.Core.Extensions;
+    using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -30,6 +32,17 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 },
                 PowerBiLogin = _externalUrlsOptions.PowerBiLogin
             };
+        }
+
+        private bool GetAndRememberOrganisationDetails(Guid? organisationId, out RegistrationSubmissionDetailsViewModel model)
+        {
+            model = organisationId == null
+                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
+                : _facadeService.GetRegistrationSubmissionDetails(organisationId.Value);
+
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
+
+            return model != null;
         }
 
         private static void ClearFilters(RegulatorRegistrationSubmissionSession session,
@@ -66,7 +79,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             session.LatestFilterChoices = filters;
         }
 
-        private IActionResult? ReturnIfAppropriate(RegistrationSubmissionsFilterViewModel? filters, string? filterType) =>
+        private RedirectToActionResult? ReturnIfAppropriate(RegistrationSubmissionsFilterViewModel? filters, string? filterType) =>
                 (filters, filterType) switch
                 {
                     (null, null) => RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions"),
@@ -74,6 +87,25 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                     (_, not FilterActions.ClearFilters and not FilterActions.SubmitFilters) => RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions"),
                     _ => null
                 };
+
+        private async Task SaveSessionAndJourney(RegulatorRegistrationSubmissionSession session, string currentPagePath, string? nextPagePath)
+        {
+            ClearRestOfJourney(session, currentPagePath);
+
+            session.Journey.AddIfNotExists(nextPagePath);
+
+            await SaveSession(_currentSession);
+        }
+
+        private static void ClearRestOfJourney(RegulatorRegistrationSubmissionSession session, string currentPagePath)
+        {
+            int index = session.Journey.IndexOf(currentPagePath);
+            session.Journey = session.Journey.Take(index + 1).ToList();
+        }
+
+        private async Task SaveSession(JourneySession session) =>
+            await _sessionManager.SaveSessionAsync(HttpContext.Session, session);
+
 
         private void SetBacklinkToHome()
         {

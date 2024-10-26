@@ -9,12 +9,13 @@ using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+
 using Microsoft.Extensions.Options;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
-
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 [ExcludeFromCodeCoverage]
@@ -100,7 +101,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
     private static List<OrganisationApplications> GenerateOrganisationApplications()
     {
         var allItems = new List<OrganisationApplications>();
-        
+
         for (int i = 1; i <= 1000; i++)
         {
             bool hasApprovedPending = (i % 2) == 0;
@@ -134,7 +135,8 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
                 LastUpdate = DateTime.Now.AddDays(-(i % 15)),
                 Enrolments = new()
                 {
-                    HasApprovedPending = hasApprovedPending, HasDelegatePending = hasDelegatedPending
+                    HasApprovedPending = hasApprovedPending,
+                    HasDelegatePending = hasDelegatedPending
                 }
             });
         }
@@ -348,10 +350,11 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
             return filteredItems.Cast<T>().ToList();
         }
 
-        return new List<T>();
+        return [];
     }
 
     public async Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+
     public async Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request)
     {
         var response = new HttpResponseMessage(HttpStatusCode.OK)
@@ -368,11 +371,12 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         return await Task.FromResult(response);
     }
 
-    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters) {
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
+    {
         filters.PageSize ??= _config.PageSize;
 
         // this is where the Facade is actually called
-        var results = FilterAndOrderRegistrations([.. _registrationSubmissions], filters) ;
+        var results = FilterAndOrderRegistrations([.. _registrationSubmissions], filters);
 
         if (filters.Page > (int)Math.Ceiling(results.Item1 / (double)_config.PageSize))
         {
@@ -388,5 +392,18 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         };
 
         return response;
+    }
+
+    public RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid organisationId)
+    {
+        var objRet = _registrationSubmissions.Find(x => x.OrganisationID == organisationId);
+
+        if (null != objRet)
+        {
+            objRet.SubmissionDetails = objRet.SubmissionDetails ?? GenerateRandomSubmissionData();
+            objRet.PaymentDetails = objRet.PaymentDetails ?? GeneratePaymentDetails();
+        }
+
+        return objRet;
     }
 }

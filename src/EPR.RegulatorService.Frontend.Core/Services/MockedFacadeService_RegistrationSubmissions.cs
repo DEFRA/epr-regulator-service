@@ -42,6 +42,8 @@ public partial class MockedFacadeService : IFacadeService
                 Postcode = fields[19],
                 OrganisationID = Guid.Parse(fields[22]),
                 NationID = int.Parse(fields[23], CultureInfo.InvariantCulture),
+                RegulatorComments = fields[20],
+                ProducerComments = fields[21],
             });
         }
 
@@ -75,4 +77,61 @@ public partial class MockedFacadeService : IFacadeService
 
         return Tuple.Create(totalItems, sortedItems);
     }
+
+    public static RegistrationSubmissionOrganisationSubmissionSummaryDetails GenerateRandomSubmissionData()
+    {
+        var random = new Random();
+
+        string[] sampleNames = ["Alice", "Bob", "Charlie", "Diana", "Edward"];
+        var sampleRoles = Enum.GetValues(typeof(ServiceRole));
+        var sampleStatuses = Enum.GetValues(typeof(RegistrationSubmissionStatus));
+
+        var generateRandomPhoneNumber  = (Random random) => $"{random.Next(100, 999)}-{random.Next(100, 999)}-{random.Next(1000, 9999)}";
+
+
+        return new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+        {
+            Status = (RegistrationSubmissionStatus)sampleStatuses.GetValue(random.Next(sampleStatuses.Length)),
+            DecisionDate = DateTime.Now.AddDays(-random.Next(1, 100)),
+            TimeAndDateOfSubmission = DateTime.Now.AddDays(-random.Next(1, 100)),
+            SubmittedOnTime = random.Next(2) == 0,
+            SubmittedBy = sampleNames[random.Next(sampleNames.Length)],
+            AccountRole = (ServiceRole)sampleRoles.GetValue(random.Next(sampleRoles.Length)),
+            Telephone = generateRandomPhoneNumber(random),
+            Email = $"{sampleNames[random.Next(sampleNames.Length)].ToLower()}@example.com",
+            DeclaredBy = sampleNames[random.Next(sampleNames.Length)],
+            Files = GenerateRandomFiles(random.Next(1, 5)) // Generate 1 to 5 random files
+        };
+    }
+
+    private static List<RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails> GenerateRandomFiles(int count)
+    {
+        var files = new List<RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails>();
+        for (int i = 0; i < count; i++)
+        {
+            files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails
+            {
+                Label = $"Document {i + 1}",
+                FileName = $"file_{i + 1}.pdf",
+                DownloadUrl = $"https://example.com/download/file_{i + 1}.pdf"
+            });
+        }
+        return files;
+    }
+
+    private static RegistrationSubmissionsOrganisationPaymentDetails GeneratePaymentDetails()
+    {
+        var random = new Random();
+
+        var generateRandomDecimal = (int min, int max) => Math.Round((decimal)(random.NextDouble() * (max - min) + min), 2);
+
+        return new RegistrationSubmissionsOrganisationPaymentDetails()
+        {
+            ApplicationProcessingFee = generateRandomDecimal(1000, 6000),
+            OnlineMarketplaceFee = generateRandomDecimal(1000, 5000),
+            PreviousPaymentsReceived = generateRandomDecimal(1000, 10000000),
+            SubsidiaryFee = generateRandomDecimal(1000, 10000)
+        };
+    }
+
 }
