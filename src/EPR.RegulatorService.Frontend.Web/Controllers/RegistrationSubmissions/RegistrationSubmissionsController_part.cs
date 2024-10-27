@@ -34,6 +34,25 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             };
         }
 
+        private bool GetOrRejectProvidedOrganisationId(Guid? organisationId, out RegistrationSubmissionDetailsViewModel viewModel)
+        {
+            viewModel = null;
+
+            if (!organisationId.HasValue)
+            {
+                return false;
+            }
+
+            var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+            if ( sessionModelWhichMustMatchSession?.OrganisationID != organisationId.Value)
+            {
+                return false;
+            }
+
+            viewModel = sessionModelWhichMustMatchSession;
+            return true;
+        }
+
         private bool GetAndRememberOrganisationDetails(Guid? organisationId, out RegistrationSubmissionDetailsViewModel model)
         {
             model = organisationId == null
@@ -78,6 +97,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
             session.LatestFilterChoices = filters;
         }
+
+        private static void GeneratePowerBILink(RegistrationSubmissionDetailsViewModel model) => model.PowerBiLogin = "https://app.powerbi.com/";
 
         private RedirectToActionResult? ReturnIfAppropriate(RegistrationSubmissionsFilterViewModel? filters, string? filterType) =>
                 (filters, filterType) switch

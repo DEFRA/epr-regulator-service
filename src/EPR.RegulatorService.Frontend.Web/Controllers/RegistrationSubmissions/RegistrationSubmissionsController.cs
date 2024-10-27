@@ -124,6 +124,8 @@ public partial class RegistrationSubmissionsController(
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
+        GeneratePowerBILink(model);
+
         SetBackLink(PagePath.RegistrationSubmissionsRoute);
         ViewBag.OrganisationId = model.OrganisationId;
 
@@ -138,7 +140,7 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetAndRememberOrganisationDetails(organisationid, out RegistrationSubmissionDetailsViewModel existingModel))
+        if (!GetOrRejectProvidedOrganisationId(organisationid, out RegistrationSubmissionDetailsViewModel existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -217,8 +219,6 @@ public partial class RegistrationSubmissionsController(
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
         _currentSession.RegulatorRegistrationSubmissionSession.CurrentPageNumber = 1;
-
-        SetBacklinkToHome();
 
         await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.PageNotFound);
         return RedirectToAction(PagePath.Error, "Error", new { statusCode = 404, backLink = PagePath.RegistrationSubmissionsRoute });

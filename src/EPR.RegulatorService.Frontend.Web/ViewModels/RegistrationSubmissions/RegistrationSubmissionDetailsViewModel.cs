@@ -35,8 +35,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public DateTime RegistrationDateTime { get; set; }
 
-        public string BackToAllSubmissionsUrl { get; set; }
-
         public string? ProducerComments { get; set; } 
 
         public string? RegulatorComments { get; set; }
@@ -44,10 +42,10 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
         public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details)
         {
-            return new RegistrationSubmissionDetailsViewModel
+            return details is null ? null : new RegistrationSubmissionDetailsViewModel
             {
                 OrganisationId = details.OrganisationID,
-                OrganisationReference = details.OrganisationReference.Substring(0, 10),
+                OrganisationReference = details.OrganisationReference.Substring(0, Math.Min(details.OrganisationReference.Length, 10)),
                 OrganisationName = details.OrganisationName,
                 ApplicationReferenceNumber = details.ApplicationReferenceNumber,
                 RegistrationReferenceNumber = details.RegistrationReferenceNumber,
@@ -77,7 +75,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         // Implicit operator from RegistrationSubmissionDetailsViewModel to RegistrationSubmissionOrganisationDetails  
         public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionDetailsViewModel details)
         {
-            return new RegistrationSubmissionOrganisationDetails
+            return details is null ? null : new RegistrationSubmissionOrganisationDetails
             {
                 OrganisationID = details.OrganisationId,
                 OrganisationReference = details.OrganisationReference.Length > 10 ? details.OrganisationReference.Substring(0, 10) : details.OrganisationReference,

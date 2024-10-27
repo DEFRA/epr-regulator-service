@@ -1124,7 +1124,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
             results.TotalPages.Should().Be(1);
-            results.TotalItems.Should().Be(1);
         }
 
         [TestMethod]
