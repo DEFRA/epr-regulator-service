@@ -80,7 +80,7 @@ public partial class MockedFacadeService : IFacadeService
 
     public static RegistrationSubmissionOrganisationSubmissionSummaryDetails GenerateRandomSubmissionData(RegistrationSubmissionStatus registrationStatus)
     {
-        var random = new Random();
+        var random = new Random(); // NOSONAR - this is dummy disposable data
 
         string[] sampleNames = ["Alice", "Bob", "Charlie", "Diana", "Edward"];
         var sampleRoles = Enum.GetValues(typeof(ServiceRole));
@@ -119,7 +119,7 @@ public partial class MockedFacadeService : IFacadeService
 
     private static RegistrationSubmissionsOrganisationPaymentDetails GeneratePaymentDetails()
     {
-        var random = new Random();
+        var random = new Random(); // NOSONAR - this is dummy disposable data
 
         var generateRandomDecimal = (int min, int max) => Math.Round((decimal)(random.NextDouble() * (max - min) + min), 2);
 
