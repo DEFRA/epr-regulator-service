@@ -78,27 +78,25 @@ public partial class MockedFacadeService : IFacadeService
         return Tuple.Create(totalItems, sortedItems);
     }
 
-    public static RegistrationSubmissionOrganisationSubmissionSummaryDetails GenerateRandomSubmissionData()
+    public static RegistrationSubmissionOrganisationSubmissionSummaryDetails GenerateRandomSubmissionData(RegistrationSubmissionStatus registrationStatus)
     {
         var random = new Random();
 
         string[] sampleNames = ["Alice", "Bob", "Charlie", "Diana", "Edward"];
         var sampleRoles = Enum.GetValues(typeof(ServiceRole));
-        var sampleStatuses = Enum.GetValues(typeof(RegistrationSubmissionStatus));
-
         var generateRandomPhoneNumber  = (Random random) => $"{random.Next(100, 999)}-{random.Next(100, 999)}-{random.Next(1000, 9999)}";
 
 
         return new RegistrationSubmissionOrganisationSubmissionSummaryDetails
         {
-            Status = (RegistrationSubmissionStatus)sampleStatuses.GetValue(random.Next(sampleStatuses.Length)),
+            Status = registrationStatus,
             DecisionDate = DateTime.Now.AddDays(-random.Next(1, 100)),
             TimeAndDateOfSubmission = DateTime.Now.AddDays(-random.Next(1, 100)),
             SubmittedOnTime = random.Next(2) == 0,
             SubmittedBy = sampleNames[random.Next(sampleNames.Length)],
             AccountRole = (ServiceRole)sampleRoles.GetValue(random.Next(sampleRoles.Length)),
             Telephone = generateRandomPhoneNumber(random),
-            Email = $"{sampleNames[random.Next(sampleNames.Length)].ToLower()}@example.com",
+            Email = $"{sampleNames[random.Next(sampleNames.Length)].ToLower(CultureInfo.CurrentCulture)}@example.com",
             DeclaredBy = sampleNames[random.Next(sampleNames.Length)],
             Files = GenerateRandomFiles(random.Next(1, 5)) // Generate 1 to 5 random files
         };
