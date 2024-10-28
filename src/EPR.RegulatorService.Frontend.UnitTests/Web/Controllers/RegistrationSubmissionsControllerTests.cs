@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
+    using System.ComponentModel.DataAnnotations;
+
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
@@ -12,6 +14,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
     [TestClass]
     public class RegistrationSubmissionsControllerTests : RegistrationSubmissionsTestBase
@@ -90,7 +93,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #region Session Models and Filter states between gets and posts
         #region Happy Path
-[TestMethod]
+        [TestMethod]
         public async Task RegistrationSubmissions_ShouldHandleNullSession()
         {
             // Arrange
@@ -119,6 +122,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var sut = new RegistrationSubmissionsController(
+                null,
                 null,
                 _loggerMock.Object,
                 _mockConfiguration.Object,
@@ -778,10 +782,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region RegistrationSubmissionDetails
 
         [TestMethod]
-        public async Task RegistrationSubmissionDetails_ReturnsViewResult()
+        public async Task RegistrationSubmissionDetails_ReturnsViewResult_When_Receiving_Valid_Organisation_Id()
         {
             // Arrange
             var organisationId = Guid.NewGuid();
+            var expectedViewModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(expectedViewModel);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(organisationId);
@@ -792,60 +799,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task RegistrationSubmissionDetails_ReturnsPageNotFound_When_Receiving_InValid_Organisation_Id()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(organisationId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirect = result as RedirectToActionResult;
+            redirect.ActionName.Should().Be(PagePath.PageNotFound);
+        }
+
+        [TestMethod]
         public async Task RegistrationSubmissionDetails_ReturnsCorrectViewModel_ForValidOrganisationId()
         {
             // Arrange
             var organisationId = Guid.NewGuid(); // Simulate a valid Organisation ID
             string expectedViewName = nameof(_controller.RegistrationSubmissionDetails);
-            var expectedViewModel = new RegistrationSubmissionDetailsViewModel
-            {
-                OrganisationId = organisationId,
-                OrganisationReference = "215 148",
-                OrganisationName = "Acme org Ltd.",
-                RegistrationReferenceNumber = "REF001",
-                ApplicationReferenceNumber = "REF002",
-                OrganisationType = RegistrationSubmissionOrganisationType.large,
-                BusinessAddress = new BusinessAddress
-                {
-                    BuildingName = string.Empty,
-                    BuildingNumber = "10",
-                    Street = "High Street",
-                    County = "Randomshire",
-                    PostCode = "A12 3BC"
-                },
-                CompaniesHouseNumber = "0123456",
-                RegisteredNation = "Scotland",
-                PowerBiLogin = "https://app.powerbi.com/",
-                Status = RegistrationSubmissionStatus.queried,
-                SubmissionDetails = new SubmissionDetailsViewModel
-                {
-                    Status = RegistrationSubmissionStatus.queried,
-                    DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
-                    TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
-                    SubmittedOnTime = true,
-                    SubmittedBy = "Sally Smith",
-                    AccountRole = Frontend.Core.Enums.ServiceRole.ApprovedPerson,
-                    Telephone = "07553 937 831",
-                    Email = "sally.smith@email.com",
-                    DeclaredBy = "Sally Smith",
-                    Files =
-                    [
-                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
-                    ]
-                },
-                PaymentDetails = new PaymentDetailsViewModel
-                {
-                    ApplicationProcessingFee = 134522.56M,
-                    OnlineMarketplaceFee = 2534534.23M,
-                    SubsidiaryFee = 1.34M,
-                    PreviousPaymentsReceived = 20M
-                },
-                ProducerComments = "producer comment",
-                RegulatorComments = "regulator comment",
-                BackToAllSubmissionsUrl = "/regulators/manage-registration-submissions"
-            };
+            var expectedViewModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(expectedViewModel);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(organisationId) as ViewResult;
@@ -863,7 +840,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.ApplicationReferenceNumber, model.ApplicationReferenceNumber);
             Assert.AreEqual(expectedViewModel.RegistrationReferenceNumber, model.RegistrationReferenceNumber);
             Assert.AreEqual(expectedViewModel.OrganisationType, model.OrganisationType);
-            Assert.AreEqual(expectedViewModel.BackToAllSubmissionsUrl, model.BackToAllSubmissionsUrl);
 
             // Assert SubmissionDetailsViewModel properties
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Status, model.SubmissionDetails.Status);
@@ -902,10 +878,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissionDetails_SetsCorrectBackLink()
+       public async Task RegistrationSubmissionDetails_SetsCorrectBackLink()
         {
             // Arrange
             var organisationId = Guid.NewGuid();
+            var expectedViewModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(expectedViewModel);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(organisationId) as ViewResult;
@@ -916,19 +895,145 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
+        /// <summary>
+        /// This test will change when we connect to the next page in the journey
+        /// </summary>
         [TestMethod]
-        public async Task SubmitOfflinePayment_Post_RedirectsToRegistrationSubmissions_WhenCalled()
+        public async Task SubmitOfflinePayment_Post_RedirectsToRegistrationSubmissions_WhenCalled_With_Valid_Model()
         {
             // Arrange
-            var model = new PaymentDetailsViewModel();
+            var model = GenerateValidPaymentDetailsViewModel() ;
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
+
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
 
             // Act
-            var result = await _controller.SubmitOfflinePayment(model, Guid.NewGuid()) as ViewResult;
+            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
+            result.ViewName.Should().Be("RegistrationSubmissionDetails");
+            _controller.ModelState.IsValid.Should().BeTrue();
         }
 
+        [TestMethod]
+        public async Task SubmitOfflinePayment_Post_PresentsSubmissionDetailsView_WhenCalled_With_Invalid_Model()
+        {
+            // Arrange
+            var model = GenerateInvalidPaymentDetailsViewModel();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
+
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+
+            _controller.ModelState.AddModelError("OfflinePayment", "The field is required.");
+
+            // Act
+            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId);
+            var viewResult = result as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            viewResult.ViewName.Should().Be("RegistrationSubmissionDetails");
+        }
+
+        [TestMethod]
+        public async Task SubmitOfflinePayment_Post_ShouldHaveValidationErrors_WhenCalled_With_Invalid_Model()
+        {
+            // Arrange
+            var model = GenerateInvalidPaymentDetailsViewModel();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
+
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
+
+            _controller.ModelState.AddModelError("OfflinePayment", "The field is required.");
+
+            // Act
+            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId) ;
+            var viewResult = result as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(viewResult);
+            _controller.ModelState.IsValid.Should().BeFalse();
+        }
+
+        [TestMethod]
+        public async Task SubmitOfflinePayment_Post_RedirectsToPageNotFound_WhenCalled_With_OrganisationId_Mismatch()
+        {
+            // Arrange
+            var model = GenerateValidPaymentDetailsViewModel();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            // Act
+            var result = await _controller.SubmitOfflinePayment(model, Guid.NewGuid());
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.Should().BeOfType(typeof(RedirectToActionResult));
+            var redirect = result as RedirectToActionResult;
+            redirect.ActionName.Should().Be(PagePath.PageNotFound);
+        }
+
+        [TestMethod]
+        public async Task SubmitOfflinePayment_Post_RedirectsToPageNotFound_When_No_Details_In_Session()
+        {
+            // Arrange
+            var model = GenerateValidPaymentDetailsViewModel();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = null
+            };
+
+            // Act
+            var result = await _controller.SubmitOfflinePayment(model, Guid.NewGuid());
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.Should().BeOfType(typeof(RedirectToActionResult));
+            var redirect = result as RedirectToActionResult;
+            redirect.ActionName.Should().Be(PagePath.PageNotFound);
+        }
         #endregion
+
+        #region Page Not Found
+        [TestMethod]
+        public async Task PageNotFound_SetsCurrentPageNumberToOne()
+        {
+            // Act
+            await _controller.PageNotFound();
+
+            // Assert
+            Assert.AreEqual(1, _journeySession.RegulatorRegistrationSubmissionSession.CurrentPageNumber);
+        }
+
+        [TestMethod]
+        public async Task PageNotFound_RedirectsToErrorPage()
+        {
+            // Act
+            var result = await _controller.PageNotFound();
+
+            // Assert
+            Assert.IsInstanceOfType<RedirectToActionResult>(result);
+            var redirectResult = result as RedirectToActionResult;
+
+            Assert.AreEqual("Error", redirectResult.ControllerName);
+            Assert.AreEqual(PagePath.Error, redirectResult.ActionName);
+            Assert.AreEqual(404, redirectResult.RouteValues["statusCode"]);
+            Assert.AreEqual(PagePath.RegistrationSubmissionsRoute, redirectResult.RouteValues["backLink"]);
+        }
+        #endregion Page Not Found
     }
 }

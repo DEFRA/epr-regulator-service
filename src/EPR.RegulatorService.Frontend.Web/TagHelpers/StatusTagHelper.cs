@@ -31,7 +31,7 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
                 "queried" => "govuk-tag--purple",
                 "pending" => "govuk-tag--blue",
                 "updated" => "govuk-tag--yellow",
-                "cancelled" => "govuk-tag--grey",
+                "cancelled" => "status__cancelled",
                 "none" => "govuk-tag--purple",
                 _ => ""
             }, HtmlEncoder.Default);

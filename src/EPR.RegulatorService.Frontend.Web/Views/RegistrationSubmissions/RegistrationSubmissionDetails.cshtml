@@ -1,6 +1,7 @@
 @using EPR.RegulatorService.Frontend.Core.Enums
 @using EPR.RegulatorService.FronRegistrationSubmissionCommenttend.Web.ViewModels.RegistrationSubmissions
 @using EPR.RegulatorService.Frontend.Core.Extensions
+@using EPR.RegulatorService.Frontend.Web.Constants
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.Helpers
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
@@ -77,30 +78,30 @@
 
                 @await Component.InvokeAsync("PaymentDetails", new { model = Model.PaymentDetails })
 
-                
-                    @await Component.InvokeAsync("RegistrationSubmissionComments",
-                         new 
-                             {
-                                 Comment = Model.ProducerComments,
+
+                @await Component.InvokeAsync("RegistrationSubmissionComments",
+                         new
+                         {
+                             Comment = Model.ProducerComments,
                              Title = "RegistrationSubmissionDetails.ProducerTitle"
-                             }
-                             )
-                
-                
-                    @await Component.InvokeAsync("RegistrationSubmissionComments",
-                         new 
-                             {
-                                 Comment = Model.RegulatorComments,
+                         }
+                         )
+
+
+                @await Component.InvokeAsync("RegistrationSubmissionComments",
+                         new
+                         {
+                             Comment = Model.RegulatorComments,
                              Title = "RegistrationSubmissionDetails.RegulatorTitle"
-                             }
-                             )
-                
+                         }
+                         )
+
 
                 @await Html.PartialAsync("Partials/_RegistrationSubmissionActionButtons", Model)
 
             </div>
             <div class="govuk-grid-column-full">
-                <a href="@Model.BackToAllSubmissionsUrl" class="govuk-link govuk-link--no-visited-state">
+                <a href="@ViewBag.BackLinkToDisplay" class="govuk-link govuk-link--no-visited-state">
                     @Localizer["RegistrationSubmissionDetails.BackToAllSubmissions"]
                 </a>
             </div>

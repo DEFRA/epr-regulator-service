@@ -344,4 +344,17 @@ public class FacadeService : IFacadeService
 
         return mockedFacade.GetRegistrationSubmissions(filters);
     }
+
+    public RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid organisationId)
+    {
+        PrepareAuthenticatedClient();
+        var mockedFacade = new MockedFacadeService(Options.Create(new PaginationConfig()
+        {
+            PageSize = _paginationConfig.PageSize
+        }));
+
+        return mockedFacade.GetRegistrationSubmissionDetails(organisationId);
+
+        return null;
+    }
 }

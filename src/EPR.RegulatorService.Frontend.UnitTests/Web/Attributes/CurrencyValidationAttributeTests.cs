@@ -1,6 +1,7 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Attributes;
 
 using System;
+using System.Globalization;
 
 using EPR.RegulatorService.Frontend.Web.Attributes;
 
@@ -13,7 +14,7 @@ public class CurrencyValidationAttributeTests
     [TestInitialize]
     public void Setup()
     {
-        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue.ToString(), "specialChar", "nonNumeric");
+        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue.ToString(CultureInfo.CurrentCulture), "specialChar", "nonNumeric");
     }
 
     [TestMethod]
@@ -124,7 +125,7 @@ public class CurrencyValidationAttributeTests
     [TestMethod]
     public void CurrencyCantExceedSuppliedValue()
     {
-        bool result = _sut.IsValid((MaxValue + 100.00M).ToString());
+        bool result = _sut.IsValid((MaxValue + 100.00M).ToString(CultureInfo.CurrentCulture));
         result.Should().BeFalse();
     }
 
@@ -152,7 +153,7 @@ public class CurrencyValidationAttributeTests
     [TestMethod]
     public void CurrencyWontTestSpecialChars()
     {
-        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue.ToString(), "", "nonNumeric");
+        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue.ToString(CultureInfo.CurrentCulture), "", "nonNumeric");
         bool result = _sut.IsValid("!43");
         result.Should().BeFalse();
     }
@@ -160,7 +161,7 @@ public class CurrencyValidationAttributeTests
     [TestMethod]
     public void CurrencyWontTestAlphaChars()
     {
-        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue.ToString(), "specialChar", "");
+        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue.ToString(CultureInfo.CurrentCulture), "specialChar", "");
         bool result = _sut.IsValid("abc");
         result.Should().BeFalse();
     }

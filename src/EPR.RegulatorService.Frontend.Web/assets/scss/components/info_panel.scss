@@ -1,5 +1,16 @@
-$status-colors: ( granted: (background:
-    govuk-tint(govuk-colour("green"), 80%), foreground: govuk-shade(govuk-colour("green"), 20%)), refused: (background: govuk-tint(govuk-colour("red"), 80%), foreground: govuk-shade(govuk-colour("red"), 20%)), pending: (background: govuk-tint(govuk-colour("blue"), 80%), foreground: govuk-shade(govuk-colour("blue"), 20%)), cancelled: (background: govuk-tint(govuk-colour("mid-grey"), 80%), foreground: govuk-shade(govuk-colour("mid-grey"), 20%)), queried: (background: govuk-tint(govuk-colour("purple"), 80%), foreground: govuk-shade(govuk-colour("purple"), 20%)), updated: (background: govuk-tint(govuk-colour("yellow"), 80%), foreground: govuk-shade(govuk-colour("yellow"), 20%)) );
+$status-colors: ( granted: (
+                            background: govuk-tint(govuk-colour("green"), 80%),
+                            foreground: govuk-shade(govuk-colour("green"), 20%)),
+                  refused: (background: govuk-tint(govuk-colour("red"), 80%),
+                            foreground: govuk-shade(govuk-colour("red"), 20%)),
+                  pending: (background: govuk-tint(govuk-colour("blue"), 80%),
+                            foreground: govuk-shade(govuk-colour("blue"), 20%)),
+                  cancelled: (background: govuk-shade(govuk-colour("black"), 20%),
+                              foreground: govuk-shade(govuk-colour("white"), 20%)),
+                  queried: (background: govuk-tint(govuk-colour("purple"), 80%),
+                            foreground: govuk-shade(govuk-colour("purple"), 20%)),
+                  updated: (background: govuk-tint(govuk-colour("yellow"), 80%),
+                            foreground: govuk-shade(govuk-colour("yellow"), 20%)) );
 $darkforeground: #0b0b0c;
 
 
@@ -34,6 +45,10 @@ $darkforeground: #0b0b0c;
   @extend %status;
 }
 
+.govuk-tag {
+  @extend %status;
+}
+
 @mixin generate-status-classes($statuses) {
   @each $status, $colors in $statuses {
     $background-color: map-get($colors, background);
@@ -41,7 +56,7 @@ $darkforeground: #0b0b0c;
 
     .status__#{$status} {
       background-color: $background-color;
-      color: $darkforeground;
+      color: $foreground-color;
     }
   }
 }
@@ -53,7 +68,7 @@ $darkforeground: #0b0b0c;
 
     &__#{$status} {
       background-color: $background-color;
-      color: $darkforeground;
+      color: $foreground-color;
 
       h3 {
         background-color: $background-color;
@@ -62,7 +77,7 @@ $darkforeground: #0b0b0c;
 
       p {
         background-color: $background-color;
-        color: $darkforeground;
+        color: $foreground-color;
       }
     }
   }
@@ -73,7 +88,8 @@ $darkforeground: #0b0b0c;
 div.info-panel {
   @include generate-status-subclasses($status-colors);
   @include govuk-responsive-padding(4, "all", $adjustment: 0);
-  width: 33%;
+  @include govuk-grid-column(one-third, 'none');
+
   margin: govuk-spacing(4) 0px;
 
   h3 {
@@ -87,4 +103,9 @@ div.info-panel {
     margin: 0px;
     padding: 0px;
   }
+}
+
+.govuk-tag--black {
+  color: govuk-shade(govuk-colour("dark-grey", $legacy: "grey-1"), 30%);
+  background: govuk-tint(govuk-colour("dark-grey", $legacy: "grey-1"), 90%);
 }

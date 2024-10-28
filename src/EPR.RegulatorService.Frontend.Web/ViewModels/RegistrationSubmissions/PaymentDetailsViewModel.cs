@@ -3,6 +3,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.CodeAnalysis;
 
+    using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Web.Attributes;
 
     [ExcludeFromCodeCoverage]
@@ -28,5 +29,22 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                             nonNumericMessage: "PaymentValidation.NonNumericCharacters"
                             )]
         public string? OfflinePayment { get; set; }
+
+        public static implicit operator RegistrationSubmissionsOrganisationPaymentDetails(PaymentDetailsViewModel details) => details is null ? null : new RegistrationSubmissionsOrganisationPaymentDetails
+        {
+            ApplicationProcessingFee = details.ApplicationProcessingFee,
+            OnlineMarketplaceFee = details.OnlineMarketplaceFee,
+            PreviousPaymentsReceived = details.PreviousPaymentsReceived,
+            SubsidiaryFee = details.SubsidiaryFee
+        };
+
+        public static implicit operator PaymentDetailsViewModel(RegistrationSubmissionsOrganisationPaymentDetails details) => details is null ? null : new()
+        {
+            ApplicationProcessingFee = details.ApplicationProcessingFee,
+            OnlineMarketplaceFee = details.OnlineMarketplaceFee,
+            PreviousPaymentsReceived = details.PreviousPaymentsReceived,
+            SubsidiaryFee = details.SubsidiaryFee
+        };
+
     }
 }

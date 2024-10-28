@@ -10,15 +10,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Sessions;
-    using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+    using EPR.RegulatorService.Frontend.Core.Services;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-    using Castle.Core.Logging;
-    using EPR.RegulatorService.Frontend.Web.Controllers.Applications;
     using Microsoft.Extensions.Logging;
+    using EPR.RegulatorService.Frontend.Core.Enums;
+    using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
     public abstract class RegistrationSubmissionsTestBase
     {
         private const string BackLinkViewDataKey = "BackLinkToDisplay";
+        protected Mock<IFacadeService> _facadeServiceMock = null!;
 
         protected Mock<ILogger<RegistrationSubmissionsController>> _loggerMock = null!;
         protected RegistrationSubmissionsController _controller = null!;
@@ -41,6 +43,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             mockConfigurationSection.Setup(section => section.Value).Returns("/regulators");
             _mockConfiguration.Setup(config => config.GetSection(ConfigKeys.PathBase))
                 .Returns(mockConfigurationSection.Object);
+            _facadeServiceMock = new Mock<IFacadeService>();
 
             _mockUrlsOptions.Setup(mockUrlOptions =>
                 mockUrlOptions.Value)
@@ -52,6 +55,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, null);
 
             _controller = new RegistrationSubmissionsController(
+                _facadeServiceMock.Object,
                 _mockSessionManager.Object,
                 _loggerMock.Object,
                 _mockConfiguration.Object,
@@ -88,5 +92,64 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             hasBackLinkKey.Should().BeTrue();
             (gotBackLinkObject as string)?.Should().Be(expectedBackLink);
         }
+
+        protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(Guid organisationId) => new RegistrationSubmissionDetailsViewModel
+        {
+            OrganisationId = organisationId,
+            OrganisationReference = "215 148",
+            OrganisationName = "Acme org Ltd.",
+            RegistrationReferenceNumber = "REF001",
+            ApplicationReferenceNumber = "REF002",
+            OrganisationType = RegistrationSubmissionOrganisationType.large,
+            BusinessAddress = new BusinessAddress
+            {
+                BuildingName = string.Empty,
+                BuildingNumber = "10",
+                Street = "High Street",
+                County = "Randomshire",
+                PostCode = "A12 3BC"
+            },
+            CompaniesHouseNumber = "0123456",
+            RegisteredNation = "Scotland",
+            PowerBiLogin = "https://app.powerbi.com/",
+            Status = RegistrationSubmissionStatus.queried,
+            SubmissionDetails = new SubmissionDetailsViewModel
+            {
+                Status = RegistrationSubmissionStatus.queried,
+                DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
+                TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
+                SubmittedOnTime = true,
+                SubmittedBy = "Sally Smith",
+                AccountRole = Frontend.Core.Enums.ServiceRole.ApprovedPerson,
+                Telephone = "07553 937 831",
+                Email = "sally.smith@email.com",
+                DeclaredBy = "Sally Smith",
+                Files =
+                    [
+                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
+                    ]
+            },
+            PaymentDetails = new PaymentDetailsViewModel
+            {
+                ApplicationProcessingFee = 134522.56M,
+                OnlineMarketplaceFee = 2534534.23M,
+                SubsidiaryFee = 1.34M,
+                PreviousPaymentsReceived = 20M
+            },
+            ProducerComments = "producer comment",
+            RegulatorComments = "regulator comment"
+        };
+
+        protected static PaymentDetailsViewModel GenerateValidPaymentDetailsViewModel() => new PaymentDetailsViewModel
+        {
+            OfflinePayment = "200.45"
+        };
+
+        protected static PaymentDetailsViewModel GenerateInvalidPaymentDetailsViewModel() => new PaymentDetailsViewModel
+        {
+            OfflinePayment = "200.45"
+        };
     }
 }

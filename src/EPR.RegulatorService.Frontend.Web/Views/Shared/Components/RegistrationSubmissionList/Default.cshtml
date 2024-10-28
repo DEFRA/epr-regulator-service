@@ -25,9 +25,10 @@
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.Company"]
                         </span>
-                        <a href="../#" class="govuk-link">
-                            @organisation.OrganisationName
-                        </a>
+                        @(Html.RouteLink(@organisation.OrganisationName,
+                                         "SubmissionDetails",
+                                         new { organisationid = @organisation.OrganisationId },
+                                         new { @class = "govuk-link govuk-link--no-visited-state"}))
                         <br />
                         <span class="orgNameFilter">@SharedLocalizer[organisation.OrganisationType.GetDescription()]</span>
                     </td>

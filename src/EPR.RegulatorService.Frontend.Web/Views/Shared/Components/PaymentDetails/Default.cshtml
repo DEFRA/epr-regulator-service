@@ -94,7 +94,7 @@
                 <payment-amount amount="@Model.TotalOutstanding" property-name="TotalOutstanding"></payment-amount>
             </div>
         </dl>
-        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"></hr>
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"/>
 
         @using (Html.BeginRouteForm("SubmitPaymentInfo", new { organisationid = ViewBag.OrganisationId }, FormMethod.Post))
         {
