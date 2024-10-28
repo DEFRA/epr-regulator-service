@@ -1,6 +1,9 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
+    using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.CodeAnalysis;
+
+    using EPR.RegulatorService.Frontend.Web.Attributes;
 
     [ExcludeFromCodeCoverage]
     public class PaymentDetailsViewModel
@@ -17,6 +20,13 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public decimal TotalOutstanding => TotalChargeableItems - PreviousPaymentsReceived;
 
-        public decimal OfflinePayment { get; set; }
+        [CurrencyValidation(requiredErrorMessage: "PaymentValidation.TheAmountIsRequired",
+                            invalidFormatMessage: "PaymentValidation.FormatIsInvalid",
+                            valueExceededMessage: "PaymentValidation.ValueIsTooHigh",
+                            maxValue: "10000000.00",
+                            specialCharactersMessage: "PaymentValidation.InvalidCharacters",
+                            nonNumericMessage: "PaymentValidation.NonNumericCharacters"
+                            )]
+        public string? OfflinePayment { get; set; }
     }
 }
