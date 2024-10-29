@@ -1,7 +1,9 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
 
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Web.Attributes;
@@ -29,6 +31,14 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                             nonNumericMessage: "PaymentValidation.NonNumericCharacters"
                             )]
         public string? OfflinePayment { get; set; }
+
+        public void EnsureTwoDecimalPlaces() {
+            if (decimal.TryParse(OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))
+            {
+                // Format the parsed value as a currency with two decimal places
+                OfflinePayment = parsedValue.ToString("F2", CultureInfo.InvariantCulture);
+            }
+        }
 
         public static implicit operator RegistrationSubmissionsOrganisationPaymentDetails(PaymentDetailsViewModel details) => details is null ? null : new RegistrationSubmissionsOrganisationPaymentDetails
         {
