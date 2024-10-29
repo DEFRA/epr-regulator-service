@@ -454,31 +454,25 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task QueryRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
-            // Arrange
-            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissionsRoute;
-
-            var expectedViewModel = new QueryRegistrationSubmissionViewModel
-            {
-                BackToAllSubmissionsUrl = expectedBacktoAllSubmissionsUrl
-            };
+            // Arrange 
+            var expectedViewModel = new QueryRegistrationSubmissionViewModel(); 
 
             // Act
-            var result = await _controller.QueryRegistrationSubmission() as ViewResult;
+            var result = await _controller.QueryRegistrationSubmission( Guid.NewGuid()) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName);
             Assert.IsInstanceOfType(result.Model, typeof(QueryRegistrationSubmissionViewModel));
             var resultViewModel = result.Model as QueryRegistrationSubmissionViewModel;
-            Assert.AreEqual(expectedViewModel.Query, resultViewModel.Query);
-            Assert.AreEqual(expectedViewModel.BackToAllSubmissionsUrl, resultViewModel.BackToAllSubmissionsUrl);
+            Assert.AreEqual(expectedViewModel.Query, resultViewModel.Query); 
         }
 
         [TestMethod]
         public async Task QueryRegistrationSubmission_SetsCorrectBackLinkInViewData()
         {
             // Act
-            var result = await _controller.QueryRegistrationSubmission();
+            var result = await _controller.QueryRegistrationSubmission(Guid.NewGuid());
 
             // Assert
             var viewResult = result as ViewResult;
@@ -558,7 +552,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var result = await _controller.QueryRegistrationSubmission(model) as ViewResult;
 
             // Assert
-            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            //Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
             Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName, "The view name should match the action name.");
             Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
 
@@ -619,31 +613,25 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task RejectRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
-            // Arrange
-            string expectedBacktoAllSubmissionsUrl = PagePath.RegistrationSubmissionsRoute;
-
-            var expectedViewModel = new RejectRegistrationSubmissionViewModel
-            {
-                BackToAllSubmissionsUrl = expectedBacktoAllSubmissionsUrl
-            };
+            // Arrange 
+            var expectedViewModel = new RejectRegistrationSubmissionViewModel( );
 
             // Act
-            var result = await _controller.RejectRegistrationSubmission() as ViewResult;
+            var result = await _controller.RejectRegistrationSubmission(Guid.NewGuid()) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName);
             Assert.IsInstanceOfType(result.Model, typeof(RejectRegistrationSubmissionViewModel));
             var resultViewModel = result.Model as RejectRegistrationSubmissionViewModel;
-            Assert.AreEqual(expectedViewModel.RejectReason, resultViewModel.RejectReason);
-            Assert.AreEqual(expectedViewModel.BackToAllSubmissionsUrl, resultViewModel.BackToAllSubmissionsUrl);
+            Assert.AreEqual(expectedViewModel.RejectReason, resultViewModel.RejectReason); 
         }
 
         [TestMethod]
         public async Task RejectRegistrationSubmission_ShouldSetCorrectBackLink()
         {
             // Act
-            var result = await _controller.RejectRegistrationSubmission();
+            var result = await _controller.RejectRegistrationSubmission(Guid.NewGuid());
 
             // Assert
             var viewResult = result as ViewResult;

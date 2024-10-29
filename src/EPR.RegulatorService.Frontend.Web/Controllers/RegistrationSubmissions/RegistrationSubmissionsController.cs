@@ -164,39 +164,63 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
+        if (!GetOrRejectProvidedOrganisationId(organisationId, out RegistrationSubmissionDetailsViewModel existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
 
-        var model = new GrantRegistrationSubmissionViewModel();
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { organisationId }), false);
+
+        var model = new GrantRegistrationSubmissionViewModel()
+        {
+            OrganisationId = organisationId.Value
+        }; 
+
+        ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
 
         return View(nameof(GrantRegistrationSubmission), model);
     }
 
     [HttpGet] 
-    [Route(PagePath.QueryRegistrationSubmission + "/{organisationId:guid}", Name = "QueryRegistrationSubmission")]
+    [Route(PagePath.QueryRegistrationSubmission + "/{organisationId:guid}")]
     public async Task<IActionResult> QueryRegistrationSubmission(Guid? organisationId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
+        if (!GetOrRejectProvidedOrganisationId(organisationId, out RegistrationSubmissionDetailsViewModel existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
 
-        var model = new QueryRegistrationSubmissionViewModel();
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { organisationId }), false);
+
+        var model = new QueryRegistrationSubmissionViewModel
+        {
+            OrganisationId = organisationId.Value
+        };
+
+        ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
 
         return View(nameof(QueryRegistrationSubmission), model);
     } 
 
     [HttpPost]
-    [Route(PagePath.QueryRegistrationSubmission)]
+    [Route(PagePath.QueryRegistrationSubmission + "/{organisationId:guid}")]
     public async Task<IActionResult> QueryRegistrationSubmission(QueryRegistrationSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
+        if (!GetOrRejectProvidedOrganisationId(model.OrganisationId, out RegistrationSubmissionDetailsViewModel existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
         if (!ModelState.IsValid)
         {
-            SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
+            SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }), false);
             return View(nameof(QueryRegistrationSubmission), model);
         }
 
-        return Redirect(PagePath.RegistrationSubmissionsRoute);
+        return RedirectToAction(PagePath.RegistrationSubmissionsAction);
     }
 
     [HttpGet] 

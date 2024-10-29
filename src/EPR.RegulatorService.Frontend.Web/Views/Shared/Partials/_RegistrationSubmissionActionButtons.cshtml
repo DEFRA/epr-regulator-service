@@ -10,19 +10,37 @@
     {
         <ul class="govuk-list govuk-list__horizontal govuk-list__last-spaced">
             <li>
-                <a class="govuk-button" href="@PagePath.GrantRegistrationSubmission">
+                <a class="govuk-button " href="@Url.Action(
+                "GrantRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  organisationId = Model.OrganisationId
+                })">
                     @Localizer["RegistrationSubmissionDetails.GrantRegistration"]
-                </a>
+                </a> 
             </li>
             <li>
-                <a class="govuk-button govuk-button--inverse " href="@PagePath.QueryRegistrationSubmission">
+                <a class="govuk-button govuk-button--inverse" href="@Url.Action(
+                "QueryRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  organisationId = Model.OrganisationId
+                })">
                     @Localizer["RegistrationSubmissionDetails.QueryRegistration"]
                 </a>
             </li>
             <li>
-                <a class="govuk-button govuk-button--warning" href="@PagePath.RejectRegistrationSubmission">
+                <a class="govuk-button govuk-button--warning" href="@Url.Action(
+                "RejectRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  organisationId = Model.OrganisationId
+                })">
                     @Localizer["RegistrationSubmissionDetails.RefuseRegistration"]
-                </a>
+                </a> 
             </li>
         </ul>
     }
