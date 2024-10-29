@@ -156,18 +156,31 @@ public partial class RegistrationSubmissionsController(
         return View(nameof(RegistrationSubmissionDetails), existingModel);
     }
 
-    [HttpGet]
-    [Route(PagePath.QueryRegistrationSubmission)]
-    public async Task<IActionResult> QueryRegistrationSubmission()
+    [HttpGet] 
+    [Route(PagePath.GrantRegistrationSubmission + "/{organisationId:guid}", Name = "GrantRegistrationSubmission")]
+    public async Task<IActionResult> GrantRegistrationSubmission(Guid? organisationId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
+
+        var model = new GrantRegistrationSubmissionViewModel();
+
+        return View(nameof(GrantRegistrationSubmission), model);
+    }
+
+    [HttpGet] 
+    [Route(PagePath.QueryRegistrationSubmission + "/{organisationId:guid}", Name = "QueryRegistrationSubmission")]
+    public async Task<IActionResult> QueryRegistrationSubmission(Guid? organisationId)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
 
         var model = new QueryRegistrationSubmissionViewModel();
 
         return View(nameof(QueryRegistrationSubmission), model);
-    }
+    } 
 
     [HttpPost]
     [Route(PagePath.QueryRegistrationSubmission)]
@@ -184,13 +197,13 @@ public partial class RegistrationSubmissionsController(
         return Redirect(PagePath.RegistrationSubmissionsRoute);
     }
 
-    [HttpGet]
-    [Route(PagePath.RejectRegistrationSubmission)]
-    public async Task<IActionResult> RejectRegistrationSubmission()
+    [HttpGet] 
+    [Route(PagePath.RejectRegistrationSubmission + "/{organisationId:guid}", Name = "RejectRegistrationSubmission")]
+    public async Task<IActionResult> RejectRegistrationSubmission(Guid? organisationId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
 
         var model = new RejectRegistrationSubmissionViewModel();
 
