@@ -1,0 +1,111 @@
+$status-colors: ( granted: (
+                            background: govuk-tint(govuk-colour("green"), 80%),
+                            foreground: govuk-shade(govuk-colour("green"), 20%)),
+                  refused: (background: govuk-tint(govuk-colour("red"), 80%),
+                            foreground: govuk-shade(govuk-colour("red"), 20%)),
+                  pending: (background: govuk-tint(govuk-colour("blue"), 80%),
+                            foreground: govuk-shade(govuk-colour("blue"), 20%)),
+                  cancelled: (background: govuk-shade(govuk-colour("black"), 20%),
+                              foreground: govuk-shade(govuk-colour("white"), 20%)),
+                  queried: (background: govuk-tint(govuk-colour("purple"), 80%),
+                            foreground: govuk-shade(govuk-colour("purple"), 20%)),
+                  updated: (background: govuk-tint(govuk-colour("yellow"), 80%),
+                            foreground: govuk-shade(govuk-colour("yellow"), 20%)) );
+$darkforeground: #0b0b0c;
+
+
+%status {
+  &__granted {
+    color: map-get($status-colors, granted, foreground);
+    background-color: map-get($status-colors, granted, background);
+  }
+
+  &__refused {
+    color: map-get($status-colors, refused, foreground);
+    background-color: map-get($status-colors, refused, background);
+  }
+
+  &__pending {
+    color: map-get($status-colors, pending, foreground);
+    background-color: map-get($status-colors, pending, background);
+  }
+
+  &__cancelled {
+    color: map-get($status-colors, cancelled, foreground);
+    background-color: map-get($status-colors, cancelled, background);
+  }
+
+  &__queried {
+    color: map-get($status-colors, queried, foreground);
+    background-color: map-get($status-colors, queried, background);
+  }
+}
+
+.status-info {
+  @extend %status;
+}
+
+.govuk-tag {
+  @extend %status;
+}
+
+@mixin generate-status-classes($statuses) {
+  @each $status, $colors in $statuses {
+    $background-color: map-get($colors, background);
+    $foreground-color: map-get($colors, foreground);
+
+    .status__#{$status} {
+      background-color: $background-color;
+      color: $foreground-color;
+    }
+  }
+}
+
+@mixin generate-status-subclasses($statuses) {
+  @each $status, $colors in $statuses {
+    $background-color: map-get($colors, background);
+    $foreground-color: map-get($colors, foreground);
+
+    &__#{$status} {
+      background-color: $background-color;
+      color: $foreground-color;
+
+      h3 {
+        background-color: $background-color;
+        color: $foreground-color;
+      }
+
+      p {
+        background-color: $background-color;
+        color: $foreground-color;
+      }
+    }
+  }
+}
+
+@include generate-status-classes($status-colors);
+
+div.info-panel {
+  @include generate-status-subclasses($status-colors);
+  @include govuk-responsive-padding(4, "all", $adjustment: 0);
+  @include govuk-grid-column(one-third, 'none');
+
+  margin: govuk-spacing(4) 0px;
+
+  h3 {
+    @extend %govuk-heading-s;
+    padding: govuk-spacing(1) 0px;
+    margin-bottom: 0px;
+  }
+
+  p {
+    @extend .govuk-body;
+    margin: 0px;
+    padding: 0px;
+  }
+}
+
+.govuk-tag--black {
+  color: govuk-shade(govuk-colour("dark-grey", $legacy: "grey-1"), 30%);
+  background: govuk-tint(govuk-colour("dark-grey", $legacy: "grey-1"), 90%);
+}

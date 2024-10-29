@@ -19,40 +19,8 @@
                 <div id="contact-hint" class="govuk-hint">
                     @Localizer["Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
                 </div>
-
-                @using (Html.BeginForm("RegistrationSubmissions", "RegistrationSubmissions", FormMethod.Get))
-                {
-                    <div class="epr-filter-panel">
-                        <div class="govuk-width-container">
-                            <div class="govuk-grid-row">
-                                <div class="govuk-grid-column-full">
-                                    <div class="epr-filter-panel-full">
-                                        <h2 class="govuk-heading-m govuk-!-margin-bottom-5">
-                                            @Localizer["FilterOptions.Title"].Value
-                                        </h2>
-                                        <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button">
-                                            @SharedLocalizer["ApplyFilters"].Value
-                                        </button>
-                                        @Html.ActionLink(SharedLocalizer["ClearFilters"].Value,
-                                                 "RegistrationSubmissions",
-                                                 "RegistrationSubmissions",
-                                                 new { clearFilters = true },
-                                                 new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-filter-panel-control" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
+                @await Component.InvokeAsync("RegistrationSubmissionList", Model.ListViewModel)
             </div>
-
-
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-5">
-                @Localizer["FilterResults.Title"].Value
-            </h2>
-
-            @await Component.InvokeAsync("RegistrationSubmissionList", Model)
-
         </div>
     </main>
 </div>

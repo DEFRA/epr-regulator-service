@@ -8,15 +8,27 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
+    using EPR.RegulatorService.Frontend.Core.Sessions;
+    using EPR.RegulatorService.Frontend.Web.Sessions;
+    using EPR.RegulatorService.Frontend.Core.Services;
+    using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+    using Microsoft.Extensions.Logging;
+    using EPR.RegulatorService.Frontend.Core.Enums;
+    using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
     public abstract class RegistrationSubmissionsTestBase
     {
         private const string BackLinkViewDataKey = "BackLinkToDisplay";
+        protected Mock<IFacadeService> _facadeServiceMock = null!;
 
+        protected Mock<ILogger<RegistrationSubmissionsController>> _loggerMock = null!;
         protected RegistrationSubmissionsController _controller = null!;
         protected Mock<HttpContext> _mockHttpContext = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _mockUrlsOptions = null!;
         protected Mock<IConfiguration> _mockConfiguration = null!;
+        protected Mock<ISessionManager<JourneySession>> _mockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
+        protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
 
         protected void SetupBase()
@@ -24,11 +36,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockHttpContext = new Mock<HttpContext>();
             _mockUrlsOptions = new Mock<IOptions<ExternalUrlsOptions>>();
             _mockConfiguration = new Mock<IConfiguration>();
+            _loggerMock = new Mock<ILogger<RegistrationSubmissionsController>>();
 
+            _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
             var mockConfigurationSection = new Mock<IConfigurationSection>();
             mockConfigurationSection.Setup(section => section.Value).Returns("/regulators");
             _mockConfiguration.Setup(config => config.GetSection(ConfigKeys.PathBase))
                 .Returns(mockConfigurationSection.Object);
+            _facadeServiceMock = new Mock<IFacadeService>();
 
             _mockUrlsOptions.Setup(mockUrlOptions =>
                 mockUrlOptions.Value)
@@ -37,13 +52,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     PowerBiLogin = PowerBiLogin
                 });
 
+            SetupJourneySession(null, null);
+
             _controller = new RegistrationSubmissionsController(
+                _facadeServiceMock.Object,
+                _mockSessionManager.Object,
+                _loggerMock.Object,
                 _mockConfiguration.Object,
-                _mockUrlsOptions.Object);
-
-            _controller.ControllerContext.HttpContext = _mockHttpContext.Object;
-
-            _controller = new RegistrationSubmissionsController(_mockConfiguration.Object, _mockUrlsOptions.Object)
+                _mockUrlsOptions.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -53,11 +69,87 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
         }
 
+        public void SetupJourneySession(RegistrationSubmissionsFilterModel filtersModel,
+                                        RegistrationSubmissionOrganisationDetails selectedSubmission, int currentPageNumber = 1)
+        {
+            _journeySession = new JourneySession()
+            {
+                RegulatorRegistrationSubmissionSession = new()
+                {
+                    LatestFilterChoices = filtersModel,
+                    CurrentPageNumber = currentPageNumber,
+                    SelectedRegistration = selectedSubmission
+                }
+            };
+
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(_journeySession);
+        }
+
         protected static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
         {
             bool hasBackLinkKey = viewResult.ViewData.TryGetValue(BackLinkViewDataKey, out var gotBackLinkObject);
             hasBackLinkKey.Should().BeTrue();
             (gotBackLinkObject as string)?.Should().Be(expectedBackLink);
         }
+
+        protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(Guid organisationId) => new RegistrationSubmissionDetailsViewModel
+        {
+            OrganisationId = organisationId,
+            OrganisationReference = "215 148",
+            OrganisationName = "Acme org Ltd.",
+            RegistrationReferenceNumber = "REF001",
+            ApplicationReferenceNumber = "REF002",
+            OrganisationType = RegistrationSubmissionOrganisationType.large,
+            BusinessAddress = new BusinessAddress
+            {
+                BuildingName = string.Empty,
+                BuildingNumber = "10",
+                Street = "High Street",
+                County = "Randomshire",
+                PostCode = "A12 3BC"
+            },
+            CompaniesHouseNumber = "0123456",
+            RegisteredNation = "Scotland",
+            PowerBiLogin = "https://app.powerbi.com/",
+            Status = RegistrationSubmissionStatus.queried,
+            SubmissionDetails = new SubmissionDetailsViewModel
+            {
+                Status = RegistrationSubmissionStatus.queried,
+                DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
+                TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
+                SubmittedOnTime = true,
+                SubmittedBy = "Sally Smith",
+                AccountRole = Frontend.Core.Enums.ServiceRole.ApprovedPerson,
+                Telephone = "07553 937 831",
+                Email = "sally.smith@email.com",
+                DeclaredBy = "Sally Smith",
+                Files =
+                    [
+                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
+                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
+                    ]
+            },
+            PaymentDetails = new PaymentDetailsViewModel
+            {
+                ApplicationProcessingFee = 134522.56M,
+                OnlineMarketplaceFee = 2534534.23M,
+                SubsidiaryFee = 1.34M,
+                PreviousPaymentsReceived = 20M
+            },
+            ProducerComments = "producer comment",
+            RegulatorComments = "regulator comment"
+        };
+
+        protected static PaymentDetailsViewModel GenerateValidPaymentDetailsViewModel() => new PaymentDetailsViewModel
+        {
+            OfflinePayment = "200.45"
+        };
+
+        protected static PaymentDetailsViewModel GenerateInvalidPaymentDetailsViewModel() => new PaymentDetailsViewModel
+        {
+            OfflinePayment = "200.45"
+        };
     }
 }

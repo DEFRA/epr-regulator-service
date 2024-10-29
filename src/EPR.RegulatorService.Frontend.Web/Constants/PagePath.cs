@@ -36,9 +36,11 @@ public static class PagePath
     public const string OrganisationDetailsFileDownload = "organisation-details-file-download";
     public const string OrganisationDetailsFileDownloadFailed = "organisation-details-file-download-failed";
     public const string OrganisationDetailsFileDownloadSecurityWarning = "organisation-details-file-download-security-warning";
-    public const string RegistrationSubmissions = "manage-registration-submissions";
+    public const string RegistrationSubmissionsRoute = "manage-registration-submissions";
+    public const string RegistrationSubmissionsAction = "RegistrationSubmissions";
     public const string QueryRegistrationSubmission = "manage-registration-submissions-query";
     public const string RejectRegistrationSubmission = "manage-registration-submissions-reject";
+    public const string RegistrationSubmissionDetails = "registration-submission-details";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

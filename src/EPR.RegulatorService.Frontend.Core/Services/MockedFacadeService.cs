@@ -7,33 +7,31 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+
 using Microsoft.Extensions.Options;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
-
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 [ExcludeFromCodeCoverage]
-public class MockedFacadeService : IFacadeService
+public partial class MockedFacadeService(IOptions<PaginationConfig> options) : IFacadeService
 {
     private const string ApprovedPerson = "ApprovedPerson";
     private const string DelegatedPerson = "DelegatedPerson";
     private const string Pending = "Pending";
     private const string Accepted = "Accepted";
     private const string Rejected = "Rejected";
-    private readonly PaginationConfig _config;
-    private static List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
-    private static List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
-    private static List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
-    private static List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
-
-    public MockedFacadeService(IOptions<PaginationConfig> options)
-    {
-        _config = options.Value;
-    }
+    private readonly PaginationConfig _config = options.Value;
+    private static readonly List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
+    private static readonly List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
+    private static readonly List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
+    private static readonly List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
+    private static readonly List<RegistrationSubmissionOrganisationDetails> _registrationSubmissions = GenerateRegistrationSubmissionDataCollection();
 
     public async Task<string> GetTestMessageAsync()
     {
@@ -103,11 +101,11 @@ public class MockedFacadeService : IFacadeService
     private static List<OrganisationApplications> GenerateOrganisationApplications()
     {
         var allItems = new List<OrganisationApplications>();
-        
+
         for (int i = 1; i <= 1000; i++)
         {
-            var hasApprovedPending = (i % 2) == 0; 
-            var hasDelegatedPending = (i % 4) < 2;
+            bool hasApprovedPending = (i % 2) == 0;
+            bool hasDelegatedPending = (i % 4) < 2;
 
             string organisationName = string.Empty;
 
@@ -125,6 +123,9 @@ public class MockedFacadeService : IFacadeService
                     // Extra long name with spaces
                     organisationName += $"Organisation{i}Ltd ReallyReallyReallyReallyReallyReallyReally Really Long Name";
                     break;
+                default:
+                    organisationName = $"Organisation {i} Ltd With an even more and even longer meaningless name that will never fit in any view";
+                    break;
             }
 
             allItems.Add(new OrganisationApplications
@@ -134,7 +135,8 @@ public class MockedFacadeService : IFacadeService
                 LastUpdate = DateTime.Now.AddDays(-(i % 15)),
                 Enrolments = new()
                 {
-                    HasApprovedPending = hasApprovedPending, HasDelegatePending = hasDelegatedPending
+                    HasApprovedPending = hasApprovedPending,
+                    HasDelegatePending = hasDelegatedPending
                 }
             });
         }
@@ -163,7 +165,7 @@ public class MockedFacadeService : IFacadeService
     private static List<OrganisationSearchResult> GenerateOrganisationSearchResults()
     {
         var allItems = new List<OrganisationSearchResult>();
-        var random = RandomNumberGenerator.GetInt32(0, 2);
+        int random = RandomNumberGenerator.GetInt32(0, 2);
 
         for (int i = 1; i <= 1000; i++)
         {
@@ -348,10 +350,11 @@ public class MockedFacadeService : IFacadeService
             return filteredItems.Cast<T>().ToList();
         }
 
-        return new List<T>();
+        return [];
     }
 
     public async Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+
     public async Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request)
     {
         var response = new HttpResponseMessage(HttpStatusCode.OK)
@@ -366,5 +369,41 @@ public class MockedFacadeService : IFacadeService
         };
 
         return await Task.FromResult(response);
+    }
+
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
+    {
+        filters.PageSize ??= _config.PageSize;
+
+        // this is where the Facade is actually called
+        var results = FilterAndOrderRegistrations([.. _registrationSubmissions], filters);
+
+        if (filters.Page > (int)Math.Ceiling(results.Item1 / (double)_config.PageSize))
+        {
+            filters.Page = (int)Math.Ceiling(results.Item1 / (double)_config.PageSize);
+        }
+
+        var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+        {
+            Items = results.Item2,
+            CurrentPage = filters.Page.Value,
+            TotalItems = results.Item1,
+            PageSize = filters.PageSize.Value
+        };
+
+        return response;
+    }
+
+    public RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid organisationId)
+    {
+        var objRet = _registrationSubmissions.Find(x => x.OrganisationID == organisationId);
+
+        if (null != objRet)
+        {
+            objRet.SubmissionDetails = objRet.SubmissionDetails ?? GenerateRandomSubmissionData(objRet.RegistrationStatus);
+            objRet.PaymentDetails = objRet.PaymentDetails ?? GeneratePaymentDetails();
+        }
+
+        return objRet;
     }
 }

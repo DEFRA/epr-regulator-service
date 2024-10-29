@@ -1,0 +1,57 @@
+$inverse-button-colour: #00703c;
+$inverse-button-hover-colour: govuk-hint($inverse-button-colour, 80%);
+$inverse-button-hover-text-colour: govuk-shade($inverse-button-colour, 20%);
+
+.govuk-list {
+  &__horizontal {
+    list-style: none;
+
+    .govuk-button--inverse {
+      color: #00703c;
+      background-color: #fff;
+      box-shadow: 0 1px 0 #00703c;
+      border: $govuk-border-width-form-element solid $inverse-button-colour;
+      border-radius: 0;
+
+      &:hover {
+        background-color: $inverse-button-hover-colour;
+        color: $inverse-button-hover-text-colour;
+        box-shadow: 0 2px 0 $inverse-button-hover-text-colour;
+        border: $govuk-border-width-form-element solid $inverse-button-hover-text-colour;
+      }
+
+      &:focus {
+        border-color: $govuk-focus-colour;
+        box-shadow: inset 0 0 0 2px $govuk-focus-colour;
+      }
+
+      &:focus:not(:active):not(:hover) {
+        border-color: $govuk-focus-colour;
+      }
+    }
+
+    li {
+      padding: 0;
+      margin: 0;
+      display: inline-block;
+    }
+
+    li:last-child {
+      a {
+        @include govuk-responsive-margin(7, "left");
+      }
+    }
+
+    @media (max-width: 768px) {
+      li {
+        display: initial;
+      }
+
+      li:last-child {
+        a {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+}

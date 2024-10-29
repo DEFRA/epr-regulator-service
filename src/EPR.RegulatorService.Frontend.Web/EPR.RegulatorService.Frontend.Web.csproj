@@ -32,6 +32,13 @@
   </Target>
 
   <ItemGroup>
+    <Compile Remove="out\**" />
+    <Content Remove="out\**" />
+    <EmbeddedResource Remove="out\**" />
+    <None Remove="out\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.8" />
@@ -50,6 +57,12 @@
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentRequests.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.en.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionDetails.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionDetails.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RejectRegistrationSubmission.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -71,6 +84,22 @@
     <EmbeddedResource Update="Resources\Views\RegulatorEnrolment\FullName.en.resx" />
     <EmbeddedResource Update="Resources\Views\SearchManageApprovers\RegulatorSearchPage.cy.resx" />
     <EmbeddedResource Update="Resources\Views\SearchManageApprovers\RegulatorSearchPage.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Components\PaymentDetails\Default.cy.resx">
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\PaymentDetails\Default.en.resx">
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\SubmissionDetails\Default.cy.resx">
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\SubmissionDetails\Default.en.resx">
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\ManageApprovedUser\_DelegatedPersons.cy.resx">
       <LastGenOutput>_ApprovedPerson.en.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>

@@ -264,4 +264,52 @@
   <data name="FileDownload.RejectSubmission" xml:space="preserve">
     <value>Reject Submission</value>
   </data>
+  <data name="RegistrationSubmissionOrganisationType.ComplianceScheme" xml:space="preserve">
+    <value>Compliance Scheme</value>
+  </data>
+  <data name="RegistrationSubmissionOrganisationType.LargeProducer" xml:space="preserve">
+    <value>Large Producer</value>
+  </data>
+  <data name="RegistrationSubmissionOrganisationType.NotSpecified" xml:space="preserve">
+    <value>Not specified</value>
+  </data>
+  <data name="RegistrationSubmissionOrganisationType.SmallProducer" xml:space="preserve">
+    <value>Small Producer</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Granted" xml:space="preserve">
+    <value>Granted</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.NotSpecified" xml:space="preserve">
+    <value>Not specified</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Queried" xml:space="preserve">
+    <value>Queried</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Refused" xml:space="preserve">
+    <value>Refused</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Updated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="ServiceRole.ApprovedPerson" xml:space="preserve">
+    <value>Approved person</value>
+  </data>
+  <data name="ServiceRole.DelegatedPerson" xml:space="preserve">
+    <value>Delegated person</value>
+  </data>
+  <data name="ServiceRole.ProducerOther" xml:space="preserve">
+    <value>Producer other</value>
+  </data>
+  <data name="ServiceRole.RegulatorAdmin" xml:space="preserve">
+    <value>Regulator admin</value>
+  </data>
+  <data name="ServiceRole.RegulatorBasic" xml:space="preserve">
+    <value>Regulator basic</value>
+  </data>
 </root>

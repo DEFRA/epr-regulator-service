@@ -3,6 +3,7 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
@@ -51,4 +52,7 @@ public interface IFacadeService
 
     Task<EndpointResponseStatus> SubmitRegistrationDecision(RegulatorRegistrationDecisionCreateRequest request);
     Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request);
+
+    Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters);
+    RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid organisationId);
 }
