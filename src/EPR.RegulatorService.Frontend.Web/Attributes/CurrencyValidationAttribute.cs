@@ -102,6 +102,6 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
     [GeneratedRegex(@"[!@#\$%\^&\*\(\)\?:{}|<>/;\[\]'~=`¬]")]
     private static partial Regex SpecialCharRegex();
 
-    [GeneratedRegex(@"^-?(\d{1,3})(,\d{3})*(\.\d{1,2})?$")]
+    [GeneratedRegex(@"^-?(\d{1,3})(,?\d{3})*(\.\d{1,2})?$")]
     private static partial Regex TestRegex();
 }
