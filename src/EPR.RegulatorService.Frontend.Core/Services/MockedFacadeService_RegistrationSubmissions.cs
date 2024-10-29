@@ -64,10 +64,9 @@ public partial class MockedFacadeService : IFacadeService
         }
 
         var sortedItems = filteredItems
-                .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
+                .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
+                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.updated)
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
                 .ThenBy(x => x.RegistrationDateTime)
