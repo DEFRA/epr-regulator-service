@@ -121,14 +121,6 @@
                                                      new { id = "is-status-cancelled-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-status-cancelled-checked-check" })
                                         </div>
                                     </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
-                                        <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
-                                            @Html.CheckBoxFor(x => x.IsStatusUpdatedChecked,
-                                                     new { id = "is-status-updated-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-status-updated-checked-label" })
-                                            @Html.LabelFor(x => x.IsStatusUpdatedChecked, Localizer["Checkbox.SubmissionStatus.Updated"].Value,
-                                                     new { id = "is-status-updated-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-status-updated-checked-check" })
-                                        </div>
-                                    </div>
                                 </div>
                             </fieldset>
                         </div>
