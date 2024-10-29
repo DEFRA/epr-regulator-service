@@ -97,22 +97,32 @@ public partial class MockedFacadeService : IFacadeService
             Telephone = generateRandomPhoneNumber(random),
             Email = $"{sampleNames[random.Next(sampleNames.Length)].ToLower(CultureInfo.CurrentCulture)}@example.com",
             DeclaredBy = sampleNames[random.Next(sampleNames.Length)],
-            Files = GenerateRandomFiles(random.Next(1, 5)) // Generate 1 to 5 random files
+            Files = GenerateRandomFiles()
         };
     }
 
-    private static List<RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails> GenerateRandomFiles(int count)
+    private static List<RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails> GenerateRandomFiles()
     {
         var files = new List<RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails>();
-        for (int i = 0; i < count; i++)
+
+        files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails()
         {
-            files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails
-            {
-                Label = $"Document {i + 1}",
-                FileName = $"file_{i + 1}.pdf",
-                DownloadUrl = $"https://example.com/download/file_{i + 1}.pdf"
-            });
-        }
+            DownloadUrl = "#",
+            FileName = "org.details.acme.csv",
+            Label = "SubmissionDetails.OrganisationDetails"
+        });
+        files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails()
+        {
+            DownloadUrl = "#",
+            FileName = "brand.details.acme.csv",
+            Label = "SubmissionDetails.BrandDetails"
+        });
+        files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails()
+        {
+            DownloadUrl = "#",
+            FileName = "partner.details.acme.csv",
+            Label = "SubmissionDetails.PartnerDetails"
+        });
         return files;
     }
 
