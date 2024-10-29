@@ -140,7 +140,7 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedOrganisationId(organisationid, out RegistrationSubmissionDetailsViewModel existingModel))
+        if (!GetOrRejectProvidedOrganisationId(organisationid, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -151,6 +151,8 @@ public partial class RegistrationSubmissionsController(
         {
             return View(nameof(RegistrationSubmissionDetails), existingModel);
         }
+
+        model.EnsureTwoDecimalPlaces();
 
         // otherwise we will redirect to the confirmation page
         return View(nameof(RegistrationSubmissionDetails), existingModel);
