@@ -14,6 +14,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+
     using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
     [TestClass]
@@ -154,7 +155,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             SetupJourneySession(latestFilterChoices, null);
-        
+
             // Act
             var result = await _controller.RegistrationSubmissions(null);
 
@@ -233,7 +234,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             int expected_page_number = 2;
 
             RegistrationSubmissionsFilterModel emptyFilterChoices = new()
-            {};
+            { };
 
             RegistrationSubmissionsFilterModel latestFilterChoices = new()
             {
@@ -413,7 +414,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task PostTo_RegistrationSubmissions_Logs_Error_When_Exception_Received()
         {
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(null,null);
+            var result = await _controller.RegistrationSubmissions(null, null);
             Assert.IsNotNull(result);
             result.Should().BeOfType<RedirectToActionResult>();
             (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
@@ -422,7 +423,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                             It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
                             It.Is<EventId>((eid) => eid == 1001),
                             It.IsAny<It.IsAnyType>(),
-                            It.Is<Exception>((v, t)=> v.ToString().Contains("Test")),
+                            It.Is<Exception>((v, t) => v.ToString().Contains("Test")),
                             It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                         Times.Once);
         }
@@ -878,7 +879,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-       public async Task RegistrationSubmissionDetails_SetsCorrectBackLink()
+        public async Task RegistrationSubmissionDetails_SetsCorrectBackLink()
         {
             // Arrange
             var organisationId = Guid.NewGuid();
@@ -902,7 +903,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task SubmitOfflinePayment_Post_RedirectsToRegistrationSubmissions_WhenCalled_With_Valid_Model()
         {
             // Arrange
-            var model = GenerateValidPaymentDetailsViewModel() ;
+            var model = GenerateValidPaymentDetailsViewModel();
             var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
 
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
@@ -952,7 +953,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _controller.ModelState.AddModelError("OfflinePayment", "The field is required.");
 
             // Act
-            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId) ;
+            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId);
             var viewResult = result as ViewResult;
 
             // Assert
@@ -1035,5 +1036,26 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(PagePath.RegistrationSubmissionsRoute, redirectResult.RouteValues["backLink"]);
         }
         #endregion Page Not Found
+
+        #region ConfirmOfflinePaymentSubmission
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_InvalidOrganisationId_RedirectsToPageNotFound()
+        {
+            // Arrange
+            var invalidOrganisationId = Guid.NewGuid();
+            SetupJourneySession(null, null); // No valid session with matching organisation
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(invalidOrganisationId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirectResult = result as RedirectToActionResult;
+            Assert.AreEqual("PageNotFound", redirectResult.ActionName);
+            Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
+        }
+
+        #endregion
     }
 }
