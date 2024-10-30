@@ -893,11 +893,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             AssertBackLink(result, $"/regulators/{PagePath.RegistrationSubmissionsRoute}");
         }
 
-        /// <summary>
-        /// This test will change when we connect to the next page in the journey
-        /// </summary>
         [TestMethod]
-        public async Task SubmitOfflinePayment_Post_RedirectsToRegistrationSubmissions_WhenCalled_With_Valid_Model()
+        public async Task SubmitOfflinePayment_Post_RedirectsToConfirmOfflinePaymentSubmission_WhenCalled_With_Valid_Model()
         {
             // Arrange
             var model = GenerateValidPaymentDetailsViewModel();
@@ -907,11 +904,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
 
             // Act
-            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId) as ViewResult;
+            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId);
 
             // Assert
             Assert.IsNotNull(result);
-            result.ViewName.Should().Be("RegistrationSubmissionDetails");
+            Assert.IsInstanceOfType(result, typeof(RedirectResult));
             _controller.ModelState.IsValid.Should().BeTrue();
         }
 
