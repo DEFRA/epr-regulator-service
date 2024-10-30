@@ -1,10 +1,7 @@
-using System.Drawing.Drawing2D;
 using System.Diagnostics;
 
 using EPR.Common.Authorization.Constants;
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Extensions;
-using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -18,8 +15,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Services;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 
@@ -212,6 +207,27 @@ public partial class RegistrationSubmissionsController(
         }
 
         return Redirect(PagePath.RegistrationSubmissionsRoute);
+    }
+
+    [HttpGet]
+    [Route(PagePath.ConfirmOfflinePaymentSubmission + "/{organisationId:guid}")]
+    public async Task<IActionResult> ConfirmOfflinePaymentSubmission(Guid? organisationId)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedOrganisationId(organisationId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { organisationId }), false);
+
+        var model = new ConfirmOfflinePaymentSubmissionViewModel
+        {
+            OrganisationId = organisationId
+        };
+
+        return View(nameof(ConfirmOfflinePaymentSubmission), model);
     }
 
     [HttpGet]

@@ -5,6 +5,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
     using Microsoft.AspNetCore.Mvc;
 
     public partial class RegistrationSubmissionsController
@@ -44,7 +45,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             }
 
             var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
-            if ( sessionModelWhichMustMatchSession?.OrganisationID != organisationId.Value)
+            if (sessionModelWhichMustMatchSession?.OrganisationID != organisationId.Value)
             {
                 return false;
             }
@@ -139,10 +140,17 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return $"/{pathBase}/{path}";
         }
 
-        private void SetBackLink(string path)
+        private void SetBackLink(string path, bool hasPathBase = true)
         {
-            string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
-            ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
+            if (hasPathBase)
+            {
+                string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
+                ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
+            }
+            else
+            {
+                ViewBag.BackLinkToDisplay = path;
+            }
         }
     }
 }
