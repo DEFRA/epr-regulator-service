@@ -230,6 +230,26 @@ public partial class RegistrationSubmissionsController(
         return View(nameof(ConfirmOfflinePaymentSubmission), model);
     }
 
+    [HttpPost]
+    [Route(PagePath.ConfirmOfflinePaymentSubmission + "/{organisationId:guid}")]
+    public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedOrganisationId(model.OrganisationId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }), false);
+            return View(nameof(ConfirmOfflinePaymentSubmission), model);
+        }
+
+        return Redirect(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }));
+    }
+
     [HttpGet]
     [Route(PagePath.PageNotFoundPath)]
     public async Task<IActionResult> PageNotFound()
