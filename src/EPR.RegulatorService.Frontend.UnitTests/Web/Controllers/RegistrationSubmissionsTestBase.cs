@@ -16,6 +16,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+    using Microsoft.AspNetCore.Mvc.Routing;
 
     public abstract class RegistrationSubmissionsTestBase
     {
@@ -30,6 +31,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         protected Mock<ISessionManager<JourneySession>> _mockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
         protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
+        protected Mock<IUrlHelper> _mockUrlHelper = null!;
 
         protected void SetupBase()
         {
@@ -37,13 +39,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockUrlsOptions = new Mock<IOptions<ExternalUrlsOptions>>();
             _mockConfiguration = new Mock<IConfiguration>();
             _loggerMock = new Mock<ILogger<RegistrationSubmissionsController>>();
+            _facadeServiceMock = new Mock<IFacadeService>();
 
             _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
+
             var mockConfigurationSection = new Mock<IConfigurationSection>();
             mockConfigurationSection.Setup(section => section.Value).Returns("/regulators");
             _mockConfiguration.Setup(config => config.GetSection(ConfigKeys.PathBase))
                 .Returns(mockConfigurationSection.Object);
-            _facadeServiceMock = new Mock<IFacadeService>();
 
             _mockUrlsOptions.Setup(mockUrlOptions =>
                 mockUrlOptions.Value)
@@ -53,6 +56,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 });
 
             SetupJourneySession(null, null);
+
+            _mockUrlHelper = new Mock<IUrlHelper>();
+            _mockUrlHelper
+                .Setup(helper => helper.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns("/expected/backlink/url");
 
             _controller = new RegistrationSubmissionsController(
                 _facadeServiceMock.Object,
@@ -65,12 +73,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 {
                     HttpContext = _mockHttpContext.Object
                 },
+                Url = _mockUrlHelper.Object,
                 TempData = new Mock<ITempDataDictionary>().Object
             };
         }
 
         public void SetupJourneySession(RegistrationSubmissionsFilterModel filtersModel,
-                                        RegistrationSubmissionOrganisationDetails selectedSubmission, int currentPageNumber = 1)
+                                        RegistrationSubmissionOrganisationDetails selectedSubmission,
+                                        int currentPageNumber = 1)
         {
             _journeySession = new JourneySession()
             {

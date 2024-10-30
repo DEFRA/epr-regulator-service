@@ -1,8 +1,5 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
-    using System.ComponentModel.DataAnnotations;
-
-    using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -1040,7 +1037,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region ConfirmOfflinePaymentSubmission
 
         [TestMethod]
-        public async Task ConfirmOfflinePaymentSubmission_InvalidOrganisationId_RedirectsToPageNotFound()
+        public async Task ConfirmOfflinePaymentSubmission_NullOrganisationId_RedirectsToPageNotFound()
+        {
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission((Guid?)null);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirectResult = result as RedirectToActionResult;
+            Assert.AreEqual("PageNotFound", redirectResult.ActionName);
+            Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_ForAnInvalidOrganisationId()
         {
             // Arrange
             var invalidOrganisationId = Guid.NewGuid();
@@ -1054,6 +1064,73 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectResult = result as RedirectToActionResult;
             Assert.AreEqual("PageNotFound", redirectResult.ActionName);
             Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_ForAnEmptyOfflinePayment()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(organisationId);
+            submissionDetails.PaymentDetails.OfflinePayment = string.Empty; // Simulate empty offline payment
+            SetupJourneySession(null, submissionDetails);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(organisationId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirectResult = result as RedirectToActionResult;
+            Assert.AreEqual("PageNotFound", redirectResult.ActionName);
+            Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_SetsCorrectBackLink()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(organisationId);
+            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            SetupJourneySession(null, submissionDetails);
+
+            string expectedBackLink = "/expected/backlink/url";
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(organisationId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+
+            // Check if backlink is correctly set in ViewData
+            AssertBackLink(viewResult, expectedBackLink);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_ReturnsViewWithCorrectModel_ForAValidOrganisationIdAndOfflinePayment()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(organisationId);
+            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            SetupJourneySession(null, submissionDetails);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(organisationId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.AreEqual("ConfirmOfflinePaymentSubmission", viewResult.ViewName);
+
+            var model = viewResult.Model as ConfirmOfflinePaymentSubmissionViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(organisationId, model.OrganisationId);
+            Assert.AreEqual(submissionDetails.PaymentDetails.OfflinePayment, model.OfflinePaymentAmount);
+
+            // Verify backlink setup
+            AssertBackLink(viewResult, "/expected/backlink/url");
         }
 
         #endregion
