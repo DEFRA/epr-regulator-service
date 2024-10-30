@@ -32,7 +32,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                             )]
         public string? OfflinePayment { get; set; }
 
-        public void EnsureTwoDecimalPlaces() {
+        public void EnsureTwoDecimalPlaces()
+        {
             if (decimal.TryParse(OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))
             {
                 // Format the parsed value as a currency with two decimal places
@@ -40,21 +41,30 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             }
         }
 
-        public static implicit operator RegistrationSubmissionsOrganisationPaymentDetails(PaymentDetailsViewModel details) => details is null ? null : new RegistrationSubmissionsOrganisationPaymentDetails
+        public static implicit operator RegistrationSubmissionsOrganisationPaymentDetails(PaymentDetailsViewModel details)
         {
-            ApplicationProcessingFee = details.ApplicationProcessingFee,
-            OnlineMarketplaceFee = details.OnlineMarketplaceFee,
-            PreviousPaymentsReceived = details.PreviousPaymentsReceived,
-            SubsidiaryFee = details.SubsidiaryFee
-        };
+            if (details == null)
+            {
+                return null;
+            }
+
+            return new RegistrationSubmissionsOrganisationPaymentDetails
+            {
+                ApplicationProcessingFee = details.ApplicationProcessingFee,
+                OnlineMarketplaceFee = details.OnlineMarketplaceFee,
+                PreviousPaymentsReceived = details.PreviousPaymentsReceived,
+                SubsidiaryFee = details.SubsidiaryFee,
+                OfflinePaymentAmount = string.IsNullOrEmpty(details.OfflinePayment) ? null : decimal.Parse(details.OfflinePayment, CultureInfo.CurrentCulture)
+            };
+        }
 
         public static implicit operator PaymentDetailsViewModel(RegistrationSubmissionsOrganisationPaymentDetails details) => details is null ? null : new()
         {
             ApplicationProcessingFee = details.ApplicationProcessingFee,
             OnlineMarketplaceFee = details.OnlineMarketplaceFee,
             PreviousPaymentsReceived = details.PreviousPaymentsReceived,
-            SubsidiaryFee = details.SubsidiaryFee
+            SubsidiaryFee = details.SubsidiaryFee,
+            OfflinePayment = details.OfflinePaymentAmount.ToString()
         };
-
     }
 }

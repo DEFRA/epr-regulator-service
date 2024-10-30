@@ -8,8 +8,9 @@
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
-@using (Html.BeginForm("ConfirmOfflinePaymentSubmission", "RegistrationSubmissions", FormMethod.Post))
+@using (Html.BeginRouteForm("ConfirmOfflinePaymentSubmission", new { organisationid = Model.OrganisationId }, FormMethod.Post))
 {
+  @Html.Hidden("OfflinePaymentAmount", Model.OfflinePaymentAmount)
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper" id="main-content" role="main">
             <div class="govuk-grid-row">

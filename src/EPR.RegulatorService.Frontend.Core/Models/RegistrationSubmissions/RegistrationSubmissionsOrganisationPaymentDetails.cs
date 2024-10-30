@@ -12,4 +12,6 @@ public class RegistrationSubmissionsOrganisationPaymentDetails
     public decimal PreviousPaymentsReceived { get; set; }
 
     public decimal TotalOutstanding => TotalChargeableItems - PreviousPaymentsReceived;
+
+    public decimal? OfflinePaymentAmount { get; set; }
 }
