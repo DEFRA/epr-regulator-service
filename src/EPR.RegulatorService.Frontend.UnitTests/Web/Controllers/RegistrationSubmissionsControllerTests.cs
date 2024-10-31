@@ -465,7 +465,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
-            }; 
+            };
 
             _controller.Url = mockUrlHelper.Object;
             var result = await _controller.GrantRegistrationSubmission(Guid.NewGuid());
@@ -490,7 +490,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
-            }; 
+            };
 
             // Act
             _controller.Url = mockUrlHelper.Object;
@@ -499,7 +499,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
             Assert.AreEqual(nameof(_controller.GrantRegistrationSubmission), result.ViewName, "The view name should match the action name.");
-               
+
             // Verify that a back link is set with the expected format, including a GUID
             string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
             Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
@@ -584,7 +584,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationId = id,
                 Query = "query provided"
-            }; 
+            };
 
             // Act
             _controller.Url = mockUrlHelper.Object;
@@ -630,7 +630,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             var viewResult = result as RedirectToActionResult;
             Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
-               
+
             Assert.AreEqual(PagePath.RegistrationSubmissionsAction, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
         }
 
@@ -640,7 +640,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
-             
+
             var mockUrlHelper = CreateUrlHelper(id, locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
@@ -709,10 +709,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result); // Ensure the result is not null
             Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName); // Ensure the user is redirected to the correct URL
         }
-         
+
 
         private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
-        { 
+        {
             var mockUrlHelper = new Mock<IUrlHelper>();
             mockUrlHelper
                 .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
@@ -952,7 +952,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             var model = new RejectRegistrationSubmissionViewModel
             {
-                OrganisationId = id 
+                OrganisationId = id
             };
 
             // Simulate an error in ModelState
@@ -1026,7 +1026,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             var model = new RejectRegistrationSubmissionViewModel
             {
-                OrganisationId =id,
+                OrganisationId = id,
                 RejectReason = new string('A', 401) // Exceeds 400 character limit
             };
 
@@ -1516,9 +1516,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 IsOfflinePaymentConfirmed = false
             };
 
-            // Set up session mock
-            SetupJourneySession(null, submissionDetails);
-
             // Act
             var result = await _controller.ConfirmOfflinePaymentSubmission(model);
 
@@ -1565,6 +1562,27 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Verify that ModelState has errors
             Assert.IsTrue(_controller.ModelState.ErrorCount > 0, "ModelState should contain errors.");
             Assert.AreEqual("Model state is invalid", _controller.ModelState["TestError"].Errors[0].ErrorMessage, "The error message should match the expected message.");
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_WhenOrgsanisationIdIsEmpty()
+        {
+            // Arrange
+            var model = new ConfirmOfflinePaymentSubmissionViewModel();
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
         }
 
         #endregion
