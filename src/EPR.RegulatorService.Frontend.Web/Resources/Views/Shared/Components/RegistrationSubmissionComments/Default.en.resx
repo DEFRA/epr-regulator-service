@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="RegistrationSubmissionDetails.RegulatorTitle" xml:space="preserve">
-    <value>Regulator Comment</value>
+    <value>Regulator comment</value>
   </data>
   <data name="RegistrationSubmissionDetails.ProducerTitle" xml:space="preserve">
-    <value>Producer Comment</value>
+    <value>Producer comment</value>
   </data>
   <data name="RegistrationSubmissionDetails.NoComments" xml:space="preserve">
     <value>No comments</value>
