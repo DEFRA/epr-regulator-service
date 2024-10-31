@@ -13,6 +13,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.Extensions.Logging;
     using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
@@ -449,52 +450,151 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #endregion Session Models and Filter states between gets and posts
         #endregion RegistrationSubmissions
 
+        #region GrantRegistrationSubmission
+
+        #endregion GrantRegistrationSubmission
+
+
+        [TestMethod]
+        public async Task GrantRegistrationSubmission_SessionDataError_ReturnsPageNotFOund()
+        {
+            // Act
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            }; 
+
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.QueryRegistrationSubmission(Guid.NewGuid());
+
+            // Assert
+            var viewResult = result as RedirectToActionResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
+
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+        }
+
+        [TestMethod]
+        public async Task GrantRegistrationSubmission_ReturnsView_WithCorrectModel()
+        {
+            // Arrange 
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            }; 
+
+            // Act
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.GrantRegistrationSubmission(id) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.GrantRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+               
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+        }
         #region QueryRegistrationSubmission
 
         [TestMethod]
         public async Task QueryRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
             // Arrange 
-            var expectedViewModel = new QueryRegistrationSubmissionViewModel(); 
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            var expectedViewModel = new QueryRegistrationSubmissionViewModel
+            {
+                OrganisationId = id,
+                Query = "query provided"
+            }; 
 
             // Act
-            var result = await _controller.QueryRegistrationSubmission( Guid.NewGuid()) as ViewResult;
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.QueryRegistrationSubmission(expectedViewModel) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName);
-            Assert.IsInstanceOfType(result.Model, typeof(QueryRegistrationSubmissionViewModel));
-            var resultViewModel = result.Model as QueryRegistrationSubmissionViewModel;
-            Assert.AreEqual(expectedViewModel.Query, resultViewModel.Query); 
+            Assert.AreEqual(result.ActionName, PagePath.RegistrationSubmissionsAction); 
         }
 
         [TestMethod]
         public async Task QueryRegistrationSubmission_SetsCorrectBackLinkInViewData()
         {
             // Act
-            var result = await _controller.QueryRegistrationSubmission(Guid.NewGuid());
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            var expectedViewModel = new QueryRegistrationSubmissionViewModel
+            {
+                OrganisationId = id,
+                Query = "query provided"
+            };
+
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.QueryRegistrationSubmission(expectedViewModel);
 
             // Assert
-            var viewResult = result as ViewResult;
+            var viewResult = result as RedirectToActionResult;
             Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
-
-            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
-            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
-            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
-
-            // Extract the GUID part using indexing and check for validity
-            string[] segments = backLink.Split('/');
-            Assert.IsNotNull(segments, "The back link should contain URL segments.");
-            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+               
+            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
         }
 
         [TestMethod]
         public async Task QueryRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
         {
             // Arrange
-            var model = new QueryRegistrationSubmissionViewModel();
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+             
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new QueryRegistrationSubmissionViewModel
+            {
+                OrganisationId = id
+            };
 
             // Simulate an error in ModelState
+            _controller.Url = mockUrlHelper.Object;
             _controller.ModelState.AddModelError("TestError", "Model state is invalid");
 
             // Act
@@ -523,36 +623,71 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task QueryRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenQueryIsValid()
         {
             // Arrange
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
             var model = new QueryRegistrationSubmissionViewModel
             {
+                OrganisationId = id,
                 Query = "Valid query within 400 characters." // Valid input
             };
 
             // Act
-            var result = await _controller.QueryRegistrationSubmission(model) as RedirectResult;
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.QueryRegistrationSubmission(model) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result); // Ensure the result is not null
-            Assert.AreEqual(PagePath.RegistrationSubmissionsRoute, result.Url); // Ensure the user is redirected to the correct URL
+            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName); // Ensure the user is redirected to the correct URL
+        }
+         
+
+        private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
+        { 
+            var mockUrlHelper = new Mock<IUrlHelper>();
+            mockUrlHelper
+                .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(locationUrl);
+            return mockUrlHelper;
         }
 
         [TestMethod]
         public async Task QueryRegistrationSubmission_Post_ReturnsExpectedError_WhenInputIsGreaterThan400()
         {
             // Arrange
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
             var model = new QueryRegistrationSubmissionViewModel
             {
+                OrganisationId = id,
                 Query = new string('A', 401) // Exceeds 400 character limit
             };
 
             // Simulate model state error for the Query property
+            _controller.Url = mockUrlHelper.Object;
             _controller.ModelState.AddModelError(nameof(model.Query), "Reason for querying application must be 400 characters or less");
 
             // Act
             var result = await _controller.QueryRegistrationSubmission(model) as ViewResult;
 
             // Assert
-            //Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
             Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName, "The view name should match the action name.");
             Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
 
@@ -564,7 +699,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Verify that a back link is set with the expected format, including a GUID
             string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
             Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
-            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+            StringAssert.StartsWith(backLink, locationUrl, "Back link should start with the expected URL.");
 
             // Check that the back link contains a valid GUID at the end
             string[] segments = backLink.Split('/');
@@ -575,12 +710,24 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task QueryRegistrationSubmission_Post_ReturnsViewWithErrors_WhenNoQueryIsProvided()
         {
             // Arrange
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
             var model = new QueryRegistrationSubmissionViewModel
             {
+                OrganisationId = id,
                 Query = null // No query provided
             };
 
             // Simulate the required field validation error for the Query property
+            _controller.Url = mockUrlHelper.Object;
             _controller.ModelState.AddModelError(nameof(model.Query), "Enter the reason you are querying this registration application");
 
             // Act
