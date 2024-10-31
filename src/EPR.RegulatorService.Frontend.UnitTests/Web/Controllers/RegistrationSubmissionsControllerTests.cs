@@ -454,7 +454,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #endregion GrantRegistrationSubmission
 
-
         [TestMethod]
         public async Task GrantRegistrationSubmission_SessionDataError_ReturnsPageNotFOund()
         {
@@ -513,6 +512,31 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
         #region QueryRegistrationSubmission
+
+        [TestMethod]
+        public async Task QueryRegistrationSubmission_SessionDataError_ReturnsPageNotFOund()
+        {
+            // Act
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.QueryRegistrationSubmission(Guid.NewGuid());
+
+            // Assert
+            var viewResult = result as RedirectToActionResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
+
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+        }
 
         [TestMethod]
         public async Task QueryRegistrationSubmission_ReturnsView_WithCorrectModel()
@@ -765,6 +789,31 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #endregion
 
         #region RejectRegistrationSubmission
+
+        [TestMethod]
+        public async Task RejectRegistrationSubmission_SessionDataError_ReturnsPageNotFOund()
+        {
+            // Act
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.RejectRegistrationSubmission(Guid.NewGuid());
+
+            // Assert
+            var viewResult = result as RedirectToActionResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
+
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+        }
 
         [TestMethod]
         public async Task RejectRegistrationSubmission_ReturnsView_WithCorrectModel()
