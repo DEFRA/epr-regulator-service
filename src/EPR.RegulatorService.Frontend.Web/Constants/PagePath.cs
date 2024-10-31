@@ -43,6 +43,7 @@ public static class PagePath
     public const string RejectRegistrationSubmission = "manage-registration-submissions-reject";
     public const string RegistrationSubmissionDetails = "registration-submission-details";
     public const string ConfirmOfflinePaymentSubmission = "confirm-offline-payment-submission";
+    public const string CancellationConfirmation = "cancellation-confirmation";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

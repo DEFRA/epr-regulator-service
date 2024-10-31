@@ -159,7 +159,7 @@ public partial class RegistrationSubmissionsController(
         return Redirect(Url.RouteUrl("ConfirmOfflinePaymentSubmission", new { existingModel.OrganisationId }));
     }
 
-    [HttpGet] 
+    [HttpGet]
     [Route(PagePath.GrantRegistrationSubmission + "/{organisationId:guid}", Name = "GrantRegistrationSubmission")]
     public async Task<IActionResult> GrantRegistrationSubmission(Guid? organisationId)
     {
@@ -175,14 +175,14 @@ public partial class RegistrationSubmissionsController(
         var model = new GrantRegistrationSubmissionViewModel()
         {
             OrganisationId = organisationId.Value
-        }; 
+        };
 
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
 
         return View(nameof(GrantRegistrationSubmission), model);
     }
 
-    [HttpGet] 
+    [HttpGet]
     [Route(PagePath.QueryRegistrationSubmission + "/{organisationId:guid}")]
     public async Task<IActionResult> QueryRegistrationSubmission(Guid? organisationId)
     {
@@ -203,7 +203,7 @@ public partial class RegistrationSubmissionsController(
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
 
         return View(nameof(QueryRegistrationSubmission), model);
-    } 
+    }
 
     [HttpPost]
     [Route(PagePath.QueryRegistrationSubmission + "/{organisationId:guid}")]
@@ -224,7 +224,7 @@ public partial class RegistrationSubmissionsController(
         return RedirectToAction(PagePath.RegistrationSubmissionsAction);
     }
 
-    [HttpGet] 
+    [HttpGet]
     [Route(PagePath.RejectRegistrationSubmission + "/{organisationId:guid}", Name = "RejectRegistrationSubmission")]
     public async Task<IActionResult> RejectRegistrationSubmission(Guid? organisationId)
     {
@@ -235,7 +235,7 @@ public partial class RegistrationSubmissionsController(
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
         SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
-         
+
         var model = new RejectRegistrationSubmissionViewModel
         {
             OrganisationId = organisationId.Value
@@ -317,6 +317,33 @@ public partial class RegistrationSubmissionsController(
         // This is where we will call the facade to submit the offline payment.
 
         return Redirect(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }));
+    }
+
+    [HttpGet]
+    [Route(PagePath.CancellationConfirmation + "/{organisationId:guid}")]
+    public async Task<IActionResult> CancellationConfirmation(Guid? organisationId)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedOrganisationId(organisationId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        if (string.IsNullOrEmpty(existingModel.OrganisationName))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        var model = new CancellationConfirmationViewModel
+        {
+            OrganisationId = existingModel.OrganisationId,
+            OrganisationName = existingModel.OrganisationName
+        };
+
+        ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+
+        return View(nameof(CancellationConfirmation), model);
     }
 
     [HttpGet]

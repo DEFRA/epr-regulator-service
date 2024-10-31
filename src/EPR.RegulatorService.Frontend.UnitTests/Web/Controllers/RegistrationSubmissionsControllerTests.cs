@@ -1587,5 +1587,123 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         #endregion
+
+        #region CancellationConfirmation
+
+        [TestMethod]
+        public async Task CancellationConfirmation_RedirectsToPageNotFound_WhenOrgsanisationIdIsEmpty()
+        {
+            // Arrange
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.CancellationConfirmation(null);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public async Task CancellationConfirmation_RedirectsToPageNotFound_WhenOrgsanisationIdIsInvalid()
+        {
+            // Arrange
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.CancellationConfirmation(Guid.NewGuid());
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public async Task CancellationConfirmation_RedirectsToPageNotFound_WhenOrgsanisationNameIsNull()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var existingModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+
+            existingModel.OrganisationName = null; // Organisation name is null
+
+            SetupJourneySession(null, existingModel);
+
+            // Act
+            var result = await _controller.CancellationConfirmation(organisationId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public async Task CancellationConfirmation_RedirectsToPageNotFound_WhenOrgsanisationNameIsEmpty()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var existingModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+
+            existingModel.OrganisationName = string.Empty; // Organisation name is empty
+
+            SetupJourneySession(null, existingModel);
+
+            // Act
+            var result = await _controller.CancellationConfirmation(organisationId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public async Task CancellationConfirmation_ReturnsViewWithModel_ForAValidOrganisationIdAndOrganisationName()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            string organisationName = "Test Organisation";
+            var existingModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            existingModel.OrganisationName = organisationName;
+            SetupJourneySession(null, existingModel);
+
+            // Act
+            var result = await _controller.CancellationConfirmation(organisationId) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            Assert.AreEqual(nameof(_controller.CancellationConfirmation), result.ViewName);
+
+            var model = result.Model as CancellationConfirmationViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(organisationId, model.OrganisationId);
+            Assert.AreEqual(organisationName, model.OrganisationName);
+        }
+
+        #endregion
     }
 }
