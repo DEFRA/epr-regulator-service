@@ -357,4 +357,6 @@ public class FacadeService : IFacadeService
 
         return null;
     }
+
+    public async Task<EndpointResponseStatus> SubmitRegulatorDecisionAsync(RegulatorDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 }

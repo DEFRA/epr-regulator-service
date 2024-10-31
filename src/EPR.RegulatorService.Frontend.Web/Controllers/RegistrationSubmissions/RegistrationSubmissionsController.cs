@@ -1,10 +1,9 @@
-using System.Drawing.Drawing2D;
 using System.Diagnostics;
 
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Extensions;
-using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -18,8 +17,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Services;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 
@@ -201,9 +198,8 @@ public partial class RegistrationSubmissionsController(
         {
             if ((bool)model.IsGrantRegistrationConfirmed)
             {
-                ////TODO:: add a new request model, interface and implementation in frontend.core project
-                _facadeService.SubmitRegistrationDecision(
-                    new Core.Models.Registrations.RegulatorRegistrationDecisionCreateRequest { Decision = Core.Enums.RegulatorDecision.Accepted, OrganisationId = existingModel.OrganisationId });
+               await _facadeService.SubmitRegulatorDecisionAsync(
+                    new RegulatorDecisionRequest { OrganisationId = existingModel.OrganisationId, Decision = Core.Enums.RegulatorDecision.Accepted });
                 ////TODO:: handle failure??
             }
 
