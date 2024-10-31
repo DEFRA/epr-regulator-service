@@ -1113,6 +1113,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
             SetupJourneySession(null, submissionDetails);
 
+            var expectedViewModel = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                OrganisationId = organisationId,
+                IsOfflinePaymentConfirmed = null,
+                OfflinePaymentAmount = "10.00"
+            };
+
             // Act
             var result = await _controller.ConfirmOfflinePaymentSubmission(organisationId);
 
@@ -1123,8 +1130,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = viewResult.Model as ConfirmOfflinePaymentSubmissionViewModel;
             Assert.IsNotNull(model);
-            Assert.AreEqual(organisationId, model.OrganisationId);
+            Assert.AreEqual(expectedViewModel.OrganisationId, model.OrganisationId);
             Assert.AreEqual(submissionDetails.PaymentDetails.OfflinePayment, model.OfflinePaymentAmount);
+            Assert.AreEqual(expectedViewModel.IsOfflinePaymentConfirmed, model.IsOfflinePaymentConfirmed);
 
             // Verify backlink setup
             AssertBackLink(viewResult, "/expected/backlink/url");

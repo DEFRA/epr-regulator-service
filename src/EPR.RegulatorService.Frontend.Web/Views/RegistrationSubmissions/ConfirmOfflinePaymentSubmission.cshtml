@@ -4,7 +4,7 @@
 
 @model ConfirmOfflinePaymentSubmissionViewModel
 @{
-    ViewData["Title"] = Localizer["PageTitle"];
+    ViewData["Title"] = Localizer["ConfirmOfflinePaymentSubmission.PageTitle"];
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
@@ -21,10 +21,13 @@
                     }
                     <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset">
+                            <legend class="govuk-visually-hidden">
+                                @Localizer["ConfirmOfflinePaymentSubmission.PageHeading"]
+                            </legend>
                             <div class="@(ViewData.ModelState.IsValid ? "" : "govuk-form-group--error")">
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                     <h1 class="govuk-fieldset__heading">
-                                        @Localizer["PageHeading"]
+                                        @Localizer["ConfirmOfflinePaymentSubmission.PageHeading"]
                                     </h1>
                                 </legend>
                                 <div class="govuk-radios" data-module="govuk-radios">
@@ -65,10 +68,9 @@
                     </div>
                 </div>
             </div>
-
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full">
-                    <button class="govuk-button" data-module="govuk-button">
+                    <button class="govuk-button" type="submit" data-module="govuk-button">
                         @SharedLocalizer["Continue"]
                     </button>
                 </div>

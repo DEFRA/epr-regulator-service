@@ -117,13 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorMessage" xml:space="preserve">
+  <data name="ConfirmOfflinePaymentSubmission.ErrorMessage" xml:space="preserve">
     <value>Select yes if you want to confirm this payment</value>
   </data>
-  <data name="PageHeading" xml:space="preserve">
+  <data name="ConfirmOfflinePaymentSubmission.PageHeading" xml:space="preserve">
     <value>Are you sure you want to add this payment?</value>
   </data>
-  <data name="PageTitle" xml:space="preserve">
+  <data name="ConfirmOfflinePaymentSubmission.PageTitle" xml:space="preserve">
     <value>Confirm offline payment submission</value>
   </data>
 </root>
