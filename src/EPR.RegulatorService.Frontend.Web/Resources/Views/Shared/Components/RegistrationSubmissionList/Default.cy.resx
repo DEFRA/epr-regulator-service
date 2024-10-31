@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Table.Header.Year" xml:space="preserve">
-    <value>[Welsh]Submission year</value>
+    <value>[Welsh]Relevant year</value>
   </data>
   <data name="Table.Header.Status" xml:space="preserve">
     <value>[Welsh]Submission status</value>
