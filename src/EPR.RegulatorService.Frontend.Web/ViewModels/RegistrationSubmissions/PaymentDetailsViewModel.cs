@@ -64,7 +64,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             OnlineMarketplaceFee = details.OnlineMarketplaceFee,
             PreviousPaymentsReceived = details.PreviousPaymentsReceived,
             SubsidiaryFee = details.SubsidiaryFee,
-            OfflinePayment = details.OfflinePaymentAmount.ToString()
+            OfflinePayment = string.Format(CultureInfo.InvariantCulture, "{0:F2}", details.OfflinePaymentAmount)
         };
     }
 }
