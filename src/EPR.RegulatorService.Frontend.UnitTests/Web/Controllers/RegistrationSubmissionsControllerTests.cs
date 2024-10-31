@@ -471,7 +471,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             }; 
 
             _controller.Url = mockUrlHelper.Object;
-            var result = await _controller.QueryRegistrationSubmission(Guid.NewGuid());
+            var result = await _controller.GrantRegistrationSubmission(Guid.NewGuid());
 
             // Assert
             var viewResult = result as RedirectToActionResult;
