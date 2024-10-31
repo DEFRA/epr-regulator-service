@@ -1138,6 +1138,72 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             AssertBackLink(viewResult, "/expected/backlink/url");
         }
 
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToSubmissionDetails_ValidOrganisationIdAndValidModel()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(organisationId);
+            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            SetupJourneySession(null, submissionDetails);
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                OrganisationId = organisationId,
+                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
+                IsOfflinePaymentConfirmed = true
+            };
+
+            // Set up session mock
+            SetupJourneySession(null, submissionDetails);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectResult));
+
+            var redirectResult = result as RedirectResult;
+
+            // Veryify the redirect URL
+            string expectedRedirectUrl = _controller.Url.RouteUrl("SubmissionDetails", new { organisationId });
+            Assert.AreEqual(expectedRedirectUrl, redirectResult.Url);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_WhenOfflinePaymentAmountIsEmpty()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(organisationId);
+            submissionDetails.PaymentDetails = new PaymentDetailsViewModel();
+            SetupJourneySession(null, submissionDetails);
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                OrganisationId = organisationId,
+                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Amount is null here
+                IsOfflinePaymentConfirmed = false
+            };
+
+            // Set up session mock
+            SetupJourneySession(null, submissionDetails);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectResult));
+
+            var redirectResult = result as RedirectResult;
+
+            // Veryify the redirect URL
+            string expectedRedirectUrl = _controller.Url.RouteUrl("SubmissionDetails", new { organisationId });
+            Assert.AreEqual(expectedRedirectUrl, redirectResult.Url);
+        }
+
         #endregion
     }
 }
