@@ -204,8 +204,8 @@ public partial class RegistrationSubmissionsController(
         {
             if ((bool)model.IsGrantRegistrationConfirmed)
             {
-               await _facadeService.SubmitRegulatorDecisionAsync(
-                    new RegulatorDecisionRequest { OrganisationId = existingModel.OrganisationId, Decision = Core.Enums.RegulatorDecision.Accepted });
+               await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
+                    new RegulatorRegistrationDecisionRequest { OrganisationId = existingModel.OrganisationId, Decision = Core.Enums.RegulatorDecision.Accepted });
                 ////TODO:: handle failure??
             }
 

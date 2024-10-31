@@ -407,5 +407,5 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         return objRet;
     }
 
-    public async Task<EndpointResponseStatus> SubmitRegulatorDecisionAsync(RegulatorDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+    public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorRegistrationDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 }
