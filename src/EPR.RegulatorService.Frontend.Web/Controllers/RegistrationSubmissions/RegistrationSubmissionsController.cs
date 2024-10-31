@@ -195,7 +195,7 @@ public partial class RegistrationSubmissionsController(
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        if (model.IsGrantRegistrationConfirmed == null)
+        if (!ModelState.IsValid && model.IsGrantRegistrationConfirmed == null)
         {
             SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}");
             return View(nameof(GrantRegistrationSubmission), model);
