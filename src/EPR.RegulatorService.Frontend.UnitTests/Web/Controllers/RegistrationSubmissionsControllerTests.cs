@@ -450,8 +450,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #region GrantRegistrationSubmission
 
-        #endregion GrantRegistrationSubmission
-
         [TestMethod]
         public async Task GrantRegistrationSubmission_SessionDataError_ReturnsPageNotFOund()
         {
@@ -509,6 +507,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string[] segments = backLink.Split('/');
             Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
+
+        #endregion GrantRegistrationSubmission
+
         #region QueryRegistrationSubmission
 
         [TestMethod]
