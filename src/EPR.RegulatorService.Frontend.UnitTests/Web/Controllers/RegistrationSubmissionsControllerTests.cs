@@ -770,24 +770,40 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task RejectRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
             // Arrange 
-            var expectedViewModel = new RejectRegistrationSubmissionViewModel( );
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            var expectedViewModel = new RejectRegistrationSubmissionViewModel
+            {
+                OrganisationId = id
+            };
 
             // Act
-            var result = await _controller.RejectRegistrationSubmission(Guid.NewGuid()) as ViewResult;
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.RejectRegistrationSubmission(id) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName);
             Assert.IsInstanceOfType(result.Model, typeof(RejectRegistrationSubmissionViewModel));
             var resultViewModel = result.Model as RejectRegistrationSubmissionViewModel;
-            Assert.AreEqual(expectedViewModel.RejectReason, resultViewModel.RejectReason); 
+            Assert.AreEqual(expectedViewModel.RejectReason, resultViewModel.RejectReason);
+            Assert.AreEqual(id, resultViewModel.OrganisationId);
         }
 
         [TestMethod]
         public async Task RejectRegistrationSubmission_ShouldSetCorrectBackLink()
         {
             // Act
-            var result = await _controller.RejectRegistrationSubmission(Guid.NewGuid());
+            var id = Guid.NewGuid();
+            var result = await _controller.RejectRegistrationSubmission(id);
 
             // Assert
             var viewResult = result as ViewResult;
@@ -807,7 +823,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task RejectRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
         {
             // Arrange
-            var model = new RejectRegistrationSubmissionViewModel();
+            var id = Guid.NewGuid();
+            var model = new RejectRegistrationSubmissionViewModel
+            {
+                OrganisationId = id 
+            };
 
             // Simulate an error in ModelState
             _controller.ModelState.AddModelError("TestError", "Model state is invalid");
@@ -838,8 +858,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task RejectRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenRejectionReasonIsValid()
         {
             // Arrange
+            var id = Guid.NewGuid();
             var model = new RejectRegistrationSubmissionViewModel
             {
+                OrganisationId = id,
                 RejectReason = "Valid rejection reason within 400 characters." // Valid input
             };
 
@@ -855,8 +877,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task RejectRegistrationSubmission_Post_ReturnsExpectedError_WhenInputIsGreaterThan400()
         {
             // Arrange
+            var id = Guid.NewGuid();
             var model = new RejectRegistrationSubmissionViewModel
             {
+                OrganisationId =id,
                 RejectReason = new string('A', 401) // Exceeds 400 character limit
             };
 
