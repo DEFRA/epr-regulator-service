@@ -337,7 +337,7 @@ public partial class RegistrationSubmissionsController(
 
         var model = new CancellationConfirmationViewModel
         {
-            OrganisationId = organisationId,
+            OrganisationId = existingModel.OrganisationId,
             OrganisationName = existingModel.OrganisationName
         };
 
