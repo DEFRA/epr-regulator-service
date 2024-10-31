@@ -306,4 +306,7 @@
   <data name="ServiceRole.RegulatorBasic" xml:space="preserve">
     <value>[Welsh]Regulator basic</value>
   </data>
+  <data name="BackToAllSubmissions" xml:space="preserve">
+    <value>[Welsh]Go back to all submissions</value>
+  </data>
 </root>

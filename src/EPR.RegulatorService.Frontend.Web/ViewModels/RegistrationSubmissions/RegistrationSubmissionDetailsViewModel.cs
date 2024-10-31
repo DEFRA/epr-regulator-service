@@ -3,7 +3,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-    using EPR.RegulatorService.Frontend.Web.Constants;
 
     public class RegistrationSubmissionDetailsViewModel
     {
@@ -35,7 +34,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public DateTime RegistrationDateTime { get; set; }
 
-        public string? ProducerComments { get; set; } 
+        public string? ProducerComments { get; set; }
 
         public string? RegulatorComments { get; set; }
 

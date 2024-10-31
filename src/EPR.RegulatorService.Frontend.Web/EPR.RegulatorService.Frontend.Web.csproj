@@ -57,6 +57,12 @@
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentRequests.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.en.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancellationConfirmation.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancellationConfirmation.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmOfflinePaymentSubmission.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
