@@ -536,11 +536,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Act
             _controller.Url = mockUrlHelper.Object;
-            var result = await _controller.QueryRegistrationSubmission(expectedViewModel) as RedirectToActionResult;
+            var result = await _controller.QueryRegistrationSubmission(id) as ViewResult;
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.ActionName, PagePath.RegistrationSubmissionsAction); 
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
