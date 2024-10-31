@@ -801,8 +801,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task RejectRegistrationSubmission_ShouldSetCorrectBackLink()
         {
-            // Act
+            // Arrange
             var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            // Act
+            _controller.Url = mockUrlHelper.Object;
             var result = await _controller.RejectRegistrationSubmission(id);
 
             // Assert
@@ -824,12 +836,22 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
             var model = new RejectRegistrationSubmissionViewModel
             {
                 OrganisationId = id 
             };
 
             // Simulate an error in ModelState
+            _controller.Url = mockUrlHelper.Object;
             _controller.ModelState.AddModelError("TestError", "Model state is invalid");
 
             // Act
@@ -859,6 +881,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
             var model = new RejectRegistrationSubmissionViewModel
             {
                 OrganisationId = id,
@@ -866,6 +897,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             // Act
+            _controller.Url = mockUrlHelper.Object;
             var result = await _controller.RejectRegistrationSubmission(model) as RedirectResult;
 
             // Assert
@@ -878,6 +910,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
             var model = new RejectRegistrationSubmissionViewModel
             {
                 OrganisationId =id,
@@ -888,6 +929,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _controller.ModelState.AddModelError(nameof(model.RejectReason), "Reason for rejecting application must be 400 characters or less");
 
             // Act
+            _controller.Url = mockUrlHelper.Object;
             var result = await _controller.RejectRegistrationSubmission(model) as ViewResult;
 
             // Assert
@@ -914,8 +956,19 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task RejectRegistrationSubmission_Post_ReturnsExpectedError_WhenNoRejectionReasonIsProvided()
         {
             // Arrange
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
             var model = new RejectRegistrationSubmissionViewModel
             {
+                OrganisationId = id,
                 RejectReason = null // No rejection reason provided
             };
 
@@ -923,6 +976,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _controller.ModelState.AddModelError(nameof(model.RejectReason), "Enter the reason you are rejecting this registration application");
 
             // Act
+            _controller.Url = mockUrlHelper.Object;
             var result = await _controller.RejectRegistrationSubmission(model) as ViewResult;
 
             // Assert
