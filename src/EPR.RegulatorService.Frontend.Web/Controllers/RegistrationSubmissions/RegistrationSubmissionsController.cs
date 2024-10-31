@@ -164,21 +164,51 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedOrganisationId(organisationId, out RegistrationSubmissionDetailsViewModel existingModel))
+        if (!GetOrRejectProvidedOrganisationId(organisationId, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        SetBackLink(Url.RouteUrl("SubmissionDetails", new { organisationId }), false);
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}");
 
-        var model = new GrantRegistrationSubmissionViewModel()
+        var model = new GrantRegistrationSubmissionViewModel
         {
-            OrganisationId = organisationId.Value
+            OrganisationId = existingModel.OrganisationId
         }; 
 
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
 
         return View(nameof(GrantRegistrationSubmission), model);
+    }
+
+    [HttpPost]
+    [Route(PagePath.GrantRegistrationSubmission + "/{organisationId:guid}", Name = "GrantRegistrationSubmission")]
+    public async Task<IActionResult> GrantRegistrationSubmission(GrantRegistrationSubmissionViewModel model)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedOrganisationId(model.OrganisationId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        if (model.IsGrantRegistrationConfirmed == null)
+        {
+            SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}");
+            return View(nameof(GrantRegistrationSubmission), model);
+        }
+        else
+        {
+            if ((bool)model.IsGrantRegistrationConfirmed)
+            {
+                ////TODO:: add a new request model, interface and implementation in frontend.core project
+                _facadeService.SubmitRegistrationDecision(
+                    new Core.Models.Registrations.RegulatorRegistrationDecisionCreateRequest { Decision = Core.Enums.RegulatorDecision.Accepted, OrganisationId = existingModel.OrganisationId });
+                ////TODO:: handle failure??
+            }
+
+            return RedirectToRoute("SubmissionDetails", new { existingModel.OrganisationId });
+        }
     }
 
     [HttpGet] 
