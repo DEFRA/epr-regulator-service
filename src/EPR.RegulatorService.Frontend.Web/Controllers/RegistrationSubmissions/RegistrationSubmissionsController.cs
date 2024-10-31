@@ -1,10 +1,7 @@
-using System.Drawing.Drawing2D;
 using System.Diagnostics;
 
 using EPR.Common.Authorization.Constants;
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Extensions;
-using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -18,8 +15,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Services;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 
@@ -136,7 +131,7 @@ public partial class RegistrationSubmissionsController(
 
     [HttpPost]
     [Route(PagePath.RegistrationSubmissionDetails + "/{organisationId:guid}", Name = "SubmitPaymentInfo")]
-    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel model, [FromRoute] Guid? organisationid)
+    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel, [FromRoute] Guid? organisationid)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -145,56 +140,108 @@ public partial class RegistrationSubmissionsController(
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        existingModel.PaymentDetails = model;
-
         if (!ModelState.IsValid)
         {
             return View(nameof(RegistrationSubmissionDetails), existingModel);
         }
 
-        model.EnsureTwoDecimalPlaces();
+        paymentDetailsViewModel.EnsureTwoDecimalPlaces();
 
-        // otherwise we will redirect to the confirmation page
-        return View(nameof(RegistrationSubmissionDetails), existingModel);
+        existingModel.PaymentDetails.OfflinePayment = paymentDetailsViewModel.OfflinePayment;
+
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = existingModel;
+
+        await SaveSessionAndJourney(
+            _currentSession.RegulatorRegistrationSubmissionSession,
+            PagePath.RegistrationSubmissionsRoute,
+            PagePath.RegistrationSubmissionsRoute);
+
+        return Redirect(Url.RouteUrl("ConfirmOfflinePaymentSubmission", new { existingModel.OrganisationId }));
     }
 
-    [HttpGet]
-    [Route(PagePath.QueryRegistrationSubmission)]
-    public async Task<IActionResult> QueryRegistrationSubmission()
+    [HttpGet] 
+    [Route(PagePath.GrantRegistrationSubmission + "/{organisationId:guid}", Name = "GrantRegistrationSubmission")]
+    public async Task<IActionResult> GrantRegistrationSubmission(Guid? organisationId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
+        if (!GetOrRejectProvidedOrganisationId(organisationId, out RegistrationSubmissionDetailsViewModel existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
 
-        var model = new QueryRegistrationSubmissionViewModel();
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { organisationId }), false);
 
-        return View(nameof(QueryRegistrationSubmission), model);
+        var model = new GrantRegistrationSubmissionViewModel()
+        {
+            OrganisationId = organisationId.Value
+        }; 
+
+        ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+
+        return View(nameof(GrantRegistrationSubmission), model);
     }
 
+    [HttpGet] 
+    [Route(PagePath.QueryRegistrationSubmission + "/{organisationId:guid}")]
+    public async Task<IActionResult> QueryRegistrationSubmission(Guid? organisationId)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedOrganisationId(organisationId, out RegistrationSubmissionDetailsViewModel existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { organisationId }), false);
+
+        var model = new QueryRegistrationSubmissionViewModel
+        {
+            OrganisationId = organisationId.Value
+        };
+
+        ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+
+        return View(nameof(QueryRegistrationSubmission), model);
+    } 
+
     [HttpPost]
-    [Route(PagePath.QueryRegistrationSubmission)]
+    [Route(PagePath.QueryRegistrationSubmission + "/{organisationId:guid}")]
     public async Task<IActionResult> QueryRegistrationSubmission(QueryRegistrationSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
+        if (!GetOrRejectProvidedOrganisationId(model.OrganisationId, out RegistrationSubmissionDetailsViewModel existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
         if (!ModelState.IsValid)
         {
-            SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
+            SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }), false);
             return View(nameof(QueryRegistrationSubmission), model);
         }
 
-        return Redirect(PagePath.RegistrationSubmissionsRoute);
+        return RedirectToAction(PagePath.RegistrationSubmissionsAction);
     }
 
-    [HttpGet]
-    [Route(PagePath.RejectRegistrationSubmission)]
-    public async Task<IActionResult> RejectRegistrationSubmission()
+    [HttpGet] 
+    [Route(PagePath.RejectRegistrationSubmission + "/{organisationId:guid}", Name = "RejectRegistrationSubmission")]
+    public async Task<IActionResult> RejectRegistrationSubmission(Guid? organisationId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
+        if (!GetOrRejectProvidedOrganisationId(organisationId, out RegistrationSubmissionDetailsViewModel existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
+         
+        var model = new RejectRegistrationSubmissionViewModel
+        {
+            OrganisationId = organisationId.Value
+        };
 
-        var model = new RejectRegistrationSubmissionViewModel();
+        ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
 
         return View(nameof(RejectRegistrationSubmission), model);
     }
@@ -205,13 +252,71 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
+        if (!GetOrRejectProvidedOrganisationId(model.OrganisationId, out RegistrationSubmissionDetailsViewModel existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
         if (!ModelState.IsValid)
         {
-            SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{Guid.NewGuid()}");
+            SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }), false);
             return View(nameof(RejectRegistrationSubmission), model);
         }
 
         return Redirect(PagePath.RegistrationSubmissionsRoute);
+    }
+
+    [HttpGet]
+    [Route(PagePath.ConfirmOfflinePaymentSubmission + "/{organisationId:guid}", Name = "ConfirmOfflinePaymentSubmission")]
+    public async Task<IActionResult> ConfirmOfflinePaymentSubmission(Guid? organisationId)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedOrganisationId(organisationId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        if (string.IsNullOrEmpty(existingModel.PaymentDetails.OfflinePayment))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { organisationId }), false);
+
+        var model = new ConfirmOfflinePaymentSubmissionViewModel
+        {
+            OrganisationId = organisationId,
+            OfflinePaymentAmount = existingModel.PaymentDetails.OfflinePayment
+        };
+
+        return View(nameof(ConfirmOfflinePaymentSubmission), model);
+    }
+
+    [HttpPost]
+    [Route(PagePath.ConfirmOfflinePaymentSubmission + "/{organisationId:guid}", Name = "ConfirmOfflinePaymentSubmission")]
+    public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedOrganisationId(model.OrganisationId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }), false);
+            return View(nameof(ConfirmOfflinePaymentSubmission), model);
+        }
+
+        if (string.IsNullOrEmpty(model.OfflinePaymentAmount))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        // This is where we will call the facade to submit the offline payment.
+
+        return Redirect(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }));
     }
 
     [HttpGet]

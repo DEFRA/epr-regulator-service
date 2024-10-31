@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Web.Constants
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 @using EPR.RegulatorService.Frontend.Core.Enums
 @model RegistrationSubmissionDetailsViewModel
@@ -9,19 +10,37 @@
     {
         <ul class="govuk-list govuk-list__horizontal govuk-list__last-spaced">
             <li>
-                <a class="govuk-button" href="">
+                <a class="govuk-button " href="@Url.Action(
+                "GrantRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  organisationId = Model.OrganisationId
+                })">
                     @Localizer["RegistrationSubmissionDetails.GrantRegistration"]
-                </a>
+                </a> 
             </li>
             <li>
-                <a class="govuk-button govuk-button--inverse " href="">
+                <a class="govuk-button govuk-button--inverse" href="@Url.Action(
+                "QueryRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  organisationId = Model.OrganisationId
+                })">
                     @Localizer["RegistrationSubmissionDetails.QueryRegistration"]
                 </a>
             </li>
             <li>
-                <a class="govuk-button govuk-button--warning" href="">
+                <a class="govuk-button govuk-button--warning" href="@Url.Action(
+                "RejectRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  organisationId = Model.OrganisationId
+                })">
                     @Localizer["RegistrationSubmissionDetails.RefuseRegistration"]
-                </a>
+                </a> 
             </li>
         </ul>
     }
