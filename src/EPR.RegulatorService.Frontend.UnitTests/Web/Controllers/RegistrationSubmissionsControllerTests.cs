@@ -1195,13 +1195,47 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectResult));
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
 
-            var redirectResult = result as RedirectResult;
+            var redirectToActionResult = result as RedirectToActionResult;
 
-            // Veryify the redirect URL
-            string expectedRedirectUrl = _controller.Url.RouteUrl("SubmissionDetails", new { organisationId });
-            Assert.AreEqual(expectedRedirectUrl, redirectResult.Url);
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(organisationId);
+            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            SetupJourneySession(null, submissionDetails);
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                OrganisationId = organisationId,
+                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment
+            };
+
+            // Simulate an error in ModelState
+            _controller.ModelState.AddModelError("TestError", "Model state is invalid");
+
+            // Set up session mock
+            SetupJourneySession(null, submissionDetails);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.ConfirmOfflinePaymentSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
+
+            // Verify that ModelState has errors
+            Assert.IsTrue(_controller.ModelState.ErrorCount > 0, "ModelState should contain errors.");
+            Assert.AreEqual("Model state is invalid", _controller.ModelState["TestError"].Errors[0].ErrorMessage, "The error message should match the expected message.");
         }
 
         #endregion
