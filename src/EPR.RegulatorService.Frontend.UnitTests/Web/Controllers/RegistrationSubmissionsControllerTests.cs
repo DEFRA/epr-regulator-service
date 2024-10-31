@@ -514,6 +514,36 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region QueryRegistrationSubmission
 
         [TestMethod]
+        public async Task QueryRegistrationSubmission_Post_SessionDataError_ReturnsPageNotFOund()
+        {
+            // Act
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            var expectedViewModel = new QueryRegistrationSubmissionViewModel
+            {
+                OrganisationId = Guid.NewGuid(),
+                Query = "query provided"
+            };
+
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.QueryRegistrationSubmission(expectedViewModel);
+
+            // Assert
+            var viewResult = result as RedirectToActionResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
+
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+        }
+
+        [TestMethod]
         public async Task QueryRegistrationSubmission_SessionDataError_ReturnsPageNotFOund()
         {
             // Act
@@ -807,6 +837,34 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _controller.Url = mockUrlHelper.Object;
             var result = await _controller.RejectRegistrationSubmission(Guid.NewGuid());
+
+            // Assert
+            var viewResult = result as RedirectToActionResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
+
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+        }
+        [TestMethod]
+        public async Task RejectRegistrationSubmission_Post_SessionDataError_ReturnsPageNotFOund()
+        {
+            // Act
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            var expectedViewModel = new RejectRegistrationSubmissionViewModel
+            {
+                OrganisationId = Guid.NewGuid()
+            };
+
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.RejectRegistrationSubmission(expectedViewModel);
 
             // Assert
             var viewResult = result as RedirectToActionResult;
