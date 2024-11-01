@@ -123,9 +123,6 @@
   <data name="Error.RejectReasonTooLong" xml:space="preserve">
     <value>[Welsh]Reason for rejecting application must be 400 characters or less</value>
   </data>
-  <data name="RejectRegistrationSubmission.BackToAllSubmissions" xml:space="preserve">
-    <value>[Welsh]Go back to all submissions</value>
-  </data>
   <data name="RejectRegistrationSubmission.Caption" xml:space="preserve">
     <value>[Welsh]Manage registration submissions</value>
   </data>

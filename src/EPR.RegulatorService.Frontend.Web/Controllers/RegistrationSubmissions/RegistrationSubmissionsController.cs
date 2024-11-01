@@ -215,9 +215,11 @@ public partial class RegistrationSubmissionsController(
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
+
         if (!ModelState.IsValid)
         {
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }), false);
+            ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(QueryRegistrationSubmission), model);
         }
 
@@ -247,7 +249,7 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpPost]
-    [Route(PagePath.RejectRegistrationSubmission)]
+    [Route(PagePath.RejectRegistrationSubmission + "/{organisationId:guid}")]
     public async Task<IActionResult> RejectRegistrationSubmission(RejectRegistrationSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
@@ -256,9 +258,11 @@ public partial class RegistrationSubmissionsController(
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
+
         if (!ModelState.IsValid)
         {
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }), false);
+            ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(RejectRegistrationSubmission), model);
         }
 
