@@ -214,7 +214,7 @@ public partial class RegistrationSubmissionsController(
                 catch (Exception ex)
                 {
                     _logControllerError.Invoke(logger, $"Exception received while granting submission {nameof(RegistrationSubmissionsController)}.{nameof(GrantRegistrationSubmission)}", ex);
-                    RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}" });
+                    return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}" });
                 }
             }
 

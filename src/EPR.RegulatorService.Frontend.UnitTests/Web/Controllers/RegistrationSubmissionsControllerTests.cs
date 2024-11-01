@@ -570,12 +570,64 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        [DataRow(EndpointResponseStatus.Fail)]
+        [DataRow(EndpointResponseStatus.NotSet)]
+        [DataRow(EndpointResponseStatus.UserExists)]
+        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_GrantRegistrationIsConfirmed_And_Facade_Returns_Non_Success(EndpointResponseStatus endpointResponseStatus)
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(endpointResponseStatus);
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { OrganisationId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.RouteName.Should().Be("ServiceNotAvailable");
+            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+        }
+
+        [TestMethod]
+        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_GrantRegistrationIsConfirmed_And_Facade_Throws()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ThrowsAsync(new Exception("Test"));
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { OrganisationId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.RouteName.Should().Be("ServiceNotAvailable");
+            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+            _loggerMock.Verify(
+                        x => x.Log(
+                            It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
+                            It.Is<EventId>((eid) => eid == 1001),
+                            It.IsAny<It.IsAnyType>(),
+                            It.Is<Exception>((v, t) => v.ToString().Contains("Test")),
+                            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                        Times.Once);
+        }
+
+        [TestMethod]
         public async Task GrantRegistrationSubmission_Post_Should_Call_Facade_And_RedirectTo_SubmissionDetails_When_GrantRegistrationIsConfirmed()
         {
             // Arrange
             var organisationId = Guid.NewGuid();
             var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
 
             // Act
             var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
