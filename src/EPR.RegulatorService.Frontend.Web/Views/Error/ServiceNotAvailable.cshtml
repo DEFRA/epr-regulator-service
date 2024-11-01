@@ -6,12 +6,12 @@
     <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-l">@Localizer["ServiceNotAvailable.PageHeading"]</h1>
+                <h1 class="govuk-heading-l">@Localizer["ServiceNotAvailable.Headline"]</h1>
                 <p class="govuk-body">@Localizer["ServiceNotAvailable.Message1"]</p>
-                <p class="govuk-body">@Localizer["ServiceNotAvailable.Message2"]</p>
                 <p class="govuk-body">
-                    <a class="govuk-link" href="#">@Localizer["ServiceNotAvailable.Message3"]</a>@Localizer["ServiceNotAvailable.Message4"]
+                    @Localizer["ServiceNotAvailable.Message2"]&nbsp;<a class="govuk-link" href="@ViewBag.BackLinkToDisplay">@Localizer["ServiceNotAvailable.Message3"]</a>&nbsp;@Localizer["ServiceNotAvailable.Message4"]
                 </p>
+                <p class="govuk-body">@Localizer["ServiceNotAvailable.Message5"]</p>
             </div>
         </div>
     </main>

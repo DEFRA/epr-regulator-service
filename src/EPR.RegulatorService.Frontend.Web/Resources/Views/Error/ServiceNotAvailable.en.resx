@@ -117,20 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ServiceNotAvailable.Headline" xml:space="preserve">
+    <value>There is a problem with this service.</value>
+  </data>
   <data name="ServiceNotAvailable.Message1" xml:space="preserve">
-    <value>Try again later.</value>
+    <value>The issue has been recorded.</value>
   </data>
   <data name="ServiceNotAvailable.Message2" xml:space="preserve">
-    <value>We saved your answers. They will be available for 30 days.</value>
+    <value>Please follow this</value>
   </data>
   <data name="ServiceNotAvailable.Message3" xml:space="preserve">
-    <value>Contact the Tax Credits Helpline</value>
+    <value>link</value>
   </data>
   <data name="ServiceNotAvailable.Message4" xml:space="preserve">
-    <value>if you need to make changes to your claim or speak to someone about your tax credits.</value>
+    <value>to return to your previous page and try again.</value>
   </data>
-  <data name="ServiceNotAvailable.PageHeading" xml:space="preserve">
-    <value>Sorry, there is a problem with the service</value>
+  <data name="ServiceNotAvailable.Message5" xml:space="preserve">
+    <value>If the error persists, please contact support.</value>
   </data>
   <data name="ServiceNotAvailable.PageTitle" xml:space="preserve">
     <value>Service Not Available</value>
