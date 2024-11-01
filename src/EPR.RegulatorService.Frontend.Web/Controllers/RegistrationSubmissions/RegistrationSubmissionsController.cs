@@ -302,6 +302,7 @@ public partial class RegistrationSubmissionsController(
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
+
         if (!ModelState.IsValid)
         {
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }), false);
