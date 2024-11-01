@@ -288,6 +288,26 @@ public partial class RegistrationSubmissionsController(
         return View(nameof(CancelRegistrationSubmission), model);
     }
 
+    [HttpPost]
+    [Route(PagePath.CancelRegistrationSubmission + "/{organisationId:guid}")]
+    public async Task<IActionResult> CancelRegistrationSubmission(CancelRegistrationSubmissionViewModel model)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedOrganisationId(model.OrganisationId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+        if (!ModelState.IsValid)
+        {
+            SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.OrganisationId }), false);
+            ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+            return View(nameof(CancelRegistrationSubmission), model);
+        }
+
+        return RedirectToAction(PagePath.RegistrationSubmissionsAction);
+    }
+
     [HttpGet]
     [Route(PagePath.ConfirmOfflinePaymentSubmission + "/{organisationId:guid}", Name = "ConfirmOfflinePaymentSubmission")]
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(Guid? organisationId)
