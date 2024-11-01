@@ -1,9 +1,9 @@
+using System.Net;
+
 using EPR.RegulatorService.Frontend.Web.Controllers.Errors;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using System.Net;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
@@ -54,5 +54,19 @@ public class ErrorControllerTests
         Assert.IsNotNull(result);
         result.Should().BeOfType<ViewResult>();
         result.ViewName.Should().Be(expected);
+    }
+
+    [TestMethod]
+    public void ServiceNotAvailable_Should_Return_To_CorrectView_With_BackLink()
+    {
+        // Arrange
+        string backLink = PagePath.RegistrationSubmissionDetails;
+
+        // Act
+        var result = _errorController.ServiceNotAvailable(backLink);
+
+        // Assert
+        Assert.IsNotNull(result);
+        result.Should().BeOfType<ViewResult>();
     }
 }
