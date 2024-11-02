@@ -199,26 +199,23 @@ public partial class RegistrationSubmissionsController(
             SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}");
             return View(nameof(GrantRegistrationSubmission), model);
         }
-        else
+        else if (!model.IsGrantRegistrationConfirmed.Value)
         {
-            if (model.IsGrantRegistrationConfirmed.Value)
-            {
-                try
-                {
-                    var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
-                                        new RegulatorDecisionRequest { OrganisationId = existingModel.OrganisationId, Decision = Core.Enums.RegulatorDecision.Accepted });
-                    return status == Core.Models.EndpointResponseStatus.Success
-                        ? RedirectToRoute("SubmissionDetails", new { existingModel.OrganisationId })
-                        : RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}" });
-                }
-                catch (Exception ex)
-                {
-                    _logControllerError.Invoke(logger, $"Exception received while granting submission {nameof(RegistrationSubmissionsController)}.{nameof(GrantRegistrationSubmission)}", ex);
-                    return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}" });
-                }
-            }
-
             return RedirectToRoute("SubmissionDetails", new { existingModel.OrganisationId });
+        }
+
+        try
+        {
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
+                                new RegulatorDecisionRequest { OrganisationId = existingModel.OrganisationId, Decision = Core.Enums.RegulatorDecision.Accepted });
+            return status == Core.Models.EndpointResponseStatus.Success
+                  ? RedirectToRoute("SubmissionDetails", new { existingModel.OrganisationId })
+                  : RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}" });
+        }
+        catch (Exception ex)
+        {
+            _logControllerError.Invoke(logger, $"Exception received while granting submission {nameof(RegistrationSubmissionsController)}.{nameof(GrantRegistrationSubmission)}", ex);
+            return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}" });
         }
     }
 

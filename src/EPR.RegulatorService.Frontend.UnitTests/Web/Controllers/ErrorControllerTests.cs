@@ -68,5 +68,6 @@ public class ErrorControllerTests
         // Assert
         Assert.IsNotNull(result);
         result.Should().BeOfType<ViewResult>();
+        result.ViewData.Values.First().Should().Be(backLink);
     }
 }

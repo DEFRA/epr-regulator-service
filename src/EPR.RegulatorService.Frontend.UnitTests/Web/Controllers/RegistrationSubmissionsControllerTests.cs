@@ -451,7 +451,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region GrantRegistrationSubmission
 
         [TestMethod]
-        public async Task GrantRegistrationSubmission_SessionDataError_ReturnsPageNotFound()
+        public async Task GrantRegistrationSubmission_ReturnsPageNotFound_When_OrganisationId_DoesNot_Match_With_That_InSession()
         {
             // Act
             var id = Guid.NewGuid();
