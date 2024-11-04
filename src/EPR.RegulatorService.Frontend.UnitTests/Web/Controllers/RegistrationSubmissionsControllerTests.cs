@@ -528,7 +528,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GrantRegistrationSubmission_Post_ReturnsPageNotFound()
+        public async Task GrantRegistrationSubmission_Post_ReturnsPageNotFound_When_OrgansitionId_Is_Invalid()
         {
             // Act
             var id = Guid.NewGuid();
