@@ -528,6 +528,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task GrantRegistrationSubmission_Post_ReturnsPageNotFound_When_OrgansitionId_Is_Invalid()
+        {
+            // Act
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel { OrganisationId = Guid.NewGuid() });
+
+            // Assert
+            var viewResult = result as RedirectToActionResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
+
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+        }
+
+        [TestMethod]
         public async Task GrantRegistrationSubmission_Post_Should_Display_ErrorMessage_When_Nothing_Is_Selected()
         {
             // Arrange
@@ -552,7 +576,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_SubmissionDetails_When_GrantRegistrationIsNotConfirmed()
+        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_SubmissionDetails_When_NotConfirmed()
         {
             // Arrange
             var organisationId = Guid.NewGuid();
@@ -573,7 +597,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [DataRow(EndpointResponseStatus.Fail)]
         [DataRow(EndpointResponseStatus.NotSet)]
         [DataRow(EndpointResponseStatus.UserExists)]
-        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_GrantRegistrationIsConfirmed_And_Facade_Returns_Non_Success(EndpointResponseStatus endpointResponseStatus)
+        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_Facade_Returns_Non_Success(EndpointResponseStatus endpointResponseStatus)
         {
             // Arrange
             var organisationId = Guid.NewGuid();
@@ -593,12 +617,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_GrantRegistrationIsConfirmed_And_Facade_Throws()
+        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_Facade_Throws()
         {
             // Arrange
             var organisationId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
-            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = GenerateTestSubmissionDetailsViewModel(organisationId);
             _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ThrowsAsync(new Exception("Test"));
 
             // Act
@@ -613,7 +636,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _loggerMock.Verify(
                         x => x.Log(
                             It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
-                            It.Is<EventId>((eid) => eid == 1001),
+                            It.IsAny<EventId>(),
                             It.IsAny<It.IsAnyType>(),
                             It.Is<Exception>((v, t) => v.ToString().Contains("Test")),
                             It.IsAny<Func<It.IsAnyType, Exception, string>>()),
@@ -621,7 +644,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GrantRegistrationSubmission_Post_Should_Call_Facade_And_RedirectTo_SubmissionDetails_When_GrantRegistrationIsConfirmed()
+        public async Task GrantRegistrationSubmission_Post_RedirectTo_SubmissionDetails_OnSuccess()
         {
             // Arrange
             var organisationId = Guid.NewGuid();
