@@ -127,6 +127,6 @@
     <value>Are you sure you want to grant this registration?</value>
   </data>
   <data name="PageTitle" xml:space="preserve">
-    <value>Grant Registration Submission</value>
+    <value>Grant registration confirmation</value>
   </data>
 </root>
