@@ -451,7 +451,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region GrantRegistrationSubmission
 
         [TestMethod]
-        public async Task GrantRegistrationSubmission_SessionDataError_ReturnsPageNotFOund()
+        public async Task GrantRegistrationSubmission_ReturnsPageNotFound_When_OrganisationId_DoesNot_Match_With_That_InSession()
         {
             // Act
             var id = Guid.NewGuid();
@@ -479,20 +479,19 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GrantRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
             // Arrange 
-            var id = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+            var organisationId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{organisationId}";
+            var mockUrlHelper = CreateUrlHelper(organisationId, locationUrl);
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
-
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
-            };
+            };             
 
             // Act
             _controller.Url = mockUrlHelper.Object;
-            var result = await _controller.GrantRegistrationSubmission(id) as ViewResult;
+            var result = await _controller.GrantRegistrationSubmission(organisationId) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
@@ -506,6 +505,139 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Check that the back link contains a valid GUID at the end
             string[] segments = backLink.Split('/');
             Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+        }
+
+        [TestMethod]
+        public async Task GrantRegistrationSubmission_Get_Should_ReturnTo_CorrectViewWithModel()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{organisationId}";
+            var mockUrlHelper = CreateUrlHelper(organisationId, locationUrl);
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(organisationId) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(nameof(_controller.GrantRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            result.Model.Should().BeOfType<GrantRegistrationSubmissionViewModel>();
+        }
+
+        [TestMethod]
+        public async Task GrantRegistrationSubmission_Post_Should_Display_ErrorMessage_When_Nothing_Is_Selected()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _controller.ModelState.AddModelError("IsGrantRegistrationConfirmed", "Select yes if you want to grant this registration");
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel { OrganisationId = organisationId }) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(nameof(_controller.GrantRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            var model = result.Model.As<GrantRegistrationSubmissionViewModel>();
+            model.Should().NotBeNull();
+            model.IsGrantRegistrationConfirmed.Should().BeNull();
+
+            // Verify that ModelState has errors
+            Assert.IsTrue(_controller.ModelState.ErrorCount > 0, "ModelState should contain errors.");
+            Assert.AreEqual("Select yes if you want to grant this registration", _controller.ModelState["IsGrantRegistrationConfirmed"].Errors[0].ErrorMessage, "The error message should match the expected message.");
+        }
+
+        [TestMethod]
+        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_SubmissionDetails_When_GrantRegistrationIsNotConfirmed()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { OrganisationId = organisationId, IsGrantRegistrationConfirmed = false }) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.RouteName.Should().Be("SubmissionDetails");
+            result.RouteValues.First().Value.Should().Be(organisationId);
+        }
+
+        [TestMethod]
+        [DataRow(EndpointResponseStatus.Fail)]
+        [DataRow(EndpointResponseStatus.NotSet)]
+        [DataRow(EndpointResponseStatus.UserExists)]
+        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_GrantRegistrationIsConfirmed_And_Facade_Returns_Non_Success(EndpointResponseStatus endpointResponseStatus)
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(endpointResponseStatus);
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { OrganisationId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.RouteName.Should().Be("ServiceNotAvailable");
+            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+        }
+
+        [TestMethod]
+        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_GrantRegistrationIsConfirmed_And_Facade_Throws()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ThrowsAsync(new Exception("Test"));
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { OrganisationId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.RouteName.Should().Be("ServiceNotAvailable");
+            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+            _loggerMock.Verify(
+                        x => x.Log(
+                            It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
+                            It.Is<EventId>((eid) => eid == 1001),
+                            It.IsAny<It.IsAnyType>(),
+                            It.Is<Exception>((v, t) => v.ToString().Contains("Test")),
+                            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                        Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GrantRegistrationSubmission_Post_Should_Call_Facade_And_RedirectTo_SubmissionDetails_When_GrantRegistrationIsConfirmed()
+        {
+            // Arrange
+            var organisationId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { OrganisationId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.RouteName.Should().Be("SubmissionDetails");
+            result.RouteValues.First().Value.Should().Be(organisationId);
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
         }
 
         #endregion GrantRegistrationSubmission
