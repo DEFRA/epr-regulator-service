@@ -1918,7 +1918,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewResult = result as RedirectToActionResult;
             Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
 
         [TestMethod]
@@ -1939,6 +1943,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Veryify the correct redirect
             Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
             Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
 
         [TestMethod]
@@ -1985,6 +1993,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Check that the back link contains a valid GUID at the end
             string[] segments = backLink.Split('/');
             Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
 
         [TestMethod]
@@ -2032,10 +2044,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Check that the back link contains a valid GUID at the end
             string[] segments = backLink.Split('/');
             Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
 
         [TestMethod]
-        public async Task CancelRegistrationSubmission_Post_ReturnsViewWithErrors_WhenNoQueryIsProvided()
+        public async Task CancelRegistrationSubmission_Post_ReturnsViewWithErrors_WhenNoCancellationReasonIsProvided()
         {
             // Arrange
             var organisationId = Guid.NewGuid();
@@ -2079,6 +2095,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Check that the back link contains a valid GUID at the end
             string[] segments = backLink.Split('/');
             Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
 
         [TestMethod]
@@ -2117,6 +2137,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
 
+            // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
@@ -2143,7 +2164,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 CancellationReason = "Valid reason within 400 characters." // Valid input
             };
 
-            // Set up successful submission status
+            // Set up an unsuccessful submission status
             _facadeServiceMock
                 .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
                 .ReturnsAsync(EndpointResponseStatus.Fail);
@@ -2162,6 +2183,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsTrue(result.RouteValues.TryGetValue("backLink", out object backLink));
             Assert.AreEqual(expectedUrl, backLink);
 
+            // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
@@ -2203,6 +2225,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual("ServiceNotAvailable", result.RouteName);
             Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{organisationId}", result.RouteValues["backLink"]);
 
+            // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
