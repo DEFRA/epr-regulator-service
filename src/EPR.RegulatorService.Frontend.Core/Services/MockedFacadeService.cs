@@ -394,9 +394,9 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         return response;
     }
 
-    public RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid organisationId)
+    public RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid submissionId)
     {
-        var objRet = _registrationSubmissions.Find(x => x.OrganisationID == organisationId);
+        var objRet = _registrationSubmissions.Find(x => x.SubmissionId == submissionId);
 
         if (null != objRet)
         {
@@ -406,4 +406,6 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
         return objRet;
     }
+
+    public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 }

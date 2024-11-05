@@ -345,7 +345,7 @@ public class FacadeService : IFacadeService
         return mockedFacade.GetRegistrationSubmissions(filters);
     }
 
-    public RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid organisationId)
+    public RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid submissionId)
     {
         PrepareAuthenticatedClient();
         var mockedFacade = new MockedFacadeService(Options.Create(new PaginationConfig()
@@ -353,8 +353,10 @@ public class FacadeService : IFacadeService
             PageSize = _paginationConfig.PageSize
         }));
 
-        return mockedFacade.GetRegistrationSubmissionDetails(organisationId);
+        return mockedFacade.GetRegistrationSubmissionDetails(submissionId);
 
         return null;
     }
+
+    public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 }

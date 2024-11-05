@@ -3,10 +3,10 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-    using EPR.RegulatorService.Frontend.Web.Constants;
 
     public class RegistrationSubmissionDetailsViewModel
     {
+        public Guid SubmissionId { get; set; }
         public Guid OrganisationId { get; set; }
 
         public string OrganisationReference { get; set; }
@@ -35,13 +35,14 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public DateTime RegistrationDateTime { get; set; }
 
-        public string? ProducerComments { get; set; } 
+        public string? ProducerComments { get; set; }
 
         public string? RegulatorComments { get; set; }
 
         // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
         public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
         {
+            SubmissionId = details.SubmissionId,
             OrganisationId = details.OrganisationID,
             OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
             OrganisationName = details.OrganisationName,
@@ -72,6 +73,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         // Implicit operator from RegistrationSubmissionDetailsViewModel to RegistrationSubmissionOrganisationDetails  
         public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionDetailsViewModel details) => details is null ? null : new RegistrationSubmissionOrganisationDetails
         {
+            SubmissionId = details.SubmissionId,
             OrganisationID = details.OrganisationId,
             OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
             OrganisationName = details.OrganisationName,

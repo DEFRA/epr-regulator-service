@@ -14,6 +14,7 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 [DebuggerDisplay("{OrganisationName}, {OrganisationReference}, {RegistrationYear}, {RegistrationStatus},{OrganisationType}")]
 public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<RegistrationSubmissionOrganisationDetails?>
 {
+    public Guid SubmissionId { get; set; }
     public Guid OrganisationID { get; set; }
     public string OrganisationReference { get; set; }
     public string OrganisationName { get; set; }

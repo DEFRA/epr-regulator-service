@@ -117,22 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Table.Header.Year" xml:space="preserve">
-    <value>[Welsh]Relevant year</value>
+  <data name="CancellationConfirmation.BannerTitle" xml:space="preserve">
+    <value>[Welsh]You have cancelled the registration of </value>
   </data>
-  <data name="Table.Header.Status" xml:space="preserve">
-    <value>[Welsh]Submission status</value>
-  </data>
-  <data name="Table.Header.CompanyId" xml:space="preserve">
-    <value>[Welsh]Organisation ID</value>
-  </data>
-  <data name="Table.Header.Company" xml:space="preserve">
-    <value>[Welsh]Organisation</value>
-  </data>
-  <data name="Table.Header.ApplicationDate" xml:space="preserve">
-    <value>[Welsh]Submission date and time</value>
-  </data>
-  <data name="Body.NoResultsFound" xml:space="preserve">
-    <value>[Welsh]No results found</value>
+  <data name="CancellationConfirmation.PageTitle" xml:space="preserve">
+    <value>[Welsh]Cancellation confirmation</value>
   </data>
 </root>

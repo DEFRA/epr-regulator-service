@@ -5,6 +5,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
     using Microsoft.AspNetCore.Mvc;
 
     public partial class RegistrationSubmissionsController
@@ -34,17 +35,17 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             };
         }
 
-        private bool GetOrRejectProvidedOrganisationId(Guid? organisationId, out RegistrationSubmissionDetailsViewModel viewModel)
+        private bool GetOrRejectProvidedSubmissionId(Guid? submissionId, out RegistrationSubmissionDetailsViewModel viewModel)
         {
             viewModel = null;
 
-            if (!organisationId.HasValue)
+            if (!submissionId.HasValue)
             {
                 return false;
             }
 
             var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
-            if ( sessionModelWhichMustMatchSession?.OrganisationID != organisationId.Value)
+            if (sessionModelWhichMustMatchSession?.SubmissionId != submissionId.Value)
             {
                 return false;
             }
@@ -53,11 +54,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return true;
         }
 
-        private bool GetAndRememberOrganisationDetails(Guid? organisationId, out RegistrationSubmissionDetailsViewModel model)
+        private bool GetAndRememberSubmissionDetails(Guid? submissionId, out RegistrationSubmissionDetailsViewModel model)
         {
-            model = organisationId == null
+            model = submissionId == null
                 ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-                : _facadeService.GetRegistrationSubmissionDetails(organisationId.Value);
+                : _facadeService.GetRegistrationSubmissionDetails(submissionId.Value);
 
             _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
 
@@ -132,17 +133,19 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         {
             string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
             ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
-        }
-        private string GetCustomBackLink(string path)
-        {
-            string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
-            return $"/{pathBase}/{path}";
-        }
+        } 
 
-        private void SetBackLink(string path)
+        private void SetBackLink(string path, bool hasPathBase = true)
         {
-            string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
-            ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
+            if (hasPathBase)
+            {
+                string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
+                ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
+            }
+            else
+            {
+                ViewBag.BackLinkToDisplay = path;
+            }
         }
     }
 }

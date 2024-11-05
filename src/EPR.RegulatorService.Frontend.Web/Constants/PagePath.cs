@@ -38,9 +38,12 @@ public static class PagePath
     public const string OrganisationDetailsFileDownloadSecurityWarning = "organisation-details-file-download-security-warning";
     public const string RegistrationSubmissionsRoute = "manage-registration-submissions";
     public const string RegistrationSubmissionsAction = "RegistrationSubmissions";
+    public const string GrantRegistrationSubmission = "manage-registration-submissions-grant";
     public const string QueryRegistrationSubmission = "manage-registration-submissions-query";
     public const string RejectRegistrationSubmission = "manage-registration-submissions-reject";
     public const string RegistrationSubmissionDetails = "registration-submission-details";
+    public const string ConfirmOfflinePaymentSubmission = "confirm-offline-payment-submission";
+    public const string CancellationConfirmation = "cancellation-confirmation";
 
     // Non journey paths
     public const string Accessibility = "accessibility";
@@ -54,4 +57,5 @@ public static class PagePath
     public const string UpdateCookieAcceptance = "update-cookie-acceptance";
     public const string FullName = "full-name";
     public const string PageNotFoundPath = "page-not-found";
+    public const string ServiceNotAvailable = "service-not-available";
 }

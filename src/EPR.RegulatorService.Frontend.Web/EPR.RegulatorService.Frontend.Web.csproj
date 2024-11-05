@@ -57,6 +57,30 @@
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentRequests.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.en.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\Error\ServiceNotAvailable.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Error\ServiceNotAvailable.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\GrantRegistrationSubmission.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\GrantRegistrationSubmission.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancellationConfirmation.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancellationConfirmation.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmOfflinePaymentSubmission.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmOfflinePaymentSubmission.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionDetails.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
