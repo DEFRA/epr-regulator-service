@@ -41,7 +41,8 @@ public partial class MockedFacadeService : IFacadeService
                 Country = fields[18],
                 Postcode = fields[19],
                 OrganisationID = Guid.Parse(fields[22]),
-                NationID = int.Parse(fields[23], CultureInfo.InvariantCulture),
+                SubmissionId = Guid.Parse(fields[23]),
+                NationID = int.Parse(fields[24], CultureInfo.InvariantCulture),
                 RegulatorComments = fields[20],
                 ProducerComments = fields[21],
             });

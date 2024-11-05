@@ -5,6 +5,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
     public class GrantRegistrationSubmissionViewModel
     {
-        public Guid OrganisationId { get; set; } 
+        public Guid SubmissionId { get; set; } 
     }
 }

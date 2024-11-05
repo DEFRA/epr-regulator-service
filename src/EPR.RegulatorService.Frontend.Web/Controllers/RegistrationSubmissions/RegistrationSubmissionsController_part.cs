@@ -35,17 +35,17 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             };
         }
 
-        private bool GetOrRejectProvidedOrganisationId(Guid? organisationId, out RegistrationSubmissionDetailsViewModel viewModel)
+        private bool GetOrRejectProvidedSubmissionId(Guid? submissionId, out RegistrationSubmissionDetailsViewModel viewModel)
         {
             viewModel = null;
 
-            if (!organisationId.HasValue)
+            if (!submissionId.HasValue)
             {
                 return false;
             }
 
             var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
-            if (sessionModelWhichMustMatchSession?.OrganisationID != organisationId.Value)
+            if (sessionModelWhichMustMatchSession?.SubmissionId != submissionId.Value)
             {
                 return false;
             }
@@ -54,11 +54,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return true;
         }
 
-        private bool GetAndRememberOrganisationDetails(Guid? organisationId, out RegistrationSubmissionDetailsViewModel model)
+        private bool GetAndRememberSubmissionDetails(Guid? submissionId, out RegistrationSubmissionDetailsViewModel model)
         {
-            model = organisationId == null
+            model = submissionId == null
                 ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-                : _facadeService.GetRegistrationSubmissionDetails(organisationId.Value);
+                : _facadeService.GetRegistrationSubmissionDetails(submissionId.Value);
 
             _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
 
