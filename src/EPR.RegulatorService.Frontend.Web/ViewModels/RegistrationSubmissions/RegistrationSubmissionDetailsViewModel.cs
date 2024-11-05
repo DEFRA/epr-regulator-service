@@ -8,6 +8,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     {
         public Guid OrganisationId { get; set; }
 
+        public Guid SubmissionId { get; set; }
+
         public string OrganisationReference { get; set; }
 
         public string OrganisationName { get; set; }
@@ -42,6 +44,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
         {
             OrganisationId = details.OrganisationID,
+            SubmissionId = details.SubmissionId,
             OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
             OrganisationName = details.OrganisationName,
             ApplicationReferenceNumber = details.ApplicationReferenceNumber,
@@ -72,6 +75,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionDetailsViewModel details) => details is null ? null : new RegistrationSubmissionOrganisationDetails
         {
             OrganisationID = details.OrganisationId,
+            SubmissionId = details.SubmissionId,
             OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
             OrganisationName = details.OrganisationName,
             ApplicationReferenceNumber = details.ApplicationReferenceNumber,

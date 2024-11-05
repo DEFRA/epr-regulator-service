@@ -6,7 +6,7 @@ public class RegulatorDecisionRequest
 {
     public Guid OrganisationId { get; set; }
 
-    public RegulatorDecision Decision { get; set; }
+    public RegistrationSubmissionStatus Decision { get; set; }
 
     public Guid SubmissionId { get; set; }
 

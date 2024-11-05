@@ -208,7 +208,7 @@ public partial class RegistrationSubmissionsController(
         try
         {
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
-                                new RegulatorDecisionRequest { OrganisationId = existingModel.OrganisationId, Decision = Core.Enums.RegulatorDecision.Accepted });
+                                new RegulatorDecisionRequest { OrganisationId = existingModel.OrganisationId, Decision = Core.Enums.RegistrationSubmissionStatus.granted });
             return status == Core.Models.EndpointResponseStatus.Success
                   ? RedirectToRoute("SubmissionDetails", new { existingModel.OrganisationId })
                   : RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}" });
@@ -354,7 +354,8 @@ public partial class RegistrationSubmissionsController(
                 new RegulatorDecisionRequest
                 {
                     OrganisationId = existingModel.OrganisationId,
-                    Decision = Core.Enums.RegulatorDecision.Cancelled,
+                    SubmissionId = existingModel.SubmissionId,
+                    Decision = Core.Enums.RegistrationSubmissionStatus.cancelled,
                     Comments = model.CancellationReason
                 });
 
