@@ -4,7 +4,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
     public class CancelRegistrationSubmissionViewModel
     {
-        public Guid OrganisationId { get; set; }
+        public Guid SubmissionId { get; set; }
 
         [CharacterCount("Error.CancellationReason", "Error.CancellationReasonTooLong", 400)]
         public string? CancellationReason { get; set; }

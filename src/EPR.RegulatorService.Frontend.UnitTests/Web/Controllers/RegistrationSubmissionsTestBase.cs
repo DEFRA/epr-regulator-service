@@ -105,6 +105,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(Guid organisationId) => new RegistrationSubmissionDetailsViewModel
         {
+            SubmissionId = organisationId,
             OrganisationId = organisationId,
             OrganisationReference = "215 148",
             OrganisationName = "Acme org Ltd.",

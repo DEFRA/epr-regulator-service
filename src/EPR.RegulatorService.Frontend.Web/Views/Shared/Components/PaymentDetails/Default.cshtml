@@ -96,7 +96,7 @@
         </dl>
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"/>
 
-        @using (Html.BeginRouteForm("SubmitPaymentInfo", new { organisationid = ViewBag.OrganisationId }, FormMethod.Post))
+        @using (Html.BeginRouteForm("SubmitPaymentInfo", new { submissionId = ViewBag.OrganisationId }, FormMethod.Post))
         {
             <div class="govuk-!-width-one-half govuk-form-group @(errorsViewModel.HasErrorKey(nameof(Model.OfflinePayment)) ? " govuk-form-group--error" : "")">
                 <label class="govuk-label" for="@nameof(Model.OfflinePayment)">
