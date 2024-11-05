@@ -679,6 +679,56 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
         }
 
+        [TestMethod]
+        public async Task GrantRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new GrantRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId
+            };
+
+            // Simulate an error in ModelState
+            _controller.Url = mockUrlHelper.Object;
+            _controller.ModelState.AddModelError("TestError", "Model state is invalid");
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(model) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.GrantRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
+
+            // Verify that ModelState has errors
+            Assert.IsTrue(_controller.ModelState.ErrorCount > 0, "ModelState should contain errors.");
+            Assert.AreEqual("Model state is invalid", _controller.ModelState["TestError"].Errors[0].ErrorMessage, "The error message should match the expected message.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
+        }
+
         #endregion GrantRegistrationSubmission
 
         #region QueryRegistrationSubmission
