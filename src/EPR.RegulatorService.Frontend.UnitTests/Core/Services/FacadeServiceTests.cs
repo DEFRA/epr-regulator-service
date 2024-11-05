@@ -71,7 +71,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["AddRemoveApprovedUser"] = "/accounts-management/add-remove-approved-users",
                     ["RegistrationSubmissionDecisionPath"] = "http://testurl.com",
                     ["FileDownload"] = "https://api.example.com/file/download",
-                    ["OrganisationRegistrationSubmissions"] = "registrations/get-organisations&currentPage={0}&pageSize={1}"
+                    ["OrganisationRegistrationSubmissions"] = "registrations/get-organisations&currentPage={0}&pageSize={1}",
+                    ["OrganisationRegistrationSubmissionDecisionPath"] = "organisation-registration-submission-decision"
                 },
                 DownstreamScope = "api://default"
             });
@@ -1134,7 +1135,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
             var expectedResult = expectedDataSet[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationType = expectedResult.OrganisationType.ToString()};
+            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationType = expectedResult.OrganisationType.ToString() };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
             results.TotalPages.Should().BeGreaterThan(1);
@@ -1189,7 +1190,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 OrganisationType = expectedSize.ToString(),
                 SubmissionStatus = expectedStatus.ToString(),
                 RelevantYear = expectedYear,
-                PageSize=5000
+                PageSize = 5000
             };
 
             var result = await _facadeService.GetRegistrationSubmissions(filter);
@@ -1237,6 +1238,70 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             var result = await _facadeService.GetRegistrationSubmissions(filter);
             result.Items.Should().BeEquivalentTo(expectedItems);
+        }
+
+        [TestMethod]
+        public async Task SubmitRegulatorRegistrationDecisionAsync_ReturnsSuccess_WhenResponseIsSuccessful()
+        {
+            // Arrange
+            var request = _fixture.Create<RegulatorDecisionRequest>();
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(() => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK
+                })
+                .Verifiable();
+
+            // Act
+            var result = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(request);
+
+            // Assert
+            Assert.AreEqual(EndpointResponseStatus.Success, result);
+            _mockHandler.Protected().Verify(
+                "SendAsync",
+                Times.Once(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.RequestUri.ToString().Contains("organisation-registration-submission-decision")),
+                ItExpr.IsAny<CancellationToken>());
+        }
+
+        [TestMethod]
+        public async Task SubmitRegulatorRegistrationDecisionAsync_ReturnsFail_WhenResponseIsUnsuccessful()
+        {
+            // Arrange
+            var request = _fixture.Create<RegulatorDecisionRequest>();
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(() => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest
+                })
+                .Verifiable();
+
+            // Act
+            var result = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(request);
+
+            // Assert
+            Assert.AreEqual(EndpointResponseStatus.Fail, result);
+            _mockHandler.Protected().Verify(
+                "SendAsync",
+                Times.Once(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.RequestUri.ToString().Contains("organisation-registration-submission-decision")),
+                ItExpr.IsAny<CancellationToken>());
         }
     }
 }

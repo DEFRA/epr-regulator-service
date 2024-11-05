@@ -197,6 +197,7 @@ public partial class RegistrationSubmissionsController(
         if (!ModelState.IsValid)
         {
             SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}");
+            ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(GrantRegistrationSubmission), model);
         }
 
