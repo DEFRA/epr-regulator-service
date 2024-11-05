@@ -208,10 +208,12 @@ public partial class RegistrationSubmissionsController(
         try
         {
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
-                                new RegulatorDecisionRequest {
+                                new RegulatorDecisionRequest
+                                {
                                     OrganisationId = existingModel.OrganisationId,
                                     SubmissionId = existingModel.SubmissionId,
-                                    Decision = Core.Enums.RegistrationSubmissionStatus.granted });
+                                    Decision = Core.Enums.RegistrationSubmissionStatus.granted.ToString()
+                                });
 
             return status == Core.Models.EndpointResponseStatus.Success
                   ? RedirectToRoute("SubmissionDetails", new { existingModel.OrganisationId })
@@ -359,7 +361,7 @@ public partial class RegistrationSubmissionsController(
                 {
                     OrganisationId = existingModel.OrganisationId,
                     SubmissionId = existingModel.SubmissionId,
-                    Decision = Core.Enums.RegistrationSubmissionStatus.cancelled,
+                    Decision = Core.Enums.RegistrationSubmissionStatus.cancelled.ToString(),
                     Comments = model.CancellationReason
                 });
 
