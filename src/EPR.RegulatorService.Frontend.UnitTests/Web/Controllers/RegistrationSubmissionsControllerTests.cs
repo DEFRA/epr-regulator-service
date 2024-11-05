@@ -542,7 +542,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _controller.Url = mockUrlHelper.Object;
 
             // Act
-            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel { OrganisationId = Guid.NewGuid() });
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel { SubmissionId = Guid.NewGuid() });
 
             // Assert
             var viewResult = result as RedirectToActionResult;
@@ -561,7 +561,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _controller.ModelState.AddModelError("IsGrantRegistrationConfirmed", "Select yes if you want to grant this registration");
 
             // Act
-            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel { OrganisationId = organisationId }) as ViewResult;
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel { SubmissionId = organisationId }) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -585,7 +585,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Act
             var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
-            { OrganisationId = organisationId, IsGrantRegistrationConfirmed = false }) as RedirectToRouteResult;
+            { SubmissionId = organisationId, IsGrantRegistrationConfirmed = false }) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -607,7 +607,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Act
             var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
-            { OrganisationId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+            { SubmissionId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -626,7 +626,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Act
             var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
-            { OrganisationId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+            { SubmissionId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -654,7 +654,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Act
             var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
-            { OrganisationId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+            { SubmissionId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
