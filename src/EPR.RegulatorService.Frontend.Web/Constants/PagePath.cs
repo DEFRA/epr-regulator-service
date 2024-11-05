@@ -57,4 +57,5 @@ public static class PagePath
     public const string UpdateCookieAcceptance = "update-cookie-acceptance";
     public const string FullName = "full-name";
     public const string PageNotFoundPath = "page-not-found";
+    public const string ServiceNotAvailable = "service-not-available";
 }

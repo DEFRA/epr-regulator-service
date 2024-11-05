@@ -1,10 +1,16 @@
-namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
+using System.ComponentModel.DataAnnotations;
+
+public class GrantRegistrationSubmissionViewModel
 {
-    using EPR.RegulatorService.Frontend.Web.Attributes;
-    using EPR.RegulatorService.Frontend.Web.Constants;
+    public Guid OrganisationId { get; set; }
 
     public class GrantRegistrationSubmissionViewModel
     {
         public Guid SubmissionId { get; set; } 
     }
+
+    [Required(ErrorMessage = "ErrorMessage")]
+    public bool? IsGrantRegistrationConfirmed { get; set; }
 }
