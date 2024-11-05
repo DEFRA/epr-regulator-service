@@ -354,7 +354,8 @@ public partial class RegistrationSubmissionsController(
                 new RegulatorDecisionRequest
                 {
                     OrganisationId = existingModel.OrganisationId,
-                    Decision = Core.Enums.RegulatorDecision.Cancelled
+                    Decision = Core.Enums.RegulatorDecision.Cancelled,
+                    Comments = model.CancellationReason
                 });
 
             return status == Core.Models.EndpointResponseStatus.Success
