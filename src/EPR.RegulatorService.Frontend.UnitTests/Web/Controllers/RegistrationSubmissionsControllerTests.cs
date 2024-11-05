@@ -986,6 +986,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
         }
         [TestMethod]
+        public async Task RejectRegistrationSubmission_SessionDataError_ReturnsPageNotFOund()
+        {
+            // Act
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.RejectRegistrationSubmission(Guid.NewGuid());
+
+            // Assert
+            var viewResult = result as RedirectToActionResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
+
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+        }
+        [TestMethod]
         public async Task RejectRegistrationSubmission_Post_SessionDataError_ReturnsPageNotFOund()
         {
             // Act
