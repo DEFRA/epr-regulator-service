@@ -212,7 +212,7 @@ public partial class RegistrationSubmissionsController(
                                 {
                                     OrganisationId = existingModel.OrganisationId,
                                     SubmissionId = existingModel.SubmissionId,
-                                    Decision = Core.Enums.RegistrationSubmissionStatus.granted.ToString()
+                                    Status = Core.Enums.RegistrationSubmissionStatus.granted.ToString()
                                 });
 
             return status == Core.Models.EndpointResponseStatus.Success
@@ -361,7 +361,7 @@ public partial class RegistrationSubmissionsController(
                 {
                     OrganisationId = existingModel.OrganisationId,
                     SubmissionId = existingModel.SubmissionId,
-                    Decision = Core.Enums.RegistrationSubmissionStatus.cancelled.ToString(),
+                    Status = Core.Enums.RegistrationSubmissionStatus.cancelled.ToString(),
                     Comments = model.CancellationReason
                 });
 

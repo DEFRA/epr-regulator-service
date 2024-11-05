@@ -4,7 +4,7 @@ public class RegulatorDecisionRequest
 {
     public Guid OrganisationId { get; set; }
 
-    public string Decision { get; set; }
+    public string Status { get; set; }
 
     public Guid SubmissionId { get; set; }
 
