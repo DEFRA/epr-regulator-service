@@ -161,21 +161,21 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpGet]
-    [Route(PagePath.GrantRegistrationSubmission + "/{submissionId:guid}", Name = "GrantRegistrationSubmission")]
-    public async Task<IActionResult> GrantRegistrationSubmission(Guid? submissionId)
+    [Route(PagePath.GrantRegistrationSubmission + "/{organisationId:guid}", Name = "GrantRegistrationSubmission")]
+    public async Task<IActionResult> GrantRegistrationSubmission(Guid? organisationId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out RegistrationSubmissionDetailsViewModel existingModel))
+        if (!GetOrRejectProvidedSubmissionId(organisationId, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        SetBackLink(Url.RouteUrl("SubmissionDetails", new { submissionId }), false);
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}");
 
         var model = new GrantRegistrationSubmissionViewModel
         {
-            SubmissionId = submissionId.Value
+            SubmissionId = existingModel.OrganisationId
         };
 
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
