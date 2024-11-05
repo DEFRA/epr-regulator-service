@@ -34,7 +34,7 @@ public class FacadeService : IFacadeService
     private const string OrganisationsRemoveApprovedUserPath = "OrganisationsRemoveApprovedUser";
     private const string AddRemoveApprovedUserPath = "AddRemoveApprovedUser";
     private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
-    private const string RegistrationSubmissionDecisionPathShehzad = "RegistrationSubmissionDecisionPathShehzad";
+    private const string OrgsanisationRegistrationSubmissionDecisionPath = "OrganisationRegistrationSubmissionDecisionPath";
     private const string FileDownloadPath = "FileDownload";
 
     private readonly string[] _scopes;
@@ -363,7 +363,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        string path = _facadeApiConfig.Endpoints[RegistrationSubmissionDecisionPathShehzad];
+        string path = _facadeApiConfig.Endpoints[OrgsanisationRegistrationSubmissionDecisionPath];
         var response = await _httpClient.PostAsJsonAsync(path, request);
 
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
