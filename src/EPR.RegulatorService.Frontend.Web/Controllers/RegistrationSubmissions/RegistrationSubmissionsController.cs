@@ -291,7 +291,7 @@ public partial class RegistrationSubmissionsController(
         {
             _logControllerError.Invoke(
                 logger,
-                $"Exception received while cancelling submission" +
+                $"Exception received while querying submission" +
                 $"{nameof(RegistrationSubmissionsController)}.{nameof(QueryRegistrationSubmission)}", ex);
 
             return RedirectToRoute(

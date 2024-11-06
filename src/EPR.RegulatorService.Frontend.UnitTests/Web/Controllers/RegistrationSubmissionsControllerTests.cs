@@ -1168,7 +1168,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 logger.Log(
                     LogLevel.Error,
                     It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while cancelling submission")),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while querying submission")),
                     exception,
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
