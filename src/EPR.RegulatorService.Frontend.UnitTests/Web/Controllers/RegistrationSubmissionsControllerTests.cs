@@ -829,7 +829,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task QueryRegistrationSubmission_SetsCorrectBackLinkInViewData()
         {
-            // Act
+            // Arrange
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
@@ -840,20 +840,23 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 SelectedRegistration = detailsModel
             };
-            var expectedViewModel = new QueryRegistrationSubmissionViewModel
-            {
-                SubmissionId = id,
-                Query = "query provided"
-            };
 
+            // Act
             _controller.Url = mockUrlHelper.Object;
-            var result = await _controller.QueryRegistrationSubmission(expectedViewModel);
+            var result = await _controller.QueryRegistrationSubmission(id);
 
             // Assert
-            var viewResult = result as RedirectToActionResult;
+            var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Extract the GUID part using indexing and check for validity
+            string[] segments = backLink.Split('/');
+            Assert.IsNotNull(segments, "The back link should contain URL segments.");
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
@@ -906,12 +909,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task QueryRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenQueryIsValid()
         {
             // Arrange
-            var id = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
 
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
@@ -919,17 +923,27 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new QueryRegistrationSubmissionViewModel
             {
-                SubmissionId = id,
+                SubmissionId = submissionId,
                 Query = "Valid query within 400 characters." // Valid input
             };
 
-            // Act
+            // Set up successful submission status
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success);
+
             _controller.Url = mockUrlHelper.Object;
+
+            // Act
             var result = await _controller.QueryRegistrationSubmission(model) as RedirectToActionResult;
 
-            // Assert
-            Assert.IsNotNull(result); // Ensure the result is not null
-            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName); // Ensure the user is redirected to the correct URL
+            // Assert - Successful query and redirection
+            Assert.IsNotNull(result);
+            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
 
         [TestMethod]
