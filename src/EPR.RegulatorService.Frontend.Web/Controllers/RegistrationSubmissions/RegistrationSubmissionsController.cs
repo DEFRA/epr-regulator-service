@@ -341,9 +341,41 @@ public partial class RegistrationSubmissionsController(
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId }), false);
             ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(RejectRegistrationSubmission), model);
-        }
+        } 
 
-        return Redirect(PagePath.RegistrationSubmissionsRoute);
+        try
+        {
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
+                new RegulatorDecisionRequest
+                {
+                    OrganisationId = existingModel.OrganisationId,
+                    SubmissionId = existingModel.SubmissionId,
+                    Status = Core.Enums.RegistrationSubmissionStatus.refused.ToString(),
+                    Comments = model.RejectReason
+                });
+
+            return status == Core.Models.EndpointResponseStatus.Success
+                ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
+                : RedirectToRoute("ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
+        catch (Exception ex)
+        {
+            _logControllerError.Invoke(
+                logger,
+                $"Exception received while refusing submission" +
+                $"{nameof(RegistrationSubmissionsController)}.{nameof(RejectRegistrationSubmission)}", ex);
+
+            return RedirectToRoute(
+                "ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        } 
     }
 
     [HttpGet]
