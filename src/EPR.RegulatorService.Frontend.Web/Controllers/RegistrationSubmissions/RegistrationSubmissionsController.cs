@@ -268,7 +268,39 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(QueryRegistrationSubmission), model);
         }
 
-        return RedirectToAction(PagePath.RegistrationSubmissionsAction);
+        try
+        {
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
+                new RegulatorDecisionRequest
+                {
+                    OrganisationId = existingModel.OrganisationId,
+                    SubmissionId = existingModel.SubmissionId,
+                    Status = Core.Enums.RegistrationSubmissionStatus.queried.ToString(),
+                    Comments = model.Query
+                });
+
+            return status == Core.Models.EndpointResponseStatus.Success
+                ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
+                : RedirectToRoute("ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
+        catch (Exception ex)
+        {
+            _logControllerError.Invoke(
+                logger,
+                $"Exception received while querying submission" +
+                $"{nameof(RegistrationSubmissionsController)}.{nameof(QueryRegistrationSubmission)}", ex);
+
+            return RedirectToRoute(
+                "ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
     }
 
     [HttpGet]
