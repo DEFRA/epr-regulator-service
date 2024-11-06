@@ -1040,6 +1040,140 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
+        [TestMethod]
+        public async Task QueryRegistrationSubmission_Post_ReturnsFailAndRedirectsCorrectly_WhenFacadeStatusReturnsFail()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new QueryRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                Query = "Valid query within 400 characters." // Valid input
+            };
+
+            // Set up an unsuccessful submission status
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Fail);
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.QueryRegistrationSubmission(model) as RedirectToRouteResult;
+
+            // Assert - Unsuccessful cancellation and redirection
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+
+            // Assert route values
+            string expectedUrl = $"{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+            Assert.IsTrue(result.RouteValues.TryGetValue("backLink", out object backLink));
+            Assert.AreEqual(expectedUrl, backLink);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task QueryRegistrationSubmission_Post_RedirectsToServiceNotAvailable_OnFacadeServiceException()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new QueryRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                Query = "Valid reason"
+            };
+
+            // Set up the facade service to throw an exception
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ThrowsAsync(new Exception("Simulated facade exception"));
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.QueryRegistrationSubmission(model) as RedirectToRouteResult;
+
+            // Assert - Redirects to ServiceNotAvailable when an exception occurs
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task QueryRegistrationSubmission_LogsErrorAndRedirectsToServiceNotAvailable_OnException()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var existingModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            SetupJourneySession(null, existingModel);
+
+            var model = new QueryRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                Query = "Test query"
+            };
+
+            var exception = new Exception("Test exception");
+
+            // Set up the mock to throw an exception when SubmitRegulatorRegistrationDecisionAsync is called
+            _facadeServiceMock
+                .Setup(service => service.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ThrowsAsync(exception);
+
+            // Act
+            var result = await _controller.QueryRegistrationSubmission(model) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+
+            // Verify the back link in the route values is set correctly
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+
+            // Verify that _logControllerError was called with correct parameters
+            _loggerMock.Verify(logger =>
+                logger.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while cancelling submission")),
+                    exception,
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
+        }
+
         #endregion
 
         #region RejectRegistrationSubmission
