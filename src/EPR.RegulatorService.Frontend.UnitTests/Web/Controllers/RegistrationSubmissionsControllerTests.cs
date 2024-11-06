@@ -1405,7 +1405,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 RejectReason = "Valid rejection reason within 400 characters." // Valid input
             };
 
-            // Set up an unsuccessful submission status
+            // Set up an unsuccessful call
             _facadeServiceMock
                 .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
                 .ReturnsAsync(EndpointResponseStatus.Fail);
@@ -2460,8 +2460,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 SubmissionId = submissionId,
                 CancellationReason = "Valid reason within 400 characters." // Valid input
             };
-
-            // Set up successful submission status
+ 
             _facadeServiceMock
                 .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
                 .ReturnsAsync(EndpointResponseStatus.Success);
@@ -2470,8 +2469,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Act
             var result = await _controller.CancelRegistrationSubmission(model) as RedirectToActionResult;
-
-            // Assert - Successful cancellation and redirection
+             
             Assert.IsNotNull(result);
             Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
 
@@ -2511,8 +2509,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Act
             var result = await _controller.CancelRegistrationSubmission(model) as RedirectToRouteResult;
-
-            // Assert - Unsuccessful cancellation and redirection
+             
             Assert.IsNotNull(result);
             Assert.AreEqual("ServiceNotAvailable", result.RouteName);
 
