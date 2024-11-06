@@ -6,7 +6,8 @@
 <div class="govuk-button-group">
     @if (Model.Status == RegistrationSubmissionStatus.queried ||
     Model.Status != RegistrationSubmissionStatus.granted &&
-    Model.Status != RegistrationSubmissionStatus.refused)
+    Model.Status != RegistrationSubmissionStatus.refused &&
+    Model.Status != RegistrationSubmissionStatus.cancelled)
     {
         <ul class="govuk-list govuk-list__horizontal govuk-list__last-spaced">
             <li>
@@ -47,7 +48,13 @@
 
     @if (Model.Status == RegistrationSubmissionStatus.granted)
     {
-        <a class="govuk-button govuk-button--secondary" href="">
+        <a class="govuk-button govuk-button--secondary" href="@Url.Action(
+                "CancelRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  submissionId = Model.SubmissionId
+                })">
             @Localizer["RegistrationSubmissionDetails.CancelRegistration"]
         </a>
     }

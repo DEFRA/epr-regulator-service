@@ -75,6 +75,9 @@
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancellationConfirmation.en.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancelRegistrationSubmission.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmOfflinePaymentSubmission.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -85,6 +88,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionDetails.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancelRegistrationSubmission.en.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RejectRegistrationSubmission.cy.resx">

@@ -123,9 +123,6 @@
   <data name="Error.QueryTooLong" xml:space="preserve">
     <value>[Welsh]Reason for querying application must be 400 characters or less</value>
   </data>
-  <data name="QueryRegistrationSubmission.BackToAllSubmissions" xml:space="preserve">
-    <value>[Welsh]Go back to all submissions</value>
-  </data>
   <data name="QueryRegistrationSubmission.Caption" xml:space="preserve">
     <value>[Welsh]Manage registration submissions</value>
   </data>

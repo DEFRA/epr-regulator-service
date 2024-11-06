@@ -1,12 +1,10 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
-using EPR.RegulatorService.Frontend.Core.Enums;
-
 public class RegulatorDecisionRequest
 {
     public Guid OrganisationId { get; set; }
 
-    public RegulatorDecision Decision { get; set; }
+    public string Status { get; set; }
 
     public Guid SubmissionId { get; set; }
 

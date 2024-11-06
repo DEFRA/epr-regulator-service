@@ -451,15 +451,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region GrantRegistrationSubmission
 
         [TestMethod]
-        public async Task GrantRegistrationSubmission_ReturnsPageNotFound_When_OrganisationId_DoesNot_Match_With_That_InSession()
+        public async Task GrantRegistrationSubmission_ReturnsPageNotFound_When_SubmissionId_DoesNot_Match_With_That_InSession()
         {
             // Act
-            var id = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
 
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
@@ -479,19 +479,19 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GrantRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
             // Arrange 
-            var organisationId = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{organisationId}";
-            var mockUrlHelper = CreateUrlHelper(organisationId, locationUrl);
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
-            };             
+            };
 
             // Act
             _controller.Url = mockUrlHelper.Object;
-            var result = await _controller.GrantRegistrationSubmission(organisationId) as ViewResult;
+            var result = await _controller.GrantRegistrationSubmission(submissionId) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
@@ -511,15 +511,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GrantRegistrationSubmission_Get_Should_ReturnTo_CorrectViewWithModel()
         {
             // Arrange
-            var organisationId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{organisationId}";
-            var mockUrlHelper = CreateUrlHelper(organisationId, locationUrl);
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
             _controller.Url = mockUrlHelper.Object;
 
             // Act
-            var result = await _controller.GrantRegistrationSubmission(organisationId) as ViewResult;
+            var result = await _controller.GrantRegistrationSubmission(submissionId) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -528,13 +528,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GrantRegistrationSubmission_Post_ReturnsPageNotFound_When_OrgansitionId_Is_Invalid()
+        public async Task GrantRegistrationSubmission_Post_ReturnsPageNotFound_When_SubmissionId_Is_Invalid()
         {
             // Act
-            var id = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
@@ -555,13 +555,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GrantRegistrationSubmission_Post_Should_Display_ErrorMessage_When_Nothing_Is_Selected()
         {
             // Arrange
-            var organisationId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
             _controller.ModelState.AddModelError("IsGrantRegistrationConfirmed", "Select yes if you want to grant this registration");
 
             // Act
-            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel { SubmissionId = organisationId }) as ViewResult;
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel { SubmissionId = submissionId }) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -579,40 +579,37 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_SubmissionDetails_When_NotConfirmed()
         {
             // Arrange
-            var organisationId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
 
             // Act
             var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
-            { SubmissionId = organisationId, IsGrantRegistrationConfirmed = false }) as RedirectToRouteResult;
+            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = false }) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
             result.RouteName.Should().Be("SubmissionDetails");
-            result.RouteValues.First().Value.Should().Be(organisationId);
+            result.RouteValues.First().Value.Should().Be(submissionId);
         }
 
         [TestMethod]
-        [DataRow(EndpointResponseStatus.Fail)]
-        [DataRow(EndpointResponseStatus.NotSet)]
-        [DataRow(EndpointResponseStatus.UserExists)]
-        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_Facade_Returns_Non_Success(EndpointResponseStatus endpointResponseStatus)
+        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_Facade_Returns_Fail()
         {
             // Arrange
-            var organisationId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
-            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(endpointResponseStatus);
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
 
             // Act
             var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
-            { SubmissionId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
             result.RouteName.Should().Be("ServiceNotAvailable");
-            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
+            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
             _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
         }
 
@@ -620,47 +617,116 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_Facade_Throws()
         {
             // Arrange
-            var organisationId = Guid.NewGuid();
-            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = GenerateTestSubmissionDetailsViewModel(organisationId);
-            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ThrowsAsync(new Exception("Test"));
+            var submissionId = Guid.NewGuid();
+            var existingModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            SetupJourneySession(null, existingModel);
+
+            var model = new GrantRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                IsGrantRegistrationConfirmed = true
+            };
+
+            var exception = new Exception("Test exception");
+
+            // Set up the mock to throw an exception when SubmitRegulatorRegistrationDecisionAsync is called
+            _facadeServiceMock
+                .Setup(service => service.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ThrowsAsync(exception);
 
             // Act
-            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
-            { SubmissionId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+            var result = await _controller.GrantRegistrationSubmission(model) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
-            result.RouteName.Should().Be("ServiceNotAvailable");
-            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{organisationId}");
-            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
-            _loggerMock.Verify(
-                        x => x.Log(
-                            It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
-                            It.IsAny<EventId>(),
-                            It.IsAny<It.IsAnyType>(),
-                            It.Is<Exception>((v, t) => v.ToString().Contains("Test")),
-                            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                        Times.Once);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+
+            // Verify the back link in the route values is set correctly
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+
+            // Verify that _logControllerError was called with correct parameters
+            _loggerMock.Verify(logger =>
+                logger.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while granting submission")),
+                    exception,
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
         }
 
         [TestMethod]
         public async Task GrantRegistrationSubmission_Post_RedirectTo_SubmissionDetails_OnSuccess()
         {
             // Arrange
-            var organisationId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(organisationId);
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
             _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
 
             // Act
             var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
-            { SubmissionId = organisationId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
             result.RouteName.Should().Be("SubmissionDetails");
-            result.RouteValues.First().Value.Should().Be(organisationId);
+            result.RouteValues.First().Value.Should().Be(submissionId);
             _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+        }
+
+        [TestMethod]
+        public async Task GrantRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new GrantRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId
+            };
+
+            // Simulate an error in ModelState
+            _controller.Url = mockUrlHelper.Object;
+            _controller.ModelState.AddModelError("TestError", "Model state is invalid");
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(model) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.GrantRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
+
+            // Verify that ModelState has errors
+            Assert.IsTrue(_controller.ModelState.ErrorCount > 0, "ModelState should contain errors.");
+            Assert.AreEqual("Model state is invalid", _controller.ModelState["TestError"].Errors[0].ErrorMessage, "The error message should match the expected message.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
 
         #endregion GrantRegistrationSubmission
@@ -866,16 +932,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName); // Ensure the user is redirected to the correct URL
         }
 
-
-        private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
-        {
-            var mockUrlHelper = new Mock<IUrlHelper>();
-            mockUrlHelper
-                .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
-                .Returns(locationUrl);
-            return mockUrlHelper;
-        }
-
         [TestMethod]
         public async Task QueryRegistrationSubmission_Post_ReturnsExpectedError_WhenInputIsGreaterThan400()
         {
@@ -998,6 +1054,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
         }
+
         [TestMethod]
         public async Task RejectRegistrationSubmission_Post_SessionDataError_ReturnsPageNotFOund()
         {
@@ -1860,5 +1917,464 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         #endregion
+
+        #region CancelRegistrationSubmission
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_RedirectsToPageNotFound_WhenSubmissionIsEmpty()
+        {
+            // Arrange
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission((Guid?)null);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_RedirectsToPageNotFound_WhenSubmissionIdIsInvalid()
+        {
+            // Arrange
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission(Guid.NewGuid());
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_ReturnsViewWithModel_ForAValidSubmissionIdAndOrganisationName()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var existingModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            SetupJourneySession(null, existingModel);
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission(submissionId) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            Assert.AreEqual(nameof(_controller.CancelRegistrationSubmission), result.ViewName);
+
+            var model = result.Model as CancelRegistrationSubmissionViewModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(submissionId, model.SubmissionId);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_Post_ReturnsPageNotFound_ForErroneousSessionData()
+        {
+            // Act
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            var expectedViewModel = new CancelRegistrationSubmissionViewModel
+            {
+                SubmissionId = Guid.NewGuid(),
+                CancellationReason = "reason provided"
+            };
+
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.CancelRegistrationSubmission(expectedViewModel);
+
+            // Assert
+            var viewResult = result as RedirectToActionResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
+
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_Post_ReturnsPageNotFound_ForAnInValidSubmissionId()
+        {
+            // Arrange
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission(new CancelRegistrationSubmissionViewModel());
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new CancelRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId
+            };
+
+            // Simulate an error in ModelState
+            _controller.Url = mockUrlHelper.Object;
+            _controller.ModelState.AddModelError("TestError", "Model state is invalid");
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission(model) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.CancelRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
+
+            // Verify that ModelState has errors
+            Assert.IsTrue(_controller.ModelState.ErrorCount > 0, "ModelState should contain errors.");
+            Assert.AreEqual("Model state is invalid", _controller.ModelState["TestError"].Errors[0].ErrorMessage, "The error message should match the expected message.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_Post_ReturnsExpectedError_WhenInputIsGreaterThan400()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            var model = new CancelRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationReason = new string('A', 401) // Exceeds 400 character limit
+            };
+
+            // Simulate model state error for the CancellationReason property
+            _controller.Url = mockUrlHelper.Object;
+            _controller.ModelState.AddModelError(nameof(model.CancellationReason), "Reason for cancelling application must be 400 characters or less");
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission(model) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.CancelRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
+
+            // Verify ModelState error for CancellationReason property
+            Assert.IsTrue(_controller.ModelState[nameof(model.CancellationReason)].Errors.Count > 0, "ModelState should contain an error for the CancellationReason property.");
+            Assert.AreEqual("Reason for cancelling application must be 400 characters or less",
+                _controller.ModelState[nameof(model.CancellationReason)].Errors[0].ErrorMessage, "The error message should match the expected validation message.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, locationUrl, "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_Post_ReturnsViewWithErrors_WhenNoCancellationReasonIsProvided()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            var model = new CancelRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationReason = null // No reason provided
+            };
+
+            // Simulate the required field validation error for the CancellationReason property
+            _controller.Url = mockUrlHelper.Object;
+            _controller.ModelState.AddModelError(nameof(model.CancellationReason), "Enter the reason you are cancelling this registration application");
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission(model) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.CancelRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
+
+            // Verify ModelState error for CancellationReason property
+            Assert.IsTrue(_controller.ModelState[nameof(model.CancellationReason)].Errors.Count > 0, "ModelState should contain an error for the CancellationReason property.");
+            Assert.AreEqual("Enter the reason you are cancelling this registration application",
+                _controller.ModelState[nameof(model.CancellationReason)].Errors[0].ErrorMessage, "The error message should match the expected validation message.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenCancellationReasonIsValid()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new CancelRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationReason = "Valid reason within 400 characters." // Valid input
+            };
+
+            // Set up successful submission status
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success);
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission(model) as RedirectToActionResult;
+
+            // Assert - Successful cancellation and redirection
+            Assert.IsNotNull(result);
+            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_Post_ReturnsFailAndRedirectsCorrectly_WhenFacadeStatusReturnsFail()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new CancelRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationReason = "Valid reason within 400 characters." // Valid input
+            };
+
+            // Set up an unsuccessful submission status
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Fail);
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission(model) as RedirectToRouteResult;
+
+            // Assert - Unsuccessful cancellation and redirection
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+
+            // Assert route values
+            string expectedUrl = $"{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+            Assert.IsTrue(result.RouteValues.TryGetValue("backLink", out object backLink));
+            Assert.AreEqual(expectedUrl, backLink);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_Post_RedirectsToServiceNotAvailable_OnFacadeServiceException()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new CancelRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationReason = "Valid reason"
+            };
+
+            // Set up the facade service to throw an exception
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ThrowsAsync(new Exception("Simulated facade exception"));
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission(model) as RedirectToRouteResult;
+
+            // Assert - Redirects to ServiceNotAvailable when an exception occurs
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task CancelRegistrationSubmission_LogsErrorAndRedirectsToServiceNotAvailable_OnException()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var existingModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            SetupJourneySession(null, existingModel);
+
+            var model = new CancelRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationReason = "Test cancellation reason"
+            };
+
+            var exception = new Exception("Test exception");
+
+            // Set up the mock to throw an exception when SubmitRegulatorRegistrationDecisionAsync is called
+            _facadeServiceMock
+                .Setup(service => service.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ThrowsAsync(exception);
+
+            // Act
+            var result = await _controller.CancelRegistrationSubmission(model) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+
+            // Verify the back link in the route values is set correctly
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+
+            // Verify that _logControllerError was called with correct parameters
+            _loggerMock.Verify(logger =>
+                logger.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while cancelling submission")),
+                    exception,
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
+        }
+
+        #endregion
+
+        private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
+        {
+            var mockUrlHelper = new Mock<IUrlHelper>();
+            mockUrlHelper
+                .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
+                .Returns(locationUrl);
+            return mockUrlHelper;
+        }
     }
 }

@@ -54,6 +54,8 @@ public interface IFacadeService
     Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request);
 
     Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters);
+
     RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid submissionId);
+
     Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request);
 }

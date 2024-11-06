@@ -117,22 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Error.Reject" xml:space="preserve">
-    <value>[Welsh]Enter the reason you are rejecting this registration application</value>
+  <data name="CancelRegistrationSubmission.PageHeading" xml:space="preserve">
+    <value>Why are you cancelling this registration application?</value>
   </data>
-  <data name="Error.RejectReasonTooLong" xml:space="preserve">
-    <value>[Welsh]Reason for rejecting application must be 400 characters or less</value>
+  <data name="CancelRegistrationSubmission.PageTitle" xml:space="preserve">
+    <value>Why are you cancelling this registration application?</value>
   </data>
-  <data name="RejectRegistrationSubmission.Caption" xml:space="preserve">
-    <value>[Welsh]Manage registration submissions</value>
+  <data name="Error.CancellationReason" xml:space="preserve">
+    <value>Enter the reason you are cancelling this registration</value>
   </data>
-  <data name="RejectRegistrationSubmission.Description" xml:space="preserve">
-    <value>[Welsh]Explain the reason for rejecting this registration. If you reject this application, the Producer or Compliance Scheme will need to re-submit their application and pay any associated fee.</value>
-  </data>
-  <data name="RejectRegistrationSubmission.Heading" xml:space="preserve">
-    <value>[Welsh]Why are you rejecting this registration application?</value>
-  </data>
-  <data name="RejectRegistrationSubmission.Title" xml:space="preserve">
-    <value>[Welsh]Why are you rejecting this registration application?</value>
+  <data name="Error.CancellationReasonTooLong" xml:space="preserve">
+    <value>Reason for cancelling application must be 400 characters or less</value>
   </data>
 </root>

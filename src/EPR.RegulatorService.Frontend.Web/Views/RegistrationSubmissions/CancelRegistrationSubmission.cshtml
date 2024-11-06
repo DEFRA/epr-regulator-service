@@ -1,0 +1,67 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+
+@model CancelRegistrationSubmissionViewModel
+@{
+    ViewData["Title"] = Localizer["CancelRegistrationSubmission.PageTitle"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer, nameof(Model.CancellationReason));
+    var cancellationReason = string.IsNullOrEmpty(Model.CancellationReason) ? string.Empty : Model.CancellationReason;
+    var cancellationReasonError = errorsViewModel.Errors.Find(x => x.Key == nameof(Model.CancellationReason));
+    var cancellationReasonErrorExists = !string.IsNullOrEmpty(cancellationReasonError.Key);
+}
+
+@using (Html.BeginForm("CancelRegistrationSubmission", "RegistrationSubmissions", FormMethod.Post))
+{
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                    }
+                    <span id="caption" class="govuk-caption-xl">
+                        @SharedLocalizer["ManageRegistrationSubmissions.Caption"]
+                    </span>
+                    <h1 id="page-heading" class="govuk-heading-xl govuk-!-margin-bottom-4" for="@nameof(Model.CancellationReason)">
+                        @Localizer["CancelRegistrationSubmission.PageHeading"]
+                    </h1>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="400">
+                        <div class="govuk-form-group @(cancellationReasonErrorExists ? "govuk-form-group--error" : string.Empty)">
+                            @if (cancellationReasonErrorExists)
+                            {
+                                @await Html.PartialAsync("Partials/Govuk/_InlineError", cancellationReasonError)
+                            }
+                            <textarea class="govuk-textarea govuk-textarea--error govuk-js-character-count @(cancellationReasonErrorExists ? "epr-textarea--error" : string.Empty)"
+                                      id="@nameof(Model.CancellationReason)"
+                                      name="@nameof(Model.CancellationReason)"
+                                      rows="5"
+                                      aria-describedby="@nameof(Model.CancellationReason)-info">@cancellationReason</textarea>
+                        </div>
+                        <div id="@nameof(Model.CancellationReason)-info" class="govuk-hint govuk-character-count__message">
+                            @SharedLocalizer["CharacterLimit.NoJavaScript"]
+                        </div>
+                    </div>
+                </div>
+                <div class="govuk-grid-column-full">
+                    <button type="submit"
+                            class="govuk-button govuk-button--secondary epr-horizontal-control epr-horizontal-control-button govuk-!-margin-right-6"
+                            data-module="govuk-button">
+                        @SharedLocalizer["SaveAndContinue"]
+                    </button>
+                </div>
+                <div class="govuk-grid-column-full">
+                    <a href="@ViewBag.BackToAllSubmissionsUrl" class="govuk-link govuk-link--no-visited-state">
+                        @SharedLocalizer["BackToAllSubmissions"]
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+}
