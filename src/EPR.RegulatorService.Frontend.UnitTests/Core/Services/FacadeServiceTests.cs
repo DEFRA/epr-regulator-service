@@ -72,7 +72,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["RegistrationSubmissionDecisionPath"] = "http://testurl.com",
                     ["FileDownload"] = "https://api.example.com/file/download",
                     ["OrganisationRegistrationSubmissions"] = "registrations/get-organisations&currentPage={0}&pageSize={1}",
-                    ["OrganisationRegistrationSubmissionDecisionPath"] = "organisation-registration-submission-decision"
+                    ["OrganisationRegistrationSubmissionDecisionPath"] = "organisation-registration-submission-decision",
+                    ["GetRegistrationSubmissionDetails"] = "registrations-submission-details/submissionId/{0}"
                 },
                 DownstreamScope = "api://default"
             });
@@ -1302,6 +1303,105 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     req.Method == HttpMethod.Post &&
                     req.RequestUri.ToString().Contains("organisation-registration-submission-decision")),
                 ItExpr.IsAny<CancellationToken>());
+        }
+
+
+        [TestMethod]
+        public async Task GetRegistrationSubmissionDetails_WhenHttpStatusCodeOK_ThenReturnValidData()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string organisationName = "Test Organisation";
+
+            var expectedResponse = new RegistrationSubmissionOrganisationDetails
+            {
+                OrganisationID = Guid.NewGuid(),
+                OrganisationReference = "ORGREF1234567890",
+                OrganisationName = "Test Organisation",
+                ApplicationReferenceNumber = "APPREF123",
+                RegistrationReferenceNumber = "REGREF456",
+                OrganisationType = RegistrationSubmissionOrganisationType.large,
+                CompaniesHouseNumber = "CH123456",
+                RegistrationStatus = RegistrationSubmissionStatus.pending,
+                RegistrationDateTime = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
+                BuildingName = "Building A",
+                SubBuildingName = "Sub A",
+                BuildingNumber = "123",
+                Street = "Test Street",
+                Town = "Test Town",
+                County = "Test County",
+                Country = "Test Country",
+                Postcode = "TC1234",
+            };
+
+            var httpTestHandler = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(expectedResponse)),
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpTestHandler);
+
+            // Act
+            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.Should().BeOfType<RegistrationSubmissionOrganisationDetails>();
+            Assert.AreEqual(expected: expectedResponse.OrganisationID, actual: result.OrganisationID);
+            Assert.AreEqual(expected: organisationName, actual: result.OrganisationName);
+            Assert.AreEqual(expected: expectedResponse.CompaniesHouseNumber, actual: result.CompaniesHouseNumber);
+
+            httpTestHandler.Dispose();
+        }
+
+        [TestMethod]
+        public async Task GetRegistrationSubmissionDetails_WhenNotHttpStatusCodeOK_ThenReturnNull()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+
+            var httpTestHandler = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.NotFound
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpTestHandler);
+
+            // Act
+            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+
+            // Assert
+            Assert.IsNull(result);
+
+            httpTestHandler.Dispose();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UriFormatException))]
+        public async Task GetRegistrationSubmissionDetails_WhenMissingBaseAddress_ThenThrowException()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+
+            _httpClient.BaseAddress = null;
+            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig);
+
+            // Act
+            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+
+            // Assert
+            Assert.IsNull(result);
         }
     }
 }
