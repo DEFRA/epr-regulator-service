@@ -1686,6 +1686,22 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task RegistrationSubmissionDetails_Returns_Null_When_SelectedRegistration_And_SubmissionId_IsNull()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(null) as ViewResult;
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
         public async Task SubmitOfflinePayment_Post_RedirectsToConfirmOfflinePaymentSubmission_WhenCalled_With_Valid_Model()
         {
             // Arrange
