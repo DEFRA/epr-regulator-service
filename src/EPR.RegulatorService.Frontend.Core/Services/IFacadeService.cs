@@ -55,7 +55,8 @@ public interface IFacadeService
 
     Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters);
 
-    RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid submissionId);
+    Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId);
 
     Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request);
+
 }

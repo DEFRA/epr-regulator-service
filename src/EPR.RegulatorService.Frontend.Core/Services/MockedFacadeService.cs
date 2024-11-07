@@ -394,7 +394,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         return response;
     }
 
-    public RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid submissionId)
+    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
     {
         var objRet = _registrationSubmissions.Find(x => x.SubmissionId == submissionId);
 
@@ -404,7 +404,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
             objRet.PaymentDetails = objRet.PaymentDetails ?? GeneratePaymentDetails();
         }
 
-        return objRet;
+        return await Task.FromResult(objRet);
     }
 
     public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(

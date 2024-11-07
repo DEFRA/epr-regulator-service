@@ -36,6 +36,7 @@ public class FacadeService : IFacadeService
     private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
     private const string OrgsanisationRegistrationSubmissionDecisionPath = "OrganisationRegistrationSubmissionDecisionPath";
     private const string FileDownloadPath = "FileDownload";
+    private const string GetRegistrationSubmissionDetailsPath = "GetRegistrationSubmissionDetails";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -346,17 +347,17 @@ public class FacadeService : IFacadeService
         return mockedFacade.GetRegistrationSubmissions(filters);
     }
 
-    public RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid submissionId)
+    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
     {
-        PrepareAuthenticatedClient();
-        var mockedFacade = new MockedFacadeService(Options.Create(new PaginationConfig()
-        {
-            PageSize = _paginationConfig.PageSize
-        }));
 
-        return mockedFacade.GetRegistrationSubmissionDetails(submissionId);
+        await PrepareAuthenticatedClient();
 
-        return null;
+
+        string path = _facadeApiConfig.Endpoints[GetRegistrationSubmissionDetailsPath].Replace("{0}", submissionId.ToString());
+
+        var response = await _httpClient.GetAsync(path);
+        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<RegistrationSubmissionOrganisationDetails>() : null;
+
     }
 
     public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request)
@@ -368,4 +369,5 @@ public class FacadeService : IFacadeService
 
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
+
 }
