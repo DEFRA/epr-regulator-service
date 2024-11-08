@@ -115,10 +115,16 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetAndRememberSubmissionDetails(submissionId, out var model))
+        RegistrationSubmissionDetailsViewModel model = submissionId == null
+            ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
+            : await _facadeService.GetRegistrationSubmissionDetails(submissionId.Value);
+
+        if (model == null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
+
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
 
         GeneratePowerBILink(model);
 

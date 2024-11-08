@@ -1577,7 +1577,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(expectedViewModel);
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId);
@@ -1611,7 +1611,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedViewName = nameof(_controller.RegistrationSubmissionDetails);
             var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(expectedViewModel);
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId) as ViewResult;
@@ -1674,7 +1674,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(expectedViewModel);
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId) as ViewResult;
@@ -1686,6 +1686,22 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task RegistrationSubmissionDetails_Returns_Null_When_SelectedRegistration_And_SubmissionId_IsNull()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(null) as ViewResult;
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
         public async Task SubmitOfflinePayment_Post_RedirectsToConfirmOfflinePaymentSubmission_WhenCalled_With_Valid_Model()
         {
             // Arrange
@@ -1693,7 +1709,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
 
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(detailsModel);
 
             // Act
             var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId);
@@ -1711,7 +1727,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = GenerateInvalidPaymentDetailsViewModel();
             var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
 
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(detailsModel);
 
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
 
@@ -1734,7 +1750,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
 
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(detailsModel);
 
             _controller.ModelState.AddModelError("OfflinePayment", "The field is required.");
 
@@ -1755,7 +1771,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = GenerateValidPaymentDetailsViewModel();
             var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
 
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(detailsModel);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
@@ -1778,7 +1794,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = GenerateValidPaymentDetailsViewModel();
             var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
 
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Returns(detailsModel);
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(detailsModel);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = null
