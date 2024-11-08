@@ -73,7 +73,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["FileDownload"] = "https://api.example.com/file/download",
                     ["OrganisationRegistrationSubmissions"] = "registrations/get-organisations&currentPage={0}&pageSize={1}",
                     ["OrganisationRegistrationSubmissionDecisionPath"] = "organisation-registration-submission-decision",
-                    ["GetRegistrationSubmissionDetails"] = "registrations-submission-details/submissionId/{0}"
+                    ["GetOrganisationRegistrationSubmissionDetailsPath"] = "registrations-submission-details/submissionId/{0}"
                 },
                 DownstreamScope = "api://default"
             });

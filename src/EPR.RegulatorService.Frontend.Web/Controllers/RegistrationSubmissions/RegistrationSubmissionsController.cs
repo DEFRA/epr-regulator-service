@@ -115,9 +115,9 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        var model = submissionId == null
-            ? (RegistrationSubmissionDetailsViewModel)_currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-            : (RegistrationSubmissionDetailsViewModel)await _facadeService.GetRegistrationSubmissionDetails(submissionId.Value);
+        RegistrationSubmissionDetailsViewModel model = submissionId == null
+            ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
+            : await _facadeService.GetRegistrationSubmissionDetails(submissionId.Value);
 
         if (model == null)
         {

@@ -36,7 +36,7 @@ public class FacadeService : IFacadeService
     private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
     private const string OrgsanisationRegistrationSubmissionDecisionPath = "OrganisationRegistrationSubmissionDecisionPath";
     private const string FileDownloadPath = "FileDownload";
-    private const string GetRegistrationSubmissionDetailsPath = "GetRegistrationSubmissionDetails";
+    private const string GetOrganisationRegistrationSubmissionDetailsPath = "GetOrganisationRegistrationSubmissionDetailsPath";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -353,7 +353,7 @@ public class FacadeService : IFacadeService
         await PrepareAuthenticatedClient();
 
 
-        string path = _facadeApiConfig.Endpoints[GetRegistrationSubmissionDetailsPath].Replace("{0}", submissionId.ToString());
+        string path = _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath].Replace("{0}", submissionId.ToString());
 
         var response = await _httpClient.GetAsync(path);
         return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<RegistrationSubmissionOrganisationDetails>() : null;
