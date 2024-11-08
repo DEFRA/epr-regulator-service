@@ -1,3 +1,4 @@
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Extensions;
@@ -23,5 +24,23 @@ public class EnumExtensionMethods
         string actualDescription = TestEnum.Option2.GetDescription();
 
         actualDescription.Should().Be(expectedDescription);
+    }
+
+    [TestMethod]
+    [DataRow(RegistrationSubmissionOrganisationType.compliance, RegistrationSubmissionType.ComplianceScheme)]
+    [DataRow(RegistrationSubmissionOrganisationType.large, RegistrationSubmissionType.Producer)]
+    [DataRow(RegistrationSubmissionOrganisationType.small, RegistrationSubmissionType.Producer)]
+    [DataRow(RegistrationSubmissionOrganisationType.none, RegistrationSubmissionType.NotSet)]
+    public void Should_Get_Correct_RegistrationSubmissionType(
+        RegistrationSubmissionOrganisationType registrationSubmissionOrganisationType,
+        RegistrationSubmissionType expectedRegistrationSubmissionType)
+    {
+        // Arrange
+
+        // Act
+        var actualRegistrationSubmissionType = registrationSubmissionOrganisationType.GetRegistrationSubmissionType();
+
+        // Assert
+        actualRegistrationSubmissionType.Should().Be(expectedRegistrationSubmissionType);
     }
 }

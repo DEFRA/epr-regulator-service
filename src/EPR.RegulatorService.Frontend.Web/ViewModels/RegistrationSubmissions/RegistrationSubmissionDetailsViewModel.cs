@@ -25,6 +25,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public string RegisteredNation { get; set; }
 
+        public int NationId { get; set; }
+
         public string PowerBiLogin { get; set; }
 
         public RegistrationSubmissionStatus Status { get; set; }
@@ -51,6 +53,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             OrganisationType = details.OrganisationType,
             CompaniesHouseNumber = details.CompaniesHouseNumber,
             RegisteredNation = details.Country, // Assuming RegisteredNation corresponds to the Country
+            NationId = details.NationID,
             Status = details.RegistrationStatus,
             RegistrationDateTime = details.RegistrationDateTime,
             RegulatorComments = details.RegulatorComments,
@@ -95,6 +98,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             Postcode = details.BusinessAddress?.PostCode,
             SubmissionDetails = details.SubmissionDetails,
             PaymentDetails = details.PaymentDetails,
+            NationID = details.NationId
         };
     }
 }

@@ -1,6 +1,9 @@
 using System.Diagnostics;
+using System.Globalization;
 
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -219,7 +222,11 @@ public partial class RegistrationSubmissionsController(
                                 {
                                     OrganisationId = existingModel.OrganisationId,
                                     SubmissionId = existingModel.SubmissionId,
-                                    Status = Core.Enums.RegistrationSubmissionStatus.granted.ToString()
+                                    Status = RegistrationSubmissionStatus.granted.ToString(),
+                                    CountryName = (CountryName)existingModel.NationId,
+                                    RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
+                                    TwoDigitYear = existingModel.RegistrationDateTime.ToString("yy", CultureInfo.InvariantCulture),
+                                    OrganisationAccountManagementId = existingModel.OrganisationReference
                                 });
 
             return status == Core.Models.EndpointResponseStatus.Success
