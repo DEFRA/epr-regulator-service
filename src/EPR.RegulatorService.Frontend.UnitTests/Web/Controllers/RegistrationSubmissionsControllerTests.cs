@@ -146,10 +146,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYear = "2025",
-                Page = 1,
+                RelevantYears = "2025",
+                PageNumber = 1,
                 PageSize = 500,
-                SubmissionStatus = "pending"
+                Statuses = "pending"
             };
 
             SetupJourneySession(latestFilterChoices, null);
@@ -165,10 +165,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.CurrentPageNumber.Should().Be(1);
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
-            session.LatestFilterChoices.Page.Should().Be(1);
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.PageNumber.Should().Be(1);
             session.LatestFilterChoices.PageSize.Should().Be(500);
-            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+            session.LatestFilterChoices.Statuses.Should().Be("pending");
 
             var model = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             model.Should().NotBeNull();
@@ -191,10 +191,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYear = "2025",
-                Page = 2,
+                RelevantYears = "2025",
+                PageNumber = 2,
                 PageSize = 500,
-                SubmissionStatus = "pending"
+                Statuses = "pending"
             };
 
             SetupJourneySession(latestFilterChoices, null, 2);
@@ -210,10 +210,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.CurrentPageNumber.Should().Be(new_page_number);
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
-            session.LatestFilterChoices.Page.Should().Be(new_page_number);
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.PageNumber.Should().Be(new_page_number);
             session.LatestFilterChoices.PageSize.Should().Be(500);
-            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+            session.LatestFilterChoices.Statuses.Should().Be("pending");
 
             var model = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             model.Should().NotBeNull();
@@ -238,10 +238,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYear = "2025",
-                Page = expected_page_number,
+                RelevantYears = "2025",
+                PageNumber = expected_page_number,
                 PageSize = 500,
-                SubmissionStatus = "pending"
+                Statuses = "pending"
             };
 
             SetupJourneySession(emptyFilterChoices, null);
@@ -258,9 +258,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var session = _journeySession.RegulatorRegistrationSubmissionSession;
             session.LatestFilterChoices.OrganisationName.Should().BeNullOrEmpty();
             session.LatestFilterChoices.OrganisationType.Should().BeNullOrEmpty();
-            session.LatestFilterChoices.RelevantYear.Should().BeNullOrEmpty();
-            session.LatestFilterChoices.Page.Should().Be(1);
-            session.LatestFilterChoices.SubmissionStatus.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.RelevantYears.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.PageNumber.Should().Be(1);
+            session.LatestFilterChoices.Statuses.Should().BeNullOrEmpty();
 
             session.Should().NotBeNull();
             session.CurrentPageNumber.Should().Be(1);
@@ -278,10 +278,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Test final session and viewmodel state
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
-            session.LatestFilterChoices.Page.Should().Be(4);
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.PageNumber.Should().Be(4);
             session.LatestFilterChoices.PageSize.Should().Be(500);
-            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+            session.LatestFilterChoices.Statuses.Should().Be("pending");
 
             model = (get_result as ViewResult).Model as RegistrationSubmissionsViewModel;
             model.Should().NotBeNull();
@@ -301,10 +301,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYear = "2025",
-                Page = 2,
+                RelevantYears = "2025",
+                PageNumber = 2,
                 PageSize = 200,
-                SubmissionStatus = "pending"
+                Statuses = "pending"
             };
 
             SetupJourneySession(latestFilterChoices, null, 2);
@@ -326,10 +326,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var session = _journeySession.RegulatorRegistrationSubmissionSession;
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
-            session.LatestFilterChoices.Page.Should().Be(2);
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.PageNumber.Should().Be(2);
             session.LatestFilterChoices.PageSize.Should().Be(200);
-            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+            session.LatestFilterChoices.Statuses.Should().Be("pending");
 
 
             // Act again
@@ -342,9 +342,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             session.LatestFilterChoices.OrganisationName.Should().BeNullOrEmpty();
             session.LatestFilterChoices.OrganisationType.Should().BeNullOrEmpty();
-            session.LatestFilterChoices.RelevantYear.Should().BeNullOrEmpty();
-            session.LatestFilterChoices.Page.Should().Be(1);
-            session.LatestFilterChoices.SubmissionStatus.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.RelevantYears.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.PageNumber.Should().Be(1);
+            session.LatestFilterChoices.Statuses.Should().BeNullOrEmpty();
             model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
         }
         #endregion Happy Path

@@ -64,8 +64,8 @@ public class RegistrationSubmissionsFilterTests
 
         // Assert
         Assert.AreEqual("compliance small", model.OrganisationType);
-        Assert.AreEqual(2, model.Page);
-        Assert.AreEqual("2025", model.RelevantYear);
+        Assert.AreEqual(2, model.PageNumber);
+        Assert.AreEqual("2025", model.RelevantYears);
     }
 
     [TestMethod]
@@ -86,7 +86,7 @@ public class RegistrationSubmissionsFilterTests
         RegistrationSubmissionsFilterModel model = viewModel;
 
         // Assert
-        Assert.AreEqual("cancelled granted queried refused", model.SubmissionStatus);
+        Assert.AreEqual("cancelled granted queried refused", model.Statuses);
     }
 
     [TestMethod]
@@ -108,7 +108,7 @@ public class RegistrationSubmissionsFilterTests
 
         // Assert
         Assert.IsNull(model.OrganisationName);
-        Assert.IsNull(model.OrganisationRef);
+        Assert.IsNull(model.OrganisationReference);
         Assert.AreEqual(string.Empty, model.OrganisationType);
     }
 
@@ -119,7 +119,7 @@ public class RegistrationSubmissionsFilterTests
         var model = new RegistrationSubmissionsFilterModel
         {
             OrganisationType = "compliance small",
-            RelevantYear = "2025"
+            RelevantYears = "2025"
         };
 
         // Act
@@ -138,7 +138,7 @@ public class RegistrationSubmissionsFilterTests
         // Arrange
         var model = new RegistrationSubmissionsFilterModel
         {
-            SubmissionStatus = "granted refused queried cancelled"
+            Statuses = "granted refused queried cancelled"
         };
 
         // Act
@@ -161,8 +161,8 @@ public class RegistrationSubmissionsFilterTests
         {
             OrganisationName = null,
             OrganisationType = string.Empty,
-            SubmissionStatus = null,
-            Page = null
+            Statuses = null,
+            PageNumber = null
         };
 
         // Act
@@ -182,7 +182,7 @@ public class RegistrationSubmissionsFilterTests
         // Arrange
         var model = new RegistrationSubmissionsFilterModel
         {
-            SubmissionStatus = "granted pending"
+            Statuses = "granted pending"
         };
 
         // Act

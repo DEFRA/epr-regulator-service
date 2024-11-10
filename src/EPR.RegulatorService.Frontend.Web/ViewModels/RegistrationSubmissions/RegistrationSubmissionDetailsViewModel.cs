@@ -45,7 +45,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
         {
             SubmissionId = details.SubmissionId,
-            OrganisationId = details.OrganisationID,
+            OrganisationId = details.OrganisationId,
             OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
             OrganisationName = details.OrganisationName,
             ApplicationReferenceNumber = details.ApplicationReferenceNumber,
@@ -53,9 +53,9 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             OrganisationType = details.OrganisationType,
             CompaniesHouseNumber = details.CompaniesHouseNumber,
             RegisteredNation = details.Country, // Assuming RegisteredNation corresponds to the Country
-            NationId = details.NationID,
+            NationId = details.NationId,
             Status = details.RegistrationStatus,
-            RegistrationDateTime = details.RegistrationDateTime,
+            RegistrationDateTime = details.SubmissionDate,
             RegulatorComments = details.RegulatorComments,
             ProducerComments = details.ProducerComments,
             BusinessAddress = new BusinessAddress
@@ -77,7 +77,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionDetailsViewModel details) => details is null ? null : new RegistrationSubmissionOrganisationDetails
         {
             SubmissionId = details.SubmissionId,
-            OrganisationID = details.OrganisationId,
+            OrganisationId = details.OrganisationId,
             OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
             OrganisationName = details.OrganisationName,
             ApplicationReferenceNumber = details.ApplicationReferenceNumber,
@@ -86,7 +86,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             CompaniesHouseNumber = details.CompaniesHouseNumber,
             Country = details.RegisteredNation,
             RegistrationStatus = details.Status,
-            RegistrationDateTime = details.RegistrationDateTime,
+            SubmissionDate = details.RegistrationDateTime,
             RegulatorComments = details.RegulatorComments,
             ProducerComments = details.ProducerComments,
             BuildingName = details.BusinessAddress?.BuildingName,
@@ -98,7 +98,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             Postcode = details.BusinessAddress?.PostCode,
             SubmissionDetails = details.SubmissionDetails,
             PaymentDetails = details.PaymentDetails,
-            NationID = details.NationId
+            NationId = details.NationId
         };
     }
 }

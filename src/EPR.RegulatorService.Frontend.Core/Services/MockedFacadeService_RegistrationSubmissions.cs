@@ -27,7 +27,7 @@ public partial class MockedFacadeService : IFacadeService
                 RegistrationStatus = Enum.Parse<RegistrationSubmissionStatus>(fields[3]),
                 ApplicationReferenceNumber = fields[4],
                 RegistrationReferenceNumber = fields[5],
-                RegistrationDateTime = dateTime,
+                SubmissionDate = dateTime,
                 RegistrationYear = dateTime.Year.ToString(CultureInfo.InvariantCulture),
                 CompaniesHouseNumber = fields[9],
                 BuildingName = fields[10],
@@ -40,9 +40,9 @@ public partial class MockedFacadeService : IFacadeService
                 County = fields[17],
                 Country = fields[18],
                 Postcode = fields[19],
-                OrganisationID = Guid.Parse(fields[22]),
+                OrganisationId = Guid.Parse(fields[22]),
                 SubmissionId = Guid.Parse(fields[23]),
-                NationID = int.Parse(fields[24], CultureInfo.InvariantCulture),
+                NationId = int.Parse(fields[24], CultureInfo.InvariantCulture),
                 RegulatorComments = fields[20],
                 ProducerComments = fields[21],
             });
@@ -59,9 +59,9 @@ public partial class MockedFacadeService : IFacadeService
 
         int totalItems = filteredItems.Count();
 
-        if (filters.Page > (int)Math.Ceiling(totalItems / (double)_config.PageSize))
+        if (filters.PageNumber > (int)Math.Ceiling(totalItems / (double)_config.PageSize))
         {
-            filters.Page = (int)Math.Ceiling(totalItems / (double)_config.PageSize);
+            filters.PageNumber = (int)Math.Ceiling(totalItems / (double)_config.PageSize);
         }
 
         var sortedItems = filteredItems
@@ -70,8 +70,8 @@ public partial class MockedFacadeService : IFacadeService
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
                 .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
-                .ThenBy(x => x.RegistrationDateTime)
-                .Skip((filters.Page.Value - 1) * _config.PageSize)
+                .ThenBy(x => x.SubmissionDate)
+                .Skip((filters.PageNumber.Value - 1) * _config.PageSize)
                 .Take(filters.PageSize ?? _config.PageSize)
                 .ToList();
 

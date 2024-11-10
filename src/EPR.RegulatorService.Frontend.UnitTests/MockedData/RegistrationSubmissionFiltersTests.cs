@@ -158,8 +158,8 @@ public class RegistrationSubmissionFiltersTests
         {
             OrganisationName = expectedName,
             OrganisationType = expectedSize.ToString(),
-            SubmissionStatus = expectedStatus.ToString(),
-            RelevantYear = expectedYear.ToString()
+            Statuses = expectedStatus.ToString(),
+            RelevantYears = expectedYear.ToString()
         };
 
         var result = _abstractRegistrations.Filter(filter).ToList();

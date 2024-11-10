@@ -51,32 +51,32 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
         {
             new()
             {
-                OrganisationID = _drinksLtdGuid,
+                OrganisationId = _drinksLtdGuid,
                 OrganisationName = DrinksLtdCompanyName,
                 OrganisationReference = DrinksLtdCompanyReference,
                 OrganisationType = DrinksLtdType,
                 RegistrationStatus = DrinksLtdStatus,
-                RegistrationDateTime = _drinksLtdRegistrationTime,
+                SubmissionDate = _drinksLtdRegistrationTime,
                 RegistrationYear = _drinksLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
             },
             new()
             {
-                OrganisationID = _sweetsLtdGuid,
+                OrganisationId = _sweetsLtdGuid,
                 OrganisationName = SweetsLtdCompanyName,
                 OrganisationReference = SweetsLtdCompanyReference,
                 OrganisationType = SweetsLtdType,
                 RegistrationStatus = SweetsLtdStatus,
-                RegistrationDateTime = _sweetsLtdRegistrationTime,
+                SubmissionDate = _sweetsLtdRegistrationTime,
                 RegistrationYear = _sweetsLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
             },
             new()
             {
-                OrganisationID = _flyByLtdGuid,
+                OrganisationId = _flyByLtdGuid,
                 OrganisationName = FlyByLtdCompanyName,
                 OrganisationReference = FlyByLtdCompanyReference,
                 OrganisationType = FlyByLtdType,
                 RegistrationStatus = FlyByLtdStatus,
-                RegistrationDateTime = _flyByLtdRegistrationTime,
+                SubmissionDate = _flyByLtdRegistrationTime,
                 RegistrationYear = _flyByLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
             }
         };

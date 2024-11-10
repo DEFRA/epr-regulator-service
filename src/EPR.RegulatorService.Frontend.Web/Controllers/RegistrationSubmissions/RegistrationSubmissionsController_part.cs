@@ -19,7 +19,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             {
                 PageNumber = 1
             };
-            existingSessionFilters.Page = session.CurrentPageNumber;
+            existingSessionFilters.PageNumber = session.CurrentPageNumber;
 
             return new RegistrationSubmissionsViewModel
             {

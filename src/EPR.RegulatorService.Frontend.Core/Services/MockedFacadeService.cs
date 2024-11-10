@@ -378,15 +378,15 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         // this is where the Facade is actually called
         var results = FilterAndOrderRegistrations([.. _registrationSubmissions], filters);
 
-        if (filters.Page > (int)Math.Ceiling(results.Item1 / (double)_config.PageSize))
+        if (filters.PageNumber > (int)Math.Ceiling(results.Item1 / (double)_config.PageSize))
         {
-            filters.Page = (int)Math.Ceiling(results.Item1 / (double)_config.PageSize);
+            filters.PageNumber = (int)Math.Ceiling(results.Item1 / (double)_config.PageSize);
         }
 
         var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
         {
             Items = results.Item2,
-            CurrentPage = filters.Page.Value,
+            CurrentPage = filters.PageNumber.Value,
             TotalItems = results.Item1,
             PageSize = filters.PageSize.Value
         };

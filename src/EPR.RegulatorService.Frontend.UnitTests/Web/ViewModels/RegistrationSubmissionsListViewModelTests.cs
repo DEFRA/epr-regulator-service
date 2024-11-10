@@ -39,10 +39,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
 
             var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
             result.OrganisationName.Should().BeNull();
-            result.OrganisationRef.Should().BeNull();
+            result.OrganisationReference.Should().BeNull();
             result.OrganisationType.Should().BeEmpty();
-            result.SubmissionStatus.Should().BeEmpty();
-            result.RelevantYear.Should().BeNull();
+            result.Statuses.Should().BeEmpty();
+            result.RelevantYears.Should().BeNull();
         }
 
         [TestMethod]
@@ -66,7 +66,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
 
             _sut.RegistrationsFilterModel = emptyFilterViewModel;
             var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
-            result.Page.Should().Be(1);
+            result.PageNumber.Should().Be(1);
         }
 
         [TestMethod]
@@ -91,7 +91,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
 
             _sut.RegistrationsFilterModel = emptyFilterViewModel;
             var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
-            result.Page.Should().Be(2);
+            result.PageNumber.Should().Be(2);
         }
 
         [TestMethod]
@@ -119,15 +119,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
             var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
 
             result.OrganisationName.Should().Be("Org name");
-            result.OrganisationRef.Should().Be("Org ref");
+            result.OrganisationReference.Should().Be("Org ref");
             result.OrganisationType.Should().Contain("compliance");
             result.OrganisationType.Should().Contain("large");
-            result.SubmissionStatus.Should().Contain("pending");
-            result.SubmissionStatus.Should().Contain("cancelled");
-            result.SubmissionStatus.Should().Contain("updated");
-            result.RelevantYear.Should().Contain("2025");
+            result.Statuses.Should().Contain("pending");
+            result.Statuses.Should().Contain("cancelled");
+            result.Statuses.Should().Contain("updated");
+            result.RelevantYears.Should().Contain("2025");
 
-            result.Page.Should().Be(2);
+            result.PageNumber.Should().Be(2);
         }
     }
 }
