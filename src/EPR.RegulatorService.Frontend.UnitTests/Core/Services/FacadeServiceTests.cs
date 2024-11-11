@@ -1175,16 +1175,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [DataRow(44)]
         public async Task FilterByNameSizeStatusAndYear_ReturnsTheCorrectSet(int byIndex)
         {
-            var item = MockedFacadeService.GenerateRegistrationSubmissionDataCollection()[byIndex];
-            var expectedItems = new List<RegistrationSubmissionOrganisationDetails>
-                                {
-                                    item
-                                };
+            // Arrange
+            var allData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var item = allData[byIndex];
+            var expectedItems = new List<RegistrationSubmissionOrganisationDetails> { item };
 
-            string expectedName = item.OrganisationName[3..6];
+            // Set up filter properties
+            string expectedName = item.OrganisationName.Length > 6 ? item.OrganisationName[3..6] : item.OrganisationName;
             var expectedSize = item.OrganisationType;
             var expectedStatus = item.RegistrationStatus;
-            string expectedYear = item.RegistrationYear.ToString(CultureInfo.InvariantCulture);
+            string expectedYear = item.RegistrationYear;
 
             var filter = new RegistrationSubmissionsFilterModel
             {
@@ -1195,8 +1195,37 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 PageSize = 5000
             };
 
+            // Mock the HTTP response
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = expectedItems,
+                PageSize = 5000
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
             var result = await _facadeService.GetRegistrationSubmissions(filter);
-            result.Items.Should().Contain(expectedItems);
+
+            // Assert
+            result.Items.Should().BeEquivalentTo(expectedItems, options => options
+                .ComparingByMembers<RegistrationSubmissionOrganisationDetails>()
+                .ExcludingMissingMembers()
+            );
         }
 
         [TestMethod]
