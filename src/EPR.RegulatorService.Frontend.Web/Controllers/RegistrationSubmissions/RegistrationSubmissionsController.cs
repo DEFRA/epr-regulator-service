@@ -225,7 +225,8 @@ public partial class RegistrationSubmissionsController(
                                     Status = RegistrationSubmissionStatus.Granted.ToString(),
                                     CountryName = (CountryName)existingModel.NationId,
                                     RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
-                                    TwoDigitYear = existingModel.RegistrationDateTime.ToString("yy", CultureInfo.InvariantCulture),
+                                    TwoDigitYear = existingModel.RegistrationYear.Substring(2),
+                                    //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
                                     OrganisationAccountManagementId = existingModel.OrganisationReference
                                 });
 

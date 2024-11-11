@@ -37,6 +37,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public DateTime RegistrationDateTime { get; set; }
 
+        public string RegistrationYear { get; set; }
+
         public string? ProducerComments { get; set; }
 
         public string? RegulatorComments { get; set; }
@@ -56,6 +58,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             NationId = details.NationId,
             Status = details.SubmissionStatus,
             RegistrationDateTime = details.SubmissionDate,
+            RegistrationYear = details.RegistrationYear,
             RegulatorComments = details.RegulatorComments,
             ProducerComments = details.ProducerComments,
             BusinessAddress = new BusinessAddress
@@ -87,6 +90,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             Country = details.RegisteredNation,
             SubmissionStatus = details.Status,
             SubmissionDate = details.RegistrationDateTime,
+            RegistrationYear = details.RegistrationYear,
             RegulatorComments = details.RegulatorComments,
             ProducerComments = details.ProducerComments,
             BuildingName = details.BusinessAddress?.BuildingName,
