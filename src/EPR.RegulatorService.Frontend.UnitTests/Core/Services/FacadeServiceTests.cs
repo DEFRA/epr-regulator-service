@@ -1191,15 +1191,50 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [TestMethod]
         [DataRow(14)]
         [DataRow(45)]
-        public async Task GetRegisrationSubmission_FilterByOrgRef_ShouldReturnSuccess_And_1Org(int byIndex)
+        public async Task GetRegistrationSubmission_FilterByOrgRef_ShouldReturnSuccess_And_1Org(int byIndex)
         {
-            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
-            var expectedResult = expectedDataSet[byIndex];
+            // Arrange
+            var allData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var expectedResult = allData[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { PageNumber = 1, OrganisationReference = expectedDataSet[byIndex].OrganisationReference };
+            var filter = new RegistrationSubmissionsFilterModel
+            {
+                PageNumber = 1,
+                OrganisationReference = expectedResult.OrganisationReference
+            };
+
+            // Set up expected items to match the filter criteria
+            var expectedItems = allData
+                .Where(item => item.OrganisationReference == expectedResult.OrganisationReference)
+                .ToList();
+
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = expectedItems,
+                PageSize = filter.PageSize.Value
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
-            results.Items.Should().Contain(expectedResult);
+            // Assert
+            results.Items.Should().ContainSingle(item => item.OrganisationId == expectedResult.OrganisationId);
         }
 
         [TestMethod]
