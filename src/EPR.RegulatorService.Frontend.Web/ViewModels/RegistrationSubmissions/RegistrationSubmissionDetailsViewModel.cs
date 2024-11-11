@@ -54,7 +54,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             CompaniesHouseNumber = details.CompaniesHouseNumber,
             RegisteredNation = details.Country, // Assuming RegisteredNation corresponds to the Country
             NationId = details.NationId,
-            Status = details.RegistrationStatus,
+            Status = details.SubmissionStatus,
             RegistrationDateTime = details.SubmissionDate,
             RegulatorComments = details.RegulatorComments,
             ProducerComments = details.ProducerComments,
@@ -85,7 +85,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             OrganisationType = details.OrganisationType,
             CompaniesHouseNumber = details.CompaniesHouseNumber,
             Country = details.RegisteredNation,
-            RegistrationStatus = details.Status,
+            SubmissionStatus = details.Status,
             SubmissionDate = details.RegistrationDateTime,
             RegulatorComments = details.RegulatorComments,
             ProducerComments = details.ProducerComments,

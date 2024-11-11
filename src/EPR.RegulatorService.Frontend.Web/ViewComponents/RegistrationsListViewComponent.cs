@@ -107,23 +107,23 @@ public class RegistrationsListViewComponent : ViewComponent
 
     private static string[] SetFilteredStatus(bool isPendingStatusSelected, bool isAcceptedStatusSelected, bool isRejectedStatusSelected)
     {
-        List<string> registrationStatuses = new();
+        List<string> submissionStatuses = new();
 
         if (isPendingStatusSelected)
         {
-            registrationStatuses.Add(PendingStatus);
+            submissionStatuses.Add(PendingStatus);
         }
 
         if (isAcceptedStatusSelected)
         {
-            registrationStatuses.Add(AcceptedStatus);
+            submissionStatuses.Add(AcceptedStatus);
         }
 
         if (isRejectedStatusSelected)
         {
-            registrationStatuses.Add(RejectedStatus);
+            submissionStatuses.Add(RejectedStatus);
         }
 
-        return registrationStatuses.ToArray();
+        return submissionStatuses.ToArray();
     }
 }

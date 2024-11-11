@@ -25,21 +25,21 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
     private const string DrinksLtdCompanyName = "DrinksLtd";
     private const string DrinksLtdCompanyReference = "123456";
     private const RegistrationSubmissionOrganisationType DrinksLtdType = RegistrationSubmissionOrganisationType.compliance;
-    private const RegistrationSubmissionStatus DrinksLtdStatus = RegistrationSubmissionStatus.updated;
+    private const RegistrationSubmissionStatus DrinksLtdStatus = RegistrationSubmissionStatus.Updated;
     private readonly DateTime _drinksLtdRegistrationTime = DateTime.Now - new TimeSpan(50, 0, 0, 0);
 
     private readonly Guid _sweetsLtdGuid = Guid.NewGuid();
     private const string SweetsLtdCompanyName = "SweetsLtd";
     private const string SweetsLtdCompanyReference = "987654";
     private const RegistrationSubmissionOrganisationType SweetsLtdType = RegistrationSubmissionOrganisationType.large;
-    private const RegistrationSubmissionStatus SweetsLtdStatus = RegistrationSubmissionStatus.queried;
+    private const RegistrationSubmissionStatus SweetsLtdStatus = RegistrationSubmissionStatus.Queried;
     private readonly DateTime _sweetsLtdRegistrationTime = DateTime.Now - new TimeSpan(30, 0, 0, 0);
 
     private readonly Guid _flyByLtdGuid = Guid.NewGuid();
     private const string FlyByLtdCompanyName = "FlyByLtd";
     private const string FlyByLtdCompanyReference = "237654";
     private const RegistrationSubmissionOrganisationType FlyByLtdType = RegistrationSubmissionOrganisationType.small;
-    private const RegistrationSubmissionStatus FlyByLtdStatus = RegistrationSubmissionStatus.pending;
+    private const RegistrationSubmissionStatus FlyByLtdStatus = RegistrationSubmissionStatus.Pending;
     private readonly DateTime _flyByLtdRegistrationTime = DateTime.Now - new TimeSpan(10, 0, 0, 0);
 
 
@@ -55,7 +55,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
                 OrganisationName = DrinksLtdCompanyName,
                 OrganisationReference = DrinksLtdCompanyReference,
                 OrganisationType = DrinksLtdType,
-                RegistrationStatus = DrinksLtdStatus,
+                SubmissionStatus = DrinksLtdStatus,
                 SubmissionDate = _drinksLtdRegistrationTime,
                 RegistrationYear = _drinksLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
             },
@@ -65,7 +65,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
                 OrganisationName = SweetsLtdCompanyName,
                 OrganisationReference = SweetsLtdCompanyReference,
                 OrganisationType = SweetsLtdType,
-                RegistrationStatus = SweetsLtdStatus,
+                SubmissionStatus = SweetsLtdStatus,
                 SubmissionDate = _sweetsLtdRegistrationTime,
                 RegistrationYear = _sweetsLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
             },
@@ -75,7 +75,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
                 OrganisationName = FlyByLtdCompanyName,
                 OrganisationReference = FlyByLtdCompanyReference,
                 OrganisationType = FlyByLtdType,
-                RegistrationStatus = FlyByLtdStatus,
+                SubmissionStatus = FlyByLtdStatus,
                 SubmissionDate = _flyByLtdRegistrationTime,
                 RegistrationYear = _flyByLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
             }

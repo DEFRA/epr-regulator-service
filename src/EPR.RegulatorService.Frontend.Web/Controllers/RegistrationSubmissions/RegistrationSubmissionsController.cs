@@ -222,7 +222,7 @@ public partial class RegistrationSubmissionsController(
                                 {
                                     OrganisationId = existingModel.OrganisationId,
                                     SubmissionId = existingModel.SubmissionId,
-                                    Status = RegistrationSubmissionStatus.granted.ToString(),
+                                    Status = RegistrationSubmissionStatus.Granted.ToString(),
                                     CountryName = (CountryName)existingModel.NationId,
                                     RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
                                     TwoDigitYear = existingModel.RegistrationDateTime.ToString("yy", CultureInfo.InvariantCulture),
@@ -288,7 +288,7 @@ public partial class RegistrationSubmissionsController(
                 {
                     OrganisationId = existingModel.OrganisationId,
                     SubmissionId = existingModel.SubmissionId,
-                    Status = Core.Enums.RegistrationSubmissionStatus.queried.ToString(),
+                    Status = Core.Enums.RegistrationSubmissionStatus.Queried.ToString(),
                     Comments = model.Query
                 });
 
@@ -363,7 +363,7 @@ public partial class RegistrationSubmissionsController(
                 {
                     OrganisationId = existingModel.OrganisationId,
                     SubmissionId = existingModel.SubmissionId,
-                    Status = Core.Enums.RegistrationSubmissionStatus.refused.ToString(),
+                    Status = Core.Enums.RegistrationSubmissionStatus.Refused.ToString(),
                     Comments = model.RejectReason
                 });
 
@@ -439,7 +439,7 @@ public partial class RegistrationSubmissionsController(
                 {
                     OrganisationId = existingModel.OrganisationId,
                     SubmissionId = existingModel.SubmissionId,
-                    Status = Core.Enums.RegistrationSubmissionStatus.cancelled.ToString(),
+                    Status = Core.Enums.RegistrationSubmissionStatus.Cancelled.ToString(),
                     Comments = model.CancellationReason
                 });
 

@@ -72,7 +72,7 @@ public static class RegistrationSubmissionsFilters
         if (!string.IsNullOrEmpty(submissionStatus) && submissionStatus != "none")
         {
             queryable = from q in queryable
-                        where submissionStatus.Contains(q.RegistrationStatus.ToString())
+                        where submissionStatus.Contains(q.SubmissionStatus.ToString())
                         select q;
         }
 

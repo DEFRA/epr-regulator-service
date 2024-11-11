@@ -1428,7 +1428,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Set up filter properties
             string expectedName = item.OrganisationName.Length > 6 ? item.OrganisationName[3..6] : item.OrganisationName;
             var expectedSize = item.OrganisationType;
-            var expectedStatus = item.RegistrationStatus;
+            var expectedStatus = item.SubmissionStatus;
             string expectedYear = item.RegistrationYear;
 
             var filter = new RegistrationSubmissionsFilterModel
@@ -1488,7 +1488,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var filter = new RegistrationSubmissionsFilterModel
             {
                 OrganisationType = $"{item.OrganisationType} {item2.OrganisationType}",
-                Statuses = $"{item.RegistrationStatus} {item2.RegistrationStatus}",
+                Statuses = $"{item.SubmissionStatus} {item2.SubmissionStatus}",
                 RelevantYears = $"{item.RegistrationYear} {item2.RegistrationYear}"
             };
 
@@ -1496,12 +1496,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .FilterByOrganisationType(filter.OrganisationType)
                 .FilterBySubmissionStatus(filter.Statuses)
                 .FilterByRelevantYear(filter.RelevantYears)
-                .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.updated)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
+                .OrderBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Refused)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Granted)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Cancelled)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Updated)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Queried)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Pending)
                 .ThenBy(x => x.SubmissionDate)
                 .Take(PAGE_SIZE)
                 .ToList();
@@ -1620,7 +1620,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 RegistrationReferenceNumber = "REGREF456",
                 OrganisationType = RegistrationSubmissionOrganisationType.large,
                 CompaniesHouseNumber = "CH123456",
-                RegistrationStatus = RegistrationSubmissionStatus.pending,
+                SubmissionStatus = RegistrationSubmissionStatus.Pending,
                 SubmissionDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
                 BuildingName = "Building A",
                 SubBuildingName = "Sub A",

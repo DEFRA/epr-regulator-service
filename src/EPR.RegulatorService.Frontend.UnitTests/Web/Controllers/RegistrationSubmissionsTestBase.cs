@@ -123,10 +123,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             CompaniesHouseNumber = "0123456",
             RegisteredNation = "Scotland",
             PowerBiLogin = "https://app.powerbi.com/",
-            Status = RegistrationSubmissionStatus.queried,
+            Status = RegistrationSubmissionStatus.Queried,
             SubmissionDetails = new SubmissionDetailsViewModel
             {
-                Status = RegistrationSubmissionStatus.queried,
+                Status = RegistrationSubmissionStatus.Queried,
                 DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
                 TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
                 SubmittedOnTime = true,

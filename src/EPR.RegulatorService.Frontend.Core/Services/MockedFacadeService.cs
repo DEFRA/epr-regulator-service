@@ -400,7 +400,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
         if (null != objRet)
         {
-            objRet.SubmissionDetails = objRet.SubmissionDetails ?? GenerateRandomSubmissionData(objRet.RegistrationStatus);
+            objRet.SubmissionDetails = objRet.SubmissionDetails ?? GenerateRandomSubmissionData(objRet.SubmissionStatus);
             objRet.PaymentDetails = objRet.PaymentDetails ?? GeneratePaymentDetails();
         }
 

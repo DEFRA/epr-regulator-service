@@ -1353,7 +1353,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-            detailsModel.Status = Frontend.Core.Enums.RegistrationSubmissionStatus.refused;
+            detailsModel.Status = Frontend.Core.Enums.RegistrationSubmissionStatus.Refused;
 
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {

@@ -24,7 +24,7 @@ public partial class MockedFacadeService : IFacadeService
                 OrganisationReference = fields[0][..10],
                 OrganisationName = fields[1],
                 OrganisationType = Enum.Parse<RegistrationSubmissionOrganisationType>(fields[2]),
-                RegistrationStatus = Enum.Parse<RegistrationSubmissionStatus>(fields[3]),
+                SubmissionStatus = Enum.Parse<RegistrationSubmissionStatus>(fields[3]),
                 ApplicationReferenceNumber = fields[4],
                 RegistrationReferenceNumber = fields[5],
                 SubmissionDate = dateTime,
@@ -65,11 +65,11 @@ public partial class MockedFacadeService : IFacadeService
         }
 
         var sortedItems = filteredItems
-                .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
+                .OrderBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Cancelled)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Refused)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Granted)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Queried)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Pending)
                 .ThenBy(x => x.SubmissionDate)
                 .Skip((filters.PageNumber.Value - 1) * _config.PageSize)
                 .Take(filters.PageSize ?? _config.PageSize)
@@ -78,7 +78,7 @@ public partial class MockedFacadeService : IFacadeService
         return Tuple.Create(totalItems, sortedItems);
     }
 
-    public static RegistrationSubmissionOrganisationSubmissionSummaryDetails GenerateRandomSubmissionData(RegistrationSubmissionStatus registrationStatus)
+    public static RegistrationSubmissionOrganisationSubmissionSummaryDetails GenerateRandomSubmissionData(RegistrationSubmissionStatus submissionStatus)
     {
         var random = new Random(); // NOSONAR - this is dummy disposable data
 
@@ -89,7 +89,7 @@ public partial class MockedFacadeService : IFacadeService
 
         return new RegistrationSubmissionOrganisationSubmissionSummaryDetails
         {
-            Status = registrationStatus,
+            Status = submissionStatus,
             DecisionDate = DateTime.Now.AddDays(-random.Next(1, 100)),
             TimeAndDateOfSubmission = DateTime.Now.AddDays(-random.Next(1, 100)),
             SubmittedOnTime = random.Next(2) == 0,

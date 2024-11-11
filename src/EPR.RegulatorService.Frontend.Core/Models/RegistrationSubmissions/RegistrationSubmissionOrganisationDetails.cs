@@ -12,7 +12,7 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 /// the registrations/get-organisations endpoint
 /// </summary>
 [ExcludeFromCodeCoverage]
-[DebuggerDisplay("{OrganisationName}, {OrganisationReference}, {RegistrationYear}, {RegistrationStatus},{OrganisationType}")]
+[DebuggerDisplay("{OrganisationName}, {OrganisationReference}, {RegistrationYear}, {SubmissionStatus},{OrganisationType}")]
 public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<RegistrationSubmissionOrganisationDetails?>
 {
     public Guid SubmissionId { get; set; }
@@ -29,7 +29,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public DateTime SubmissionDate { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public RegistrationSubmissionStatus RegistrationStatus { get; set; }
+    public RegistrationSubmissionStatus SubmissionStatus { get; set; }
     public DateTime? StatusPendingDate { get; set; }
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;

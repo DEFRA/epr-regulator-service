@@ -59,12 +59,12 @@ public class RegistrationSubmissionsFilterViewModel
                                }.Where(x => !string.IsNullOrEmpty(x))),
         Statuses = string.Join(" ", new[]
                                {
-                                    viewModel.IsStatusCancelledChecked ? Core.Enums.RegistrationSubmissionStatus.cancelled.ToString() : null,
-                                    viewModel.IsStatusGrantedChecked ? Core.Enums.RegistrationSubmissionStatus.granted.ToString() : null,
-                                    viewModel.IsStatusPendingChecked ? Core.Enums.RegistrationSubmissionStatus.pending.ToString() : null,
-                                    viewModel.IsStatusQueriedChecked ? Core.Enums.RegistrationSubmissionStatus.queried.ToString() : null,
-                                    viewModel.IsStatusRefusedChecked ? Core.Enums.RegistrationSubmissionStatus.refused.ToString() : null,
-                                    viewModel.IsStatusUpdatedChecked ? Core.Enums.RegistrationSubmissionStatus.updated.ToString() : null
+                                    viewModel.IsStatusCancelledChecked ? Core.Enums.RegistrationSubmissionStatus.Cancelled.ToString() : null,
+                                    viewModel.IsStatusGrantedChecked ? Core.Enums.RegistrationSubmissionStatus.Granted.ToString() : null,
+                                    viewModel.IsStatusPendingChecked ? Core.Enums.RegistrationSubmissionStatus.Pending.ToString() : null,
+                                    viewModel.IsStatusQueriedChecked ? Core.Enums.RegistrationSubmissionStatus.Queried.ToString() : null,
+                                    viewModel.IsStatusRefusedChecked ? Core.Enums.RegistrationSubmissionStatus.Refused.ToString() : null,
+                                    viewModel.IsStatusUpdatedChecked ? Core.Enums.RegistrationSubmissionStatus.Updated.ToString() : null
                                }.Where(x => !string.IsNullOrEmpty(x)))
     };
 

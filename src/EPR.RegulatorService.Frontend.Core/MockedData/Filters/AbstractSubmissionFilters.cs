@@ -47,11 +47,11 @@ public static class AbstractSubmissionFilters
     }
 
     public static IQueryable<AbstractSubmission> FilterByStatus(this IQueryable<AbstractSubmission> query,
-        string[] registrationStatuses)
+        string[] submissionStatuses)
     {
-        if (registrationStatuses?.Length > 0)
+        if (submissionStatuses?.Length > 0)
         {
-            query = query.Where(o => registrationStatuses.Any(o.Decision.Contains));
+            query = query.Where(o => submissionStatuses.Any(o.Decision.Contains));
         }
 
         return query;

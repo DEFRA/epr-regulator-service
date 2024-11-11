@@ -30,7 +30,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             RegistrationReferenceNumber = "REGREF456",
             OrganisationType = RegistrationSubmissionOrganisationType.large,
             CompaniesHouseNumber = "CH123456",
-            RegistrationStatus = RegistrationSubmissionStatus.pending,
+            SubmissionStatus = RegistrationSubmissionStatus.Pending,
             SubmissionDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
             BuildingName = "Building A",
             SubBuildingName = "Sub A",
@@ -54,7 +54,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.AreEqual(details.OrganisationType, viewModel.OrganisationType);
         Assert.AreEqual(details.CompaniesHouseNumber, viewModel.CompaniesHouseNumber);
         Assert.AreEqual(details.Country, viewModel.RegisteredNation);
-        Assert.AreEqual(details.RegistrationStatus, viewModel.Status);
+        Assert.AreEqual(details.SubmissionStatus, viewModel.Status);
         Assert.AreEqual(details.SubmissionDate, viewModel.RegistrationDateTime);
 
         // Check Business Address mapping
@@ -83,7 +83,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             CompaniesHouseNumber = "CH987654",
             RegisteredNation = "Test Country",
             PowerBiLogin = "testlogin@org.com",
-            Status = RegistrationSubmissionStatus.granted,
+            Status = RegistrationSubmissionStatus.Granted,
             RegistrationDateTime = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
             BusinessAddress = new BusinessAddress
             {
@@ -108,7 +108,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.AreEqual("CH987654", viewModel.CompaniesHouseNumber);
         Assert.AreEqual("Test Country", viewModel.RegisteredNation);
         Assert.AreEqual("testlogin@org.com", viewModel.PowerBiLogin);
-        Assert.AreEqual(RegistrationSubmissionStatus.granted, viewModel.Status);
+        Assert.AreEqual(RegistrationSubmissionStatus.Granted, viewModel.Status);
         Assert.AreEqual(new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified), viewModel.RegistrationDateTime);
 
         // Assert BusinessAddress
@@ -135,7 +135,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             RegistrationReferenceNumber = string.Empty,
             OrganisationType = RegistrationSubmissionOrganisationType.large,
             CompaniesHouseNumber = "CH123456",
-            RegistrationStatus = RegistrationSubmissionStatus.cancelled,
+            SubmissionStatus = RegistrationSubmissionStatus.Cancelled,
             SubmissionDate = new DateTime(2023, 5, 10, 0, 0, 0, DateTimeKind.Unspecified),
             BuildingName = null,
             SubBuildingName = null,

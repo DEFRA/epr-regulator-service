@@ -5,10 +5,10 @@ namespace EPR.RegulatorService.Frontend.Web.Helpers
 
     public static class ReferenceNumberPanelHelper
     {
-        public static string GetPanelTitle(RegistrationSubmissionDetailsViewModel model) => model.Status == RegistrationSubmissionStatus.granted
+        public static string GetPanelTitle(RegistrationSubmissionDetailsViewModel model) => model.Status == RegistrationSubmissionStatus.Granted
                 ? "RegistrationSubmissionDetails.RegistrationReferenceNumber"
                 : "RegistrationSubmissionDetails.ApplicationReferenceNumber";
-        public static string GetPanelContent(RegistrationSubmissionDetailsViewModel model) => model.Status == RegistrationSubmissionStatus.granted
+        public static string GetPanelContent(RegistrationSubmissionDetailsViewModel model) => model.Status == RegistrationSubmissionStatus.Granted
             ? model.RegistrationReferenceNumber
             : model.ApplicationReferenceNumber;
     }
