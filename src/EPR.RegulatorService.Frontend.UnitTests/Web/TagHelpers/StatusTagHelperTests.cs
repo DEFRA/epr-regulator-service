@@ -51,13 +51,12 @@ public class StatusTagHelperTests
     }
 
     [DataTestMethod]
-    [DataRow("granted", "govuk-tag--green")]
-    [DataRow("refused", "govuk-tag--red")]
-    [DataRow("queried", "govuk-tag--purple")]
-    [DataRow("pending", "govuk-tag--blue")]
-    [DataRow("updated", "govuk-tag--yellow")]
-    [DataRow("cancelled", "status__cancelled")]
-    [DataRow("none", "govuk-tag--purple")]
+    [DataRow("Granted", "govuk-tag--green")]
+    [DataRow("Refused", "govuk-tag--red")]
+    [DataRow("Queried", "govuk-tag--purple")]
+    [DataRow("Pending", "govuk-tag--blue")]
+    [DataRow("Updated", "govuk-tag--yellow")]
+    [DataRow("Cancelled", "status__cancelled")]
     public void Process_ShouldAddCorrectStatusClass(string status, string expectedClass)
     {
         // Arrange

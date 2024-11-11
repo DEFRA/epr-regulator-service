@@ -34,8 +34,8 @@ public static class RegistrationSubmissionsFilters
             queryable = completeQueryable.Any()
                 ? completeQueryable
                 : (from q in queryable
-                            where nameParts.Any(part => q.OrganisationName.Contains(part, StringComparison.OrdinalIgnoreCase))
-                            select q);
+                   where nameParts.Any(part => q.OrganisationName.Contains(part, StringComparison.OrdinalIgnoreCase))
+                   select q);
         }
 
         return queryable;
@@ -69,7 +69,7 @@ public static class RegistrationSubmissionsFilters
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterBySubmissionStatus(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? submissionStatus)
     {
-        if (!string.IsNullOrEmpty(submissionStatus) && submissionStatus != "none")
+        if (!string.IsNullOrEmpty(submissionStatus) && submissionStatus != "None")
         {
             queryable = from q in queryable
                         where submissionStatus.Contains(q.SubmissionStatus.ToString())

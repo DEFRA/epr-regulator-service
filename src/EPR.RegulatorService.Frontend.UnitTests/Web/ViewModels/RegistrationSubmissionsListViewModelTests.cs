@@ -122,9 +122,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
             result.OrganisationReference.Should().Be("Org ref");
             result.OrganisationType.Should().Contain("compliance");
             result.OrganisationType.Should().Contain("large");
-            result.Statuses.Should().Contain("pending");
-            result.Statuses.Should().Contain("cancelled");
-            result.Statuses.Should().Contain("updated");
+            result.Statuses.Should().Contain("Pending");
+            result.Statuses.Should().Contain("Cancelled");
+            result.Statuses.Should().Contain("Updated");
             result.RelevantYears.Should().Contain("2025");
 
             result.PageNumber.Should().Be(2);

@@ -1,10 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
@@ -84,7 +82,7 @@ public partial class MockedFacadeService : IFacadeService
 
         string[] sampleNames = ["Alice", "Bob", "Charlie", "Diana", "Edward"];
         var sampleRoles = Enum.GetValues(typeof(ServiceRole));
-        var generateRandomPhoneNumber  = (Random random) => $"{random.Next(100, 999)}-{random.Next(100, 999)}-{random.Next(1000, 9999)}";
+        var generateRandomPhoneNumber = (Random random) => $"{random.Next(100, 999)}-{random.Next(100, 999)}-{random.Next(1000, 9999)}";
 
 
         return new RegistrationSubmissionOrganisationSubmissionSummaryDetails
@@ -131,7 +129,7 @@ public partial class MockedFacadeService : IFacadeService
     {
         var random = new Random(); // NOSONAR - this is dummy disposable data
 
-        var generateRandomDecimal = (int min, int max) => Math.Round((decimal)(random.NextDouble() * (max - min) + min), 2);
+        var generateRandomDecimal = (int min, int max) => Math.Round((decimal)((random.NextDouble() * (max - min)) + min), 2);
 
         return new RegistrationSubmissionsOrganisationPaymentDetails()
         {

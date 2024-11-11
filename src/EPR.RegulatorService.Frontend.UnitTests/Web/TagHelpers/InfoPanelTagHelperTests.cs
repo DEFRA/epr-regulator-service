@@ -27,12 +27,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
         }
 
         [TestMethod]
-        [DataRow("granted", "info-panel info-panel__granted")]
-        [DataRow("refused", "info-panel info-panel__refused")]
-        [DataRow("pending", "info-panel info-panel__pending")]
-        [DataRow("cancelled", "info-panel info-panel__cancelled")]
-        [DataRow("queried", "info-panel info-panel__queried")]
-        [DataRow("updated", "info-panel info-panel__updated")]
+        [DataRow("Granted", "info-panel info-panel__granted")]
+        [DataRow("Refused", "info-panel info-panel__refused")]
+        [DataRow("Pending", "info-panel info-panel__pending")]
+        [DataRow("Cancelled", "info-panel info-panel__cancelled")]
+        [DataRow("Queried", "info-panel info-panel__queried")]
+        [DataRow("Updated", "info-panel info-panel__updated")]
         [DataRow(null, "info-panel ")]
         public void Process_StatusAttribute_GeneratesCorrectClass(string status, string expectedClass)
         {
