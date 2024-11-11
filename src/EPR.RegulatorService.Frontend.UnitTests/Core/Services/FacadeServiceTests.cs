@@ -1099,6 +1099,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
                 Items = mockData,
+                TotalItems = mockData.Count,
                 CurrentPage = pageNumber,
                 PageSize = PAGE_SIZE
             };
@@ -1143,6 +1144,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
                 Items = mockData,
+                TotalItems = mockData.Count,
                 CurrentPage = pageNumber,
                 PageSize = filter.PageSize.Value
             };
@@ -1193,6 +1195,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
                 Items = expectedItems,
+                TotalItems = allData.Count,
                 PageSize = filter.PageSize.Value
             };
 
@@ -1269,14 +1272,53 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [DataRow(90)]
         public async Task GetRegistrationSubmission_WithFilter_ShouldReturnCorrectPaginationInformation_MoreThan1Page(int byIndex)
         {
+            // Arrange
             var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
             var expectedResult = expectedDataSet[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { PageNumber = 1, OrganisationType = expectedResult.OrganisationType.ToString() };
+            // Create mock data for a paginated response where multiple items are returned.
+            var filteredData = expectedDataSet.Where(x => x.OrganisationType == expectedResult.OrganisationType).ToList();
+            int pageSize = 10; // Adjust to suit your pagination size (e.g., 10 items per page)
+
+            // Create a mock response content with more than one page of results
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = filteredData.Take(pageSize).ToList(),
+                TotalItems = filteredData.Count,
+                CurrentPage = 1,
+                PageSize = pageSize
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Filter based on the OrganisationType
+            var filter = new RegistrationSubmissionsFilterModel
+            {
+                PageNumber = 1,
+                OrganisationType = expectedResult.OrganisationType.ToString()
+            };
+
+            // Act
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
-            results.TotalPages.Should().BeGreaterThan(1);
-            results.TotalItems.Should().BeGreaterThan(1);
+            // Assert
+            results.TotalPages.Should().BeGreaterThan(1); // Ensure multiple pages of data
+            results.TotalItems.Should().BeGreaterThan(1); // Ensure multiple items exist
+            results.Items.Should().HaveCount(pageSize); // Ensure the first page contains the expected number of items
         }
 
         [TestMethod]
@@ -1311,6 +1353,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
                 Items = expectedItems,
+                TotalItems = allData.Count,
                 PageSize = filter.PageSize.Value
             };
 
@@ -1369,6 +1412,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
                 Items = expectedItems,
+                TotalItems = allData.Count,
                 PageSize = 5000
             };
 
@@ -1433,6 +1477,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
                 Items = expectedItems,
+                TotalItems = expectedItems.Count,
                 PageSize = PAGE_SIZE
             };
 
@@ -1627,16 +1672,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
         public static class PaginatedListHelper
         {
-            public static PaginatedList<T> Create<T>(List<T> items, int totalCount, int currentPage, int pageSize)
+            public static PaginatedList<T> Create<T>(List<T> items, int totalCount, int currentPage, int pageSize) => new PaginatedList<T>
             {
-                return new PaginatedList<T>
-                {
-                    Items = items,
-                    TotalItems = totalCount,
-                    CurrentPage = currentPage,
-                    PageSize = pageSize
-                };
-            }
+                Items = items,
+                TotalItems = totalCount,
+                CurrentPage = currentPage,
+                PageSize = pageSize
+            };
         }
     }
 }
