@@ -1129,6 +1129,39 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        public async Task GetRegistrationSubmissions_ShouldReturnNull_WhenRequestFails()
+        {
+            // Arrange
+            int pageNumber = 1;
+            var filter = new RegistrationSubmissionsFilterModel { PageNumber = pageNumber };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.BadRequest)
+            {
+                Content = new StringContent("Bad Request")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
+            var result = await _facadeService.GetRegistrationSubmissions(filter);
+
+            // Assert: Ensure the result is null when the response status code is not successful (i.e., 400 or 500)
+            result.Should().BeNull();
+
+            // Verify that SendAsync was called as expected
+            _mockHandler.Verify();
+        }
+
+        [TestMethod]
         public async Task GetRegistrationSubmission_ShouldReturnPageTwo_WhenRequestSucceeds()
         {
             // Arrange
