@@ -1278,7 +1278,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Create mock data for a paginated response where multiple items are returned.
             var filteredData = expectedDataSet.Where(x => x.OrganisationType == expectedResult.OrganisationType).ToList();
-            int pageSize = 10; // Adjust to suit your pagination size (e.g., 10 items per page)
+            int pageSize = 20;
 
             // Create a mock response content with more than one page of results
             var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
@@ -1324,10 +1324,42 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [TestMethod]
         public async Task GetRegistrationSubmission_WithoutFilter_ShouldReturnCorrectPaginationInformation()
         {
-            var filter = new RegistrationSubmissionsFilterModel() { PageNumber = 1 };
+            // Arrange: Create a mock response with paginated data
+            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            int pageSize = 20;
+
+            // Mocking a paginated response where the total count is greater than the page size
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = expectedDataSet.Take(pageSize).ToList(),
+                TotalItems = expectedDataSet.Count,
+                CurrentPage = 1,
+                PageSize = pageSize
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act: Call the method with no filter except PageNumber
+            var filter = new RegistrationSubmissionsFilterModel { PageNumber = 1 };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
-            Assert.AreNotEqual(results.Items.Count, results.TotalItems);
+            // Assert: Ensure the number of items on the current page is less than the total items
+            results.Items.Count.Should().NotBe(results.TotalItems);
+            results.TotalPages.Should().BeGreaterThan(1); // Ensure that pagination works with more than one page if TotalCount > PageSize
         }
 
         [TestMethod]
