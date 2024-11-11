@@ -17,6 +17,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using System.Globalization;
 
     public abstract class RegistrationSubmissionsTestBase
     {
@@ -150,7 +151,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 PreviousPaymentsReceived = 20M
             },
             ProducerComments = "producer comment",
-            RegulatorComments = "regulator comment"
+            RegulatorComments = "regulator comment",
+            RegistrationYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture)
         };
 
         protected static PaymentDetailsViewModel GenerateValidPaymentDetailsViewModel() => new PaymentDetailsViewModel
