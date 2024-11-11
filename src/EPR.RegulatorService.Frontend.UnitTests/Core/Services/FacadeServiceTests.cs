@@ -73,7 +73,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["FileDownload"] = "https://api.example.com/file/download",
                     ["OrganisationRegistrationSubmissions"] = "registrations/get-organisations&currentPage={0}&pageSize={1}",
                     ["OrganisationRegistrationSubmissionDecisionPath"] = "organisation-registration-submission-decision",
-                    ["GetOrganisationRegistrationSubmissionDetailsPath"] = "registrations-submission-details/submissionId/{0}"
+                    ["GetOrganisationRegistrationSubmissionDetailsPath"] = "registrations-submission-details/submissionId/{0}",
+                    ["GetOrganisationRegistrationSubmissionsPath"] = "organisation-registration-submissions"
                 },
                 DownstreamScope = "api://default"
             });
@@ -1204,41 +1205,62 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [DataRow(115, 76)]
         public async Task FilterByMultipleNameSizeStatusAndYear_ReturnsACompleteSet(int byIndex, int byOtherIndex)
         {
-            var alldata = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
-
-            var item = alldata[byIndex];
-            var item2 = alldata[byOtherIndex];
-
-            var expectedItems = alldata.AsQueryable().FilterByOrganisationType($"{item.OrganisationType.ToString()} {item2.OrganisationType.ToString()}")
-                                                     .FilterBySubmissionStatus($"{item.RegistrationStatus.ToString()} {item2.RegistrationStatus.ToString()}")
-                                                     .FilterByRelevantYear($"{item.RegistrationYear} {item2.RegistrationYear}")
-                                                     .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.updated)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
-                                                     .ThenBy(x => x.SubmissionDate)
-                                                     .Skip((1 - 1) * PAGE_SIZE)
-                                                     .Take(PAGE_SIZE)
-                                                     .ToList();
-
-            var expectedSize1 = item.OrganisationType;
-            var expectedStatus1 = item.RegistrationStatus;
-            string expectedYear1 = item.RegistrationYear;
-            var expectedSize2 = item2.OrganisationType;
-            var expectedStatus2 = item2.RegistrationStatus;
-            string expectedYear2 = item2.RegistrationYear;
+            // Arrange
+            var allData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var item = allData[byIndex];
+            var item2 = allData[byOtherIndex];
 
             var filter = new RegistrationSubmissionsFilterModel
             {
-                OrganisationType = $"{expectedSize1.ToString()} {expectedSize2.ToString()}",
-                Statuses = $"{expectedStatus1.ToString()} {expectedStatus2.ToString()}",
-                RelevantYears = $"{expectedYear1} {expectedYear2}"
+                OrganisationType = $"{item.OrganisationType} {item2.OrganisationType}",
+                Statuses = $"{item.RegistrationStatus} {item2.RegistrationStatus}",
+                RelevantYears = $"{item.RegistrationYear} {item2.RegistrationYear}"
             };
 
+            var expectedItems = allData.AsQueryable()
+                .FilterByOrganisationType(filter.OrganisationType)
+                .FilterBySubmissionStatus(filter.Statuses)
+                .FilterByRelevantYear(filter.RelevantYears)
+                .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
+                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
+                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
+                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.updated)
+                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
+                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
+                .ThenBy(x => x.SubmissionDate)
+                .Take(PAGE_SIZE)
+                .ToList();
+
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = expectedItems,
+                PageSize = PAGE_SIZE
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
             var result = await _facadeService.GetRegistrationSubmissions(filter);
-            result.Items.Should().BeEquivalentTo(expectedItems);
+
+            // Assert
+            result.Items.Should().BeEquivalentTo(expectedItems, options => options
+                .ComparingByMembers<RegistrationSubmissionOrganisationDetails>()
+                .ExcludingMissingMembers()
+            );
         }
 
         [TestMethod]
