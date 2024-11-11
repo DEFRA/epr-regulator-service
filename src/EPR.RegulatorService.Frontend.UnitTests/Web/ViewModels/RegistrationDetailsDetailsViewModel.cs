@@ -23,15 +23,15 @@ public class RegistrationSubmissionDetailsViewModelTests
         // Arrange
         var details = new RegistrationSubmissionOrganisationDetails
         {
-            OrganisationID = Guid.NewGuid(),
+            OrganisationId = Guid.NewGuid(),
             OrganisationReference = "ORGREF1234567890",
             OrganisationName = "Test Organisation",
             ApplicationReferenceNumber = "APPREF123",
             RegistrationReferenceNumber = "REGREF456",
             OrganisationType = RegistrationSubmissionOrganisationType.large,
             CompaniesHouseNumber = "CH123456",
-            RegistrationStatus = RegistrationSubmissionStatus.pending,
-            RegistrationDateTime = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
+            SubmissionStatus = RegistrationSubmissionStatus.Pending,
+            SubmissionDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
             BuildingName = "Building A",
             SubBuildingName = "Sub A",
             BuildingNumber = "123",
@@ -46,7 +46,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         RegistrationSubmissionDetailsViewModel viewModel = details;
 
         // Assert
-        Assert.AreEqual(details.OrganisationID, viewModel.OrganisationId);
+        Assert.AreEqual(details.OrganisationId, viewModel.OrganisationId);
         Assert.AreEqual(details.OrganisationReference[..10], viewModel.OrganisationReference);
         Assert.AreEqual(details.OrganisationName, viewModel.OrganisationName);
         Assert.AreEqual(details.ApplicationReferenceNumber, viewModel.ApplicationReferenceNumber);
@@ -54,8 +54,8 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.AreEqual(details.OrganisationType, viewModel.OrganisationType);
         Assert.AreEqual(details.CompaniesHouseNumber, viewModel.CompaniesHouseNumber);
         Assert.AreEqual(details.Country, viewModel.RegisteredNation);
-        Assert.AreEqual(details.RegistrationStatus, viewModel.Status);
-        Assert.AreEqual(details.RegistrationDateTime, viewModel.RegistrationDateTime);
+        Assert.AreEqual(details.SubmissionStatus, viewModel.Status);
+        Assert.AreEqual(details.SubmissionDate, viewModel.RegistrationDateTime);
 
         // Check Business Address mapping
         Assert.AreEqual(details.BuildingName, viewModel.BusinessAddress.BuildingName);
@@ -83,7 +83,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             CompaniesHouseNumber = "CH987654",
             RegisteredNation = "Test Country",
             PowerBiLogin = "testlogin@org.com",
-            Status = RegistrationSubmissionStatus.granted,
+            Status = RegistrationSubmissionStatus.Granted,
             RegistrationDateTime = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
             BusinessAddress = new BusinessAddress
             {
@@ -108,7 +108,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.AreEqual("CH987654", viewModel.CompaniesHouseNumber);
         Assert.AreEqual("Test Country", viewModel.RegisteredNation);
         Assert.AreEqual("testlogin@org.com", viewModel.PowerBiLogin);
-        Assert.AreEqual(RegistrationSubmissionStatus.granted, viewModel.Status);
+        Assert.AreEqual(RegistrationSubmissionStatus.Granted, viewModel.Status);
         Assert.AreEqual(new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified), viewModel.RegistrationDateTime);
 
         // Assert BusinessAddress
@@ -128,15 +128,15 @@ public class RegistrationSubmissionDetailsViewModelTests
         // Arrange
         var details = new RegistrationSubmissionOrganisationDetails
         {
-            OrganisationID = Guid.NewGuid(),
+            OrganisationId = Guid.NewGuid(),
             OrganisationReference = "ORGREF1234567890",
             OrganisationName = "Test Organisation",
             ApplicationReferenceNumber = string.Empty,
             RegistrationReferenceNumber = string.Empty,
             OrganisationType = RegistrationSubmissionOrganisationType.large,
             CompaniesHouseNumber = "CH123456",
-            RegistrationStatus = RegistrationSubmissionStatus.cancelled,
-            RegistrationDateTime = new DateTime(2023, 5, 10, 0, 0, 0, DateTimeKind.Unspecified),
+            SubmissionStatus = RegistrationSubmissionStatus.Cancelled,
+            SubmissionDate = new DateTime(2023, 5, 10, 0, 0, 0, DateTimeKind.Unspecified),
             BuildingName = null,
             SubBuildingName = null,
             BuildingNumber = null,

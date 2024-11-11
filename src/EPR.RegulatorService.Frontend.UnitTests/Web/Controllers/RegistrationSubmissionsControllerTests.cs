@@ -146,10 +146,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYear = "2025",
-                Page = 1,
+                RelevantYears = "2025",
+                PageNumber = 1,
                 PageSize = 500,
-                SubmissionStatus = "pending"
+                Statuses = "Pending"
             };
 
             SetupJourneySession(latestFilterChoices, null);
@@ -165,10 +165,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.CurrentPageNumber.Should().Be(1);
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
-            session.LatestFilterChoices.Page.Should().Be(1);
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.PageNumber.Should().Be(1);
             session.LatestFilterChoices.PageSize.Should().Be(500);
-            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+            session.LatestFilterChoices.Statuses.Should().Be("Pending");
 
             var model = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             model.Should().NotBeNull();
@@ -191,10 +191,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYear = "2025",
-                Page = 2,
+                RelevantYears = "2025",
+                PageNumber = 2,
                 PageSize = 500,
-                SubmissionStatus = "pending"
+                Statuses = "Pending"
             };
 
             SetupJourneySession(latestFilterChoices, null, 2);
@@ -210,10 +210,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.CurrentPageNumber.Should().Be(new_page_number);
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
-            session.LatestFilterChoices.Page.Should().Be(new_page_number);
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.PageNumber.Should().Be(new_page_number);
             session.LatestFilterChoices.PageSize.Should().Be(500);
-            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+            session.LatestFilterChoices.Statuses.Should().Be("Pending");
 
             var model = (result as ViewResult).Model as RegistrationSubmissionsViewModel;
             model.Should().NotBeNull();
@@ -238,10 +238,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYear = "2025",
-                Page = expected_page_number,
+                RelevantYears = "2025",
+                PageNumber = expected_page_number,
                 PageSize = 500,
-                SubmissionStatus = "pending"
+                Statuses = "Pending"
             };
 
             SetupJourneySession(emptyFilterChoices, null);
@@ -258,9 +258,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var session = _journeySession.RegulatorRegistrationSubmissionSession;
             session.LatestFilterChoices.OrganisationName.Should().BeNullOrEmpty();
             session.LatestFilterChoices.OrganisationType.Should().BeNullOrEmpty();
-            session.LatestFilterChoices.RelevantYear.Should().BeNullOrEmpty();
-            session.LatestFilterChoices.Page.Should().Be(1);
-            session.LatestFilterChoices.SubmissionStatus.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.RelevantYears.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.PageNumber.Should().Be(1);
+            session.LatestFilterChoices.Statuses.Should().BeNullOrEmpty();
 
             session.Should().NotBeNull();
             session.CurrentPageNumber.Should().Be(1);
@@ -278,10 +278,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Test final session and viewmodel state
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
-            session.LatestFilterChoices.Page.Should().Be(4);
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.PageNumber.Should().Be(4);
             session.LatestFilterChoices.PageSize.Should().Be(500);
-            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+            session.LatestFilterChoices.Statuses.Should().Be("Pending");
 
             model = (get_result as ViewResult).Model as RegistrationSubmissionsViewModel;
             model.Should().NotBeNull();
@@ -301,10 +301,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYear = "2025",
-                Page = 2,
+                RelevantYears = "2025",
+                PageNumber = 2,
                 PageSize = 200,
-                SubmissionStatus = "pending"
+                Statuses = "Pending"
             };
 
             SetupJourneySession(latestFilterChoices, null, 2);
@@ -326,10 +326,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var session = _journeySession.RegulatorRegistrationSubmissionSession;
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYear.Should().Be("2025");
-            session.LatestFilterChoices.Page.Should().Be(2);
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.PageNumber.Should().Be(2);
             session.LatestFilterChoices.PageSize.Should().Be(200);
-            session.LatestFilterChoices.SubmissionStatus.Should().Be("pending");
+            session.LatestFilterChoices.Statuses.Should().Be("Pending");
 
 
             // Act again
@@ -342,9 +342,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             session.LatestFilterChoices.OrganisationName.Should().BeNullOrEmpty();
             session.LatestFilterChoices.OrganisationType.Should().BeNullOrEmpty();
-            session.LatestFilterChoices.RelevantYear.Should().BeNullOrEmpty();
-            session.LatestFilterChoices.Page.Should().Be(1);
-            session.LatestFilterChoices.SubmissionStatus.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.RelevantYears.Should().BeNullOrEmpty();
+            session.LatestFilterChoices.PageNumber.Should().Be(1);
+            session.LatestFilterChoices.Statuses.Should().BeNullOrEmpty();
             model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
         }
         #endregion Happy Path
@@ -825,7 +825,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string[] segments = backLink.Split('/');
             Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
             var model = result.Model as QueryRegistrationSubmissionViewModel;
-            Assert.AreEqual(expectedViewModel.SubmissionId, model.SubmissionId); 
+            Assert.AreEqual(expectedViewModel.SubmissionId, model.SubmissionId);
         }
 
         [TestMethod]
@@ -1261,7 +1261,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             Assert.AreEqual(nameof(_controller.RejectRegistrationSubmission), result.ViewName);
             Assert.IsInstanceOfType(result.Model, typeof(RejectRegistrationSubmissionViewModel));
-            var resultViewModel = result.Model as RejectRegistrationSubmissionViewModel; 
+            var resultViewModel = result.Model as RejectRegistrationSubmissionViewModel;
             Assert.AreEqual(expectedViewModel.SubmissionId, resultViewModel.SubmissionId);
         }
 
@@ -1353,7 +1353,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-            detailsModel.Status = Frontend.Core.Enums.RegistrationSubmissionStatus.refused;
+            detailsModel.Status = Frontend.Core.Enums.RegistrationSubmissionStatus.Refused;
 
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
@@ -1374,7 +1374,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _controller.Url = mockUrlHelper.Object;
             var result = await _controller.RejectRegistrationSubmission(model) as RedirectToActionResult;
-             
+
             // Assert - Successful query and redirection
             Assert.IsNotNull(result);
             Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
@@ -2488,7 +2488,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Act
             var result = await _controller.CancelRegistrationSubmission(model) as RedirectToActionResult;
-             
+
             Assert.IsNotNull(result);
             Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
 
@@ -2528,7 +2528,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Act
             var result = await _controller.CancelRegistrationSubmission(model) as RedirectToRouteResult;
-             
+
             Assert.IsNotNull(result);
             Assert.AreEqual("ServiceNotAvailable", result.RouteName);
 

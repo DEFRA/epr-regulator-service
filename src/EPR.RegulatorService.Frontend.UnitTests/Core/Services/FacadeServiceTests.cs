@@ -18,6 +18,7 @@ using Moq.Protected;
 
 using System.Globalization;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
@@ -73,7 +74,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["FileDownload"] = "https://api.example.com/file/download",
                     ["OrganisationRegistrationSubmissions"] = "registrations/get-organisations&currentPage={0}&pageSize={1}",
                     ["OrganisationRegistrationSubmissionDecisionPath"] = "organisation-registration-submission-decision",
-                    ["GetOrganisationRegistrationSubmissionDetailsPath"] = "registrations-submission-details/submissionId/{0}"
+                    ["GetOrganisationRegistrationSubmissionDetailsPath"] = "registrations-submission-details/submissionId/{0}",
+                    ["GetOrganisationRegistrationSubmissionsPath"] = "organisation-registration-submissions"
                 },
                 DownstreamScope = "api://default"
             });
@@ -1079,39 +1081,181 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             });
 
             var sut = new FacadeService(httpClient, _tokenAcquisitionMock.Object, _paginationConfig, facadeApiConfig);
-            sut.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { Page = 1 });
+            sut.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { PageNumber = 1 });
             httpClient.DefaultRequestHeaders.Authorization.Should().NotBeNull();
         }
 
         [TestMethod]
         public async Task GetRegistrationSubmissions_ShouldReturnPaginatedList_WhenRequestSucceeds()
         {
-            var filter = new RegistrationSubmissionsFilterModel { Page = 1 };
+            // Arrange
+            int pageNumber = 1;
+            var filter = new RegistrationSubmissionsFilterModel { PageNumber = pageNumber };
 
+            // Generate mock data for the first page with the page size defined in PAGE_SIZE
+            var mockData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection()
+                                               .Take(PAGE_SIZE)
+                                               .ToList();
+
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = mockData,
+                TotalItems = mockData.Count,
+                CurrentPage = pageNumber,
+                PageSize = PAGE_SIZE
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
             var result = await _facadeService.GetRegistrationSubmissions(filter);
+
+            // Assert
             result.Should().BeOfType<PaginatedList<RegistrationSubmissionOrganisationDetails>>();
             result.Items.Should().HaveCount(PAGE_SIZE);
         }
 
         [TestMethod]
+        public async Task GetRegistrationSubmissions_ShouldReturnNull_WhenRequestFails()
+        {
+            // Arrange
+            int pageNumber = 1;
+            var filter = new RegistrationSubmissionsFilterModel { PageNumber = pageNumber };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.BadRequest)
+            {
+                Content = new StringContent("Bad Request")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
+            var result = await _facadeService.GetRegistrationSubmissions(filter);
+
+            // Assert: Ensure the result is null when the response status code is not successful (i.e., 400 or 500)
+            result.Should().BeNull();
+
+            // Verify that SendAsync was called as expected
+            _mockHandler.Verify();
+
+            mockResponse.Dispose();
+        }
+
+        [TestMethod]
         public async Task GetRegistrationSubmission_ShouldReturnPageTwo_WhenRequestSucceeds()
         {
-            var result = await _facadeService.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { Page = 2 });
-            result.CurrentPage.Should().Be(2);
+            // Arrange
+            int pageNumber = 2;
+            var filter = new RegistrationSubmissionsFilterModel { PageNumber = pageNumber };
+
+            // Create mock data for the second page
+            var mockData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection()
+                                               .Skip((pageNumber - 1) * filter.PageSize.Value)
+                                               .Take(filter.PageSize.Value)
+                                               .ToList();
+
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = mockData,
+                TotalItems = mockData.Count,
+                CurrentPage = pageNumber,
+                PageSize = filter.PageSize.Value
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
+            var result = await _facadeService.GetRegistrationSubmissions(filter);
+
+            // Assert
+            result.CurrentPage.Should().Be(pageNumber);
         }
 
         [TestMethod]
         [DataRow(24)]
         [DataRow(90)]
-        public async Task GetRegisrationSubmission_FilterByOrgName_ShouldReturnSuccess_And_1Org(int byIndex)
+        public async Task GetRegistrationSubmission_FilterByOrgName_ShouldReturnSuccess_And_1Org(int byIndex)
         {
-            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
-            var expectedResult = expectedDataSet[byIndex];
+            // Arrange
+            var allData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var expectedResult = allData[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationName = expectedDataSet[byIndex].OrganisationName };
+            var filter = new RegistrationSubmissionsFilterModel
+            {
+                PageNumber = 1,
+                OrganisationName = expectedResult.OrganisationName
+            };
+
+            // Set up expected items to match the filter criteria
+            var expectedItems = allData
+                .Where(item => item.OrganisationName == expectedResult.OrganisationName)
+                .ToList();
+
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = expectedItems,
+                TotalItems = allData.Count,
+                PageSize = filter.PageSize.Value
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
-            results.Items.Should().Contain(expectedResult);
+            // Assert
+            results.Items.Should().ContainSingle(item => item.OrganisationId == expectedResult.OrganisationId);
         }
 
         [TestMethod]
@@ -1119,12 +1263,43 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [DataRow(90)]
         public async Task GetRegistrationSubmission_WithFilter_ShouldReturnCorrectPaginationInformation_1Page(int byIndex)
         {
+            // Arrange
             var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
             var expectedResult = expectedDataSet[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationName = expectedResult.OrganisationName };
+            // Create mock data to simulate a single-page response
+            var mockData = expectedDataSet.Where(x => x.OrganisationName == expectedResult.OrganisationName).ToList();
+
+            // Use helper method to create PaginatedList
+            var mockResponseContent = PaginatedListHelper.Create(
+                mockData, mockData.Count, 1, PAGE_SIZE);
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            var filter = new RegistrationSubmissionsFilterModel
+            {
+                PageNumber = 1,
+                OrganisationName = expectedResult.OrganisationName
+            };
+
+            // Act
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
+            // Assert
             results.TotalPages.Should().Be(1);
         }
 
@@ -1133,37 +1308,144 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [DataRow(90)]
         public async Task GetRegistrationSubmission_WithFilter_ShouldReturnCorrectPaginationInformation_MoreThan1Page(int byIndex)
         {
+            // Arrange
             var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
             var expectedResult = expectedDataSet[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationType = expectedResult.OrganisationType.ToString() };
+            // Create mock data for a paginated response where multiple items are returned.
+            var filteredData = expectedDataSet.Where(x => x.OrganisationType == expectedResult.OrganisationType).ToList();
+            int pageSize = 20;
+
+            // Create a mock response content with more than one page of results
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = filteredData.Take(pageSize).ToList(),
+                TotalItems = filteredData.Count,
+                CurrentPage = 1,
+                PageSize = pageSize
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Filter based on the OrganisationType
+            var filter = new RegistrationSubmissionsFilterModel
+            {
+                PageNumber = 1,
+                OrganisationType = expectedResult.OrganisationType.ToString()
+            };
+
+            // Act
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
-            results.TotalPages.Should().BeGreaterThan(1);
-            results.TotalItems.Should().BeGreaterThan(1);
+            // Assert
+            results.TotalPages.Should().BeGreaterThan(1); // Ensure multiple pages of data
+            results.TotalItems.Should().BeGreaterThan(1); // Ensure multiple items exist
+            results.Items.Should().HaveCount(pageSize); // Ensure the first page contains the expected number of items
         }
 
         [TestMethod]
         public async Task GetRegistrationSubmission_WithoutFilter_ShouldReturnCorrectPaginationInformation()
         {
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1 };
+            // Arrange: Create a mock response with paginated data
+            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            int pageSize = 20;
+
+            // Mocking a paginated response where the total count is greater than the page size
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = expectedDataSet.Take(pageSize).ToList(),
+                TotalItems = expectedDataSet.Count,
+                CurrentPage = 1,
+                PageSize = pageSize
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act: Call the method with no filter except PageNumber
+            var filter = new RegistrationSubmissionsFilterModel { PageNumber = 1 };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
-            Assert.AreNotEqual(results.Items.Count, results.TotalItems);
+            // Assert: Ensure the number of items on the current page is less than the total items
+            results.Items.Count.Should().NotBe(results.TotalItems);
+            results.TotalPages.Should().BeGreaterThan(1); // Ensure that pagination works with more than one page if TotalCount > PageSize
         }
 
         [TestMethod]
         [DataRow(14)]
         [DataRow(45)]
-        public async Task GetRegisrationSubmission_FilterByOrgRef_ShouldReturnSuccess_And_1Org(int byIndex)
+        public async Task GetRegistrationSubmission_FilterByOrgRef_ShouldReturnSuccess_And_1Org(int byIndex)
         {
-            var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
-            var expectedResult = expectedDataSet[byIndex];
+            // Arrange
+            var allData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var expectedResult = allData[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationRef = expectedDataSet[byIndex].OrganisationReference };
+            var filter = new RegistrationSubmissionsFilterModel
+            {
+                PageNumber = 1,
+                OrganisationReference = expectedResult.OrganisationReference
+            };
+
+            // Set up expected items to match the filter criteria
+            var expectedItems = allData
+                .Where(item => item.OrganisationReference == expectedResult.OrganisationReference)
+                .ToList();
+
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = expectedItems,
+                TotalItems = allData.Count,
+                PageSize = filter.PageSize.Value
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
-            results.Items.Should().Contain(expectedResult);
+            // Assert
+            results.Items.Should().ContainSingle(item => item.OrganisationId == expectedResult.OrganisationId);
         }
 
         [TestMethod]
@@ -1174,28 +1456,58 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [DataRow(44)]
         public async Task FilterByNameSizeStatusAndYear_ReturnsTheCorrectSet(int byIndex)
         {
-            var item = MockedFacadeService.GenerateRegistrationSubmissionDataCollection()[byIndex];
-            var expectedItems = new List<RegistrationSubmissionOrganisationDetails>
-                                {
-                                    item
-                                };
+            // Arrange
+            var allData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var item = allData[byIndex];
+            var expectedItems = new List<RegistrationSubmissionOrganisationDetails> { item };
 
-            string expectedName = item.OrganisationName[3..6];
+            // Set up filter properties
+            string expectedName = item.OrganisationName.Length > 6 ? item.OrganisationName[3..6] : item.OrganisationName;
             var expectedSize = item.OrganisationType;
-            var expectedStatus = item.RegistrationStatus;
-            string expectedYear = item.RegistrationYear.ToString(CultureInfo.InvariantCulture);
+            var expectedStatus = item.SubmissionStatus;
+            string expectedYear = item.RegistrationYear;
 
             var filter = new RegistrationSubmissionsFilterModel
             {
                 OrganisationName = expectedName,
                 OrganisationType = expectedSize.ToString(),
-                SubmissionStatus = expectedStatus.ToString(),
-                RelevantYear = expectedYear,
+                Statuses = expectedStatus.ToString(),
+                RelevantYears = expectedYear,
                 PageSize = 5000
             };
 
+            // Mock the HTTP response
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = expectedItems,
+                TotalItems = allData.Count,
+                PageSize = 5000
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
             var result = await _facadeService.GetRegistrationSubmissions(filter);
-            result.Items.Should().Contain(expectedItems);
+
+            // Assert
+            result.Items.Should().BeEquivalentTo(expectedItems, options => options
+                .ComparingByMembers<RegistrationSubmissionOrganisationDetails>()
+                .ExcludingMissingMembers()
+            );
         }
 
         [TestMethod]
@@ -1204,41 +1516,63 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [DataRow(115, 76)]
         public async Task FilterByMultipleNameSizeStatusAndYear_ReturnsACompleteSet(int byIndex, int byOtherIndex)
         {
-            var alldata = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
-
-            var item = alldata[byIndex];
-            var item2 = alldata[byOtherIndex];
-
-            var expectedItems = alldata.AsQueryable().FilterByOrganisationType($"{item.OrganisationType.ToString()} {item2.OrganisationType.ToString()}")
-                                                     .FilterBySubmissionStatus($"{item.RegistrationStatus.ToString()} {item2.RegistrationStatus.ToString()}")
-                                                     .FilterByRelevantYear($"{item.RegistrationYear} {item2.RegistrationYear}")
-                                                     .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.updated)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
-                                                     .ThenBy(x => x.RegistrationDateTime)
-                                                     .Skip((1 - 1) * PAGE_SIZE)
-                                                     .Take(PAGE_SIZE)
-                                                     .ToList();
-
-            var expectedSize1 = item.OrganisationType;
-            var expectedStatus1 = item.RegistrationStatus;
-            string expectedYear1 = item.RegistrationYear;
-            var expectedSize2 = item2.OrganisationType;
-            var expectedStatus2 = item2.RegistrationStatus;
-            string expectedYear2 = item2.RegistrationYear;
+            // Arrange
+            var allData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
+            var item = allData[byIndex];
+            var item2 = allData[byOtherIndex];
 
             var filter = new RegistrationSubmissionsFilterModel
             {
-                OrganisationType = $"{expectedSize1.ToString()} {expectedSize2.ToString()}",
-                SubmissionStatus = $"{expectedStatus1.ToString()} {expectedStatus2.ToString()}",
-                RelevantYear = $"{expectedYear1} {expectedYear2}"
+                OrganisationType = $"{item.OrganisationType} {item2.OrganisationType}",
+                Statuses = $"{item.SubmissionStatus} {item2.SubmissionStatus}",
+                RelevantYears = $"{item.RegistrationYear} {item2.RegistrationYear}"
             };
 
+            var expectedItems = allData.AsQueryable()
+                .FilterByOrganisationType(filter.OrganisationType)
+                .FilterBySubmissionStatus(filter.Statuses)
+                .FilterByRelevantYear(filter.RelevantYears)
+                .OrderBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Refused)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Granted)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Cancelled)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Updated)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Queried)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Pending)
+                .ThenBy(x => x.SubmissionDate)
+                .Take(PAGE_SIZE)
+                .ToList();
+
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = expectedItems,
+                TotalItems = expectedItems.Count,
+                PageSize = PAGE_SIZE
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
             var result = await _facadeService.GetRegistrationSubmissions(filter);
-            result.Items.Should().BeEquivalentTo(expectedItems);
+
+            // Assert
+            result.Items.Should().BeEquivalentTo(expectedItems, options => options
+                .ComparingByMembers<RegistrationSubmissionOrganisationDetails>()
+                .ExcludingMissingMembers()
+            );
         }
 
         [TestMethod]
@@ -1315,15 +1649,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             var expectedResponse = new RegistrationSubmissionOrganisationDetails
             {
-                OrganisationID = Guid.NewGuid(),
+                OrganisationId = Guid.NewGuid(),
                 OrganisationReference = "ORGREF1234567890",
                 OrganisationName = "Test Organisation",
                 ApplicationReferenceNumber = "APPREF123",
                 RegistrationReferenceNumber = "REGREF456",
                 OrganisationType = RegistrationSubmissionOrganisationType.large,
                 CompaniesHouseNumber = "CH123456",
-                RegistrationStatus = RegistrationSubmissionStatus.pending,
-                RegistrationDateTime = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
+                SubmissionStatus = RegistrationSubmissionStatus.Pending,
+                SubmissionDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
                 BuildingName = "Building A",
                 SubBuildingName = "Sub A",
                 BuildingNumber = "123",
@@ -1353,7 +1687,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Assert
             Assert.IsNotNull(result);
             result.Should().BeOfType<RegistrationSubmissionOrganisationDetails>();
-            Assert.AreEqual(expected: expectedResponse.OrganisationID, actual: result.OrganisationID);
+            Assert.AreEqual(expected: expectedResponse.OrganisationId, actual: result.OrganisationId);
             Assert.AreEqual(expected: organisationName, actual: result.OrganisationName);
             Assert.AreEqual(expected: expectedResponse.CompaniesHouseNumber, actual: result.CompaniesHouseNumber);
 
@@ -1402,6 +1736,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Assert
             Assert.IsNull(result);
+        }
+
+        public static class PaginatedListHelper
+        {
+            public static PaginatedList<T> Create<T>(List<T> items, int totalCount, int currentPage, int pageSize) => new PaginatedList<T>
+            {
+                Items = items,
+                TotalItems = totalCount,
+                CurrentPage = currentPage,
+                PageSize = pageSize
+            };
         }
     }
 }
