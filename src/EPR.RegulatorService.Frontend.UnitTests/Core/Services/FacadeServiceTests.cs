@@ -18,6 +18,7 @@ using Moq.Protected;
 
 using System.Globalization;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
@@ -1159,6 +1160,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Verify that SendAsync was called as expected
             _mockHandler.Verify();
+
+            mockResponse.Dispose();
         }
 
         [TestMethod]
