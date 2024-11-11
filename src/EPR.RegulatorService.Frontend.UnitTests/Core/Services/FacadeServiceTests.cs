@@ -1087,9 +1087,42 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [TestMethod]
         public async Task GetRegistrationSubmissions_ShouldReturnPaginatedList_WhenRequestSucceeds()
         {
-            var filter = new RegistrationSubmissionsFilterModel { PageNumber = 1 };
+            // Arrange
+            int pageNumber = 1;
+            var filter = new RegistrationSubmissionsFilterModel { PageNumber = pageNumber };
 
+            // Generate mock data for the first page with the page size defined in PAGE_SIZE
+            var mockData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection()
+                                               .Take(PAGE_SIZE)
+                                               .ToList();
+
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = mockData,
+                CurrentPage = pageNumber,
+                PageSize = PAGE_SIZE
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
             var result = await _facadeService.GetRegistrationSubmissions(filter);
+
+            // Assert
             result.Should().BeOfType<PaginatedList<RegistrationSubmissionOrganisationDetails>>();
             result.Items.Should().HaveCount(PAGE_SIZE);
         }
@@ -1097,8 +1130,44 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [TestMethod]
         public async Task GetRegistrationSubmission_ShouldReturnPageTwo_WhenRequestSucceeds()
         {
-            var result = await _facadeService.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { PageNumber = 2 });
-            result.CurrentPage.Should().Be(2);
+            // Arrange
+            int pageNumber = 2;
+            var filter = new RegistrationSubmissionsFilterModel { PageNumber = pageNumber };
+
+            // Create mock data for the second page
+            var mockData = MockedFacadeService.GenerateRegistrationSubmissionDataCollection()
+                                               .Skip((pageNumber - 1) * filter.PageSize.Value)
+                                               .Take(filter.PageSize.Value)
+                                               .ToList();
+
+            var mockResponseContent = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = mockData,
+                CurrentPage = pageNumber,
+                PageSize = filter.PageSize.Value
+            };
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            // Act
+            var result = await _facadeService.GetRegistrationSubmissions(filter);
+
+            // Assert
+            result.CurrentPage.Should().Be(pageNumber);
         }
 
         [TestMethod]
@@ -1155,12 +1224,43 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [DataRow(90)]
         public async Task GetRegistrationSubmission_WithFilter_ShouldReturnCorrectPaginationInformation_1Page(int byIndex)
         {
+            // Arrange
             var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
             var expectedResult = expectedDataSet[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { PageNumber = 1, OrganisationName = expectedResult.OrganisationName };
+            // Create mock data to simulate a single-page response
+            var mockData = expectedDataSet.Where(x => x.OrganisationName == expectedResult.OrganisationName).ToList();
+
+            // Use helper method to create PaginatedList
+            var mockResponseContent = PaginatedListHelper.Create(
+                mockData, mockData.Count, 1, PAGE_SIZE);
+
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(mockResponseContent), Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Post &&
+                        req.RequestUri == new Uri("http://localhost/organisation-registration-submissions")),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(mockResponse);
+
+            var filter = new RegistrationSubmissionsFilterModel
+            {
+                PageNumber = 1,
+                OrganisationName = expectedResult.OrganisationName
+            };
+
+            // Act
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
+            // Assert
             results.TotalPages.Should().Be(1);
         }
 
@@ -1523,6 +1623,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Assert
             Assert.IsNull(result);
+        }
+
+        public static class PaginatedListHelper
+        {
+            public static PaginatedList<T> Create<T>(List<T> items, int totalCount, int currentPage, int pageSize)
+            {
+                return new PaginatedList<T>
+                {
+                    Items = items,
+                    TotalItems = totalCount,
+                    CurrentPage = currentPage,
+                    PageSize = pageSize
+                };
+            }
         }
     }
 }
