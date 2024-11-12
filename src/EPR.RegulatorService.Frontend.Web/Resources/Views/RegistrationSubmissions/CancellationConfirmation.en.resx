@@ -117,14 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CancellationConfirmation.BannerTitlePartOne" xml:space="preserve">
-    <value>You’ve cancelled</value>
-  </data>
-  <data name="CancellationConfirmation.BannerTitlePartThree" xml:space="preserve">
-    <value>registration</value>
-  </data>
-  <data name="CancellationConfirmation.BannerTitlePartTwo" xml:space="preserve">
-    <value>'s</value>
+  <data name="CancellationConfirmation.BannerTitle" xml:space="preserve">
+    <value>You have cancelled the registration of </value>
   </data>
   <data name="CancellationConfirmation.PageTitle" xml:space="preserve">
     <value>Cancellation confirmation</value>

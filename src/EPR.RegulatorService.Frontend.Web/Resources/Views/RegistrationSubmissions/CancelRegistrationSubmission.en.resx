@@ -121,10 +121,10 @@
     <value>The organisation will be able to see your comments. Clearly explain why you’ve cancelled the registration.</value>
   </data>
   <data name="CancelRegistrationSubmission.PageHeading" xml:space="preserve">
-    <value>Why are you cancelling this registration application?</value>
+    <value>Why are you cancelling this registration?</value>
   </data>
   <data name="CancelRegistrationSubmission.PageTitle" xml:space="preserve">
-    <value>Why are you cancelling this registration application?</value>
+    <value>Why are you cancelling this registration?</value>
   </data>
   <data name="Error.CancellationReason" xml:space="preserve">
     <value>Enter the reason you are cancelling this registration</value>
