@@ -9,7 +9,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         [Required(ErrorMessage = "ConfirmRegistrationRefusal.ErrorMessage")]
         public bool? IsRegistrationRefusalConfirmed { get; set; }
 
-        public string RejectReason { get; set; }
+        public string? RejectReason { get; set; }
 
     }
 }

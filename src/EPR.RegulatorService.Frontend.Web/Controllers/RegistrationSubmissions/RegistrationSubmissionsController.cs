@@ -555,6 +555,11 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(ConfirmRegistrationRefusal), model);
         }
 
+        if (!model.IsRegistrationRefusalConfirmed.Value)
+        {
+            return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
+        }
+
         if (string.IsNullOrEmpty(model.RejectReason))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
