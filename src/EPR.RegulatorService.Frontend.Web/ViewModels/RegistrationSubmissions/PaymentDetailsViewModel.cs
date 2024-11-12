@@ -3,6 +3,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
+
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Web.Attributes;
 
@@ -24,9 +25,11 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         [CurrencyValidation(requiredErrorMessage: "PaymentValidation.TheAmountIsRequired",
                             invalidFormatMessage: "PaymentValidation.FormatIsInvalid",
                             valueExceededMessage: "PaymentValidation.ValueIsTooHigh",
+                            minValue: "0.01",
                             maxValue: "10000000.00",
                             specialCharactersMessage: "PaymentValidation.InvalidCharacters",
-                            nonNumericMessage: "PaymentValidation.NonNumericCharacters"
+                            nonNumericMessage: "PaymentValidation.NonNumericCharacters",
+                            valueZeroMesssage: "PaymentValidation.ValueIsTooLow"
                             )]
         public string? OfflinePayment { get; set; }
 

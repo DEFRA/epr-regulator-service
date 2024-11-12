@@ -16,14 +16,19 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
     private readonly string _invalidFormatMessage;
     private readonly string _specialCharactersMessage;
     private readonly string _nonNumericMessage;
+    private readonly string _valueZeroMesssage;
+    private readonly decimal _minValue;
     private readonly decimal _maxValue;
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S107:Methods should not have too many parameters", Justification = "Impossible to change")]
     public CurrencyValidationAttribute(string requiredErrorMessage,
                                         string valueExceededMessage,
                                         string invalidFormatMessage,
+                                        string minValue,
                                         string maxValue,
                                         string specialCharactersMessage = null,
-                                        string nonNumericMessage = null)
+                                        string nonNumericMessage = null,
+                                        string valueZeroMesssage = null)
     {
         _validateSpecialCharacters = !string.IsNullOrEmpty(specialCharactersMessage);
         _validateNonNumericCharacters = !string.IsNullOrEmpty(nonNumericMessage);
@@ -32,6 +37,12 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
         _invalidFormatMessage = invalidFormatMessage;
         _specialCharactersMessage = specialCharactersMessage;
         _nonNumericMessage = nonNumericMessage;
+        _valueZeroMesssage = valueZeroMesssage;
+
+        if (!decimal.TryParse(minValue, NumberStyles.Currency, CultureInfo.CurrentCulture, out _minValue))
+        {
+            throw new ArgumentOutOfRangeException(nameof(minValue));
+        }
 
         if (!decimal.TryParse(maxValue, NumberStyles.Currency, CultureInfo.CurrentCulture, out _maxValue))
         {
@@ -58,8 +69,15 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
             return new ValidationResult(_invalidFormatMessage);
         }
 
+        if (BelowMinValue(theValue))
+        {
+            return new ValidationResult(_valueZeroMesssage);
+        }
+
         return ExceedsMaxValue(theValue) ? new ValidationResult(_valueExceededMessage) : ValidationResult.Success;
     }
+
+    private bool BelowMinValue(decimal value) => value < _minValue;
 
     private static bool ExceedsMaxCharacterCount(string text) => text.Length > MAX_CHARACTER_COUNT;
 
