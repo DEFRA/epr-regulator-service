@@ -10,6 +10,7 @@
 
 @using (Html.BeginRouteForm("ConfirmRegistrationRefusal", new { submissionId = Model.SubmissionId }, FormMethod.Post))
 {
+    @Html.Hidden("RejectReason", Model.RejectReason)
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper" id="main-content" role="main">
             <div class="govuk-grid-row">
