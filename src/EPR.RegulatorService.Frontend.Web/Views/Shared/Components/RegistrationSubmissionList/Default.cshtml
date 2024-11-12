@@ -1,6 +1,7 @@
 @using EPR.RegulatorService.Frontend.Core.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
+@using EPR.RegulatorService.Frontend.Core.Enums
 
 @model RegistrationSubmissionsListViewModel
 
@@ -36,7 +37,15 @@
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.CompanyId"]
                         </span>
-                        @organisation.OrganisationReference
+                        @organisation.OrganisationReference <br />
+                        @if (organisation.Status == RegistrationSubmissionStatus.Granted)
+                        {
+                            @organisation.RegistrationReferenceNumber
+                        }
+                        else
+                        {
+                            @organisation.ApplicationReferenceNumber
+                        }
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
