@@ -63,6 +63,12 @@
     <EmbeddedResource Update="Resources\Views\Error\ServiceNotAvailable.en.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmRegistrationRefusal.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmRegistrationRefusal.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\GrantRegistrationSubmission.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

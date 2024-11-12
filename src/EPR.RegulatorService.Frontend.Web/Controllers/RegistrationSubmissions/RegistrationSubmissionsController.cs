@@ -355,7 +355,7 @@ public partial class RegistrationSubmissionsController(
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId }), false);
             ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(RejectRegistrationSubmission), model);
-        } 
+        }
 
         try
         {
@@ -389,7 +389,7 @@ public partial class RegistrationSubmissionsController(
                 {
                     backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
                 });
-        } 
+        }
     }
 
     [HttpGet]
@@ -547,6 +547,27 @@ public partial class RegistrationSubmissionsController(
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
 
         return View(nameof(CancellationConfirmation), model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.ConfirmRegistrationRefusal + "/{submissionId:guid}", Name = "ConfirmRegistrationRefusal")]
+    public async Task<IActionResult> ConfirmRegistrationRefusal(Guid? submissionId)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        SetBackLink(Url.RouteUrl("RejectRegistrationSubmission", new { submissionId }), false);
+
+        var model = new ConfirmRegistrationRefusalViewModel
+        {
+            SubmissionId = submissionId
+        };
+
+        return View(nameof(ConfirmRegistrationRefusal), model);
     }
 
     [HttpGet]
