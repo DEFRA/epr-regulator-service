@@ -2890,6 +2890,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
 
+        [TestMethod]
         public async Task ConfirmRegistrationRefusal_Post_ReturnsSuccessAndRedirectsCorrectly_WhenRejectionReasonIsValid()
         {
             // Arrange
@@ -2933,19 +2934,152 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
 
+        [TestMethod]
         public async Task ConfirmRegistrationRefusal_Post_ReturnsFailAndRedirectsCorrectly_WhenFacadeStatusReturnsFail()
         {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.RejectReason = "Valid reason.";
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new ConfirmRegistrationRefusalViewModel
+            {
+                SubmissionId = detailsModel.SubmissionId,
+                RejectReason = detailsModel.RejectReason,
+                IsRegistrationRefusalConfirmed = true
+            };
+
+            // Set up an unsuccessful call
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Fail);
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.ConfirmRegistrationRefusal(model) as RedirectToRouteResult;
+
+            // Assert - Unsuccessful reject and redirection
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+
+            // Assert route values
+            string expectedUrl = $"{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+            Assert.IsTrue(result.RouteValues.TryGetValue("backLink", out object backLink));
+            Assert.AreEqual(expectedUrl, backLink);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
 
+        [TestMethod]
         public async Task ConfirmRegistrationRefusal_Post_RedirectsToServiceNotAvailable_OnFacadeServiceException()
         {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.RejectReason = "Valid reason";
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new ConfirmRegistrationRefusalViewModel
+            {
+                SubmissionId = detailsModel.SubmissionId,
+                RejectReason = detailsModel.RejectReason,
+                IsRegistrationRefusalConfirmed = true
+            };
+
+            // Set up the facade service to throw an exception
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ThrowsAsync(new Exception("Simulated facade exception"));
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.ConfirmRegistrationRefusal(model) as RedirectToRouteResult;
+
+            // Assert - Redirects to ServiceNotAvailable when an exception occurs
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
 
-        public async Task ReturnsExpectedError_WhenModelStateIsInvalid()
+        [TestMethod]
+        public async Task ConfirmRegistrationRefusal_Post_ReturnsExpectedError_WhenSubmittingWithoutSelection()
         {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.RejectReason = "Valid reason";
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new ConfirmRegistrationRefusalViewModel
+            {
+                SubmissionId = detailsModel.SubmissionId,
+                RejectReason = detailsModel.RejectReason,
+                IsRegistrationRefusalConfirmed = null // Deliberately setting selection bool as null
+            };
+
+            // Simulate model state error for the IsRegistrationRefusalConfirmed property
+            _controller.ModelState.AddModelError(nameof(model.IsRegistrationRefusalConfirmed), "Select yes if you want to refuse this registration application");
+
+            // Act
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.ConfirmRegistrationRefusal(model) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.ConfirmRegistrationRefusal), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
+
+            // Verify ModelState error for IsRegistrationRefusalConfirmed property
+            Assert.IsTrue(_controller.ModelState[nameof(model.IsRegistrationRefusalConfirmed)].Errors.Count > 0, "ModelState should contain an error for the IsRegistrationRefusalConfirmed property.");
+            Assert.AreEqual("Select yes if you want to refuse this registration application",
+                _controller.ModelState[nameof(model.IsRegistrationRefusalConfirmed)].Errors[0].ErrorMessage, "The error message should match the expected validation message.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+            Assert.AreEqual(segments[3], detailsModel.SubmissionId.ToString(), "Back link should contain the correct Submission ID");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
 
         #endregion
