@@ -1437,6 +1437,41 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
         }
 
+        [TestMethod]
+        public async Task RejectRegistrationSubmission_Post_SavesRejectReasonInSessionObjectAndRedirectsCorrectly_ForAValidModelState()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.RejectReason = "Valid reject reason";
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new RejectRegistrationSubmissionViewModel
+            {
+                SubmissionId = detailsModel.SubmissionId,
+                RejectReason = detailsModel.RejectReason
+            };
+
+            // Act
+            var result = await _controller.RejectRegistrationSubmission(model) as RedirectToRouteResult;
+
+            // Assert - Successful save in session
+            Assert.IsTrue(_journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason == "Valid reject reason");
+
+            // Assert - Successful redirection
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ConfirmRegistrationRefusal", result.RouteName);
+
+            var routeValues = result.RouteValues.ToList();
+
+            Assert.AreEqual("submissionId", routeValues[0].Key);
+            Assert.AreEqual(detailsModel.SubmissionId, routeValues[0].Value);
+        }
+
         #endregion
 
         #region RegistrationSubmissionDetails
