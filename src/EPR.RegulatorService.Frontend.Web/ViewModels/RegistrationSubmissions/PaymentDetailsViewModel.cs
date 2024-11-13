@@ -26,7 +26,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                             valueExceededMessage: "PaymentValidation.ValueIsTooHigh",
                             maxValue: "10000000.00",
                             specialCharactersMessage: "PaymentValidation.InvalidCharacters",
-                            nonNumericMessage: "PaymentValidation.NonNumericCharacters"
+                            nonNumericMessage: "PaymentValidation.NonNumericCharacters",
+                            valueZeroMesssage: "PaymentValidation.ValueCannotBeZero"
                             )]
         public string? OfflinePayment { get; set; }
 
