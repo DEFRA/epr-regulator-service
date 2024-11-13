@@ -1181,7 +1181,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region RejectRegistrationSubmission
 
         [TestMethod]
-        public async Task RejectRegistrationSubmission_SessionDataError_ReturnsPageNotFOund()
+        public async Task RejectRegistrationSubmission_Get_SessionDataError_ReturnsPageNotFound()
         {
             // Act
             var id = Guid.NewGuid();
@@ -1235,7 +1235,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RejectRegistrationSubmission_ReturnsView_WithCorrectModel()
+        public async Task RejectRegistrationSubmission_Get_ReturnsView_WithCorrectModel()
         {
             // Arrange 
             var id = Guid.NewGuid();
@@ -1266,7 +1266,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RejectRegistrationSubmission_ShouldSetCorrectBackLink()
+        public async Task RejectRegistrationSubmission_Get_ShouldSetCorrectBackLink()
         {
             // Arrange
             var id = Guid.NewGuid();
@@ -2629,6 +2629,96 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
         }
+
+        #endregion
+
+        #region ConfirmRegistrationRefusal
+
+        #region GET
+        public async Task ConfirmRegistrationRefusal_Get_RedirectsToPageNotFound_WhenSubmissionIdIsInvalid()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Get_RedirectsToPageNotFound_WhenSubmissionIdIsNull()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Get_RedirectsToPageNotFound_WhenExisitngModelIsInvalid()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Get_RedirectsToPageNotFound_WhenExisitngModelIsNull()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Get_ReturnsView_WithCorrectViewModelAndBackLink()
+        {
+
+        }
+
+        #endregion
+
+        #region POST
+        public async Task ConfirmRegistrationRefusal_Post_RedirectsToPageNotFound_WhenSubmissionIdIsInvalid()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Post_RedirectsToPageNotFound_WhenSubmissionIdIsNull()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Post_RedirectsToPageNotFound_WhenExisitngModelIsInvalid()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Post_RedirectsToPageNotFound_WhenExisitngModelIsNull()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Post_ReturnsViewCorrectly_WhenModelStateIsInvalid()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Post_RedirectsToSubmissionDetails_WhenIsRegistrationRefusalConfirmedIsFalse()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Post_RedirectsToPageNotFound_WhenRejectReasonIsNull()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Post_ReturnsSuccessAndRedirectsCorrectly_WhenRejectionReasonIsValid()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Post_ReturnsFailAndRedirectsCorrectly_WhenFacadeStatusReturnsFail()
+        {
+
+        }
+
+        public async Task ConfirmRegistrationRefusal_Post_RedirectsToServiceNotAvailable_OnFacadeServiceException()
+        {
+
+        }
+
+        public async Task ReturnsExpectedError_WhenModelStateIsInvalid()
+        {
+
+        }
+
+        #endregion
 
         #endregion
 
