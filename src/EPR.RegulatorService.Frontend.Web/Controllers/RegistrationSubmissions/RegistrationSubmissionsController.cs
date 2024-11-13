@@ -357,6 +357,13 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(RejectRegistrationSubmission), model);
         }
 
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason = model.RejectReason;
+
+        SaveSessionAndJourney(
+            _currentSession.RegulatorRegistrationSubmissionSession,
+            PagePath.RejectRegistrationSubmission,
+            PagePath.ConfirmRegistrationRefusal);
+
         return RedirectToRoute("ConfirmRegistrationRefusal", new { submissionId = existingModel.SubmissionId });
     }
 
@@ -532,7 +539,8 @@ public partial class RegistrationSubmissionsController(
 
         var model = new ConfirmRegistrationRefusalViewModel
         {
-            SubmissionId = submissionId
+            SubmissionId = existingModel.SubmissionId,
+            RejectReason = existingModel.RejectReason
         };
 
         return View(nameof(ConfirmRegistrationRefusal), model);
@@ -565,41 +573,40 @@ public partial class RegistrationSubmissionsController(
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        //try
-        //{
-        //    var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
-        //        new RegulatorDecisionRequest
-        //        {
-        //            OrganisationId = existingModel.OrganisationId,
-        //            SubmissionId = existingModel.SubmissionId,
-        //            Status = Core.Enums.RegistrationSubmissionStatus.Refused.ToString(),
-        //            Comments = model.RejectReason
-        //        });
+        try
+        {
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
+                new RegulatorDecisionRequest
+                {
+                    OrganisationId = existingModel.OrganisationId,
+                    SubmissionId = existingModel.SubmissionId,
+                    Status = Core.Enums.RegistrationSubmissionStatus.Refused.ToString(),
+                    Comments = existingModel.RejectReason
+                });
 
-        //    return status == Core.Models.EndpointResponseStatus.Success
-        //        ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
-        //        : RedirectToRoute("ServiceNotAvailable",
-        //        new
-        //        {
-        //            backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
-        //        });
-        //}
-        //catch (Exception ex)
-        //{
-        //    _logControllerError.Invoke(
-        //        logger,
-        //        $"Exception received while refusing submission" +
-        //        $"{nameof(RegistrationSubmissionsController)}.{nameof(RejectRegistrationSubmission)}", ex);
+            return status == Core.Models.EndpointResponseStatus.Success
+                ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
+                : RedirectToRoute("ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
+        catch (Exception ex)
+        {
+            _logControllerError.Invoke(
+                logger,
+                $"Exception received while refusing submission" +
+                $"{nameof(RegistrationSubmissionsController)}.{nameof(ConfirmRegistrationRefusal)}", ex);
 
-        //    return RedirectToRoute(
-        //        "ServiceNotAvailable",
-        //        new
-        //        {
-        //            backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
-        //        });
-        //}
+            return RedirectToRoute(
+                "ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
 
-        return RedirectToAction(PagePath.RegistrationSubmissionsAction);
     }
 
     [HttpGet]
