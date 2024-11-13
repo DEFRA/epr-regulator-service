@@ -2635,29 +2635,99 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region ConfirmRegistrationRefusal
 
         #region GET
+
+        [TestMethod]
         public async Task ConfirmRegistrationRefusal_Get_RedirectsToPageNotFound_WhenSubmissionIdIsInvalid()
         {
+            // Arrange
+            var submissionId = Guid.NewGuid();
 
+            // Act
+            var result = await _controller.ConfirmRegistrationRefusal(submissionId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectResult = result as RedirectToActionResult;
+            Assert.AreEqual("PageNotFound", redirectResult.ActionName);
+            Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
         }
 
+        [TestMethod]
         public async Task ConfirmRegistrationRefusal_Get_RedirectsToPageNotFound_WhenSubmissionIdIsNull()
         {
+            // Act
+            var result = await _controller.ConfirmRegistrationRefusal((Guid?)null);
 
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectResult = result as RedirectToActionResult;
+            Assert.AreEqual("PageNotFound", redirectResult.ActionName);
+            Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
         }
 
-        public async Task ConfirmRegistrationRefusal_Get_RedirectsToPageNotFound_WhenExisitngModelIsInvalid()
-        {
-
-        }
-
+        [TestMethod]
         public async Task ConfirmRegistrationRefusal_Get_RedirectsToPageNotFound_WhenExisitngModelIsNull()
         {
+            // Arrange
+            SetupJourneySession(null, null);
 
+            // Act
+            var result = await _controller.ConfirmRegistrationRefusal(Guid.NewGuid());
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectResult = result as RedirectToActionResult;
+            Assert.AreEqual("PageNotFound", redirectResult.ActionName);
+            Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
         }
 
+        [TestMethod]
         public async Task ConfirmRegistrationRefusal_Get_ReturnsView_WithCorrectViewModelAndBackLink()
         {
+            // Arrange 
+            var submissionId = Guid.NewGuid();
+            string expectedRejectReason = "Valid reject reason";
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.RejectReason = expectedRejectReason;
+
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel,
+            };
+
+            var expectedViewModel = new ConfirmRegistrationRefusalViewModel
+            {
+                SubmissionId = detailsModel.SubmissionId,
+                RejectReason = detailsModel.RejectReason
+            };
+
+            // Act
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.ConfirmRegistrationRefusal(submissionId) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(nameof(_controller.ConfirmRegistrationRefusal), result.ViewName);
+            Assert.IsInstanceOfType(result.Model, typeof(ConfirmRegistrationRefusalViewModel));
+            var resultViewModel = result.Model as ConfirmRegistrationRefusalViewModel;
+            Assert.AreEqual(expectedViewModel.SubmissionId, resultViewModel.SubmissionId);
+
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Extract the GUID part using indexing and check for validity
+            string[] segments = backLink.Split('/');
+            Assert.IsNotNull(segments, "The back link should contain URL segments.");
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+            Assert.AreEqual(segments[3], detailsModel.SubmissionId.ToString(), "Back link should contain the correct Submission ID");
         }
 
         #endregion
