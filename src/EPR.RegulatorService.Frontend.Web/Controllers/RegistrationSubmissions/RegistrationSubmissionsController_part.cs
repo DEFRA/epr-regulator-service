@@ -19,7 +19,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             {
                 PageNumber = 1
             };
-            existingSessionFilters.Page = session.CurrentPageNumber;
+            existingSessionFilters.PageNumber = session.CurrentPageNumber;
 
             return new RegistrationSubmissionsViewModel
             {
@@ -52,17 +52,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
             viewModel = sessionModelWhichMustMatchSession;
             return true;
-        }
-
-        private bool GetAndRememberSubmissionDetails(Guid? submissionId, out RegistrationSubmissionDetailsViewModel model)
-        {
-            model = submissionId == null
-                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-                : _facadeService.GetRegistrationSubmissionDetails(submissionId.Value);
-
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
-
-            return model != null;
         }
 
         private static void ClearFilters(RegulatorRegistrationSubmissionSession session,

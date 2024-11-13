@@ -34,7 +34,10 @@ public class FacadeService : IFacadeService
     private const string OrganisationsRemoveApprovedUserPath = "OrganisationsRemoveApprovedUser";
     private const string AddRemoveApprovedUserPath = "AddRemoveApprovedUser";
     private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
+    private const string OrgsanisationRegistrationSubmissionDecisionPath = "OrganisationRegistrationSubmissionDecisionPath";
     private const string FileDownloadPath = "FileDownload";
+    private const string GetOrganisationRegistrationSubmissionDetailsPath = "GetOrganisationRegistrationSubmissionDetailsPath";
+    private const string GetOrganisationRegistationSubmissionsPath = "GetOrganisationRegistrationSubmissionsPath";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -331,32 +334,35 @@ public class FacadeService : IFacadeService
         }
     }
 
-    public Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
     {
-        var options = Options.Create(new PaginationConfig()
-        {
-            PageSize = _paginationConfig.PageSize
-        });
+        await PrepareAuthenticatedClient();
 
-        PrepareAuthenticatedClient();
+        string path = _facadeApiConfig.Endpoints[GetOrganisationRegistationSubmissionsPath];
 
-        var mockedFacade = new MockedFacadeService(options);
+        var response = await _httpClient.PostAsJsonAsync(path, filters);
 
-        return mockedFacade.GetRegistrationSubmissions(filters);
+        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<PaginatedList<RegistrationSubmissionOrganisationDetails>>() : null;
     }
 
-    public RegistrationSubmissionOrganisationDetails GetRegistrationSubmissionDetails(Guid submissionId)
+    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
     {
-        PrepareAuthenticatedClient();
-        var mockedFacade = new MockedFacadeService(Options.Create(new PaginationConfig()
-        {
-            PageSize = _paginationConfig.PageSize
-        }));
+        await PrepareAuthenticatedClient();
 
-        return mockedFacade.GetRegistrationSubmissionDetails(submissionId);
+        string path = _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath].Replace("{0}", submissionId.ToString());
 
-        return null;
+        var response = await _httpClient.GetAsync(path);
+        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<RegistrationSubmissionOrganisationDetails>() : null;
     }
 
-    public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+    public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = _facadeApiConfig.Endpoints[OrgsanisationRegistrationSubmissionDecisionPath];
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+
+        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+    }
+
 }

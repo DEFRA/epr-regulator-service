@@ -5,17 +5,23 @@ namespace EPR.RegulatorService.Frontend.Core.Enums;
 public enum RegistrationSubmissionStatus
 {
     [Description("RegistrationSubmissionStatus.NotSpecified")]
-    none = 0,
+    None = 0,
+
     [Description("RegistrationSubmissionStatus.Pending")]
-    pending = 1,
+    Pending = 1,
+
     [Description("RegistrationSubmissionStatus.Granted")]
-    granted = 10,
+    Granted = 10,
+
     [Description("RegistrationSubmissionStatus.Refused")]
-    refused = 20,
+    Refused = 20,
+
     [Description("RegistrationSubmissionStatus.Queried")]
-    queried = 30,
+    Queried = 30,
+
     [Description("RegistrationSubmissionStatus.Cancelled")]
-    cancelled = 40,
+    Cancelled = 40,
+
     [Description("RegistrationSubmissionStatus.Updated")]
-    updated = 50
+    Updated = 50
 }

@@ -26,14 +26,13 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
 
             output.AddClass(Status switch
             {
-                "granted" => "govuk-tag--green",
-                "refused" => "govuk-tag--red",
-                "queried" => "govuk-tag--purple",
-                "pending" => "govuk-tag--blue",
-                "updated" => "govuk-tag--yellow",
-                "cancelled" => "status__cancelled",
-                "none" => "govuk-tag--purple",
-                _ => ""
+                "Granted" => "govuk-tag--green",
+                "Refused" => "govuk-tag--red",
+                "Queried" => "govuk-tag--purple",
+                "Pending" => "govuk-tag--blue",
+                "Updated" => "govuk-tag--yellow",
+                "Cancelled" => "status__cancelled",
+                _ => string.Empty
             }, HtmlEncoder.Default);
 
 

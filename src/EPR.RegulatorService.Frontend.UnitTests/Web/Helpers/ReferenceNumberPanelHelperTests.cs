@@ -15,7 +15,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers
             // Arrange
             var model = new RegistrationSubmissionDetailsViewModel
             {
-                Status = RegistrationSubmissionStatus.granted
+                Status = RegistrationSubmissionStatus.Granted
             };
 
             // Act
@@ -31,7 +31,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers
             // Arrange
             var model = new RegistrationSubmissionDetailsViewModel
             {
-                Status = RegistrationSubmissionStatus.pending // or any other status except 'granted'
+                Status = RegistrationSubmissionStatus.Pending // or any other status except 'granted'
             };
 
             // Act
@@ -47,7 +47,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers
             // Arrange
             var model = new RegistrationSubmissionDetailsViewModel
             {
-                Status = RegistrationSubmissionStatus.granted,
+                Status = RegistrationSubmissionStatus.Granted,
                 RegistrationReferenceNumber = "REG123"
             };
 
@@ -64,7 +64,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers
             // Arrange
             var model = new RegistrationSubmissionDetailsViewModel
             {
-                Status = RegistrationSubmissionStatus.pending,
+                Status = RegistrationSubmissionStatus.Pending,
                 ApplicationReferenceNumber = "APP456"
             };
 

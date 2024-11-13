@@ -22,9 +22,9 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
                     CurrentPageNumber = 1;
                     if (null != LatestFilterChoices)
                     {
-                        LatestFilterChoices.Page = 1;
-                        LatestFilterChoices.OrganisationName = LatestFilterChoices.OrganisationRef = null;
-                        LatestFilterChoices.OrganisationType = LatestFilterChoices.RelevantYear = LatestFilterChoices.SubmissionStatus = null;
+                        LatestFilterChoices.PageNumber = 1;
+                        LatestFilterChoices.OrganisationName = LatestFilterChoices.OrganisationReference = null;
+                        LatestFilterChoices.OrganisationType = LatestFilterChoices.RelevantYears = LatestFilterChoices.Statuses = null;
                     }
                 }
             }

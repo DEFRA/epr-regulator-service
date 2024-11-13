@@ -46,10 +46,10 @@ public class RegistrationSubmissionsFilterViewModel
 
     public static implicit operator RegistrationSubmissionsFilterModel(RegistrationSubmissionsFilterViewModel viewModel) => new RegistrationSubmissionsFilterModel
     {
-        Page = viewModel.PageNumber,
+        PageNumber = viewModel.PageNumber,
         PageSize = viewModel.PageSize,
-        RelevantYear = viewModel.Is2025Checked ? "2025" : null,
-        OrganisationRef = !string.IsNullOrEmpty(viewModel.OrganisationRef) ? viewModel.OrganisationRef : null,
+        RelevantYears = viewModel.Is2025Checked ? "2025" : null,
+        OrganisationReference = !string.IsNullOrEmpty(viewModel.OrganisationRef) ? viewModel.OrganisationRef : null,
         OrganisationName = !string.IsNullOrEmpty(viewModel.OrganisationName) ? viewModel.OrganisationName : null,
         OrganisationType = string.Join(" ", new[]
                                {
@@ -57,32 +57,32 @@ public class RegistrationSubmissionsFilterViewModel
                                    viewModel.IsOrganisationLargeChecked ? Core.Enums.RegistrationSubmissionOrganisationType.large.ToString() : null,
                                    viewModel.IsOrganisationSmallChecked ? Core.Enums.RegistrationSubmissionOrganisationType.small.ToString() : null
                                }.Where(x => !string.IsNullOrEmpty(x))),
-        SubmissionStatus = string.Join(" ", new[]
+        Statuses = string.Join(" ", new[]
                                {
-                                    viewModel.IsStatusCancelledChecked ? Core.Enums.RegistrationSubmissionStatus.cancelled.ToString() : null,
-                                    viewModel.IsStatusGrantedChecked ? Core.Enums.RegistrationSubmissionStatus.granted.ToString() : null,
-                                    viewModel.IsStatusPendingChecked ? Core.Enums.RegistrationSubmissionStatus.pending.ToString() : null,
-                                    viewModel.IsStatusQueriedChecked ? Core.Enums.RegistrationSubmissionStatus.queried.ToString() : null,
-                                    viewModel.IsStatusRefusedChecked ? Core.Enums.RegistrationSubmissionStatus.refused.ToString() : null,
-                                    viewModel.IsStatusUpdatedChecked ? Core.Enums.RegistrationSubmissionStatus.updated.ToString() : null
+                                    viewModel.IsStatusCancelledChecked ? Core.Enums.RegistrationSubmissionStatus.Cancelled.ToString() : null,
+                                    viewModel.IsStatusGrantedChecked ? Core.Enums.RegistrationSubmissionStatus.Granted.ToString() : null,
+                                    viewModel.IsStatusPendingChecked ? Core.Enums.RegistrationSubmissionStatus.Pending.ToString() : null,
+                                    viewModel.IsStatusQueriedChecked ? Core.Enums.RegistrationSubmissionStatus.Queried.ToString() : null,
+                                    viewModel.IsStatusRefusedChecked ? Core.Enums.RegistrationSubmissionStatus.Refused.ToString() : null,
+                                    viewModel.IsStatusUpdatedChecked ? Core.Enums.RegistrationSubmissionStatus.Updated.ToString() : null
                                }.Where(x => !string.IsNullOrEmpty(x)))
     };
 
     public static implicit operator RegistrationSubmissionsFilterViewModel(RegistrationSubmissionsFilterModel model) => new RegistrationSubmissionsFilterViewModel
     {
         OrganisationName = model.OrganisationName,
-        OrganisationRef = model.OrganisationRef,
+        OrganisationRef = model.OrganisationReference,
         IsOrganisationComplianceChecked = model.OrganisationType != null && model.OrganisationType.Contains("compliance", StringComparison.OrdinalIgnoreCase),
         IsOrganisationSmallChecked = model.OrganisationType != null && model.OrganisationType.Contains("small", StringComparison.OrdinalIgnoreCase),
         IsOrganisationLargeChecked = model.OrganisationType != null && model.OrganisationType.Contains("large", StringComparison.OrdinalIgnoreCase),
-        IsStatusGrantedChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("granted", StringComparison.OrdinalIgnoreCase),
-        IsStatusRefusedChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("refused", StringComparison.OrdinalIgnoreCase),
-        IsStatusPendingChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("pending", StringComparison.OrdinalIgnoreCase),
-        IsStatusQueriedChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("queried", StringComparison.OrdinalIgnoreCase),
-        IsStatusUpdatedChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("updated", StringComparison.OrdinalIgnoreCase),
-        IsStatusCancelledChecked = model.SubmissionStatus != null && model.SubmissionStatus.Contains("cancelled", StringComparison.OrdinalIgnoreCase),
-        Is2025Checked = model.RelevantYear != null && model.RelevantYear.Contains("2025", StringComparison.OrdinalIgnoreCase),
-        PageNumber = model.Page ?? 1,
+        IsStatusGrantedChecked = model.Statuses != null && model.Statuses.Contains("granted", StringComparison.OrdinalIgnoreCase),
+        IsStatusRefusedChecked = model.Statuses != null && model.Statuses.Contains("refused", StringComparison.OrdinalIgnoreCase),
+        IsStatusPendingChecked = model.Statuses != null && model.Statuses.Contains("pending", StringComparison.OrdinalIgnoreCase),
+        IsStatusQueriedChecked = model.Statuses != null && model.Statuses.Contains("queried", StringComparison.OrdinalIgnoreCase),
+        IsStatusUpdatedChecked = model.Statuses != null && model.Statuses.Contains("updated", StringComparison.OrdinalIgnoreCase),
+        IsStatusCancelledChecked = model.Statuses != null && model.Statuses.Contains("cancelled", StringComparison.OrdinalIgnoreCase),
+        Is2025Checked = model.RelevantYears != null && model.RelevantYears.Contains("2025", StringComparison.OrdinalIgnoreCase),
+        PageNumber = model.PageNumber ?? 1,
         PageSize = model.PageSize ?? 20
     };
 }

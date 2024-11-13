@@ -22,13 +22,13 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
         {
             string statusClassName = Status switch
             {
-                "granted" => "info-panel__granted",
-                "refused" => "info-panel__refused",
-                "pending" => "info-panel__pending",
-                "cancelled" => "info-panel__cancelled",
-                "queried" => "info-panel__queried",
-                "updated" => "info-panel__updated",
-                _ => ""
+                "Granted" => "info-panel__granted",
+                "Refused" => "info-panel__refused",
+                "Pending" => "info-panel__pending",
+                "Cancelled" => "info-panel__cancelled",
+                "Queried" => "info-panel__queried",
+                "Updated" => "info-panel__updated",
+                _ => string.Empty
             };
 
             output.TagName = "div";

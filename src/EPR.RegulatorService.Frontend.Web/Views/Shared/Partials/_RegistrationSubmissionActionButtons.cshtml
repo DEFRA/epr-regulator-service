@@ -4,9 +4,10 @@
 @model RegistrationSubmissionDetailsViewModel
 
 <div class="govuk-button-group">
-    @if (Model.Status == RegistrationSubmissionStatus.queried ||
-    Model.Status != RegistrationSubmissionStatus.granted &&
-    Model.Status != RegistrationSubmissionStatus.refused)
+    @if (Model.Status == RegistrationSubmissionStatus.Queried ||
+    Model.Status != RegistrationSubmissionStatus.Granted &&
+    Model.Status != RegistrationSubmissionStatus.Refused &&
+    Model.Status != RegistrationSubmissionStatus.Cancelled)
     {
         <ul class="govuk-list govuk-list__horizontal govuk-list__last-spaced">
             <li>
@@ -45,9 +46,15 @@
         </ul>
     }
 
-    @if (Model.Status == RegistrationSubmissionStatus.granted)
+    @if (Model.Status == RegistrationSubmissionStatus.Granted)
     {
-        <a class="govuk-button govuk-button--secondary" href="">
+        <a class="govuk-button govuk-button--secondary" href="@Url.Action(
+                "CancelRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  submissionId = Model.SubmissionId
+                })">
             @Localizer["RegistrationSubmissionDetails.CancelRegistration"]
         </a>
     }

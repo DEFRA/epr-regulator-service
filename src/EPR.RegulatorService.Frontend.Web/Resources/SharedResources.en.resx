@@ -315,4 +315,10 @@
   <data name="BackToAllSubmissions" xml:space="preserve">
     <value>Go back to all submissions</value>
   </data>
+  <data name="ManageRegistrationSubmissions.Caption" xml:space="preserve">
+    <value>Manage registration submissions</value>
+  </data>
+  <data name="SaveAndContinue" xml:space="preserve">
+    <value>Save and continue</value>
+  </data>
 </root>

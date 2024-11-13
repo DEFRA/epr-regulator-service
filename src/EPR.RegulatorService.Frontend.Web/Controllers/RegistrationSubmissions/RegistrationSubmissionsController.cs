@@ -1,6 +1,9 @@
 using System.Diagnostics;
+using System.Globalization;
 
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -115,10 +118,16 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetAndRememberSubmissionDetails(submissionId, out var model))
+        RegistrationSubmissionDetailsViewModel model = submissionId == null
+            ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
+            : await _facadeService.GetRegistrationSubmissionDetails(submissionId.Value);
+
+        if (model == null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
+
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
 
         GeneratePowerBILink(model);
 
@@ -161,21 +170,21 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpGet]
-    [Route(PagePath.GrantRegistrationSubmission + "/{organisationId:guid}", Name = "GrantRegistrationSubmission")]
-    public async Task<IActionResult> GrantRegistrationSubmission(Guid? organisationId)
+    [Route(PagePath.GrantRegistrationSubmission + "/{submissionId:guid}", Name = "GrantRegistrationSubmission")]
+    public async Task<IActionResult> GrantRegistrationSubmission(Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedSubmissionId(organisationId, out var existingModel))
+        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}");
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}");
 
         var model = new GrantRegistrationSubmissionViewModel
         {
-            SubmissionId = existingModel.OrganisationId
+            SubmissionId = existingModel.SubmissionId
         };
 
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
@@ -184,7 +193,7 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpPost]
-    [Route(PagePath.GrantRegistrationSubmission + "/{organisationId:guid}", Name = "GrantRegistrationSubmission")]
+    [Route(PagePath.GrantRegistrationSubmission + "/{submissionId:guid}", Name = "GrantRegistrationSubmission")]
     public async Task<IActionResult> GrantRegistrationSubmission(GrantRegistrationSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
@@ -196,27 +205,39 @@ public partial class RegistrationSubmissionsController(
 
         if (!ModelState.IsValid)
         {
-            SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}");
+            SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}");
+            ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(GrantRegistrationSubmission), model);
         }
 
         if (!model.IsGrantRegistrationConfirmed.Value)
         {
-            return RedirectToRoute("SubmissionDetails", new { existingModel.OrganisationId });
+            return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
         }
 
         try
         {
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
-                                new RegulatorDecisionRequest { OrganisationId = existingModel.OrganisationId, Decision = Core.Enums.RegulatorDecision.Accepted });
+                                new RegulatorDecisionRequest
+                                {
+                                    OrganisationId = existingModel.OrganisationId,
+                                    SubmissionId = existingModel.SubmissionId,
+                                    Status = RegistrationSubmissionStatus.Granted.ToString(),
+                                    CountryName = (CountryName)existingModel.NationId,
+                                    RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
+                                    TwoDigitYear = existingModel.RegistrationYear.Substring(2),
+                                    //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
+                                    OrganisationAccountManagementId = existingModel.OrganisationReference
+                                });
+
             return status == Core.Models.EndpointResponseStatus.Success
-                  ? RedirectToRoute("SubmissionDetails", new { existingModel.OrganisationId })
-                  : RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}" });
+                  ? RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId })
+                  : RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
         }
         catch (Exception ex)
         {
             _logControllerError.Invoke(logger, $"Exception received while granting submission {nameof(RegistrationSubmissionsController)}.{nameof(GrantRegistrationSubmission)}", ex);
-            return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.OrganisationId}" });
+            return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
         }
     }
 
@@ -253,13 +274,47 @@ public partial class RegistrationSubmissionsController(
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
+
         if (!ModelState.IsValid)
         {
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId }), false);
+            ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(QueryRegistrationSubmission), model);
         }
 
-        return RedirectToAction(PagePath.RegistrationSubmissionsAction);
+        try
+        {
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
+                new RegulatorDecisionRequest
+                {
+                    OrganisationId = existingModel.OrganisationId,
+                    SubmissionId = existingModel.SubmissionId,
+                    Status = Core.Enums.RegistrationSubmissionStatus.Queried.ToString(),
+                    Comments = model.Query
+                });
+
+            return status == Core.Models.EndpointResponseStatus.Success
+                ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
+                : RedirectToRoute("ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
+        catch (Exception ex)
+        {
+            _logControllerError.Invoke(
+                logger,
+                $"Exception received while querying submission" +
+                $"{nameof(RegistrationSubmissionsController)}.{nameof(QueryRegistrationSubmission)}", ex);
+
+            return RedirectToRoute(
+                "ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
     }
 
     [HttpGet]
@@ -285,7 +340,7 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpPost]
-    [Route(PagePath.RejectRegistrationSubmission)]
+    [Route(PagePath.RejectRegistrationSubmission + "/{submissionId:guid}")]
     public async Task<IActionResult> RejectRegistrationSubmission(RejectRegistrationSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
@@ -294,13 +349,123 @@ public partial class RegistrationSubmissionsController(
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
+
         if (!ModelState.IsValid)
         {
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId }), false);
+            ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(RejectRegistrationSubmission), model);
+        } 
+
+        try
+        {
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
+                new RegulatorDecisionRequest
+                {
+                    OrganisationId = existingModel.OrganisationId,
+                    SubmissionId = existingModel.SubmissionId,
+                    Status = Core.Enums.RegistrationSubmissionStatus.Refused.ToString(),
+                    Comments = model.RejectReason
+                });
+
+            return status == Core.Models.EndpointResponseStatus.Success
+                ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
+                : RedirectToRoute("ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
+        catch (Exception ex)
+        {
+            _logControllerError.Invoke(
+                logger,
+                $"Exception received while refusing submission" +
+                $"{nameof(RegistrationSubmissionsController)}.{nameof(RejectRegistrationSubmission)}", ex);
+
+            return RedirectToRoute(
+                "ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        } 
+    }
+
+    [HttpGet]
+    [Route(PagePath.CancelRegistrationSubmission + "/{submissionId:guid}", Name = "CancelRegistrationSubmission")]
+    public async Task<IActionResult> CancelRegistrationSubmission(Guid? submissionId)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        return Redirect(PagePath.RegistrationSubmissionsRoute);
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
+
+        var model = new CancelRegistrationSubmissionViewModel
+        {
+            SubmissionId = submissionId.Value
+        };
+
+        ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+
+        return View(nameof(CancelRegistrationSubmission), model);
+    }
+
+    [HttpPost]
+    [Route(PagePath.CancelRegistrationSubmission + "/{submissionId:guid}")]
+    public async Task<IActionResult> CancelRegistrationSubmission(CancelRegistrationSubmissionViewModel model)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId }), false);
+            ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+            return View(nameof(CancelRegistrationSubmission), model);
+        }
+
+        try
+        {
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
+                new RegulatorDecisionRequest
+                {
+                    OrganisationId = existingModel.OrganisationId,
+                    SubmissionId = existingModel.SubmissionId,
+                    Status = Core.Enums.RegistrationSubmissionStatus.Cancelled.ToString(),
+                    Comments = model.CancellationReason
+                });
+
+            return status == Core.Models.EndpointResponseStatus.Success
+                ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
+                : RedirectToRoute("ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
+        catch (Exception ex)
+        {
+            _logControllerError.Invoke(
+                logger,
+                $"Exception received while cancelling submission" +
+                $"{nameof(RegistrationSubmissionsController)}.{nameof(CancelRegistrationSubmission)}", ex);
+
+            return RedirectToRoute(
+                "ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
     }
 
     [HttpGet]
