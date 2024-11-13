@@ -69,7 +69,7 @@ public partial class CurrencyValidationAttribute : ValidationAttribute
         return ExceedsMaxValue(theValue) ? new ValidationResult(_valueExceededMessage) : ValidationResult.Success;
     }
 
-    private bool IsZeroValue(decimal value) => value == 0M;
+    private static bool IsZeroValue(decimal value) => value == 0M;
 
     private static bool ExceedsMaxCharacterCount(string text) => text.Length > MAX_CHARACTER_COUNT;
 
