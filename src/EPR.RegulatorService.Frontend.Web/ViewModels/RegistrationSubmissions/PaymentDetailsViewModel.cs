@@ -3,7 +3,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
-
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Web.Attributes;
 
