@@ -355,7 +355,7 @@ public partial class RegistrationSubmissionsController(
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId }), false);
             ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(RejectRegistrationSubmission), model);
-        }
+        } 
 
         _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason = model.RejectReason;
 

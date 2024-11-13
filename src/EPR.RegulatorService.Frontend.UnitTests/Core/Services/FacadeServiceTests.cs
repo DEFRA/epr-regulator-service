@@ -1127,6 +1127,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Assert
             result.Should().BeOfType<PaginatedList<RegistrationSubmissionOrganisationDetails>>();
             result.Items.Should().HaveCount(PAGE_SIZE);
+
+            mockResponse.Dispose();
         }
 
         [TestMethod]
@@ -1206,6 +1208,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Assert
             result.CurrentPage.Should().Be(pageNumber);
+
+            mockResponse.Dispose();
         }
 
         [TestMethod]
@@ -1256,6 +1260,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Assert
             results.Items.Should().ContainSingle(item => item.OrganisationId == expectedResult.OrganisationId);
+
+            mockResponse.Dispose();
         }
 
         [TestMethod]
@@ -1301,6 +1307,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Assert
             results.TotalPages.Should().Be(1);
+
+            mockResponse.Dispose();
         }
 
         [TestMethod]
@@ -1355,6 +1363,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             results.TotalPages.Should().BeGreaterThan(1); // Ensure multiple pages of data
             results.TotalItems.Should().BeGreaterThan(1); // Ensure multiple items exist
             results.Items.Should().HaveCount(pageSize); // Ensure the first page contains the expected number of items
+
+            mockResponse.Dispose();
         }
 
         [TestMethod]
@@ -1396,6 +1406,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Assert: Ensure the number of items on the current page is less than the total items
             results.Items.Count.Should().NotBe(results.TotalItems);
             results.TotalPages.Should().BeGreaterThan(1); // Ensure that pagination works with more than one page if TotalCount > PageSize
+
+            mockResponse.Dispose();
         }
 
         [TestMethod]
@@ -1446,6 +1458,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Assert
             results.Items.Should().ContainSingle(item => item.OrganisationId == expectedResult.OrganisationId);
+
+            mockResponse.Dispose();
         }
 
         [TestMethod]
@@ -1508,6 +1522,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ComparingByMembers<RegistrationSubmissionOrganisationDetails>()
                 .ExcludingMissingMembers()
             );
+
+            mockResponse.Dispose();
         }
 
         [TestMethod]
@@ -1573,6 +1589,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ComparingByMembers<RegistrationSubmissionOrganisationDetails>()
                 .ExcludingMissingMembers()
             );
+
+            mockResponse.Dispose();
         }
 
         [TestMethod]

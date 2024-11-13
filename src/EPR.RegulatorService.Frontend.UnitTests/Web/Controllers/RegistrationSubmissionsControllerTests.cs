@@ -634,6 +634,19 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .Setup(service => service.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
                 .ThrowsAsync(exception);
 
+            var model = new GrantRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                IsGrantRegistrationConfirmed = true
+            };
+
+            var exception = new Exception("Test exception");
+
+            // Set up the mock to throw an exception when SubmitRegulatorRegistrationDecisionAsync is called
+            _facadeServiceMock
+                .Setup(service => service.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ThrowsAsync(exception);
+
             // Act
             var result = await _controller.GrantRegistrationSubmission(model) as RedirectToRouteResult;
 
