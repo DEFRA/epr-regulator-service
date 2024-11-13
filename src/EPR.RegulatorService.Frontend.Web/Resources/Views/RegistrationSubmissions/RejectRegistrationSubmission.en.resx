@@ -127,12 +127,12 @@
     <value>Manage registration submissions</value>
   </data>
   <data name="RejectRegistrationSubmission.Description" xml:space="preserve">
-    <value>Explain the reason for rejecting this registration. If you reject this application, the Producer or Compliance Scheme will need to re-submit their application and pay any associated fee.</value>
+    <value>The organisation will be able to see your comments. Clearly explain why you’ve refused their registration and how they might respond. If you refuse this submission, the organisation will need to resubmit their application and pay any associated fee.</value>
   </data>
   <data name="RejectRegistrationSubmission.Heading" xml:space="preserve">
-    <value>Why are you rejecting this registration application?</value>
+    <value>Why are you refusing this registration submission?</value>
   </data>
   <data name="RejectRegistrationSubmission.Title" xml:space="preserve">
-    <value>Why are you rejecting this registration application?</value>
+    <value>Why are you refusing this registration submission?</value>
   </data>
 </root>

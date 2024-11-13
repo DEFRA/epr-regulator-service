@@ -117,11 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CancelRegistrationSubmission.Description" xml:space="preserve">
+    <value>The organisation will be able to see your comments. Clearly explain why you’ve cancelled the registration.</value>
+  </data>
   <data name="CancelRegistrationSubmission.PageHeading" xml:space="preserve">
-    <value>Why are you cancelling this registration application?</value>
+    <value>Why are you cancelling this registration?</value>
   </data>
   <data name="CancelRegistrationSubmission.PageTitle" xml:space="preserve">
-    <value>Why are you cancelling this registration application?</value>
+    <value>Why are you cancelling this registration?</value>
   </data>
   <data name="Error.CancellationReason" xml:space="preserve">
     <value>Enter the reason you are cancelling this registration</value>
