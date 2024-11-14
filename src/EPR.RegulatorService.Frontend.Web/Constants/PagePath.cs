@@ -45,6 +45,7 @@ public static class PagePath
     public const string ConfirmOfflinePaymentSubmission = "confirm-offline-payment-submission";
     public const string CancellationConfirmation = "cancellation-confirmation";
     public const string CancelRegistrationSubmission = "manage-registration-submissions-cancel";
+    public const string ConfirmRegistrationRefusal = "refusal-confirmation";
 
     // Non journey paths
     public const string Accessibility = "accessibility";
