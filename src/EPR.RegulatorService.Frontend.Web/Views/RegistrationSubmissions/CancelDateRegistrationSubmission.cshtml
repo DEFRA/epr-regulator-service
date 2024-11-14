@@ -7,9 +7,9 @@
 @{
     ViewData["Title"] = Localizer["CancelDateRegistrationSubmission.PageTitle"];
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer, nameof(Model.CancellationDate));
-    var cancellationReason = Model.CancellationDate == null ? null : Model.CancellationDate;
-    var cancellationReasonError = errorsViewModel.Errors.Find(x => x.Key == nameof(Model.CancellationDate));
-    var cancellationReasonErrorExists = !string.IsNullOrEmpty(cancellationReasonError.Key);
+    var cancellationDate = Model.CancellationDate == null ? null : Model.CancellationDate;
+    var cancellationDateError = errorsViewModel.Errors.Find(x => x.Key == nameof(Model.CancellationDate));
+    var cancellationDateErrorExists = !string.IsNullOrEmpty(cancellationDateError.Key);
 }
 
 @using (Html.BeginForm("CancelDateRegistrationSubmission", "RegistrationSubmissions", FormMethod.Post))
@@ -33,9 +33,12 @@
 
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group @(cancellationDateErrorExists ? "govuk-form-group--error" : string.Empty)">
+                        @if (cancellationDateErrorExists)
+                        {
+                            @await Html.PartialAsync("Partials/Govuk/_InlineError", cancellationDateError)
+                        }
                         <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
-
                             <div class="govuk-date-input" id="passport-issued">
                                 <div class="govuk-date-input__item">
                                     <div class="govuk-form-group">

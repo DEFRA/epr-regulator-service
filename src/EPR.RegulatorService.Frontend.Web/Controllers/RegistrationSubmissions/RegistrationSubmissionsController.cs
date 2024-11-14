@@ -620,24 +620,9 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(CancelDateRegistrationSubmission), model);
         }
 
-        try
-        {
-            return RedirectToAction(PagePath.RegistrationSubmissionsAction);
-        }
-        catch (Exception ex)
-        {
-            _logControllerError.Invoke(
-                logger,
-                $"Exception received while cancelling submission" +
-                $"{nameof(RegistrationSubmissionsController)}.{nameof(CancelRegistrationSubmission)}", ex);
+        string cancellationDate = model.CancellationDate.Value.ToString("d/M/yyyy");
 
-            return RedirectToRoute(
-                "ServiceNotAvailable",
-                new
-                {
-                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
-                });
-        }
+        return RedirectToAction(PagePath.RegistrationSubmissionsAction);
     }
 
     [HttpGet]
