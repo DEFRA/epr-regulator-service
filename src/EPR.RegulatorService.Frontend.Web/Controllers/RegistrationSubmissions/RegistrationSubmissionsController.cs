@@ -586,7 +586,59 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.CancelDateRegistrationSubmission + "/{submissionId:guid}", Name = "CancelDateRegistrationSubmission")]
-    public async Task<IActionResult> CancelDateRegistrationSubmission(Guid? submissionId) => View();
+    public async Task<IActionResult> CancelDateRegistrationSubmission(Guid? submissionId)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+        SetBackLink($"{PagePath.CancelRegistrationSubmission}/{submissionId}");
+        var model = new CancelDateRegistrationSubmissionViewModel
+        {
+            SubmissionId = submissionId.Value
+        };
+        ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+        return View(nameof(CancelDateRegistrationSubmission), model);
+    }
+
+    [HttpPost]
+    [Route(PagePath.CancelDateRegistrationSubmission + "/{submissionId:guid}")]
+    public async Task<IActionResult> CancelDateRegistrationSubmission(CancelDateRegistrationSubmissionViewModel model)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLink(Url.RouteUrl("CancelRegistrationSubmission", new { model.SubmissionId }), false);
+            ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+            return View(nameof(CancelDateRegistrationSubmission), model);
+        }
+
+        try
+        {
+            RedirectToAction(PagePath.RegistrationSubmissionsAction);
+        }
+        catch (Exception ex)
+        {
+            _logControllerError.Invoke(
+                logger,
+                $"Exception received while cancelling submission" +
+                $"{nameof(RegistrationSubmissionsController)}.{nameof(CancelRegistrationSubmission)}", ex);
+
+            return RedirectToRoute(
+                "ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
+    }
 
     [HttpGet]
     [Route(PagePath.PageNotFoundPath)]
