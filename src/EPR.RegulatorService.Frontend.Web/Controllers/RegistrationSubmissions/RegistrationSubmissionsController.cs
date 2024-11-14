@@ -586,27 +586,7 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.CancelDateRegistrationSubmission + "/{submissionId:guid}", Name = "CancelDateRegistrationSubmission")]
-    public async Task<IActionResult> CancelDateRegistrationSubmission(Guid? submissionId)
-    {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
-        {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-        }
-
-        SetBackLink($"{PagePath.CancelRegistrationSubmission}/{submissionId}");
-
-        //var model = new CancelDateRegistrationSubmissionViewModel
-        //{
-        //    SubmissionId = submissionId.Value
-        //};
-
-        ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
-
-        // return View(nameof(CancelDateRegistrationSubmission), model);
-        return View();
-    }
+    public async Task<IActionResult> CancelDateRegistrationSubmission(Guid? submissionId) => View();
 
     [HttpGet]
     [Route(PagePath.PageNotFoundPath)]
