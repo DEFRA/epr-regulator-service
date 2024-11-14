@@ -46,6 +46,7 @@ public static class PagePath
     public const string CancellationConfirmation = "cancellation-confirmation";
     public const string CancelRegistrationSubmission = "manage-registration-submissions-cancel";
     public const string ConfirmRegistrationRefusal = "refusal-confirmation";
+    public const string CancelDateRegistrationSubmission = "manage-registration-submissions-cancel-date";
 
     // Non journey paths
     public const string Accessibility = "accessibility";
