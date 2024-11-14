@@ -15,4 +15,7 @@ public class OrganisationResponse
 
     [JsonPropertyName("organisationType")]
     public string OrganisationType { get; set; } = null!;
+
+    [JsonPropertyName("nationId")]
+    public int? NationId { get; set; } = null!;
 }
