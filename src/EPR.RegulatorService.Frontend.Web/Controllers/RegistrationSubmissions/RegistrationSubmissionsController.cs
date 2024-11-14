@@ -622,7 +622,7 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            RedirectToAction(PagePath.RegistrationSubmissionsAction);
+            return RedirectToAction(PagePath.RegistrationSubmissionsAction);
         }
         catch (Exception ex)
         {
