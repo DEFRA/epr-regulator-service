@@ -123,6 +123,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var sut = new RegistrationSubmissionsController(
                 null,
                 null,
+                null,
                 _loggerMock.Object,
                 _mockConfiguration.Object,
                 _mockUrlsOptions.Object
@@ -1925,7 +1926,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 SubmissionId = submissionId,
                 IsOfflinePaymentConfirmed = null,
-                OfflinePaymentAmount = "10.00"
+                OfflinePaymentAmount = 1000
             };
 
             // Act
@@ -1939,7 +1940,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = viewResult.Model as ConfirmOfflinePaymentSubmissionViewModel;
             Assert.IsNotNull(model);
             Assert.AreEqual(expectedViewModel.SubmissionId, model.SubmissionId);
-            Assert.AreEqual(submissionDetails.PaymentDetails.OfflinePayment, model.OfflinePaymentAmount);
+            Assert.AreEqual(submissionDetails.PaymentDetails.OfflinePaymentInPence, model.OfflinePaymentAmount);
             Assert.AreEqual(expectedViewModel.IsOfflinePaymentConfirmed, model.IsOfflinePaymentConfirmed);
 
             // Verify backlink setup
@@ -1954,11 +1955,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
             submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
             SetupJourneySession(null, submissionDetails);
+            _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
+                OfflinePaymentAmount = (int)(decimal.Parse(submissionDetails.PaymentDetails.OfflinePayment) * 100), // Valid amount
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -1977,10 +1979,46 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Veryify the redirect URL
             string expectedRedirectUrl = _controller.Url.RouteUrl("SubmissionDetails", new { submissionId });
             Assert.AreEqual(expectedRedirectUrl, redirectResult.Url);
+            _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
         }
 
         [TestMethod]
-        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_WhenOfflinePaymentAmountIsEmpty()
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsTo_ServiceNotAvailable_When_Facade_Returns_NonSuccess()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
+            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            SetupJourneySession(null, submissionDetails);
+            _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                OfflinePaymentAmount = (int)(decimal.Parse(submissionDetails.PaymentDetails.OfflinePayment) * 100), // Valid amount
+                IsOfflinePaymentConfirmed = true
+            };
+
+            // Set up session mock
+            SetupJourneySession(null, submissionDetails);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            // Veryify the redirect URL
+            result.RouteName.Should().Be("ServiceNotAvailable");
+            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
+            _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow(0)]
+        [DataRow(-1)]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_WhenOfflinePaymentAmountIsInvalid(int? offlinePaymentAmount)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -1991,8 +2029,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Amount is null here
-                IsOfflinePaymentConfirmed = false
+                IsOfflinePaymentConfirmed = false,
+                OfflinePaymentAmount = offlinePaymentAmount
             };
 
             // Act
@@ -2021,7 +2059,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment
+                OfflinePaymentAmount = (int)(decimal.Parse(submissionDetails.PaymentDetails.OfflinePayment) * 100)
             };
 
             // Simulate an error in ModelState
