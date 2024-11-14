@@ -71,7 +71,8 @@ namespace EPR.RegulatorService.Frontend.Web.Middleware
                         Id = Guid.Parse(org.Id),
                         Name = org.Name,
                         OrganisationRole = org.OrganisationRole,
-                        OrganisationType = org.OrganisationType
+                        OrganisationType = org.OrganisationType,
+                        NationId = org.NationId
                     }).ToList(),
                 };
 
