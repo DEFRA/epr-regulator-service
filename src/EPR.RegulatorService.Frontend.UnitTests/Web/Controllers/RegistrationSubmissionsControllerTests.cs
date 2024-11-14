@@ -1832,7 +1832,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 SubmissionId = submissionId,
                 IsOfflinePaymentConfirmed = null,
-                OfflinePaymentAmount = 1000
+                OfflinePaymentAmount = "10.00"
             };
 
             // Act
@@ -1846,7 +1846,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = viewResult.Model as ConfirmOfflinePaymentSubmissionViewModel;
             Assert.IsNotNull(model);
             Assert.AreEqual(expectedViewModel.SubmissionId, model.SubmissionId);
-            Assert.AreEqual(submissionDetails.PaymentDetails.OfflinePaymentInPence, model.OfflinePaymentAmount);
+            Assert.AreEqual(submissionDetails.PaymentDetails.OfflinePayment, model.OfflinePaymentAmount);
             Assert.AreEqual(expectedViewModel.IsOfflinePaymentConfirmed, model.IsOfflinePaymentConfirmed);
 
             // Verify backlink setup
@@ -1866,7 +1866,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = (int)(decimal.Parse(submissionDetails.PaymentDetails.OfflinePayment) * 100), // Valid amount
+                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -1901,7 +1901,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = (int)(decimal.Parse(submissionDetails.PaymentDetails.OfflinePayment) * 100), // Valid amount
+                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -1922,9 +1922,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         [TestMethod]
         [DataRow(null)]
-        [DataRow(0)]
-        [DataRow(-1)]
-        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_WhenOfflinePaymentAmountIsInvalid(int? offlinePaymentAmount)
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_WhenOfflinePaymentAmountIsInvalid(string offlinePaymentAmount)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -1965,7 +1965,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = (int)(decimal.Parse(submissionDetails.PaymentDetails.OfflinePayment) * 100)
+                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment
             };
 
             // Simulate an error in ModelState

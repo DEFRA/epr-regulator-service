@@ -31,8 +31,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
                             )]
         public string? OfflinePayment { get; set; }
 
-        public int OfflinePaymentInPence => (int)(decimal.Parse(OfflinePayment, CultureInfo.InvariantCulture) * 100);
-
         public void EnsureTwoDecimalPlaces()
         {
             if (decimal.TryParse(OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))

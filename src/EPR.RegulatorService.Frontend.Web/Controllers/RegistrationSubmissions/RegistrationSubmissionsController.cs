@@ -467,7 +467,7 @@ public partial class RegistrationSubmissionsController(
         var model = new ConfirmOfflinePaymentSubmissionViewModel
         {
             SubmissionId = submissionId,
-            OfflinePaymentAmount = existingModel.PaymentDetails.OfflinePaymentInPence
+            OfflinePaymentAmount = existingModel.PaymentDetails.OfflinePayment
         };
 
         return View(nameof(ConfirmOfflinePaymentSubmission), model);
@@ -490,24 +490,9 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(ConfirmOfflinePaymentSubmission), model);
         }
 
-        if (model.OfflinePaymentAmount is null or <= 0)
-        {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-        }
-
-        string regulator = ((CountryName)existingModel.NationId).GetDescription();
-        var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
-        {
-            Amount = (int)model.OfflinePaymentAmount,
-            Description = "Registration fee",
-            Reference = existingModel.ApplicationReferenceNumber,
-            Regulator = regulator,
-            UserId = (Guid)_currentSession.UserData.Id
-        });
-
-        return response == Core.Models.EndpointResponseStatus.Success
-            ? Redirect(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId }))
-            : RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
+        return string.IsNullOrWhiteSpace(model.OfflinePaymentAmount)
+            ? RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions")
+            : await ProcessOfflinePayment(existingModel, model.OfflinePaymentAmount);
     }
 
     [HttpGet]

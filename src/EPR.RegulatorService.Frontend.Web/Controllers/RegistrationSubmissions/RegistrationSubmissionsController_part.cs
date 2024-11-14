@@ -1,5 +1,10 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 {
+    using System.Globalization;
+    using System.Reflection;
+    using System.Security.Cryptography;
+
+    using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -135,6 +140,27 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             {
                 ViewBag.BackLinkToDisplay = path;
             }
+        }
+
+        private async Task<IActionResult> ProcessOfflinePayment(RegistrationSubmissionDetailsViewModel existingModel, string offlinePayment)
+        {
+            string regulator = ((CountryName)existingModel.NationId).GetDescription();
+            var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
+            {
+                Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
+                Description = "Registration fee",
+                Reference = existingModel.ApplicationReferenceNumber,
+                Regulator = regulator,
+                UserId = (Guid)_currentSession.UserData.Id
+            });
+
+            if (response == Core.Models.EndpointResponseStatus.Success)
+            {
+                //// To Do:: Call facade api to create event via regulator facace & submissions api on success
+                return Redirect(Url.RouteUrl("SubmissionDetails", new { existingModel.SubmissionId }));
+            }
+
+            return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
         }
     }
 }
