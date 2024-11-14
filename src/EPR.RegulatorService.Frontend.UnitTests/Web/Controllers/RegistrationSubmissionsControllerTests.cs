@@ -2364,15 +2364,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task CancelRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenCancellationReasonIsValid()
+        public async Task CancelRegistrationSubmission_Post_SavesCancellationReasonInSessionObjectAndRedirectsCorrectly_ForAValidModelState()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
-
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.CancellationReason = "Valid cancellation reason";
 
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
@@ -2381,159 +2378,24 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new CancelRegistrationSubmissionViewModel
             {
-                SubmissionId = submissionId,
-                CancellationReason = "Valid reason within 400 characters." // Valid input
+                SubmissionId = detailsModel.SubmissionId,
+                CancellationReason = detailsModel.CancellationReason
             };
-
-            // Set up successful cancellation submission
-            _facadeServiceMock
-                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
-                .ReturnsAsync(EndpointResponseStatus.Success);
-
-            _controller.Url = mockUrlHelper.Object;
-
-            // Act
-            var result = await _controller.CancelRegistrationSubmission(model) as RedirectToActionResult;
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
-
-            // Verify that the facade service was called the expected number of times
-            _facadeServiceMock.Verify(mock =>
-                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
-        }
-
-        [TestMethod]
-        public async Task CancelRegistrationSubmission_Post_ReturnsFailAndRedirectsCorrectly_WhenFacadeStatusReturnsFail()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
-
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-
-            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
-            {
-                SelectedRegistration = detailsModel
-            };
-
-            var model = new CancelRegistrationSubmissionViewModel
-            {
-                SubmissionId = submissionId,
-                CancellationReason = "Valid reason within 400 characters." // Valid input
-            };
-
-            // Set up an unsuccessful cancellation submission status
-            _facadeServiceMock
-                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
-                .ReturnsAsync(EndpointResponseStatus.Fail);
-
-            _controller.Url = mockUrlHelper.Object;
 
             // Act
             var result = await _controller.CancelRegistrationSubmission(model) as RedirectToRouteResult;
 
+            // Assert - Successful save in session
+            Assert.IsTrue(_journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration.CancellationReason == "Valid cancellation reason");
+
+            // Assert - Successful redirection
             Assert.IsNotNull(result);
-            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+            Assert.AreEqual("CancelDateRegistrationSubmission", result.RouteName);
 
-            // Assert route values
-            string expectedUrl = $"{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-            Assert.IsTrue(result.RouteValues.TryGetValue("backLink", out object backLink));
-            Assert.AreEqual(expectedUrl, backLink);
+            var routeValues = result.RouteValues.ToList();
 
-            // Verify that the facade service was called the expected number of times
-            _facadeServiceMock.Verify(mock =>
-                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
-        }
-
-        [TestMethod]
-        public async Task CancelRegistrationSubmission_Post_RedirectsToServiceNotAvailable_OnFacadeServiceException()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
-
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-
-            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
-            {
-                SelectedRegistration = detailsModel
-            };
-
-            var model = new CancelRegistrationSubmissionViewModel
-            {
-                SubmissionId = submissionId,
-                CancellationReason = "Valid reason"
-            };
-
-            // Set up the facade service to throw an exception
-            _facadeServiceMock
-                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
-                .ThrowsAsync(new Exception("Simulated facade exception"));
-
-            _controller.Url = mockUrlHelper.Object;
-
-            // Act
-            var result = await _controller.CancelRegistrationSubmission(model) as RedirectToRouteResult;
-
-            // Assert - Redirects to ServiceNotAvailable when an exception occurs
-            Assert.IsNotNull(result);
-            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
-
-            // Verify that the facade service was called the expected number of times
-            _facadeServiceMock.Verify(mock =>
-                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
-        }
-
-        [TestMethod]
-        public async Task CancelRegistrationSubmission_LogsErrorAndRedirectsToServiceNotAvailable_OnException()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            var existingModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-            SetupJourneySession(null, existingModel);
-
-            var model = new CancelRegistrationSubmissionViewModel
-            {
-                SubmissionId = submissionId,
-                CancellationReason = "Test cancellation reason"
-            };
-
-            var exception = new Exception("Test exception");
-
-            // Set up the mock to throw an exception when SubmitRegulatorRegistrationDecisionAsync is called
-            _facadeServiceMock
-                .Setup(service => service.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
-                .ThrowsAsync(exception);
-
-            // Act
-            var result = await _controller.CancelRegistrationSubmission(model) as RedirectToRouteResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
-
-            // Verify the back link in the route values is set correctly
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
-
-            // Verify that the facade service was called the expected number of times
-            _facadeServiceMock.Verify(mock =>
-                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
-
-            // Verify that _logControllerError was called with correct parameters
-            _loggerMock.Verify(logger =>
-                logger.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while cancelling submission")),
-                    exception,
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
+            Assert.AreEqual("submissionId", routeValues[0].Key);
+            Assert.AreEqual(detailsModel.SubmissionId, routeValues[0].Value);
         }
 
         #endregion
