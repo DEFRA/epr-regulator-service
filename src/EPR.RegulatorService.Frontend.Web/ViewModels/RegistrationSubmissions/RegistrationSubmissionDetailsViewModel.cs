@@ -45,6 +45,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public string? RejectReason { get; set; } = string.Empty;
 
+        public string? CancellationReason { get; set; } = string.Empty;
+
         // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
         public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
         {
@@ -76,7 +78,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             },
             SubmissionDetails = details.SubmissionDetails,
             PaymentDetails = details.PaymentDetails,
-            RejectReason = details.RejectReason
+            RejectReason = details.RejectReason,
+            CancellationReason = details.CancellationReason
         };
 
         // Implicit operator from RegistrationSubmissionDetailsViewModel to RegistrationSubmissionOrganisationDetails  
@@ -106,7 +109,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             SubmissionDetails = details.SubmissionDetails,
             PaymentDetails = details.PaymentDetails,
             NationId = details.NationId,
-            RejectReason = details.RejectReason
+            RejectReason = details.RejectReason,
+            CancellationReason = details.CancellationReason
         };
     }
 }

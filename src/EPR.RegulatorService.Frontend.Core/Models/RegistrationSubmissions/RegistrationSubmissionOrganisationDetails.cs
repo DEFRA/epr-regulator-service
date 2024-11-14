@@ -48,6 +48,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public string Postcode { get; set; }
 
     public string? RejectReason { get; set; } = string.Empty;
+    public string? CancellationReason { get; set; } = string.Empty;
 
     public RegistrationSubmissionOrganisationSubmissionSummaryDetails SubmissionDetails { get; set; }
     public RegistrationSubmissionsOrganisationPaymentDetails PaymentDetails { get; set; }
