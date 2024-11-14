@@ -97,7 +97,7 @@
             </div>
             @if(Model.SubmissionYears?.Any() == true)
             {
-                <div class="govuk-form-group">
+                <div class="govuk-form-group submission-years">
                     <fieldset class="govuk-fieldset">
                         <legend>
                             <span class="govuk-label govuk-label--m">@Localizer["SubTitle.SubmissionYear"]</span>
@@ -126,7 +126,7 @@
             }
             @if (Model.SubmissionPeriods?.Any() == true)
             {
-                <div class="govuk-form-group">
+                <div class="govuk-form-group submission-periods">
                     <fieldset class="govuk-fieldset">
                         <legend>
                             <span class="govuk-label govuk-label--m">@Localizer["SubTitle.SubmissionPeriod"]</span>
