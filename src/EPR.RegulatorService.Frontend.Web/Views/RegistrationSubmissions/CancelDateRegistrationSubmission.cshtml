@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = Localizer["CancelDateRegistrationSubmission.PageTitle"];
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer, nameof(Model.CancellationDate));
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionaryByKey(nameof(Model.CancellationDate)), Localizer, nameof(Model.CancellationDate));
     var cancellationDate = Model.CancellationDate == null ? null : Model.CancellationDate;
     var cancellationDateError = errorsViewModel.Errors.Find(x => x.Key == nameof(Model.CancellationDate));
     var cancellationDateErrorExists = !string.IsNullOrEmpty(cancellationDateError.Key);
