@@ -2874,6 +2874,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.CancellationReason = "Valid cancellation reason";
 
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
+
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
@@ -2882,6 +2884,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new CancelDateRegistrationSubmissionViewModel
             {
                 SubmissionId = detailsModel.SubmissionId,
+                CancellationDate = expectedDate,
                 Day = 3,
                 Month = 4,
                 Year = 2025
@@ -2918,6 +2921,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.CancellationReason = "Valid cancellation reason";
 
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
+
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
@@ -2926,6 +2931,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new CancelDateRegistrationSubmissionViewModel
             {
                 SubmissionId = detailsModel.SubmissionId,
+                CancellationDate = expectedDate,
                 Day = 3,
                 Month = 4,
                 Year = 2025
@@ -2966,6 +2972,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.CancellationReason = "Valid cancellation reason";
 
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
+
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
@@ -2974,6 +2982,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new CancelDateRegistrationSubmissionViewModel
             {
                 SubmissionId = detailsModel.SubmissionId,
+                CancellationDate = expectedDate,
                 Day = 3,
                 Month = 4,
                 Year = 2025
@@ -3006,12 +3015,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             var existingModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             existingModel.CancellationReason = "Valid cancellation reason";
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
 
             SetupJourneySession(null, existingModel);
 
             var model = new CancelDateRegistrationSubmissionViewModel
             {
                 SubmissionId = existingModel.SubmissionId,
+                CancellationDate = expectedDate,
                 Day = 3,
                 Month = 4,
                 Year = 2025
@@ -3056,6 +3067,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
             submissionDetails.CancellationReason = null; // Null cancellation reason
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
 
             // Set up session mock
             SetupJourneySession(null, submissionDetails);
@@ -3063,6 +3075,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new CancelDateRegistrationSubmissionViewModel
             {
                 SubmissionId = submissionDetails.SubmissionId,
+                CancellationDate = expectedDate,
                 Day = 3,
                 Month = 4,
                 Year = 2025
