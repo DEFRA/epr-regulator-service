@@ -620,14 +620,7 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(CancelDateRegistrationSubmission), model);
         }
 
-        string cancellationDate = model.CancellationDate.Value.ToString("d/M/yyyy");
-
         if (string.IsNullOrEmpty(existingModel.CancellationReason))
-        {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-        }
-
-        if (string.IsNullOrEmpty(cancellationDate))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -640,7 +633,8 @@ public partial class RegistrationSubmissionsController(
                     OrganisationId = existingModel.OrganisationId,
                     SubmissionId = existingModel.SubmissionId,
                     Status = Core.Enums.RegistrationSubmissionStatus.Cancelled.ToString(),
-                    Comments = existingModel.CancellationReason
+                    Comments = existingModel.CancellationReason,
+                    DecisionDate = model.CancellationDate
                 });
 
             return status == Core.Models.EndpointResponseStatus.Success

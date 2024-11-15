@@ -23,5 +23,5 @@ public class RegulatorDecisionRequest
 
     public string? OrganisationAccountManagementId { get; set; }
 
-    // New property for the decision date to be added here as well as the Facade
+    public DateTime? DecisionDate { get; set; }
 }
