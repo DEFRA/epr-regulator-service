@@ -3086,13 +3086,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
 
-            var redirectResult = result as RedirectToActionResult;
+            var redirectResult = result as RedirectToRouteResult;
 
             // Veryify the redirect URL
-            redirectResult.ActionName.Should().Be(PagePath.PageNotFound);
-            redirectResult.ControllerName.Should().Be("RegistrationSubmissions");
+            Assert.IsNotNull(redirectResult);
+            redirectResult.RouteName.Should().Be("CancelRegistrationSubmission");
+            redirectResult.RouteValues.First().Value.Should().Be(submissionId);
 
             // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>

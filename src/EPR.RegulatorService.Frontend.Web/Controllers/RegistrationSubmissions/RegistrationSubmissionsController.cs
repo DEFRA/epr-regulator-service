@@ -622,7 +622,7 @@ public partial class RegistrationSubmissionsController(
 
         if (string.IsNullOrEmpty(existingModel.CancellationReason))
         {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+            return RedirectToRoute("CancelRegistrationSubmission", new { submissionId = existingModel.SubmissionId });
         }
 
         try
