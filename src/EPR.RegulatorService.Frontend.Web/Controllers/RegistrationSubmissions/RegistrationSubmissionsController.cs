@@ -618,8 +618,6 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(CancelDateRegistrationSubmission), model);
         }
 
-        string cancellationDate = model.CancellationDate.Value.ToString("d/M/yyyy");
-
         return RedirectToAction(PagePath.RegistrationSubmissionsAction);
     }
 
