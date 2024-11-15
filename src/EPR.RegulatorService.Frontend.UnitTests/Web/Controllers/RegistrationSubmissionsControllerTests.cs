@@ -1862,6 +1862,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
             SetupJourneySession(null, submissionDetails);
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
+            _facadeServiceMock.Setup(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
@@ -1886,10 +1887,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedRedirectUrl = _controller.Url.RouteUrl("SubmissionDetails", new { submissionId });
             Assert.AreEqual(expectedRedirectUrl, redirectResult.Url);
             _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
+            _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>()), Times.AtMostOnce);
         }
 
         [TestMethod]
-        public async Task ConfirmOfflinePaymentSubmission_RedirectsTo_ServiceNotAvailable_When_Facade_Returns_NonSuccess()
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsTo_ServiceNotAvailable_When_Payment_Facade_Returns_NonSuccess()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -1918,6 +1920,40 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             result.RouteName.Should().Be("ServiceNotAvailable");
             result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
             _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsTo_ServiceNotAvailable_When_Facade_Returns_NonSuccess()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
+            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            SetupJourneySession(null, submissionDetails);
+            _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
+            _facadeServiceMock.Setup(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
+                IsOfflinePaymentConfirmed = true
+            };
+
+            // Set up session mock
+            SetupJourneySession(null, submissionDetails);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            // Veryify the redirect URL
+            result.RouteName.Should().Be("ServiceNotAvailable");
+            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
+            _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
+            _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>()), Times.AtMostOnce);
         }
 
         [TestMethod]
@@ -2006,6 +2042,67 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Veryify the correct redirect
             Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
             Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public async Task ConfirmOfflinePaymentSubmission_Logs_And_RedirectsTo_ServiceNotAvailable_When_Facade_Throws(bool shouldPaymentFacadeThrow)
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
+            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            SetupJourneySession(null, submissionDetails);
+            var exception = new Exception("Test exception");
+            if (shouldPaymentFacadeThrow)
+            {
+                _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ThrowsAsync(exception);
+            }
+            else
+            {
+                _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
+                _facadeServiceMock.Setup(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>())).ThrowsAsync(exception);
+            }
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment,
+                IsOfflinePaymentConfirmed = true
+            };
+
+            // Set up session mock
+            SetupJourneySession(null, submissionDetails);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            // Veryify the redirect URL
+            result.RouteName.Should().Be("ServiceNotAvailable");
+            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
+            if (shouldPaymentFacadeThrow)
+            {
+                _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
+                _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>()), Times.Never);
+            }
+            else
+            {
+                _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
+                _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>()), Times.AtMostOnce);
+            }
+
+            _loggerMock.Verify(logger =>
+               logger.Log(
+                   LogLevel.Error,
+                   It.IsAny<EventId>(),
+                   It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while processing offline payment")),
+                   exception,
+                   It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+               Times.Once);
         }
 
         #endregion

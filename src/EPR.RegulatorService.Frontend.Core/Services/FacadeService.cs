@@ -38,6 +38,7 @@ public class FacadeService : IFacadeService
     private const string FileDownloadPath = "FileDownload";
     private const string GetOrganisationRegistrationSubmissionDetailsPath = "GetOrganisationRegistrationSubmissionDetailsPath";
     private const string GetOrganisationRegistationSubmissionsPath = "GetOrganisationRegistrationSubmissionsPath";
+    private const string SubmitRegistrationFeePaymentPath = "SubmitRegistrationFeePaymentPath";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -365,4 +366,13 @@ public class FacadeService : IFacadeService
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
+    public async Task<EndpointResponseStatus> SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = _facadeApiConfig.Endpoints[SubmitRegistrationFeePaymentPath];
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+
+        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+    }
 }

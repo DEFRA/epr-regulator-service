@@ -467,7 +467,7 @@ public partial class RegistrationSubmissionsController(
 
         return string.IsNullOrWhiteSpace(model.OfflinePaymentAmount)
             ? RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions")
-            : await ProcessOfflinePayment(existingModel, model.OfflinePaymentAmount);
+            : await ProcessOfflinePaymentAsync(existingModel, model.OfflinePaymentAmount);
     }
 
     [HttpGet]
