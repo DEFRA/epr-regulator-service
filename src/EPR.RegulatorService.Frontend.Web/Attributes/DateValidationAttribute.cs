@@ -6,166 +6,88 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 namespace EPR.RegulatorService.Frontend.Web.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class DateValidationAttribute(string invalidDateErrorMessage,
-                                            string includeADayErrorMessage,
-                                            string includeAMonthErrorMessage,
-                                            string includeAYearErrorMessage,
-                                            string enterACancellationDate,
-                                            string mustBeARealDateErrorMessage,
-                                            string pastDateErrorMessage) : ValidationAttribute
+    public class DateValidationAttribute(
+        string invalidDateErrorMessage,
+        string missingDayErrorMessage,
+        string missingMonthErrorMessage,
+        string missingYearErrorMessage,
+        string emptyDateErrorMessage,
+        string invalidRealDateErrorMessage,
+        string pastDateErrorMessage) : ValidationAttribute
     {
+
         protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
         {
-            var viewModel = (CancelDateRegistrationSubmissionViewModel)validationContext.ObjectInstance;
-
-            if (AllFieldsAreEmpty(viewModel))
+            if (validationContext.ObjectInstance is not CancelDateRegistrationSubmissionViewModel viewModel)
             {
-                return new ValidationResult(enterACancellationDate, ["CancellationDate"]);
+                throw new InvalidOperationException("This attribute is only valid on CancelDateRegistrationSubmissionViewModel.");
             }
 
-            var result = IsValidDayField(viewModel.Day);
-
-            if (!result.isValid)
+            if (AreAllFieldsEmpty(viewModel))
             {
-                return result.validationResult;
+                return CreateValidationResult(emptyDateErrorMessage);
             }
 
-            result = IsValidMonthField(viewModel.Month);
-
-            if (!result.isValid)
+            if (!ValidateField(viewModel.Day, missingDayErrorMessage, 1, 31, out var dayValidationResult))
             {
-                return result.validationResult;
+                return dayValidationResult;
             }
 
-            result = IsValidYearField(viewModel.Year);
-
-            if (!result.isValid)
+            if (!ValidateField(viewModel.Month, missingMonthErrorMessage, 1, 12, out var monthValidationResult))
             {
-                return result.validationResult;
+                return monthValidationResult;
             }
 
-            result = IsInvalidDate((int)viewModel.Day, (int)viewModel.Month, (int)viewModel.Year);
-
-            if (!result.isValid)
+            if (!ValidateField(viewModel.Year, missingYearErrorMessage, 2024, 9999, out var yearValidationResult))
             {
-                return result.validationResult;
+                return yearValidationResult;
             }
 
-            var (isValid, cancellationDate, validationResult) = IsDateValid((int)viewModel.Day, (int)viewModel.Month, (int)viewModel.Year);
-
-            if (!isValid)
+            if (!TryParseDate(viewModel.Day!.Value, viewModel.Month!.Value, viewModel.Year!.Value, out var parsedDate, out var dateValidationResult))
             {
-                return validationResult;
+                return dateValidationResult;
             }
 
-            viewModel.CancellationDate = cancellationDate;
+            viewModel.CancellationDate = parsedDate;
 
-            result = PastDateValidation(cancellationDate);
+            return parsedDate <= new DateTime(2024, 12, 31, 0, 0, 0, 0, DateTimeKind.Local) ? CreateValidationResult(pastDateErrorMessage) : ValidationResult.Success;
+        }
+        private static bool AreAllFieldsEmpty(CancelDateRegistrationSubmissionViewModel viewModel) =>
+            !viewModel.Day.HasValue &&
+            !viewModel.Month.HasValue &&
+            !viewModel.Year.HasValue;
 
-            return !result.isValid ? result.validationResult : ValidationResult.Success;
+        private bool ValidateField(int? value, string errorMessage, int min, int max, out ValidationResult validationResult)
+        {
+            if (!value.HasValue)
+            {
+                validationResult = CreateValidationResult(errorMessage);
+                return false;
+            }
+
+            if (value.Value < min || value.Value > max)
+            {
+                validationResult = CreateValidationResult(invalidDateErrorMessage);
+                return false;
+            }
+
+            validationResult = ValidationResult.Success!;
+            return true;
         }
 
-
-        private static bool AllFieldsAreEmpty(CancelDateRegistrationSubmissionViewModel viewModel) => viewModel.Day == null && viewModel.Month == null && viewModel.Year == null;
-
-        private (bool isValid, ValidationResult validationResult) IsValidDayField(int? day)
+        private bool TryParseDate(int day, int month, int year, out DateTime parsedDate, out ValidationResult validationResult)
         {
-            bool result;
-            if (day == null)
-            {
-                result = false;
-                return (result, new ValidationResult(includeADayErrorMessage, ["CancellationDate"]));
-            }
-            result = true;
-            return (result, ValidationResult.Success);
-        }
-
-        private (bool isValid, ValidationResult validationResult) IsValidMonthField(int? month)
-        {
-            bool result;
-            if (month == null)
-            {
-                result = false;
-                return (result, new ValidationResult(includeAMonthErrorMessage, ["CancellationDate"]));
-            }
-            result = true;
-            return (result, ValidationResult.Success);
-        }
-
-
-        private (bool isValid, ValidationResult validationResult) IsValidYearField(int? year)
-        {
-            bool result;
-            if (year == null)
-            {
-                result = false;
-                return (result, new ValidationResult(includeAYearErrorMessage, ["CancellationDate"]));
-            }
-            result = true;
-            return (result, ValidationResult.Success);
-        }
-
-        private (bool isValid, ValidationResult validationResult) PastDateValidation(DateTime cancellationDate)
-        {
-            bool result;
-            var validCancellationDate = new DateTime(2024, 12, 31, 0, 0, 0, 0, DateTimeKind.Local);
-
-            if (cancellationDate <= validCancellationDate)
-            {
-                result = false;
-                return (result, new ValidationResult(pastDateErrorMessage, ["CancellationDate"]));
-            }
-            result = true;
-            return (result, ValidationResult.Success);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="day"></param>
-        /// <param name="month"></param>
-        /// <param name="year"></param>
-        /// <returns></returns>
-        private (bool isValid, DateTime cancellationDate, ValidationResult validationResult) IsDateValid(int? day, int? month, int? year)
-        {
-            bool result;
             string dateString = $"{day}/{month}/{year}";
-
-            string[] formats = ["dd/MM/yyyy", "d/M/yyyy"];
-
-            bool isDateValid = DateTime.TryParseExact(dateString, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
-            if (!isDateValid)
+            string[] formats = { "d/M/yyyy", "dd/MM/yyyy" };
+            if (!DateTime.TryParseExact(dateString, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
             {
-                result = false;
-                return (result, date ,new ValidationResult(mustBeARealDateErrorMessage, ["CancellationDate"]));
+                validationResult = CreateValidationResult(invalidRealDateErrorMessage);
+                return false;
             }
-
-            result = true;
-            return (result, date, ValidationResult.Success);
+            validationResult = ValidationResult.Success!;
+            return true;
         }
 
-        private (bool isValid, ValidationResult validationResult) IsInvalidDate(int day, int month, int year)
-        {
-            bool result;
-            if (day is not (>= 1 and <= 31))
-            {
-                result = false;
-                return (result, new ValidationResult(invalidDateErrorMessage, ["CancellationDate"]));
-            }
-
-            if (month is not (>= 1 and <= 12))
-            {
-                result = false;
-                return (result, new ValidationResult(invalidDateErrorMessage, ["CancellationDate"]));
-            }
-
-            if (year is not (>= 2024 and <= 9999))
-            {
-                result = false;
-                return (result, new ValidationResult(invalidDateErrorMessage, ["CancellationDate"]));
-            }
-            result = true;
-            return (result, ValidationResult.Success);
-        }
+        private static ValidationResult CreateValidationResult(string errorMessage) => new(errorMessage, ["CancellationDate"]);
     }
 }
