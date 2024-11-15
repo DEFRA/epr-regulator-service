@@ -409,4 +409,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
     public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(
         RegulatorDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+
+    public async Task<EndpointResponseStatus> SubmitRegistrationFeePaymentAsync(
+        RegistrationFeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 }

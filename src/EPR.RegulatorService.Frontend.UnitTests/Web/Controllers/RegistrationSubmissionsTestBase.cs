@@ -23,6 +23,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     {
         private const string BackLinkViewDataKey = "BackLinkToDisplay";
         protected Mock<IFacadeService> _facadeServiceMock = null!;
+        protected Mock<IPaymentFacadeService> _paymentFacadeServiceMock = null!;
 
         protected Mock<ILogger<RegistrationSubmissionsController>> _loggerMock = null!;
         protected RegistrationSubmissionsController _controller = null!;
@@ -41,6 +42,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockConfiguration = new Mock<IConfiguration>();
             _loggerMock = new Mock<ILogger<RegistrationSubmissionsController>>();
             _facadeServiceMock = new Mock<IFacadeService>();
+            _paymentFacadeServiceMock = new Mock<IPaymentFacadeService>();
 
             _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
 
@@ -65,6 +67,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _controller = new RegistrationSubmissionsController(
                 _facadeServiceMock.Object,
+                _paymentFacadeServiceMock.Object,
                 _mockSessionManager.Object,
                 _loggerMock.Object,
                 _mockConfiguration.Object,
@@ -85,6 +88,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             _journeySession = new JourneySession()
             {
+                UserData = new Common.Authorization.Models.UserData {
+                    Id = Guid.NewGuid()
+                },
                 RegulatorRegistrationSubmissionSession = new()
                 {
                     LatestFilterChoices = filtersModel,
@@ -122,7 +128,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 PostCode = "A12 3BC"
             },
             CompaniesHouseNumber = "0123456",
-            RegisteredNation = "Scotland",
+            RegisteredNation = "Sco",
+            NationId = 3,
             PowerBiLogin = "https://app.powerbi.com/",
             Status = RegistrationSubmissionStatus.Queried,
             SubmissionDetails = new SubmissionDetailsViewModel
