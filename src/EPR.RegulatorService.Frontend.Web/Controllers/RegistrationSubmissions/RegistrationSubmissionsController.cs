@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 
 using EPR.Common.Authorization.Constants;
+using EPR.Common.Authorization.Extensions;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
@@ -26,6 +27,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 public partial class RegistrationSubmissionsController(
                 IFacadeService facade,
+                IPaymentFacadeService paymentFacade,
                 ISessionManager<JourneySession> sessionManager,
                 ILogger<RegistrationSubmissionsController> logger,
                 IConfiguration configuration,
@@ -36,6 +38,7 @@ public partial class RegistrationSubmissionsController(
     private readonly ExternalUrlsOptions _externalUrlsOptions = externalUrlsOptions.Value;
     private readonly ISessionManager<JourneySession> _sessionManager = sessionManager ?? new JourneySessionManager();
     private readonly IFacadeService _facadeService = facade;
+    private readonly IPaymentFacadeService _paymentFacadeService = paymentFacade;
     private JourneySession _currentSession;
 
     public ISessionManager<JourneySession> SessionManager => _sessionManager;
@@ -462,14 +465,9 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(ConfirmOfflinePaymentSubmission), model);
         }
 
-        if (string.IsNullOrEmpty(model.OfflinePaymentAmount))
-        {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-        }
-
-        // This is where we will call the facade to submit the offline payment.
-
-        return Redirect(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId }));
+        return string.IsNullOrWhiteSpace(model.OfflinePaymentAmount)
+            ? RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions")
+            : await ProcessOfflinePaymentAsync(existingModel, model.OfflinePaymentAmount);
     }
 
     [HttpGet]

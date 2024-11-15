@@ -1,3 +1,8 @@
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData;
@@ -15,12 +20,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
 using Moq.Protected;
-
-using System.Globalization;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 {
@@ -75,7 +74,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["OrganisationRegistrationSubmissions"] = "registrations/get-organisations&currentPage={0}&pageSize={1}",
                     ["OrganisationRegistrationSubmissionDecisionPath"] = "organisation-registration-submission-decision",
                     ["GetOrganisationRegistrationSubmissionDetailsPath"] = "registrations-submission-details/submissionId/{0}",
-                    ["GetOrganisationRegistrationSubmissionsPath"] = "organisation-registration-submissions"
+                    ["GetOrganisationRegistrationSubmissionsPath"] = "organisation-registration-submissions",
+                    ["SubmitRegistrationFeePaymentPath"] = "organisation-registration-fee-payment"
                 },
                 DownstreamScope = "api://default"
             });
@@ -1754,6 +1754,42 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Assert
             Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        [DataRow(HttpStatusCode.OK, EndpointResponseStatus.Success)]
+        [DataRow(HttpStatusCode.BadRequest, EndpointResponseStatus.Fail)]
+        [DataRow(HttpStatusCode.InternalServerError, EndpointResponseStatus.Fail)]
+        [DataRow(HttpStatusCode.ServiceUnavailable, EndpointResponseStatus.Fail)]
+        public async Task SubmitRegistrationFeePaymentAsync_Returns_Correct_Status_BasedOn_Response(HttpStatusCode statusCode, EndpointResponseStatus expectedStatus)
+        {
+            // Arrange
+            var request = _fixture.Create<RegistrationFeePaymentRequest>();
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(() => new HttpResponseMessage
+                {
+                    StatusCode = statusCode
+                })
+                .Verifiable();
+
+            // Act
+            var result = await _facadeService.SubmitRegistrationFeePaymentAsync(request);
+
+            // Assert
+            Assert.AreEqual(expectedStatus, result);
+            _mockHandler.Protected().Verify(
+                "SendAsync",
+                Times.Once(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.RequestUri.ToString().Contains("organisation-registration-fee-payment")),
+                ItExpr.IsAny<CancellationToken>());
         }
 
         public static class PaginatedListHelper
