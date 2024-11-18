@@ -3002,6 +3002,134 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #endregion
 
+        #region  CancelDateRegistrationSubmission
+
+        [TestMethod]
+        public async Task CancelDateRegistrationSubmission_RedirectsToPageNotFound_WhenSubmissionIdIsEmpty()
+        {
+            // Arrange
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission((Guid?)null);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public async Task CancelDateRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId
+            };
+
+            // Simulate an error in ModelState
+            _controller.Url = mockUrlHelper.Object;
+            _controller.ModelState.AddModelError("CancelllationDate", "Model state is invalid");
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.CancelDateRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
+
+            // Verify that ModelState has errors
+            Assert.IsTrue(_controller.ModelState.ErrorCount > 0, "ModelState should contain errors.");
+            Assert.AreEqual("Model state is invalid", _controller.ModelState["CancelllationDate"].Errors[0].ErrorMessage, "The error message should match the expected message.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task CancelDateRegistrationSubmission_Post_ReturnsViewWithErrors_WhenNoCancellationReasonIsProvided()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationDate = null,
+                Day = null,
+                Month = null,
+                Year = null
+            };
+
+            // Simulate the required field validation error for the CancellationReason property
+            _controller.Url = mockUrlHelper.Object;
+            _controller.ModelState.AddModelError(nameof(model.CancellationDate), "Date of cancellation must be a real Date");
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
+            Assert.AreEqual(nameof(_controller.CancelDateRegistrationSubmission), result.ViewName, "The view name should match the action name.");
+            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
+
+            // Verify ModelState error for CancellationReason property
+            Assert.IsTrue(_controller.ModelState[nameof(model.CancellationDate)].Errors.Count > 0, "ModelState should contain an error for the CancellationReason property.");
+            Assert.AreEqual("Date of cancellation must be a real Date",
+                _controller.ModelState[nameof(model.CancellationDate)].Errors[0].ErrorMessage, "The error message should match the expected validation message.");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
+
+            // Check that the back link contains a valid GUID at the end
+            string[] segments = backLink.Split('/');
+            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
+        }
+
+        #endregion
+
         private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
         {
             var mockUrlHelper = new Mock<IUrlHelper>();
