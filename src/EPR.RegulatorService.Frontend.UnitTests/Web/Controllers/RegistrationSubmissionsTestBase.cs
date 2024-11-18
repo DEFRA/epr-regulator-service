@@ -88,7 +88,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             _journeySession = new JourneySession()
             {
-                UserData = new Common.Authorization.Models.UserData {
+                UserData = new Common.Authorization.Models.UserData
+                {
                     Id = Guid.NewGuid()
                 },
                 RegulatorRegistrationSubmissionSession = new()
@@ -171,5 +172,18 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             OfflinePayment = "200.45"
         };
+
+        protected void MergeFilterChoices(RegulatorRegistrationSubmissionSession session, RegistrationSubmissionsFilterModel newChoices)
+        {
+            if (session.LatestFilterChoices == null)
+                session.LatestFilterChoices = new RegistrationSubmissionsFilterModel();
+
+            session.LatestFilterChoices.OrganisationName = newChoices.OrganisationName ?? session.LatestFilterChoices.OrganisationName;
+            session.LatestFilterChoices.OrganisationType = newChoices.OrganisationType ?? session.LatestFilterChoices.OrganisationType;
+            session.LatestFilterChoices.RelevantYears = newChoices.RelevantYears ?? session.LatestFilterChoices.RelevantYears;
+            session.LatestFilterChoices.PageNumber = newChoices.PageNumber > 0 ? newChoices.PageNumber : session.LatestFilterChoices.PageNumber;
+            session.LatestFilterChoices.PageSize = newChoices.PageSize > 0 ? newChoices.PageSize : session.LatestFilterChoices.PageSize;
+            session.LatestFilterChoices.Statuses = newChoices.Statuses ?? session.LatestFilterChoices.Statuses;
+        }
     }
 }
