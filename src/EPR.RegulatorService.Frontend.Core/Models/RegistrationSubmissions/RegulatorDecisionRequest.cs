@@ -12,10 +12,8 @@ public class RegulatorDecisionRequest
 
     public Guid SubmissionId { get; set; }
 
-    public string? Comments { get; set; }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public CountryName CountryName { get; set; }
+    public string? Comments { get; set; } 
+    public string CountryName { get; set; }
 
     public RegistrationSubmissionType RegistrationSubmissionType { get; set; }
 
