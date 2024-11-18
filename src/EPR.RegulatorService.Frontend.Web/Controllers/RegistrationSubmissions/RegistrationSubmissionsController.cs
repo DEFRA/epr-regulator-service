@@ -60,7 +60,7 @@ public partial class RegistrationSubmissionsController(
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
 
-            int nationId = _currentSession.UserData.Organisations[0].NationId.Value;
+            int nationId = _currentSession.UserData.Organisations[0].NationId != null ? _currentSession.UserData.Organisations[0].NationId.Value : 0;
 
             InitialiseOrContinuePaging(_currentSession.RegulatorRegistrationSubmissionSession, pageNumber);
 

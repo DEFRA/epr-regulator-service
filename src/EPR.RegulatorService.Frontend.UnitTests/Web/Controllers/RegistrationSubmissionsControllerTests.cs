@@ -29,17 +29,58 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #region Initialisation and Basic Session state
         [TestMethod]
-        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel()
+        [DataRow(0, "")]
+        [DataRow(1, "Environment Agency (EA)")]
+        [DataRow(2, "Northern Ireland Environment Agency (NIEA)")]
+        [DataRow(3, "Scottish Environment Protection Agency (SEPA)")]
+        [DataRow(4, "Natural Resources Wales (NRW)")]
+        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel(
+            int nationId,
+            string agencyName)
         {
             // Arrange
-            var expectedViewModel = new RegistrationSubmissionsViewModel();
+            var expectedViewModel = new RegistrationSubmissionsViewModel
+            {
+                AgencyName = agencyName
+            };
             string expectedBackLink = "/regulators/home";
 
             // Ensure the Organisation has a valid NationId
             _journeySession.UserData.Organisations.Add(new Organisation
             {
-                NationId = 1
+                NationId = nationId
             });
+
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(_journeySession);
+
+            // Act
+            var result = await _controller.RegistrationSubmissions(1);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            Assert.IsInstanceOfType(expectedViewModel, viewResult!.Model.GetType());
+
+            var resultModel = viewResult.Model as RegistrationSubmissionsViewModel;
+            Assert.AreEqual(expectedViewModel.AgencyName, resultModel.AgencyName);
+
+            var actualBackLink = _controller.ViewBag.CustomBackLinkToDisplay;
+            Assert.IsNotNull(actualBackLink);
+            Assert.AreEqual(expectedBackLink, actualBackLink);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel_WithNullNationId()
+        {
+            // Arrange
+            var expectedViewModel = new RegistrationSubmissionsViewModel();
+            string expectedBackLink = "/regulators/home";
+
+            _journeySession.UserData.Organisations.Add(new Organisation());
 
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(_journeySession);
