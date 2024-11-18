@@ -228,7 +228,7 @@ public partial class RegistrationSubmissionsController(
                                     OrganisationId = existingModel.OrganisationId,
                                     SubmissionId = existingModel.SubmissionId,
                                     Status = RegistrationSubmissionStatus.Granted.ToString(),
-                                    CountryName = GetContryCodeInitial(existingModel.NationId),
+                                    CountryName = GetCountryCodeInitial(existingModel.NationId),
                                     RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
                                     TwoDigitYear = existingModel.RegistrationYear.Substring(2),
                                     //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
@@ -247,7 +247,7 @@ public partial class RegistrationSubmissionsController(
     }
 
 
-    private string GetContryCodeInitial(int nationId)
+    private string GetCountryCodeInitial(int nationId)
     {
         string code = nationId switch
         {
