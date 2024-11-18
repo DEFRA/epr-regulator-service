@@ -123,4 +123,25 @@
   <data name="CancelDateRegistrationSubmission.PageTitle" xml:space="preserve">
     <value>What date will this registration be cancelled?</value>
   </data>
+  <data name="Error.InvalidDateErrorMessage" xml:space="preserve">
+    <value>Enter a cancellation date</value>
+  </data>
+  <data name="Error.MissingDayErrorMessage" xml:space="preserve">
+    <value>Cancellation date must include a day</value>
+  </data>
+  <data name="Error.MissingMonthErrorMessage" xml:space="preserve">
+    <value>Cancellation date must include a month</value>
+  </data>
+  <data name="Error.MissingYearErrorMessage" xml:space="preserve">
+    <value>Cancellation date must include a year</value>
+  </data>
+  <data name="Error.EmptyDateErrorMessage" xml:space="preserve">
+    <value>Date of cancellation must be a real Date</value>
+  </data>
+  <data name="Error.InvalidRealDateErrorMessage" xml:space="preserve">
+    <value>Date of cancellation must be a real Date</value>
+  </data>
+  <data name="Error.PastDateErrorMessage" xml:space="preserve">
+    <value>Cancellation date must be after 31 December 2024</value>
+  </data>
 </root>

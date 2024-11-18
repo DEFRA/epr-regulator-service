@@ -6,13 +6,13 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     {
         public Guid SubmissionId { get; set; }
 
-        [DateValidation("Date of cancellation must be a real Date",
-                        "Cancellation date must include a day",
-                        "Cancellation date must include a month",
-                        "Cancellation date must include a year",
-                        "Enter a cancellation date",
-                        "Cancellate date must be a real date",
-                        "Cancellation date must be after 31 December 2024")]
+        [DateValidation("Error.InvalidDateErrorMessage",
+                        "Error.MissingDayErrorMessage",
+                        "Error.MissingMonthErrorMessage",
+                        "Error.MissingYearErrorMessage",
+                        "Error.EmptyDateErrorMessage",
+                        "Error.InvalidRealDateErrorMessage",
+                        "Error.PastDateErrorMessage")]
         public DateTime? CancellationDate { get; set; }
 
         public int? Day { get; set; }
