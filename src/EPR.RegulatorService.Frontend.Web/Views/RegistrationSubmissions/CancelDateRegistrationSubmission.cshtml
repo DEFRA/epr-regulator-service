@@ -6,7 +6,7 @@
 
 @{
     ViewData["Title"] = Localizer["CancelDateRegistrationSubmission.PageTitle"];
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionaryByKey(nameof(Model.CancellationDate)), Localizer, nameof(Model.CancellationDate));
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(new string[] { "CancellationDate" }), Localizer, nameof(Model.CancellationDate));
     var cancellationDateError = errorsViewModel.Errors.Find(x => x.Key == nameof(Model.CancellationDate));
     var cancellationDateErrorExists = !string.IsNullOrEmpty(cancellationDateError.Key);
 }
@@ -37,20 +37,20 @@
                         {
                             @await Html.PartialAsync("Partials/Govuk/_InlineError", cancellationDateError)
                         }
-                        <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
-                            <div class="govuk-date-input" id="passport-issued">
+                        <fieldset class="govuk-fieldset" role="group" aria-describedby="cancel-date-issued-hint">
+                            <div class="govuk-date-input" id="cancel-date-issued">
                                 <div class="govuk-date-input__item">
                                     <div class="govuk-form-group">
                                         <label class="govuk-label govuk-date-input__label"
-                                               for="passport-issued-day"
+                                               for="cancel-date-issued-day"
                                                gov-for="Day"
                                                gov-first-option="true">
                                             Day
                                         </label>
                                         <input type="text"
                                                class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                               id="passport-issued-day"
-                                               name="passport-issued-day"
+                                               id="cancel-date-issued-day"
+                                               name="cancel-date-issued-day"
                                                gov-first-option="true"
                                                gov-for="Day"
                                                gov-value="@Model.Day">
@@ -59,15 +59,15 @@
                                 <div class="govuk-date-input__item">
                                     <div class="govuk-form-group">
                                         <label class="govuk-label govuk-date-input__label"
-                                               for="passport-issued-month"
+                                               for="cancel-date-issued-month"
                                                gov-for="Month"
                                                gov-first-option="true">
                                             Month
                                         </label>
                                         <input type="text"
                                                class="govuk-input govuk-date-input__input govuk-input--width-2"
-                                               id="passport-issued-month"
-                                               name="passport-issued-month"
+                                               id="cancel-date-issued-month"
+                                               name="cancel-date-issued-month"
                                                gov-for="Month"
                                                gov-value="@Model.Month">
                                     </div>
@@ -75,15 +75,15 @@
                                 <div class="govuk-date-input__item">
                                     <div class="govuk-form-group">
                                         <label class="govuk-label govuk-date-input__label"
-                                               for="passport-issued-year"
+                                               for="cancel-date-issued-year"
                                                gov-for="Year"
                                                gov-first-option="true">
                                             Year
                                         </label>
                                         <input type="text"
                                                class="govuk-input govuk-date-input__input govuk-input--width-4"
-                                               id="passport-issued-year"
-                                               name="passport-issued-year"
+                                               id="cancel-date-issued-year"
+                                               name="cancel-date-issued-year"
                                                gov-first-option="true"
                                                gov-for="Year"
                                                gov-value="@Model.Year">

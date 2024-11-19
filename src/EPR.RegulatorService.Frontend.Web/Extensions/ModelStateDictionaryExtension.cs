@@ -6,10 +6,9 @@ namespace EPR.RegulatorService.Frontend.Web.Extensions;
 
 public static class ModelStateDictionaryExtension
 {
-    public static List<(string Key, List<ErrorViewModel> Errors)> ToErrorDictionary(this ModelStateDictionary modelState)
+    public static List<(string Key, List<ErrorViewModel> Errors)> ToErrorDictionary(this ModelStateDictionary modelState, string?[]? keys = null)
     {
         var errors = new List<ErrorViewModel>();
-
         foreach (var item in modelState)
         {
             foreach (var error in item.Value.Errors)
@@ -22,42 +21,13 @@ public static class ModelStateDictionaryExtension
             }
         }
 
-        var errorsDictionary = new List<(string Key, List<ErrorViewModel> Errors)>();
+        var filterdErrors = new List<ErrorViewModel>();
 
-        var groupedErrors = errors
-            .GroupBy(e => e.Key)
-            .OrderBy(e => e.Key);
-
-        foreach (var error in groupedErrors)
-        {
-            errorsDictionary.Add((error.Key, error.ToList()));
-        }
-
-        return errorsDictionary;
-    }
-
-    public static List<(string Key, List<ErrorViewModel> Errors)> ToErrorDictionaryByKey(this ModelStateDictionary modelState, string key)
-    {
-        var errors = new List<ErrorViewModel>();
-
-        foreach (var item in modelState)
-        {
-            if (item.Key == key)
-            {
-                foreach (var error in item.Value.Errors)
-                {
-                    errors.Add(new ErrorViewModel
-                    {
-                        Key = item.Key,
-                        Message = error.ErrorMessage
-                    });
-                }
-            }
-        }
+        filterdErrors = keys != null ? errors.Where(x => keys.Contains(x.Key)).ToList() : errors;
 
         var errorsDictionary = new List<(string Key, List<ErrorViewModel> Errors)>();
 
-        var groupedErrors = errors
+        var groupedErrors = filterdErrors
             .GroupBy(e => e.Key)
             .OrderBy(e => e.Key);
 

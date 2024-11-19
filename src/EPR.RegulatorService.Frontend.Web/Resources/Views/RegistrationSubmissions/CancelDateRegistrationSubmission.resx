@@ -123,4 +123,25 @@
   <data name="CancelDateRegistrationSubmission.PageTitle" xml:space="preserve">
     <value />
   </data>
+  <data name="Error.InvalidDateErrorMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Error.MissingDayErrorMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Error.MissingMonthErrorMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Error.MissingYearErrorMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Error.EmptyDateErrorMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Error.InvalidRealDateErrorMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Error.PastDateErrorMessage" xml:space="preserve">
+    <value />
+  </data>
 </root>
