@@ -3585,12 +3585,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task CancelDateRegistrationSubmission_Post_RedirectsToPageNotFound_WhenCancellationReasonIsNull()
+        [DataRow(null)]
+        [DataRow(" ")]
+        [DataRow("")]
+        public async Task CancelDateRegistrationSubmission_Post_RedirectsToPageNotFound_WhenCancellationReasonIsInvalid(string cancellationReason)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.CancellationReason = null; // Null cancellation reason
+            submissionDetails.CancellationReason = cancellationReason;
             var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
 
             // Set up session mock
@@ -3606,18 +3609,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             // Act
-            var result = await _controller.CancelDateRegistrationSubmission(model);
+            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectToRouteResult));
-
-            var redirectResult = result as RedirectToRouteResult;
 
             // Veryify the redirect URL
-            Assert.IsNotNull(redirectResult);
-            redirectResult.RouteName.Should().Be("CancelRegistrationSubmission");
-            redirectResult.RouteValues.First().Value.Should().Be(submissionId);
+            result.RouteName.Should().Be("CancelRegistrationSubmission");
+            result.RouteValues.First().Value.Should().Be(submissionId);
 
             // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
