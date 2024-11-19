@@ -3225,7 +3225,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task CancelDateRegistrationSubmission_Should_Calls_CancelDateRegistrationSubmissionView()
+        public async Task CancelDateRegistrationSubmission_Should_Call_CancelDateRegistrationSubmissionView()
         {
             // Arrange
             var submissionId = Guid.NewGuid();

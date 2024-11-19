@@ -1,4 +1,5 @@
 using System.Diagnostics;
+
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
@@ -9,11 +10,13 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
+
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
@@ -586,16 +589,21 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> CancelDateRegistrationSubmission(Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
         if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
+
         SetBackLink($"{PagePath.CancelRegistrationSubmission}/{submissionId}");
+
         var model = new CancelDateRegistrationSubmissionViewModel
         {
             SubmissionId = submissionId.Value
         };
+
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+
         return View(nameof(CancelDateRegistrationSubmission), model);
     }
 
