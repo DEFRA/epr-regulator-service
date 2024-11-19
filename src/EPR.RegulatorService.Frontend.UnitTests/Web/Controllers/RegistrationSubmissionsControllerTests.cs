@@ -3201,7 +3201,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #endregion
 
-        #region  CancelDateRegistrationSubmission
+        #region CancelDateRegistrationSubmission
+
+        #region GET
 
         [TestMethod]
         public async Task CancelDateRegistrationSubmission_RedirectsToPageNotFound_WhenSubmissionIdIsEmpty()
@@ -3215,7 +3217,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-
             var redirectToActionResult = result as RedirectToActionResult;
 
             // Veryify the correct redirect
@@ -3224,7 +3225,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task CancelDateRegistrationSubmission_Should_Calls_CancelDateRegistrationSubmissionView()
+        public async Task CancelDateRegistrationSubmission_Should_Call_CancelDateRegistrationSubmissionView()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -3249,16 +3250,48 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             StringAssert.StartsWith(backLink, $"/regulators/{PagePath.CancelRegistrationSubmission}/", "Back link should start with the expected URL.");
         }
 
+        #endregion
+
+        #region POST
+
+        [TestMethod]
+        public async Task CancelDateRegistrationSubmission_Post_RedirectsToPageNotFound_When_There_Is_No_SessionData()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationDate = null,
+                Day = null,
+                Month = null,
+                Year = null
+            };
+            // Simulate the required field validation error for the CancellationReason property
+            _controller.Url = mockUrlHelper.Object;
+            _controller.ModelState.AddModelError(nameof(model.CancellationDate), "Date of cancellation must be a real Date");
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model);
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirectToActionResult = result as RedirectToActionResult;
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
         [TestMethod]
         public async Task CancelDateRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-
             var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
-
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
@@ -3299,57 +3332,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
 
-
-        [TestMethod]
-        public async Task CancelDateRegistrationSubmission_Post_RedirectsToPageNotFound_When_There_Is_No_SessionData()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
-
-            var model = new CancelDateRegistrationSubmissionViewModel
-            {
-                SubmissionId = submissionId,
-                CancellationDate = null,
-                Day = null,
-                Month = null,
-                Year = null
-            };
-
-            // Simulate the required field validation error for the CancellationReason property
-            _controller.Url = mockUrlHelper.Object;
-            _controller.ModelState.AddModelError(nameof(model.CancellationDate), "Date of cancellation must be a real Date");
-
-            // Act
-            var result = await _controller.CancelDateRegistrationSubmission(model);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-
-            var redirectToActionResult = result as RedirectToActionResult;
-
-            // Veryify the correct redirect
-            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
-            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
-
-        }
         [TestMethod]
         public async Task CancelDateRegistrationSubmission_Post_ReturnsViewWithErrors_WhenNoCancellationDateIsProvided()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-
             var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
-
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
             };
+
             var model = new CancelDateRegistrationSubmissionViewModel
             {
                 SubmissionId = submissionId,
@@ -3357,8 +3353,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 Day = null,
                 Month = null,
                 Year = null
-            };
 
+            };
             // Simulate the required field validation error for the CancellationReason property
             _controller.Url = mockUrlHelper.Object;
             _controller.ModelState.AddModelError(nameof(model.CancellationDate), "Date of cancellation must be a real Date");
@@ -3389,6 +3385,245 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Verify(mock =>
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
+
+        [TestMethod]
+        public async Task CancelDateRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_ForValidSubmission()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.CancellationReason = "Valid cancellation reason";
+
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = detailsModel.SubmissionId,
+                CancellationDate = expectedDate,
+                Day = 3,
+                Month = 4,
+                Year = 2025
+            };
+
+            // Set up successful cancellation submission
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success);
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
+
+            Assert.IsNotNull(result);
+            result.RouteName.Should().Be("CancellationConfirmation");
+            result.RouteValues.First().Value.Should().Be(detailsModel.SubmissionId);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task CancelDateRegistrationSubmission_Post_ReturnsFailAndRedirectsCorrectly_WhenFacadeStatusReturnsFail()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.CancellationReason = "Valid cancellation reason";
+
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = detailsModel.SubmissionId,
+                CancellationDate = expectedDate,
+                Day = 3,
+                Month = 4,
+                Year = 2025
+            };
+
+            // Set up an unsuccessful cancellation submission status
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Fail);
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+
+            // Assert route values
+            string expectedUrl = $"{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+            Assert.IsTrue(result.RouteValues.TryGetValue("backLink", out object backLink));
+            Assert.AreEqual(expectedUrl, backLink);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task CancelDateRegistrationSubmission_Post_RedirectsToServiceNotAvailable_OnFacadeServiceException()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.CancellationReason = "Valid cancellation reason";
+
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = detailsModel.SubmissionId,
+                CancellationDate = expectedDate,
+                Day = 3,
+                Month = 4,
+                Year = 2025
+            };
+
+            // Set up the facade service to throw an exception
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ThrowsAsync(new Exception("Simulated facade exception"));
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
+
+            // Assert - Redirects to ServiceNotAvailable when an exception occurs
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task CancelDateRegistrationSubmission_Post_LogsErrorAndRedirectsToServiceNotAvailable_OnException()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var existingModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            existingModel.CancellationReason = "Valid cancellation reason";
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
+
+            SetupJourneySession(null, existingModel);
+
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = existingModel.SubmissionId,
+                CancellationDate = expectedDate,
+                Day = 3,
+                Month = 4,
+                Year = 2025
+            };
+
+            var exception = new Exception("Test exception");
+
+            // Set up the mock to throw an exception when SubmitRegulatorRegistrationDecisionAsync is called
+            _facadeServiceMock
+                .Setup(service => service.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ThrowsAsync(exception);
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
+
+            // Verify the back link in the route values is set correctly
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+
+            // Verify that _logControllerError was called with correct parameters
+            _loggerMock.Verify(logger =>
+                logger.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while cancelling submission")),
+                    exception,
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
+        }
+
+        [TestMethod]
+        [DataRow(null)]
+        [DataRow(" ")]
+        [DataRow("")]
+        public async Task CancelDateRegistrationSubmission_Post_RedirectsToPageNotFound_WhenCancellationReasonIsInvalid(string cancellationReason)
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
+            submissionDetails.CancellationReason = cancellationReason;
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
+
+            // Set up session mock
+            SetupJourneySession(null, submissionDetails);
+
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionDetails.SubmissionId,
+                CancellationDate = expectedDate,
+                Day = 3,
+                Month = 4,
+                Year = 2025
+            };
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            // Veryify the redirect URL
+            result.RouteName.Should().Be("CancelRegistrationSubmission");
+            result.RouteValues.First().Value.Should().Be(submissionId);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
+        }
+
+        #endregion
 
         #endregion
 

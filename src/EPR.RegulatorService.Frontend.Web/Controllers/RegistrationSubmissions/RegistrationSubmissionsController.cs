@@ -1,4 +1,5 @@
 using System.Diagnostics;
+
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
@@ -9,11 +10,13 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
+
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
@@ -470,7 +473,7 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpGet]
-    [Route(PagePath.CancellationConfirmation + "/{submissionId:guid}")]
+    [Route(PagePath.CancellationConfirmation + "/{submissionId:guid}", Name = "CancellationConfirmation")]
     public async Task<IActionResult> CancellationConfirmation(Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
@@ -586,16 +589,21 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> CancelDateRegistrationSubmission(Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
         if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
+
         SetBackLink($"{PagePath.CancelRegistrationSubmission}/{submissionId}");
+
         var model = new CancelDateRegistrationSubmissionViewModel
         {
             SubmissionId = submissionId.Value
         };
+
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+
         return View(nameof(CancelDateRegistrationSubmission), model);
     }
 
@@ -617,7 +625,45 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(CancelDateRegistrationSubmission), model);
         }
 
-        return RedirectToAction(PagePath.RegistrationSubmissionsAction);
+        if (string.IsNullOrWhiteSpace(existingModel.CancellationReason))
+        {
+            return RedirectToRoute("CancelRegistrationSubmission", new { submissionId = existingModel.SubmissionId });
+        }
+
+        try
+        {
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
+                new RegulatorDecisionRequest
+                {
+                    OrganisationId = existingModel.OrganisationId,
+                    SubmissionId = existingModel.SubmissionId,
+                    Status = Core.Enums.RegistrationSubmissionStatus.Cancelled.ToString(),
+                    Comments = existingModel.CancellationReason,
+                    DecisionDate = model.CancellationDate
+                });
+
+            return status == Core.Models.EndpointResponseStatus.Success
+                ? RedirectToRoute("CancellationConfirmation", new { submissionId = existingModel.SubmissionId })
+                : RedirectToRoute("ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
+        catch (Exception ex)
+        {
+            _logControllerError.Invoke(
+                logger,
+                $"Exception received while cancelling submission" +
+                $"{nameof(RegistrationSubmissionsController)}.{nameof(CancelDateRegistrationSubmission)}", ex);
+
+            return RedirectToRoute(
+                "ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
     }
 
     [HttpGet]
