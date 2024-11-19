@@ -139,9 +139,18 @@
     <value>[Welsh]Enter a cancellation date</value>
   </data>
   <data name="Error.InvalidRealDateErrorMessage" xml:space="preserve">
-    <value>[Welsh]Cancellate date must be a real date</value>
+    <value>[Welsh]Cancellation date must be a real date</value>
   </data>
   <data name="Error.PastDateErrorMessage" xml:space="preserve">
     <value>[Welsh]Cancellation date must be after 31 December 2024</value>
+  </data>
+  <data name="CancelDateRegistrationSubmission.Day" xml:space="preserve">
+    <value>[Welsh]Day</value>
+  </data>
+  <data name="CancelDateRegistrationSubmission.Month" xml:space="preserve">
+    <value>[Welsh]Month</value>
+  </data>
+  <data name="CancelDateRegistrationSubmission.Year" xml:space="preserve">
+    <value>[Welsh]Year</value>
   </data>
 </root>

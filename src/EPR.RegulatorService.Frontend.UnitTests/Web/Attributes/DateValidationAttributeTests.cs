@@ -9,12 +9,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Attributes
     [TestClass]
     public class DateValidationAttributeTests
     {
-        private const string InvalidDateErrorMessage = "Date of cancellation must be a real Date";
+        private const string InvalidDateErrorMessage = "Error.InvalidDateErrorMessage";
         private const string MissingDayErrorMessage = "Cancellation date must include a day";
         private const string MissingMonthErrorMessage = "Cancellation date must include a month";
         private const string MissingYearErrorMessage = "Cancellation date must include a year";
         private const string EmptyDateErrorMessage = "Enter a cancellation date";
-        private const string InvalidRealDateErrorMessage = "Cancellate date must be a real date";
+        private const string InvalidRealDateErrorMessage = "Cancellation date must be a real date";
         private const string PastDateErrorMessage = "Cancellation date must be after 31 December 2024";
 
         private DateValidationAttribute _systemUnderTest = null!;

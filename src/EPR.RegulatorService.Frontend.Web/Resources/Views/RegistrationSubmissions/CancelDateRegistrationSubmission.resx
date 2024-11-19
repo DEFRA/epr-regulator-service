@@ -144,4 +144,13 @@
   <data name="Error.PastDateErrorMessage" xml:space="preserve">
     <value />
   </data>
+  <data name="CancelDateRegistrationSubmission.Day" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CancelDateRegistrationSubmission.Month" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CancelDateRegistrationSubmission.Year" xml:space="preserve">
+    <value />
+  </data>
 </root>
