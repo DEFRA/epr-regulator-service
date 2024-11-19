@@ -60,13 +60,17 @@ public partial class RegistrationSubmissionsController(
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
 
+            int nationId = _currentSession.UserData.Organisations[0].NationId != null ? _currentSession.UserData.Organisations[0].NationId.Value : 0;
+
             InitialiseOrContinuePaging(_currentSession.RegulatorRegistrationSubmissionSession, pageNumber);
 
             ViewBag.PowerBiLogin = _externalUrlsOptions.PowerBiLogin;
 
             SetBacklinkToHome();
 
-            var viewModel = InitialiseOrCreateViewModel(_currentSession.RegulatorRegistrationSubmissionSession);
+            var viewModel = InitialiseOrCreateViewModel(
+                _currentSession.RegulatorRegistrationSubmissionSession,
+                nationId);
 
             await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
