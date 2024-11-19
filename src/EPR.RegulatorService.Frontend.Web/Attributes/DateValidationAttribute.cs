@@ -6,14 +6,13 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 namespace EPR.RegulatorService.Frontend.Web.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class DateValidationAttribute(
-        string invalidDateErrorMessage,
-        string missingDayErrorMessage,
-        string missingMonthErrorMessage,
-        string missingYearErrorMessage,
-        string emptyDateErrorMessage,
-        string invalidRealDateErrorMessage,
-        string pastDateErrorMessage) : ValidationAttribute
+    public class DateValidationAttribute(string invalidDateErrorMessage,
+                                         string missingDayErrorMessage,
+                                         string missingMonthErrorMessage,
+                                         string missingYearErrorMessage,
+                                         string emptyDateErrorMessage,
+                                         string invalidRealDateErrorMessage,
+                                         string pastDateErrorMessage) : ValidationAttribute
     {
 
         protected override ValidationResult IsValid(object? value, ValidationContext validationContext)

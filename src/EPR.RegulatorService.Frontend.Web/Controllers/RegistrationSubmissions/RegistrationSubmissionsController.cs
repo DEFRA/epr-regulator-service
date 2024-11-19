@@ -1,8 +1,5 @@
 using System.Diagnostics;
-using System.Globalization;
-
 using EPR.Common.Authorization.Constants;
-using EPR.Common.Authorization.Extensions;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
@@ -12,13 +9,11 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
-
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
@@ -60,13 +55,17 @@ public partial class RegistrationSubmissionsController(
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
 
+            int nationId = _currentSession.UserData.Organisations[0].NationId != null ? _currentSession.UserData.Organisations[0].NationId.Value : 0;
+
             InitialiseOrContinuePaging(_currentSession.RegulatorRegistrationSubmissionSession, pageNumber);
 
             ViewBag.PowerBiLogin = _externalUrlsOptions.PowerBiLogin;
 
             SetBacklinkToHome();
 
-            var viewModel = InitialiseOrCreateViewModel(_currentSession.RegulatorRegistrationSubmissionSession);
+            var viewModel = InitialiseOrCreateViewModel(
+                _currentSession.RegulatorRegistrationSubmissionSession,
+                nationId);
 
             await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
