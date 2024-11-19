@@ -139,9 +139,18 @@
     <value>Enter a cancellation date</value>
   </data>
   <data name="Error.InvalidRealDateErrorMessage" xml:space="preserve">
-    <value>Cancellate date must be a real date</value>
+    <value>Cancellation date must be a real date</value>
   </data>
   <data name="Error.PastDateErrorMessage" xml:space="preserve">
     <value>Cancellation date must be after 31 December 2024</value>
+  </data>
+  <data name="CancelDateRegistrationSubmission.Day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="CancelDateRegistrationSubmission.Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="CancelDateRegistrationSubmission.Year" xml:space="preserve">
+    <value>Year</value>
   </data>
 </root>
