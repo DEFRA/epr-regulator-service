@@ -3533,7 +3533,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task CancelDateRegistrationSubmission_LogsErrorAndRedirectsToServiceNotAvailable_OnException()
+        public async Task CancelDateRegistrationSubmission_Post_LogsErrorAndRedirectsToServiceNotAvailable_OnException()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
