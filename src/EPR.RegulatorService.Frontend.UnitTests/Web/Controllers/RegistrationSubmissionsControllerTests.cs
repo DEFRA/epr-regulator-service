@@ -3025,6 +3025,32 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task CancelDateRegistrationSubmission_Should_Calls_CancelDateRegistrationSubmissionView()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            SetupJourneySession(null, null);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(submissionId) as ViewResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.ViewName.Should().Be("CancelDateRegistrationSubmission");
+
+            // Verify that a back link is set with the expected format, including a GUID
+            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
+            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
+            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.CancelRegistrationSubmission}/", "Back link should start with the expected URL.");
+        }
+
+        [TestMethod]
         public async Task CancelDateRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
         {
             // Arrange
@@ -3074,8 +3100,45 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
         }
 
+
         [TestMethod]
-        public async Task CancelDateRegistrationSubmission_Post_ReturnsViewWithErrors_WhenNoCancellationReasonIsProvided()
+        public async Task CancelDateRegistrationSubmission_Post_RedirectsToPageNotFound_When_There_Is_No_SessionData()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationDate = null,
+                Day = null,
+                Month = null,
+                Year = null
+            };
+
+            // Simulate the required field validation error for the CancellationReason property
+            _controller.Url = mockUrlHelper.Object;
+            _controller.ModelState.AddModelError(nameof(model.CancellationDate), "Date of cancellation must be a real Date");
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+
+        }
+        [TestMethod]
+        public async Task CancelDateRegistrationSubmission_Post_ReturnsViewWithErrors_WhenNoCancellationDateIsProvided()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
