@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -124,7 +124,7 @@
     <value>[Welsh]What date will this registration be cancelled?</value>
   </data>
   <data name="Error.InvalidDateErrorMessage" xml:space="preserve">
-    <value>[Welsh]Enter a cancellation date</value>
+    <value>[Welsh]Date of cancellation must be a real date</value>
   </data>
   <data name="Error.MissingDayErrorMessage" xml:space="preserve">
     <value>[Welsh]Cancellation date must include a day</value>
@@ -136,10 +136,10 @@
     <value>[Welsh]Cancellation date must include a year</value>
   </data>
   <data name="Error.EmptyDateErrorMessage" xml:space="preserve">
-    <value>[Welsh]Date of cancellation must be a real Date</value>
+    <value>[Welsh]Enter a cancellation date</value>
   </data>
   <data name="Error.InvalidRealDateErrorMessage" xml:space="preserve">
-    <value>[Welsh]Date of cancellation must be a real Date</value>
+    <value>[Welsh]Cancellate date must be a real date</value>
   </data>
   <data name="Error.PastDateErrorMessage" xml:space="preserve">
     <value>[Welsh]Cancellation date must be after 31 December 2024</value>
