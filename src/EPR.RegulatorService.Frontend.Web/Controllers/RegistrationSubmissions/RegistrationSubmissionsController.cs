@@ -625,7 +625,7 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(CancelDateRegistrationSubmission), model);
         }
 
-        if (string.IsNullOrEmpty(existingModel.CancellationReason))
+        if (string.IsNullOrWhiteSpace(existingModel.CancellationReason))
         {
             return RedirectToRoute("CancelRegistrationSubmission", new { submissionId = existingModel.SubmissionId });
         }
