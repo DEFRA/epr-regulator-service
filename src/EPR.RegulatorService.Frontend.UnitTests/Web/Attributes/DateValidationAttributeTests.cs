@@ -9,7 +9,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Attributes
     [TestClass]
     public class DateValidationAttributeTests
     {
-        private const string InvalidDateErrorMessage = "Error.InvalidDateErrorMessage";
+        private const string InvalidDateErrorMessage = "Date of cancellation must be a real Date";
         private const string MissingDayErrorMessage = "Cancellation date must include a day";
         private const string MissingMonthErrorMessage = "Cancellation date must include a month";
         private const string MissingYearErrorMessage = "Cancellation date must include a year";
