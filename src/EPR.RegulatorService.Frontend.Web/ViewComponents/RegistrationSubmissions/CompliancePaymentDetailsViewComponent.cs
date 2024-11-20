@@ -17,7 +17,7 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
     {
         try
         {
-            var model = await paymentFacadeService.GetCompliancePaymentDetailsAsync(new CompliancePaymentRequest
+            var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(new CompliancePaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
                 Regulator = ((Core.Enums.CountryName)viewModel.NationId).GetDescription(), /*get the nation code in a new property*/
@@ -28,7 +28,12 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*payment facade in utc format*/
             });
 
-            // To do:: map the domain to view model
+            if (compliancePaymentResponse is null)
+            {
+                return View();
+            }
+
+            // To do:: map the domain to view model as part of https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_workitems/edit/477227
             return View(new CompliancePaymentDetailsViewModel());
         }
         catch (Exception ex)

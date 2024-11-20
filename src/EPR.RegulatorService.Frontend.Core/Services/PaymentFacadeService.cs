@@ -6,7 +6,6 @@ using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
-using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
@@ -44,7 +43,7 @@ public class PaymentFacadeService : IPaymentFacadeService
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
-    public async Task<Optional<ProducerPaymentResponse>> GetProducerPaymentDetailsAsync(ProducerPaymentRequest request)
+    public async Task<ProducerPaymentResponse?> GetProducerPaymentDetailsAsync(ProducerPaymentRequest request)
     {
         await SetAuthorisationHeaderAsync();
 
@@ -54,7 +53,7 @@ public class PaymentFacadeService : IPaymentFacadeService
         return JsonSerializer.Deserialize<ProducerPaymentResponse>(await response.Content.ReadAsStringAsync());
     }
 
-    public async Task<Optional<CompliancePaymentResponse>> GetCompliancePaymentDetailsAsync(CompliancePaymentRequest request)
+    public async Task<CompliancePaymentResponse?> GetCompliancePaymentDetailsAsync(CompliancePaymentRequest request)
     {
         await SetAuthorisationHeaderAsync();
 

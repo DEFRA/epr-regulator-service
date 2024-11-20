@@ -16,7 +16,7 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
     {
         try
         {
-            var optionalModel = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
+            var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
                 NoOfSubsidiariesOnlineMarketplace = 1, /* to do: will be in a new property*/
@@ -28,21 +28,20 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*payment facade in utc format*/
             });
 
-            if (!optionalModel.HasValue)
+            if (producerPaymentResponse is null)
             {
                 return View();
             }
 
-            var model = optionalModel.Value;
             var producerPaymentDetailsViewModel = new ProducerPaymentDetailsViewModel
             {
-                ApplicationProcessingFee = ConvertToPoundsFromPence(model.ApplicationProcessingFee),
-                LateRegistrationFee = ConvertToPoundsFromPence(model.LateRegistrationFee),
-                OnlineMarketplaceFee = ConvertToPoundsFromPence(model.OnlineMarketplaceFee),
-                PreviousPaymentsReceived = ConvertToPoundsFromPence(model.PreviousPaymentsReceived),
-                SubsidiaryFee = ConvertToPoundsFromPence(model.SubsidiaryFee),
-                TotalChargeableItems = ConvertToPoundsFromPence(model.TotalChargeableItems),
-                TotalOutstanding = ConvertToPoundsFromPence(model.TotalOutstanding)
+                ApplicationProcessingFee = ConvertToPoundsFromPence(producerPaymentResponse.ApplicationProcessingFee),
+                LateRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.LateRegistrationFee),
+                OnlineMarketplaceFee = ConvertToPoundsFromPence(producerPaymentResponse.OnlineMarketplaceFee),
+                PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
+                SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee),
+                TotalChargeableItems = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
+                TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding)
             };
 
             return View(producerPaymentDetailsViewModel);

@@ -62,7 +62,6 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
             PreviousPaymentsReceived = 500.00M,
             TotalOutstanding = 500.00M
         });
-        //_sut = new CompliancePaymentDetailsViewComponent(_paymentFacadeServiceMock.Object, _loggerMock.Object);
 
         // Act
         var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
