@@ -246,20 +246,6 @@ public partial class RegistrationSubmissionsController(
         }
     }
 
-
-    private static string GetCountryCodeInitial(int nationId)
-    {
-        string code = nationId switch
-        {
-            1 => "Eng",
-            2 => "NI",
-            3 => "Sco",
-            4 => "Wal",
-            _ => "Eng",
-        };
-        return code;
-    }
-
     [HttpGet]
     [Route(PagePath.QueryRegistrationSubmission + "/{submissionId:guid}")]
     public async Task<IActionResult> QueryRegistrationSubmission(Guid? submissionId)

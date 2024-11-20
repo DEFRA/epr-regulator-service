@@ -37,7 +37,7 @@ namespace EPR.RegulatorService.Frontend.Web.Attributes
                 return monthValidationResult;
             }
 
-            if (!ValidateField(viewModel.Year, missingYearErrorMessage, 2024, 9999, out var yearValidationResult))
+            if (!ValidateField(viewModel.Year, missingYearErrorMessage, 1000, 9999, out var yearValidationResult))
             {
                 return yearValidationResult;
             }

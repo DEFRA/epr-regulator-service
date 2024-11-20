@@ -54,8 +54,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Attributes
         [TestMethod]
         [DataRow(32, 8, 2030, InvalidDateErrorMessage, "CancellationDate", false)]
         [DataRow(02, 13, 2030, InvalidDateErrorMessage, "CancellationDate", false)]
-        [DataRow(02, 13, 10000, InvalidDateErrorMessage, "CancellationDate", false)]
-        [DataRow(null, 13, 10000, MissingDayErrorMessage, "CancellationDate", false)]
+        [DataRow(02, 03, 01, InvalidDateErrorMessage, "CancellationDate", false)]
+        [DataRow(02, 03, 12, InvalidDateErrorMessage, "CancellationDate", false)]
+        [DataRow(02, 03, 999, InvalidDateErrorMessage, "CancellationDate", false)]
+        [DataRow(02, 03, 10000, InvalidDateErrorMessage, "CancellationDate", false)]
+        [DataRow(02, 03, 1000, PastDateErrorMessage, "CancellationDate", false)]
+        [DataRow(02, 03, 2023, PastDateErrorMessage, "CancellationDate", false)]
+        [DataRow(null, 03, 10000, MissingDayErrorMessage, "CancellationDate", false)]
         [DataRow(02, null, 10000, MissingMonthErrorMessage, "CancellationDate", false)]
         [DataRow(02, 12, null, MissingYearErrorMessage, "CancellationDate", false)]
         [DataRow(null, null, null, EmptyDateErrorMessage, "CancellationDate", false)]
@@ -68,7 +73,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Attributes
             var context = new ValidationContext(viewModel);
 
             // Act
-            var result = _systemUnderTest.GetValidationResult(viewModel.Day, context);
+            var result = _systemUnderTest.GetValidationResult(viewModel, context);
 
             // Assert
             result.Should().NotBeNull();
