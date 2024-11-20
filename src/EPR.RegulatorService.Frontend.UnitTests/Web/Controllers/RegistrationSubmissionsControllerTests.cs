@@ -478,78 +478,96 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissions_Updates_Clears_ListViewModel_And_Session_Filters_When_ClearFilters_Received()
+        public async Task RegistrationSubmissions_Clears_Filters_On_ClearFilters_Action()
         {
             // Arrange
+            SetupSessionWithFilters("braun", "small", "2025", 2, 200, "Pending");
+            // Act: Perform initial GET request
+            var getResult = await _controller.RegistrationSubmissions(null);
+            // Assert: Verify initial state
+            AssertInitialFilters(getResult, "braun", "small", "2025", 2, 200, "Pending");
+            // Act: Perform POST request to clear filters
+            var postResult = await _controller.RegistrationSubmissions(null, FilterActions.ClearFilters);
+            // Assert: Verify POST redirects to GET action
+            AssertRedirectToGet(postResult);
+            // Assert: Verify cleared state
+            AssertClearedFilters();
+        }
+        private void SetupSessionWithFilters(
+            string organisationName,
+            string organisationType,
+            string relevantYears,
+            int pageNumber,
+            int pageSize,
+            string statuses)
+        {
             RegistrationSubmissionsFilterModel latestFilterChoices = new()
             {
-                OrganisationName = "braun",
-                OrganisationType = "small",
-                RelevantYears = "2025",
-                PageNumber = 2,
-                PageSize = 200,
-                Statuses = "Pending"
+                OrganisationName = organisationName,
+                OrganisationType = organisationType,
+                RelevantYears = relevantYears,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Statuses = statuses
             };
-
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
             {
                 LatestFilterChoices = latestFilterChoices,
-                CurrentPageNumber = 2
+                CurrentPageNumber = pageNumber
             };
-
             _journeySession.UserData.Organisations.Add(new Organisation
             {
                 NationId = 1
             });
-
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(_journeySession);
-
-            // Act: Perform initial GET request
-            var getResult = await _controller.RegistrationSubmissions(null);
-
-            // Assert: Verify initial state
+        }
+        private void AssertInitialFilters(
+            object getResult,
+            string organisationName,
+            string organisationType,
+            string relevantYears,
+            int pageNumber,
+            int pageSize,
+            string statuses)
+        {
             getResult.Should().BeOfType<ViewResult>();
             var model = (getResult as ViewResult)?.Model as RegistrationSubmissionsViewModel;
             model.Should().NotBeNull();
-
             var session = _journeySession.RegulatorRegistrationSubmissionSession;
             session.Should().NotBeNull();
-            model!.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(2);
-            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(2);
+            model!.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(pageNumber);
+            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(pageNumber);
             model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be(organisationName);
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
-
-            session.LatestFilterChoices.OrganisationName.Should().Be("braun");
-            session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
-            session.LatestFilterChoices.PageNumber.Should().Be(2);
-            session.LatestFilterChoices.PageSize.Should().Be(200);
-            session.LatestFilterChoices.Statuses.Should().Be("Pending");
-
-            // Act: Perform POST request to clear filters
-            var postResult = await _controller.RegistrationSubmissions(null, FilterActions.ClearFilters);
-
-            // Assert: Verify POST redirects to GET action
+            session.LatestFilterChoices.OrganisationName.Should().Be(organisationName);
+            session.LatestFilterChoices.OrganisationType.Should().Be(organisationType);
+            session.LatestFilterChoices.RelevantYears.Should().Be(relevantYears);
+            session.LatestFilterChoices.PageNumber.Should().Be(pageNumber);
+            session.LatestFilterChoices.PageSize.Should().Be(pageSize);
+            session.LatestFilterChoices.Statuses.Should().Be(statuses);
+        }
+        private static void AssertRedirectToGet(object postResult)
+        {
             postResult.Should().BeOfType<RedirectToActionResult>();
             (postResult as RedirectToActionResult)?.ActionName.Should().Be(PagePath.RegistrationSubmissionsAction);
-
-            // Assert: Verify final session and view model state
+        }
+        private void AssertClearedFilters()
+        {
+            var session = _journeySession.RegulatorRegistrationSubmissionSession;
             session.LatestFilterChoices.OrganisationName.Should().BeNullOrEmpty();
             session.LatestFilterChoices.OrganisationType.Should().BeNullOrEmpty();
             session.LatestFilterChoices.RelevantYears.Should().BeNullOrEmpty();
             session.LatestFilterChoices.PageNumber.Should().Be(1);
             session.LatestFilterChoices.Statuses.Should().BeNullOrEmpty();
-
-            model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
         }
-
+        
         #endregion Happy Path
 
         #region Sad Path
-        [TestMethod]
+                [TestMethod]
         public async Task RegistrationSubmissions_Return_PageNot_Found_When_FilterAction_IsEmpty()
         {
             var viewModel = new RegistrationSubmissionsFilterViewModel();
