@@ -247,7 +247,7 @@ public partial class RegistrationSubmissionsController(
     }
 
 
-    private string GetCountryCodeInitial(int nationId)
+    private static string GetCountryCodeInitial(int nationId)
     {
         string code = nationId switch
         {
