@@ -173,7 +173,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             OfflinePayment = "200.45"
         };
 
-        protected void MergeFilterChoices(RegulatorRegistrationSubmissionSession session, RegistrationSubmissionsFilterModel newChoices)
+        protected static void MergeFilterChoices(RegulatorRegistrationSubmissionSession session, RegistrationSubmissionsFilterModel newChoices)
         {
             if (session.LatestFilterChoices == null)
                 session.LatestFilterChoices = new RegistrationSubmissionsFilterModel();
