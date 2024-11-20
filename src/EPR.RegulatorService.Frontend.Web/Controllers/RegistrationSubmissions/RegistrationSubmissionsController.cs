@@ -228,7 +228,7 @@ public partial class RegistrationSubmissionsController(
                                     OrganisationId = existingModel.OrganisationId,
                                     SubmissionId = existingModel.SubmissionId,
                                     Status = RegistrationSubmissionStatus.Granted.ToString(),
-                                    CountryName = (CountryName)existingModel.NationId,
+                                    CountryName = GetCountryCodeInitial(existingModel.NationId),
                                     RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
                                     TwoDigitYear = existingModel.RegistrationYear.Substring(2),
                                     //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
@@ -244,6 +244,20 @@ public partial class RegistrationSubmissionsController(
             _logControllerError.Invoke(logger, $"Exception received while granting submission {nameof(RegistrationSubmissionsController)}.{nameof(GrantRegistrationSubmission)}", ex);
             return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
         }
+    }
+
+
+    private static string GetCountryCodeInitial(int nationId)
+    {
+        string code = nationId switch
+        {
+            1 => "Eng",
+            2 => "NI",
+            3 => "Sco",
+            4 => "Wal",
+            _ => "Eng",
+        };
+        return code;
     }
 
     [HttpGet]

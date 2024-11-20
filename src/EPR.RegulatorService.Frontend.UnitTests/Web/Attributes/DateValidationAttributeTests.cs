@@ -47,7 +47,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Attributes
             // Assert
             result.Should().Be(null);
             viewModel.CancellationDate.Should().NotBeNull();
-            _ = DateTime.Parse(viewModel.CancellationDate.Value.ToString(), CultureInfo.CurrentCulture);
+            _ = DateTime.Parse(viewModel.CancellationDate.Value.ToString("d/M/yyyy"), CultureInfo.CurrentCulture);
 
         }
 
