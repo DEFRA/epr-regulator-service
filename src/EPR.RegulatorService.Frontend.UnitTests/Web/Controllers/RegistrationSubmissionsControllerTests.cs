@@ -859,11 +859,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GrantRegistrationSubmission_Post_RedirectTo_SubmissionDetails_OnSuccess()
+        [DataRow(1, "Eng")]
+        [DataRow(2, "NI")]
+        [DataRow(3, "Sco")]
+        [DataRow(4, "Wal")]
+        [DataRow(5, "Eng")]
+        public async Task GrantRegistrationSubmission_Post_RedirectTo_SubmissionDetails_OnSuccess(int nationId, string nationCode)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, nationId,nationCode);
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
             _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
 
