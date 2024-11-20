@@ -190,5 +190,18 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             4 => "Natural Resources Wales (NRW)",
             _ => "",
         };
+
+        private static string GetCountryCodeInitial(int nationId)
+        {
+            string code = nationId switch
+            {
+                1 => "Eng",
+                2 => "NI",
+                3 => "Sco",
+                4 => "Wal",
+                _ => "Eng",
+            };
+            return code;
+        }
     }
 }
