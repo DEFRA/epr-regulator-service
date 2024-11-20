@@ -8,10 +8,10 @@ public class CompliancePaymentRequest
 
     public DateTime SubmissionDate { get; set; }
 
-    public List<ComplianceSchemeMember> ComplianceSchemeMembers { get; set; }    
+    public List<ComplianceSchemeMemberRequest> ComplianceSchemeMembers { get; set; }    
 }
 
-public class ComplianceSchemeMember
+public class ComplianceSchemeMemberRequest
 {
     public required string MemberId { get; set; }
 

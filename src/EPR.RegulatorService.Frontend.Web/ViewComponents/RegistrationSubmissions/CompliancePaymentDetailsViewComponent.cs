@@ -23,7 +23,7 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
                 Regulator = ((Core.Enums.CountryName)viewModel.NationId).GetDescription(), /*get the nation code in a new property*/
                 ComplianceSchemeMembers =
                 [
-                    new ComplianceSchemeMember { MemberId = "addhere", MemberType = "addhere" }
+                    new ComplianceSchemeMemberRequest { MemberId = "addhere", MemberType = "addhere" }
                 ],
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*payment facade in utc format*/
             });

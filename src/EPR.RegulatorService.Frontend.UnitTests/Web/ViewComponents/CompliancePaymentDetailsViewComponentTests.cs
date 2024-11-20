@@ -55,9 +55,6 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         .ReturnsAsync(new CompliancePaymentResponse // all values in pence
         {
             ApplicationProcessingFee = 100.00M, 
-            LateRegistrationFee = 200.00M,
-            OnlineMarketplaceFee = 300.00M,
-            SubsidiaryFee = 400.00M,
             TotalChargeableItems = 1000.00M,
             PreviousPaymentsReceived = 500.00M,
             TotalOutstanding = 500.00M
@@ -71,8 +68,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         result.Should().BeOfType<ViewViewComponentResult>();
         var model = result.ViewData.Model as CompliancePaymentDetailsViewModel;
         model.Should().NotBeNull();
-        // all values converted to pounds
-        //To do: Add more asserts after we have the response object
+        //To do: Add more asserts after we know what is needed in the response object
         _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.AtMostOnce);
     }
 
