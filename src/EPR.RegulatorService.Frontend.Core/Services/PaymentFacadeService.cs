@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -15,6 +16,7 @@ public class PaymentFacadeService : IPaymentFacadeService
 {
     private const string SubmitOfflinePaymentPath = "SubmitOfflinePaymentPath";
     private const string GetProducerPaymentDetailsPath = "GetProducerPaymentDetailsPath";
+    private const string GetCompliancePaymentDetailsPath = "GetCompliancePaymentDetailsPath";
 
     private readonly HttpClient _httpClient;
     private readonly ITokenAcquisition _tokenAcquisition;
@@ -50,6 +52,16 @@ public class PaymentFacadeService : IPaymentFacadeService
         response.EnsureSuccessStatusCode();
 
         return JsonSerializer.Deserialize<ProducerPaymentResponse>(await response.Content.ReadAsStringAsync());
+    }
+
+    public async Task<Optional<CompliancePaymentResponse>> GetCompliancePaymentDetailsAsync(CompliancePaymentRequest request)
+    {
+        await SetAuthorisationHeaderAsync();
+
+        var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[GetCompliancePaymentDetailsPath], request);
+        response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<CompliancePaymentResponse>(await response.Content.ReadAsStringAsync());
     }
 
     private async Task SetAuthorisationHeaderAsync()

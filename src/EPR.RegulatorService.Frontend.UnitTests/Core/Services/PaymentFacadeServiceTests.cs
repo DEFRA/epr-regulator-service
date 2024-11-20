@@ -36,6 +36,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 {
                     ["SubmitOfflinePaymentPath"] = "offline-payments",
                     ["GetProducerPaymentDetailsPath"] = "producer/registration-fee",
+                    ["GetCompliancePaymentDetailsPath"] = "compliance-scheme/registration-fee"
                 },
                 DownstreamScope = "api://default"
             });
@@ -151,6 +152,41 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 ItExpr.Is<HttpRequestMessage>(req =>
                     req.Method == HttpMethod.Post &&
                     req.RequestUri.ToString().Contains("producer/registration-fee")),
+                ItExpr.IsAny<CancellationToken>());
+            _httpClient.DefaultRequestHeaders.Count().Should().Be(1);
+            _httpClient.DefaultRequestHeaders.Authorization.Scheme.Should().Be("Bearer");
+        }
+
+        [TestMethod]
+        public async Task GetCompliancePaymentDetailsAsync_ReturnsCorrectResponse_When_SuccessStatusCode()
+        {
+            // Arrange
+            var request = _fixture.Create<CompliancePaymentRequest>();
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(() => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(JsonConvert.SerializeObject(new CompliancePaymentResponse()))
+                })
+                .Verifiable();
+
+            // Act
+            var result = await _paymentFacadeService.GetCompliancePaymentDetailsAsync(request);
+
+            // Assert
+            Assert.IsNotNull(result);
+            _mockHandler.Protected().Verify(
+                "SendAsync",
+                Times.Once(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.RequestUri.ToString().Contains("compliance-scheme/registration-fee")),
                 ItExpr.IsAny<CancellationToken>());
             _httpClient.DefaultRequestHeaders.Count().Should().Be(1);
             _httpClient.DefaultRequestHeaders.Authorization.Scheme.Should().Be("Bearer");

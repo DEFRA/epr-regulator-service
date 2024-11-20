@@ -120,6 +120,15 @@
     <EmbeddedResource Update="Resources\Views\RegulatorEnrolment\FullName.en.resx" />
     <EmbeddedResource Update="Resources\Views\SearchManageApprovers\RegulatorSearchPage.cy.resx" />
     <EmbeddedResource Update="Resources\Views\SearchManageApprovers\RegulatorSearchPage.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Components\CompliancePaymentDetails\Default.cy.resx">
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\CompliancePaymentDetails\Default.en.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Components\ProducerPaymentDetails\Default.cy.resx">
       <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>

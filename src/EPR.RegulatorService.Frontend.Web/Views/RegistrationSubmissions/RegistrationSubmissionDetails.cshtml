@@ -78,7 +78,14 @@
 
                 @* @await Component.InvokeAsync("PaymentDetails", new { viewModel = Model.PaymentDetails }) *@
 
+                @if (Model.OrganisationType == RegistrationSubmissionOrganisationType.compliance)
+                {
+                    @await Component.InvokeAsync("CompliancePaymentDetails", new { viewModel = Model })
+                }
+                else
+                {
                     @await Component.InvokeAsync("ProducerPaymentDetails", new { viewModel = Model })
+                }
 
                 @await Component.InvokeAsync("RegistrationSubmissionComments",
                          new
