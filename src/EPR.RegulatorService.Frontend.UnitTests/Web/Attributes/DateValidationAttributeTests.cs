@@ -45,10 +45,18 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Attributes
             var result = _systemUnderTest.GetValidationResult(viewModel.Day, context);
 
             // Assert
-            result.Should().Be(null);
-            viewModel.CancellationDate.Should().NotBeNull();
-            _ = DateTime.Parse(viewModel.CancellationDate.Value.ToString("d/M/yyyy"), CultureInfo.CurrentCulture);
 
+            viewModel.CancellationDate.Should().NotBeNull();
+            result.Should().Be(null);
+            try
+            {
+               _ = DateTime.Parse(viewModel.CancellationDate.Value.ToString("d/M/yyyy", CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail($"Not expected DateTime format exception. But got an: {ex.Message}");
+            }
+ 
         }
 
         [TestMethod]
