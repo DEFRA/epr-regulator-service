@@ -1,8 +1,6 @@
 using System.Diagnostics;
-using System.Globalization;
 
 using EPR.Common.Authorization.Constants;
-using EPR.Common.Authorization.Extensions;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
@@ -60,13 +58,17 @@ public partial class RegistrationSubmissionsController(
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
 
+            int nationId = _currentSession.UserData.Organisations[0].NationId != null ? _currentSession.UserData.Organisations[0].NationId.Value : 0;
+
             InitialiseOrContinuePaging(_currentSession.RegulatorRegistrationSubmissionSession, pageNumber);
 
             ViewBag.PowerBiLogin = _externalUrlsOptions.PowerBiLogin;
 
             SetBacklinkToHome();
 
-            var viewModel = InitialiseOrCreateViewModel(_currentSession.RegulatorRegistrationSubmissionSession);
+            var viewModel = InitialiseOrCreateViewModel(
+                _currentSession.RegulatorRegistrationSubmissionSession,
+                nationId);
 
             await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
@@ -485,7 +487,7 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpGet]
-    [Route(PagePath.CancellationConfirmation + "/{submissionId:guid}")]
+    [Route(PagePath.CancellationConfirmation + "/{submissionId:guid}", Name = "CancellationConfirmation")]
     public async Task<IActionResult> CancellationConfirmation(Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
@@ -598,7 +600,85 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.CancelDateRegistrationSubmission + "/{submissionId:guid}", Name = "CancelDateRegistrationSubmission")]
-    public async Task<IActionResult> CancelDateRegistrationSubmission(Guid? submissionId) => View();
+    public async Task<IActionResult> CancelDateRegistrationSubmission(Guid? submissionId)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        SetBackLink($"{PagePath.CancelRegistrationSubmission}/{submissionId}");
+
+        var model = new CancelDateRegistrationSubmissionViewModel
+        {
+            SubmissionId = submissionId.Value
+        };
+
+        ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+
+        return View(nameof(CancelDateRegistrationSubmission), model);
+    }
+
+    [HttpPost]
+    [Route(PagePath.CancelDateRegistrationSubmission + "/{submissionId:guid}")]
+    public async Task<IActionResult> CancelDateRegistrationSubmission(CancelDateRegistrationSubmissionViewModel model)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLink(Url.RouteUrl("CancelRegistrationSubmission", new { model.SubmissionId }), false);
+            ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
+            return View(nameof(CancelDateRegistrationSubmission), model);
+        }
+
+        if (string.IsNullOrWhiteSpace(existingModel.CancellationReason))
+        {
+            return RedirectToRoute("CancelRegistrationSubmission", new { submissionId = existingModel.SubmissionId });
+        }
+
+        try
+        {
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
+                new RegulatorDecisionRequest
+                {
+                    OrganisationId = existingModel.OrganisationId,
+                    SubmissionId = existingModel.SubmissionId,
+                    Status = Core.Enums.RegistrationSubmissionStatus.Cancelled.ToString(),
+                    Comments = existingModel.CancellationReason,
+                    DecisionDate = model.CancellationDate
+                });
+
+            return status == Core.Models.EndpointResponseStatus.Success
+                ? RedirectToRoute("CancellationConfirmation", new { submissionId = existingModel.SubmissionId })
+                : RedirectToRoute("ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
+        catch (Exception ex)
+        {
+            _logControllerError.Invoke(
+                logger,
+                $"Exception received while cancelling submission" +
+                $"{nameof(RegistrationSubmissionsController)}.{nameof(CancelDateRegistrationSubmission)}", ex);
+
+            return RedirectToRoute(
+                "ServiceNotAvailable",
+                new
+                {
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                });
+        }
+    }
 
     [HttpGet]
     [Route(PagePath.PageNotFoundPath)]

@@ -1,8 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 {
     using System.Globalization;
-    using System.Reflection;
-    using System.Security.Cryptography;
 
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
@@ -18,7 +16,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         public static void InitialiseOrContinuePaging(RegulatorRegistrationSubmissionSession session,
                                                 int? pageNumber) => session.CurrentPageNumber = pageNumber ?? session.CurrentPageNumber ?? 1;
 
-        private RegistrationSubmissionsViewModel InitialiseOrCreateViewModel(RegulatorRegistrationSubmissionSession session)
+        private RegistrationSubmissionsViewModel InitialiseOrCreateViewModel(
+            RegulatorRegistrationSubmissionSession session,
+            int nationId)
         {
             var existingSessionFilters = session.LatestFilterChoices ?? new RegistrationSubmissionsFilterViewModel()
             {
@@ -36,7 +36,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                         CurrentPage = session.CurrentPageNumber.Value
                     }
                 },
-                PowerBiLogin = _externalUrlsOptions.PowerBiLogin
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
+                AgencyName = GetRegulatorAgencyName(nationId)
             };
         }
 
@@ -127,7 +128,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         {
             string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
             ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
-        } 
+        }
 
         private void SetBackLink(string path, bool hasPathBase = true)
         {
@@ -180,5 +181,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
             return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
         }
+
+        private static string GetRegulatorAgencyName(int nationId) => nationId switch
+        {
+            1 => "Environment Agency (EA)",
+            2 => "Northern Ireland Environment Agency (NIEA)",
+            3 => "Scottish Environment Protection Agency (SEPA)",
+            4 => "Natural Resources Wales (NRW)",
+            _ => "",
+        };
     }
 }
