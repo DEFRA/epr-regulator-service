@@ -5,6 +5,7 @@ using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
+using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
@@ -13,6 +14,7 @@ namespace EPR.RegulatorService.Frontend.Core.Services;
 public class PaymentFacadeService : IPaymentFacadeService
 {
     private const string SubmitOfflinePaymentPath = "SubmitOfflinePaymentPath";
+    private const string GetProducerPaymentDetailsPath = "GetProducerPaymentDetailsPath";
 
     private readonly HttpClient _httpClient;
     private readonly ITokenAcquisition _tokenAcquisition;
@@ -33,17 +35,31 @@ public class PaymentFacadeService : IPaymentFacadeService
 
     public async Task<EndpointResponseStatus> SubmitOfflinePaymentAsync(OfflinePaymentRequest request)
     {
-        if (_httpClient.BaseAddress == null)
-        {
-            _httpClient.BaseAddress = new Uri(_paymentFacadeApiConfig.BaseUrl);
-
-            //To Do:: Update the downstream scope in the app settings once we have the correct one for payment facade api
-            string accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(_scopes);
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, accessToken);
-        }
+        await SetAuthorisationHeaderAsync();
 
         var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[SubmitOfflinePaymentPath], request);
 
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+    }
+
+    public async Task<Optional<ProducerPaymentResponse>> GetProducerPaymentDetailsAsync(ProducerPaymentRequest request)
+    {
+        await SetAuthorisationHeaderAsync();
+
+        var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[GetProducerPaymentDetailsPath], request);
+        response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<ProducerPaymentResponse>(await response.Content.ReadAsStringAsync());
+    }
+
+    private async Task SetAuthorisationHeaderAsync()
+    {
+        if (_httpClient.BaseAddress == null)
+        {
+            _httpClient.BaseAddress = new Uri(_paymentFacadeApiConfig.BaseUrl);
+        }
+
+        string accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(_scopes);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(Constants.Bearer, accessToken);
     }
 }

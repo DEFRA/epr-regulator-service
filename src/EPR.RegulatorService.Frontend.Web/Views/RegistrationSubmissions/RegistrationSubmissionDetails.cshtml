@@ -76,8 +76,9 @@
 
                 @await Component.InvokeAsync("SubmissionDetails", new { model = Model.SubmissionDetails })
 
-                @await Component.InvokeAsync("PaymentDetails", new { model = Model.PaymentDetails })
+                @* @await Component.InvokeAsync("PaymentDetails", new { viewModel = Model.PaymentDetails }) *@
 
+                    @await Component.InvokeAsync("ProducerPaymentDetails", new { viewModel = Model })
 
                 @await Component.InvokeAsync("RegistrationSubmissionComments",
                          new
