@@ -61,7 +61,6 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             PreviousPaymentsReceived = 500.00M,
             TotalOutstanding = 500.00M
         });
-        _sut = new ProducerPaymentDetailsViewComponent(_paymentFacadeServiceMock.Object, _loggerMock.Object);
 
         // Act
         var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
