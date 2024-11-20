@@ -22,4 +22,6 @@ public class RegulatorDecisionRequest
     public string? TwoDigitYear { get; set; }
 
     public string? OrganisationAccountManagementId { get; set; }
+
+    public DateTime? DecisionDate { get; set; }
 }
