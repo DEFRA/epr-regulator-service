@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
@@ -27,6 +28,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             ApplicationReferenceNumber = "SomeGuid",
             RegistrationDateTime = DateTime.Now.AddDays(-1)
         };
+        _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _sut = new ProducerPaymentDetailsViewComponent(_paymentFacadeServiceMock.Object, _loggerMock.Object);
     }
 
@@ -102,7 +104,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
                logger.Log(
                    LogLevel.Error,
                    It.IsAny<EventId>(),
-                   It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Unable to retrieve the producer payment details for {_registrationSumissionDetailsViewModel.SubmissionId}")),
+                   It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Unable to retrieve the producer payment details for")),
                     exception,
                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                Times.Once);

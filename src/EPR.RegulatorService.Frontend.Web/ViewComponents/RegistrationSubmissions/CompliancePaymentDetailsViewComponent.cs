@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Extensions;
@@ -13,6 +12,12 @@ namespace EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissio
 
 public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService paymentFacadeService, ILogger<CompliancePaymentDetailsViewComponent> logger) : ViewComponent
 {
+    private static readonly Action<ILogger, string, Exception?> _logViewComponentError =
+        LoggerMessage.Define<string>(
+            LogLevel.Error,
+            new EventId(1001, nameof(CompliancePaymentDetailsViewComponent)),
+            "An error occurred while retrieving the payment details: {ErrorMessage}");
+
     public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionDetailsViewModel viewModel)
     {
         try
@@ -38,7 +43,10 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Unable to retrieve the compliance scheme payment details for {SubmissionId}", viewModel.SubmissionId);
+            _logViewComponentError.Invoke(logger,
+                $"Unable to retrieve the compliance scheme payment details for " +
+                $"{viewModel.SubmissionId} in {nameof(CompliancePaymentDetailsViewComponent)}.{nameof(InvokeAsync)}", ex);
+
             return View();
         }
     }

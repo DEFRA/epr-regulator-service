@@ -28,6 +28,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
             RegistrationDateTime = DateTime.Now.AddDays(-1),
             NationId = 1
         };
+        _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _sut = new CompliancePaymentDetailsViewComponent(_paymentFacadeServiceMock.Object, _loggerMock.Object);
     }
 

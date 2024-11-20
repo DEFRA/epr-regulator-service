@@ -12,6 +12,12 @@ namespace EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissio
 
 public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFacadeService, ILogger<ProducerPaymentDetailsViewComponent> logger) : ViewComponent
 {
+    private static readonly Action<ILogger, string, Exception?> _logViewComponentError =
+        LoggerMessage.Define<string>(
+            LogLevel.Error,
+            new EventId(1001, nameof(ProducerPaymentDetailsViewComponent)),
+            "An error occurred while retrieving the payment details: {ErrorMessage}");
+
     public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionDetailsViewModel viewModel)
     {
         try
@@ -48,7 +54,9 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
         }
         catch (Exception ex)
         {
-            logger.Log(LogLevel.Error, ex, "Unable to retrieve the producer payment details for {SubmissionId}", viewModel.SubmissionId);
+            _logViewComponentError.Invoke(logger,
+               $"Unable to retrieve the producer payment details for {viewModel.SubmissionId} in {nameof(ProducerPaymentDetailsViewComponent)}.{nameof(InvokeAsync)}", ex);
+
             return View();
         }
     }
