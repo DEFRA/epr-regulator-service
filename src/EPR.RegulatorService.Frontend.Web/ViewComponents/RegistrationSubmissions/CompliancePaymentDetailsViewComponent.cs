@@ -35,7 +35,7 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
 
             if (compliancePaymentResponse is null)
             {
-                return View();
+                return View(default(CompliancePaymentDetailsViewModel));
             }
 
             // To do:: map the domain to view model as part of https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_workitems/edit/477227
@@ -47,7 +47,7 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
                 $"Unable to retrieve the compliance scheme payment details for " +
                 $"{viewModel.SubmissionId} in {nameof(CompliancePaymentDetailsViewComponent)}.{nameof(InvokeAsync)}", ex);
 
-            return View();
+            return View(default(CompliancePaymentDetailsViewModel));
         }
     }
 }

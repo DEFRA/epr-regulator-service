@@ -36,7 +36,7 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
 
             if (producerPaymentResponse is null)
             {
-                return View();
+                return View(default(ProducerPaymentDetailsViewModel));
             }
 
             var producerPaymentDetailsViewModel = new ProducerPaymentDetailsViewModel
@@ -57,7 +57,7 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
             _logViewComponentError.Invoke(logger,
                $"Unable to retrieve the producer payment details for {viewModel.SubmissionId} in {nameof(ProducerPaymentDetailsViewComponent)}.{nameof(InvokeAsync)}", ex);
 
-            return View();
+            return View(default(ProducerPaymentDetailsViewModel));
         }
     }
 
