@@ -24,6 +24,7 @@ public class CompliancePaymentResponse
     public decimal? OfflinePaymentAmount { get; set; } = null!;
 }
 
+[ExcludeFromCodeCoverage]
 public class ComplianceSchemeMember
 {
     [JsonPropertyName("memberId")]
@@ -48,6 +49,7 @@ public class ComplianceSchemeMember
     public SubsidiariesFeeBreakdown SubsidiariesFeeBreakdown { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class SubsidiariesFeeBreakdown
 {
     [JsonPropertyName("totalSubsidiariesOMPFees")]
@@ -63,6 +65,7 @@ public class SubsidiariesFeeBreakdown
     public List<FeeBreakdown> FeeBreakdowns { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class FeeBreakdown
 {
     [JsonPropertyName("bandNumber")]
