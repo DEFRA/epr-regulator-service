@@ -111,7 +111,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             (gotBackLinkObject as string)?.Should().Be(expectedBackLink);
         }
 
-        protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(Guid organisationId) => new RegistrationSubmissionDetailsViewModel
+        protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(Guid organisationId, int nationId = 3, string nationCode = "Sco" ) => new RegistrationSubmissionDetailsViewModel
         {
             SubmissionId = organisationId,
             OrganisationId = organisationId,
@@ -129,8 +129,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 PostCode = "A12 3BC"
             },
             CompaniesHouseNumber = "0123456",
-            RegisteredNation = "Sco",
-            NationId = 3,
+            RegisteredNation = nationCode,
+            NationId = nationId,
             PowerBiLogin = "https://app.powerbi.com/",
             Status = RegistrationSubmissionStatus.Queried,
             SubmissionDetails = new SubmissionDetailsViewModel
@@ -173,7 +173,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             OfflinePayment = "200.45"
         };
 
-        protected void MergeFilterChoices(RegulatorRegistrationSubmissionSession session, RegistrationSubmissionsFilterModel newChoices)
+        protected static void MergeFilterChoices(RegulatorRegistrationSubmissionSession session, RegistrationSubmissionsFilterModel newChoices)
         {
             if (session.LatestFilterChoices == null)
                 session.LatestFilterChoices = new RegistrationSubmissionsFilterModel();

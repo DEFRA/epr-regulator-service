@@ -37,7 +37,8 @@
                         {
                             @await Html.PartialAsync("Partials/Govuk/_InlineError", cancellationDateError)
                         }
-                        <fieldset class="govuk-fieldset" role="group" aria-describedby="cancel-date-issued-hint">
+                        <fieldset class="govuk-fieldset" role="group">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" />
                             <div class="govuk-date-input" id="cancel-date-issued">
                                 <div class="govuk-date-input__item">
                                     <div class="govuk-form-group">
