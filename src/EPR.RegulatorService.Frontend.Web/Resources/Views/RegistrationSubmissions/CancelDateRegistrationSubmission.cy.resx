@@ -118,39 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CancelDateRegistrationSubmission.PageHeading" xml:space="preserve">
-    <value>[Welsh]What date will this registration be cancelled?</value>
+    <value>Ar ba ddyddiad y caiff y cofrestriad yma ei ganslo?</value>
   </data>
   <data name="CancelDateRegistrationSubmission.PageTitle" xml:space="preserve">
-    <value>[Welsh]What date will this registration be cancelled?</value>
+    <value>Ar ba ddyddiad y caiff y cofrestriad yma ei ganslo?</value>
   </data>
   <data name="Error.InvalidDateErrorMessage" xml:space="preserve">
-    <value>[Welsh]Date of cancellation must be a real date</value>
+    <value>Rhaid i'r dyddiad canslo fod yn ddyddiad go iawn</value>
   </data>
   <data name="Error.MissingDayErrorMessage" xml:space="preserve">
-    <value>[Welsh]Cancellation date must include a day</value>
+    <value>Rhaid i'r dyddiad canslo gynnwys dydd</value>
   </data>
   <data name="Error.MissingMonthErrorMessage" xml:space="preserve">
-    <value>[Welsh]Cancellation date must include a month</value>
+    <value>Rhaid i'r dyddiad canslo gynnwys mis</value>
   </data>
   <data name="Error.MissingYearErrorMessage" xml:space="preserve">
-    <value>[Welsh]Cancellation date must include a year</value>
+    <value>Rhaid i'r dyddiad canslo gynnwys blwyddyn</value>
   </data>
   <data name="Error.EmptyDateErrorMessage" xml:space="preserve">
     <value>[Welsh]Enter a cancellation date</value>
   </data>
   <data name="Error.InvalidRealDateErrorMessage" xml:space="preserve">
-    <value>[Welsh]Cancellation date must be a real date</value>
+    <value>Rhaid i'r dyddiad canslo fod yn ddyddiad go iawn</value>
   </data>
   <data name="Error.PastDateErrorMessage" xml:space="preserve">
-    <value>[Welsh]Cancellation date must be after 31 December 2024</value>
+    <value>Rhaid i'r dyddiad canslo fod ar ôl 31 Rhagfyr 2024</value>
   </data>
   <data name="CancelDateRegistrationSubmission.Day" xml:space="preserve">
-    <value>[Welsh]Day</value>
+    <value>Dydd</value>
   </data>
   <data name="CancelDateRegistrationSubmission.Month" xml:space="preserve">
-    <value>[Welsh]Month</value>
+    <value>Mis</value>
   </data>
   <data name="CancelDateRegistrationSubmission.Year" xml:space="preserve">
-    <value>[Welsh]Year</value>
+    <value>Blwyddyn</value>
   </data>
 </root>
