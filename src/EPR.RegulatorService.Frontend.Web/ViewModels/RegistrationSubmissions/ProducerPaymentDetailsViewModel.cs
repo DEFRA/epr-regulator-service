@@ -16,11 +16,19 @@ public class ProducerPaymentDetailsViewModel
 
     public decimal SubsidiaryFee { get; set; }
 
+    public decimal SubsidiaryOnlineMarketPlaceFee { get; set; }
+
     public decimal TotalChargeableItems { get; set; }
 
     public decimal PreviousPaymentsReceived { get; set; }
 
     public decimal TotalOutstanding { get; set; }
+
+    public string ProducerSize { get; set; }
+
+    public int NumberOfSubsidiaries { get; set; }
+
+    public int NumberOfSubsidiariesBeingOnlineMarketplace { get; set; }
 
     [CurrencyValidation(requiredErrorMessage: "PaymentValidation.TheAmountIsRequired",
                         invalidFormatMessage: "PaymentValidation.FormatIsInvalid",

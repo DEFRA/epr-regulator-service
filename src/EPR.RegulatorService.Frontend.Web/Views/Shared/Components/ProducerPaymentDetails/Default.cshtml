@@ -10,13 +10,13 @@
 }
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
-        <h2 class="govuk-summary-card__title">@Localizer["ProducerPaymentDetails.Title"] - ADDHERE submission period</h2>
+        <h2 class="govuk-summary-card__title">@Localizer["ProducerPaymentDetails.Title"]</h2>
         <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action"></li>
         </ul>
     </div>
     <div class="govuk-summary-card__content" style="padding-bottom: 0px;">
-      @if (Model is not null)
+        @if (Model is not null)
         {
             <dl class="govuk-summary-list govuk-!-margin-bottom-4">
 
@@ -34,51 +34,58 @@
 
                 <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                     <dd class="govuk-summary-list__value" style="width: 285px;">
-                        <strong>@Localizer["ProducerPaymentDetails.ChargeableItems"]</strong>
-                    </dd>
-                    <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
-                    <dd class="govuk-summary-list__actions" style="text-align: right; flex-grow: 1;"></dd>
-                </div>
-
-                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
-                    <dd class="govuk-summary-list__value" style="width: 285px;">
-                        @Localizer["ProducerPaymentDetails.ApplicationProcessingFee"]
+                        <strong>@Localizer["ProducerPaymentDetails.ApplicationProcessingFee"]</strong>
                     </dd>
                     <dd class="govuk-summary-list__value" style="width: 410px;">
-                        @Localizer["ProducerPaymentDetails.FeeForProducerSize"]
+                        @Localizer["ProducerPaymentDetails.FeeForProducerSize", Model.ProducerSize]
                     </dd>
                     <payment-amount amount="@Model.ApplicationProcessingFee"></payment-amount>
                 </div>
-
-                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
-                    <dd class="govuk-summary-list__value" style="width: 285px;">
-                        @Localizer["ProducerPaymentDetails.OnlineMarketplaceFee"]
-                    </dd>
-                    <dd class="govuk-summary-list__value" style="width: 410px;">
-                        @Localizer["ProducerPaymentDetails.FeeForOwningAnOnlineMarketplace"]
-                    </dd>
-                    <payment-amount amount="@Model.OnlineMarketplaceFee"></payment-amount>
-                </div>
-
-                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
-                    <dd class="govuk-summary-list__value" style="width: 285px;">
-                        @Localizer["ProducerPaymentDetails.SubsidiaryFee"]
-                    </dd>
-                    <dd class="govuk-summary-list__value" style="width: 410px;">
-                        @Localizer["ProducerPaymentDetails.FeeForSubsidiaryOnlineMarketPlace"]
-                    </dd>
-                    <payment-amount amount="@Model.SubsidiaryFee"></payment-amount>
-                </div>
-
-                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
-                    <dd class="govuk-summary-list__value" style="width: 285px;">
-                        @Localizer["ProducerPaymentDetails.LateRegistrationFeeTitle"]
-                    </dd>
-                    <dd class="govuk-summary-list__value" style="width: 410px;">
-                        @Localizer["ProducerPaymentDetails.LateRegistrationFeeDescription"]
-                    </dd>
-                    <payment-amount amount="@Model.LateRegistrationFee"></payment-amount>
-                </div>
+                @if (Model.LateRegistrationFee > 0)
+                {
+                    <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                        <dd class="govuk-summary-list__value" style="width: 285px;">
+                        </dd>
+                        <dd class="govuk-summary-list__value" style="width: 410px;">
+                            @Localizer["ProducerPaymentDetails.LateRegistrationFeeDescription"]
+                        </dd>
+                        <payment-amount amount="@Model.LateRegistrationFee"></payment-amount>
+                    </div>
+                }
+                @if (Model.OnlineMarketplaceFee > 0)
+                {
+                    <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                        <dd class="govuk-summary-list__value" style="width: 285px;">
+                        </dd>
+                        <dd class="govuk-summary-list__value" style="width: 410px;">
+                            @Localizer["ProducerPaymentDetails.OnelineMarketPlaceFeeDescription"]
+                        </dd>
+                        <payment-amount amount="@Model.OnlineMarketplaceFee"></payment-amount>
+                    </div>
+                }
+                @if (Model.NumberOfSubsidiaries > 0)
+                {
+                    <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                        <dd class="govuk-summary-list__value" style="width: 285px;">
+                            <strong>@Localizer["ProducerPaymentDetails.SubsidiaryFee"]</strong>
+                        </dd>
+                        <dd class="govuk-summary-list__value" style="width: 410px;">
+                            @Localizer["ProducerPaymentDetails.SubsidiaryFeeDescription", Model.NumberOfSubsidiaries]
+                        </dd>
+                        <payment-amount amount="@Model.SubsidiaryFee"></payment-amount>
+                    </div>
+                    @if (Model.NumberOfSubsidiariesBeingOnlineMarketplace > 0)
+                    {
+                        <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                            <dd class="govuk-summary-list__value" style="width: 285px;">
+                            </dd>
+                            <dd class="govuk-summary-list__value" style="width: 410px;">
+                                @Localizer["ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription", Model.NumberOfSubsidiariesBeingOnlineMarketplace]
+                            </dd>
+                            <payment-amount amount="@Model.SubsidiaryOnlineMarketPlaceFee"></payment-amount>
+                        </div>
+                    }
+                }
 
                 <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                     <dd class="govuk-summary-list__value" style="width: 285px;">
@@ -88,15 +95,18 @@
                     <payment-amount amount="@Model.TotalChargeableItems" property-name="TotalChargeableItems"></payment-amount>
                 </div>
 
-                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
-                    <dd class="govuk-summary-list__value" style="width: 285px;">
-                        <strong>@Localizer["ProducerPaymentDetails.PreviousPaymentsReceived"]</strong>
-                    </dd>
-                    <dd class="govuk-summary-list__value" style="width: 410px;">
-                        @Localizer["ProducerPaymentDetails.TotalPaymentsReceived"]
-                    </dd>
-                    <payment-amount amount="@Model.PreviousPaymentsReceived" property-name="PreviousPaymentsReceived"></payment-amount>
-                </div>
+                @if (Model.PreviousPaymentsReceived > 0)
+                {
+                    <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                        <dd class="govuk-summary-list__value" style="width: 285px;">
+                            <strong>@Localizer["ProducerPaymentDetails.PreviousPaymentsReceived"]</strong>
+                        </dd>
+                        <dd class="govuk-summary-list__value" style="width: 410px;">
+                            @Localizer["ProducerPaymentDetails.TotalPaymentsReceived"]
+                        </dd>
+                        <payment-amount amount="@Model.PreviousPaymentsReceived" property-name="PreviousPaymentsReceived"></payment-amount>
+                    </div>
+                }
 
                 <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                     <dd class="govuk-summary-list__value" style="width: 285px;">
@@ -141,6 +151,5 @@
         {
             <p class="govuk-body">Unable to retrieve producer payment details</p>
         }
-        
     </div>
 </div>

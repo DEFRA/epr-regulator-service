@@ -25,5 +25,8 @@ public class ProducerPaymentResponse
     [JsonPropertyName("outstandingPayment")]
     public decimal TotalOutstanding { get; set; }
 
+    [JsonPropertyName("subsidiariesFeeBreakdown")]
+    public SubsidiariesFeeBreakdownResponse SubsidiariesFeeBreakdown { get; set; }
+
     public decimal? OfflinePaymentAmount { get; set; } = null!;
 }

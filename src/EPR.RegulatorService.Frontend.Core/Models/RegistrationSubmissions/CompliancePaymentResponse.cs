@@ -46,37 +46,5 @@ public class ComplianceSchemeMember
     public decimal TotalFee { get; set; }
 
     [JsonPropertyName("subsidiariesFeeBreakdown")]
-    public SubsidiariesFeeBreakdown SubsidiariesFeeBreakdown { get; set; }
-}
-
-[ExcludeFromCodeCoverage]
-public class SubsidiariesFeeBreakdown
-{
-    [JsonPropertyName("totalSubsidiariesOMPFees")]
-    public decimal TotalSubsidiariesOMPFees { get; set; }
-
-    [JsonPropertyName("countOfOMPSubsidiaries")]
-    public int CountOfOMPSubsidiaries { get; set; }
-
-    [JsonPropertyName("unitOMPFees")]
-    public int UnitOMPFees { get; set; }
-
-    [JsonPropertyName("feeBreakdowns")]
-    public List<FeeBreakdown> FeeBreakdowns { get; set; }
-}
-
-[ExcludeFromCodeCoverage]
-public class FeeBreakdown
-{
-    [JsonPropertyName("bandNumber")]
-    public int BandNumber { get; set; }
-
-    [JsonPropertyName("unitCount")]
-    public int UnitCount { get; set; }
-
-    [JsonPropertyName("unitPrice")]
-    public decimal UnitPrice { get; set; }
-
-    [JsonPropertyName("totalPrice")]
-    public decimal TotalPrice { get; set; }
+    public SubsidiariesFeeBreakdownResponse SubsidiariesFeeBreakdown { get; set; }
 }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Extensions;
@@ -45,9 +46,13 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 LateRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.LateRegistrationFee),
                 OnlineMarketplaceFee = ConvertToPoundsFromPence(producerPaymentResponse.OnlineMarketplaceFee),
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
-                SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee),
+                SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
+                SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 TotalChargeableItems = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
-                TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding)
+                TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
+                ProducerSize = "Large", // To do - check if this is the right property
+                NumberOfSubsidiaries = 3, // To do - assign from request object
+                NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount // To do - assign from request object
             };
 
             return View(producerPaymentDetailsViewModel);

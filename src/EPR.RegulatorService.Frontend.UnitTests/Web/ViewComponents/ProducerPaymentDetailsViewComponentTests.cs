@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
-using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
@@ -55,13 +54,15 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>()))
         .ReturnsAsync(new ProducerPaymentResponse // all values in pence
         {
-            ApplicationProcessingFee = 100.00M, 
+            ApplicationProcessingFee = 100.00M,
             LateRegistrationFee = 200.00M,
             OnlineMarketplaceFee = 300.00M,
             SubsidiaryFee = 400.00M,
             TotalChargeableItems = 1000.00M,
             PreviousPaymentsReceived = 500.00M,
-            TotalOutstanding = 500.00M
+            TotalOutstanding = 500.00M,
+            SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+                { OnlineMarketPlaceSubsidiariesCount = 1, SubsidiaryOnlineMarketPlaceFee = 200.00M }
         });
 
         // Act
@@ -76,7 +77,8 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.ApplicationProcessingFee.Should().Be(1.00M);
         model.LateRegistrationFee.Should().Be(2.00M);
         model.OnlineMarketplaceFee.Should().Be(3.00M);
-        model.SubsidiaryFee.Should().Be(4.00M);
+        model.SubsidiaryFee.Should().Be(2.00M);
+        model.SubsidiaryOnlineMarketPlaceFee.Should().Be(2.00M);
         model.TotalChargeableItems.Should().Be(10.00M);
         model.PreviousPaymentsReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(5.00M);
