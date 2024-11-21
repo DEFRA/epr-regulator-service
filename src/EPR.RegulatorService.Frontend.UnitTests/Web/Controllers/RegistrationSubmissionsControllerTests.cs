@@ -244,29 +244,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissions_ShouldCreateANewJourneySession_WhenSessionManagerNull()
-        {
-            // Arrange
-            var sut = new RegistrationSubmissionsController(
-                null,
-                null,
-                null,
-                _loggerMock.Object,
-                _mockConfiguration.Object,
-                _mockUrlsOptions.Object
-                );
-
-            // Act
-            var result = sut.SessionManager;
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(JourneySessionManager));
-
-            sut.Dispose();
-        }
-
-        [TestMethod]
         public async Task RegistrationSubmissions_Initialises_ListViewModel_When_New()
         {
             // Arrange

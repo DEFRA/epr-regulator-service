@@ -4,6 +4,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
+    using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
@@ -50,7 +51,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 return false;
             }
 
-            var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+            var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId.Value, out var value)
+                                                    ? value : _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+
             if (sessionModelWhichMustMatchSession?.SubmissionId != submissionId.Value)
             {
                 return false;
@@ -202,6 +205,25 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 _ => "Eng",
             };
             return code;
+        }
+
+        private async Task UpdateOrganisationDetailsChangeHistoryAsync(RegistrationSubmissionDetailsViewModel existingModel, EndpointResponseStatus status, RegulatorDecisionRequest regulatorDecisionRequest)
+        {
+            if (status == EndpointResponseStatus.Success)
+            {
+                existingModel.RegulatorComments = regulatorDecisionRequest.Comments;
+                existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
+
+                if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
+                {
+                    _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory[existingModel.SubmissionId] = existingModel;
+                }
+                else
+                {
+                    _currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(existingModel.SubmissionId, existingModel);
+                }
+                await SaveSession(_currentSession);
+            }
         }
     }
 }

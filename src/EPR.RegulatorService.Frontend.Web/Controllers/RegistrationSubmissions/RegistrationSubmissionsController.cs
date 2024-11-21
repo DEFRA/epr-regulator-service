@@ -3,6 +3,7 @@ using System.Diagnostics;
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
+using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -34,12 +35,10 @@ public partial class RegistrationSubmissionsController(
 {
     private readonly string _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
     private readonly ExternalUrlsOptions _externalUrlsOptions = externalUrlsOptions.Value;
-    private readonly ISessionManager<JourneySession> _sessionManager = sessionManager ?? new JourneySessionManager();
+    private readonly ISessionManager<JourneySession> _sessionManager = sessionManager;
     private readonly IFacadeService _facadeService = facade;
     private readonly IPaymentFacadeService _paymentFacadeService = paymentFacade;
     private JourneySession _currentSession;
-
-    public ISessionManager<JourneySession> SessionManager => _sessionManager;
 
     private static readonly Action<ILogger, string, Exception?> _logControllerError =
         LoggerMessage.Define<string>(
@@ -222,18 +221,21 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
-                                new RegulatorDecisionRequest
-                                {
-                                    OrganisationId = existingModel.OrganisationId,
-                                    SubmissionId = existingModel.SubmissionId,
-                                    Status = RegistrationSubmissionStatus.Granted.ToString(),
-                                    CountryName = GetCountryCodeInitial(existingModel.NationId),
-                                    RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
-                                    TwoDigitYear = existingModel.RegistrationYear.Substring(2),
-                                    //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
-                                    OrganisationAccountManagementId = existingModel.OrganisationReference
-                                });
+            var regulatorDecisionRequest = new RegulatorDecisionRequest
+            {
+                OrganisationId = existingModel.OrganisationId,
+                SubmissionId = existingModel.SubmissionId,
+                Status = RegistrationSubmissionStatus.Granted.ToString(),
+                CountryName = GetCountryCodeInitial(existingModel.NationId),
+                RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
+                TwoDigitYear = existingModel.RegistrationYear.Substring(2),
+                //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
+                OrganisationAccountManagementId = existingModel.OrganisationReference
+            };
+
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
+
+            await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
 
             return status == Core.Models.EndpointResponseStatus.Success
                   ? RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId })
@@ -289,16 +291,19 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
-                new RegulatorDecisionRequest
-                {
-                    OrganisationId = existingModel.OrganisationId,
-                    SubmissionId = existingModel.SubmissionId,
-                    Status = Core.Enums.RegistrationSubmissionStatus.Queried.ToString(),
-                    Comments = model.Query
-                });
+            var regulatorDecisionRequest = new RegulatorDecisionRequest
+            {
+                OrganisationId = existingModel.OrganisationId,
+                SubmissionId = existingModel.SubmissionId,
+                Status = Core.Enums.RegistrationSubmissionStatus.Queried.ToString(),
+                Comments = model.Query
+            };
 
-            return status == Core.Models.EndpointResponseStatus.Success
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
+
+            await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
+
+            return status == EndpointResponseStatus.Success
                 ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
                 : RedirectToRoute("ServiceNotAvailable",
                 new
@@ -363,6 +368,7 @@ public partial class RegistrationSubmissionsController(
         }
 
         _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason = model.RejectReason;
+        existingModel.RegulatorComments = model.RejectReason;
 
         SaveSessionAndJourney(
             _currentSession.RegulatorRegistrationSubmissionSession,
@@ -550,14 +556,17 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
-                new RegulatorDecisionRequest
-                {
-                    OrganisationId = existingModel.OrganisationId,
-                    SubmissionId = existingModel.SubmissionId,
-                    Status = Core.Enums.RegistrationSubmissionStatus.Refused.ToString(),
-                    Comments = existingModel.RejectReason
-                });
+            var regulatorDecisionRequest = new RegulatorDecisionRequest
+            {
+                OrganisationId = existingModel.OrganisationId,
+                SubmissionId = existingModel.SubmissionId,
+                Status = RegistrationSubmissionStatus.Refused.ToString(),
+                Comments = existingModel.RejectReason
+            };
+
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
+
+            await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
 
             return status == Core.Models.EndpointResponseStatus.Success
                 ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
@@ -632,15 +641,18 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
-                new RegulatorDecisionRequest
-                {
-                    OrganisationId = existingModel.OrganisationId,
-                    SubmissionId = existingModel.SubmissionId,
-                    Status = Core.Enums.RegistrationSubmissionStatus.Cancelled.ToString(),
-                    Comments = existingModel.CancellationReason,
-                    DecisionDate = model.CancellationDate
-                });
+            var regulatorDecisionRequest = new RegulatorDecisionRequest
+            {
+                OrganisationId = existingModel.OrganisationId,
+                SubmissionId = existingModel.SubmissionId,
+                Status = RegistrationSubmissionStatus.Cancelled.ToString(),
+                Comments = existingModel.CancellationReason,
+                DecisionDate = model.CancellationDate
+            };
+
+            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
+
+            await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
 
             return status == Core.Models.EndpointResponseStatus.Success
                 ? RedirectToRoute("CancellationConfirmation", new { submissionId = existingModel.SubmissionId })
