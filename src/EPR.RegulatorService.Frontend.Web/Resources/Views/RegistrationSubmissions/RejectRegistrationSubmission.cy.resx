@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Error.Reject" xml:space="preserve">
-    <value>[Welsh]Enter the reason you are rejecting this registration application</value>
+    <value>Rhowch y rheswm pam rydych chi'n gwrthod y cais yma am gofrestru</value>
   </data>
   <data name="Error.RejectReasonTooLong" xml:space="preserve">
-    <value>[Welsh]Reason for rejecting application must be 400 characters or less</value>
+    <value>Rhaid i'r rheswm dros wrthod y cais fod yn 400 o gymeriadau neu lai</value>
   </data>
   <data name="RejectRegistrationSubmission.Caption" xml:space="preserve">
-    <value>[Welsh]Manage registration submissions</value>
+    <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="RejectRegistrationSubmission.Description" xml:space="preserve">
-    <value>[Welsh]The organisation will be able to see your comments. Clearly explain why you’ve refused their registration and how they might respond. If you refuse this submission, the organisation will need to resubmit their application and pay any associated fee.</value>
+    <value>Bydd y sefydliad yn gallu gweld eich sylwadau. Esboniwch yn glir pam rydych chi wedi gwrthod eu cofrestru a sut gallai'r sefydliad ymateb. Os byddwch chi'n gwrthod y cais yma, bydd angen i'r cynhyrchydd neu'r Cynllun Cydymffurfio ailgyflwyno'u cais a thalu unrhyw ffi berthnasol.</value>
   </data>
   <data name="RejectRegistrationSubmission.Heading" xml:space="preserve">
-    <value>[Welsh]Why are you refusing this registration submission?</value>
+    <value>Pam rydych chi'n gwrthod y cais yma am gofrestru?</value>
   </data>
   <data name="RejectRegistrationSubmission.Title" xml:space="preserve">
-    <value>[Welsh]Why are you refusing this registration submission?</value>
+    <value>Pam rydych chi'n gwrthod y cais yma am gofrestru?</value>
   </data>
 </root>
