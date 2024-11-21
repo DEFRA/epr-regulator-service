@@ -30,7 +30,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         protected Mock<HttpContext> _mockHttpContext = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _mockUrlsOptions = null!;
         protected Mock<IConfiguration> _mockConfiguration = null!;
-        protected Mock<ISessionManager<JourneySession>> _mockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
+        protected Mock<ISessionManager<JourneySession>> _mockSessionManager = null!;
         protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
         protected Mock<IUrlHelper> _mockUrlHelper = null!;
@@ -43,6 +43,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _loggerMock = new Mock<ILogger<RegistrationSubmissionsController>>();
             _facadeServiceMock = new Mock<IFacadeService>();
             _paymentFacadeServiceMock = new Mock<IPaymentFacadeService>();
+            _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
 
             _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
 
