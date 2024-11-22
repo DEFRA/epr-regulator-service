@@ -225,6 +225,7 @@ public partial class RegistrationSubmissionsController(
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(
                                 new RegulatorDecisionRequest
                                 {
+                                    ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
                                     OrganisationId = existingModel.OrganisationId,
                                     SubmissionId = existingModel.SubmissionId,
                                     Status = RegistrationSubmissionStatus.Granted.ToString(),
