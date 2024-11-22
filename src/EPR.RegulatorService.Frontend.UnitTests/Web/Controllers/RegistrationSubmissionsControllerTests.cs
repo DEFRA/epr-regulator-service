@@ -1694,7 +1694,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissionDetails_ReturnsViewResult_When_Receiving_Valid_SubmissionId1()
+        public async Task Fetch_RegistrationSubmissionDetails_From_Session_ChangeHistory()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
