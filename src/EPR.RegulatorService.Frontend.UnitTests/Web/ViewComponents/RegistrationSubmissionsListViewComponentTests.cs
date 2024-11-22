@@ -1,11 +1,17 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+using EPR.RegulatorService.Frontend.Web.ViewComponents;
+using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using Frontend.Core.Enums;
 
@@ -21,12 +27,14 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
     private const RegistrationSubmissionOrganisationType DrinksLtdType = RegistrationSubmissionOrganisationType.compliance;
     private const RegistrationSubmissionStatus DrinksLtdStatus = RegistrationSubmissionStatus.Updated;
     private readonly DateTime _drinksLtdRegistrationTime = DateTime.Now - new TimeSpan(50, 0, 0, 0);
+
     private readonly Guid _sweetsLtdGuid = Guid.NewGuid();
     private const string SweetsLtdCompanyName = "SweetsLtd";
     private const string SweetsLtdCompanyReference = "987654";
     private const RegistrationSubmissionOrganisationType SweetsLtdType = RegistrationSubmissionOrganisationType.large;
     private const RegistrationSubmissionStatus SweetsLtdStatus = RegistrationSubmissionStatus.Queried;
     private readonly DateTime _sweetsLtdRegistrationTime = DateTime.Now - new TimeSpan(30, 0, 0, 0);
+
     private readonly Guid _flyByLtdGuid = Guid.NewGuid();
     private const string FlyByLtdCompanyName = "FlyByLtd";
     private const string FlyByLtdCompanyReference = "237654";
@@ -39,8 +47,8 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
     public void TestInitialize()
     {
         _fixture = new Fixture();
-        _submissions =
-        [
+        _submissions = new List<RegistrationSubmissionOrganisationDetails>()
+        {
             new()
             {
                 OrganisationId = _drinksLtdGuid,
@@ -71,7 +79,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
                 SubmissionDate = _flyByLtdRegistrationTime,
                 RegistrationYear = _flyByLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
             }
-        ];
+        };
     }
 
     [TestMethod]
@@ -87,6 +95,9 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
             .Setup(x => x.GetRegistrationSubmissions(It.IsAny<RegistrationSubmissionsFilterModel?>()))
             .Returns(Task.FromResult(submissions));
 
-        var viewComponent = new RegistrationSubmissionListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object, _sessionManager.Object);
+        var viewComponent = new RegistrationSubmissionListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
+
+
     }
+
 }

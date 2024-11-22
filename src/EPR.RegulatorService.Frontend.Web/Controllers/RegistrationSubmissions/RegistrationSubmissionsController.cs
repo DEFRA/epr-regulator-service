@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime;
 
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -39,7 +40,6 @@ public partial class RegistrationSubmissionsController(
     private readonly IFacadeService _facadeService = facade;
     private readonly IPaymentFacadeService _paymentFacadeService = paymentFacade;
     private JourneySession _currentSession;
-
     private static readonly Action<ILogger, string, Exception?> _logControllerError =
         LoggerMessage.Define<string>(
             LogLevel.Error,
@@ -124,7 +124,7 @@ public partial class RegistrationSubmissionsController(
 
         RegistrationSubmissionDetailsViewModel model = submissionId == null
             ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-            : await _facadeService.GetRegistrationSubmissionDetails(submissionId.Value);
+            :  await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
 
         if (model == null)
         {

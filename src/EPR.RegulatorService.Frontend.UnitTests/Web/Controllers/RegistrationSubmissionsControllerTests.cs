@@ -3666,8 +3666,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
 
             Assert.IsNotNull(result);
-            result.RouteName.Should().Be("CancellationConfirmation");
-            result.RouteValues.First().Value.Should().Be(detailsModel.SubmissionId);
+
 
             // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>

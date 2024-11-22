@@ -1,7 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 {
     using System.Globalization;
-
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
     using EPR.RegulatorService.Frontend.Core.Models;
@@ -62,6 +61,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             viewModel = sessionModelWhichMustMatchSession;
             return true;
         }
+
+        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
+            => _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var registrationSubmissionOrganisationDetails)
+                ? registrationSubmissionOrganisationDetails
+                : await facadeMethod(submissionId);
 
         private static void ClearFilters(RegulatorRegistrationSubmissionSession session,
                                   RegistrationSubmissionsFilterViewModel filters,
@@ -213,6 +217,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             {
                 existingModel.RegulatorComments = regulatorDecisionRequest.Comments;
                 existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
+                existingModel.SubmissionDetails.Status = existingModel.Status;
 
                 if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
                 {
