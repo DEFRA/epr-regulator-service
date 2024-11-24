@@ -17,10 +17,10 @@ public static class RegistrationSubmissionsFilters
     public static IQueryable<RegistrationSubmissionOrganisationDetails> Filter(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable,
                                                                                 RegistrationSubmissionsFilterModel filters) => queryable
                         .FilterByOrganisationName(filters.OrganisationName)
-                        .FilterByOrganisationRef(filters.OrganisationReference)
+                        .FilterByOrganisationRef(filters.OrganisationRef)
                         .FilterByOrganisationType(filters.OrganisationType)
-                        .FilterBySubmissionStatus(filters.Statuses)
-                        .FilterByRelevantYear(filters.RelevantYears);
+                        .FilterBySubmissionStatus(filters.SubmissionStatus)
+                        .FilterByRelevantYear(filters.RelevantYear);
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByOrganisationName(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? organisationName)
     {
@@ -34,8 +34,8 @@ public static class RegistrationSubmissionsFilters
             queryable = completeQueryable.Any()
                 ? completeQueryable
                 : (from q in queryable
-                   where nameParts.Any(part => q.OrganisationName.Contains(part, StringComparison.OrdinalIgnoreCase))
-                   select q);
+                            where nameParts.Any(part => q.OrganisationName.Contains(part, StringComparison.OrdinalIgnoreCase))
+                            select q);
         }
 
         return queryable;
@@ -69,10 +69,10 @@ public static class RegistrationSubmissionsFilters
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterBySubmissionStatus(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? submissionStatus)
     {
-        if (!string.IsNullOrEmpty(submissionStatus) && submissionStatus != "None")
+        if (!string.IsNullOrEmpty(submissionStatus) && submissionStatus != "none")
         {
             queryable = from q in queryable
-                        where submissionStatus.Contains(q.SubmissionStatus.ToString())
+                        where submissionStatus.Contains(q.RegistrationStatus.ToString())
                         select q;
         }
 
@@ -84,7 +84,7 @@ public static class RegistrationSubmissionsFilters
         if (!string.IsNullOrEmpty(relevantYear))
         {
             queryable = from q in queryable
-                        where relevantYear.Contains(q.RegistrationYear)
+                        where relevantYear.Contains(q.RelevantYear)
                         select q;
         }
 

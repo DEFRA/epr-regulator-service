@@ -25,14 +25,25 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public RegistrationSubmissionOrganisationType OrganisationType { get; set; }
 
     public int NationId { get; set; }
-    public string RegistrationYear { get; set; }
+    public string RelevantYear { get; set; }
     public DateTime SubmissionDate { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionStatus SubmissionStatus { get; set; }
     public DateTime? StatusPendingDate { get; set; }
+
+    public bool? IsComplianceScheme { get; set; }
+    public string ProducerSize { get; set; }
+
+    public int NumberOfSubsidiaries { get; set; }
+    public int NumberOfOnlineSubsidiaries { get; set; }
+    public bool IsOnlineMarketPlace { get; set; }
+    public bool IsLateFeeDue { get; set; }
+
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
+    public DateTime? RegulatorDecisionDate { get; set; }
+    public DateTime ProducerCommentDate { get; set; }
     public string ApplicationReferenceNumber { get; set; } = String.Empty;
     public string? RegistrationReferenceNumber { get; set; } = String.Empty;
     public string CompaniesHouseNumber { get; set; }
