@@ -438,6 +438,7 @@
         **/ServiceSettingsOptions.cs,
         **/SiteDateOptions.cs,
         **/gulpfile.js,
+        **/submissionFilterState.js,
         **/HealthCheckOptionBuilder.cs,
         **/AnalyticsCookieMiddleware.cs,
         **/Program.cs,

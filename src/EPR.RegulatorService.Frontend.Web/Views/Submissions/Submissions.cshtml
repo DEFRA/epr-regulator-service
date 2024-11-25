@@ -8,7 +8,11 @@
 @{
     ViewData["Title"] = Localizer["Submissions.Title"];
 
-  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/submissionFilterState.js"></script>
 }
 
 <div class="govuk-width-container">
