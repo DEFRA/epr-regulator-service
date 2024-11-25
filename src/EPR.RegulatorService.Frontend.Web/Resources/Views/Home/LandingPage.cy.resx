@@ -139,24 +139,24 @@
     <value>Gweld, derbyn neu wrthod cyflwyniadau data pecynwaith</value>
   </data>
   <data name="LandingPage.ManageRegistrations" xml:space="preserve">
-    <value>WManage organisation details submissions</value>
+    <value>Rheoli cyflwyniadau manylion sefydliadau</value>
   </data>
   <data name="LandingPage.ManageRegistrationsDescription" xml:space="preserve">
-    <value>WView, accept or reject organisation details submissions</value>
+    <value>Gweld, derbyn neu wrthod cyflwyniadau manylion sefydliadau</value>
   </data>
   <data name="Regulator.Home" xml:space="preserve">
     <value>Hafan Rheoleiddwyr - {0}</value>
   </data>
   <data name="LandingPage.ManageApprovedPerson" xml:space="preserve">
-    <value>WManage organisations and their approved person</value>
+    <value>Rheoli sefydliad a'u person wedi'i gymeradwyo</value>
   </data>
   <data name="LandingPage.ManageApprovedPersonDescription" xml:space="preserve">
-    <value>WRemove or invite approved persons</value>
+    <value>Tynnu neu wahodd personau wedi'u cymeradwyo</value>
   </data>
   <data name="LandingPage.ManageRegistrationSubmissions" xml:space="preserve">
-    <value>[Welsh]Manage registration submissions</value>
+    <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="LandingPage.ManageRegistrationSubmissionsDescription" xml:space="preserve">
-    <value>[Welsh]View, accept or reject registration application submissions</value>
+    <value>Gweld, derbyn neu wrthod cyflwyniadau ceisiadau am gofrestru</value>
   </data>
 </root>

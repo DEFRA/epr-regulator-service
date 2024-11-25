@@ -3,16 +3,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewComponents;
-using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-
 using Frontend.Core.Enums;
 
 [TestClass]
@@ -95,9 +89,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
             .Setup(x => x.GetRegistrationSubmissions(It.IsAny<RegistrationSubmissionsFilterModel?>()))
             .Returns(Task.FromResult(submissions));
 
-        var viewComponent = new RegistrationSubmissionListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
-
-
+        var viewComponent = new RegistrationSubmissionListViewComponent(_facadeServiceMock.Object);
+        viewComponent.Should().NotBeNull();
     }
-
 }

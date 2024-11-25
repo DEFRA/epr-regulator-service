@@ -121,7 +121,7 @@
     <value>[Welsh]Select yes if you want to refuse this registration application</value>
   </data>
   <data name="ConfirmRegistrationRefusal.PageHeading" xml:space="preserve">
-    <value>[Welsh]Are you sure you want to refuse this registration application?</value>
+    <value>Ydych chi'n siŵr yr hoffech chi wrthod y cais yma am gofrestru?</value>
   </data>
   <data name="ConfirmRegistrationRefusal.PageTitle" xml:space="preserve">
     <value>[Welsh]Confirm application refusal</value>

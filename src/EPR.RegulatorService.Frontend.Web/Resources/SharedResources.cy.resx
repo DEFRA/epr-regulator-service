@@ -259,34 +259,34 @@
     <value>WYou can enter up to 500 characters</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.ComplianceScheme" xml:space="preserve">
-    <value>[Welsh]Compliance Scheme</value>
+    <value>Cynllun cydymffurfio</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.LargeProducer" xml:space="preserve">
-    <value>[Welsh]Large Producer</value>
+    <value>Cynhyrchydd mawr</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.NotSpecified" xml:space="preserve">
     <value>[Welsh]Not specified</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.SmallProducer" xml:space="preserve">
-    <value>[Welsh]Small Producer</value>
+    <value>Cynhyrchydd bach</value>
   </data>
   <data name="RegistrationSubmissionStatus.Cancelled" xml:space="preserve">
-    <value>[Welsh]Cancelled</value>
+    <value>Wedi'i ganslo</value>
   </data>
   <data name="RegistrationSubmissionStatus.Granted" xml:space="preserve">
-    <value>[Welsh]Granted</value>
+    <value>Wedi'i ganiatáu</value>
   </data>
   <data name="RegistrationSubmissionStatus.NotSpecified" xml:space="preserve">
     <value>[Welsh]Not specified</value>
   </data>
   <data name="RegistrationSubmissionStatus.Pending" xml:space="preserve">
-    <value>[Welsh]Pending</value>
+    <value>Ar ei hanner</value>
   </data>
   <data name="RegistrationSubmissionStatus.Queried" xml:space="preserve">
-    <value>[Welsh]Queried</value>
+    <value>Wedi'i gwestiynu</value>
   </data>
   <data name="RegistrationSubmissionStatus.Refused" xml:space="preserve">
-    <value>[Welsh]Refused</value>
+    <value>Wedi'i wrthod</value>
   </data>
   <data name="RegistrationSubmissionStatus.Updated" xml:space="preserve">
     <value>[Welsh]Updated</value>
@@ -307,12 +307,12 @@
     <value>[Welsh]Regulator basic</value>
   </data>
   <data name="BackToAllSubmissions" xml:space="preserve">
-    <value>[Welsh]Go back to all submissions</value>
+    <value>Ewch yn ôl i bob cyflwyniad</value>
   </data>
   <data name="ManageRegistrationSubmissions.Caption" xml:space="preserve">
-    <value>[Welsh]Manage registration submissions</value>
+    <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="SaveAndContinue" xml:space="preserve">
-    <value>[Welsh]Save and continue</value>
+    <value>Cadw a pharhau</value>
   </data>
 </root>

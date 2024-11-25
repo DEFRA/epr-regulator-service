@@ -1,9 +1,9 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 {
     using System.Globalization;
-
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
+    using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
@@ -50,7 +50,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 return false;
             }
 
-            var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+            var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId.Value, out var value)
+                                                    ? value : _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+
             if (sessionModelWhichMustMatchSession?.SubmissionId != submissionId.Value)
             {
                 return false;
@@ -59,6 +61,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             viewModel = sessionModelWhichMustMatchSession;
             return true;
         }
+
+        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
+            => _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var registrationSubmissionOrganisationDetails)
+                ? registrationSubmissionOrganisationDetails
+                : await facadeMethod(submissionId);
 
         private static void ClearFilters(RegulatorRegistrationSubmissionSession session,
                                   RegistrationSubmissionsFilterViewModel filters,
@@ -190,6 +197,39 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             4 => "Natural Resources Wales (NRW)",
             _ => "",
         };
+
+        private static string GetCountryCodeInitial(int nationId)
+        {
+            string code = nationId switch
+            {
+                1 => "Eng",
+                2 => "NI",
+                3 => "Sco",
+                4 => "Wal",
+                _ => "Eng",
+            };
+            return code;
+        }
+
+        private async Task UpdateOrganisationDetailsChangeHistoryAsync(RegistrationSubmissionDetailsViewModel existingModel, EndpointResponseStatus status, RegulatorDecisionRequest regulatorDecisionRequest)
+        {
+            if (status == EndpointResponseStatus.Success)
+            {
+                existingModel.RegulatorComments = regulatorDecisionRequest.Comments;
+                existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
+                existingModel.SubmissionDetails.Status = existingModel.Status;
+
+                if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
+                {
+                    _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory[existingModel.SubmissionId] = existingModel;
+                }
+                else
+                {
+                    _currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(existingModel.SubmissionId, existingModel);
+                }
+                await SaveSession(_currentSession);
+            }
+        }
 
         private static string GetRegulatorAgencyEmail(int nationId) => nationId switch
         {

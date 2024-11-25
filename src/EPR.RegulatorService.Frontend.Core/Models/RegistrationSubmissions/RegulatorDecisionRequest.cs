@@ -1,7 +1,5 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
-using System.Text.Json.Serialization;
-
 using EPR.RegulatorService.Frontend.Core.Enums;
 
 public class RegulatorDecisionRequest
@@ -12,10 +10,13 @@ public class RegulatorDecisionRequest
 
     public Guid SubmissionId { get; set; }
 
-    public string? Comments { get; set; } 
+    public string? Comments { get; set; }
+
     public string CountryName { get; set; }
 
     public RegistrationSubmissionType RegistrationSubmissionType { get; set; }
+
+    public string ApplicationReferenceNumber { get; set; }
 
     public string? TwoDigitYear { get; set; }
 
