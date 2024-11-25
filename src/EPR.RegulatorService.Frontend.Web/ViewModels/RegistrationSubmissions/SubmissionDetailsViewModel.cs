@@ -3,26 +3,37 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
+using static EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.RegistrationSubmissionOrganisationSubmissionSummaryDetails;
+
 public class SubmissionDetailsViewModel
 {
     public class FileDetails
     {
+        FileType Type { get; set; }
+
         public string Label { get; set; }
         public string FileName { get; set; }
+        public string FileId { get; set; }
+        public string BlobName { get; set; }
+
         public string DownloadUrl { get; set; }
 
         public static implicit operator FileDetails(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails otherFile) => otherFile is null ? null : new FileDetails
         {
-            Label = otherFile.Label,
+            Type = otherFile.Type,
+            Label = "tbc",
             FileName = otherFile.FileName,
-            DownloadUrl = otherFile.DownloadUrl,
+            DownloadUrl = "generated",
+            FileId = otherFile.FileId,
+            BlobName = otherFile.BlobName
         };
 
         public static implicit operator RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails(FileDetails otherFile) => otherFile is null ? null : new()
         {
-            Label = otherFile.Label,
+            Type = otherFile.Type,
             FileName = otherFile.FileName,
-            DownloadUrl = otherFile.DownloadUrl,
+            FileId = otherFile.FileId,
+            BlobName = otherFile.BlobName
         };
     }
 
@@ -53,7 +64,6 @@ public class SubmissionDetailsViewModel
         DeclaredBy = details.DeclaredBy,
         DecisionDate = details.DecisionDate,
         Status = details.Status,
-        SubmittedBy = details.SubmittedBy,
         SubmittedOnTime = details.SubmittedOnTime,
         TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
         Files = details.Files.Select(file => (RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails)file).ToList()
@@ -67,7 +77,6 @@ public class SubmissionDetailsViewModel
         DeclaredBy = details.DeclaredBy,
         DecisionDate = details.DecisionDate,
         Status = details.Status,
-        SubmittedBy = details.SubmittedBy,
         SubmittedOnTime = details.SubmittedOnTime,
         TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
         Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList()

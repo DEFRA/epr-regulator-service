@@ -6,11 +6,13 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 
 public class RegistrationSubmissionOrganisationSubmissionSummaryDetails
 {
+    public enum FileType { company, brands, partnership }
     public class FileDetails
     {
-        public string Label { get; set; }
+        public FileType Type { get; set; }
+        public string FileId { get; set; }
         public string FileName { get; set; }
-        public string DownloadUrl { get; set; }
+        public string BlobName { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -20,7 +22,8 @@ public class RegistrationSubmissionOrganisationSubmissionSummaryDetails
 
     public DateTime TimeAndDateOfSubmission { get; set; }
     public bool SubmittedOnTime { get; set; }
-    public string SubmittedBy { get; set; }
+    public Guid? SubmittedByUserId { get; set; }
+    public string SubmissionPeriod { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ServiceRole AccountRole { get; set; }

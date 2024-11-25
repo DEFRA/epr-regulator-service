@@ -24,10 +24,10 @@ public partial class MockedFacadeService : IFacadeService
                 OrganisationReference = fields[0][..10],
                 OrganisationName = fields[1],
                 OrganisationType = Enum.Parse<RegistrationSubmissionOrganisationType>(fields[2]),
-                RegistrationStatus = Enum.Parse<RegistrationSubmissionStatus>(fields[3]),
+                SubmissionStatus= Enum.Parse<RegistrationSubmissionStatus>(fields[3]),
                 ApplicationReferenceNumber = fields[4],
                 RegistrationReferenceNumber = fields[5],
-                RegistrationDateTime = dateTime,
+                SubmissionDate = dateTime,
                 RelevantYear = dateTime.Year.ToString(CultureInfo.InvariantCulture),
                 CompaniesHouseNumber = fields[9],
                 BuildingName = fields[10],
@@ -40,9 +40,9 @@ public partial class MockedFacadeService : IFacadeService
                 County = fields[17],
                 Country = fields[18],
                 Postcode = fields[19],
-                OrganisationID = Guid.Parse(fields[22]),
+                OrganisationId = Guid.Parse(fields[22]),
                 SubmissionId = Guid.Parse(fields[23]),
-                NationID = int.Parse(fields[24], CultureInfo.InvariantCulture),
+                NationId = int.Parse(fields[24], CultureInfo.InvariantCulture),
                 RegulatorComments = fields[20],
                 ProducerComments = fields[21],
             });
@@ -59,19 +59,19 @@ public partial class MockedFacadeService : IFacadeService
 
         int totalItems = filteredItems.Count();
 
-        if (filters.Page > (int)Math.Ceiling(totalItems / (double)_config.PageSize))
+        if (filters.PageNumber > (int)Math.Ceiling(totalItems / (double)_config.PageSize))
         {
-            filters.Page = (int)Math.Ceiling(totalItems / (double)_config.PageSize);
+            filters.PageNumber = (int)Math.Ceiling(totalItems / (double)_config.PageSize);
         }
 
         var sortedItems = filteredItems
-                .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
-                .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
-                .ThenBy(x => x.RegistrationDateTime)
-                .Skip((filters.Page.Value - 1) * _config.PageSize)
+                .OrderBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Cancelled)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Refused)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Granted)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Queried)
+                .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Pending)
+                .ThenBy(x => x.SubmissionStatus)
+                .Skip((filters.PageNumber.Value - 1) * _config.PageSize)
                 .Take(filters.PageSize ?? _config.PageSize)
                 .ToList();
 
@@ -93,7 +93,6 @@ public partial class MockedFacadeService : IFacadeService
             DecisionDate = DateTime.Now.AddDays(-random.Next(1, 100)),
             TimeAndDateOfSubmission = DateTime.Now.AddDays(-random.Next(1, 100)),
             SubmittedOnTime = random.Next(2) == 0,
-            SubmittedBy = sampleNames[random.Next(sampleNames.Length)],
             AccountRole = (ServiceRole)sampleRoles.GetValue(random.Next(sampleRoles.Length)),
             Telephone = generateRandomPhoneNumber(random),
             Email = $"{sampleNames[random.Next(sampleNames.Length)].ToLower(CultureInfo.CurrentCulture)}@example.com",
@@ -108,21 +107,24 @@ public partial class MockedFacadeService : IFacadeService
 
         files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails()
         {
-            DownloadUrl = "#",
+            Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company,
+            FileId = "1",
             FileName = "org.details.acme.csv",
-            Label = "SubmissionDetails.OrganisationDetails"
+            BlobName = "SubmissionDetails.OrganisationDetails"
         });
         files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails()
         {
-            DownloadUrl = "#",
+            Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands,
+            FileId = "2",
             FileName = "brand.details.acme.csv",
-            Label = "SubmissionDetails.BrandDetails"
+            BlobName= "SubmissionDetails.BrandDetails"
         });
         files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails()
         {
-            DownloadUrl = "#",
+            Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership,
+            FileId = "3",
             FileName = "partner.details.acme.csv",
-            Label = "SubmissionDetails.PartnerDetails"
+            BlobName = "SubmissionDetails.PartnerDetails"
         });
         return files;
     }

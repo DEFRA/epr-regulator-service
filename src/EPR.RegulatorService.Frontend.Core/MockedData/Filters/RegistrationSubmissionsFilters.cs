@@ -17,10 +17,10 @@ public static class RegistrationSubmissionsFilters
     public static IQueryable<RegistrationSubmissionOrganisationDetails> Filter(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable,
                                                                                 RegistrationSubmissionsFilterModel filters) => queryable
                         .FilterByOrganisationName(filters.OrganisationName)
-                        .FilterByOrganisationRef(filters.OrganisationRef)
+                        .FilterByOrganisationRef(filters.OrganisationReference)
                         .FilterByOrganisationType(filters.OrganisationType)
-                        .FilterBySubmissionStatus(filters.SubmissionStatus)
-                        .FilterByRelevantYear(filters.RelevantYear);
+                        .FilterBySubmissionStatus(filters.Statuses)
+                        .FilterByRelevantYear(filters.RelevantYears);
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByOrganisationName(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? organisationName)
     {
@@ -72,7 +72,7 @@ public static class RegistrationSubmissionsFilters
         if (!string.IsNullOrEmpty(submissionStatus) && submissionStatus != "none")
         {
             queryable = from q in queryable
-                        where submissionStatus.Contains(q.RegistrationStatus.ToString())
+                        where submissionStatus.Contains(q.SubmissionStatus.ToString())
                         select q;
         }
 

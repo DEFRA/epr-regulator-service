@@ -62,7 +62,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             NationId = details.NationId,
             Status = details.SubmissionStatus,
             RegistrationDateTime = details.SubmissionDate,
-            RegistrationYear = details.RegistrationYear,
+            RegistrationYear = details.RelevantYear,
             RegulatorComments = details.RegulatorComments,
             ProducerComments = details.ProducerComments,
             BusinessAddress = new BusinessAddress
@@ -96,7 +96,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
             Country = details.RegisteredNation,
             SubmissionStatus = details.Status,
             SubmissionDate = details.RegistrationDateTime,
-            RegistrationYear = details.RegistrationYear,
+            RelevantYear = details.RegistrationYear,
             RegulatorComments = details.RegulatorComments,
             ProducerComments = details.ProducerComments,
             BuildingName = details.BusinessAddress?.BuildingName,

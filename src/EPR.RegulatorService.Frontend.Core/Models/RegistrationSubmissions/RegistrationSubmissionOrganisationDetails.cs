@@ -3,9 +3,13 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
+
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 /// <summary>
 /// The Frontend representation of the Results from the Facade for
@@ -43,7 +47,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
     public DateTime? RegulatorDecisionDate { get; set; }
-    public DateTime ProducerCommentDate { get; set; }
+    public string? ProducerCommentDate { get; set; }
     public string ApplicationReferenceNumber { get; set; } = String.Empty;
     public string? RegistrationReferenceNumber { get; set; } = String.Empty;
     public string CompaniesHouseNumber { get; set; }
@@ -63,6 +67,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
 
     public RegistrationSubmissionOrganisationSubmissionSummaryDetails SubmissionDetails { get; set; }
     public RegistrationSubmissionsOrganisationPaymentDetails PaymentDetails { get; set; }
+    public string RegulatorDescisionDate { get; private set; }
 
     public override bool Equals(object? obj) => Equals(obj as RegistrationSubmissionOrganisationDetails);
     public bool Equals(RegistrationSubmissionOrganisationDetails? other) => other is not null && OrganisationId.Equals(other.OrganisationId);
@@ -70,5 +75,67 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
 
     public static bool operator ==(RegistrationSubmissionOrganisationDetails? left, RegistrationSubmissionOrganisationDetails? right) => EqualityComparer<RegistrationSubmissionOrganisationDetails>.Default.Equals(left, right);
     public static bool operator !=(RegistrationSubmissionOrganisationDetails? left, RegistrationSubmissionOrganisationDetails? right) => !(left == right);
+
+    public static implicit operator RegistrationSubmissionOrganisationDetails(OrganisationRegistrationSubmissionSummaryResponse response) => response is null
+            ? null
+            : new RegistrationSubmissionOrganisationDetails
+            {
+                SubmissionId = response.SubmissionId,
+                OrganisationId = response.OrganisationId,
+                OrganisationName = response.OrganisationName,
+                OrganisationReference = response.OrganisationReference,
+                OrganisationType = response.OrganisationType,
+                ApplicationReferenceNumber = response.ApplicationReferenceNumber,
+                RegistrationReferenceNumber = response.RegistrationReferenceNumber,
+                SubmissionDate = response.SubmissionDate,
+                NationId = response.NationId,
+                RelevantYear = response.RegistrationYear,
+                SubmissionStatus = response.SubmissionStatus,
+                StatusPendingDate = response.StatusPendingDate,
+                ProducerCommentDate = response.ProducerCommentDate,
+                RegulatorDecisionDate = response.RegulatorCommentDate
+            };
+
+    public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionOrganisationDetailsResponse response) => response is null
+        ? null
+        : new RegistrationSubmissionOrganisationDetails
+        {
+            SubmissionId = response.SubmissionId,
+            OrganisationId = response.OrganisationId,
+            OrganisationReference = response.OrganisationReference,
+            OrganisationName = response.OrganisationName,
+            OrganisationType = response.OrganisationType,
+            NationId = response.NationId,
+            RelevantYear = response.RegistrationYear,
+            SubmissionDate = response.RegistrationDateTime,
+            SubmissionStatus = response.SubmissionStatus,
+            StatusPendingDate = response.SubmissionStatusPendingDate,
+            RegulatorComments = response.RegulatorComments,
+            ProducerComments = response.ProducerComments,
+            ApplicationReferenceNumber = response.ApplicationReferenceNumber,
+            RegistrationReferenceNumber = response.RegistrationReferenceNumber,
+            CompaniesHouseNumber = response.CompaniesHouseNumber,
+            BuildingName = response.BuildingName,
+            SubBuildingName = response.SubBuildingName,
+            BuildingNumber = response.BuildingNumber,
+            Street = response.Street,
+            Locality = response.Locality,
+            DependentLocality = response.DependentLocality,
+            Town = response.Town,
+            County = response.County,
+            Country = response.Country,
+            Postcode = response.Postcode,
+            IsComplianceScheme = response.IsComplianceScheme,
+            ProducerSize = response.OrganisationSize,
+            NumberOfSubsidiaries = response.NumberOfSubsidiaries,
+            NumberOfOnlineSubsidiaries = response.NumberOfSubsidiaries,
+            SubmissionDetails = response.SubmissionDetails,
+            IsLateFeeDue = response.IsLateSubmission,
+            RegulatorDecisionDate = DateTime.Parse(response.RegulatorDecisionDate, CultureInfo.InvariantCulture),
+            ProducerCommentDate = response.ProducerCommentDate,
+            RegulatorDescisionDate = response.RegulatorDecisionDate,
+            IsOnlineMarketPlace = response.IsOnlineMarketPlace,
+        };
 }
+        
 

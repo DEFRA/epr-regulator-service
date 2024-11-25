@@ -11,6 +11,7 @@ using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 using Microsoft.Extensions.Options;
@@ -343,7 +344,20 @@ public class FacadeService : IFacadeService
 
         var response = await _httpClient.PostAsJsonAsync(path, filters);
 
-        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<PaginatedList<RegistrationSubmissionOrganisationDetails>>() : null;
+        if (response.IsSuccessStatusCode)
+        {
+            var commonData = await response.Content.ReadFromJsonAsync<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>();
+            var responseData = commonData.Items.Select(x => (RegistrationSubmissionOrganisationDetails)x).ToList();
+            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = responseData,
+                CurrentPage = commonData.CurrentPage,
+                TotalItems = commonData.TotalItems,
+                PageSize = commonData.PageSize
+            };
+        }
+
+        return null;
     }
 
     public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
