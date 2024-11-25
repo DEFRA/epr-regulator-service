@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Runtime;
 
 using EPR.Common.Authorization.Constants;
+using EPR.Common.Authorization.Extensions;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -218,7 +219,7 @@ public partial class RegistrationSubmissionsController(
         {
             return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
         }
-
+         
         try
         {
             var regulatorDecisionRequest = new RegulatorDecisionRequest
@@ -226,12 +227,20 @@ public partial class RegistrationSubmissionsController(
                 ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
+                // For generating reference
                 Status = RegistrationSubmissionStatus.Granted.ToString(),
                 CountryName = GetCountryCodeInitial(existingModel.NationId),
                 RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
                 TwoDigitYear = existingModel.RegistrationYear.Substring(2),
                 //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
-                OrganisationAccountManagementId = existingModel.OrganisationReference
+                OrganisationAccountManagementId = existingModel.OrganisationReference,
+                // For sending emails
+                OrganisationName = existingModel.OrganisationName,
+                OrganisationEmail = existingModel.SubmissionDetails.Email,
+                OrganisationReference = existingModel.OrganisationReference,
+                AgencyName = GetRegulatorAgencyName(existingModel.NationId),
+                AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
+                IsWelsh = existingModel.NationId == 4
             };
 
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);

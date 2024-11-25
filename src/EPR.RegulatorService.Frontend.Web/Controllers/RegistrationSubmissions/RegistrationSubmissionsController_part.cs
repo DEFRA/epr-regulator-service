@@ -198,6 +198,15 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             _ => "",
         };
 
+        private static string GetRegulatorAgencyEmail(int nationId) => nationId switch
+        {
+            1 => "packagingproducers@environment-agency.gov.uk",
+            2 => "packaging@daera-ni.gov.uk",
+            3 => "producer.responsibility@sepa.org.uk",
+            4 => "deunyddpacio@cyfoethnaturiolcymru.gov.uk; packaging@naturalresourceswales.gov.uk",
+            _ => "",
+        };
+
         private static string GetCountryCodeInitial(int nationId)
         {
             string code = nationId switch
