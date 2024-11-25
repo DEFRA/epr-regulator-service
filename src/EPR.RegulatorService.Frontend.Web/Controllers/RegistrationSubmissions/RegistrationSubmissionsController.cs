@@ -223,6 +223,7 @@ public partial class RegistrationSubmissionsController(
         {
             var regulatorDecisionRequest = new RegulatorDecisionRequest
             {
+                                    ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
                 Status = RegistrationSubmissionStatus.Granted.ToString(),
