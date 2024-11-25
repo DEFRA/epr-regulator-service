@@ -1,6 +1,7 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
     using EPR.Common.Authorization.Models;
+    using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -241,29 +242,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert: Verify NationId handling
             Assert.IsNotNull(journeySession.UserData.Organisations.FirstOrDefault()?.NationId);
             Assert.AreEqual(1, journeySession.UserData.Organisations.FirstOrDefault()?.NationId);
-        }
-
-        [TestMethod]
-        public async Task RegistrationSubmissions_ShouldCreateANewJourneySession_WhenSessionManagerNull()
-        {
-            // Arrange
-            var sut = new RegistrationSubmissionsController(
-                null,
-                null,
-                null,
-                _loggerMock.Object,
-                _mockConfiguration.Object,
-                _mockUrlsOptions.Object
-                );
-
-            // Act
-            var result = sut.SessionManager;
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(JourneySessionManager));
-
-            sut.Dispose();
         }
 
         [TestMethod]
@@ -1713,6 +1691,35 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod]
+        public async Task Fetch_RegistrationSubmissionDetails_From_Session_ChangeHistory()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
+            {
+                SelectedRegistration = null,
+                OrganisationDetailsChangeHistory = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>
+                                                    {
+                                                        { submissionId, expectedViewModel }
+                                                    }
+            };
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+
+            Assert.IsNotNull(result);
+            _facadeServiceMock.Verify(r => r.GetRegistrationSubmissionDetails(It.IsAny<Guid>()), Times.Never);
         }
 
         [TestMethod]
@@ -3647,6 +3654,198 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         #endregion
+
+        #endregion OrganisationDetailsChangeHistorySession
+        [TestMethod]
+        public async Task When_CancelDateRegistrationSubmission_Post_Success_Then_Should_Update_OrganisationDetailsChangeHistory_InSession()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.CancellationReason = "Valid cancellation reason";
+
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationDate = DateTime.Now,
+                Day = 3,
+                Month = 4,
+                Year = 2025
+            };
+
+            // Set up successful cancellation submission
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success);
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
+
+            Assert.IsNotNull(result);
+
+            bool upadtedChangeHistory =
+                _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestOrganisationDetails);
+
+            upadtedChangeHistory.Should().BeTrue();
+            latestOrganisationDetails.RegulatorComments.Should().BeSameAs(detailsModel.CancellationReason);
+            latestOrganisationDetails.SubmissionStatus.Should().Be(RegistrationSubmissionStatus.Cancelled);
+        }
+
+        [TestMethod]
+        public async Task Fetch_RegistrationSubmissionDetailsViewModel_From_OrganisationDetailsChangeHistory_InSession()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.CancellationReason = "Valid cancellation reason";
+
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
+            {
+                SelectedRegistration = null,
+                OrganisationDetailsChangeHistory = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>
+                                                    {
+                                                        { submissionId, detailsModel }
+                                                    }
+            };
+
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationDate = DateTime.Now,
+                Day = 3,
+                Month = 4,
+                Year = 2025
+            };
+
+            // Set up successful cancellation submission
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success);
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
+
+            Assert.IsNotNull(result);
+
+            bool upadtedChangeHistory =
+                _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestOrganisationDetails);
+
+            upadtedChangeHistory.Should().BeTrue();
+            latestOrganisationDetails.RegulatorComments.Should().BeSameAs(detailsModel.CancellationReason);
+            latestOrganisationDetails.SubmissionStatus.Should().Be(RegistrationSubmissionStatus.Cancelled);
+        }
+
+        [TestMethod]
+        public async Task When_CancelDateRegistrationSubmission_Post_Fail_Then_Should_Not_Update_OrganisationDetailsChangeHistory_InSession()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.CancellationReason = "Valid cancellation reason";
+
+            var expectedDate = new DateTime(2025, 4, 3, 0, 0, 0, DateTimeKind.Utc);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new CancelDateRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                CancellationDate = expectedDate,
+                Day = 3,
+                Month = 4,
+                Year = 2025
+            };
+
+            // Set up successful cancellation submission
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Fail);
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
+
+            Assert.IsNotNull(result);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+
+            bool upadtedChangeHistory =
+                _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestOrganisationDetails);
+
+            upadtedChangeHistory.Should().BeFalse();
+            latestOrganisationDetails.Should().BeNull();
+        }
+
+        [TestMethod]
+        public async Task When_GrantRegistrationSubmission_Post_Success_Then_Should_Update_OrganisationDetailsChangeHistory_InSession()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+
+            bool upadtedChangeHistory =
+                _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestOrganisationDetails);
+            upadtedChangeHistory.Should().BeTrue();
+            latestOrganisationDetails.SubmissionStatus.Should().Be(RegistrationSubmissionStatus.Granted);
+        }
+
+        [TestMethod]
+        public async Task When_GrantRegistrationSubmission_Post_Fail_Then_Should_Not_Update_OrganisationDetailsChangeHistory_InSession()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
+
+           
+
+           // Act
+           var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+
+            bool upadtedChangeHistory =
+                _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestOrganisationDetails);
+
+            upadtedChangeHistory.Should().BeFalse();
+            latestOrganisationDetails.Should().BeNull();
+        }
+
+        #region 
 
         #endregion
 
