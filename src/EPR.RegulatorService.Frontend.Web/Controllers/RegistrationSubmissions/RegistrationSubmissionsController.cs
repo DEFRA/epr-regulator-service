@@ -227,19 +227,20 @@ public partial class RegistrationSubmissionsController(
                 ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
+                // For generating reference
                 Status = RegistrationSubmissionStatus.Granted.ToString(),
                 CountryName = GetCountryCodeInitial(existingModel.NationId),
                 RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
                 TwoDigitYear = existingModel.RegistrationYear.Substring(2),
                 //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
-                OrganisationAccountManagementId = existingModel.OrganisationReference
-                // ##
+                OrganisationAccountManagementId = existingModel.OrganisationReference,
+                // For sending emails
                 OrganisationName = existingModel.OrganisationName,
                 OrganisationEmail = existingModel.SubmissionDetails.Email,
                 OrganisationReference = existingModel.OrganisationReference,
                 AgencyName = GetRegulatorAgencyName(existingModel.NationId),
                 AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
-                IsWelsh = false
+                IsWelsh = existingModel.NationId == 4
             };
 
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
