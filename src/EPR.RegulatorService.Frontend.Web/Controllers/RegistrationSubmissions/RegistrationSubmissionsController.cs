@@ -223,6 +223,7 @@ public partial class RegistrationSubmissionsController(
         {
             var regulatorDecisionRequest = new RegulatorDecisionRequest
             {
+                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
                 Status = RegistrationSubmissionStatus.Granted.ToString(),
@@ -293,6 +294,7 @@ public partial class RegistrationSubmissionsController(
         {
             var regulatorDecisionRequest = new RegulatorDecisionRequest
             {
+                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
                 Status = Core.Enums.RegistrationSubmissionStatus.Queried.ToString(),
@@ -558,6 +560,7 @@ public partial class RegistrationSubmissionsController(
         {
             var regulatorDecisionRequest = new RegulatorDecisionRequest
             {
+                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
                 Status = RegistrationSubmissionStatus.Refused.ToString(),
@@ -643,6 +646,7 @@ public partial class RegistrationSubmissionsController(
         {
             var regulatorDecisionRequest = new RegulatorDecisionRequest
             {
+                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
                 Status = RegistrationSubmissionStatus.Cancelled.ToString(),
