@@ -31,8 +31,8 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 IsLateFeeApplicable = false, /* to do: will be in a new property*/
                 IsProducerOnlineMarketplace = false, /* to do: will be in a new property*/
                 ProducerType = "large", /* to do: will be in a new property*/
-                Regulator = ((Core.Enums.CountryName)viewModel.NationId).GetDescription(), /*get the nation code in a new property*/
-                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*payment facade in utc format*/
+                Regulator = ((Core.Enums.CountryName)viewModel.NationId).GetDescription(), /*to do: get the nation code in a new property*/
+                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmissionDetails.TimeAndDateOfSubmission) /*to do: get from the RegistrationDateTime*/
             });
 
             if (producerPaymentResponse is null)

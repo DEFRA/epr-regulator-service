@@ -76,23 +76,13 @@
 
                 @await Component.InvokeAsync("SubmissionDetails", new { model = Model.SubmissionDetails })
 
-                <!-- Remove the UsePaymentFacadeApiCall condition once common data api call is integrated and tested -->
-                @using Microsoft.Extensions.Configuration
-                @inject IConfiguration Configuration
-                @if (bool.Parse(Configuration.GetSection("UsePaymentFacadeApiCall").Value))
+                @if (Model.OrganisationType == RegistrationSubmissionOrganisationType.compliance)
                 {
-                    if (Model.OrganisationType == RegistrationSubmissionOrganisationType.compliance)
-                    {
-                      @await Component.InvokeAsync("CompliancePaymentDetails", new { viewModel = Model })
-                    }
-                    else
-                    {
-                        @await Component.InvokeAsync("ProducerPaymentDetails", new { viewModel = Model })
-                    }
+                  @await Component.InvokeAsync("CompliancePaymentDetails", new { viewModel = Model })
                 }
                 else
                 {
-                    @await Component.InvokeAsync("PaymentDetails", new { viewModel = Model.PaymentDetails })
+                    @await Component.InvokeAsync("ProducerPaymentDetails", new { viewModel = Model })
                 }
 
                 @await Component.InvokeAsync("RegistrationSubmissionComments",
