@@ -125,7 +125,7 @@ public partial class RegistrationSubmissionsController(
 
         RegistrationSubmissionDetailsViewModel model = submissionId == null
             ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-            :  await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+            : await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
 
         if (model == null)
         {
@@ -219,30 +219,31 @@ public partial class RegistrationSubmissionsController(
         {
             return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
         }
-         
+
         try
         {
-            var regulatorDecisionRequest = new RegulatorDecisionRequest
-            {
-                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
-                OrganisationId = existingModel.OrganisationId,
-                SubmissionId = existingModel.SubmissionId,
-                // For generating reference
-                Status = RegistrationSubmissionStatus.Granted.ToString(),
-                CountryName = GetCountryCodeInitial(existingModel.NationId),
-                RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
-                TwoDigitYear = existingModel.RegistrationYear.Substring(2),
-                //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
-                OrganisationAccountManagementId = existingModel.OrganisationReference,
-                // For sending emails
-                OrganisationName = existingModel.OrganisationName,
-                OrganisationEmail = existingModel.SubmissionDetails.Email,
-                OrganisationReference = existingModel.OrganisationReference,
-                AgencyName = GetRegulatorAgencyName(existingModel.NationId),
-                AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
-                IsWelsh = existingModel.NationId == 4
-            };
+            //var regulatorDecisionRequest = new RegulatorDecisionRequest
+            //{
+            //    ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
+            //    OrganisationId = existingModel.OrganisationId,
+            //    SubmissionId = existingModel.SubmissionId,
+            //    // For generating reference
+            //    Status = RegistrationSubmissionStatus.Granted.ToString(),
+            //    CountryName = GetCountryCodeInitial(existingModel.NationId),
+            //    RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
+            //    TwoDigitYear = existingModel.RegistrationYear.Substring(2),
+            //    //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
+            //    OrganisationAccountManagementId = existingModel.OrganisationReference,
+            //    // For sending emails
+            //    OrganisationName = existingModel.OrganisationName,
+            //    OrganisationEmail = existingModel.SubmissionDetails.Email,
+            //    OrganisationReference = existingModel.OrganisationReference,
+            //    AgencyName = GetRegulatorAgencyName(existingModel.NationId),
+            //    AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
+            //    IsWelsh = existingModel.NationId == 4
+            //};
 
+            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Granted);
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
             await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
@@ -301,14 +302,8 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var regulatorDecisionRequest = new RegulatorDecisionRequest
-            {
-                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
-                OrganisationId = existingModel.OrganisationId,
-                SubmissionId = existingModel.SubmissionId,
-                Status = Core.Enums.RegistrationSubmissionStatus.Queried.ToString(),
-                Comments = model.Query
-            };
+            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Queried);
+            regulatorDecisionRequest.Comments = model.Query;
 
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
