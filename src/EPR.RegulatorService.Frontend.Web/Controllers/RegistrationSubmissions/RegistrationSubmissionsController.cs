@@ -222,27 +222,6 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            //var regulatorDecisionRequest = new RegulatorDecisionRequest
-            //{
-            //    ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
-            //    OrganisationId = existingModel.OrganisationId,
-            //    SubmissionId = existingModel.SubmissionId,
-            //    // For generating reference
-            //    Status = RegistrationSubmissionStatus.Granted.ToString(),
-            //    CountryName = GetCountryCodeInitial(existingModel.NationId),
-            //    RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
-            //    TwoDigitYear = existingModel.RegistrationYear.Substring(2),
-            //    //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
-            //    OrganisationAccountManagementId = existingModel.OrganisationReference,
-            //    // For sending emails
-            //    OrganisationName = existingModel.OrganisationName,
-            //    OrganisationEmail = existingModel.SubmissionDetails.Email,
-            //    OrganisationReference = existingModel.OrganisationReference,
-            //    AgencyName = GetRegulatorAgencyName(existingModel.NationId),
-            //    AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
-            //    IsWelsh = existingModel.NationId == 4
-            //};
-
             var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Granted);
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
