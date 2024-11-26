@@ -356,6 +356,16 @@ public class FacadeService : IFacadeService
                 PageSize = commonData.PageSize
             };
         }
+        else
+        {
+            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                Items = [],
+                CurrentPage = 1,
+                TotalItems = 0,
+                PageSize = 20
+            };
+        }
 
         return null;
     }

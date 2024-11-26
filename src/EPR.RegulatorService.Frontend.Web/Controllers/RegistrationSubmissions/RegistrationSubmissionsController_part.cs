@@ -22,12 +22,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         {
             var existingSessionFilters = session.LatestFilterChoices ?? new RegistrationSubmissionsFilterViewModel()
             {
-                PageNumber = 1
+                PageNumber = 1,
+                NationId = nationId
             };
             existingSessionFilters.PageNumber = session.CurrentPageNumber;
 
             return new RegistrationSubmissionsViewModel
             {
+                NationId = nationId,
                 ListViewModel = new RegistrationSubmissionsListViewModel
                 {
                     RegistrationsFilterModel = existingSessionFilters,

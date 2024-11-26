@@ -43,6 +43,7 @@ public class RegistrationSubmissionsFilterViewModel
     }
 
     public bool IsFilterApplied { get; set; }
+    public int NationId { get; internal set; }
 
     public static implicit operator RegistrationSubmissionsFilterModel(RegistrationSubmissionsFilterViewModel viewModel) => new RegistrationSubmissionsFilterModel
     {
