@@ -1,10 +1,6 @@
 using System.Diagnostics;
-using System.Runtime;
-
 using EPR.Common.Authorization.Constants;
-using EPR.Common.Authorization.Extensions;
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
@@ -354,6 +350,12 @@ public partial class RegistrationSubmissionsController(
 
         _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason = model.RejectReason;
         existingModel.RegulatorComments = model.RejectReason;
+
+        if(_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out var organisationDetailsChangeHistory))
+        {
+            organisationDetailsChangeHistory.RejectReason = model.RejectReason;
+            organisationDetailsChangeHistory.RegulatorComments = model.RejectReason;
+        }
 
         SaveSessionAndJourney(
             _currentSession.RegulatorRegistrationSubmissionSession,
