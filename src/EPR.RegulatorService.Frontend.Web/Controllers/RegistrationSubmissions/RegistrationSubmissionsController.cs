@@ -541,14 +541,9 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var regulatorDecisionRequest = new RegulatorDecisionRequest
-            {
-                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
-                OrganisationId = existingModel.OrganisationId,
-                SubmissionId = existingModel.SubmissionId,
-                Status = RegistrationSubmissionStatus.Refused.ToString(),
-                Comments = existingModel.RejectReason
-            };
+            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Refused);
+
+            regulatorDecisionRequest.Comments = existingModel.RejectReason;
 
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
@@ -627,15 +622,10 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var regulatorDecisionRequest = new RegulatorDecisionRequest
-            {
-                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
-                OrganisationId = existingModel.OrganisationId,
-                SubmissionId = existingModel.SubmissionId,
-                Status = RegistrationSubmissionStatus.Cancelled.ToString(),
-                Comments = existingModel.CancellationReason,
-                DecisionDate = model.CancellationDate
-            };
+            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Cancelled);
+
+            regulatorDecisionRequest.Comments = existingModel.CancellationReason;
+            regulatorDecisionRequest.DecisionDate = model.CancellationDate;
 
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
