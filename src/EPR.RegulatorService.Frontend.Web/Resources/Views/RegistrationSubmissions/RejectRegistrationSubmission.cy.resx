@@ -127,7 +127,7 @@
     <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="RejectRegistrationSubmission.Description" xml:space="preserve">
-    <value>Bydd y sefydliad yn gallu gweld eich sylwadau. Esboniwch yn glir pam rydych chi wedi gwrthod eu cofrestru a sut gallai'r sefydliad ymateb. Os byddwch chi'n gwrthod y cais yma, bydd angen i'r cynhyrchydd neu'r Cynllun Cydymffurfio ailgyflwyno'u cais a thalu unrhyw ffi berthnasol.</value>
+    <value>[Welsh]If you refuse this submission, the organisation will need to re-submit their application and pay any associated fee.</value>
   </data>
   <data name="RejectRegistrationSubmission.Heading" xml:space="preserve">
     <value>Pam rydych chi'n gwrthod y cais yma am gofrestru?</value>

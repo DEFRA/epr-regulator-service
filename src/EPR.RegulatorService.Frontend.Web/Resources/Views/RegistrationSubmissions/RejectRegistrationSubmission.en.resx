@@ -127,7 +127,7 @@
     <value>Manage registration submissions</value>
   </data>
   <data name="RejectRegistrationSubmission.Description" xml:space="preserve">
-    <value>The organisation will be able to see your comments. Clearly explain why you’ve refused their registration and how they might respond. If you refuse this submission, the organisation will need to resubmit their application and pay any associated fee.</value>
+    <value>If you refuse this submission, the organisation will need to re-submit their application and pay any associated fee.</value>
   </data>
   <data name="RejectRegistrationSubmission.Heading" xml:space="preserve">
     <value>Why are you refusing this registration submission?</value>

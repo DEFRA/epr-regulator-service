@@ -127,7 +127,7 @@
     <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="QueryRegistrationSubmission.Description" xml:space="preserve">
-    <value>Bydd y sefydliad yn gallu gweld eich sylwadau. Dywedwch yn glir pam rydych chi'n cwestiynu'r cais a sut gallai'r sefydliad ymateb. Os byddwch chi'n cwestiynu'r cais yma, bydd angen i'r cynhyrchydd neu'r Cynllun Cydymffurfio ailgyflwyno'u cais.</value>
+    <value>[Welsh]If you query this submission, the organisation will need to resubmit their application.</value>
   </data>
   <data name="QueryRegistrationSubmission.Heading" xml:space="preserve">
     <value>Pam rydych chi'n cwestiynu'r cais yma am gofrestru?</value>
