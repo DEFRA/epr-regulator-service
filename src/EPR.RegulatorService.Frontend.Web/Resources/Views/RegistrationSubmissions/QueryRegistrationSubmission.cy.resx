@@ -127,7 +127,7 @@
     <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="QueryRegistrationSubmission.Description" xml:space="preserve">
-    <value>[Welsh]If you query this submission, the organisation will need to resubmit their application.</value>
+    <value>Os byddwch chi'n cwestiynu'r cyflwyniad yma, bydd angen i'r sefydliad ailgyflwyno'u cais.</value>
   </data>
   <data name="QueryRegistrationSubmission.Heading" xml:space="preserve">
     <value>Pam rydych chi'n cwestiynu'r cais yma am gofrestru?</value>

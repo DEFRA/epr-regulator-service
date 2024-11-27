@@ -157,10 +157,10 @@
     <value>Taliadau blaenorol sydd wedi dod i law</value>
   </data>
   <data name="CompliancePaymentDetails.SubsidiaryFee" xml:space="preserve">
-    <value>[Welsh]Subsidiary fee</value>
+    <value>Ffi atodol</value>
   </data>
   <data name="CompliancePaymentDetails.Title" xml:space="preserve">
-    <value>[Welsh]Compliance Payment details</value>
+    <value>Manylion y taliad</value>
   </data>
   <data name="CompliancePaymentDetails.TotalChargeableItems" xml:space="preserve">
     <value>Cyfanswm yr eitemau taladwy</value>

@@ -172,7 +172,7 @@
     <value>[Welsh]Total payments received</value>
   </data>
   <data name="ProducerPaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
-    <value>[Welsh]Late fee</value>
+    <value>Ffi hwyr</value>
   </data>
   <data name="ProducerPaymentDetails.ServiceIssueDescription" xml:space="preserve">
     <value>[Welsh]Unable to retrieve producer payment details</value>
