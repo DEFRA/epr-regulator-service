@@ -18,6 +18,7 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public string OrganisationName { get; init; }
     public RegistrationSubmissionOrganisationType OrganisationType { get; init; }
     public int NationId { get; init; }
+    public string NationCode { get; set; }
     public string RegistrationYear { get; init; }
     public DateTime RegistrationDateTime { get; init; }
     public RegistrationSubmissionStatus SubmissionStatus { get; init; }

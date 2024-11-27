@@ -16,7 +16,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 /// the registrations/get-organisations endpoint
 /// </summary>
 [ExcludeFromCodeCoverage]
-[DebuggerDisplay("{OrganisationName}, {OrganisationReference}, {RegistrationYear}, {SubmissionStatus},{OrganisationType}")]
+[DebuggerDisplay("{OrganisationName}, {OrganisationReference}, {RelevantYear}, {SubmissionStatus},{OrganisationType}")]
 public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<RegistrationSubmissionOrganisationDetails?>
 {
     public Guid SubmissionId { get; set; }
@@ -29,6 +29,8 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public RegistrationSubmissionOrganisationType OrganisationType { get; set; }
 
     public int NationId { get; set; }
+
+    public string NationCode { get; set; }
     public string RelevantYear { get; set; }
     public DateTime SubmissionDate { get; set; }
 
@@ -106,6 +108,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             OrganisationName = response.OrganisationName,
             OrganisationType = response.OrganisationType,
             NationId = response.NationId,
+            NationCode = response.NationCode,
             RelevantYear = response.RegistrationYear,
             SubmissionDate = response.RegistrationDateTime,
             SubmissionStatus = response.SubmissionStatus,
