@@ -15,6 +15,7 @@ public class ErrorController : Controller
     [Route(PagePath.PageNotFoundPath)]
     public ViewResult Error(int? statusCode, string? backLink)
     {
+
         bool isPageNotFoundError = statusCode == (int?)HttpStatusCode.NotFound;
         string errorView = isPageNotFoundError ? PagePath.PageNotFound : "Error";
 

@@ -34,8 +34,8 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.Faca
         public DateTime? StatusPendingDate { get; set; }
 
         public int NationId { get; set; }
-        public DateTime? RegulatorCommentDate { get; internal set; }
-        public string? ProducerCommentDate { get; internal set; }
-        public Guid? RegulatorUserId { get; internal set; }
+        public DateTime? RegulatorCommentDate { get; set; }
+        public DateTime? ProducerCommentDate { get; set; }
+        public Guid? RegulatorUserId { get; set; }
     }
 }

@@ -49,7 +49,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
     public DateTime? RegulatorDecisionDate { get; set; }
-    public string? ProducerCommentDate { get; set; }
+    public DateTime? ProducerCommentDate { get; set; }
     public string ApplicationReferenceNumber { get; set; } = String.Empty;
     public string? RegistrationReferenceNumber { get; set; } = String.Empty;
     public string CompaniesHouseNumber { get; set; }
@@ -134,9 +134,8 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             NumberOfOnlineSubsidiaries = response.NumberOfSubsidiaries,
             SubmissionDetails = response.SubmissionDetails,
             IsLateFeeDue = response.IsLateSubmission,
-            RegulatorDecisionDate = DateTime.Parse(response.RegulatorDecisionDate, CultureInfo.InvariantCulture),
+            RegulatorDecisionDate = response.RegulatorDecisionDate,
             ProducerCommentDate = response.ProducerCommentDate,
-            RegulatorDescisionDate = response.RegulatorDecisionDate,
             IsOnlineMarketPlace = response.IsOnlineMarketPlace,
         };
 }

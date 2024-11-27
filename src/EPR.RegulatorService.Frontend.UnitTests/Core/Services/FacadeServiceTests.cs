@@ -730,10 +730,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         {
             var pagedOrganisationResults = new PaginatedList<OrganisationSearchResult>
             {
-                CurrentPage = 1,
-                PageSize = 10,
-                TotalItems = 0,
-                Items = new List<OrganisationSearchResult>()
+                currentPage = 1,
+                pageSize = 10,
+                totalItems = 0,
+                items = new List<OrganisationSearchResult>()
             };
 
             // Arrange
@@ -1090,7 +1090,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             var result = await _facadeService.GetRegistrationSubmissions(filter);
             result.Should().BeOfType<PaginatedList<RegistrationSubmissionOrganisationDetails>>();
-            result.Items.Should().HaveCount(PAGE_SIZE);
+            result.items.Should().HaveCount(PAGE_SIZE);
         }
 
         [TestMethod]
@@ -1111,7 +1111,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationName = expectedDataSet[byIndex].OrganisationName };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
-            results.Items.Should().Contain(expectedResult);
+            results.items.Should().Contain(expectedResult);
         }
 
         [TestMethod]
@@ -1140,7 +1140,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
             results.TotalPages.Should().BeGreaterThan(1);
-            results.TotalItems.Should().BeGreaterThan(1);
+            results.totalItems.Should().BeGreaterThan(1);
         }
 
         [TestMethod]
@@ -1149,7 +1149,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var filter = new RegistrationSubmissionsFilterModel() { Page = 1 };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
-            Assert.AreNotEqual(results.Items.Count, results.TotalItems);
+            Assert.AreNotEqual(results.items.Count, results.totalItems);
         }
 
         [TestMethod]
@@ -1163,7 +1163,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationRef = expectedDataSet[byIndex].OrganisationReference };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
-            results.Items.Should().Contain(expectedResult);
+            results.items.Should().Contain(expectedResult);
         }
 
         [TestMethod]
@@ -1195,7 +1195,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             };
 
             var result = await _facadeService.GetRegistrationSubmissions(filter);
-            result.Items.Should().Contain(expectedItems);
+            result.items.Should().Contain(expectedItems);
         }
 
         [TestMethod]
@@ -1238,7 +1238,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             };
 
             var result = await _facadeService.GetRegistrationSubmissions(filter);
-            result.Items.Should().BeEquivalentTo(expectedItems);
+            result.items.Should().BeEquivalentTo(expectedItems);
         }
 
         [TestMethod]
