@@ -29,7 +29,7 @@ public class RegistrationSubmissionDetailsViewModel
 
     public int NationId { get; set; }
 
-        public string NationCode { get; set; }
+    public string NationCode { get; set; }
 
     public string PowerBiLogin { get; set; }
 
@@ -51,15 +51,15 @@ public class RegistrationSubmissionDetailsViewModel
 
     public string? CancellationReason { get; set; } = string.Empty;
 
-        public int NoOfSubsidiariesOnlineMarketPlace { get; set; }
+    public int NoOfSubsidiariesOnlineMarketPlace { get; set; }
 
-        public int NoOfSubsidiaries { get; set; }
+    public int NoOfSubsidiaries { get; set; }
 
-        public bool IsLateFeeApplicable { get; set; }
+    public bool IsLateFeeApplicable { get; set; }
 
-        public bool IsProducerOnlineMarketplace { get; set; }
+    public bool IsProducerOnlineMarketplace { get; set; }
 
-        public string ProducerType { get; set; }
+    public string ProducerType { get; set; }
 
     // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
     public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
