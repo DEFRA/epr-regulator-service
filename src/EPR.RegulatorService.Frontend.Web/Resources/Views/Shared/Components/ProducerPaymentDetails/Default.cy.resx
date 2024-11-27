@@ -148,7 +148,7 @@
     <value>Cyflwyno taliad all-lein</value>
   </data>
   <data name="ProducerPaymentDetails.OfflinePaymentDetailsTitle" xml:space="preserve">
-    <value>[Welsh]Offline payment details</value>
+    <value>Manylion taliadau all-lein</value>
   </data>
   <data name="ProducerPaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
     <value>[Welsh]Online marketplace fee</value>

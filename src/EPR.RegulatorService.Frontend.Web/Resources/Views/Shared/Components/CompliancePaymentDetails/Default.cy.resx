@@ -121,7 +121,7 @@
     <value>Swm</value>
   </data>
   <data name="CompliancePaymentDetails.ApplicationProcessingFee" xml:space="preserve">
-    <value>[Welsh]Application processing fee</value>
+    <value>Ffi ymgeisio</value>
   </data>
   <data name="CompliancePaymentDetails.ChargeableItems" xml:space="preserve">
     <value>Eitemau taladwy</value>
