@@ -127,7 +127,7 @@
     <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="RejectRegistrationSubmission.Description" xml:space="preserve">
-    <value>[Welsh]If you refuse this submission, the organisation will need to re-submit their application and pay any associated fee.</value>
+    <value>Os byddwch chi'n gwrthod y cyflwyniad yma, bydd angen i'r sefydliad ailgyflwyno'u cais a thalu unrhyw ffi berthynol.</value>
   </data>
   <data name="RejectRegistrationSubmission.Heading" xml:space="preserve">
     <value>Pam rydych chi'n gwrthod y cais yma am gofrestru?</value>

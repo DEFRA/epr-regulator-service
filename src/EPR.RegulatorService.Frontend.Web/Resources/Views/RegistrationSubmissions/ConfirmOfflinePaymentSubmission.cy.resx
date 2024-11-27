@@ -124,6 +124,6 @@
     <value>Ydych chi'n siŵr yr hoffech chi ychwanegu'r taliad yma?</value>
   </data>
   <data name="ConfirmOfflinePaymentSubmission.PageTitle" xml:space="preserve">
-    <value>[Welsh]Confirm offline payment submission</value>
+    <value>Cadarnhau bod taliad all-lein wedi'i gyflwyno</value>
   </data>
 </root>

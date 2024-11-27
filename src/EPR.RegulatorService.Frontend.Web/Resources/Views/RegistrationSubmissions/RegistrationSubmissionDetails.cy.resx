@@ -133,7 +133,7 @@
     <value>Gweld cofrestr Tŷ'r Cwmnïau</value>
   </data>
   <data name="RegistrationSubmissionDetails.NotListed" xml:space="preserve">
-    <value>[Welsh]Not listed</value>
+    <value>Heb ei restru</value>
   </data>
   <data name="RegistrationSubmissionDetails.OrganisationIdSubTitle" xml:space="preserve">
     <value>ID:</value>
@@ -145,7 +145,7 @@
     <value>Math o sefydliad</value>
   </data>
   <data name="RegistrationSubmissionDetails.PageTitle" xml:space="preserve">
-    <value>[Welsh]Registration submission details</value>
+    <value>Manylion cyflwyniad cofrestru</value>
   </data>
   <data name="RegistrationSubmissionDetails.PowerBiSubTitle" xml:space="preserve">
     <value>I weld crynodeb o fanylion y sefydliad, y brand a'r partneriaid ac unrhyw gyflwyniadau blaenorol,</value>
