@@ -265,7 +265,7 @@
     <value>Cynhyrchydd mawr</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.NotSpecified" xml:space="preserve">
-    <value>[Welsh]Not specified</value>
+    <value>Heb ei bennu</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.SmallProducer" xml:space="preserve">
     <value>Cynhyrchydd bach</value>
@@ -277,7 +277,7 @@
     <value>Wedi'i ganiatáu</value>
   </data>
   <data name="RegistrationSubmissionStatus.NotSpecified" xml:space="preserve">
-    <value>[Welsh]Not specified</value>
+    <value>Heb ei bennu</value>
   </data>
   <data name="RegistrationSubmissionStatus.Pending" xml:space="preserve">
     <value>Ar ei hanner</value>
@@ -289,22 +289,22 @@
     <value>Wedi'i wrthod</value>
   </data>
   <data name="RegistrationSubmissionStatus.Updated" xml:space="preserve">
-    <value>[Welsh]Updated</value>
+    <value>Wedi'i ddiweddaru</value>
   </data>
   <data name="ServiceRole.ApprovedPerson" xml:space="preserve">
-    <value>[Welsh]Approved person</value>
+    <value>Person wedi'i gymeradwyo</value>
   </data>
   <data name="ServiceRole.DelegatedPerson" xml:space="preserve">
-    <value>[Welsh]Delegated person</value>
+    <value>Person wedi'i ddirprwyo</value>
   </data>
   <data name="ServiceRole.ProducerOther" xml:space="preserve">
-    <value>[Welsh]Producer other</value>
+    <value>Cynhyrchydd - arall</value>
   </data>
   <data name="ServiceRole.RegulatorAdmin" xml:space="preserve">
-    <value>[Welsh]Regulator admin</value>
+    <value>Rheoleiddiwr - gweinyddol</value>
   </data>
   <data name="ServiceRole.RegulatorBasic" xml:space="preserve">
-    <value>[Welsh]Regulator basic</value>
+    <value>Rheoleiddiwr - sylfaenol</value>
   </data>
   <data name="BackToAllSubmissions" xml:space="preserve">
     <value>Ewch yn ôl i bob cyflwyniad</value>
