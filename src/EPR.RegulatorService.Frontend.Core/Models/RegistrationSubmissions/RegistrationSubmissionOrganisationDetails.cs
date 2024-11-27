@@ -31,7 +31,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public int NationId { get; set; }
 
     public string NationCode { get; set; }
-    public string RelevantYear { get; set; }
+    public int RelevantYear { get; set; }
     public DateTime SubmissionDate { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

@@ -27,7 +27,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.Faca
 
         public DateTime SubmissionDate { get; set; }
 
-        public string RegistrationYear { get; set; }
+        public int RegistrationYear { get; set; }
 
         public RegistrationSubmissionStatus SubmissionStatus { get; set; }
 

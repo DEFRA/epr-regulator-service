@@ -27,6 +27,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public int NationId { get; set; }
 
+        public string NationCode { get; set; }
+
         public string PowerBiLogin { get; set; }
 
         public RegistrationSubmissionStatus Status { get; set; }
@@ -37,7 +39,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public DateTime RegistrationDateTime { get; set; }
 
-        public string RegistrationYear { get; set; }
+        public int RegistrationYear { get; set; }
 
         public string? ProducerComments { get; set; }
 
@@ -46,6 +48,16 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public string? RejectReason { get; set; } = string.Empty;
 
         public string? CancellationReason { get; set; } = string.Empty;
+
+        public int NoOfSubsidiariesOnlineMarketPlace { get; set; }
+
+        public int NoOfSubsidiaries { get; set; }
+
+        public bool IsLateFeeApplicable { get; set; }
+
+        public bool IsProducerOnlineMarketplace { get; set; }
+
+        public string ProducerType { get; set; }
 
         // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
         public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel

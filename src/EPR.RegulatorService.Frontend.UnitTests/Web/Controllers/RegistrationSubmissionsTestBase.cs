@@ -161,7 +161,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             },
             ProducerComments = "producer comment",
             RegulatorComments = "regulator comment",
-            RegistrationYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture)
+            RegistrationYear = DateTime.Now.Year
         };
 
         protected static PaymentDetailsViewModel GenerateValidPaymentDetailsViewModel() => new PaymentDetailsViewModel

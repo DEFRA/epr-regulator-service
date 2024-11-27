@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Extensions;
@@ -26,13 +25,13 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
-                NoOfSubsidiariesOnlineMarketplace = 1, /* to do: will be in a new property*/
-                NumberOfSubsidiaries = 1, /* to do: will be in a new property*/
-                IsLateFeeApplicable = false, /* to do: will be in a new property*/
-                IsProducerOnlineMarketplace = false, /* to do: will be in a new property*/
-                ProducerType = "large", /* to do: will be in a new property*/
-                Regulator = ((Core.Enums.CountryName)viewModel.NationId).GetDescription(), /*to do: get the nation code in a new property*/
-                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*to do: get from the RegistrationDateTime*/
+                NoOfSubsidiariesOnlineMarketplace = viewModel.NoOfSubsidiariesOnlineMarketPlace,
+                NumberOfSubsidiaries = viewModel.NoOfSubsidiaries,
+                IsLateFeeApplicable = viewModel.IsLateFeeApplicable,
+                IsProducerOnlineMarketplace = viewModel.IsProducerOnlineMarketplace,
+                ProducerType = viewModel.ProducerType,
+                Regulator = viewModel.NationCode,
+                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime)
             });
 
             if (producerPaymentResponse is null)
@@ -50,9 +49,10 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 TotalChargeableItems = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
                 TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
-                ProducerSize = "Large", // To do - check if this is the right property
-                NumberOfSubsidiaries = 3, // To do - assign from request object
-                NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount // To do - assign from request object
+                ProducerSize = viewModel.ProducerType,
+                NumberOfSubsidiaries = viewModel.NoOfSubsidiaries,
+                NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount
+                // To do - assign NumberOfSubsidiariesBeingOnlineMarketplace from request object
             };
 
             return View(producerPaymentDetailsViewModel);

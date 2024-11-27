@@ -254,8 +254,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 Status = status.ToString(),
                 CountryName = GetCountryCodeInitial(existingModel.NationId),
                 RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
-                TwoDigitYear = existingModel.RegistrationYear.Substring(2),
-                //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
+                TwoDigitYear = (existingModel.RegistrationYear % 100).ToString(CultureInfo.InvariantCulture),
                 OrganisationAccountManagementId = existingModel.OrganisationReference,
                 // For sending emails
                 OrganisationName = existingModel.OrganisationName,
