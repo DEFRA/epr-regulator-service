@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Runtime;
 
 using EPR.Common.Authorization.Constants;
+using EPR.Common.Authorization.Extensions;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -124,7 +125,7 @@ public partial class RegistrationSubmissionsController(
 
         RegistrationSubmissionDetailsViewModel model = submissionId == null
             ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-            :  await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+            : await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
 
         if (model == null)
         {
@@ -221,19 +222,7 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var regulatorDecisionRequest = new RegulatorDecisionRequest
-            {
-                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
-                OrganisationId = existingModel.OrganisationId,
-                SubmissionId = existingModel.SubmissionId,
-                Status = RegistrationSubmissionStatus.Granted.ToString(),
-                CountryName = GetCountryCodeInitial(existingModel.NationId),
-                RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
-                TwoDigitYear = existingModel.RegistrationYear.Substring(2),
-                //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
-                OrganisationAccountManagementId = existingModel.OrganisationReference
-            };
-
+            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Granted);
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
             await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
@@ -292,14 +281,8 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var regulatorDecisionRequest = new RegulatorDecisionRequest
-            {
-                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
-                OrganisationId = existingModel.OrganisationId,
-                SubmissionId = existingModel.SubmissionId,
-                Status = Core.Enums.RegistrationSubmissionStatus.Queried.ToString(),
-                Comments = model.Query
-            };
+            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Queried);
+            regulatorDecisionRequest.Comments = model.Query;
 
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
@@ -558,14 +541,9 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var regulatorDecisionRequest = new RegulatorDecisionRequest
-            {
-                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
-                OrganisationId = existingModel.OrganisationId,
-                SubmissionId = existingModel.SubmissionId,
-                Status = RegistrationSubmissionStatus.Refused.ToString(),
-                Comments = existingModel.RejectReason
-            };
+            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Refused);
+
+            regulatorDecisionRequest.Comments = existingModel.RejectReason;
 
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
@@ -644,15 +622,10 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var regulatorDecisionRequest = new RegulatorDecisionRequest
-            {
-                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
-                OrganisationId = existingModel.OrganisationId,
-                SubmissionId = existingModel.SubmissionId,
-                Status = RegistrationSubmissionStatus.Cancelled.ToString(),
-                Comments = existingModel.CancellationReason,
-                DecisionDate = model.CancellationDate
-            };
+            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Cancelled);
+
+            regulatorDecisionRequest.Comments = existingModel.CancellationReason;
+            regulatorDecisionRequest.DecisionDate = model.CancellationDate;
 
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 

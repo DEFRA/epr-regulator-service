@@ -1,6 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 {
     using System.Globalization;
+
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
     using EPR.RegulatorService.Frontend.Core.Models;
@@ -200,6 +201,15 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             _ => "",
         };
 
+        private static string GetRegulatorAgencyEmail(int nationId) => nationId switch
+        {
+            1 => "packagingproducers@environment-agency.gov.uk",
+            2 => "packaging@daera-ni.gov.uk",
+            3 => "producer.responsibility@sepa.org.uk",
+            4 => "deunyddpacio@cyfoethnaturiolcymru.gov.uk; packaging@naturalresourceswales.gov.uk",
+            _ => "",
+        };
+
         private static string GetCountryCodeInitial(int nationId)
         {
             string code = nationId switch
@@ -232,5 +242,28 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 await SaveSession(_currentSession);
             }
         }
+
+        private RegulatorDecisionRequest GetDecisionRequest(
+            RegistrationSubmissionDetailsViewModel existingModel,
+            RegistrationSubmissionStatus status) => new()
+            {
+                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
+                OrganisationId = existingModel.OrganisationId,
+                SubmissionId = existingModel.SubmissionId,
+                // For generating reference
+                Status = status.ToString(),
+                CountryName = GetCountryCodeInitial(existingModel.NationId),
+                RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
+                TwoDigitYear = existingModel.RegistrationYear.Substring(2),
+                //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
+                OrganisationAccountManagementId = existingModel.OrganisationReference,
+                // For sending emails
+                OrganisationName = existingModel.OrganisationName,
+                OrganisationEmail = existingModel.SubmissionDetails.Email,
+                OrganisationReference = existingModel.OrganisationReference,
+                AgencyName = GetRegulatorAgencyName(existingModel.NationId),
+                AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
+                IsWelsh = existingModel.NationId == 4
+            };
     }
 }
