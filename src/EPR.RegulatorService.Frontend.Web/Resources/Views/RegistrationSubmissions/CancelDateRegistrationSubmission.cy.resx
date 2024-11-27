@@ -136,7 +136,7 @@
     <value>Rhaid i'r dyddiad canslo gynnwys blwyddyn</value>
   </data>
   <data name="Error.EmptyDateErrorMessage" xml:space="preserve">
-    <value>[Welsh]Enter a cancellation date</value>
+    <value>Rhowch ddyddiad canslo</value>
   </data>
   <data name="Error.InvalidRealDateErrorMessage" xml:space="preserve">
     <value>Rhaid i'r dyddiad canslo fod yn ddyddiad go iawn</value>

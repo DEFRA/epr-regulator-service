@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ConfirmRegistrationRefusal.ErrorMessage" xml:space="preserve">
-    <value>[Welsh]Select yes if you want to refuse this registration application</value>
+    <value>Dewiswch ydw os hoffech chi wrthod y cais yma am gofrestru</value>
   </data>
   <data name="ConfirmRegistrationRefusal.PageHeading" xml:space="preserve">
     <value>Ydych chi'n siŵr yr hoffech chi wrthod y cais yma am gofrestru?</value>
   </data>
   <data name="ConfirmRegistrationRefusal.PageTitle" xml:space="preserve">
-    <value>[Welsh]Confirm application refusal</value>
+    <value>Cadarnhau bod cais wedi'i wrthod</value>
   </data>
 </root>
