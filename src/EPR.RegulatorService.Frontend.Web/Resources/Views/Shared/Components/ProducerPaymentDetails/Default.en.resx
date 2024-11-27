@@ -117,70 +117,82 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RegistrationSubmissionDetails.ApplicationReferenceNumber" xml:space="preserve">
-    <value>Rhif cyfeirnod y cais</value>
+  <data name="ProducerPaymentDetails.Amount" xml:space="preserve">
+    <value>Amount</value>
   </data>
-  <data name="RegistrationSubmissionDetails.BackToAllSubmissions" xml:space="preserve">
-    <value>Ewch yn ôl i bob cyflwyniad</value>
+  <data name="ProducerPaymentDetails.ApplicationProcessingFee" xml:space="preserve">
+    <value>Application fee</value>
   </data>
-  <data name="RegistrationSubmissionDetails.Caption" xml:space="preserve">
-    <value>Rheoli cyflwyniadau cofrestru</value>
+  <data name="ProducerPaymentDetails.Description" xml:space="preserve">
+    <value>Description</value>
   </data>
-  <data name="RegistrationSubmissionDetails.CompaniesHouseNumber" xml:space="preserve">
-    <value>Rhif Tŷ'r Cwmnïau</value>
+  <data name="ProducerPaymentDetails.OnelineMarketPlaceFeeDescription" xml:space="preserve">
+    <value>Online marketplace fee</value>
   </data>
-  <data name="RegistrationSubmissionDetails.CompaniesHouseRegister" xml:space="preserve">
-    <value>Gweld cofrestr Tŷ'r Cwmnïau</value>
+  <data name="ProducerPaymentDetails.FeeForProducerSize" xml:space="preserve">
+    <value>{0} organisation registration fee</value>
   </data>
-  <data name="RegistrationSubmissionDetails.NotListed" xml:space="preserve">
-    <value>Heb ei restru</value>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription" xml:space="preserve">
+    <value>{0} subsidiaries</value>
   </data>
-  <data name="RegistrationSubmissionDetails.OrganisationIdSubTitle" xml:space="preserve">
-    <value>ID:</value>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription" xml:space="preserve">
+    <value>{0} are online marketplaces</value>
   </data>
-  <data name="RegistrationSubmissionDetails.OrganisationIdTitle" xml:space="preserve">
-    <value>ID y sefydliad</value>
+  <data name="ProducerPaymentDetails.Items" xml:space="preserve">
+    <value>Items</value>
   </data>
-  <data name="RegistrationSubmissionDetails.OrganisationType" xml:space="preserve">
-    <value>Math o sefydliad</value>
+  <data name="ProducerPaymentDetails.OfflinePaymentDetailsHint" xml:space="preserve">
+    <value>Include details of any offline payments, for example, £600.00 or £193.54. Adjustments can also be added, including for negative amounts.</value>
   </data>
-  <data name="RegistrationSubmissionDetails.PageTitle" xml:space="preserve">
-    <value>Manylion cyflwyniad cofrestru</value>
+  <data name="ProducerPaymentDetails.OfflinePaymentDetailsSubmit" xml:space="preserve">
+    <value>Submit offline payment</value>
   </data>
-  <data name="RegistrationSubmissionDetails.PowerBiSubTitle" xml:space="preserve">
-    <value>I weld crynodeb o fanylion y sefydliad, y brand a'r partneriaid ac unrhyw gyflwyniadau blaenorol,</value>
+  <data name="ProducerPaymentDetails.OfflinePaymentDetailsTitle" xml:space="preserve">
+    <value>Offline payment details</value>
   </data>
-  <data name="RegistrationSubmissionDetails.PowerBiTitle" xml:space="preserve">
-    <value>Power BI</value>
+  <data name="ProducerPaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
+    <value>Online marketplace fee</value>
   </data>
-  <data name="RegistrationSubmissionDetails.RegisteredAddress" xml:space="preserve">
-    <value>Cyfeiriad cofrestredig</value>
+  <data name="ProducerPaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
+    <value>Previous payments</value>
   </data>
-  <data name="RegistrationSubmissionDetails.RegistrationReferenceNumber" xml:space="preserve">
-    <value>Rhif cyfeirnod y cofrestriad</value>
+  <data name="ProducerPaymentDetails.SubsidiaryFee" xml:space="preserve">
+    <value>Subsidiary fee</value>
   </data>
-  <data name="RegistrationSubmissionDetails.ProducerTitle" xml:space="preserve">
-    <value>Sylw gan y cynhyrchydd</value>
+  <data name="ProducerPaymentDetails.Title" xml:space="preserve">
+    <value>Payment details</value>
   </data>
-  <data name="RegistrationSubmissionDetails.RegulatorTitle" xml:space="preserve">
-    <value>Sylw gan y rheoleiddiwr</value>
+  <data name="ProducerPaymentDetails.TotalChargeableItems" xml:space="preserve">
+    <value>Sub-total</value>
   </data>
-  <data name="PaymentValidation.FormatIsInvalid" xml:space="preserve">
-    <value>Rhaid i'r swm gynnwys punnoedd a cheiniogau yn unig</value>
+  <data name="ProducerPaymentDetails.TotalOutstanding" xml:space="preserve">
+    <value>Total outstanding</value>
   </data>
-  <data name="PaymentValidation.ValueIsTooHigh" xml:space="preserve">
-    <value>Rhaid i'r swm fod yn llai na £10,000,000</value>
+  <data name="ProducerPaymentDetails.TotalPaymentsReceived" xml:space="preserve">
+    <value>Total payments received</value>
   </data>
-  <data name="PaymentValidation.TheAmountIsRequired" xml:space="preserve">
-    <value>Rhowch swm</value>
+  <data name="ProducerPaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
+    <value>Late fee</value>
   </data>
-  <data name="PaymentValidation.InvalidCharacters" xml:space="preserve">
-    <value>Rhowch rif dilys</value>
+  <data name="ProducerPaymentDetails.ServiceIssueDescription" xml:space="preserve">
+    <value>Unable to retrieve producer payment details</value>
   </data>
-  <data name="PaymentValidation.NonNumericCharacters" xml:space="preserve">
-    <value>Rhaid i'r swm fod yn rhif</value>
+  <data name="ProducerPaymentValidation.ValueIsTooHigh" xml:space="preserve">
+    <value>Amount must be less than £10,000,000</value>
   </data>
-  <data name="PaymentValidation.ValueCannotBeZero" xml:space="preserve">
-    <value>Chaiff y swm ddim bod yn sero</value>
+  <data name="ProducerPaymentValidation.FormatIsInvalid" xml:space="preserve">
+    <value>Amount can only include pounds and pence.</value>
+  </data>
+  <data name="ProducerPaymentValidation.TheAmountIsRequired" xml:space="preserve">
+    <value>Enter an amount</value>
+  </data>
+  <data name="ProducerPaymentValidation.InvalidCharacters" xml:space="preserve">
+    <value>Enter a valid number</value>
+  </data>
+  <data name="ProducerPaymentValidation.NonNumericCharacters" xml:space="preserve">
+    <value>Amount must be a number</value>
+  </data>
+  <data name="ProducerPaymentValidation.ValueCannotBeZero" xml:space="preserve">
+    <value>Amount cannot be zero</value>
   </data>
 </root>

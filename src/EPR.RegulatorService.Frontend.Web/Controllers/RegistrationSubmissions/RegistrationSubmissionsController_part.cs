@@ -241,7 +241,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             }
         }
 
-        private RegulatorDecisionRequest GetDecisionRequest(
+        private static RegulatorDecisionRequest GetDecisionRequest(
             RegistrationSubmissionDetailsViewModel existingModel,
             RegistrationSubmissionStatus status) => new()
             {

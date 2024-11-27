@@ -117,70 +117,82 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RegistrationSubmissionDetails.ApplicationReferenceNumber" xml:space="preserve">
-    <value>Rhif cyfeirnod y cais</value>
+  <data name="CompliancePaymentDetails.Amount" xml:space="preserve">
+    <value>Amount</value>
   </data>
-  <data name="RegistrationSubmissionDetails.BackToAllSubmissions" xml:space="preserve">
-    <value>Ewch yn ôl i bob cyflwyniad</value>
+  <data name="CompliancePaymentDetails.ApplicationProcessingFee" xml:space="preserve">
+    <value>Application processing fee</value>
   </data>
-  <data name="RegistrationSubmissionDetails.Caption" xml:space="preserve">
-    <value>Rheoli cyflwyniadau cofrestru</value>
+  <data name="CompliancePaymentDetails.ChargeableItems" xml:space="preserve">
+    <value>Chargeable items</value>
   </data>
-  <data name="RegistrationSubmissionDetails.CompaniesHouseNumber" xml:space="preserve">
-    <value>Rhif Tŷ'r Cwmnïau</value>
+  <data name="CompliancePaymentDetails.Description" xml:space="preserve">
+    <value>Description</value>
   </data>
-  <data name="RegistrationSubmissionDetails.CompaniesHouseRegister" xml:space="preserve">
-    <value>Gweld cofrestr Tŷ'r Cwmnïau</value>
+  <data name="CompliancePaymentDetails.FeeForOwningAnOnlineMarketplace" xml:space="preserve">
+    <value>Fee for owning an online marketplace</value>
   </data>
-  <data name="RegistrationSubmissionDetails.NotListed" xml:space="preserve">
-    <value>Heb ei restru</value>
+  <data name="CompliancePaymentDetails.FeeForProducerSize" xml:space="preserve">
+    <value>Fee for producer size</value>
   </data>
-  <data name="RegistrationSubmissionDetails.OrganisationIdSubTitle" xml:space="preserve">
-    <value>ID:</value>
+  <data name="CompliancePaymentDetails.FeeForSubsidiaryOnlineMarketPlace" xml:space="preserve">
+    <value>Fee for the 25 subsidiaries of which 0 are an online marketplace</value>
   </data>
-  <data name="RegistrationSubmissionDetails.OrganisationIdTitle" xml:space="preserve">
-    <value>ID y sefydliad</value>
+  <data name="CompliancePaymentDetails.Items" xml:space="preserve">
+    <value>Items</value>
   </data>
-  <data name="RegistrationSubmissionDetails.OrganisationType" xml:space="preserve">
-    <value>Math o sefydliad</value>
+  <data name="CompliancePaymentDetails.OfflinePaymentDetailsHint" xml:space="preserve">
+    <value>Include details of any offline payments, for example, £600.00 or £193.54. Adjustments can also be added, including for negative amounts.</value>
   </data>
-  <data name="RegistrationSubmissionDetails.PageTitle" xml:space="preserve">
-    <value>Manylion cyflwyniad cofrestru</value>
+  <data name="CompliancePaymentDetails.OfflinePaymentDetailsSubmit" xml:space="preserve">
+    <value>Submit offline payment</value>
   </data>
-  <data name="RegistrationSubmissionDetails.PowerBiSubTitle" xml:space="preserve">
-    <value>I weld crynodeb o fanylion y sefydliad, y brand a'r partneriaid ac unrhyw gyflwyniadau blaenorol,</value>
+  <data name="CompliancePaymentDetails.OfflinePaymentDetailsTitle" xml:space="preserve">
+    <value>Offline payment details</value>
   </data>
-  <data name="RegistrationSubmissionDetails.PowerBiTitle" xml:space="preserve">
-    <value>Power BI</value>
+  <data name="CompliancePaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
+    <value>Online marketplace fee</value>
   </data>
-  <data name="RegistrationSubmissionDetails.RegisteredAddress" xml:space="preserve">
-    <value>Cyfeiriad cofrestredig</value>
+  <data name="CompliancePaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
+    <value>Previous payments received</value>
   </data>
-  <data name="RegistrationSubmissionDetails.RegistrationReferenceNumber" xml:space="preserve">
-    <value>Rhif cyfeirnod y cofrestriad</value>
+  <data name="CompliancePaymentDetails.SubsidiaryFee" xml:space="preserve">
+    <value>Subsidiary fee</value>
   </data>
-  <data name="RegistrationSubmissionDetails.ProducerTitle" xml:space="preserve">
-    <value>Sylw gan y cynhyrchydd</value>
+  <data name="CompliancePaymentDetails.Title" xml:space="preserve">
+    <value>Compliance Payment details</value>
   </data>
-  <data name="RegistrationSubmissionDetails.RegulatorTitle" xml:space="preserve">
-    <value>Sylw gan y rheoleiddiwr</value>
+  <data name="CompliancePaymentDetails.TotalChargeableItems" xml:space="preserve">
+    <value>Total chargeable items</value>
   </data>
-  <data name="PaymentValidation.FormatIsInvalid" xml:space="preserve">
-    <value>Rhaid i'r swm gynnwys punnoedd a cheiniogau yn unig</value>
+  <data name="CompliancePaymentDetails.TotalOutstanding" xml:space="preserve">
+    <value>Total outstanding</value>
   </data>
-  <data name="PaymentValidation.ValueIsTooHigh" xml:space="preserve">
-    <value>Rhaid i'r swm fod yn llai na £10,000,000</value>
+  <data name="CompliancePaymentDetails.TotalPaymentsReceived" xml:space="preserve">
+    <value>Total previous payments received by the regulator</value>
   </data>
-  <data name="PaymentValidation.TheAmountIsRequired" xml:space="preserve">
-    <value>Rhowch swm</value>
+  <data name="CompliancePaymentDetails.LateRegistrationFeeTitle" xml:space="preserve">
+    <value>Late Fee</value>
   </data>
-  <data name="PaymentValidation.InvalidCharacters" xml:space="preserve">
-    <value>Rhowch rif dilys</value>
+  <data name="CompliancePaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
+    <value>Late fee description</value>
   </data>
-  <data name="PaymentValidation.NonNumericCharacters" xml:space="preserve">
-    <value>Rhaid i'r swm fod yn rhif</value>
+  <data name="CompliancePaymentValidation.ValueIsTooHigh" xml:space="preserve">
+    <value>Amount must be less than £10,000,000</value>
   </data>
-  <data name="PaymentValidation.ValueCannotBeZero" xml:space="preserve">
-    <value>Chaiff y swm ddim bod yn sero</value>
+  <data name="CompliancePaymentValidation.FormatIsInvalid" xml:space="preserve">
+    <value>Amount can only include pounds and pence.</value>
+  </data>
+  <data name="CompliancePaymentValidation.TheAmountIsRequired" xml:space="preserve">
+    <value>Enter an amount</value>
+  </data>
+  <data name="CompliancePaymentValidation.InvalidCharacters" xml:space="preserve">
+    <value>Enter a valid number</value>
+  </data>
+  <data name="CompliancePaymentValidation.NonNumericCharacters" xml:space="preserve">
+    <value>Amount must be a number</value>
+  </data>
+  <data name="CompliancePaymentValidation.ValueCannotBeZero" xml:space="preserve">
+    <value>Amount cannot be zero</value>
   </data>
 </root>
