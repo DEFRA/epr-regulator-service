@@ -83,16 +83,16 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
         var response = new PaginatedList<OrganisationApplications>
         {
-            Items = results
+            items = results
                 .OrderByDescending(x => x.Enrolments.HasApprovedPending)
                 .ThenBy(x => x.LastUpdate)
                 .ThenBy(x => x.OrganisationName)
                 .Skip((currentPage - 1) * _config.PageSize)
                 .Take(_config.PageSize)
                 .ToList(),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
+            currentPage = currentPage,
+            totalItems = results.Count,
+            pageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
         };
 
         return Task.FromResult(response);
@@ -242,14 +242,14 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
         var response = new PaginatedList<OrganisationSearchResult>
         {
-            Items = results
+            items = results
                 .OrderByDescending(x => x.OrganisationName)
                 .Skip((currentPage - 1) * _config.PageSize)
                 .Take(_config.PageSize)
                 .ToList(),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
+            currentPage = currentPage,
+            totalItems = results.Count,
+            pageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
         };
 
         return Task.FromResult(response);
@@ -298,10 +298,10 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
         var response = new PaginatedList<T>
         {
-            Items = await FilterSubmissions<T>(results, currentPage),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = _config.PageSize
+            items = await FilterSubmissions<T>(results, currentPage),
+            currentPage = currentPage,
+            totalItems = results.Count,
+            pageSize = _config.PageSize
         };
 
         return response;
@@ -385,10 +385,10 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
         var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
         {
-            Items = results.Item2,
-            CurrentPage = filters.PageNumber.Value,
-            TotalItems = results.Item1,
-            PageSize = filters.PageSize.Value
+            items = results.Item2,
+            currentPage = filters.PageNumber.Value,
+            totalItems = results.Item1,
+            pageSize = filters.PageSize.Value
         };
 
         return response;

@@ -23,6 +23,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             var existingSessionFilters = session.LatestFilterChoices ?? new RegistrationSubmissionsFilterViewModel()
             {
                 PageNumber = 1,
+                PageSize = 20,
                 NationId = nationId
             };
             existingSessionFilters.PageNumber = session.CurrentPageNumber;
@@ -32,6 +33,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 NationId = nationId,
                 ListViewModel = new RegistrationSubmissionsListViewModel
                 {
+                    NationId = nationId,
                     RegistrationsFilterModel = existingSessionFilters,
                     PaginationNavigationModel = new ViewModels.Shared.PaginationNavigationModel
                     {

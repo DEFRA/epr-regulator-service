@@ -19,7 +19,7 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public RegistrationSubmissionOrganisationType OrganisationType { get; init; }
     public int NationId { get; init; }
     public string NationCode { get; set; }
-    public string RegistrationYear { get; init; }
+    public int RegistrationYear { get; init; }
     public DateTime RegistrationDateTime { get; init; }
     public RegistrationSubmissionStatus SubmissionStatus { get; init; }
     public DateTime? SubmissionStatusPendingDate { get; set; }
@@ -41,8 +41,8 @@ public class RegistrationSubmissionOrganisationDetailsResponse
 
     public RegistrationSubmissionOrganisationSubmissionSummaryDetails SubmissionDetails { get; set; }
     public RegistrationSubmissionsOrganisationPaymentDetails PaymentDetails { get; set; }
-    public string? RegulatorDecisionDate { get; internal set; }
-    public string? ProducerCommentDate { get; internal set; }
+    public DateTime? RegulatorDecisionDate { get; internal set; }
+    public DateTime? ProducerCommentDate { get; internal set; }
     public Guid? RegulatorUserId { get; internal set; }
     public bool IsOnlineMarketPlace { get; internal set; }
     public int NumberOfSubsidiaries { get; internal set; }

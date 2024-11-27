@@ -80,9 +80,9 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
     public async Task InvokeAsync_ReturnsCorrectViewAndModel_Where_NoFiltersSet()
     {
         var submissions = _fixture.Build<PaginatedList<RegistrationSubmissionOrganisationDetails>>()
-            .With(x => x.Items, _submissions)
-            .With(x => x.CurrentPage, 1)
-            .With(x => x.TotalItems, 3)
+            .With(x => x.items, _submissions)
+            .With(x => x.currentPage, 1)
+            .With(x => x.totalItems, 3)
             .Create();
 
         _facadeServiceMock

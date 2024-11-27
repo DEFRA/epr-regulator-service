@@ -346,28 +346,46 @@ public class FacadeService : IFacadeService
 
         if (response.IsSuccessStatusCode)
         {
-            var commonData = await response.Content.ReadFromJsonAsync<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>();
-            var responseData = commonData.Items.Select(x => (RegistrationSubmissionOrganisationDetails)x).ToList();
+            var commonData = await ReadRequiredJsonContent(response.Content);
+            var responseData = commonData.items.Select(x => (RegistrationSubmissionOrganisationDetails)x).ToList();
+
             return new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
-                Items = responseData,
-                CurrentPage = commonData.CurrentPage,
-                TotalItems = commonData.TotalItems,
-                PageSize = commonData.PageSize
+                items = responseData,
+                currentPage = commonData.currentPage,
+                totalItems = commonData.totalItems,
+                pageSize = commonData.pageSize
             };
         }
         else
         {
             return new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
-                Items = [],
-                CurrentPage = 1,
-                TotalItems = 0,
-                PageSize = 20
+                items = [],
+                currentPage = 1,
+                totalItems = 0,
+                pageSize = 20
             };
         }
 
         return null;
+    }
+
+    private static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
+    {
+        string jsonContent = await content.ReadAsStringAsync();
+
+        try
+        {
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var response = JsonSerializer.Deserialize<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>(jsonContent, options);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidDataException("Cannot parse data from Facade for Submission Summaries", ex);
+        }
     }
 
     public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)

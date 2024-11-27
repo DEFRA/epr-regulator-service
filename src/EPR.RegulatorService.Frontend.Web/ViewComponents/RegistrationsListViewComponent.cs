@@ -54,7 +54,7 @@ public class RegistrationsListViewComponent : ViewComponent
             _httpContextAccessor.HttpContext.Response.Redirect(PagePath.PageNotFoundPath);
         }
 
-        foreach(Registration item in pagedOrganisationRegistrations.Items)
+        foreach(Registration item in pagedOrganisationRegistrations.items)
        {
            item.OrganisationDetailsFileId = item.CompanyDetailsFileId;
            item.OrganisationDetailsFileName = item.CompanyDetailsFileName;
@@ -63,10 +63,10 @@ public class RegistrationsListViewComponent : ViewComponent
       
        var model = new RegistrationsListViewModel()
         {
-            PagedOrganisationRegistrations = pagedOrganisationRegistrations.Items,
+            PagedOrganisationRegistrations = pagedOrganisationRegistrations.items,
             PaginationNavigationModel = new PaginationNavigationModel
             {
-                CurrentPage = pagedOrganisationRegistrations.CurrentPage,
+                CurrentPage = pagedOrganisationRegistrations.currentPage,
                 PageCount = pagedOrganisationRegistrations.TotalPages,
                 ControllerName = "Registrations",
                 ActionName = nameof(RegistrationsController.Registrations)

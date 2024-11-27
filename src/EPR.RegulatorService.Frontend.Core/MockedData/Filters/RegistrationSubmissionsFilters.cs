@@ -84,7 +84,7 @@ public static class RegistrationSubmissionsFilters
         if (!string.IsNullOrEmpty(relevantYear))
         {
             queryable = from q in queryable
-                        where relevantYear.Contains(q.RelevantYear)
+                        where relevantYear.Contains(q.RelevantYear.ToString())
                         select q;
         }
 
