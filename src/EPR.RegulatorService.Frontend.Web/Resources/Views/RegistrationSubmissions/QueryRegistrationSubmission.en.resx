@@ -127,7 +127,7 @@
     <value>Manage registration submissions</value>
   </data>
   <data name="QueryRegistrationSubmission.Description" xml:space="preserve">
-    <value>The organisation will be able to see your comments. Clearly state what the query is about and how the organisation might respond. If you query this submission, the organisation will need to resubmit their application.</value>
+    <value>If you query this submission, the organisation will need to resubmit their application.</value>
   </data>
   <data name="QueryRegistrationSubmission.Heading" xml:space="preserve">
     <value>Why are you querying this registration submission?</value>
