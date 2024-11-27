@@ -32,7 +32,7 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 IsProducerOnlineMarketplace = false, /* to do: will be in a new property*/
                 ProducerType = "large", /* to do: will be in a new property*/
                 Regulator = ((Core.Enums.CountryName)viewModel.NationId).GetDescription(), /*to do: get the nation code in a new property*/
-                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmissionDetails.TimeAndDateOfSubmission) /*to do: get from the RegistrationDateTime*/
+                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*to do: get from the RegistrationDateTime*/
             });
 
             if (producerPaymentResponse is null)
