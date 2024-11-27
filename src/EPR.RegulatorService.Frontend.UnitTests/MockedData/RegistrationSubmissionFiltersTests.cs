@@ -24,7 +24,7 @@ public class RegistrationSubmissionFiltersTests
         _fixture = new Fixture();
         _abstractRegistrations = _fixture
             .Build<RegistrationSubmissionOrganisationDetails>()
-            .With(x => x.RegistrationStatus, GetRandomStatus)
+            .With(x => x.SubmissionStatus, GetRandomStatus)
             .With(x => x.OrganisationType, GetRandomOrgType)
             .CreateMany(50)
             .AsQueryable();
@@ -97,14 +97,14 @@ public class RegistrationSubmissionFiltersTests
     }
 
     [TestMethod]
-    [DataRow(RegistrationSubmissionStatus.updated)]
-    [DataRow(RegistrationSubmissionStatus.queried)]
-    [DataRow(RegistrationSubmissionStatus.cancelled)]
-    [DataRow(RegistrationSubmissionStatus.granted)]
-    [DataRow(RegistrationSubmissionStatus.refused)]
+    [DataRow(RegistrationSubmissionStatus.Updated)]
+    [DataRow(RegistrationSubmissionStatus.Queried)]
+    [DataRow(RegistrationSubmissionStatus.Cancelled)]
+    [DataRow(RegistrationSubmissionStatus.Granted)]
+    [DataRow(RegistrationSubmissionStatus.Refused)]
     public void FilterByOrganisationName_ReturnsOnlyBySubmissionStatus(RegistrationSubmissionStatus byStatus)
     {
-        var expectedResult = _abstractRegistrations.Where(x=>x.RegistrationStatus == byStatus);
+        var expectedResult = _abstractRegistrations.Where(x=>x.SubmissionStatus == byStatus);
 
         var result = _abstractRegistrations.FilterBySubmissionStatus(byStatus.ToString());
         result.Should().BeEquivalentTo(expectedResult);
@@ -116,7 +116,7 @@ public class RegistrationSubmissionFiltersTests
         var result = _abstractRegistrations.FilterBySubmissionStatus (null);
         result.Count().Should().Be(_abstractRegistrations.Count());
 
-        result = _abstractRegistrations.FilterBySubmissionStatus(RegistrationSubmissionStatus.none.ToString());
+        result = _abstractRegistrations.FilterBySubmissionStatus(RegistrationSubmissionStatus.None.ToString());
         result.Count().Should().Be(_abstractRegistrations.Count());
     }
 
@@ -128,7 +128,7 @@ public class RegistrationSubmissionFiltersTests
     [DataRow(44)]
     public void FilterByRegistrationYear_ReturnsOnlyThatYear(int byIndex)
     {
-        string expectedYear = _abstractRegistrations.ToArray()[byIndex].RelevantYear;
+        var expectedYear = _abstractRegistrations.ToArray()[byIndex].RelevantYear;
         var expectedResult = _abstractRegistrations.Where(x=>x.RelevantYear == expectedYear);
 
         var result = _abstractRegistrations.FilterByRelevantYear(expectedYear.ToString());
@@ -151,15 +151,15 @@ public class RegistrationSubmissionFiltersTests
 
         string expectedName = item.OrganisationName[3..6];
         var expectedSize = item.OrganisationType;
-        var expectedStatus = item.RegistrationStatus;
-        string expectedYear = item.RelevantYear;
+        var expectedStatus = item.SubmissionStatus;
+        var expectedYear = item.RelevantYear;
 
         var filter = new RegistrationSubmissionsFilterModel
         {
             OrganisationName = expectedName,
             OrganisationType = expectedSize.ToString(),
-            SubmissionStatus = expectedStatus.ToString(),
-            RelevantYear = expectedYear.ToString()
+            Statuses = expectedStatus.ToString(),
+            RelevantYears = expectedYear.ToString()
         };
 
         var result = _abstractRegistrations.Filter(filter).ToList();
@@ -168,7 +168,7 @@ public class RegistrationSubmissionFiltersTests
 
     private static RegistrationSubmissionStatus GetRandomStatus()
     {
-        RegistrationSubmissionStatus[] enums = [RegistrationSubmissionStatus.granted, RegistrationSubmissionStatus.refused, RegistrationSubmissionStatus.queried, RegistrationSubmissionStatus.updated, RegistrationSubmissionStatus.cancelled, RegistrationSubmissionStatus.pending];
+        RegistrationSubmissionStatus[] enums = [RegistrationSubmissionStatus.Granted, RegistrationSubmissionStatus.Refused, RegistrationSubmissionStatus.Queried, RegistrationSubmissionStatus.Updated, RegistrationSubmissionStatus.Cancelled, RegistrationSubmissionStatus.Pending];
         int index = _random.Next(enums.Length);
         return enums[index];
     }

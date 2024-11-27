@@ -1079,14 +1079,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             });
 
             var sut = new FacadeService(httpClient, _tokenAcquisitionMock.Object, _paginationConfig, facadeApiConfig);
-            sut.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { Page = 1 });
+            sut.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { PageSize = 1 });
             httpClient.DefaultRequestHeaders.Authorization.Should().NotBeNull();
         }
 
         [TestMethod]
         public async Task GetRegistrationSubmissions_ShouldReturnPaginatedList_WhenRequestSucceeds()
         {
-            var filter = new RegistrationSubmissionsFilterModel { Page = 1 };
+            var filter = new RegistrationSubmissionsFilterModel { PageSize = 1 };
 
             var result = await _facadeService.GetRegistrationSubmissions(filter);
             result.Should().BeOfType<PaginatedList<RegistrationSubmissionOrganisationDetails>>();
@@ -1096,8 +1096,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [TestMethod]
         public async Task GetRegistrationSubmission_ShouldReturnPageTwo_WhenRequestSucceeds()
         {
-            var result = await _facadeService.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { Page = 2 });
-            result.CurrentPage.Should().Be(2);
+            var result = await _facadeService.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { PageSize = 2 });
+            result.currentPage.Should().Be(2);
         }
 
         [TestMethod]
@@ -1108,7 +1108,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
             var expectedResult = expectedDataSet[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationName = expectedDataSet[byIndex].OrganisationName };
+            var filter = new RegistrationSubmissionsFilterModel() { PageSize = 1, OrganisationName = expectedDataSet[byIndex].OrganisationName };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
             results.items.Should().Contain(expectedResult);
@@ -1122,7 +1122,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
             var expectedResult = expectedDataSet[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationName = expectedResult.OrganisationName };
+            var filter = new RegistrationSubmissionsFilterModel() { PageSize = 1, OrganisationName = expectedResult.OrganisationName };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
             results.TotalPages.Should().Be(1);
@@ -1136,7 +1136,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
             var expectedResult = expectedDataSet[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationType = expectedResult.OrganisationType.ToString() };
+            var filter = new RegistrationSubmissionsFilterModel() { PageSize = 1, OrganisationType = expectedResult.OrganisationType.ToString() };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
             results.TotalPages.Should().BeGreaterThan(1);
@@ -1146,7 +1146,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         [TestMethod]
         public async Task GetRegistrationSubmission_WithoutFilter_ShouldReturnCorrectPaginationInformation()
         {
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1 };
+            var filter = new RegistrationSubmissionsFilterModel() { PageSize = 1 };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
             Assert.AreNotEqual(results.items.Count, results.totalItems);
@@ -1160,7 +1160,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var expectedDataSet = MockedFacadeService.GenerateRegistrationSubmissionDataCollection();
             var expectedResult = expectedDataSet[byIndex];
 
-            var filter = new RegistrationSubmissionsFilterModel() { Page = 1, OrganisationRef = expectedDataSet[byIndex].OrganisationReference };
+            var filter = new RegistrationSubmissionsFilterModel() { PageSize = 1, OrganisationReference = expectedDataSet[byIndex].OrganisationReference };
             var results = await _facadeService.GetRegistrationSubmissions(filter);
 
             results.items.Should().Contain(expectedResult);
@@ -1182,15 +1182,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             string expectedName = item.OrganisationName[3..6];
             var expectedSize = item.OrganisationType;
-            var expectedStatus = item.RegistrationStatus;
+            var expectedStatus = item.SubmissionStatus;
             string expectedYear = item.RelevantYear.ToString(CultureInfo.InvariantCulture);
 
             var filter = new RegistrationSubmissionsFilterModel
             {
                 OrganisationName = expectedName,
                 OrganisationType = expectedSize.ToString(),
-                SubmissionStatus = expectedStatus.ToString(),
-                RelevantYear = expectedYear,
+                Statuses= expectedStatus.ToString(),
+                RelevantYears = expectedYear,
                 PageSize = 5000
             };
 
@@ -1210,31 +1210,31 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var item2 = alldata[byOtherIndex];
 
             var expectedItems = alldata.AsQueryable().FilterByOrganisationType($"{item.OrganisationType.ToString()} {item2.OrganisationType.ToString()}")
-                                                     .FilterBySubmissionStatus($"{item.RegistrationStatus.ToString()} {item2.RegistrationStatus.ToString()}")
+                                                     .FilterBySubmissionStatus($"{item.SubmissionStatus.ToString()} {item2.SubmissionStatus.ToString()}")
                                                      .FilterByRelevantYear($"{item.RelevantYear} {item2.RelevantYear}")
-                                                     .OrderBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.refused)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.granted)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.cancelled)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.updated)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.queried)
-                                                     .ThenBy(x => x.RegistrationStatus == RegistrationSubmissionStatus.pending)
-                                                     .ThenBy(x => x.RegistrationDateTime)
+                                                     .OrderBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Refused)
+                                                     .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Granted)
+                                                     .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Cancelled)
+                                                     .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Updated)
+                                                     .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Queried)
+                                                     .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Pending)
+                                                     .ThenBy(x => x.SubmissionDate)
                                                      .Skip((1 - 1) * PAGE_SIZE)
                                                      .Take(PAGE_SIZE)
                                                      .ToList();
 
             var expectedSize1 = item.OrganisationType;
-            var expectedStatus1 = item.RegistrationStatus;
-            string expectedYear1 = item.RelevantYear;
+            var expectedStatus1 = item.SubmissionStatus;
+            var expectedYear1 = item.RelevantYear;
             var expectedSize2 = item2.OrganisationType;
-            var expectedStatus2 = item2.RegistrationStatus;
-            string expectedYear2 = item2.RelevantYear;
+            var expectedStatus2 = item2.SubmissionStatus;
+            var expectedYear2 = item2.RelevantYear;
 
             var filter = new RegistrationSubmissionsFilterModel
             {
                 OrganisationType = $"{expectedSize1.ToString()} {expectedSize2.ToString()}",
-                SubmissionStatus = $"{expectedStatus1.ToString()} {expectedStatus2.ToString()}",
-                RelevantYear = $"{expectedYear1} {expectedYear2}"
+                Statuses = $"{expectedStatus1.ToString()} {expectedStatus2.ToString()}",
+                RelevantYears = $"{expectedYear1} {expectedYear2}"
             };
 
             var result = await _facadeService.GetRegistrationSubmissions(filter);
@@ -1315,15 +1315,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             var expectedResponse = new RegistrationSubmissionOrganisationDetails
             {
-                OrganisationID = Guid.NewGuid(),
+                OrganisationId = Guid.NewGuid(),
                 OrganisationReference = "ORGREF1234567890",
                 OrganisationName = "Test Organisation",
                 ApplicationReferenceNumber = "APPREF123",
                 RegistrationReferenceNumber = "REGREF456",
                 OrganisationType = RegistrationSubmissionOrganisationType.large,
                 CompaniesHouseNumber = "CH123456",
-                RegistrationStatus = RegistrationSubmissionStatus.pending,
-                RegistrationDateTime = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
+                SubmissionStatus = RegistrationSubmissionStatus.Pending,
+                SubmissionDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
                 BuildingName = "Building A",
                 SubBuildingName = "Sub A",
                 BuildingNumber = "123",
@@ -1353,7 +1353,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Assert
             Assert.IsNotNull(result);
             result.Should().BeOfType<RegistrationSubmissionOrganisationDetails>();
-            Assert.AreEqual(expected: expectedResponse.OrganisationID, actual: result.OrganisationID);
+            Assert.AreEqual(expected: expectedResponse.OrganisationId, actual: result.OrganisationId);
             Assert.AreEqual(expected: organisationName, actual: result.OrganisationName);
             Assert.AreEqual(expected: expectedResponse.CompaniesHouseNumber, actual: result.CompaniesHouseNumber);
 

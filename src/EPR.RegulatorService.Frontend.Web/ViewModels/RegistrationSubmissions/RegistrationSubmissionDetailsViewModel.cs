@@ -76,7 +76,7 @@ public class RegistrationSubmissionDetailsViewModel
         NationId = details.NationId,
         Status = details.SubmissionStatus,
         RegistrationDateTime = details.SubmissionDate,
-        RegistrationYear = details.RelevantYear.ToString(),
+        RegistrationYear = details.RelevantYear,
         RegulatorComments = details.RegulatorComments,
         ProducerComments = details.ProducerComments,
         BusinessAddress = new BusinessAddress
@@ -110,7 +110,7 @@ public class RegistrationSubmissionDetailsViewModel
         Country = details.RegisteredNation,
         SubmissionStatus = details.Status,
         SubmissionDate = details.RegistrationDateTime,
-        RelevantYear = int.Parse(details.RegistrationYear, CultureInfo.InvariantCulture),
+        RelevantYear = details.RegistrationYear,
         RegulatorComments = details.RegulatorComments,
         ProducerComments = details.ProducerComments,
         BuildingName = details.BusinessAddress?.BuildingName,
