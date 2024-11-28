@@ -1161,7 +1161,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task QueryRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenQueryIsValid()
+        [DataRow("Valid query within 400 characters")]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task QueryRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenQueryIsValid(string queryValue)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -1179,48 +1182,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new QueryRegistrationSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                Query = "Valid query within 400 characters." // Valid input
-            };
-
-            // Set up successful submission status
-            _facadeServiceMock
-                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
-                .ReturnsAsync(EndpointResponseStatus.Success);
-
-            _controller.Url = mockUrlHelper.Object;
-
-            // Act
-            var result = await _controller.QueryRegistrationSubmission(model) as RedirectToActionResult;
-
-            // Assert - Successful query and redirection
-            Assert.IsNotNull(result);
-            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
-
-            // Verify that the facade service was called the expected number of times
-            _facadeServiceMock.Verify(mock =>
-                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
-        }
-
-        [TestMethod]
-        public async Task QueryRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenNoQueryIsProvided()
-        {
-            // Arrange
-            var id = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
-
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
-
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
-
-            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
-            {
-                SelectedRegistration = detailsModel
-            };
-
-            var model = new QueryRegistrationSubmissionViewModel
-            {
-                SubmissionId = id,
-                Query = null // No query provided
+                Query = queryValue // Valid input
             };
 
             // Set up successful submission status
