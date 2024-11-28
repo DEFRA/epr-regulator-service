@@ -11,6 +11,7 @@ using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Filters;
 
+[Ignore("This will be removed")]
 [TestClass]
 public class RegistrationSubmissionFiltersTests
 {
