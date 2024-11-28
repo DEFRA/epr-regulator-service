@@ -337,7 +337,7 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out RegistrationSubmissionDetailsViewModel existingModel))
+        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
