@@ -541,11 +541,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.LatestFilterChoices.PageNumber.Should().Be(1);
             session.LatestFilterChoices.Statuses.Should().BeNullOrEmpty();
         }
-        
+
         #endregion Happy Path
 
         #region Sad Path
-                [TestMethod]
+        [TestMethod]
         public async Task RegistrationSubmissions_Return_PageNot_Found_When_FilterAction_IsEmpty()
         {
             var viewModel = new RegistrationSubmissionsFilterViewModel();
@@ -864,7 +864,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, nationId,nationCode);
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, nationId, nationCode);
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
             _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
 
@@ -933,38 +933,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #region QueryRegistrationSubmission
 
-        [TestMethod]
-        public async Task QueryRegistrationSubmission_Post_SessionDataError_ReturnsPageNotFound()
-        {
-            // Act
-            var id = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
-
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
-
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
-            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
-            {
-                SelectedRegistration = detailsModel
-            };
-            var expectedViewModel = new QueryRegistrationSubmissionViewModel
-            {
-                SubmissionId = Guid.NewGuid(),
-                Query = "query provided"
-            };
-
-            _controller.Url = mockUrlHelper.Object;
-            var result = await _controller.QueryRegistrationSubmission(expectedViewModel);
-
-            // Assert
-            var viewResult = result as RedirectToActionResult;
-            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
-
-            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
-        }
+        #region GET
 
         [TestMethod]
-        public async Task QueryRegistrationSubmission_SessionDataError_ReturnsPageNotFound()
+        public async Task QueryRegistrationSubmission_Get_SessionDataError_ReturnsPageNotFound()
         {
             // Act
             var id = Guid.NewGuid();
@@ -989,7 +961,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task QueryRegistrationSubmission_ReturnsView_WithCorrectModel()
+        public async Task QueryRegistrationSubmission_Get_ReturnsView_WithCorrectModel()
         {
             // Arrange 
             var id = Guid.NewGuid();
@@ -1029,7 +1001,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task QueryRegistrationSubmission_SetsCorrectBackLinkInViewData()
+        public async Task QueryRegistrationSubmission_Get_SetsCorrectBackLinkInViewData()
         {
             // Arrange
             var id = Guid.NewGuid();
@@ -1059,6 +1031,40 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string[] segments = backLink.Split('/');
             Assert.IsNotNull(segments, "The back link should contain URL segments.");
             Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+        }
+
+        #endregion GET
+
+        #region POST
+
+        [TestMethod]
+        public async Task QueryRegistrationSubmission_Post_SessionDataError_ReturnsPageNotFound()
+        {
+            // Act
+            var id = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
+
+            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+            var expectedViewModel = new QueryRegistrationSubmissionViewModel
+            {
+                SubmissionId = Guid.NewGuid(),
+                Query = "query provided"
+            };
+
+            _controller.Url = mockUrlHelper.Object;
+            var result = await _controller.QueryRegistrationSubmission(expectedViewModel);
+
+            // Assert
+            var viewResult = result as RedirectToActionResult;
+            Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
+
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
         }
 
         [TestMethod]
@@ -1331,7 +1337,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task QueryRegistrationSubmission_LogsErrorAndRedirectsToServiceNotAvailable_OnException()
+        public async Task QueryRegistrationSubmission_Post_LogsErrorAndRedirectsToServiceNotAvailable_OnException()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -1375,6 +1381,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
         }
+
+        #endregion POST
 
         #endregion
 
@@ -3666,7 +3674,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #endregion
 
-        #endregion OrganisationDetailsChangeHistorySession
+        #endregion CancelDateRegistrationSubmission
+
+        #region OrganisationDetailsChangeHistorySession
+
         [TestMethod]
         public async Task When_CancelDateRegistrationSubmission_Post_Success_Then_Should_Update_OrganisationDetailsChangeHistory_InSession()
         {
@@ -3838,10 +3849,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
             _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
 
-           
 
-           // Act
-           var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
             { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
 
             // Assert
@@ -3856,9 +3867,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             latestOrganisationDetails.Should().BeNull();
         }
 
-        #region 
-
-        #endregion
+        #endregion OrganisationDetailsChangeHistorySession
 
         private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
         {
