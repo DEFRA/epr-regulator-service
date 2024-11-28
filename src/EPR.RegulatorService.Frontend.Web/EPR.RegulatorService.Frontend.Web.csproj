@@ -90,6 +90,12 @@
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmOfflinePaymentSubmission.en.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionFileDownloadFailed.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionFileDownloadFailed.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionDetails.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

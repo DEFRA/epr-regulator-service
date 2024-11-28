@@ -402,7 +402,6 @@ public class FacadeService : IFacadeService
         RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFE(content);
 
         return result;
-        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<RegistrationSubmissionOrganisationDetailsResponse>() : null;
     }
 
     private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content) {

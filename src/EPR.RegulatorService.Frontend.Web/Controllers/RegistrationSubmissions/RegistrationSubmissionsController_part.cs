@@ -5,6 +5,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
     using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
@@ -266,5 +267,55 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
                 IsWelsh = existingModel.NationId == 4
             };
+
+        private static FileDownloadRequest CreateFileDownloadRequest(JourneySession session, RegistrationSubmissionOrganisationDetails registration)
+        {
+            var fileDownloadModel = new FileDownloadRequest
+            {
+                SubmissionId = registration.SubmissionId,
+                SubmissionType = SubmissionType.Registration
+            };
+
+            switch (session.RegulatorRegistrationSubmissionSession.FileDownloadRequestType)
+            {
+                case FileDownloadTypes.OrganisationDetails:
+                    var orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company);
+                    if (null != orgFile)
+                    {
+                        fileDownloadModel.FileId = orgFile.FileId;
+                        fileDownloadModel.BlobName = orgFile.BlobName;
+                        fileDownloadModel.FileName = orgFile.FileName;
+                    }
+                    break;
+                case FileDownloadTypes.BrandDetails:
+                    orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands);
+                    if (null != orgFile)
+                    {
+                        fileDownloadModel.FileId = orgFile.FileId;
+                        fileDownloadModel.BlobName = orgFile.BlobName;
+                        fileDownloadModel.FileName = orgFile.FileName;
+                    }
+                    break;
+                case FileDownloadTypes.PartnershipDetails:
+                    orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership);
+                    if (null != orgFile)
+                    {
+                        fileDownloadModel.FileId = orgFile.FileId;
+                        fileDownloadModel.BlobName = orgFile.BlobName;
+                        fileDownloadModel.FileName = orgFile.FileName;
+                    }
+                    break;
+                default:
+                    return null;
+            }
+
+            if (fileDownloadModel.FileId == null || fileDownloadModel.BlobName == null || fileDownloadModel.FileName == null)
+            {
+                return null;
+            }
+
+            return fileDownloadModel;
+        }
+
     }
 }

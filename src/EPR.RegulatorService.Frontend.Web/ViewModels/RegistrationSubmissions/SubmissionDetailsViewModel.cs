@@ -3,33 +3,44 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 using System.Globalization;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Web.Constants;
 
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using static EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.RegistrationSubmissionOrganisationSubmissionSummaryDetails;
+
+using ServiceRole = Core.Enums.ServiceRole;
 
 public class SubmissionDetailsViewModel
 {
     public class FileDetails
     {
-        FileType Type { get; set; }
+        public FileType Type { get; set; }
+        public string DownloadType { get; set; }
 
         public string Label { get; set; }
         public string FileName { get; set; }
-        public string FileId { get; set; }
-        public string BlobName { get; set; }
-
-        public string DownloadUrl { get; set; }
+        public Guid? FileId { get; set; }
+        public string? BlobName { get; set; }
 
         public static implicit operator FileDetails(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails otherFile) => otherFile is null ? null : new FileDetails
         {
             Type = otherFile.Type,
-            Label = "tbc",
+            DownloadType = otherFile.Type switch
+            {
+                FileType.company => FileDownloadTypes.OrganisationDetails,
+                FileType.partnership => FileDownloadTypes.PartnershipDetails,
+                FileType.brands => FileDownloadTypes.BrandDetails,
+                _ => ""
+            },
+            Label = otherFile.Type switch
+            {
+                FileType.company => "SubmissionDetails.OrganisationDetails",
+                FileType.partnership => "SubmissionDetails.PartnerDetails",
+                FileType.brands => "SubmissionDetails.BrandDetails",
+                _ => ""
+            },
             FileName = otherFile.FileName,
-            DownloadUrl = "generated",
             FileId = otherFile.FileId,
             BlobName = otherFile.BlobName
         };

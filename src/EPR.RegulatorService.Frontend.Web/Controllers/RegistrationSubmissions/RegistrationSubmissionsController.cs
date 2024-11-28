@@ -12,6 +12,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using Microsoft.AspNetCore.Authorization;
@@ -662,6 +663,80 @@ public partial class RegistrationSubmissionsController(
                     backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
                 });
         }
+    }
+
+    [HttpGet]
+    [Route(PagePath.RegistrationSubmissionsFileDownload)]
+    public async Task<IActionResult> RegistrationSubmissionsFileDownload(string downloadType)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        TempData["DownloadCompleted"] = false;
+        _currentSession.RegulatorRegistrationSubmissionSession.FileDownloadRequestType = downloadType;
+        await SaveSession(_currentSession);
+
+        return RedirectToAction(nameof(SubmissionDetailsFileDownload), "RegistrationSubmissions");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> FileDownloadInProgress()
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        var registration = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+        var fileDownloadModel = CreateFileDownloadRequest(_currentSession, registration);
+
+        if (fileDownloadModel == null)
+        {
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed));
+        }
+
+        var response = await _facadeService.GetFileDownload(fileDownloadModel);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+        {
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning));
+        }
+        else if (response.IsSuccessStatusCode)
+        {
+            var fileStream = await response.Content.ReadAsStreamAsync();
+            var contentDisposition = response.Content.Headers.ContentDisposition;
+            var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.SubmissionDetails.Files[0].FileName ?? $"{registration.OrganisationReference}_details.csv";
+            TempData["DownloadCompleted"] = true;
+
+            return File(fileStream, "application/octet-stream", fileName);
+        }
+        else
+        {
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed));
+        }
+    }
+
+    [HttpGet]
+    [Route(PagePath.RegistrationSubmissionDetailsFileDownload)]
+    public IActionResult SubmissionDetailsFileDownload()
+    {
+        return View("RegistrationSubmissionFileDownload");
+    }
+
+    [HttpGet]
+    [Route(PagePath.RegistrationSubmissionFileDownloadFailed)]
+    public IActionResult RegistrationSubmissionFileDownloadFailed()
+    {
+        _currentSession = _sessionManager.GetSessionAsync(HttpContext.Session).Result;
+
+        var model = new OrganisationDetailsFileDownloadViewModel(true, false, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId);
+        return View("RegistrationSubmissionFileDownloadFailed", model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.RegistrationSubmissionFileDownloadSecurityWarning)]
+    public IActionResult RegistrationSubmissionFileDownloadSecurityWarning()
+    {
+        _currentSession = _sessionManager.GetSessionAsync(HttpContext.Session).Result;
+
+        var model = new OrganisationDetailsFileDownloadViewModel(true, true, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId);
+        return View("RegistrationSubmissionFileDownloadFailed", model);
     }
 
     [HttpGet]

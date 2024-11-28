@@ -84,19 +84,29 @@
 
             @foreach (var file in Model.Files)
             {
-                <div class="govuk-summary-list__row">
-                    <dd class="govuk-summary-list__value">
-                        <strong>@Localizer[file.Label]</strong>
-                    </dd>
-                    <dd class="govuk-summary-list__value">
-                        @file.FileName
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link--no-visited-state" href="#">
-                            @SharedLocalizer["Link.Download"]
-                        </a>
-                    </dd>
-                </div>
+                if (!string.IsNullOrWhiteSpace(file.DownloadType))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dd class="govuk-summary-list__value">
+                            <strong>@Localizer[file.Label]</strong>
+                        </dd>
+                        <dd class="govuk-summary-list__value">
+                            @file.FileName
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            @Html.ActionLink(SharedLocalizer["Link.Download"],
+                                     "RegistrationSubmissionsFileDownload",
+                                     "RegistrationSubmissions",
+                                     new
+                                     {
+                                         downloadType = file.DownloadType
+                                     },
+                                     new {
+                                        @class = "govuk-link--no-visited-state"
+                                     })
+                        </dd>
+                    </div>
+                }
             }
 
         </dl>

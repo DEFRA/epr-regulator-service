@@ -11,9 +11,9 @@ public class RegistrationSubmissionOrganisationSubmissionSummaryDetails
     {
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public FileType Type { get; set; }
-        public string FileId { get; set; }
+        public Guid? FileId { get; set; }
         public string FileName { get; set; }
-        public string BlobName { get; set; }
+        public string? BlobName { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
