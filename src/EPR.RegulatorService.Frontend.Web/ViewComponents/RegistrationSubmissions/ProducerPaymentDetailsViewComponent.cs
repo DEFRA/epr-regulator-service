@@ -49,10 +49,9 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 TotalChargeableItems = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
                 TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
-                ProducerSize = viewModel.OrganisationSize,
+                ProducerSize = $"{char.ToUpperInvariant(viewModel.OrganisationSize[0])}{viewModel.OrganisationSize[1..]}",
                 NumberOfSubsidiaries = viewModel.NoOfSubsidiaries,
                 NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount
-                // To do - assign NumberOfSubsidiariesBeingOnlineMarketplace from request object
             };
 
             return View(producerPaymentDetailsViewModel);
