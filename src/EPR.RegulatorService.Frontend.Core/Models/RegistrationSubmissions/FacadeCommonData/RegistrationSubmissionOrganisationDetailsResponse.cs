@@ -41,15 +41,15 @@ public class RegistrationSubmissionOrganisationDetailsResponse
 
     public RegistrationSubmissionOrganisationSubmissionSummaryDetails SubmissionDetails { get; set; }
     public RegistrationSubmissionsOrganisationPaymentDetails PaymentDetails { get; set; }
-    public DateTime? RegulatorDecisionDate { get; internal set; }
-    public DateTime? ProducerCommentDate { get; internal set; }
-    public Guid? RegulatorUserId { get; internal set; }
-    public bool IsOnlineMarketPlace { get; internal set; }
-    public int NumberOfSubsidiaries { get; internal set; }
-    public int NumberOfOnlineSubsidiaries { get; internal set; }
-    public bool IsLateSubmission { get; internal set; }
-    public string OrganisationSize { get; internal set; }
-    public bool IsComplianceScheme { get; internal set; }
-    public string SubmissionPeriod { get; internal set; }
+    public DateTime? RegulatorDecisionDate { get; set; }
+    public DateTime? ProducerCommentDate { get; set; }
+    public Guid? RegulatorUserId { get; set; }
+    public bool IsOnlineMarketPlace { get; set; }
+    public int NumberOfSubsidiaries { get; set; }
+    public int NumberOfOnlineSubsidiaries { get; set; }
+    public bool IsLateSubmission { get; set; }
+    public string OrganisationSize { get; set; }
+    public bool IsComplianceScheme { get; set; }
+    public string SubmissionPeriod { get; set; }
 
 }

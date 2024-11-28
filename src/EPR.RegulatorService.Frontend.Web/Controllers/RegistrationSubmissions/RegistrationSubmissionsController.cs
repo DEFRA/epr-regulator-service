@@ -58,6 +58,7 @@ public partial class RegistrationSubmissionsController(
         try
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;
 
             int nationId = _currentSession.UserData.Organisations[0].NationId ?? 0;
 
