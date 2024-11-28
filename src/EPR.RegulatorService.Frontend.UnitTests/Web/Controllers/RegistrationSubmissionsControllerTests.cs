@@ -2940,42 +2940,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task ConfirmRegistrationRefusal_Post_RedirectsToPageNotFound_WhenRejectReasonIsNull()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.RejectReason = null; // Null reject reason
-
-            // Set up session mock
-            SetupJourneySession(null, submissionDetails);
-
-            var model = new ConfirmRegistrationRefusalViewModel
-            {
-                SubmissionId = submissionDetails.SubmissionId,
-                RejectReason = submissionDetails.RejectReason,
-                IsRegistrationRefusalConfirmed = true
-            };
-
-            // Act
-            var result = await _controller.ConfirmRegistrationRefusal(model);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-
-            var redirectResult = result as RedirectToActionResult;
-
-            // Veryify the redirect URL
-            redirectResult.ActionName.Should().Be(PagePath.PageNotFound);
-            redirectResult.ControllerName.Should().Be("RegistrationSubmissions");
-
-            // Verify that the facade service was called the expected number of times
-            _facadeServiceMock.Verify(mock =>
-                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Never);
-        }
-
-        [TestMethod]
         public async Task ConfirmRegistrationRefusal_Post_ReturnsSuccessAndRedirectsCorrectly_WhenRejectionReasonIsValid()
         {
             // Arrange

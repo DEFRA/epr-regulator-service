@@ -537,11 +537,6 @@ public partial class RegistrationSubmissionsController(
             return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
         }
 
-        if (string.IsNullOrEmpty(model.RejectReason))
-        {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-        }
-
         try
         {
             var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Refused);
