@@ -93,7 +93,11 @@ public class RegistrationSubmissionDetailsViewModel
         SubmissionDetails = details.SubmissionDetails,
         PaymentDetails = details.PaymentDetails,
         RejectReason = details.RejectReason,
-        CancellationReason = details.CancellationReason
+        CancellationReason = details.CancellationReason,
+        IsLateFeeApplicable = details.IsLateSubmission,
+        NoOfSubsidiaries = details.NumberOfSubsidiaries,
+        NoOfSubsidiariesOnlineMarketPlace = details.NumberOfOnlineSubsidiaries,
+        IsProducerOnlineMarketplace = details.IsOnlineMarketPlace
     };
 
     // Implicit operator from RegistrationSubmissionDetailsViewModel to RegistrationSubmissionOrganisationDetails  

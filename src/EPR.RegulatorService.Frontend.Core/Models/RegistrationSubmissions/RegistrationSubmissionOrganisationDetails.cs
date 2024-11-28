@@ -38,13 +38,9 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public RegistrationSubmissionStatus SubmissionStatus { get; set; }
     public DateTime? StatusPendingDate { get; set; }
 
-    public bool? IsComplianceScheme { get; set; }
-    public string ProducerSize { get; set; }
-
     public int NumberOfSubsidiaries { get; set; }
     public int NumberOfOnlineSubsidiaries { get; set; }
     public bool IsOnlineMarketPlace { get; set; }
-    public bool IsLateFeeDue { get; set; }
 
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
@@ -69,7 +65,13 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
 
     public RegistrationSubmissionOrganisationSubmissionSummaryDetails SubmissionDetails { get; set; }
     public RegistrationSubmissionsOrganisationPaymentDetails PaymentDetails { get; set; }
-    public string RegulatorDescisionDate { get; private set; }
+    public string? RegulatorDescisionDate { get; set; }
+
+    public bool IsLateSubmission { get; internal set; }
+    public bool? IsComplianceScheme { get; set; }
+    public string OrganisationSize { get; set; }
+
+    public string SubmissionPeriod { get; internal set; }
 
     public override bool Equals(object? obj) => Equals(obj as RegistrationSubmissionOrganisationDetails);
     public bool Equals(RegistrationSubmissionOrganisationDetails? other) => other is not null && OrganisationId.Equals(other.OrganisationId);
@@ -109,10 +111,10 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             OrganisationType = response.OrganisationType,
             NationId = response.NationId,
             NationCode = response.NationCode,
-            RelevantYear = response.RegistrationYear,
-            SubmissionDate = response.RegistrationDateTime,
+            RelevantYear = response.RelevantYear,
+            SubmissionDate = response.SubmissionDate,
             SubmissionStatus = response.SubmissionStatus,
-            StatusPendingDate = response.SubmissionStatusPendingDate,
+            StatusPendingDate = response.StatusPendingDate,
             RegulatorComments = response.RegulatorComments,
             ProducerComments = response.ProducerComments,
             ApplicationReferenceNumber = response.ApplicationReferenceNumber,
@@ -129,11 +131,11 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             Country = response.Country,
             Postcode = response.Postcode,
             IsComplianceScheme = response.IsComplianceScheme,
-            ProducerSize = response.OrganisationSize,
+            OrganisationSize = response.OrganisationSize,
             NumberOfSubsidiaries = response.NumberOfSubsidiaries,
             NumberOfOnlineSubsidiaries = response.NumberOfSubsidiaries,
             SubmissionDetails = response.SubmissionDetails,
-            IsLateFeeDue = response.IsLateSubmission,
+            IsLateSubmission = response.IsLateSubmission,
             RegulatorDecisionDate = response.RegulatorDecisionDate,
             ProducerCommentDate = response.ProducerCommentDate,
             IsOnlineMarketPlace = response.IsOnlineMarketPlace,

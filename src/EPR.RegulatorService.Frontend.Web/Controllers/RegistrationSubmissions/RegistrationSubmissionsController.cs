@@ -121,27 +121,36 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionDetails + "/{submissionId:guid}", Name = "SubmissionDetails")]
     public async Task<IActionResult> RegistrationSubmissionDetails(Guid? submissionId)
     {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        RegistrationSubmissionDetailsViewModel model = submissionId == null
-            ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-            : await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
-
-        if (model == null)
+        try
         {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+            RegistrationSubmissionDetailsViewModel model = submissionId == null
+                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
+                : await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+
+            if (model == null)
+            {
+                return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+            }
+
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
+
+            GeneratePowerBILink(model);
+
+            SetBackLink(PagePath.RegistrationSubmissionsRoute);
+            ViewBag.SubmissionId = model.SubmissionId;
+
+            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
+
+            return View(nameof(RegistrationSubmissionDetails), model);
         }
-
-        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
-
-        GeneratePowerBILink(model);
-
-        SetBackLink(PagePath.RegistrationSubmissionsRoute);
-        ViewBag.SubmissionId = model.SubmissionId;
-
-        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
-
-        return View(nameof(RegistrationSubmissionDetails), model);
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
+            return RedirectToAction(PagePath.Error, "Error");
+        }
     }
 
     [HttpPost]

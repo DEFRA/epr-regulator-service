@@ -19,10 +19,10 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public RegistrationSubmissionOrganisationType OrganisationType { get; init; }
     public int NationId { get; init; }
     public string NationCode { get; set; }
-    public int RegistrationYear { get; init; }
-    public DateTime RegistrationDateTime { get; init; }
+    public int RelevantYear { get; init; }
+    public DateTime SubmissionDate { get; init; }
     public RegistrationSubmissionStatus SubmissionStatus { get; init; }
-    public DateTime? SubmissionStatusPendingDate { get; set; }
+    public DateTime? StatusPendingDate { get; set; }
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
     public string ApplicationReferenceNumber { get; init; } = string.Empty;

@@ -93,7 +93,7 @@ public partial class MockedFacadeService : IFacadeService
             DecisionDate = DateTime.Now.AddDays(-random.Next(1, 100)),
             TimeAndDateOfSubmission = DateTime.Now.AddDays(-random.Next(1, 100)),
             SubmittedOnTime = random.Next(2) == 0,
-            AccountRole = (ServiceRole)sampleRoles.GetValue(random.Next(sampleRoles.Length)),
+            AccountRoleId = (int) sampleRoles.GetValue(random.Next(sampleRoles.Length)),
             Telephone = generateRandomPhoneNumber(random),
             Email = $"{sampleNames[random.Next(sampleNames.Length)].ToLower(CultureInfo.CurrentCulture)}@example.com",
             DeclaredBy = sampleNames[random.Next(sampleNames.Length)],

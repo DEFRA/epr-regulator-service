@@ -377,8 +377,7 @@ public class FacadeService : IFacadeService
 
         try
         {
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var response = JsonSerializer.Deserialize<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>(jsonContent, options);
+            var response = JsonSerializer.Deserialize<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>(jsonContent, _jsonSerializerOptions);
 
             return response;
         }
@@ -395,7 +394,28 @@ public class FacadeService : IFacadeService
         string path = _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath].Replace("{0}", submissionId.ToString());
 
         var response = await _httpClient.GetAsync(path);
-        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<RegistrationSubmissionOrganisationDetails>() : null;
+
+        response.EnsureSuccessStatusCode();
+
+        string content = await response.Content.ReadAsStringAsync();
+
+        RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFE(content);
+
+        return result;
+        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<RegistrationSubmissionOrganisationDetailsResponse>() : null;
+    }
+
+    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content) {
+        try
+        {
+            var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidDataException("Cannot parse data from Facade for Submission Details", ex);
+        }
     }
 
     public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request)
