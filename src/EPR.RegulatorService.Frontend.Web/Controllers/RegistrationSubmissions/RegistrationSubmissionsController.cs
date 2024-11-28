@@ -613,11 +613,6 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(CancelDateRegistrationSubmission), model);
         }
 
-        if (string.IsNullOrWhiteSpace(existingModel.CancellationReason))
-        {
-            return RedirectToRoute("CancelRegistrationSubmission", new { submissionId = existingModel.SubmissionId });
-        }
-
         try
         {
             var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Cancelled);
