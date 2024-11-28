@@ -1,10 +1,7 @@
 using System.Diagnostics;
-using System.Runtime;
 
 using EPR.Common.Authorization.Constants;
-using EPR.Common.Authorization.Extensions;
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
@@ -280,7 +277,7 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out RegistrationSubmissionDetailsViewModel existingModel))
+        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -353,7 +350,7 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out RegistrationSubmissionDetailsViewModel existingModel))
+        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -367,6 +364,12 @@ public partial class RegistrationSubmissionsController(
 
         _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason = model.RejectReason;
         existingModel.RegulatorComments = model.RejectReason;
+
+        if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out var organisationDetailsChangeHistory))
+        {
+            organisationDetailsChangeHistory.RejectReason = model.RejectReason;
+            organisationDetailsChangeHistory.RegulatorComments = model.RejectReason;
+        }
 
         SaveSessionAndJourney(
             _currentSession.RegulatorRegistrationSubmissionSession,
@@ -545,11 +548,6 @@ public partial class RegistrationSubmissionsController(
         if (!model.IsRegistrationRefusalConfirmed.Value)
         {
             return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
-        }
-
-        if (string.IsNullOrEmpty(model.RejectReason))
-        {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
         try
