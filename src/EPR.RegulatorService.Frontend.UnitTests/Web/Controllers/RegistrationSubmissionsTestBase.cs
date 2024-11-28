@@ -147,9 +147,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 DeclaredBy = "Sally Smith",
                 Files =
                     [
-                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
                     ]
             },
             PaymentDetails = new PaymentDetailsViewModel
