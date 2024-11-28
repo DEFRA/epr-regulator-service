@@ -1641,14 +1641,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task RejectRegistrationSubmission_Post_SavesRejectReasonInSessionObjectAndRedirectsCorrectly_ForAValidModelState()
         {
             // Arrange
+            string rejectReason = "Valid reject reason";
             var submissionId = Guid.NewGuid();
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-            detailsModel.RejectReason = "Valid reject reason";
+            detailsModel.RejectReason = rejectReason;
 
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
             };
+
+            _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(submissionId, detailsModel);
 
             var model = new RejectRegistrationSubmissionViewModel
             {
@@ -1660,7 +1663,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var result = await _controller.RejectRegistrationSubmission(model) as RedirectToRouteResult;
 
             // Assert - Successful save in session
-            Assert.IsTrue(_journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason == "Valid reject reason");
+            Assert.IsTrue(_journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason == rejectReason);
+
+            bool isRegistrationSubmissionOrganisationDetailsChanged =
+                _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestRegistrationSubmissionOrganisationDetails);
+
+            isRegistrationSubmissionOrganisationDetailsChanged.Should().BeTrue();
+            latestRegistrationSubmissionOrganisationDetails.Should().NotBeNull();
+            latestRegistrationSubmissionOrganisationDetails.RejectReason.Should().Be(rejectReason);
+            latestRegistrationSubmissionOrganisationDetails.RegulatorComments.Should().Be(rejectReason.ToString());
 
             // Assert - Successful redirection
             Assert.IsNotNull(result);
