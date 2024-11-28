@@ -100,6 +100,8 @@ public partial class RegistrationSubmissionsController(
                 return response;
             }
 
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;
+
             ClearFilters(_currentSession.RegulatorRegistrationSubmissionSession,
                                filters,
                                filterType == FilterActions.ClearFilters);
