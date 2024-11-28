@@ -1114,47 +1114,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task QueryRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenQueryIsValid()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
-
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-
-            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
-            {
-                SelectedRegistration = detailsModel
-            };
-
-            var model = new QueryRegistrationSubmissionViewModel
-            {
-                SubmissionId = submissionId,
-                Query = "Valid query within 400 characters." // Valid input
-            };
-
-            // Set up successful submission status
-            _facadeServiceMock
-                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
-                .ReturnsAsync(EndpointResponseStatus.Success);
-
-            _controller.Url = mockUrlHelper.Object;
-
-            // Act
-            var result = await _controller.QueryRegistrationSubmission(model) as RedirectToActionResult;
-
-            // Assert - Successful query and redirection
-            Assert.IsNotNull(result);
-            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
-
-            // Verify that the facade service was called the expected number of times
-            _facadeServiceMock.Verify(mock =>
-                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
-        }
-
-        [TestMethod]
         public async Task QueryRegistrationSubmission_Post_ReturnsExpectedError_WhenInputIsGreaterThan400()
         {
             // Arrange
@@ -1202,7 +1161,48 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task QueryRegistrationSubmission_Post_ReturnsViewWithErrors_WhenNoQueryIsProvided()
+        public async Task QueryRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenQueryIsValid()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+
+            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var model = new QueryRegistrationSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                Query = "Valid query within 400 characters." // Valid input
+            };
+
+            // Set up successful submission status
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success);
+
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = await _controller.QueryRegistrationSubmission(model) as RedirectToActionResult;
+
+            // Assert - Successful query and redirection
+            Assert.IsNotNull(result);
+            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task QueryRegistrationSubmission_Post_ReturnsSuccessAndRedirectsCorrectly_WhenNoQueryIsProvided()
         {
             // Arrange
             var id = Guid.NewGuid();
@@ -1211,41 +1211,35 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var mockUrlHelper = CreateUrlHelper(id, locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
+
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
                 SelectedRegistration = detailsModel
             };
+
             var model = new QueryRegistrationSubmissionViewModel
             {
                 SubmissionId = id,
                 Query = null // No query provided
             };
 
-            // Simulate the required field validation error for the Query property
+            // Set up successful submission status
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success);
+
             _controller.Url = mockUrlHelper.Object;
-            _controller.ModelState.AddModelError(nameof(model.Query), "Enter the reason you are querying this registration application");
 
             // Act
-            var result = await _controller.QueryRegistrationSubmission(model) as ViewResult;
+            var result = await _controller.QueryRegistrationSubmission(model) as RedirectToActionResult;
 
-            // Assert
-            Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
-            Assert.AreEqual(nameof(_controller.QueryRegistrationSubmission), result.ViewName, "The view name should match the action name.");
-            Assert.AreEqual(model, result.Model, "The returned model should match the input model.");
+            // Assert - Successful query and redirection
+            Assert.IsNotNull(result);
+            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
 
-            // Verify ModelState error for Query property
-            Assert.IsTrue(_controller.ModelState[nameof(model.Query)].Errors.Count > 0, "ModelState should contain an error for the Query property.");
-            Assert.AreEqual("Enter the reason you are querying this registration application",
-                _controller.ModelState[nameof(model.Query)].Errors[0].ErrorMessage, "The error message should match the expected validation message.");
-
-            // Verify that a back link is set with the expected format, including a GUID
-            string backLink = _controller.ViewData["BackLinkToDisplay"] as string;
-            Assert.IsNotNull(backLink, "BackLinkToDisplay should be set in ViewData.");
-            StringAssert.StartsWith(backLink, $"/regulators/{PagePath.RegistrationSubmissionDetails}/", "Back link should start with the expected URL.");
-
-            // Check that the back link contains a valid GUID at the end
-            string[] segments = backLink.Split('/');
-            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
 
         [TestMethod]
