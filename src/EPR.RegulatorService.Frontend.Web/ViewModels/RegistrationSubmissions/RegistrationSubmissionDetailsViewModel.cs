@@ -59,7 +59,7 @@ public class RegistrationSubmissionDetailsViewModel
 
     public bool IsProducerOnlineMarketplace { get; set; }
 
-    public string ProducerType { get; set; }
+    public string OrganisationSize { get; set; }
 
     // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
     public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
@@ -70,10 +70,12 @@ public class RegistrationSubmissionDetailsViewModel
         OrganisationName = details.OrganisationName,
         ApplicationReferenceNumber = details.ApplicationReferenceNumber,
         RegistrationReferenceNumber = details.RegistrationReferenceNumber,
+        OrganisationSize = details.OrganisationSize,
         OrganisationType = details.OrganisationType,
         CompaniesHouseNumber = details.CompaniesHouseNumber,
         RegisteredNation = details.Country, // Assuming RegisteredNation corresponds to the Country
         NationId = details.NationId,
+        NationCode = details.NationCode,
         Status = details.SubmissionStatus,
         RegistrationDateTime = details.SubmissionDate,
         RegistrationYear = details.RelevantYear,
@@ -109,6 +111,7 @@ public class RegistrationSubmissionDetailsViewModel
         OrganisationName = details.OrganisationName,
         ApplicationReferenceNumber = details.ApplicationReferenceNumber,
         RegistrationReferenceNumber = details.RegistrationReferenceNumber,
+        OrganisationSize = details.OrganisationSize,
         OrganisationType = details.OrganisationType,
         CompaniesHouseNumber = details.CompaniesHouseNumber,
         Country = details.RegisteredNation,
@@ -126,8 +129,13 @@ public class RegistrationSubmissionDetailsViewModel
         Postcode = details.BusinessAddress?.PostCode,
         SubmissionDetails = details.SubmissionDetails,
         PaymentDetails = details.PaymentDetails,
+        NationCode = details.NationCode,
         NationId = details.NationId,
         RejectReason = details.RejectReason,
-        CancellationReason = details.CancellationReason
+        CancellationReason = details.CancellationReason,
+        NumberOfOnlineSubsidiaries = details.NoOfSubsidiariesOnlineMarketPlace,
+        NumberOfSubsidiaries = details.NoOfSubsidiaries,
+        IsLateSubmission = details.IsLateFeeApplicable,
+        IsOnlineMarketPlace = details.IsProducerOnlineMarketplace
     };
 }

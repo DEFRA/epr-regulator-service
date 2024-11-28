@@ -3,13 +3,10 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Text.Json.Serialization;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
-
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 /// <summary>
 /// The Frontend representation of the Results from the Facade for
@@ -67,7 +64,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public RegistrationSubmissionsOrganisationPaymentDetails PaymentDetails { get; set; }
     public string? RegulatorDescisionDate { get; set; }
 
-    public bool IsLateSubmission { get; internal set; }
+    public bool IsLateSubmission { get; set; }
     public bool? IsComplianceScheme { get; set; }
     public string OrganisationSize { get; set; }
 

@@ -29,7 +29,7 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 NumberOfSubsidiaries = viewModel.NoOfSubsidiaries,
                 IsLateFeeApplicable = viewModel.IsLateFeeApplicable,
                 IsProducerOnlineMarketplace = viewModel.IsProducerOnlineMarketplace,
-                ProducerType = viewModel.ProducerType,
+                ProducerType = viewModel.OrganisationSize,
                 Regulator = viewModel.NationCode,
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime)
             });
@@ -49,7 +49,7 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 TotalChargeableItems = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
                 TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
-                ProducerSize = viewModel.ProducerType,
+                ProducerSize = viewModel.OrganisationSize,
                 NumberOfSubsidiaries = viewModel.NoOfSubsidiaries,
                 NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount
                 // To do - assign NumberOfSubsidiariesBeingOnlineMarketplace from request object
