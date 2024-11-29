@@ -175,8 +175,17 @@
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_EnrolmentRequestDelegatedUser.en.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\Applications.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\Applications.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_FileIsDownloadingStatus.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_FileIsDownloadingStatus.en.resx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_FileIsDownloadingVirusError.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_FileNotDownloadingTryAgain.cy.resx">
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_RegulatorApplicationFilters.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_RegulatorApplicationFilters.en.resx" />

@@ -315,4 +315,7 @@
   <data name="SaveAndContinue" xml:space="preserve">
     <value>Cadw a pharhau</value>
   </data>
+  <data name="Link.BackToSubmissionDetails" xml:space="preserve">
+    <value>Ewch yn ôl i bob cyflwyniad</value>
+  </data>
 </root>
