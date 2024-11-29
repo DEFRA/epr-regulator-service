@@ -1,23 +1,7 @@
-using EPR;
-using EPR.RegulatorService;
-using EPR.RegulatorService.Frontend;
-using EPR.RegulatorService.Frontend.UnitTests;
-using EPR.RegulatorService.Frontend.UnitTests.Web;
-using EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels;
-using EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions;
-
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
     public class RegistrationSubmissionsListViewModelTests
