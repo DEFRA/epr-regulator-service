@@ -1,18 +1,4 @@
-using EPR;
-using EPR.RegulatorService;
-using EPR.RegulatorService.Frontend;
-using EPR.RegulatorService.Frontend.UnitTests;
-using EPR.RegulatorService.Frontend.UnitTests.Web;
-using EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels;
-using EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions;
-
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -36,11 +22,10 @@ public class RegistrationSubmissionsFilterTests
             IsStatusRefusedChecked = true,
             IsStatusUpdatedChecked = true,
             PageNumber = 2,
-            Is2025Checked = true
+            Is2025Checked = true,
+            // Act
+            ClearFilters = true
         };
-
-        // Act
-        viewModel.ClearFilters = true;
 
         // Assert
         Assert.IsFalse(viewModel.IsOrganisationComplianceChecked, "IsOrganisationComplianceChecked should be false");
