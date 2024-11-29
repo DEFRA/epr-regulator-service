@@ -1,10 +1,4 @@
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions;
 
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 

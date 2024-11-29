@@ -1,4 +1,12 @@
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
+using EPR;
+using EPR.RegulatorService;
+using EPR.RegulatorService.Frontend;
+using EPR.RegulatorService.Frontend.UnitTests;
+using EPR.RegulatorService.Frontend.UnitTests.Web;
+using EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels;
+using EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions;
+
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions
 {
     using System;
     using System.Collections.Generic;
