@@ -2,19 +2,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
 {
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
-    using System.ComponentModel.DataAnnotations;
+    using EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.Shared.Helpers;
 
     [TestClass]
     public class QueryRegistrationSubmissionViewModelTests
     {
-        private static List<ValidationResult> ValidateModel(object model)
-        {
-            var validationResults = new List<ValidationResult>();
-            var validationContext = new ValidationContext(model, null, null);
-            Validator.TryValidateObject(model, validationContext, validationResults, true);
-            return validationResults;
-        }
-
         [TestMethod]
         public void QueryRegistrationSubmissionViewModel_ShouldHaveNoValidationErrors_ForAValidModel()
         {
@@ -26,7 +18,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             };
 
             // Act
-            var validationResults = ValidateModel(viewModel);
+            var validationResults = ValidationHelper.ValidateModel(viewModel);
 
             // Assert
             Assert.AreEqual(0, validationResults.Count, "Expected no validation errors for a valid model.");
@@ -43,7 +35,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             };
 
             // Act
-            var validationResults = ValidateModel(viewModel);
+            var validationResults = ValidationHelper.ValidateModel(viewModel);
 
             // Assert
             Assert.AreEqual(1, validationResults.Count, "Expected a validation error for an excessively long query.");
@@ -60,7 +52,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             };
 
             // Act
-            var validationResults = ValidateModel(viewModel);
+            var validationResults = ValidationHelper.ValidateModel(viewModel);
 
             // Assert
             Assert.AreEqual(0, validationResults.Count, "SubmissionId is not required, so the model should still be valid.");
