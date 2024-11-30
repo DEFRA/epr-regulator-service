@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData;
@@ -15,7 +14,8 @@ using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
-
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
@@ -34,6 +34,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         private HttpClient _httpClient;
         private IOptions<PaginationConfig> _paginationConfig;
         private IOptions<FacadeApiConfig> _facadeApiConfig;
+        private Mock<ILogger<FacadeService>> _loggerMock = null;
         private FacadeService _facadeService;
         private Fixture _fixture;
 
@@ -49,6 +50,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             _mockHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             _tokenAcquisitionMock = new Mock<ITokenAcquisition>();
             _httpClient = new HttpClient(_mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
+            _loggerMock = new Mock<ILogger<FacadeService>>();
             _paginationConfig = Options.Create(new PaginationConfig { PageSize = PAGE_SIZE });
             _facadeApiConfig = Options.Create(new FacadeApiConfig
             {
@@ -80,7 +82,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 DownstreamScope = "api://default"
             });
 
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig);
+            _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
+
+            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _loggerMock.Object);
             _fixture = new Fixture();
         }
 
@@ -357,7 +361,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var organisationId = Guid.NewGuid();
 
             _httpClient.BaseAddress = null;
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig);
+            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _loggerMock.Object);
 
             // Act
             var result = await _facadeService.GetOrganisationEnrolments(organisationId);
@@ -374,7 +378,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var organisationNationTransfer = new OrganisationTransferNationRequest();
 
             _httpClient.BaseAddress = null;
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig);
+            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _loggerMock.Object);
 
             // Act
             var result = await _facadeService.TransferOrganisationNation(organisationNationTransfer);
@@ -1080,7 +1084,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 BaseUrl = "http://localhost/"
             });
 
-            var sut = new FacadeService(httpClient, _tokenAcquisitionMock.Object, _paginationConfig, facadeApiConfig);
+            var sut = new FacadeService(httpClient, _tokenAcquisitionMock.Object, _paginationConfig, facadeApiConfig, _loggerMock.Object);
             sut.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { PageNumber = 1 });
             httpClient.DefaultRequestHeaders.Authorization.Should().NotBeNull();
         }
@@ -1630,6 +1634,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         {
             // Arrange
             var request = _fixture.Create<RegulatorDecisionRequest>();
+
+            string jsonRequest = JsonSerializer.Serialize(new ProblemDetails { Status = 400 });
+            StringContent stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
             _mockHandler
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -1639,7 +1647,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 )
                 .ReturnsAsync(() => new HttpResponseMessage
                 {
-                    StatusCode = HttpStatusCode.BadRequest
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Content = stringContent
                 })
                 .Verifiable();
 
@@ -1747,7 +1756,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var submissionId = Guid.NewGuid();
 
             _httpClient.BaseAddress = null;
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig);
+            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _loggerMock.Object);
 
             // Act
             var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
