@@ -1,4 +1,5 @@
 using System.Diagnostics;
+
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -263,7 +264,7 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out RegistrationSubmissionDetailsViewModel existingModel))
+        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -336,7 +337,7 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out RegistrationSubmissionDetailsViewModel existingModel))
+        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -351,7 +352,7 @@ public partial class RegistrationSubmissionsController(
         _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason = model.RejectReason;
         existingModel.RegulatorComments = model.RejectReason;
 
-        if(_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out var organisationDetailsChangeHistory))
+        if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out var organisationDetailsChangeHistory))
         {
             organisationDetailsChangeHistory.RejectReason = model.RejectReason;
             organisationDetailsChangeHistory.RegulatorComments = model.RejectReason;
@@ -536,11 +537,6 @@ public partial class RegistrationSubmissionsController(
             return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
         }
 
-        if (string.IsNullOrEmpty(model.RejectReason))
-        {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-        }
-
         try
         {
             var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Refused);
@@ -615,11 +611,6 @@ public partial class RegistrationSubmissionsController(
             SetBackLink(Url.RouteUrl("CancelRegistrationSubmission", new { model.SubmissionId }), false);
             ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(CancelDateRegistrationSubmission), model);
-        }
-
-        if (string.IsNullOrWhiteSpace(existingModel.CancellationReason))
-        {
-            return RedirectToRoute("CancelRegistrationSubmission", new { submissionId = existingModel.SubmissionId });
         }
 
         try
