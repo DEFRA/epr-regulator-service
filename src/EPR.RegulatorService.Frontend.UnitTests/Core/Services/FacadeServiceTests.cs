@@ -1664,6 +1664,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     req.Method == HttpMethod.Post &&
                     req.RequestUri.ToString().Contains("organisation-registration-submission-decision")),
                 ItExpr.IsAny<CancellationToken>());
+            stringContent?.Dispose();
         }
 
 
