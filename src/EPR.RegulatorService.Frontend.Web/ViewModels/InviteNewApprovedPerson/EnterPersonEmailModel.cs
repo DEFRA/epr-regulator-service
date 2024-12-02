@@ -21,7 +21,7 @@ public class EnterPersonEmailModel : IValidatableObject
     {
         var validationResults = new List<ValidationResult> { };
 
-        if (!Email.Contains('.') && !Email.Contains('@'))
+        if (string.IsNullOrWhiteSpace(Email) || !Email.Contains('.') || !Email.Contains('@') || Email != Email.Trim())
         {
             validationResults.AddRange(_emailInvalidErrors.Select(
                 errorString => new ValidationResult(errorString, new[] {nameof(Email)})));
