@@ -48,15 +48,19 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
         }
 
         [TestMethod]
-        public void CancelDateRegistrationSubmissionViewModel_InvalidIncompleteDate_ShouldHaveValidationErrors()
+        [DataRow(null, 12, 2024, "Error.MissingDayErrorMessage", DisplayName = "Missing Day")]
+        [DataRow(3, null, 2024, "Error.MissingMonthErrorMessage", DisplayName = "Missing Month")]
+        [DataRow(3, 4, null, "Error.MissingYearErrorMessage", DisplayName = "Missing Year")]
+        public void CancelDateRegistrationSubmissionViewModel_InvalidIncompleteDate_ShouldHaveValidationErrors(
+        int? day, int? month, int? year, string expectedErrorMessage)
         {
             // Arrange
             var viewModel = new CancelDateRegistrationSubmissionViewModel
             {
                 SubmissionId = Guid.NewGuid(),
-                Day = null, // Missing day
-                Month = 12,
-                Year = 2024
+                Day = day,
+                Month = month,
+                Year = year
             };
 
             // Act
@@ -64,7 +68,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
 
             // Assert
             validationResults.Should().HaveCount(1, "there should be a validation error for an incomplete date")
-                .And.ContainSingle(result => result.ErrorMessage == "Error.MissingDayErrorMessage");
+                .And.ContainSingle(result => result.ErrorMessage == expectedErrorMessage);
         }
 
         [TestMethod]
