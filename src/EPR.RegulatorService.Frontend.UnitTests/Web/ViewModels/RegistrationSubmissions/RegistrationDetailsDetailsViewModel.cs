@@ -1,18 +1,9 @@
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-
-using Microsoft.AspNetCore.Mvc;
 
 [TestClass]
 public class RegistrationSubmissionDetailsViewModelTests
