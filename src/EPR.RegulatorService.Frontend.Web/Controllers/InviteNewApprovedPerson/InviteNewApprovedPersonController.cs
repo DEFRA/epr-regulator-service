@@ -129,7 +129,7 @@ public class InviteNewApprovedPersonController : RegulatorSessionBaseController
         {
             OrganisationId = session.InviteNewApprovedPersonSession.ExternalOrganisationId,
             RemovedConnectionExternalId = session.InviteNewApprovedPersonSession.RemovedConnectionExternalId,
-            InvitedPersonEmail = session.InviteNewApprovedPersonSession.InvitedPersonEmail.Trim(),
+            InvitedPersonEmail = session.InviteNewApprovedPersonSession.InvitedPersonEmail?.Trim(),
             InvitedPersonFirstname = session.InviteNewApprovedPersonSession.InvitedPersonFirstname,
             InvitedPersonLastname = session.InviteNewApprovedPersonSession.InvitedPersonLastname
         };
