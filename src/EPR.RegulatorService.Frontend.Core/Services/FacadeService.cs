@@ -377,6 +377,12 @@ public class FacadeService : IFacadeService
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
+    /// <summary>
+    ///  May required code refactor here once we know the offilepayment journery for on fail the CreateSubmissionEvent.
+    ///  Currently it's redircting to SubmissionDetails even if its success/fails the CreateSubmissionEvent.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     public async Task<EndpointResponseStatus> SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request)
     {
         await PrepareAuthenticatedClient();
@@ -384,6 +390,23 @@ public class FacadeService : IFacadeService
         string path = _facadeApiConfig.Endpoints[SubmitRegistrationFeePaymentPath];
         var response = await _httpClient.PostAsJsonAsync(path, request);
 
-        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+        if (response.StatusCode == HttpStatusCode.BadRequest)
+        {
+            var problemDetails = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+            string logValidationErrorMessage = string.Join(", ", problemDetails.Errors.Values.SelectMany(x => x));
+            _loggerMessageError.Invoke(_logger, $"Failed to call service at {path}. Error message:{logValidationErrorMessage}", null);
+
+           return EndpointResponseStatus.Success;
+        }
+
+        if(!response.IsSuccessStatusCode)
+        {
+            var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+            _loggerMessageError.Invoke(_logger, $"Failed to call service at {path}. Error message:{problemDetails.Detail}", null);
+
+            return EndpointResponseStatus.Success;
+        }
+
+        return EndpointResponseStatus.Success;
     }
 }

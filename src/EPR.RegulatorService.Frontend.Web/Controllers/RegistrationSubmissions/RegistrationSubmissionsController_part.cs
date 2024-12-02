@@ -165,7 +165,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                     UserId = (Guid)_currentSession.UserData.Id
                 });
 
-                if (response == Core.Models.EndpointResponseStatus.Success)
+                if (response == EndpointResponseStatus.Success)
                 {
                     response = await _facadeService.SubmitRegistrationFeePaymentAsync(new RegistrationFeePaymentRequest
                     {
@@ -176,7 +176,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                         UserId = (Guid)_currentSession.UserData.Id
                     });
 
-                    if (response == Core.Models.EndpointResponseStatus.Success)
+                    if (response == EndpointResponseStatus.Success)
                     {
                         return Redirect(Url.RouteUrl("SubmissionDetails", new { existingModel.SubmissionId }));
                     }
