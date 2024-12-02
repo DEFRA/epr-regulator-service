@@ -7,21 +7,24 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
     public class ConfirmOfflinePaymentSubmissionViewModelTests
     {
         [TestMethod]
-        public void ConfirmOfflinePaymentSubmissionViewModel_ValidModel_ShouldHaveNoValidationErrors()
+        [DataRow("£100.00", DisplayName = "Valid amount")]
+        [DataRow(null, DisplayName = "Null amount")]
+        [DataRow("", DisplayName = "Empty amount")]
+        public void ConfirmOfflinePaymentSubmissionViewModel_ValidModel_ShouldHaveNoValidationErrors(string offlinePaymentAmount)
         {
             // Arrange
             var viewModel = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = Guid.NewGuid(),
                 IsOfflinePaymentConfirmed = true,
-                OfflinePaymentAmount = "£100.00"
+                OfflinePaymentAmount = offlinePaymentAmount
             };
 
             // Act
             var validationResults = ValidationHelper.ValidateModel(viewModel);
 
             // Assert
-            Assert.AreEqual(0, validationResults.Count, "Expected no validation errors for a valid model.");
+            validationResults.Should().BeEmpty("a valid model should not produce validation errors.");
         }
 
         [TestMethod]
@@ -39,17 +42,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             var validationResults = ValidationHelper.ValidateModel(viewModel);
 
             // Assert
-            Assert.AreEqual(0, validationResults.Count, "Expected no validation errors when SubmissionId is null.");
+            validationResults.Should().BeEmpty("SubmissionId is nullable, and null should not cause validation errors.");
         }
 
         [TestMethod]
-        public void ConfirmOfflinePaymentSubmissionViewModel_NullIsOfflinePaymentConfirmed_ShouldHaveValidationError()
+        [DataRow(null, "ConfirmOfflinePaymentSubmission.ErrorMessage", DisplayName = "IsOfflinePaymentConfirmed is null")]
+        public void ConfirmOfflinePaymentSubmissionViewModel_InvalidValues_ShouldHaveValidationError(
+            bool? isOfflinePaymentConfirmed,
+            string expectedErrorMessage)
         {
             // Arrange
             var viewModel = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = Guid.NewGuid(),
-                IsOfflinePaymentConfirmed = null, // Required field
+                IsOfflinePaymentConfirmed = isOfflinePaymentConfirmed,
                 OfflinePaymentAmount = "£100.00"
             };
 
@@ -57,44 +63,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             var validationResults = ValidationHelper.ValidateModel(viewModel);
 
             // Assert
-            Assert.AreEqual(1, validationResults.Count, "Expected one validation error for null IsOfflinePaymentConfirmed.");
-            Assert.AreEqual("ConfirmOfflinePaymentSubmission.ErrorMessage", validationResults[0].ErrorMessage, "Expected the correct error message for IsOfflinePaymentConfirmed being null.");
-        }
-
-        [TestMethod]
-        public void ConfirmOfflinePaymentSubmissionViewModel_OfflinePaymentAmountNullable_ShouldHaveNoValidationErrors()
-        {
-            // Arrange
-            var viewModel = new ConfirmOfflinePaymentSubmissionViewModel
-            {
-                SubmissionId = Guid.NewGuid(),
-                IsOfflinePaymentConfirmed = true,
-                OfflinePaymentAmount = null // Nullable field
-            };
-
-            // Act
-            var validationResults = ValidationHelper.ValidateModel(viewModel);
-
-            // Assert
-            Assert.AreEqual(0, validationResults.Count, "Expected no validation errors when OfflinePaymentAmount is null.");
-        }
-
-        [TestMethod]
-        public void ConfirmOfflinePaymentSubmissionViewModel_OfflinePaymentAmountEmpty_ShouldHaveNoValidationErrors()
-        {
-            // Arrange
-            var viewModel = new ConfirmOfflinePaymentSubmissionViewModel
-            {
-                SubmissionId = Guid.NewGuid(),
-                IsOfflinePaymentConfirmed = true,
-                OfflinePaymentAmount = "" // Empty string
-            };
-
-            // Act
-            var validationResults = ValidationHelper.ValidateModel(viewModel);
-
-            // Assert
-            Assert.AreEqual(0, validationResults.Count, "Expected no validation errors when OfflinePaymentAmount is an empty string.");
+            validationResults.Should().HaveCount(1, "there should be exactly one validation error for this scenario")
+                .And.ContainSingle(result => result.ErrorMessage == expectedErrorMessage, "the error message should match the expected message.");
         }
     }
 }
