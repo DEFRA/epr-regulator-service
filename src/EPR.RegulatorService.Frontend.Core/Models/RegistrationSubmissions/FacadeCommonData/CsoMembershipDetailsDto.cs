@@ -4,7 +4,7 @@ using System.Globalization;
 
 public class CsoMembershipDetailsDto
 {
-    public string MemberId { get; set; }
+    public int MemberId { get; set; }
     public string MemberType { get; set; }
     public bool IsOnlineMarketPlace { get; set; }
     public bool IsLateFeeApplicable { get; set; }
