@@ -1,17 +1,11 @@
 namespace EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
-using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
-
+[ExcludeFromCodeCoverage]
 public static class RegistrationSubmissionsFilters
 {
     public static IQueryable<RegistrationSubmissionOrganisationDetails> Filter(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable,
