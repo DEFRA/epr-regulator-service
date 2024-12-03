@@ -130,13 +130,13 @@
     <value>Disgrifiad</value>
   </data>
   <data name="CompliancePaymentDetails.FeeForOwningAnOnlineMarketplace" xml:space="preserve">
-    <value>[Welsh]Fee for owning an online marketplace</value>
+    <value>Ffi am fod yn berchennog marchnad</value>
   </data>
   <data name="CompliancePaymentDetails.FeeForProducerSize" xml:space="preserve">
-    <value>[Welsh]Fee for producer size</value>
+    <value>Ffi maint y cynhyrchydd</value>
   </data>
   <data name="CompliancePaymentDetails.FeeForSubsidiaryOnlineMarketPlace" xml:space="preserve">
-    <value>[Welsh]Fee for the 25 subsidiaries of which 0 are an online marketplace</value>
+    <value>Ffi am yr 25 o is-gwmnïau, y mae 0 ohonyn nhw yn farchnad ar-lein</value>
   </data>
   <data name="CompliancePaymentDetails.Items" xml:space="preserve">
     <value>Eitemau</value>
@@ -151,7 +151,7 @@
     <value>Manylion taliadau all-lein</value>
   </data>
   <data name="CompliancePaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
-    <value>[Welsh]Online marketplace fee</value>
+    <value>Ffi marchnad ar-lein</value>
   </data>
   <data name="CompliancePaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
     <value>Taliadau blaenorol sydd wedi dod i law</value>
@@ -169,7 +169,7 @@
     <value>Y cyfanswm sydd heb ei dalu</value>
   </data>
   <data name="CompliancePaymentDetails.TotalPaymentsReceived" xml:space="preserve">
-    <value>[Welsh]Total previous payments received by the regulator</value>
+    <value>Cyfanswm y taliadau blaenorol sydd wedi dod i law'r rheoleiddiwr</value>
   </data>
   <data name="CompliancePaymentValidation.FormatIsInvalid" xml:space="preserve">
     <value>Rhaid i'r swm gynnwys punnoedd a cheiniogau yn unig</value>
