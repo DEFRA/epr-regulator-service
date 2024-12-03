@@ -67,8 +67,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
             TotalOutstanding = 500.00M,
             ComplianceSchemeMembers =
             [
-                new() { MemberId = "memberid1", MemberType = "large" },
-                new() { MemberId = "memberid2", MemberType = "small" }
+                new() { MemberId = "memberid1", MemberType = "large", MemberFee = 2.00M },
+                new() { MemberId = "memberid2", MemberType = "small", MemberFee = 3.00M }
             ]
         });
 
@@ -80,6 +80,14 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         result.Should().BeOfType<ViewViewComponentResult>();
         var model = result.ViewData.Model as CompliancePaymentDetailsViewModel;
         model.Should().NotBeNull();
+        model.ApplicationFee.Should().NotBe(null);
+        model.SubTotal.Should().NotBe(null);
+        model.TotalOutstanding.Should().NotBe(null);
+        model.LargeProducerCount.Should().Be(1);
+        model.SmallProducerCount.Should().Be(1);
+        model.LateProducerCount.Should().Be(0);
+        model.OnlineMarketPlaceCount.Should().Be(0);
+        model.SubsidiariesCompanyCount.Should().Be(0);
         //To do: Add more asserts after we know what is needed in the response object
         _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.AtMostOnce);
     }
