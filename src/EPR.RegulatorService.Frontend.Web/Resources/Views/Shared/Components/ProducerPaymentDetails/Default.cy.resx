@@ -120,49 +120,49 @@
   <data name="ProducerPaymentDetails.Amount" xml:space="preserve">
     <value>Swm</value>
   </data>
-  <data name="ProducerPaymentDetails.ApplicationProcessingFee" xml:space="preserve">
+  <data name="ProducerPaymentDetails.ApplicationFee" xml:space="preserve">
     <value>Ffi ymgeisio</value>
+  </data>
+  <data name="ProducerPaymentDetails.ApplicationFeeDescription" xml:space="preserve">
+    <value>[Welsh]{0} organisation registration fee</value>
   </data>
   <data name="ProducerPaymentDetails.Description" xml:space="preserve">
     <value>Disgrifiad</value>
   </data>
-  <data name="ProducerPaymentDetails.OnelineMarketPlaceFeeDescription" xml:space="preserve">
-    <value>[Welsh]Online marketplace fee</value>
-  </data>
-  <data name="ProducerPaymentDetails.FeeForProducerSize" xml:space="preserve">
-    <value>[Welsh]{0} organisation registration fee</value>
-  </data>
-  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription" xml:space="preserve">
-    <value>[Welsh]{0} subsidiaries</value>
-  </data>
-  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription" xml:space="preserve">
-    <value>[Welsh]{0} are online marketplaces</value>
-  </data>
   <data name="ProducerPaymentDetails.Items" xml:space="preserve">
     <value>Eitemau</value>
   </data>
-  <data name="ProducerPaymentDetails.OfflinePaymentDetailsHint" xml:space="preserve">
-    <value>Cynhwyswch fanylion taliadau all-lein yma, er enghraifft £600 neu £193.54.  Gall addasiadau gael eu hychwanegu hefyd, gan gynnwys symiau negyddol.</value>
+  <data name="ProducerPaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
+    <value>Ffi hwyr</value>
   </data>
-  <data name="ProducerPaymentDetails.OfflinePaymentDetailsSubmit" xml:space="preserve">
-    <value>Cyflwyno taliad all-lein</value>
-  </data>
-  <data name="ProducerPaymentDetails.OfflinePaymentDetailsTitle" xml:space="preserve">
-    <value>Manylion taliadau all-lein</value>
-  </data>
-  <data name="ProducerPaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
+  <data name="ProducerPaymentDetails.OnlineMarketPlaceFeeDescription" xml:space="preserve">
     <value>[Welsh]Online marketplace fee</value>
   </data>
   <data name="ProducerPaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
     <value>Taliadau blaenorol</value>
   </data>
+  <data name="ProducerPaymentDetails.ServiceIssueDescription" xml:space="preserve">
+    <value>[Welsh]Unable to retrieve producer payment details</value>
+  </data>
   <data name="ProducerPaymentDetails.SubsidiaryFee" xml:space="preserve">
     <value>Ffi atodol</value>
+  </data>  
+  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription1" xml:space="preserve">
+    <value>[Welsh]{0} subsidiary</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription2" xml:space="preserve">
+    <value>[Welsh]{0} subsidiaries</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription1" xml:space="preserve">
+    <value>[Welsh]{0} is an online marketplace</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription2" xml:space="preserve">
+    <value>[Welsh]{0} are online marketplaces</value>
   </data>
   <data name="ProducerPaymentDetails.Title" xml:space="preserve">
     <value>Manylion y taliad</value>
   </data>
-  <data name="ProducerPaymentDetails.TotalChargeableItems" xml:space="preserve">
+  <data name="ProducerPaymentDetails.SubTotalDescription" xml:space="preserve">
     <value>Is-gyfanswm</value>
   </data>
   <data name="ProducerPaymentDetails.TotalOutstanding" xml:space="preserve">
@@ -170,29 +170,5 @@
   </data>
   <data name="ProducerPaymentDetails.TotalPaymentsReceived" xml:space="preserve">
     <value>[Welsh]Total payments received</value>
-  </data>
-  <data name="ProducerPaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
-    <value>Ffi hwyr</value>
-  </data>
-  <data name="ProducerPaymentDetails.ServiceIssueDescription" xml:space="preserve">
-    <value>[Welsh]Unable to retrieve producer payment details</value>
-  </data>
-  <data name="ProducerPaymentValidation.ValueIsTooHigh" xml:space="preserve">
-    <value>Rhaid i'r swm fod yn llai na £10,000,000</value>
-  </data>
-  <data name="ProducerPaymentValidation.FormatIsInvalid" xml:space="preserve">
-    <value>Rhaid i'r swm gynnwys punnoedd a cheiniogau yn unig</value>
-  </data>
-  <data name="ProducerPaymentValidation.TheAmountIsRequired" xml:space="preserve">
-    <value>Rhowch swm</value>
-  </data>
-  <data name="ProducerPaymentValidation.InvalidCharacters" xml:space="preserve">
-    <value>Rhowch rif dilys</value>
-  </data>
-  <data name="ProducerPaymentValidation.NonNumericCharacters" xml:space="preserve">
-    <value>Rhaid i'r swm fod yn rhif</value>
-  </data>
-  <data name="ProducerPaymentValidation.ValueCannotBeZero" xml:space="preserve">
-    <value>Chaiff y swm ddim bod yn sero</value>
   </data>
 </root>
