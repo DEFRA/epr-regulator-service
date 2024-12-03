@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -52,13 +53,23 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     public async Task InvokeAsync_Returns_CorrectView_With_Model()
     {
         // Arrange
+        var complianceSchemeMembers = new List<CsoMembershipDetailsDto> {
+            new() { MemberId = "memberid1", MemberType = "large" },
+            new() { MemberId = "memberid2", MemberType = "small" }
+        };
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails = complianceSchemeMembers;
         _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
         .ReturnsAsync(new CompliancePaymentResponse // all values in pence
         {
             ApplicationProcessingFee = 100.00M, 
             TotalChargeableItems = 1000.00M,
             PreviousPaymentsReceived = 500.00M,
-            TotalOutstanding = 500.00M
+            TotalOutstanding = 500.00M,
+            ComplianceSchemeMembers =
+            [
+                new() { MemberId = "memberid1", MemberType = "large" },
+                new() { MemberId = "memberid2", MemberType = "small" }
+            ]
         });
 
         // Act
@@ -77,6 +88,11 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     public async Task InvokeAsync_Logs_Error_And_Returns_CorrectView_With_DefaultModel_When_Service_Throws()
     {
         // Arrange
+        var complianceSchemeMembers = new List<CsoMembershipDetailsDto> {
+            new() { MemberId = "memberid1", MemberType = "large" },
+            new() { MemberId = "memberid2", MemberType = "small" }
+        };
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails = complianceSchemeMembers;
         var exception = new Exception("error");
         _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
             .ThrowsAsync(exception);

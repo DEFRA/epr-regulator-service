@@ -120,6 +120,12 @@
   <data name="CompliancePaymentDetails.Amount" xml:space="preserve">
     <value>Swm</value>
   </data>
+  <data name="CompliancePaymentDetails.ApplicationFee" xml:space="preserve">
+    <value>Ffi ymgeisio</value>
+  </data>
+  <data name="CompliancePaymentDetails.ApplicationFeeDescription" xml:space="preserve">
+    <value>Compliance scheme</value>
+  </data>
   <data name="CompliancePaymentDetails.ApplicationProcessingFee" xml:space="preserve">
     <value>Ffi ymgeisio</value>
   </data>

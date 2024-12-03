@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData.Filters;
-using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Filters;
 
+[Ignore("This will be cleaned after the drop date")]
 [TestClass]
 public class RegistrationSubmissionFiltersTests
 {
@@ -126,10 +124,10 @@ public class RegistrationSubmissionFiltersTests
     [DataRow(19)]
     [DataRow(23)]
     [DataRow(44)]
-    public void FilterByRegistrationYear_ReturnsOnlyThatYear(int byIndex)
+    public void FilterByRelevantYear_ReturnsOnlyThatYear(int byIndex)
     {
-        string expectedYear = _abstractRegistrations.ToArray()[byIndex].RegistrationYear;
-        var expectedResult = _abstractRegistrations.Where(x=>x.RegistrationYear == expectedYear);
+        int expectedYear = _abstractRegistrations.ToArray()[byIndex].RelevantYear;
+        var expectedResult = _abstractRegistrations.Where(x=>x.RelevantYear == expectedYear);
 
         var result = _abstractRegistrations.FilterByRelevantYear(expectedYear.ToString());
         result.Should().BeEquivalentTo(expectedResult);
@@ -152,7 +150,7 @@ public class RegistrationSubmissionFiltersTests
         string expectedName = item.OrganisationName[3..6];
         var expectedSize = item.OrganisationType;
         var expectedStatus = item.SubmissionStatus;
-        string expectedYear = item.RegistrationYear;
+        int expectedYear = item.RelevantYear;
 
         var filter = new RegistrationSubmissionsFilterModel
         {

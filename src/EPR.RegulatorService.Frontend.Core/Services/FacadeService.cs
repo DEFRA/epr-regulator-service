@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -10,9 +11,9 @@ using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 namespace EPR.RegulatorService.Frontend.Core.Services;
@@ -44,29 +45,23 @@ public class FacadeService : IFacadeService
     private readonly ITokenAcquisition _tokenAcquisition;
     private readonly PaginationConfig _paginationConfig;
     private readonly FacadeApiConfig _facadeApiConfig;
-    private readonly ILogger _logger;
 
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
 
-    private static readonly Action<ILogger, string, Exception?> _loggerMessageError =
-        LoggerMessage.Define<String>(LogLevel.Error, eventId: new EventId(id: 1002, nameof(FacadeService)), formatString: "{Message}");
-
     public FacadeService(
         HttpClient httpClient,
         ITokenAcquisition tokenAcquisition,
         IOptions<PaginationConfig> paginationOptions,
-        IOptions<FacadeApiConfig> facadeApiOptions,
-        ILogger<FacadeService> logger)
+        IOptions<FacadeApiConfig> facadeApiOptions)
     {
         _httpClient = httpClient;
         _tokenAcquisition = tokenAcquisition;
         _paginationConfig = paginationOptions.Value;
         _facadeApiConfig = facadeApiOptions.Value;
         _scopes = [_facadeApiConfig.DownstreamScope];
-        _logger = logger;
     }
 
     private static readonly Dictionary<Type, string> _typeToEndpointMap = new()
@@ -78,12 +73,7 @@ public class FacadeService : IFacadeService
     public async Task<string> GetTestMessageAsync()
     {
         var response = await _httpClient.GetAsync("/api/test");
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        return response.ToString();
+        return response.StatusCode == HttpStatusCode.OK ? await response.Content.ReadAsStringAsync() : response.ToString();
     }
 
     public async Task<PaginatedList<OrganisationApplications>> GetUserApplicationsByOrganisation(
@@ -348,7 +338,47 @@ public class FacadeService : IFacadeService
 
         var response = await _httpClient.PostAsJsonAsync(path, filters);
 
-        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<PaginatedList<RegistrationSubmissionOrganisationDetails>>() : null;
+        if (response.IsSuccessStatusCode)
+        {
+            var commonData = await ReadRequiredJsonContent(response.Content);
+            var responseData = commonData.items.Select(x => (RegistrationSubmissionOrganisationDetails)x).ToList();
+
+            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                items = responseData,
+                currentPage = commonData.currentPage,
+                totalItems = commonData.totalItems,
+                pageSize = commonData.pageSize
+            };
+        }
+        else
+        {
+            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                items = [],
+                currentPage = 1,
+                totalItems = 0,
+                pageSize = 20
+            };
+        }
+
+        return null;
+    }
+
+    private static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
+    {
+        string jsonContent = await content.ReadAsStringAsync();
+
+        try
+        {
+            var response = JsonSerializer.Deserialize<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>(jsonContent, _jsonSerializerOptions);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidDataException("Cannot parse data from Facade for Submission Summaries", ex);
+        }
     }
 
     public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
@@ -358,7 +388,27 @@ public class FacadeService : IFacadeService
         string path = _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath].Replace("{0}", submissionId.ToString());
 
         var response = await _httpClient.GetAsync(path);
-        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<RegistrationSubmissionOrganisationDetails>() : null;
+
+        response.EnsureSuccessStatusCode();
+
+        string content = await response.Content.ReadAsStringAsync();
+
+        RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFE(content);
+
+        return result;
+    }
+
+    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content) {
+        try
+        {
+            var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidDataException("Cannot parse data from Facade for Submission Details", ex);
+        }
     }
 
     public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request)
@@ -368,21 +418,9 @@ public class FacadeService : IFacadeService
         string path = _facadeApiConfig.Endpoints[OrgsanisationRegistrationSubmissionDecisionPath];
         var response = await _httpClient.PostAsJsonAsync(path, request);
 
-        if (response.StatusCode == HttpStatusCode.BadRequest)
-        {
-            var problemDetails = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
-            string logValidationErrorMessage = string.Join(", ", problemDetails.Errors.Values.SelectMany(x => x));
-            _loggerMessageError.Invoke(_logger, $"Failed to call service at {path}. Error message:{logValidationErrorMessage}", null);
-        }
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
-    /// <summary>
-    ///  May required code refactor here once we know the offilepayment journery for on fail the CreateSubmissionEvent.
-    ///  Currently it's redircting to SubmissionDetails even if its success/fails the CreateSubmissionEvent.
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns></returns>
     public async Task<EndpointResponseStatus> SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request)
     {
         await PrepareAuthenticatedClient();
@@ -390,23 +428,6 @@ public class FacadeService : IFacadeService
         string path = _facadeApiConfig.Endpoints[SubmitRegistrationFeePaymentPath];
         var response = await _httpClient.PostAsJsonAsync(path, request);
 
-        if (response.StatusCode == HttpStatusCode.BadRequest)
-        {
-            var problemDetails = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
-            string logValidationErrorMessage = string.Join(", ", problemDetails.Errors.Values.SelectMany(x => x));
-            _loggerMessageError.Invoke(_logger, $"Failed to call service at {path}. Error message:{logValidationErrorMessage}", null);
-
-           return EndpointResponseStatus.Success;
-        }
-
-        if(!response.IsSuccessStatusCode)
-        {
-            var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-            _loggerMessageError.Invoke(_logger, $"Failed to call service at {path}. Error message:{problemDetails.Detail}", null);
-
-            return EndpointResponseStatus.Success;
-        }
-
-        return EndpointResponseStatus.Success;
+        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 }

@@ -20,10 +20,10 @@ public class RegistrationSubmissionListViewComponent(IFacadeService facadeServic
     {
         var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(request.RegistrationsFilterModel);
 
-        request.PagedRegistrationSubmissions = pagedOrganisationRegistrations.Items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
+        request.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
         request.PaginationNavigationModel = new PaginationNavigationModel
         {
-            CurrentPage = pagedOrganisationRegistrations.CurrentPage,
+            CurrentPage = pagedOrganisationRegistrations.currentPage,
             PageCount = pagedOrganisationRegistrations.TotalPages,
             ControllerName = "RegistrationSubmissions",
             ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)

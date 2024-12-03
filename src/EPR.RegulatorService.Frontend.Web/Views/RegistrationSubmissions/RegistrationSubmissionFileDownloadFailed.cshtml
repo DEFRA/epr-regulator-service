@@ -1,0 +1,51 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations
+
+@model OrganisationDetailsFileDownloadViewModel
+@{
+    ViewData["Title"] = Localizer["OrganisationDetailsFileDownloadFailed.Title"];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                @if (Model.DownloadFailed && !Model.HasIssue)
+                {
+                    <partial name="Partials/_FileNotDownloadingTryAgain" />
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-full">
+                            @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
+                                     "RegistrationSubmissionDetails",
+                                     "RegistrationSubmissions",
+                                     new
+                                     {
+                                         SubmissionId = Model.SubmissionId
+                                     },
+                                     new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
+                        </div>
+                    </div>
+                }
+                else if (Model.HasIssue)
+                {
+                    <partial name="Partials/_FileIsDownloadingVirusError" />
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-full">
+                            @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
+                                     "RegistrationSubmissionDetails",
+                                     "RegistrationSubmissions",
+                                     new
+                                     {
+                                         SubmissionId = Model.SubmissionId
+                                     },
+                                     new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p>Invalid Request</p>
+                }
+            </div>
+        </div>
+    </main>
+</div>

@@ -48,7 +48,9 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
-    public async Task InvokeAsync_Returns_CorrectView_With_Model()
+    [DataRow("large", "Large")]
+    [DataRow("small", "Small")]
+    public async Task InvokeAsync_Returns_CorrectView_With_Model(string organisationSize, string expectedProducerSize)
     {
         // Arrange
         _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>()))
@@ -64,6 +66,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
                 { OnlineMarketPlaceSubsidiariesCount = 1, SubsidiaryOnlineMarketPlaceFee = 200.00M }
         });
+        _registrationSumissionDetailsViewModel.OrganisationSize = organisationSize;
 
         // Act
         var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
@@ -77,9 +80,10 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.ApplicationProcessingFee.Should().Be(1.00M);
         model.LateRegistrationFee.Should().Be(2.00M);
         model.OnlineMarketplaceFee.Should().Be(3.00M);
+        model.ProducerSize.Should().Be(expectedProducerSize);
         model.SubsidiaryFee.Should().Be(2.00M);
         model.SubsidiaryOnlineMarketPlaceFee.Should().Be(2.00M);
-        model.TotalChargeableItems.Should().Be(10.00M);
+        model.SubTotal.Should().Be(10.00M);
         model.PreviousPaymentsReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(5.00M);
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>()), Times.AtMostOnce);

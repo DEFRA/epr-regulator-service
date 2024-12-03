@@ -1,75 +1,151 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
+using System.Globalization;
+
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Web.Constants;
+
+
+using static EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.RegistrationSubmissionOrganisationSubmissionSummaryDetails;
+
+using ServiceRole = Core.Enums.ServiceRole;
 
 public class SubmissionDetailsViewModel
 {
     public class FileDetails
     {
+        public FileType Type { get; set; }
+        public string DownloadType { get; set; }
+
         public string Label { get; set; }
         public string FileName { get; set; }
-        public string DownloadUrl { get; set; }
+        public Guid? FileId { get; set; }
+        public string? BlobName { get; set; }
 
         public static implicit operator FileDetails(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails otherFile) => otherFile is null ? null : new FileDetails
         {
-            Label = otherFile.Label,
+            Type = otherFile.Type,
+            DownloadType = otherFile.Type switch
+            {
+                FileType.company => FileDownloadTypes.OrganisationDetails,
+                FileType.partnership => FileDownloadTypes.PartnershipDetails,
+                FileType.brands => FileDownloadTypes.BrandDetails,
+                _ => ""
+            },
+            Label = otherFile.Type switch
+            {
+                FileType.company => "SubmissionDetails.OrganisationDetails",
+                FileType.partnership => "SubmissionDetails.PartnerDetails",
+                FileType.brands => "SubmissionDetails.BrandDetails",
+                _ => ""
+            },
             FileName = otherFile.FileName,
-            DownloadUrl = otherFile.DownloadUrl,
+            FileId = otherFile.FileId,
+            BlobName = otherFile.BlobName
         };
 
         public static implicit operator RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails(FileDetails otherFile) => otherFile is null ? null : new()
         {
-            Label = otherFile.Label,
+            Type = otherFile.Type,
             FileName = otherFile.FileName,
-            DownloadUrl = otherFile.DownloadUrl,
+            FileId = otherFile.FileId,
+            BlobName = otherFile.BlobName
         };
     }
 
     public RegistrationSubmissionStatus Status { get; set; }
-    public DateTime DecisionDate { get; set; }
+    public DateTime? DecisionDate { get; set; }
+    public DateTime? StatusPendingDate { get; set; }
 
     public DateTime TimeAndDateOfSubmission { get; set; }
     public bool SubmittedOnTime { get; set; }
     public string SubmittedBy { get; set; }
-    public ServiceRole AccountRole { get; set; }
+    public ServiceRole? AccountRole { get; set; }
     public string Telephone { get; set; }
     public string Email { get; set; }
     public string DeclaredBy { get; set; }
 
     // Files with download links
     public List<FileDetails> Files { get; set; }
+    public int? AccountRoleId { get; set; }
 
     public SubmissionDetailsViewModel()
     {
         Files = [];
     }
 
-    public static implicit operator RegistrationSubmissionOrganisationSubmissionSummaryDetails(SubmissionDetailsViewModel details) => details is null  ? null : new()
+    public string DisplayAppropriateSubmissionDate()
     {
-        AccountRole = details.AccountRole,
-        Telephone = details.Telephone,
-        Email = details.Email,
-        DeclaredBy = details.DeclaredBy,
-        DecisionDate = details.DecisionDate,
-        Status = details.Status,
-        SubmittedBy = details.SubmittedBy,
-        SubmittedOnTime = details.SubmittedOnTime,
-        TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
-        Files = details.Files.Select(file => (RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails)file).ToList()
-    };
+        const string format = "dd MMMM yyyy HH:mm:ss";
 
-    public static implicit operator SubmissionDetailsViewModel(RegistrationSubmissionOrganisationSubmissionSummaryDetails details) => details is null ? null : new()
+        var targetDate = Status switch
+        {
+            RegistrationSubmissionStatus.Granted or RegistrationSubmissionStatus.Refused or RegistrationSubmissionStatus.Queried => DecisionDate,
+            RegistrationSubmissionStatus.Cancelled => StatusPendingDate ?? DecisionDate,
+            _ => TimeAndDateOfSubmission,
+        } ?? TimeAndDateOfSubmission;
+
+        return targetDate.ToString(format, CultureInfo.InvariantCulture);
+    }
+
+    public static implicit operator RegistrationSubmissionOrganisationSubmissionSummaryDetails(SubmissionDetailsViewModel details)
     {
-        AccountRole = details.AccountRole,
-        Telephone = details.Telephone,
-        Email = details.Email,
-        DeclaredBy = details.DeclaredBy,
-        DecisionDate = details.DecisionDate,
-        Status = details.Status,
-        SubmittedBy = details.SubmittedBy,
-        SubmittedOnTime = details.SubmittedOnTime,
-        TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
-        Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList()
-    };
+        if (details is null)
+        {
+            return null;
+        }
+
+        var result = new RegistrationSubmissionOrganisationSubmissionSummaryDetails();
+
+        result.AccountRoleId = details.AccountRoleId;
+        result.Telephone = details.Telephone;
+        result.Email = details.Email;
+        result.DeclaredBy = details.DeclaredBy;
+        result.SubmittedBy = details.SubmittedBy;
+        result.DecisionDate = details.DecisionDate;
+        result.Status = details.Status;
+        result.SubmittedOnTime = details.SubmittedOnTime;
+        result.TimeAndDateOfSubmission = details.TimeAndDateOfSubmission;
+
+        if (details.Files != null)
+        {
+            result.Files = details.Files
+                .Select(file => (RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails)file)
+                .ToList();
+        }
+
+        return result;
+    }
+
+
+    public static implicit operator SubmissionDetailsViewModel(RegistrationSubmissionOrganisationSubmissionSummaryDetails details)
+    {
+        if (details is null)
+        {
+            return null;
+        }
+
+        return new()
+        {
+            AccountRoleId = details.AccountRoleId,
+            AccountRole = GetAccountRole(details.AccountRoleId),
+            Telephone = details.Telephone,
+            Email = details.Email,
+            DeclaredBy = details.DeclaredBy,
+            SubmittedBy = details.SubmittedBy,
+            DecisionDate = details.DecisionDate,
+            Status = details.Status,
+            SubmittedOnTime = details.SubmittedOnTime,
+            TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
+            Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList()
+        };
+    }
+
+    private static ServiceRole? GetAccountRole ( int? serviceRoleId )
+    {
+        ServiceRole? retVal = serviceRoleId.HasValue ? (ServiceRole)serviceRoleId : null;
+
+        return retVal;
+    }
 }

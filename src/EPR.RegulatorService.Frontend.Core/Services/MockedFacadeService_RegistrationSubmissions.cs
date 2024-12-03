@@ -1,5 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -22,11 +23,11 @@ public partial class MockedFacadeService : IFacadeService
                 OrganisationReference = fields[0][..10],
                 OrganisationName = fields[1],
                 OrganisationType = Enum.Parse<RegistrationSubmissionOrganisationType>(fields[2]),
-                SubmissionStatus = Enum.Parse<RegistrationSubmissionStatus>(fields[3]),
+                SubmissionStatus= Enum.Parse<RegistrationSubmissionStatus>(fields[3]),
                 ApplicationReferenceNumber = fields[4],
                 RegistrationReferenceNumber = fields[5],
                 SubmissionDate = dateTime,
-                RegistrationYear = dateTime.Year.ToString(CultureInfo.InvariantCulture),
+                RelevantYear = dateTime.Year,
                 CompaniesHouseNumber = fields[9],
                 BuildingName = fields[10],
                 SubBuildingName = fields[11],
@@ -68,7 +69,7 @@ public partial class MockedFacadeService : IFacadeService
                 .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Granted)
                 .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Queried)
                 .ThenBy(x => x.SubmissionStatus == RegistrationSubmissionStatus.Pending)
-                .ThenBy(x => x.SubmissionDate)
+                .ThenBy(x => x.SubmissionStatus)
                 .Skip((filters.PageNumber.Value - 1) * _config.PageSize)
                 .Take(filters.PageSize ?? _config.PageSize)
                 .ToList();
@@ -76,7 +77,7 @@ public partial class MockedFacadeService : IFacadeService
         return Tuple.Create(totalItems, sortedItems);
     }
 
-    public static RegistrationSubmissionOrganisationSubmissionSummaryDetails GenerateRandomSubmissionData(RegistrationSubmissionStatus submissionStatus)
+    public static RegistrationSubmissionOrganisationSubmissionSummaryDetails GenerateRandomSubmissionData(RegistrationSubmissionStatus registrationStatus)
     {
         var random = new Random(); // NOSONAR - this is dummy disposable data
 
@@ -87,12 +88,11 @@ public partial class MockedFacadeService : IFacadeService
 
         return new RegistrationSubmissionOrganisationSubmissionSummaryDetails
         {
-            Status = submissionStatus,
+            Status = registrationStatus,
             DecisionDate = DateTime.Now.AddDays(-random.Next(1, 100)),
             TimeAndDateOfSubmission = DateTime.Now.AddDays(-random.Next(1, 100)),
             SubmittedOnTime = random.Next(2) == 0,
-            SubmittedBy = sampleNames[random.Next(sampleNames.Length)],
-            AccountRole = (ServiceRole)sampleRoles.GetValue(random.Next(sampleRoles.Length)),
+            AccountRoleId = (int) sampleRoles.GetValue(random.Next(sampleRoles.Length)),
             Telephone = generateRandomPhoneNumber(random),
             Email = $"{sampleNames[random.Next(sampleNames.Length)].ToLower(CultureInfo.CurrentCulture)}@example.com",
             DeclaredBy = sampleNames[random.Next(sampleNames.Length)],
@@ -106,21 +106,24 @@ public partial class MockedFacadeService : IFacadeService
 
         files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails()
         {
-            DownloadUrl = "#",
+            Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company,
+            FileId = Guid.NewGuid(),
             FileName = "org.details.acme.csv",
-            Label = "SubmissionDetails.OrganisationDetails"
+            BlobName = "SubmissionDetails.OrganisationDetails"
         });
         files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails()
         {
-            DownloadUrl = "#",
+            Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands,
+            FileId = Guid.NewGuid(),
             FileName = "brand.details.acme.csv",
-            Label = "SubmissionDetails.BrandDetails"
+            BlobName= "SubmissionDetails.BrandDetails"
         });
         files.Add(new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails()
         {
-            DownloadUrl = "#",
+            Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership,
+            FileId = Guid.NewGuid(),
             FileName = "partner.details.acme.csv",
-            Label = "SubmissionDetails.PartnerDetails"
+            BlobName = "SubmissionDetails.PartnerDetails"
         });
         return files;
     }
@@ -129,7 +132,7 @@ public partial class MockedFacadeService : IFacadeService
     {
         var random = new Random(); // NOSONAR - this is dummy disposable data
 
-        var generateRandomDecimal = (int min, int max) => Math.Round((decimal)((random.NextDouble() * (max - min)) + min), 2);
+        var generateRandomDecimal = (int min, int max) => Math.Round((decimal)(random.NextDouble() * (max - min) + min), 2);
 
         return new RegistrationSubmissionsOrganisationPaymentDetails()
         {

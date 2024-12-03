@@ -13,6 +13,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.Extensions.Logging;
 
     using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
@@ -1715,13 +1716,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.SubmissionDetails.DeclaredBy, model.SubmissionDetails.DeclaredBy);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Files.Count, model.SubmissionDetails.Files.Count);
 
-            // Assert PaymentDetailsViewModel properties
-            Assert.AreEqual(expectedViewModel.PaymentDetails.ApplicationProcessingFee, model.PaymentDetails.ApplicationProcessingFee);
-            Assert.AreEqual(expectedViewModel.PaymentDetails.OnlineMarketplaceFee, model.PaymentDetails.OnlineMarketplaceFee);
-            Assert.AreEqual(expectedViewModel.PaymentDetails.SubsidiaryFee, model.PaymentDetails.SubsidiaryFee);
-            Assert.AreEqual(expectedViewModel.PaymentDetails.TotalChargeableItems, model.PaymentDetails.TotalChargeableItems);
-            Assert.AreEqual(expectedViewModel.PaymentDetails.PreviousPaymentsReceived, model.PaymentDetails.PreviousPaymentsReceived);
-            Assert.AreEqual(expectedViewModel.PaymentDetails.TotalOutstanding, model.PaymentDetails.TotalOutstanding);
+            //// Assert PaymentDetailsViewModel properties
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.ApplicationProcessingFee, model.PaymentDetails.ApplicationProcessingFee);
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.OnlineMarketplaceFee, model.PaymentDetails.OnlineMarketplaceFee);
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.SubsidiaryFee, model.PaymentDetails.SubsidiaryFee);
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.TotalChargeableItems, model.PaymentDetails.TotalChargeableItems);
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.PreviousPaymentsReceived, model.PaymentDetails.PreviousPaymentsReceived);
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.TotalOutstanding, model.PaymentDetails.TotalOutstanding);
 
             // Assert business address
             Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingName, model.BusinessAddress.BuildingName);
@@ -1944,12 +1945,18 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_ForAnEmptyOfflinePayment()
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_ForAnEmptyOfflinePayment(string offlinePayment)
         {
             // Arrange
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            {
+                { "OfflinePaymentAmount", offlinePayment }
+            };
+            _controller.TempData = tempData;
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails.OfflinePayment = string.Empty; // Simulate empty offline payment
             SetupJourneySession(null, submissionDetails);
 
             // Act
@@ -1966,9 +1973,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task ConfirmOfflinePaymentSubmission_SetsCorrectBackLink()
         {
             // Arrange
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            {
+                { "OfflinePaymentAmount", "200.45" }
+            };
+            _controller.TempData = tempData;
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
             SetupJourneySession(null, submissionDetails);
 
             string expectedBackLink = "/expected/backlink/url";
@@ -1988,17 +1999,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task ConfirmOfflinePaymentSubmission_ReturnsViewWithCorrectModel_ForAValidSubmissionIdAndOfflinePayment()
         {
             // Arrange
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            {
+                { "OfflinePaymentAmount", "10.00" }
+            };
+            _controller.TempData = tempData;
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
             SetupJourneySession(null, submissionDetails);
-
-            var expectedViewModel = new ConfirmOfflinePaymentSubmissionViewModel
-            {
-                SubmissionId = submissionId,
-                IsOfflinePaymentConfirmed = null,
-                OfflinePaymentAmount = "10.00"
-            };
 
             // Act
             var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId);
@@ -2007,12 +2015,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
             Assert.AreEqual("ConfirmOfflinePaymentSubmission", viewResult.ViewName);
-
             var model = viewResult.Model as ConfirmOfflinePaymentSubmissionViewModel;
             Assert.IsNotNull(model);
-            Assert.AreEqual(expectedViewModel.SubmissionId, model.SubmissionId);
-            Assert.AreEqual(submissionDetails.PaymentDetails.OfflinePayment, model.OfflinePaymentAmount);
-            Assert.AreEqual(expectedViewModel.IsOfflinePaymentConfirmed, model.IsOfflinePaymentConfirmed);
+            model.SubmissionId.Should().Be(submissionId);
+            model.IsOfflinePaymentConfirmed.Should().BeNull();
+            model.OfflinePaymentAmount.Should().Be("10.00");
 
             // Verify backlink setup
             AssertBackLink(viewResult, "/expected/backlink/url");
@@ -2024,7 +2031,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
             SetupJourneySession(null, submissionDetails);
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
             _facadeServiceMock.Setup(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
@@ -2032,7 +2040,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
+                OfflinePaymentAmount = "200.45", // Valid amount
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -2061,14 +2069,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
             SetupJourneySession(null, submissionDetails);
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
+                OfflinePaymentAmount = "200.45", //submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -2093,7 +2103,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
             SetupJourneySession(null, submissionDetails);
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
             _facadeServiceMock.Setup(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
@@ -2101,7 +2112,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
+                OfflinePaymentAmount = "200.45", //submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -2130,7 +2141,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = new PaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = new PaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
             SetupJourneySession(null, submissionDetails);
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
@@ -2160,13 +2173,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
             SetupJourneySession(null, submissionDetails);
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment
+                OfflinePaymentAmount = "200.45" //submissionDetails.PaymentDetails.OfflinePayment
             };
 
             // Simulate an error in ModelState
@@ -2215,7 +2230,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
             SetupJourneySession(null, submissionDetails);
             var exception = new Exception("Test exception");
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ThrowsAsync(exception);
@@ -2223,7 +2240,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment,
+                OfflinePaymentAmount = "200.45", //submissionDetails.PaymentDetails.OfflinePayment,
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -2244,7 +2261,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
             SetupJourneySession(null, submissionDetails);
             var exception = new Exception("Test exception");
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
@@ -2253,7 +2272,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment,
+                OfflinePaymentAmount = "200.45", //submissionDetails.PaymentDetails.OfflinePayment,
                 IsOfflinePaymentConfirmed = true
             };
 

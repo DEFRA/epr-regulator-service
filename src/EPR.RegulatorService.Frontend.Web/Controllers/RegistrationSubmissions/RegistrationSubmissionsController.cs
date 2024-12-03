@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Globalization;
+using System.Net;
 
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -9,6 +11,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using Microsoft.AspNetCore.Authorization;
@@ -54,8 +57,9 @@ public partial class RegistrationSubmissionsController(
         try
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;
 
-            int nationId = _currentSession.UserData.Organisations[0].NationId != null ? _currentSession.UserData.Organisations[0].NationId.Value : 0;
+            int nationId = _currentSession.UserData.Organisations[0].NationId ?? 0;
 
             InitialiseOrContinuePaging(_currentSession.RegulatorRegistrationSubmissionSession, pageNumber);
 
@@ -96,6 +100,8 @@ public partial class RegistrationSubmissionsController(
                 return response;
             }
 
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;
+
             ClearFilters(_currentSession.RegulatorRegistrationSubmissionSession,
                                filters,
                                filterType == FilterActions.ClearFilters);
@@ -118,6 +124,8 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionDetails + "/{submissionId:guid}", Name = "SubmissionDetails")]
     public async Task<IActionResult> RegistrationSubmissionDetails(Guid? submissionId)
     {
+        try
+        {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
         RegistrationSubmissionDetailsViewModel model = submissionId == null
@@ -140,10 +148,26 @@ public partial class RegistrationSubmissionsController(
 
         return View(nameof(RegistrationSubmissionDetails), model);
     }
+        catch (HttpRequestException hex)
+        {
+            if ( hex.StatusCode == HttpStatusCode.NotFound)
+            {
+                _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", hex);
+                return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+            }
+            return RedirectToAction(PagePath.Error, "Error");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
+            return RedirectToAction(PagePath.Error, "Error");
+        }
+    }
 
     [HttpPost]
     [Route(PagePath.RegistrationSubmissionDetails + "/{submissionId:guid}", Name = "SubmitPaymentInfo")]
-    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel, [FromRoute] Guid? submissionId)
+    public async Task<IActionResult> SubmitOfflinePayment([FromForm]PaymentDetailsViewModel paymentDetailsViewModel, [FromRoute] Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -157,11 +181,11 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(RegistrationSubmissionDetails), existingModel);
         }
 
-        paymentDetailsViewModel.EnsureTwoDecimalPlaces();
-
-        existingModel.PaymentDetails.OfflinePayment = paymentDetailsViewModel.OfflinePayment;
-
-        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = existingModel;
+        if (decimal.TryParse(paymentDetailsViewModel.OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))
+        {
+            paymentDetailsViewModel.OfflinePayment = parsedValue.ToString("F2", CultureInfo.InvariantCulture);
+        }
+        TempData["OfflinePaymentAmount"] = paymentDetailsViewModel.OfflinePayment;
 
         await SaveSessionAndJourney(
             _currentSession.RegulatorRegistrationSubmissionSession,
@@ -428,7 +452,8 @@ public partial class RegistrationSubmissionsController(
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        if (string.IsNullOrEmpty(existingModel.PaymentDetails.OfflinePayment))
+        string offlinePayment = TempData.Peek("OfflinePaymentAmount").ToString();
+        if (string.IsNullOrWhiteSpace(offlinePayment))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -438,7 +463,7 @@ public partial class RegistrationSubmissionsController(
         var model = new ConfirmOfflinePaymentSubmissionViewModel
         {
             SubmissionId = submissionId,
-            OfflinePaymentAmount = existingModel.PaymentDetails.OfflinePayment
+            OfflinePaymentAmount = offlinePayment
         };
 
         return View(nameof(ConfirmOfflinePaymentSubmission), model);
@@ -461,6 +486,7 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(ConfirmOfflinePaymentSubmission), model);
         }
 
+        TempData.Remove("OfflinePaymentAmount");
         return string.IsNullOrWhiteSpace(model.OfflinePaymentAmount)
             ? RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions")
             : await ProcessOfflinePaymentAsync(existingModel, model.OfflinePaymentAmount);
@@ -646,6 +672,80 @@ public partial class RegistrationSubmissionsController(
                     backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
                 });
         }
+    }
+
+    [HttpGet]
+    [Route(PagePath.RegistrationSubmissionsFileDownload)]
+    public async Task<IActionResult> RegistrationSubmissionsFileDownload(string downloadType)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        TempData["DownloadCompleted"] = false;
+        _currentSession.RegulatorRegistrationSubmissionSession.FileDownloadRequestType = downloadType;
+        await SaveSession(_currentSession);
+
+        return RedirectToAction(nameof(SubmissionDetailsFileDownload), "RegistrationSubmissions");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> FileDownloadInProgress()
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        var registration = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+        var fileDownloadModel = CreateFileDownloadRequest(_currentSession, registration);
+
+        if (fileDownloadModel == null)
+        {
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed));
+        }
+
+        var response = await _facadeService.GetFileDownload(fileDownloadModel);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+        {
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning));
+        }
+        else if (response.IsSuccessStatusCode)
+        {
+            var fileStream = await response.Content.ReadAsStreamAsync();
+            var contentDisposition = response.Content.Headers.ContentDisposition;
+            var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.SubmissionDetails.Files[0].FileName ?? $"{registration.OrganisationReference}_details.csv";
+            TempData["DownloadCompleted"] = true;
+
+            return File(fileStream, "application/octet-stream", fileName);
+        }
+        else
+        {
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed));
+        }
+    }
+
+    [HttpGet]
+    [Route(PagePath.RegistrationSubmissionDetailsFileDownload)]
+    public IActionResult SubmissionDetailsFileDownload()
+    {
+        return View("RegistrationSubmissionFileDownload");
+    }
+
+    [HttpGet]
+    [Route(PagePath.RegistrationSubmissionFileDownloadFailed)]
+    public IActionResult RegistrationSubmissionFileDownloadFailed()
+    {
+        _currentSession = _sessionManager.GetSessionAsync(HttpContext.Session).Result;
+
+        var model = new OrganisationDetailsFileDownloadViewModel(true, false, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId);
+        return View("RegistrationSubmissionFileDownloadFailed", model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.RegistrationSubmissionFileDownloadSecurityWarning)]
+    public IActionResult RegistrationSubmissionFileDownloadSecurityWarning()
+    {
+        _currentSession = _sessionManager.GetSessionAsync(HttpContext.Session).Result;
+
+        var model = new OrganisationDetailsFileDownloadViewModel(true, true, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId);
+        return View("RegistrationSubmissionFileDownloadFailed", model);
     }
 
     [HttpGet]

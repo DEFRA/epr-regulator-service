@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 
-using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -25,11 +24,8 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(new CompliancePaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
-                Regulator = ((Core.Enums.CountryName)viewModel.NationId).GetDescription(), /*get the nation code in a new property*/
-                ComplianceSchemeMembers =
-                [
-                    new ComplianceSchemeMemberRequest { MemberId = "addhere", MemberType = "addhere" }
-                ],
+                Regulator = viewModel.NationCode,
+                ComplianceSchemeMembers = viewModel.CSOMembershipDetails?.Select(x => (ComplianceSchemeMemberRequest)x),
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*payment facade in utc format*/
             });
 
@@ -38,8 +34,73 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
                 return View(default(CompliancePaymentDetailsViewModel));
             }
 
-            // To do:: map the domain to view model as part of https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_workitems/edit/477227
-            return View(new CompliancePaymentDetailsViewModel());
+            #region "No Member Type from payment facade"
+            ////IList<ComplianceSchemeMember> largeProducers1 = [];
+            ////IList<ComplianceSchemeMember> smallProducers1 = [];
+            ////foreach (var csoMembershipDetail in viewModel.CSOMembershipDetails)
+            ////{
+            ////    //Filter the member based on the member id match between the req and res object
+            ////    var complianceSchemeMember = compliancePaymentResponse.ComplianceSchemeMembers
+            ////        .Find(r => r.MemberId == csoMembershipDetail.MemberId);
+
+            ////    //Check the member type from the request object to filter the large producers
+            ////    if (csoMembershipDetail.MemberType.Equals("Large", StringComparison.OrdinalIgnoreCase))
+            ////    {
+            ////        largeProducers1.Add(complianceSchemeMember);
+            ////        break;
+            ////    }
+
+            ////    //Check the member type from the request object to filter the small producers
+            ////    if (csoMembershipDetail.MemberType.Equals("Small", StringComparison.OrdinalIgnoreCase))
+            ////    {
+            ////        smallProducers1.Add(complianceSchemeMember);
+            ////        break;
+            ////    }
+            ////}
+
+            ////int lpCount1 = largeProducers1.Count;
+            ////decimal lpFee1 = largeProducers1.Sum(r => r.MemberFee);
+
+            ////int spCount1 = smallProducers1.Count;
+            ////decimal spFee1 = smallProducers1.Sum(r => r.MemberFee);
+            #endregion
+
+            #region "Member Type from payment facade"
+            var largeProducers2 = compliancePaymentResponse.ComplianceSchemeMembers.Where(
+                r => r.MemberType.Equals("Large", StringComparison.OrdinalIgnoreCase)).ToList();
+
+            var smallProducers2 = compliancePaymentResponse.ComplianceSchemeMembers.Where(
+                r => r.MemberType.Equals("Small", StringComparison.OrdinalIgnoreCase)).ToList();
+
+            int lpCount2 = largeProducers2.Count;
+            decimal lpFee2 = largeProducers2.Sum(r => r.MemberFee);
+
+            int spCount2 = smallProducers2.Count;
+            decimal spFee2 = smallProducers2.Sum(r => r.MemberFee);
+            #endregion
+
+            var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.Select(r => r.OnlineMarketPlaceFee);
+            var subsidiariesCompanies = compliancePaymentResponse.ComplianceSchemeMembers.Select(r => r.SubsidiaryFee);
+            var lateProducers = compliancePaymentResponse.ComplianceSchemeMembers.Select(r => r.LateRegistrationFee);
+
+            return View(new CompliancePaymentDetailsViewModel
+            {
+                ApplicationFee = ConvertToPoundsFromPence(compliancePaymentResponse.ApplicationProcessingFee),
+                SubTotal = ConvertToPoundsFromPence(compliancePaymentResponse.TotalChargeableItems),
+                PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
+                TotalOutstanding = ConvertToPoundsFromPence(compliancePaymentResponse.TotalOutstanding),
+                SchemeMemberCount = compliancePaymentResponse.ComplianceSchemeMembers.Count,
+                LargeProducerCount = lpCount2,
+                LargeProducerFee = ConvertToPoundsFromPence(lpFee2),
+                SmallProducerCount = spCount2,
+                SmallProducerFee = ConvertToPoundsFromPence(spFee2),
+                LateProducerCount = lateProducers.Count(),
+                LateProducerFee = ConvertToPoundsFromPence(lateProducers.Sum()),
+                OnlineMarketPlaceCount = onlineMarketPlaces.Count(),
+                OnlineMarketPlaceFee = ConvertToPoundsFromPence(onlineMarketPlaces.Sum()),
+                SubsidiariesCompanyCount = subsidiariesCompanies.Count(),
+                SubsidiariesCompanyFee = ConvertToPoundsFromPence(subsidiariesCompanies.Sum())
+            });
         }
         catch (Exception ex)
         {
@@ -50,4 +111,6 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
             return View(default(CompliancePaymentDetailsViewModel));
         }
     }
+
+    private static decimal ConvertToPoundsFromPence(decimal amount) => amount / 100;
 }

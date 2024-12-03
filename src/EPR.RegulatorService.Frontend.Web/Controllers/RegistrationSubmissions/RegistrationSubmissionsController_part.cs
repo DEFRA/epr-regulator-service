@@ -5,6 +5,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
     using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
@@ -23,14 +24,18 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         {
             var existingSessionFilters = session.LatestFilterChoices ?? new RegistrationSubmissionsFilterViewModel()
             {
-                PageNumber = 1
+                PageNumber = 1,
+                PageSize = 20,
+                NationId = nationId
             };
             existingSessionFilters.PageNumber = session.CurrentPageNumber;
 
             return new RegistrationSubmissionsViewModel
             {
+                NationId = nationId,
                 ListViewModel = new RegistrationSubmissionsListViewModel
                 {
+                    NationId = nationId,
                     RegistrationsFilterModel = existingSessionFilters,
                     PaginationNavigationModel = new ViewModels.Shared.PaginationNavigationModel
                     {
@@ -64,9 +69,18 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         }
 
         private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
-            => _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var registrationSubmissionOrganisationDetails)
+        {
+            if ((_currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration?.SubmissionId == submissionId))
+            {
+                return _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+            }
+            else
+            {
+                return _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var registrationSubmissionOrganisationDetails)
                 ? registrationSubmissionOrganisationDetails
                 : await facadeMethod(submissionId);
+            }
+        }
 
         private static void ClearFilters(RegulatorRegistrationSubmissionSession session,
                                   RegistrationSubmissionsFilterViewModel filters,
@@ -165,7 +179,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                     UserId = (Guid)_currentSession.UserData.Id
                 });
 
-                if (response == EndpointResponseStatus.Success)
+                if (response == Core.Models.EndpointResponseStatus.Success)
                 {
                     response = await _facadeService.SubmitRegistrationFeePaymentAsync(new RegistrationFeePaymentRequest
                     {
@@ -176,7 +190,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                         UserId = (Guid)_currentSession.UserData.Id
                     });
 
-                    if (response == EndpointResponseStatus.Success)
+                    if (response == Core.Models.EndpointResponseStatus.Success)
                     {
                         return Redirect(Url.RouteUrl("SubmissionDetails", new { existingModel.SubmissionId }));
                     }
@@ -252,8 +266,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 Status = status.ToString(),
                 CountryName = GetCountryCodeInitial(existingModel.NationId),
                 RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
-                TwoDigitYear = existingModel.RegistrationYear.Substring(2),
-                //TO DO: Refactor existingModel.RegistrationYear.Substring(2) to take from submission date once facade is fixed
+                TwoDigitYear = (existingModel.RegistrationYear % 100).ToString(CultureInfo.InvariantCulture),
                 OrganisationAccountManagementId = existingModel.OrganisationReference,
                 // For sending emails
                 OrganisationName = existingModel.OrganisationName,
@@ -263,5 +276,55 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
                 IsWelsh = existingModel.NationId == 4
             };
+
+        private static FileDownloadRequest CreateFileDownloadRequest(JourneySession session, RegistrationSubmissionOrganisationDetails registration)
+        {
+            var fileDownloadModel = new FileDownloadRequest
+            {
+                SubmissionId = registration.SubmissionId,
+                SubmissionType = SubmissionType.Registration
+            };
+
+            switch (session.RegulatorRegistrationSubmissionSession.FileDownloadRequestType)
+            {
+                case FileDownloadTypes.OrganisationDetails:
+                    var orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company);
+                    if (null != orgFile)
+                    {
+                        fileDownloadModel.FileId = orgFile.FileId;
+                        fileDownloadModel.BlobName = orgFile.BlobName;
+                        fileDownloadModel.FileName = orgFile.FileName;
+                    }
+                    break;
+                case FileDownloadTypes.BrandDetails:
+                    orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands);
+                    if (null != orgFile)
+                    {
+                        fileDownloadModel.FileId = orgFile.FileId;
+                        fileDownloadModel.BlobName = orgFile.BlobName;
+                        fileDownloadModel.FileName = orgFile.FileName;
+                    }
+                    break;
+                case FileDownloadTypes.PartnershipDetails:
+                    orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership);
+                    if (null != orgFile)
+                    {
+                        fileDownloadModel.FileId = orgFile.FileId;
+                        fileDownloadModel.BlobName = orgFile.BlobName;
+                        fileDownloadModel.FileName = orgFile.FileName;
+                    }
+                    break;
+                default:
+                    return null;
+            }
+
+            if (fileDownloadModel.FileId == null || fileDownloadModel.BlobName == null || fileDownloadModel.FileName == null)
+            {
+                return null;
+            }
+
+            return fileDownloadModel;
+        }
+
     }
 }
