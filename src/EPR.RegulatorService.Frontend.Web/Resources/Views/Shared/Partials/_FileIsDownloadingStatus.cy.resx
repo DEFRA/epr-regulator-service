@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="OrganisationDetailsFileDownload.DoNotRefresh" xml:space="preserve">
-    <value>[Welsh]Do not close the page and do not refresh it yourself.</value>
+    <value>Peidiwch â chau'r tudalen a pheidiwch â'i adnewyddu eich hunan.</value>
   </data>
   <data name="OrganisationDetailsFileDownload.Info" xml:space="preserve">
     <value>Pan fydd hynny wedi'i gwblhau, cliciwch y ddolen isod i fynd yn ôl.</value>

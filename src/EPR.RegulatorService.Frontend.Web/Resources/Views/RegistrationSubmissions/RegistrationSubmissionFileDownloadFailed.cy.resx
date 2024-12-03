@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="OrganisationDetailsFileDownloadFailed.Title" xml:space="preserve">
-    <value>[Welsh]Registration Submission file download failed</value>
+    <value>Wedi methu lawrlwytho ffeil Cyflwyniad Cofrestru</value>
   </data>
 </root>
