@@ -15,7 +15,7 @@ internal static class ComplianceSchemeMemberExtension
         {
             //Filter the member based on the member id match between the req and res object
             var complianceSchemeMember = complianceSchemeMembers
-                .Find(r => r.MemberId == csoMembershipDetail.MemberId && r.MemberFee > 0);
+                .Find(r => r.MemberId.Equals(csoMembershipDetail.MemberId, StringComparison.OrdinalIgnoreCase) && r.MemberFee > 0);
 
             //Check the member type from the request object to filter the large producers
             if (csoMembershipDetail.MemberType.Equals("Large", StringComparison.OrdinalIgnoreCase))

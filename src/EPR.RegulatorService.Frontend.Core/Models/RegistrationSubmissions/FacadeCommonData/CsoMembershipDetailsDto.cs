@@ -4,7 +4,7 @@ using System.Globalization;
 
 public class CsoMembershipDetailsDto
 {
-    public int MemberId { get; set; }
+    public string MemberId { get; set; }
     public string MemberType { get; set; }
     public bool IsOnlineMarketPlace { get; set; }
     public bool IsLateFeeApplicable { get; set; }
@@ -16,7 +16,7 @@ public class CsoMembershipDetailsDto
 
     public static implicit operator ComplianceSchemeMemberRequest(CsoMembershipDetailsDto dto) => new ComplianceSchemeMemberRequest
     {
-        MemberId = dto.MemberId.ToString(CultureInfo.InvariantCulture),
+        MemberId = dto.MemberId,
         MemberType = dto.MemberType,
         IsOnlineMarketplace = dto.IsOnlineMarketPlace,
         IsLateFeeApplicable = dto.IsLateFeeApplicable,
