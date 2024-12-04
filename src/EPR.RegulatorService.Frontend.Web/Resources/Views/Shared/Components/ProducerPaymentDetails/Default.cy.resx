@@ -129,14 +129,26 @@
   <data name="ProducerPaymentDetails.Description" xml:space="preserve">
     <value>Disgrifiad</value>
   </data>
+  <data name="ProducerPaymentDetails.OnelineMarketPlaceFeeDescription" xml:space="preserve">
+    <value>Ffi marchnad ar-lein</value>
+  </data>
+  <data name="ProducerPaymentDetails.FeeForProducerSize" xml:space="preserve">
+    <value>Ffi gofrestru sefydliad {0}</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription" xml:space="preserve">
+    <value>{0} o is-gwmnïau</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription" xml:space="preserve">
+    <value>Mae {0} yn farchnadoedd ar-lein</value>
+  </data>
   <data name="ProducerPaymentDetails.Items" xml:space="preserve">
     <value>Eitemau</value>
   </data>
   <data name="ProducerPaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
     <value>Ffi hwyr</value>
   </data>
-  <data name="ProducerPaymentDetails.OnlineMarketPlaceFeeDescription" xml:space="preserve">
-    <value>[Welsh]Online marketplace fee</value>
+  <data name="ProducerPaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
+    <value>Ffi marchnad ar-lein</value>
   </data>
   <data name="ProducerPaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
     <value>Taliadau blaenorol</value>
@@ -169,6 +181,30 @@
     <value>Y cyfanswm sydd heb ei dalu</value>
   </data>
   <data name="ProducerPaymentDetails.TotalPaymentsReceived" xml:space="preserve">
-    <value>[Welsh]Total payments received</value>
+    <value>Cyfanswm y taliadau sydd wedi dod i law</value>
+  </data>
+  <data name="ProducerPaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
+    <value>Ffi hwyr</value>
+  </data>
+  <data name="ProducerPaymentDetails.ServiceIssueDescription" xml:space="preserve">
+    <value>Methu nôl manylion taliad cynhyrchydd</value>
+  </data>
+  <data name="ProducerPaymentValidation.ValueIsTooHigh" xml:space="preserve">
+    <value>Rhaid i'r swm fod yn llai na £10,000,000</value>
+  </data>
+  <data name="ProducerPaymentValidation.FormatIsInvalid" xml:space="preserve">
+    <value>Rhaid i'r swm gynnwys punnoedd a cheiniogau yn unig</value>
+  </data>
+  <data name="ProducerPaymentValidation.TheAmountIsRequired" xml:space="preserve">
+    <value>Rhowch swm</value>
+  </data>
+  <data name="ProducerPaymentValidation.InvalidCharacters" xml:space="preserve">
+    <value>Rhowch rif dilys</value>
+  </data>
+  <data name="ProducerPaymentValidation.NonNumericCharacters" xml:space="preserve">
+    <value>Rhaid i'r swm fod yn rhif</value>
+  </data>
+  <data name="ProducerPaymentValidation.ValueCannotBeZero" xml:space="preserve">
+    <value>Chaiff y swm ddim bod yn sero</value>
   </data>
 </root>
