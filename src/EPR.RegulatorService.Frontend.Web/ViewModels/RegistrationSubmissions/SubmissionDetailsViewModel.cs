@@ -81,7 +81,7 @@ public class SubmissionDetailsViewModel
 
         var targetDate = Status switch
         {
-            RegistrationSubmissionStatus.Granted or RegistrationSubmissionStatus.Refused or RegistrationSubmissionStatus.Queried => DecisionDate,
+            RegistrationSubmissionStatus.Granted or RegistrationSubmissionStatus.Refused or RegistrationSubmissionStatus.Queried or RegistrationSubmissionStatus.Updated => DecisionDate,
             RegistrationSubmissionStatus.Cancelled => StatusPendingDate ?? DecisionDate,
             _ => TimeAndDateOfSubmission,
         } ?? TimeAndDateOfSubmission;
