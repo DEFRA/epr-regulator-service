@@ -142,46 +142,52 @@
     <value>Eitemau</value>
   </data>
   <data name="CompliancePaymentDetails.LargeProducerDescription1" xml:space="preserve">
-    <value>[Welsh]{0} Large producer</value>
+    <value>{0} Cynhyrchydd mawr</value>
   </data>
   <data name="CompliancePaymentDetails.LargeProducerDescription2" xml:space="preserve">
-    <value>[Welsh]{0} Large producers</value>
+    <value>{0} Cynhyrchwyr mawr</value>
   </data>
   <data name="CompliancePaymentDetails.LateProducerDescription1" xml:space="preserve">
-    <value>[Welsh]{0} late producer fee</value>
+    <value>{0} ffi cynhyrchydd hwyr</value>
+  </data>
+  <data name="CompliancePaymentDetails.LateProducerDescription2" xml:space="preserve">
+    <value>{0} ffioedd cynhyrchydd hwyr</value>
   </data>
   <data name="CompliancePaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
     <value>Ffi marchnad ar-lein</value>
   </data>
   <data name="CompliancePaymentDetails.OnlineMarketPlaceDescription1" xml:space="preserve">
-    <value>[Welsh]{0} is an online marketplace</value>
+    <value>Mae {0} yn farchnad ar-lein</value>
   </data>
   <data name="CompliancePaymentDetails.OnlineMarketPlaceDescription2" xml:space="preserve">
-    <value>[Welsh]{0} are online marketplaces</value>
+    <value>Mae {0} yn farchnadoedd ar-lein</value>
   </data>
   <data name="CompliancePaymentDetails.PreviousPaymentReceived" xml:space="preserve">
     <value>Taliadau blaenorol sydd wedi dod i law</value>
   </data>
   <data name="CompliancePaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
-    <value>[Welsh]Total payments received</value>
+    <value>Cyfanswm y taliadau sydd wedi dod i law</value>
   </data>
   <data name="CompliancePaymentDetails.SchemeMemberDescription" xml:space="preserve">
-    <value>[Welsh]Scheme members</value>
+    <value>Aelodau'r cynllun</value>
   </data>
   <data name="CompliancePaymentDetails.ServiceIssueDescription" xml:space="preserve">
-    <value>[Welsh]Unable to retrieve compliance scheme payment details</value>
+    <value>Methu nôl manylion taliad cynllun cydymffurfio</value>
   </data>
   <data name="CompliancePaymentDetails.TotalPaymentsReceived" xml:space="preserve">
     <value>Cyfanswm y taliadau blaenorol sydd wedi dod i law'r rheoleiddiwr</value>
   </data>
+  <data name="CompliancePaymentDetails.SmallProducerDescription1" xml:space="preserve">
+    <value>{0} Cynhyrchydd bach</value>
+  </data>
   <data name="CompliancePaymentDetails.SmallProducerDescription2" xml:space="preserve">
-    <value>[Welsh]{0} Small producers</value>
+    <value>{0} Cynhyrchwyr bach</value>
   </data>
   <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription1" xml:space="preserve">
-    <value>[Welsh]{0} subsidiary company</value>
+    <value>{0} is-gwmni</value>
   </data>
   <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription2" xml:space="preserve">
-    <value>[Welsh]{0} subsidiaries companies</value>
+    <value>{0} is-gwmnïau</value>
   </data>
   <data name="CompliancePaymentDetails.SubTotalDescription" xml:space="preserve">
     <value>Is-gyfanswm</value>

@@ -124,7 +124,7 @@
     <value>Ffi ymgeisio</value>
   </data>
   <data name="ProducerPaymentDetails.ApplicationFeeDescription" xml:space="preserve">
-    <value>[Welsh]{0} organisation registration fee</value>
+    <value>{0} ffi cofrestru sefydliad</value>
   </data>
   <data name="ProducerPaymentDetails.Description" xml:space="preserve">
     <value>Disgrifiad</value>
@@ -154,22 +154,22 @@
     <value>Taliadau blaenorol</value>
   </data>
   <data name="ProducerPaymentDetails.ServiceIssueDescription" xml:space="preserve">
-    <value>[Welsh]Unable to retrieve producer payment details</value>
+    <value>Methu nôl manylion taliad cynhyrchydd</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFee" xml:space="preserve">
     <value>Ffi atodol</value>
   </data>  
   <data name="ProducerPaymentDetails.SubsidiaryFeeDescription1" xml:space="preserve">
-    <value>[Welsh]{0} subsidiary</value>
+    <value>{0} is-gwmni</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeDescription2" xml:space="preserve">
-    <value>[Welsh]{0} subsidiaries</value>
+    <value>{0} is-gwmnïau</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription1" xml:space="preserve">
-    <value>[Welsh]{0} is an online marketplace</value>
+    <value>Mae {0} yn farchnad ar-lein</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription2" xml:space="preserve">
-    <value>[Welsh]{0} are online marketplaces</value>
+    <value>Mae {0} yn farchnadoedd ar-lein</value>
   </data>
   <data name="ProducerPaymentDetails.Title" xml:space="preserve">
     <value>Manylion y taliad</value>
