@@ -126,31 +126,31 @@ public partial class RegistrationSubmissionsController(
     {
         try
         {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        RegistrationSubmissionDetailsViewModel model = submissionId == null
-            ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-            : await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+            RegistrationSubmissionDetailsViewModel model = submissionId == null
+                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
+                : await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
 
-        if (model == null)
-        {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+            if (model == null)
+            {
+                return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+            }
+
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
+
+            GeneratePowerBILink(model);
+
+            SetBackLink(PagePath.RegistrationSubmissionsRoute);
+            ViewBag.SubmissionId = model.SubmissionId;
+
+            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
+
+            return View(nameof(RegistrationSubmissionDetails), model);
         }
-
-        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
-
-        GeneratePowerBILink(model);
-
-        SetBackLink(PagePath.RegistrationSubmissionsRoute);
-        ViewBag.SubmissionId = model.SubmissionId;
-
-        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
-
-        return View(nameof(RegistrationSubmissionDetails), model);
-    }
         catch (HttpRequestException hex)
         {
-            if ( hex.StatusCode == HttpStatusCode.NotFound)
+            if (hex.StatusCode == HttpStatusCode.NotFound)
             {
                 _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", hex);
                 return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
@@ -167,7 +167,7 @@ public partial class RegistrationSubmissionsController(
 
     [HttpPost]
     [Route(PagePath.RegistrationSubmissionDetails + "/{submissionId:guid}", Name = "SubmitPaymentInfo")]
-    public async Task<IActionResult> SubmitOfflinePayment([FromForm]PaymentDetailsViewModel paymentDetailsViewModel, [FromRoute] Guid? submissionId)
+    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel, [FromRoute] Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -246,7 +246,10 @@ public partial class RegistrationSubmissionsController(
             var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Granted);
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
-            await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;  // this will force a reload of the item in SubmissionDetails
+            //await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
+
+            SaveSession(_currentSession);
 
             return status == Core.Models.EndpointResponseStatus.Success
                   ? RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId })
@@ -380,6 +383,8 @@ public partial class RegistrationSubmissionsController(
         {
             organisationDetailsChangeHistory.RejectReason = model.RejectReason;
             organisationDetailsChangeHistory.RegulatorComments = model.RejectReason;
+            organisationDetailsChangeHistory.RegulatorDecisionDate = DateTime.UtcNow;
+            organisationDetailsChangeHistory.SubmissionDetails.DecisionDate = DateTime.UtcNow;
         }
 
         SaveSessionAndJourney(
