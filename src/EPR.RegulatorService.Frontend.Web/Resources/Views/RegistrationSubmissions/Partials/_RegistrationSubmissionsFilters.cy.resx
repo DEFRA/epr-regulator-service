@@ -124,7 +124,7 @@
     <value>Enw'r sefydliad</value>
   </data>
   <data name="SubTitle.OrganisationReference" xml:space="preserve">
-    <value>ID y sefydliad</value>
+    <value>ID y sefydliad neu rif cyfeirnod</value>
   </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
     <value>Math o sefydliad</value>
