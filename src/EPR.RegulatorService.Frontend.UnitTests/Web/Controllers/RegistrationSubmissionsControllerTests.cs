@@ -11,6 +11,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Web.Sessions;
+    using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
     using Microsoft.AspNetCore.Http;
@@ -3934,6 +3935,98 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         #endregion FileDownloadInProgress
+
+        #region SubmissionDetailsFileDownload
+
+        [TestMethod]
+        public void SubmissionDetailsFileDownload_ShouldReturnViewResult()
+        {
+            // Act
+            var result = _controller.SubmissionDetailsFileDownload();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "The result should be a ViewResult.");
+            var viewResult = result as ViewResult;
+            Assert.AreEqual("RegistrationSubmissionFileDownload", viewResult.ViewName, "The view name should be 'RegistrationSubmissionFileDownload'.");
+        }
+
+        #endregion SubmissionDetailsFileDownload
+
+        #region RegistrationSubmissionFileDownloadFailed
+
+        [TestMethod]
+        public void RegistrationSubmissionFileDownloadFailed_ShouldReturnViewWithCorrectModel()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var expectedModel = new OrganisationDetailsFileDownloadViewModel
+            {
+                DownloadFailed = true,
+                HasIssue = false,
+                SubmissionId = submissionId
+            };
+
+            // Act
+            var result = _controller.RegistrationSubmissionFileDownloadFailed() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null.");
+            Assert.AreEqual("RegistrationSubmissionFileDownloadFailed", result.ViewName, "The view name should be 'RegistrationSubmissionFileDownloadFailed'.");
+
+            // Assert that the model is of the correct type
+            var model = result.Model as OrganisationDetailsFileDownloadViewModel;
+            Assert.IsNotNull(model, "The model should not be null.");
+            Assert.AreEqual(expectedModel.DownloadFailed, model.DownloadFailed, "DownloadFailed should be true.");
+            Assert.AreEqual(expectedModel.HasIssue, model.HasIssue, "HasIssue should be false.");
+            Assert.AreEqual(expectedModel.SubmissionId, model.SubmissionId, "The SubmissionId should match.");
+        }
+
+        #endregion RegistrationSubmissionFileDownloadFailed
+
+        #region RegistrationSubmissionFileDownloadSecurityWarning
+
+        [TestMethod]
+        public void RegistrationSubmissionFileDownloadSecurityWarning_ShouldReturnViewWithCorrectModel()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var expectedModel = new OrganisationDetailsFileDownloadViewModel
+            {
+                DownloadFailed = true,
+                HasIssue = true,
+                SubmissionId = submissionId
+            };
+
+            // Act
+            var result = _controller.RegistrationSubmissionFileDownloadSecurityWarning() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null.");
+            Assert.AreEqual("RegistrationSubmissionFileDownloadFailed", result.ViewName, "The view name should be 'RegistrationSubmissionFileDownloadFailed'.");
+
+            // Assert that the model is of the correct type
+            var model = result.Model as OrganisationDetailsFileDownloadViewModel;
+            Assert.IsNotNull(model, "The model should not be null.");
+            Assert.AreEqual(expectedModel.DownloadFailed, model.DownloadFailed, "DownloadFailed should be true.");
+            Assert.AreEqual(expectedModel.HasIssue, model.HasIssue, "HasIssue should be true.");
+            Assert.AreEqual(expectedModel.SubmissionId, model.SubmissionId, "The SubmissionId should match.");
+        }
+
+        #endregion RegistrationSubmissionFileDownloadSecurityWarning
 
         private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
         {
