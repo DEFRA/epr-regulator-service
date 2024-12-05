@@ -3759,27 +3759,78 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task FileDownloadInProgress_ShouldRedirectCorrectly_WhenFacadeReturnsForbidden()
+        [DataRow(HttpStatusCode.Forbidden, nameof(RegistrationSubmissionsController.RegistrationSubmissionFileDownloadSecurityWarning))]
+        [DataRow(HttpStatusCode.BadRequest, nameof(RegistrationSubmissionsController.RegistrationSubmissionFileDownloadFailed))]
+        public async Task FileDownloadInProgress_ShouldRedirectCorrectly_WhenFacadeDoesNotReturnSuccess(
+            HttpStatusCode httpStatusCode,
+            string expectedRedirectAction)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-            string expectedRedirectAction = nameof(RegistrationSubmissionsController.RegistrationSubmissionFileDownloadFailed);
+            string fileName = "test-file.csv";
+            var fileId = Guid.NewGuid();
+            string blobName = "test-blob";
 
-            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            // Generate mock registration details with files
+            var registration = new RegistrationSubmissionOrganisationDetails
             {
-                SelectedRegistration = detailsModel
+                SubmissionId = submissionId,
+                OrganisationReference = "ORG12345",
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+                {
+                    Files =
+            [
+                new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails
+                {
+                    FileId = fileId,
+                    BlobName = blobName,
+                    FileName = fileName,
+                    Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company
+                }
+            ]
+                }
             };
 
-            var expectedResponseMessage = new HttpResponseMessage
+            var tempDataMock = new Mock<ITempDataDictionary>();
+            _controller.TempData = tempDataMock.Object;
+
+            // Set the file download request type in session to OrganisationDetails
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
             {
-                StatusCode = HttpStatusCode.Forbidden
+                SelectedRegistration = registration,
+                FileDownloadRequestType = FileDownloadTypes.OrganisationDetails
             };
 
-            // Set up a forbidden response call
+            // Mock the CreateFileDownloadRequest method
+            var mockedFileDownloadRequest = new FileDownloadRequest
+            {
+                SubmissionId = submissionId,
+                FileId = fileId,
+                BlobName = blobName,
+                FileName = fileName,
+                SubmissionType = SubmissionType.Registration
+            };
+
+            // Mock the facade service to return an usuccessful response with content
+            var fileStream = new MemoryStream();
+            var response = new HttpResponseMessage(httpStatusCode)
+            {
+                Content = new StreamContent(fileStream)
+            };
+
+            response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+            {
+                FileName = fileName
+            };
+
             _facadeServiceMock
-                .Setup(mock => mock.GetFileDownload(It.IsAny<FileDownloadRequest>()))
-                .ReturnsAsync(expectedResponseMessage);
+                .Setup(mock => mock.GetFileDownload(It.Is<FileDownloadRequest>(req =>
+                    req.SubmissionId == mockedFileDownloadRequest.SubmissionId &&
+                    req.FileId == mockedFileDownloadRequest.FileId &&
+                    req.BlobName == mockedFileDownloadRequest.BlobName &&
+                    req.FileName == mockedFileDownloadRequest.FileName &&
+                    req.SubmissionType == SubmissionType.Registration)))
+                .ReturnsAsync(response);
 
             // Act
             var result = await _controller.FileDownloadInProgress() as RedirectToActionResult;
@@ -3790,7 +3841,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _facadeServiceMock.Verify(m => m.GetFileDownload(It.IsAny<FileDownloadRequest>()), Times.AtMostOnce);
 
-            expectedResponseMessage.Dispose();
+            response.Dispose();
         }
 
         [TestMethod]
