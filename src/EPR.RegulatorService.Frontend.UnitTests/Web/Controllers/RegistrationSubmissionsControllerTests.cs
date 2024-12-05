@@ -3670,6 +3670,65 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #endregion OrganisationDetailsChangeHistorySession
 
+        #region RegistrationSubmissionsFileDownload
+
+        [TestMethod]
+        public async Task RegistrationSubmissionsFileDownload_ValidDownloadType_ShouldRedirectToSubmissionDetailsFileDownload()
+        {
+            // Arrange
+            string downloadType = "TestDownloadType";
+            string expectedRedirectAction = nameof(RegistrationSubmissionsController.SubmissionDetailsFileDownload);
+            string expectedRedirectController = "RegistrationSubmissions";
+
+            var tempDataMock = new Mock<ITempDataDictionary>();
+            _controller.TempData = tempDataMock.Object;
+
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionsFileDownload(downloadType) as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null");
+            Assert.AreEqual(expectedRedirectAction, result.ActionName, "Action name should match");
+            Assert.AreEqual(expectedRedirectController, result.ControllerName, "Controller name should match");
+
+            _mockSessionManager.Verify(manager => manager.GetSessionAsync(It.IsAny<ISession>()), Times.Once, "Session should be retrieved once");
+            _mockSessionManager.Verify(manager => manager.SaveSessionAsync(It.IsAny<ISession>(), _journeySession), Times.Once, "Session should be saved once");
+
+            Assert.AreEqual(downloadType, _journeySession.RegulatorRegistrationSubmissionSession.FileDownloadRequestType, "FileDownloadRequestType should match");
+
+            tempDataMock.VerifySet(tempData => tempData["DownloadCompleted"] = false, Times.Once, "DownloadCompleted should be set to false in TempData");
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissionsFileDownload_NullDownloadType_ShouldHandleGracefully()
+        {
+            // Arrange
+            string downloadType = null; // Simulate null input
+            string expectedRedirectAction = nameof(RegistrationSubmissionsController.SubmissionDetailsFileDownload);
+
+            var tempDataMock = new Mock<ITempDataDictionary>();
+            _controller.TempData = tempDataMock.Object;
+
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionsFileDownload(downloadType) as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null");
+            Assert.AreEqual(expectedRedirectAction, result.ActionName, "Action name should match");
+
+            _mockSessionManager.Verify(manager => manager.GetSessionAsync(It.IsAny<ISession>()), Times.Once, "Session should be retrieved once");
+            _mockSessionManager.Verify(manager => manager.SaveSessionAsync(It.IsAny<ISession>(), _journeySession), Times.Once, "Session should be saved once");
+            Assert.IsNull(_journeySession.RegulatorRegistrationSubmissionSession.FileDownloadRequestType, "FileDownloadRequestType should be null");
+
+            tempDataMock.VerifySet(tempData => tempData["DownloadCompleted"] = false, Times.Once, "DownloadCompleted should be set to false in TempData");
+        }
+
+        #endregion RegistrationSubmissionsFileDownload
+
         private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
         {
             var mockUrlHelper = new Mock<IUrlHelper>();
