@@ -48,5 +48,9 @@
       <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Services\" />
+    </ItemGroup>
+
 
 </Project>

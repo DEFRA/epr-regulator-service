@@ -336,7 +336,7 @@ public class FacadeService : IFacadeService
 
         string path = _facadeApiConfig.Endpoints[GetOrganisationRegistationSubmissionsPath];
 
-        var response = await _httpClient.PostAsJsonAsync(path, filters);
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync(path, filters);
 
         if (response.IsSuccessStatusCode)
         {
@@ -365,7 +365,7 @@ public class FacadeService : IFacadeService
         return null;
     }
 
-    private static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
+    public static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
     {
         string jsonContent = await content.ReadAsStringAsync();
 
