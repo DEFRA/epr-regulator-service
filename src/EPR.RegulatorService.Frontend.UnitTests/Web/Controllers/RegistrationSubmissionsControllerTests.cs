@@ -3948,7 +3948,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task FileDownloadInProgress_ShouldReturnFileStreamResult_WhenFacadeReturnsSuccess()
+        [DataRow(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company, FileDownloadTypes.OrganisationDetails)]
+        [DataRow(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands, FileDownloadTypes.BrandDetails)]
+        [DataRow(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership, FileDownloadTypes.PartnershipDetails)]
+        public async Task FileDownloadInProgress_ShouldReturnFileStreamResult_WhenFacadeReturnsSuccess(
+            RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType fileType,
+            string fileDownloadTypes)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -3970,7 +3975,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     FileId = fileId,
                     BlobName = blobName,
                     FileName = fileName,
-                    Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company
+                    Type = fileType
                 }
             ]
                 }
@@ -3979,11 +3984,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var tempDataMock = new Mock<ITempDataDictionary>();
             _controller.TempData = tempDataMock.Object;
 
-            // Set the file download request type in session to OrganisationDetails
+            // Set the file download request type in session
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
             {
                 SelectedRegistration = registration,
-                FileDownloadRequestType = FileDownloadTypes.OrganisationDetails
+                FileDownloadRequestType = fileDownloadTypes
             };
 
             // Mock the CreateFileDownloadRequest method
