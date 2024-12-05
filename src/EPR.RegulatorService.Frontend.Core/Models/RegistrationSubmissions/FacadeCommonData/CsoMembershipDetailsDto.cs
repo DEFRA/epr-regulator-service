@@ -1,7 +1,5 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 
-using System.Globalization;
-
 public class CsoMembershipDetailsDto
 {
     public string MemberId { get; set; }
