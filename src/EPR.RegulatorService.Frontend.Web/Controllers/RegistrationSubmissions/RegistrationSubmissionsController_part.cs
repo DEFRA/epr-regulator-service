@@ -68,20 +68,10 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return true;
         }
 
-        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
-        {
-            if ((_currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration?.SubmissionId == submissionId))
-            {
-                return _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
-            }
-            return await facadeMethod(submissionId);
-            //else
-            //{
-            //    //return _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var registrationSubmissionOrganisationDetails)
-            //    //? registrationSubmissionOrganisationDetails
-            //    //: 
-            //}
-        }
+        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod) =>
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration?.SubmissionId == submissionId
+                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
+                : await facadeMethod(submissionId);
 
         private static void ClearFilters(RegulatorRegistrationSubmissionSession session,
                                   RegistrationSubmissionsFilterViewModel filters,
