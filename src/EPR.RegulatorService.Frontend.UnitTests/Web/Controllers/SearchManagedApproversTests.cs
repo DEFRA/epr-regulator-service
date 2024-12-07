@@ -49,8 +49,8 @@ public class SearchManagedApproversTests
             .Setup(x => x.GetOrganisationBySearchTerm(It.IsAny<string>(), It.IsAny<int>()))
             .ReturnsAsync(new PaginatedList<OrganisationSearchResult>
             {
-                Items = new List<OrganisationSearchResult>(),
-                PageSize = _pageSize
+                items = new List<OrganisationSearchResult>(),
+                pageSize = _pageSize
             });
 
         _facadeServiceMock

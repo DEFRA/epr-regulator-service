@@ -23,13 +23,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     {
         private const string BackLinkViewDataKey = "BackLinkToDisplay";
         protected Mock<IFacadeService> _facadeServiceMock = null!;
+        protected Mock<IPaymentFacadeService> _paymentFacadeServiceMock = null!;
 
         protected Mock<ILogger<RegistrationSubmissionsController>> _loggerMock = null!;
         protected RegistrationSubmissionsController _controller = null!;
         protected Mock<HttpContext> _mockHttpContext = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _mockUrlsOptions = null!;
         protected Mock<IConfiguration> _mockConfiguration = null!;
-        protected Mock<ISessionManager<JourneySession>> _mockSessionManager { get; set; } = new Mock<ISessionManager<JourneySession>>();
+        protected Mock<ISessionManager<JourneySession>> _mockSessionManager = null!;
         protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
         protected Mock<IUrlHelper> _mockUrlHelper = null!;
@@ -41,6 +42,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockConfiguration = new Mock<IConfiguration>();
             _loggerMock = new Mock<ILogger<RegistrationSubmissionsController>>();
             _facadeServiceMock = new Mock<IFacadeService>();
+            _paymentFacadeServiceMock = new Mock<IPaymentFacadeService>();
+            _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
 
             _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
 
@@ -65,6 +68,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _controller = new RegistrationSubmissionsController(
                 _facadeServiceMock.Object,
+                _paymentFacadeServiceMock.Object,
                 _mockSessionManager.Object,
                 _loggerMock.Object,
                 _mockConfiguration.Object,
@@ -85,6 +89,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             _journeySession = new JourneySession()
             {
+                UserData = new Common.Authorization.Models.UserData
+                {
+                    Id = Guid.NewGuid()
+                },
                 RegulatorRegistrationSubmissionSession = new()
                 {
                     LatestFilterChoices = filtersModel,
@@ -104,7 +112,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             (gotBackLinkObject as string)?.Should().Be(expectedBackLink);
         }
 
-        protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(Guid organisationId) => new RegistrationSubmissionDetailsViewModel
+        protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(Guid organisationId, int nationId = 3, string nationCode = "Sco" ) => new RegistrationSubmissionDetailsViewModel
         {
             SubmissionId = organisationId,
             OrganisationId = organisationId,
@@ -122,7 +130,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 PostCode = "A12 3BC"
             },
             CompaniesHouseNumber = "0123456",
-            RegisteredNation = "Scotland",
+            RegisteredNation = nationCode,
+            NationId = nationId,
             PowerBiLogin = "https://app.powerbi.com/",
             Status = RegistrationSubmissionStatus.Queried,
             SubmissionDetails = new SubmissionDetailsViewModel
@@ -133,26 +142,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 SubmittedOnTime = true,
                 SubmittedBy = "Sally Smith",
                 AccountRole = Frontend.Core.Enums.ServiceRole.ApprovedPerson,
+                AccountRoleId = (int)Frontend.Core.Enums.ServiceRole.ApprovedPerson,
                 Telephone = "07553 937 831",
                 Email = "sally.smith@email.com",
                 DeclaredBy = "Sally Smith",
                 Files =
                     [
-                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
-                    ]
-            },
-            PaymentDetails = new PaymentDetailsViewModel
-            {
-                ApplicationProcessingFee = 134522.56M,
-                OnlineMarketplaceFee = 2534534.23M,
-                SubsidiaryFee = 1.34M,
-                PreviousPaymentsReceived = 20M
+                    ],
             },
             ProducerComments = "producer comment",
             RegulatorComments = "regulator comment",
-            RegistrationYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture)
+            RegistrationYear = DateTime.Now.Year
         };
 
         protected static PaymentDetailsViewModel GenerateValidPaymentDetailsViewModel() => new PaymentDetailsViewModel
@@ -164,5 +164,18 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             OfflinePayment = "200.45"
         };
+
+        protected static void MergeFilterChoices(RegulatorRegistrationSubmissionSession session, RegistrationSubmissionsFilterModel newChoices)
+        {
+            if (session.LatestFilterChoices == null)
+                session.LatestFilterChoices = new RegistrationSubmissionsFilterModel();
+
+            session.LatestFilterChoices.OrganisationName = newChoices.OrganisationName ?? session.LatestFilterChoices.OrganisationName;
+            session.LatestFilterChoices.OrganisationType = newChoices.OrganisationType ?? session.LatestFilterChoices.OrganisationType;
+            session.LatestFilterChoices.RelevantYears = newChoices.RelevantYears ?? session.LatestFilterChoices.RelevantYears;
+            session.LatestFilterChoices.PageNumber = newChoices.PageNumber > 0 ? newChoices.PageNumber : session.LatestFilterChoices.PageNumber;
+            session.LatestFilterChoices.PageSize = newChoices.PageSize > 0 ? newChoices.PageSize : session.LatestFilterChoices.PageSize;
+            session.LatestFilterChoices.Statuses = newChoices.Statuses ?? session.LatestFilterChoices.Statuses;
+        }
     }
 }

@@ -1,0 +1,113 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+
+@model CancelDateRegistrationSubmissionViewModel
+
+@{
+    ViewData["Title"] = Localizer["CancelDateRegistrationSubmission.PageTitle"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(new string[] { "CancellationDate" }), Localizer, nameof(Model.CancellationDate));
+    var cancellationDateError = errorsViewModel.Errors.Find(x => x.Key == nameof(Model.CancellationDate));
+    var cancellationDateErrorExists = !string.IsNullOrEmpty(cancellationDateError.Key);
+}
+
+@using (Html.BeginForm("CancelDateRegistrationSubmission", "RegistrationSubmissions", FormMethod.Post))
+{
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                    }
+                    <span id="caption" class="govuk-caption-xl">
+                        @SharedLocalizer["ManageRegistrationSubmissions.Caption"]
+                    </span>
+                    <h1 id="page-heading" class="govuk-heading-xl govuk-!-margin-bottom-4" for="@nameof(Model.CancellationDate)">
+                        @Localizer["CancelDateRegistrationSubmission.PageHeading"]
+                    </h1>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-form-group @(cancellationDateErrorExists ? "govuk-form-group--error" : string.Empty)">
+                        @if (cancellationDateErrorExists)
+                        {
+                            @await Html.PartialAsync("Partials/Govuk/_InlineError", cancellationDateError)
+                        }
+                        <fieldset class="govuk-fieldset" role="group">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" />
+                            <div class="govuk-date-input" id="cancel-date-issued">
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label"
+                                               for="cancel-date-issued-day"
+                                               gov-for="Day"
+                                               gov-first-option="true">
+                                            @Localizer["CancelDateRegistrationSubmission.Day"]
+                                        </label>
+                                        <input type="text"
+                                               class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                               id="cancel-date-issued-day"
+                                               name="cancel-date-issued-day"
+                                               gov-first-option="true"
+                                               gov-for="Day"
+                                               gov-value="@Model.Day">
+                                    </div>
+                                </div>
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label"
+                                               for="cancel-date-issued-month"
+                                               gov-for="Month"
+                                               gov-first-option="true">
+                                            @Localizer["CancelDateRegistrationSubmission.Month"]
+                                        </label>
+                                        <input type="text"
+                                               class="govuk-input govuk-date-input__input govuk-input--width-2"
+                                               id="cancel-date-issued-month"
+                                               name="cancel-date-issued-month"
+                                               gov-for="Month"
+                                               gov-value="@Model.Month">
+                                    </div>
+                                </div>
+                                <div class="govuk-date-input__item">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label govuk-date-input__label"
+                                               for="cancel-date-issued-year"
+                                               gov-for="Year"
+                                               gov-first-option="true">
+                                            @Localizer["CancelDateRegistrationSubmission.Year"]
+                                        </label>
+                                        <input type="text"
+                                               class="govuk-input govuk-date-input__input govuk-input--width-4"
+                                               id="cancel-date-issued-year"
+                                               name="cancel-date-issued-year"
+                                               gov-first-option="true"
+                                               gov-for="Year"
+                                               gov-value="@Model.Year">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                    </div>
+                </div>
+                <div class="govuk-grid-column-full">
+                    <button type="submit"
+                            class="govuk-button govuk-button--secondary epr-horizontal-control epr-horizontal-control-button govuk-!-margin-right-6"
+                            data-module="govuk-button">
+                        @SharedLocalizer["SaveAndContinue"]
+                    </button>
+                </div>
+                <div class="govuk-grid-column-full">
+                    <a href="@ViewBag.BackToAllSubmissionsUrl" class="govuk-link govuk-link--no-visited-state">
+                        @SharedLocalizer["BackToAllSubmissions"]
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+}

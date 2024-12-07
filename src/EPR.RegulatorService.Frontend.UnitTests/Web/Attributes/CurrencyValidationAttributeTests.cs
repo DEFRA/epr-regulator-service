@@ -12,16 +12,24 @@ public class CurrencyValidationAttributeTests
     private const decimal MaxValue = 10000000.00M;
 
     [TestInitialize]
-    public void Setup()
-    {
-        _sut = new("requireMessage", "valueTooBig", "invalidFormat", MaxValue.ToString(CultureInfo.CurrentCulture), "specialChar", "nonNumeric");
-    }
+    public void Setup() => _sut = new(
+        "requireMessage",
+        "valueTooBig",
+        "invalidFormat",
+        MaxValue.ToString(CultureInfo.CurrentCulture),
+        "specialChar",
+        "nonNumeric");
 
     [TestMethod]
-    public void CurrencyWillNotConstructWithBadMaxValue()
-    {
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => new CurrencyValidationAttribute("requireMessage", "valueTooBig", "invalidFormat", "baddecimal", "specialChar", "nonNumeric"));
-    }
+    public void CurrencyWillNotConstructWithBadMaxValue() =>
+        Assert.ThrowsException<ArgumentOutOfRangeException>(
+            () => new CurrencyValidationAttribute(
+                "requireMessage",
+                "valueTooBig",
+                "invalidFormat",
+                "baddecimal",
+                "specialChar",
+                "nonNumeric"));
 
     [TestMethod]
     public void CurrencyCannotBeANullString()
@@ -166,4 +174,10 @@ public class CurrencyValidationAttributeTests
         result.Should().BeFalse();
     }
 
+    [TestMethod]
+    public void CurrencyValueCannotBeZero()
+    {
+        bool result = _sut.IsValid("0");
+        result.Should().BeFalse();
+    }
 }

@@ -1,8 +1,4 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-
-using System.Globalization;
-
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 public class RegistrationSubmissionsFilterViewModel
@@ -43,11 +39,13 @@ public class RegistrationSubmissionsFilterViewModel
     }
 
     public bool IsFilterApplied { get; set; }
+    public int NationId { get; set; }
 
     public static implicit operator RegistrationSubmissionsFilterModel(RegistrationSubmissionsFilterViewModel viewModel) => new RegistrationSubmissionsFilterModel
     {
         PageNumber = viewModel.PageNumber,
         PageSize = viewModel.PageSize,
+        NationId = viewModel.NationId,
         RelevantYears = viewModel.Is2025Checked ? "2025" : null,
         OrganisationReference = !string.IsNullOrEmpty(viewModel.OrganisationRef) ? viewModel.OrganisationRef : null,
         OrganisationName = !string.IsNullOrEmpty(viewModel.OrganisationName) ? viewModel.OrganisationName : null,
@@ -83,6 +81,7 @@ public class RegistrationSubmissionsFilterViewModel
         IsStatusCancelledChecked = model.Statuses != null && model.Statuses.Contains("cancelled", StringComparison.OrdinalIgnoreCase),
         Is2025Checked = model.RelevantYears != null && model.RelevantYears.Contains("2025", StringComparison.OrdinalIgnoreCase),
         PageNumber = model.PageNumber ?? 1,
-        PageSize = model.PageSize ?? 20
+        PageSize = model.PageSize ?? 20,
+        NationId = model.NationId
     };
 }

@@ -55,10 +55,10 @@ public class SubmissionsListViewComponent : ViewComponent
 
         var model = new SubmissionsListViewModel
         {
-            PagedOrganisationSubmissions = pagedOrganisationSubmissions.Items,
+            PagedOrganisationSubmissions = pagedOrganisationSubmissions.items,
             PaginationNavigationModel = new PaginationNavigationModel
             {
-                CurrentPage = pagedOrganisationSubmissions.CurrentPage,
+                CurrentPage = pagedOrganisationSubmissions.currentPage,
                 PageCount = pagedOrganisationSubmissions.TotalPages,
                 ControllerName = "Submissions",
                 ActionName = "Submissions"

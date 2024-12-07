@@ -46,9 +46,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         {
             // Arrange
             var userApplications = _fixture.Build<PaginatedList<OrganisationApplications>>()
-                .With(x => x.Items, _organisationApplications)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
+                .With(x => x.items, _organisationApplications)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 2)
                 .Create();
 
             _facadeServiceMock
@@ -71,9 +71,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             Assert.IsNotNull(model);
 
             Assert.IsNotNull(model.PagedOrganisationApplications);
-            model.PagedOrganisationApplications.Should().BeEquivalentTo(userApplications.Items);
+            model.PagedOrganisationApplications.Should().BeEquivalentTo(userApplications.items);
             model.PagedOrganisationApplications.Count().Should().Be(2);
-            model.PaginationNavigationModel.CurrentPage.Should().Be(userApplications.CurrentPage);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(userApplications.currentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(userApplications.TotalPages);
             model.RegulatorApplicationFiltersModel.SearchOrganisationName.Should().BeNull();
             model.RegulatorApplicationFiltersModel.IsApprovedUserTypeChecked.Should().BeFalse();
@@ -88,13 +88,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
                 .Enrolments
                 .HasDelegatePending = true;
             var userApplications = _fixture.Build<PaginatedList<OrganisationApplications>>()
-                .With(x => x.Items, _organisationApplications)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 1)
+                .With(x => x.items, _organisationApplications)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 1)
                 .Create();
 
             var expectedResult = userApplications;
-            expectedResult.Items.RemoveAt(1);
+            expectedResult.items.RemoveAt(1);
             
             _facadeServiceMock
                 .Setup(x => x.GetUserApplicationsByOrganisation(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int>()))
@@ -115,9 +115,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             Assert.IsNotNull(model);
 
             Assert.IsNotNull(model.PagedOrganisationApplications);
-            model.PagedOrganisationApplications.Should().BeEquivalentTo(userApplications.Items);
+            model.PagedOrganisationApplications.Should().BeEquivalentTo(userApplications.items);
             model.PagedOrganisationApplications.Count().Should().Be(1);
-            model.PaginationNavigationModel.CurrentPage.Should().Be(userApplications.CurrentPage);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(userApplications.currentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(userApplications.TotalPages);
             model.RegulatorApplicationFiltersModel.SearchOrganisationName.Should().Be(DrinksLtdCompanyName);
             model.RegulatorApplicationFiltersModel.IsApprovedUserTypeChecked.Should().BeFalse();

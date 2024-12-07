@@ -2,6 +2,9 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Cookies;
 using EPR.RegulatorService.Frontend.Web.Cookies;
+using EPR.RegulatorService.Frontend.Web.Extensions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Cookies;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -13,6 +16,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 public class CookiesControllerTests
 {
     ControllerContext _controllerContext;
+    Mock<ICookieService> _cookieServiceMock;
+    IOptions<EprCookieOptions> _eprCookieOptions;
 
     [TestInitialize]
     public void TestInitialize()
@@ -24,6 +29,19 @@ public class CookiesControllerTests
         {
             HttpContext = httpContext,
         };
+
+        _cookieServiceMock = new Mock<ICookieService>();
+
+        _eprCookieOptions = Options.Create(new EprCookieOptions
+        {
+            SessionCookieName = "sessionCookie",
+            B2CCookieName = "b2cCookie",
+            CookiePolicyCookieName = "policyCookie",
+            AntiForgeryCookieName = "antiForgeryCookie",
+            AuthenticationCookieName = "authCookie",
+            TsCookieName = "tsCookie",
+            TempDataCookie = "tempDataCookie"
+        });
     }
 
     [TestMethod]
@@ -92,5 +110,33 @@ public class CookiesControllerTests
 
         // Assert
         result.Url.Should().Be(returnUrl);
+    }
+
+    [TestMethod]
+    public void AcknowledgeAcceptance_LocalUrl_RedirectsToThatUrl()
+    {
+        // Arrange
+        string localUrl = "/local/path";
+        var urlHelper = new Mock<IUrlHelper>();
+        urlHelper.Setup(u => u.IsLocalUrl(localUrl)).Returns(true);
+        using var cookieController = new CookiesController(_cookieServiceMock.Object, _eprCookieOptions, Mock.Of<IOptions<AnalyticsOptions>>())
+        {
+            Url = urlHelper.Object,
+            TempData = new TempDataDictionary(_controllerContext.HttpContext, Mock.Of<ITempDataProvider>()),
+            ControllerContext = _controllerContext
+        };
+
+        // Act
+        var result = cookieController.AcknowledgeAcceptance(localUrl);
+
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(LocalRedirectResult));
+        var redirectResult = (LocalRedirectResult)result;
+        Assert.AreEqual(localUrl, redirectResult.Url);
+    }
+
+    private object ViewBagValue(ViewResult viewResult, string key)
+    {
+        return viewResult.ViewData[key];
     }
 }

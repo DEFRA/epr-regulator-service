@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CancelRegistrationSubmission.PageHeading" xml:space="preserve">
-    <value>[Welsh]Why are you cancelling this registration application?</value>
+    <value>Pam rydych chi'n canslo'r cofrestriad yma?</value>
   </data>
   <data name="CancelRegistrationSubmission.PageTitle" xml:space="preserve">
-    <value>[Welsh]Why are you cancelling this registration application?</value>
+    <value>Pam rydych chi'n canslo'r cofrestriad yma?</value>
   </data>
   <data name="Error.CancellationReason" xml:space="preserve">
-    <value>[Welsh]Enter the reason you are cancelling this registration</value>
+    <value>Rhowch y rheswm pam rydych chi'n canslo'r cofrestriad yma</value>
   </data>
   <data name="Error.CancellationReasonTooLong" xml:space="preserve">
-    <value>[Welsh]Reason for cancelling application must be 400 characters or less</value>
+    <value>Rhaid i'r rheswm dros ganslo cais fod yn 400 o gymeriadau neu lai</value>
   </data>
 </root>

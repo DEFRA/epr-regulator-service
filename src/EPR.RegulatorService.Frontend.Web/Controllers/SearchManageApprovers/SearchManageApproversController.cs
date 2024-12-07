@@ -78,10 +78,10 @@ public class SearchManageApproversController : RegulatorSessionBaseController
 
         var model = new OrganisationSearchResultsListViewModel
         {
-            PagedOrganisationSearchResults = organisationSearchResults.Items,
+            PagedOrganisationSearchResults = organisationSearchResults.items,
             PaginationNavigationModel = new PaginationNavigationModel
             {
-                CurrentPage = organisationSearchResults.CurrentPage,
+                CurrentPage = organisationSearchResults.currentPage,
                 PageCount = organisationSearchResults.TotalPages,
                 ControllerName = "SearchManageApprovers",
                 ActionName = nameof(RegulatorSearchResult)

@@ -118,66 +118,69 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="RegistrationSubmissionDetails.ApplicationReferenceNumber" xml:space="preserve">
-    <value>[Welsh]Application reference number</value>
+    <value>Rhif cyfeirnod y cais</value>
   </data>
   <data name="RegistrationSubmissionDetails.BackToAllSubmissions" xml:space="preserve">
-    <value>[Welsh]Go back to all submissions</value>
+    <value>Ewch yn ôl i bob cyflwyniad</value>
   </data>
   <data name="RegistrationSubmissionDetails.Caption" xml:space="preserve">
-    <value>[Welsh]Manage registration submissions</value>
+    <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="RegistrationSubmissionDetails.CompaniesHouseNumber" xml:space="preserve">
-    <value>[Welsh]Companies House number</value>
+    <value>Rhif Tŷ'r Cwmnïau</value>
   </data>
   <data name="RegistrationSubmissionDetails.CompaniesHouseRegister" xml:space="preserve">
-    <value>[Welsh]View on Companies House register</value>
+    <value>Gweld cofrestr Tŷ'r Cwmnïau</value>
   </data>
   <data name="RegistrationSubmissionDetails.NotListed" xml:space="preserve">
-    <value>[Welsh]Not listed</value>
+    <value>Heb ei restru</value>
   </data>
   <data name="RegistrationSubmissionDetails.OrganisationIdSubTitle" xml:space="preserve">
-    <value>[Welsh]ID:</value>
+    <value>ID:</value>
   </data>
   <data name="RegistrationSubmissionDetails.OrganisationIdTitle" xml:space="preserve">
-    <value>[Welsh]Organisation ID</value>
+    <value>ID y sefydliad</value>
   </data>
   <data name="RegistrationSubmissionDetails.OrganisationType" xml:space="preserve">
-    <value>[Welsh]Organisation type</value>
+    <value>Math o sefydliad</value>
   </data>
   <data name="RegistrationSubmissionDetails.PageTitle" xml:space="preserve">
-    <value>[Welsh]Registration submission details</value>
+    <value>Manylion cyflwyniad cofrestru</value>
   </data>
   <data name="RegistrationSubmissionDetails.PowerBiSubTitle" xml:space="preserve">
-    <value>[Welsh]To view a summary of the organisation, brand and partner details and any previous submissions,</value>
+    <value>I weld crynodeb o fanylion y sefydliad, y brand a'r partneriaid ac unrhyw gyflwyniadau blaenorol,</value>
   </data>
   <data name="RegistrationSubmissionDetails.PowerBiTitle" xml:space="preserve">
-    <value>[Welsh]Power BI</value>
+    <value>Power BI</value>
   </data>
   <data name="RegistrationSubmissionDetails.RegisteredAddress" xml:space="preserve">
-    <value>[Welsh]Registered address</value>
+    <value>Cyfeiriad cofrestredig</value>
   </data>
   <data name="RegistrationSubmissionDetails.RegistrationReferenceNumber" xml:space="preserve">
-    <value>[Welsh]Registration reference number</value>
+    <value>Rhif cyfeirnod y cofrestriad</value>
   </data>
   <data name="RegistrationSubmissionDetails.ProducerTitle" xml:space="preserve">
-    <value>[Welsh]Producer Comment</value>
+    <value>Sylw gan y cynhyrchydd</value>
   </data>
   <data name="RegistrationSubmissionDetails.RegulatorTitle" xml:space="preserve">
-    <value>[Welsh]Regulator Comment</value>
+    <value>Sylw gan y rheoleiddiwr</value>
   </data>
   <data name="PaymentValidation.FormatIsInvalid" xml:space="preserve">
-    <value>[Welsh]Amount can only include pounds and pence</value>
+    <value>Rhaid i'r swm gynnwys punnoedd a cheiniogau yn unig</value>
   </data>
   <data name="PaymentValidation.ValueIsTooHigh" xml:space="preserve">
-    <value>[Welsh]Amount must be less than £10,000,000</value>
+    <value>Rhaid i'r swm fod yn llai na £10,000,000</value>
   </data>
   <data name="PaymentValidation.TheAmountIsRequired" xml:space="preserve">
-    <value>[Welsh]Enter an amount</value>
+    <value>Rhowch swm</value>
   </data>
   <data name="PaymentValidation.InvalidCharacters" xml:space="preserve">
-    <value>[Welsh]Enter a valid number</value>
+    <value>Rhowch rif dilys</value>
   </data>
   <data name="PaymentValidation.NonNumericCharacters" xml:space="preserve">
-    <value>[Welsh]Amount must be a number</value>
+    <value>Rhaid i'r swm fod yn rhif</value>
+  </data>
+  <data name="PaymentValidation.ValueCannotBeZero" xml:space="preserve">
+    <value>Chaiff y swm ddim bod yn sero</value>
   </data>
 </root>

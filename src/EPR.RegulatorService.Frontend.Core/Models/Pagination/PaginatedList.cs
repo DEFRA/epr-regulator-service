@@ -2,13 +2,13 @@ namespace EPR.RegulatorService.Frontend.Core.Models.Pagination;
 
 public class PaginatedList<T>
 {
-    public List<T> Items { get; set; } = new();
-    public int CurrentPage { get; set; }
-    public int TotalItems { get; set; }
-    public int PageSize { get; set; }
+    public List<T> items { get; set; } = new();
+    public int currentPage { get; set; }
+    public int totalItems { get; set; }
+    public int pageSize { get; set; }
 
     public int TotalPages
     {
-        get => (TotalItems + PageSize - 1) / PageSize;
+        get => pageSize == 0 ? 0 : (totalItems + pageSize - 1) / pageSize;
     }
 }

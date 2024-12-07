@@ -1,10 +1,5 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
     [TestClass]
@@ -13,10 +8,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models
         private RegistrationSubmissionsFilterModel _sut;
 
         [TestInitialize]
-        public void SetUp()
-        {
-            _sut = new();
-        }
+        public void SetUp() => _sut = new();
 
         [TestMethod]
         public void SetOrganisationName_RemovesArticles_AndOtherTerms()

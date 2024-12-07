@@ -118,36 +118,36 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SubmissionDetails.AccountRole" xml:space="preserve">
-    <value>[Welsh]Account role</value>
+    <value>Rôl yn y cyfrif</value>
   </data>
   <data name="SubmissionDetails.BrandDetails" xml:space="preserve">
-    <value>[Welsh]Brand details</value>
+    <value>Manylion y brand</value>
   </data>
   <data name="SubmissionDetails.DeclaredBy" xml:space="preserve">
-    <value>[Welsh]Declared by</value>
+    <value>Wedi'i ddatgan gan</value>
   </data>
   <data name="SubmissionDetails.Email" xml:space="preserve">
-    <value>[Welsh]Email</value>
+    <value>Ebost</value>
   </data>
   <data name="SubmissionDetails.OrganisationDetails" xml:space="preserve">
-    <value>[Welsh]Organisation details</value>
+    <value>Manylion y sefydliad</value>
   </data>
   <data name="SubmissionDetails.PartnerDetails" xml:space="preserve">
-    <value>[Welsh]Partner details</value>
+    <value>Manylion y partneriaid</value>
   </data>
   <data name="SubmissionDetails.SubmittedBy" xml:space="preserve">
-    <value>[Welsh]Submitted by</value>
+    <value>Wedi'i gyflwyno gan</value>
   </data>
   <data name="SubmissionDetails.SubmittedOnTime" xml:space="preserve">
-    <value>[Welsh]Submitted on time</value>
+    <value>Wedi'i gyflwyno'n brydlon</value>
   </data>
   <data name="SubmissionDetails.Telephone" xml:space="preserve">
-    <value>[Welsh]Telephone</value>
+    <value>Ffôn</value>
   </data>
   <data name="SubmissionDetails.TimeAndDateOfSubmission" xml:space="preserve">
-    <value>[Welsh]Time and date of submission</value>
+    <value>Amser a dyddiad y cyflwyniad</value>
   </data>
   <data name="SubmissionDetails.Title" xml:space="preserve">
-    <value>[Welsh]Submission details</value>
+    <value>Manylion y cyflwyniad</value>
   </data>
 </root>
