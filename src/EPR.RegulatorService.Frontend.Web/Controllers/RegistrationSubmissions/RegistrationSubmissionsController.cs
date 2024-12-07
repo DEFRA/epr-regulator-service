@@ -758,10 +758,11 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> PageNotFound()
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        _currentSession.RegulatorRegistrationSubmissionSession.CurrentPageNumber = 1;
-
-        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.PageNotFound);
+        if (_currentSession is not null)
+        {
+            _currentSession.RegulatorRegistrationSubmissionSession.CurrentPageNumber = 1;
+            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.PageNotFound);
+        }
         return RedirectToAction(PagePath.Error, "Error", new { statusCode = 404, backLink = PagePath.RegistrationSubmissionsRoute });
     }
 }

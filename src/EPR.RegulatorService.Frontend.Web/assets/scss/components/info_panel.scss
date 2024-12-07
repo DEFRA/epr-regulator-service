@@ -10,7 +10,7 @@ $status-colors: ( granted: (
                   queried: (background: govuk-tint(govuk-colour("purple"), 80%),
                             foreground: govuk-shade(govuk-colour("purple"), 20%)),
                   updated: (background: govuk-tint(govuk-colour("yellow"), 80%),
-                            foreground: govuk-shade(govuk-colour("yellow"), 20%)) );
+                            foreground: #594d00) );
 $darkforeground: #0b0b0c;
 
 
@@ -38,6 +38,11 @@ $darkforeground: #0b0b0c;
   &__queried {
     color: map-get($status-colors, queried, foreground);
     background-color: map-get($status-colors, queried, background);
+  }
+
+  &__updated {
+    color: map-get($status-colors, updated, foreground);
+    background-color: map-get($status-colors, updated, background);
   }
 }
 
