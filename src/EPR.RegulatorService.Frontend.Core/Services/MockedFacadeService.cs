@@ -31,7 +31,6 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
     private static readonly List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
     private static readonly List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
     private static readonly List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
-    private static readonly List<RegistrationSubmissionOrganisationDetails> _registrationSubmissions = GenerateRegistrationSubmissionDataCollection();
 
     public async Task<string> GetTestMessageAsync()
     {
@@ -373,21 +372,11 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
     public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
     {
-        filters.PageSize ??= _config.PageSize;
-
-        // this is where the Facade is actually called
-        var results = FilterAndOrderRegistrations([.. _registrationSubmissions], filters);
-
-        if (filters.PageNumber > (int)Math.Ceiling(results.Item1 / (double)_config.PageSize))
-        {
-            filters.PageNumber = (int)Math.Ceiling(results.Item1 / (double)_config.PageSize);
-        }
-
         var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
         {
-            items = results.Item2,
+            items = [],
             currentPage = filters.PageNumber.Value,
-            totalItems = results.Item1,
+            totalItems = 0,
             pageSize = filters.PageSize.Value
         };
 
@@ -396,13 +385,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
     public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
     {
-        var objRet = _registrationSubmissions.Find(x => x.SubmissionId == submissionId);
-
-        if (null != objRet)
-        {
-            objRet.SubmissionDetails = objRet.SubmissionDetails ?? GenerateRandomSubmissionData(objRet.SubmissionStatus);
-            objRet.PaymentDetails = objRet.PaymentDetails ?? GeneratePaymentDetails();
-        }
+        RegistrationSubmissionOrganisationDetails objRet = null;
 
         return await Task.FromResult(objRet);
     }

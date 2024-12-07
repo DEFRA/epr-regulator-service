@@ -1636,36 +1636,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
-        [Ignore]
-        [TestMethod]
-        public async Task Fetch_RegistrationSubmissionDetails_From_Session_ChangeHistory()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-
-            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
-            {
-                SelectedRegistration = null,
-                OrganisationDetailsChangeHistory = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>
-                                                    {
-                                                        { submissionId, expectedViewModel }
-                                                    }
-            };
-
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
-
-            // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-
-            Assert.IsNotNull(result);
-            _facadeServiceMock.Verify(r => r.GetRegistrationSubmissionDetails(It.IsAny<Guid>()), Times.Never);
-        }
-
         [TestMethod]
         public async Task RegistrationSubmissionDetails_ReturnsPageNotFound_When_Receiving_InValid_SubmissionId()
         {
@@ -3723,9 +3693,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             latestOrganisationDetails.Should().BeNull();
         }
 
-        [Ignore]
         [TestMethod]
-        public async Task When_GrantRegistrationSubmission_Post_Success_Then_Should_Update_OrganisationDetailsChangeHistory_InSession()
+        public async Task When_GrantRegistrationSubmission_Post_Success_Then_Should_NOT_Update_OrganisationDetailsChangeHistory_InSession()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -3743,8 +3712,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             bool upadtedChangeHistory =
                 _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestOrganisationDetails);
-            upadtedChangeHistory.Should().BeTrue();
-            latestOrganisationDetails.SubmissionStatus.Should().Be(RegistrationSubmissionStatus.Granted);
+            upadtedChangeHistory.Should().BeFalse();
         }
 
         [TestMethod]

@@ -5,7 +5,6 @@ using Frontend.Core.MockedData.Filters;
 using Frontend.Core.Models.Submissions;
 
 //this test class is created in response to sonarqube flagging lower code coverage
-[Ignore("This will be removed")]
 [TestClass]
 public class MockedSubmissionFiltersTests
 {

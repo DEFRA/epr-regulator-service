@@ -4,7 +4,6 @@ using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.MockedData;
 
-[Ignore("This will be removed")]
 [TestClass]
 public class MockedRegistrationFiltersTests
 {

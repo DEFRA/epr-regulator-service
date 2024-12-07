@@ -12,7 +12,7 @@ public class CsoMembershipDetailsDto
     public DateTime SubmittedDate { get; set; }
     public string SubmissionPeriodDescription { get; set; }
 
-    public static implicit operator ComplianceSchemeMemberRequest(CsoMembershipDetailsDto dto) => new ComplianceSchemeMemberRequest
+    public static implicit operator ComplianceSchemeMemberRequest(CsoMembershipDetailsDto dto) => new()
     {
         MemberId = dto.MemberId,
         MemberType = dto.MemberType,

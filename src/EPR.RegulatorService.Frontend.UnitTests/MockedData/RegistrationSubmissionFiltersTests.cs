@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -8,7 +9,6 @@ using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Filters;
 
-[Ignore("This will be cleaned after the drop date")]
 [TestClass]
 public class RegistrationSubmissionFiltersTests
 {
@@ -24,6 +24,7 @@ public class RegistrationSubmissionFiltersTests
             .Build<RegistrationSubmissionOrganisationDetails>()
             .With(x => x.SubmissionStatus, GetRandomStatus)
             .With(x => x.OrganisationType, GetRandomOrgType)
+            .With(x => x.RelevantYear)
             .CreateMany(50)
             .AsQueryable();
     }
@@ -126,8 +127,8 @@ public class RegistrationSubmissionFiltersTests
     [DataRow(44)]
     public void FilterByRelevantYear_ReturnsOnlyThatYear(int byIndex)
     {
-        int expectedYear = _abstractRegistrations.ToArray()[byIndex].RelevantYear;
-        var expectedResult = _abstractRegistrations.Where(x=>x.RelevantYear == expectedYear);
+        string expectedYear = _abstractRegistrations.ToArray()[byIndex].RelevantYear.ToString();
+        var expectedResult = _abstractRegistrations.Where(x => expectedYear.Contains(x.RelevantYear.ToString(CultureInfo.InvariantCulture)));
 
         var result = _abstractRegistrations.FilterByRelevantYear(expectedYear.ToString());
         result.Should().BeEquivalentTo(expectedResult);

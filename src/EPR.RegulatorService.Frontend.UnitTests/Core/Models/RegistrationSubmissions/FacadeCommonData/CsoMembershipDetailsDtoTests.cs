@@ -107,7 +107,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             };
 
             // Act
-            ComplianceSchemeMemberRequest request = dto;
+            var request = (ComplianceSchemeMemberRequest)dto;
 
             // Assert
             Assert.AreEqual(dto.MemberId, request.MemberId);
@@ -136,7 +136,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             };
 
             // Act
-            ComplianceSchemeMemberRequest request = dto;
+            var request = (ComplianceSchemeMemberRequest)dto;
 
             // Assert
             Assert.AreEqual(dto.MemberId, request.MemberId);
@@ -165,7 +165,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             };
 
             // Act
-            ComplianceSchemeMemberRequest request = dto;
+            var request = (ComplianceSchemeMemberRequest)dto;
 
             // Assert
             Assert.IsNull(request.MemberId);

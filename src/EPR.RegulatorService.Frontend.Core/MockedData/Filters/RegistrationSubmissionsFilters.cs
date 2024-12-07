@@ -63,7 +63,7 @@ public static class RegistrationSubmissionsFilters
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterBySubmissionStatus(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? submissionStatus)
     {
-        if (!string.IsNullOrEmpty(submissionStatus) && submissionStatus != "none")
+        if (!string.IsNullOrEmpty(submissionStatus) && submissionStatus.ToLower() != "none")
         {
             queryable = from q in queryable
                         where submissionStatus.Contains(q.SubmissionStatus.ToString())
