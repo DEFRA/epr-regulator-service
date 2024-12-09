@@ -3,16 +3,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewComponents;
-using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-
 using Frontend.Core.Enums;
 
 [TestClass]
@@ -57,7 +51,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
                 OrganisationType = DrinksLtdType,
                 SubmissionStatus = DrinksLtdStatus,
                 SubmissionDate = _drinksLtdRegistrationTime,
-                RegistrationYear = _drinksLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
+                RelevantYear = _drinksLtdRegistrationTime.Year
             },
             new()
             {
@@ -67,7 +61,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
                 OrganisationType = SweetsLtdType,
                 SubmissionStatus = SweetsLtdStatus,
                 SubmissionDate = _sweetsLtdRegistrationTime,
-                RegistrationYear = _sweetsLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
+                RelevantYear = _sweetsLtdRegistrationTime.Year
             },
             new()
             {
@@ -77,7 +71,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
                 OrganisationType = FlyByLtdType,
                 SubmissionStatus = FlyByLtdStatus,
                 SubmissionDate = _flyByLtdRegistrationTime,
-                RegistrationYear = _flyByLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
+                RelevantYear = _flyByLtdRegistrationTime.Year
             }
         };
     }
@@ -86,18 +80,16 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
     public async Task InvokeAsync_ReturnsCorrectViewAndModel_Where_NoFiltersSet()
     {
         var submissions = _fixture.Build<PaginatedList<RegistrationSubmissionOrganisationDetails>>()
-            .With(x => x.Items, _submissions)
-            .With(x => x.CurrentPage, 1)
-            .With(x => x.TotalItems, 3)
+            .With(x => x.items, _submissions)
+            .With(x => x.currentPage, 1)
+            .With(x => x.totalItems, 3)
             .Create();
 
         _facadeServiceMock
             .Setup(x => x.GetRegistrationSubmissions(It.IsAny<RegistrationSubmissionsFilterModel?>()))
             .Returns(Task.FromResult(submissions));
 
-        var viewComponent = new RegistrationSubmissionListViewComponent(_facadeServiceMock.Object, _viewComponentHttpContextAccessor.Object);
-
-
+        var viewComponent = new RegistrationSubmissionListViewComponent(_facadeServiceMock.Object);
+        viewComponent.Should().NotBeNull();
     }
-
 }

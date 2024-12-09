@@ -1,6 +1,11 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 {
+    using System.Globalization;
+
+    using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
+    using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
@@ -13,25 +18,32 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         public static void InitialiseOrContinuePaging(RegulatorRegistrationSubmissionSession session,
                                                 int? pageNumber) => session.CurrentPageNumber = pageNumber ?? session.CurrentPageNumber ?? 1;
 
-        private RegistrationSubmissionsViewModel InitialiseOrCreateViewModel(RegulatorRegistrationSubmissionSession session)
+        private RegistrationSubmissionsViewModel InitialiseOrCreateViewModel(
+            RegulatorRegistrationSubmissionSession session,
+            int nationId)
         {
             var existingSessionFilters = session.LatestFilterChoices ?? new RegistrationSubmissionsFilterViewModel()
             {
-                PageNumber = 1
+                PageNumber = 1,
+                PageSize = 20,
+                NationId = nationId
             };
             existingSessionFilters.PageNumber = session.CurrentPageNumber;
 
             return new RegistrationSubmissionsViewModel
             {
+                NationId = nationId,
                 ListViewModel = new RegistrationSubmissionsListViewModel
                 {
+                    NationId = nationId,
                     RegistrationsFilterModel = existingSessionFilters,
                     PaginationNavigationModel = new ViewModels.Shared.PaginationNavigationModel
                     {
                         CurrentPage = session.CurrentPageNumber.Value
                     }
                 },
-                PowerBiLogin = _externalUrlsOptions.PowerBiLogin
+                PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
+                AgencyName = GetRegulatorAgencyName(nationId)
             };
         }
 
@@ -44,7 +56,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 return false;
             }
 
-            var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+            var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId.Value, out var value)
+                                                    ? value : _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+
             if (sessionModelWhichMustMatchSession?.SubmissionId != submissionId.Value)
             {
                 return false;
@@ -53,6 +67,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             viewModel = sessionModelWhichMustMatchSession;
             return true;
         }
+
+        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod) =>
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration?.SubmissionId == submissionId
+                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
+                : await facadeMethod(submissionId);
 
         private static void ClearFilters(RegulatorRegistrationSubmissionSession session,
                                   RegistrationSubmissionsFilterViewModel filters,
@@ -122,7 +141,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         {
             string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
             ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
-        } 
+        }
 
         private void SetBackLink(string path, bool hasPathBase = true)
         {
@@ -136,5 +155,168 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 ViewBag.BackLinkToDisplay = path;
             }
         }
+
+        private async Task<IActionResult> ProcessOfflinePaymentAsync(RegistrationSubmissionDetailsViewModel existingModel, string offlinePayment)
+        {
+            try
+            {
+                string regulator = ((CountryName)existingModel.NationId).GetDescription();
+                var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
+                {
+                    Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
+                    Description = "Registration fee",
+                    Reference = existingModel.ApplicationReferenceNumber,
+                    Regulator = regulator,
+                    UserId = (Guid)_currentSession.UserData.Id
+                });
+
+                if (response == Core.Models.EndpointResponseStatus.Success)
+                {
+                    response = await _facadeService.SubmitRegistrationFeePaymentAsync(new RegistrationFeePaymentRequest
+                    {
+                        PaidAmount = offlinePayment,
+                        PaymentMethod = "Offline",
+                        PaymentStatus = "Paid",
+                        SubmissionId = existingModel.SubmissionId,
+                        UserId = (Guid)_currentSession.UserData.Id
+                    });
+
+                    if (response == Core.Models.EndpointResponseStatus.Success)
+                    {
+                        return Redirect(Url.RouteUrl("SubmissionDetails", new { existingModel.SubmissionId }));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logControllerError.Invoke(logger, $"Exception received while processing offline payment {nameof(RegistrationSubmissionsController)}.{nameof(ProcessOfflinePaymentAsync)}", ex);
+            }
+
+            return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
+        }
+
+        private static string GetRegulatorAgencyName(int nationId) => nationId switch
+        {
+            1 => "Environment Agency (EA)",
+            2 => "Northern Ireland Environment Agency (NIEA)",
+            3 => "Scottish Environment Protection Agency (SEPA)",
+            4 => "Natural Resources Wales (NRW)",
+            _ => "",
+        };
+
+        private static string GetRegulatorAgencyEmail(int nationId) => nationId switch
+        {
+            1 => "packagingproducers@environment-agency.gov.uk",
+            2 => "packaging@daera-ni.gov.uk",
+            3 => "producer.responsibility@sepa.org.uk",
+            4 => "deunyddpacio@cyfoethnaturiolcymru.gov.uk; packaging@naturalresourceswales.gov.uk",
+            _ => "",
+        };
+
+        private static string GetCountryCodeInitial(int nationId)
+        {
+            string code = nationId switch
+            {
+                1 => "Eng",
+                2 => "NI",
+                3 => "Sco",
+                4 => "Wal",
+                _ => "Eng",
+            };
+            return code;
+        }
+
+        private async Task UpdateOrganisationDetailsChangeHistoryAsync(RegistrationSubmissionDetailsViewModel existingModel, EndpointResponseStatus status, RegulatorDecisionRequest regulatorDecisionRequest)
+        {
+            if (status == EndpointResponseStatus.Success)
+            {
+                existingModel.RegulatorComments = regulatorDecisionRequest.Comments;
+                existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
+                existingModel.SubmissionDetails.Status = existingModel.Status;
+                existingModel.SubmissionDetails.DecisionDate = DateTime.UtcNow;
+
+                if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
+                {
+                    _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory[existingModel.SubmissionId] = existingModel;
+                }
+                else
+                {
+                    _currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(existingModel.SubmissionId, existingModel);
+                }
+                await SaveSession(_currentSession);
+            }
+        }
+
+        private static RegulatorDecisionRequest GetDecisionRequest(
+            RegistrationSubmissionDetailsViewModel existingModel,
+            RegistrationSubmissionStatus status) => new()
+            {
+                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
+                OrganisationId = existingModel.OrganisationId,
+                SubmissionId = existingModel.SubmissionId,
+                // For generating reference
+                Status = status.ToString(),
+                CountryName = GetCountryCodeInitial(existingModel.NationId),
+                RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
+                TwoDigitYear = (existingModel.RegistrationYear % 100).ToString(CultureInfo.InvariantCulture),
+                OrganisationAccountManagementId = existingModel.OrganisationReference,
+                // For sending emails
+                OrganisationName = existingModel.OrganisationName,
+                OrganisationEmail = existingModel.SubmissionDetails.Email,
+                OrganisationReference = existingModel.OrganisationReference,
+                AgencyName = GetRegulatorAgencyName(existingModel.NationId),
+                AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
+                IsWelsh = existingModel.NationId == 4
+            };
+
+        private static FileDownloadRequest CreateFileDownloadRequest(JourneySession session, RegistrationSubmissionOrganisationDetails registration)
+        {
+            var fileDownloadModel = new FileDownloadRequest
+            {
+                SubmissionId = registration.SubmissionId,
+                SubmissionType = SubmissionType.Registration
+            };
+
+            switch (session.RegulatorRegistrationSubmissionSession.FileDownloadRequestType)
+            {
+                case FileDownloadTypes.OrganisationDetails:
+                    var orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company);
+                    if (null != orgFile)
+                    {
+                        fileDownloadModel.FileId = orgFile.FileId;
+                        fileDownloadModel.BlobName = orgFile.BlobName;
+                        fileDownloadModel.FileName = orgFile.FileName;
+                    }
+                    break;
+                case FileDownloadTypes.BrandDetails:
+                    orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands);
+                    if (null != orgFile)
+                    {
+                        fileDownloadModel.FileId = orgFile.FileId;
+                        fileDownloadModel.BlobName = orgFile.BlobName;
+                        fileDownloadModel.FileName = orgFile.FileName;
+                    }
+                    break;
+                case FileDownloadTypes.PartnershipDetails:
+                    orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership);
+                    if (null != orgFile)
+                    {
+                        fileDownloadModel.FileId = orgFile.FileId;
+                        fileDownloadModel.BlobName = orgFile.BlobName;
+                        fileDownloadModel.FileName = orgFile.FileName;
+                    }
+                    break;
+                default:
+                    return null;
+            }
+
+            if (fileDownloadModel.FileId == null || fileDownloadModel.BlobName == null || fileDownloadModel.FileName == null)
+            {
+                return null;
+            }
+
+            return fileDownloadModel;
+        }
+
     }
 }

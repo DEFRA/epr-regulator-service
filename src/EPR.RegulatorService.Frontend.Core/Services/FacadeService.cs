@@ -11,11 +11,11 @@ using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
-
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 public class FacadeService : IFacadeService
@@ -38,6 +38,7 @@ public class FacadeService : IFacadeService
     private const string FileDownloadPath = "FileDownload";
     private const string GetOrganisationRegistrationSubmissionDetailsPath = "GetOrganisationRegistrationSubmissionDetailsPath";
     private const string GetOrganisationRegistationSubmissionsPath = "GetOrganisationRegistrationSubmissionsPath";
+    private const string SubmitRegistrationFeePaymentPath = "SubmitRegistrationFeePaymentPath";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -60,7 +61,7 @@ public class FacadeService : IFacadeService
         _tokenAcquisition = tokenAcquisition;
         _paginationConfig = paginationOptions.Value;
         _facadeApiConfig = facadeApiOptions.Value;
-        _scopes = new[] { _facadeApiConfig.DownstreamScope };
+        _scopes = [_facadeApiConfig.DownstreamScope];
     }
 
     private static readonly Dictionary<Type, string> _typeToEndpointMap = new()
@@ -72,12 +73,7 @@ public class FacadeService : IFacadeService
     public async Task<string> GetTestMessageAsync()
     {
         var response = await _httpClient.GetAsync("/api/test");
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        return response.ToString();
+        return response.StatusCode == HttpStatusCode.OK ? await response.Content.ReadAsStringAsync() : response.ToString();
     }
 
     public async Task<PaginatedList<OrganisationApplications>> GetUserApplicationsByOrganisation(
@@ -340,9 +336,49 @@ public class FacadeService : IFacadeService
 
         string path = _facadeApiConfig.Endpoints[GetOrganisationRegistationSubmissionsPath];
 
-        var response = await _httpClient.PostAsJsonAsync(path, filters);
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync(path, filters);
 
-        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<PaginatedList<RegistrationSubmissionOrganisationDetails>>() : null;
+        if (response.IsSuccessStatusCode)
+        {
+            var commonData = await ReadRequiredJsonContent(response.Content);
+            var responseData = commonData.items.Select(x => (RegistrationSubmissionOrganisationDetails)x).ToList();
+
+            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                items = responseData,
+                currentPage = commonData.currentPage,
+                totalItems = commonData.totalItems,
+                pageSize = commonData.pageSize
+            };
+        }
+        else
+        {
+            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                items = [],
+                currentPage = 1,
+                totalItems = 0,
+                pageSize = 20
+            };
+        }
+
+        return null;
+    }
+
+    public static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
+    {
+        string jsonContent = await content.ReadAsStringAsync();
+
+        try
+        {
+            var response = JsonSerializer.Deserialize<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>(jsonContent, _jsonSerializerOptions);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidDataException("Cannot parse data from Facade for Submission Summaries", ex);
+        }
     }
 
     public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
@@ -352,7 +388,27 @@ public class FacadeService : IFacadeService
         string path = _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath].Replace("{0}", submissionId.ToString());
 
         var response = await _httpClient.GetAsync(path);
-        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<RegistrationSubmissionOrganisationDetails>() : null;
+
+        response.EnsureSuccessStatusCode();
+
+        string content = await response.Content.ReadAsStringAsync();
+
+        RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFE(content);
+
+        return result;
+    }
+
+    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content) {
+        try
+        {
+            var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidDataException("Cannot parse data from Facade for Submission Details", ex);
+        }
     }
 
     public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request)
@@ -365,4 +421,13 @@ public class FacadeService : IFacadeService
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
+    public async Task<EndpointResponseStatus> SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = _facadeApiConfig.Endpoints[SubmitRegistrationFeePaymentPath];
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+
+        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+    }
 }

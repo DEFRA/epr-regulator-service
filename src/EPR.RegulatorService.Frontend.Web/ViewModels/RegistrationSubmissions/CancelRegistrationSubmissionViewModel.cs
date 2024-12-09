@@ -1,12 +1,12 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
-    using EPR.RegulatorService.Frontend.Web.Attributes;
+    using System.ComponentModel.DataAnnotations;
 
     public class CancelRegistrationSubmissionViewModel
     {
         public Guid SubmissionId { get; set; }
 
-        [CharacterCount("Error.CancellationReason", "Error.CancellationReasonTooLong", 400)]
+        [StringLength(400, ErrorMessage = "Error.CancellationReasonTooLong")]
         public string? CancellationReason { get; set; }
 
     }

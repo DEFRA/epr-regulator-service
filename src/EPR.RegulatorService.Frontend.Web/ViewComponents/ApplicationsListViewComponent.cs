@@ -31,10 +31,10 @@ public class ApplicationsListViewComponent : ViewComponent
         
         var model = new ApplicationsListViewModel
         {
-            PagedOrganisationApplications = pagedOrganisationApplications.Items,
+            PagedOrganisationApplications = pagedOrganisationApplications.items,
             PaginationNavigationModel = new()
             {
-                CurrentPage = pagedOrganisationApplications.CurrentPage,
+                CurrentPage = pagedOrganisationApplications.currentPage,
                 PageCount = pagedOrganisationApplications.TotalPages,
                 ControllerName = "Applications",
                 ActionName = "Applications"

@@ -73,6 +73,7 @@ public static class ServiceProviderExtension
         services.Configure<PaginationConfig>(configuration.GetSection(PaginationConfig.ConfigSection));
         services.Configure<TransferOrganisationConfig>(configuration.GetSection(TransferOrganisationConfig.ConfigSection));
         services.Configure<LandingPageConfig>(configuration.GetSection(LandingPageConfig.ConfigSection));
+        services.Configure<PaymentFacadeApiConfig>(configuration.GetSection(PaymentFacadeApiConfig.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)

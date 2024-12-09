@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ConfirmOfflinePaymentSubmission.ErrorMessage" xml:space="preserve">
-    <value>[Welsh]Select yes if you want to confirm this payment</value>
+    <value>Dewiswch ydw os hoffech chi gadarnhau'r taliad yma</value>
   </data>
   <data name="ConfirmOfflinePaymentSubmission.PageHeading" xml:space="preserve">
-    <value>[Welsh]Are you sure you want to add this payment?</value>
+    <value>Ydych chi'n siŵr yr hoffech chi ychwanegu'r taliad yma?</value>
   </data>
   <data name="ConfirmOfflinePaymentSubmission.PageTitle" xml:space="preserve">
-    <value>[Welsh]Confirm offline payment submission</value>
+    <value>Cadarnhau bod taliad all-lein wedi'i gyflwyno</value>
   </data>
 </root>
