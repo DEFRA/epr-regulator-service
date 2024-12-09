@@ -88,7 +88,6 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.LateProducerCount.Should().Be(0);
         model.OnlineMarketPlaceCount.Should().Be(0);
         model.SubsidiariesCompanyCount.Should().Be(0);
-        //To do: Add more asserts after we know what is needed in the response object
         _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.AtMostOnce);
     }
 
