@@ -81,9 +81,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             var submissionPeriods = new[] { "January to June 2023", "January to June 2024" };
 
             var submissions = _fixture.Build<PaginatedList<Submission>>()
-                .With(x => x.Items, _submissions)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
+                .With(x => x.items, _submissions)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 2)
                 .Create();
 
             _facadeServiceMock
@@ -119,9 +119,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 
             var model = result.ViewData.Model as SubmissionsListViewModel;
             model.Should().NotBeNull();
-            model.PagedOrganisationSubmissions.Should().BeEquivalentTo(submissions.Items);
+            model.PagedOrganisationSubmissions.Should().BeEquivalentTo(submissions.items);
             model.PagedOrganisationSubmissions.Count().Should().Be(2);
-            model.PaginationNavigationModel.CurrentPage.Should().Be(submissions.CurrentPage);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(submissions.currentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(submissions.TotalPages);
             model.RegulatorSubmissionFiltersModel.SearchOrganisationName.Should().BeEmpty();
             model.RegulatorSubmissionFiltersModel.IsDirectProducerChecked.Should().BeFalse();
@@ -143,12 +143,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             var submissionPeriods = new[] { "January to June 2023", "January to June 2024" };
 
             var submissions = _fixture.Build<PaginatedList<Submission>>()
-                .With(x => x.Items, _submissions)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
+                .With(x => x.items, _submissions)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 2)
                 .Create();
 
-            submissions.Items.RemoveAt(0);
+            submissions.items.RemoveAt(0);
 
             _facadeServiceMock
                 .Setup(x => x.GetOrganisationSubmissions<Submission>(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<OrganisationType>(),
@@ -187,12 +187,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             // Assert
             result.Should().NotBeNull().And.BeOfType<ViewViewComponentResult>();
             model.Should().NotBeNull();
-            model.PagedOrganisationSubmissions.Should().BeEquivalentTo(submissions.Items);
+            model.PagedOrganisationSubmissions.Should().BeEquivalentTo(submissions.items);
             model.PagedOrganisationSubmissions.Count().Should().Be(1);
             model.PagedOrganisationSubmissions.FirstOrDefault().OrganisationName.Should().Be(SweetsLtdCompanyName);
             model.PagedOrganisationSubmissions.FirstOrDefault().OrganisationType.Should().Be(OrganisationType.ComplianceScheme);
             model.PagedOrganisationSubmissions.FirstOrDefault().Decision.Should().Be(ApprovedStatus);
-            model.PaginationNavigationModel.CurrentPage.Should().Be(submissions.CurrentPage);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(submissions.currentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(submissions.TotalPages);
             model.RegulatorSubmissionFiltersModel.SearchOrganisationName.Should().Be(SweetsLtdCompanyName);
             model.RegulatorSubmissionFiltersModel.IsDirectProducerChecked.Should().BeFalse();

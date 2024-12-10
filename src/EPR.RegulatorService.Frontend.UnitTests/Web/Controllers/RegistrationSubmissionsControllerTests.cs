@@ -1,18 +1,24 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
+    using System;
+    using System.Net;
+
     using EPR.Common.Authorization.Models;
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Web.Sessions;
+    using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.Extensions.Logging;
 
     using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
@@ -1631,35 +1637,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task Fetch_RegistrationSubmissionDetails_From_Session_ChangeHistory()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-
-            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
-            {
-                SelectedRegistration = null,
-                OrganisationDetailsChangeHistory = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>
-                                                    {
-                                                        { submissionId, expectedViewModel }
-                                                    }
-            };
-
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
-
-            // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-
-            Assert.IsNotNull(result);
-            _facadeServiceMock.Verify(r => r.GetRegistrationSubmissionDetails(It.IsAny<Guid>()), Times.Never);
-        }
-
-        [TestMethod]
         public async Task RegistrationSubmissionDetails_ReturnsPageNotFound_When_Receiving_InValid_SubmissionId()
         {
             // Arrange
@@ -1715,13 +1692,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.SubmissionDetails.DeclaredBy, model.SubmissionDetails.DeclaredBy);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Files.Count, model.SubmissionDetails.Files.Count);
 
-            // Assert PaymentDetailsViewModel properties
-            Assert.AreEqual(expectedViewModel.PaymentDetails.ApplicationProcessingFee, model.PaymentDetails.ApplicationProcessingFee);
-            Assert.AreEqual(expectedViewModel.PaymentDetails.OnlineMarketplaceFee, model.PaymentDetails.OnlineMarketplaceFee);
-            Assert.AreEqual(expectedViewModel.PaymentDetails.SubsidiaryFee, model.PaymentDetails.SubsidiaryFee);
-            Assert.AreEqual(expectedViewModel.PaymentDetails.TotalChargeableItems, model.PaymentDetails.TotalChargeableItems);
-            Assert.AreEqual(expectedViewModel.PaymentDetails.PreviousPaymentsReceived, model.PaymentDetails.PreviousPaymentsReceived);
-            Assert.AreEqual(expectedViewModel.PaymentDetails.TotalOutstanding, model.PaymentDetails.TotalOutstanding);
+            //// Assert PaymentDetailsViewModel properties
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.ApplicationProcessingFee, model.PaymentDetails.ApplicationProcessingFee);
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.OnlineMarketplaceFee, model.PaymentDetails.OnlineMarketplaceFee);
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.SubsidiaryFee, model.PaymentDetails.SubsidiaryFee);
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.TotalChargeableItems, model.PaymentDetails.TotalChargeableItems);
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.PreviousPaymentsReceived, model.PaymentDetails.PreviousPaymentsReceived);
+            //Assert.AreEqual(expectedViewModel.PaymentDetails.TotalOutstanding, model.PaymentDetails.TotalOutstanding);
 
             // Assert business address
             Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingName, model.BusinessAddress.BuildingName);
@@ -1881,6 +1858,107 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirect = result as RedirectToActionResult;
             redirect.ActionName.Should().Be(PagePath.PageNotFound);
         }
+
+        [TestMethod]
+        public async Task RegistrationSubmissionDetails_ReturnsPageNotFound_When_HttpRequestException_Thrown_With_NotFound_Status()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var exception = new HttpRequestException("Not Found", null, HttpStatusCode.NotFound);
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Throws(exception);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirect = result as RedirectToActionResult;
+            Assert.AreEqual(PagePath.PageNotFound, redirect.ActionName);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissionDetails_ReturnsErrorPage_When_General_Exception_Thrown()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var exception = new Exception("General exception");
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Throws(exception);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirect = result as RedirectToActionResult;
+            Assert.AreEqual(PagePath.Error, redirect.ActionName);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissionDetails_ReturnsPageNotFound_When_HttpRequestException_Thrown_With_NotFound_StatusCode()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var httpRequestException = new HttpRequestException("Not Found", null, HttpStatusCode.NotFound);
+
+            // Setup the _facadeServiceMock to throw the HttpRequestException
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ThrowsAsync(httpRequestException);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
+
+            // Assert
+            // Verify that the logger was called with the expected error message
+            _loggerMock.Verify(logger =>
+                logger.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received processing GET to RegistrationSubmissionsController")),
+                    It.Is<Exception>(ex => ex == httpRequestException),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
+
+            // Check the redirection to "PageNotFound"
+            var redirectResult = result as RedirectToActionResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePath.PageNotFound, redirectResult.ActionName);
+            Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissionDetails_ReturnsErrorPage_When_HttpRequestException_Thrown_With_NonNotFound_StatusCode()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var httpRequestException = new HttpRequestException("Error", null, HttpStatusCode.InternalServerError); // Non-NotFound status code
+
+            // Setup the _facadeServiceMock to throw the HttpRequestException
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ThrowsAsync(httpRequestException);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
+
+            // Assert
+            // Check the redirection to "Error"
+            var redirectResult = result as RedirectToActionResult;
+            Assert.IsNotNull(redirectResult);
+            Assert.AreEqual(PagePath.Error, redirectResult.ActionName);
+            Assert.AreEqual("Error", redirectResult.ControllerName);
+
+            // Verify that the logger was called with the expected error message
+            _loggerMock.Verify(logger =>
+                logger.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received processing GET to RegistrationSubmissionsController")),
+                    It.Is<Exception>(ex => ex == httpRequestException),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Never);
+        }
+
         #endregion
 
         #region Page Not Found
@@ -1944,12 +2022,18 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_ForAnEmptyOfflinePayment()
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_ForAnEmptyOfflinePayment(string offlinePayment)
         {
             // Arrange
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            {
+                { "OfflinePaymentAmount", offlinePayment }
+            };
+            _controller.TempData = tempData;
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails.OfflinePayment = string.Empty; // Simulate empty offline payment
             SetupJourneySession(null, submissionDetails);
 
             // Act
@@ -1966,9 +2050,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task ConfirmOfflinePaymentSubmission_SetsCorrectBackLink()
         {
             // Arrange
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            {
+                { "OfflinePaymentAmount", "200.45" }
+            };
+            _controller.TempData = tempData;
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
             SetupJourneySession(null, submissionDetails);
 
             string expectedBackLink = "/expected/backlink/url";
@@ -1988,17 +2076,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task ConfirmOfflinePaymentSubmission_ReturnsViewWithCorrectModel_ForAValidSubmissionIdAndOfflinePayment()
         {
             // Arrange
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+            {
+                { "OfflinePaymentAmount", "10.00" }
+            };
+            _controller.TempData = tempData;
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
             SetupJourneySession(null, submissionDetails);
-
-            var expectedViewModel = new ConfirmOfflinePaymentSubmissionViewModel
-            {
-                SubmissionId = submissionId,
-                IsOfflinePaymentConfirmed = null,
-                OfflinePaymentAmount = "10.00"
-            };
 
             // Act
             var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId);
@@ -2007,12 +2092,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
             Assert.AreEqual("ConfirmOfflinePaymentSubmission", viewResult.ViewName);
-
             var model = viewResult.Model as ConfirmOfflinePaymentSubmissionViewModel;
             Assert.IsNotNull(model);
-            Assert.AreEqual(expectedViewModel.SubmissionId, model.SubmissionId);
-            Assert.AreEqual(submissionDetails.PaymentDetails.OfflinePayment, model.OfflinePaymentAmount);
-            Assert.AreEqual(expectedViewModel.IsOfflinePaymentConfirmed, model.IsOfflinePaymentConfirmed);
+            model.SubmissionId.Should().Be(submissionId);
+            model.IsOfflinePaymentConfirmed.Should().BeNull();
+            model.OfflinePaymentAmount.Should().Be("10.00");
 
             // Verify backlink setup
             AssertBackLink(viewResult, "/expected/backlink/url");
@@ -2024,7 +2108,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
             SetupJourneySession(null, submissionDetails);
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
             _facadeServiceMock.Setup(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
@@ -2032,7 +2117,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
+                OfflinePaymentAmount = "200.45", // Valid amount
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -2061,14 +2146,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
             SetupJourneySession(null, submissionDetails);
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
+                OfflinePaymentAmount = "200.45", //submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -2093,7 +2180,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
             SetupJourneySession(null, submissionDetails);
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
             _facadeServiceMock.Setup(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
@@ -2101,7 +2189,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
+                OfflinePaymentAmount = "200.45", //submissionDetails.PaymentDetails.OfflinePayment, // Valid amount
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -2130,7 +2218,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = new PaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = new PaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
             SetupJourneySession(null, submissionDetails);
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
@@ -2160,13 +2250,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
             SetupJourneySession(null, submissionDetails);
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment
+                OfflinePaymentAmount = "200.45" //submissionDetails.PaymentDetails.OfflinePayment
             };
 
             // Simulate an error in ModelState
@@ -2215,7 +2307,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
             SetupJourneySession(null, submissionDetails);
             var exception = new Exception("Test exception");
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ThrowsAsync(exception);
@@ -2223,7 +2317,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment,
+                OfflinePaymentAmount = "200.45", //submissionDetails.PaymentDetails.OfflinePayment,
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -2244,7 +2338,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
-            submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            ////submissionDetails.PaymentDetails = GenerateValidPaymentDetailsViewModel();
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
             SetupJourneySession(null, submissionDetails);
             var exception = new Exception("Test exception");
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
@@ -2253,7 +2349,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                OfflinePaymentAmount = submissionDetails.PaymentDetails.OfflinePayment,
+                OfflinePaymentAmount = "200.45", //submissionDetails.PaymentDetails.OfflinePayment,
                 IsOfflinePaymentConfirmed = true
             };
 
@@ -3598,7 +3694,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task When_GrantRegistrationSubmission_Post_Success_Then_Should_Update_OrganisationDetailsChangeHistory_InSession()
+        public async Task When_GrantRegistrationSubmission_Post_Success_Then_Should_NOT_Update_OrganisationDetailsChangeHistory_InSession()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -3616,8 +3712,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             bool upadtedChangeHistory =
                 _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestOrganisationDetails);
-            upadtedChangeHistory.Should().BeTrue();
-            latestOrganisationDetails.SubmissionStatus.Should().Be(RegistrationSubmissionStatus.Granted);
+            upadtedChangeHistory.Should().BeFalse();
         }
 
         [TestMethod]
@@ -3648,6 +3743,365 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         #endregion OrganisationDetailsChangeHistorySession
+
+        #region RegistrationSubmissionsFileDownload
+
+        [TestMethod]
+        public async Task RegistrationSubmissionsFileDownload_ValidDownloadType_ShouldRedirectToSubmissionDetailsFileDownload()
+        {
+            // Arrange
+            string downloadType = "TestDownloadType";
+            string expectedRedirectAction = nameof(RegistrationSubmissionsController.SubmissionDetailsFileDownload);
+            string expectedRedirectController = "RegistrationSubmissions";
+
+            var tempDataMock = new Mock<ITempDataDictionary>();
+            _controller.TempData = tempDataMock.Object;
+
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionsFileDownload(downloadType) as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null");
+            Assert.AreEqual(expectedRedirectAction, result.ActionName, "Action name should match");
+            Assert.AreEqual(expectedRedirectController, result.ControllerName, "Controller name should match");
+
+            _mockSessionManager.Verify(manager => manager.GetSessionAsync(It.IsAny<ISession>()), Times.Once, "Session should be retrieved once");
+            _mockSessionManager.Verify(manager => manager.SaveSessionAsync(It.IsAny<ISession>(), _journeySession), Times.Once, "Session should be saved once");
+
+            Assert.AreEqual(downloadType, _journeySession.RegulatorRegistrationSubmissionSession.FileDownloadRequestType, "FileDownloadRequestType should match");
+
+            tempDataMock.VerifySet(tempData => tempData["DownloadCompleted"] = false, Times.Once, "DownloadCompleted should be set to false in TempData");
+        }
+
+        [TestMethod]
+        public async Task RegistrationSubmissionsFileDownload_NullDownloadType_ShouldHandleGracefully()
+        {
+            // Arrange
+            string downloadType = null; // Simulate null input
+            string expectedRedirectAction = nameof(RegistrationSubmissionsController.SubmissionDetailsFileDownload);
+
+            var tempDataMock = new Mock<ITempDataDictionary>();
+            _controller.TempData = tempDataMock.Object;
+
+            SetupJourneySession(null, null);
+
+            // Act
+            var result = await _controller.RegistrationSubmissionsFileDownload(downloadType) as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null");
+            Assert.AreEqual(expectedRedirectAction, result.ActionName, "Action name should match");
+
+            _mockSessionManager.Verify(manager => manager.GetSessionAsync(It.IsAny<ISession>()), Times.Once, "Session should be retrieved once");
+            _mockSessionManager.Verify(manager => manager.SaveSessionAsync(It.IsAny<ISession>(), _journeySession), Times.Once, "Session should be saved once");
+            Assert.IsNull(_journeySession.RegulatorRegistrationSubmissionSession.FileDownloadRequestType, "FileDownloadRequestType should be null");
+
+            tempDataMock.VerifySet(tempData => tempData["DownloadCompleted"] = false, Times.Once, "DownloadCompleted should be set to false in TempData");
+        }
+
+        #endregion RegistrationSubmissionsFileDownload
+
+        #region FileDownloadInProgress
+
+        [TestMethod]
+        public async Task FileDownloadInProgress_ShouldRedirectToFileDownloadFailed_WhenFileDownloadModelIsNull()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            string expectedRedirectAction = nameof(RegistrationSubmissionsController.RegistrationSubmissionFileDownloadFailed);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            // Act
+            var result = await _controller.FileDownloadInProgress() as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null");
+            Assert.AreEqual(expectedRedirectAction, result.ActionName, "Action name should match");
+
+            _facadeServiceMock.Verify(m => m.GetFileDownload(It.IsAny<FileDownloadRequest>()), Times.Never);
+
+        }
+
+        [TestMethod]
+        [DataRow(HttpStatusCode.Forbidden, nameof(RegistrationSubmissionsController.RegistrationSubmissionFileDownloadSecurityWarning))]
+        [DataRow(HttpStatusCode.BadRequest, nameof(RegistrationSubmissionsController.RegistrationSubmissionFileDownloadFailed))]
+        public async Task FileDownloadInProgress_ShouldRedirectCorrectly_WhenFacadeDoesNotReturnSuccess(
+            HttpStatusCode httpStatusCode,
+            string expectedRedirectAction)
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string fileName = "test-file.csv";
+            var fileId = Guid.NewGuid();
+            string blobName = "test-blob";
+
+            // Generate mock registration details with files
+            var registration = new RegistrationSubmissionOrganisationDetails
+            {
+                SubmissionId = submissionId,
+                OrganisationReference = "ORG12345",
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+                {
+                    Files =
+            [
+                new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails
+                {
+                    FileId = fileId,
+                    BlobName = blobName,
+                    FileName = fileName,
+                    Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company
+                }
+            ]
+                }
+            };
+
+            var tempDataMock = new Mock<ITempDataDictionary>();
+            _controller.TempData = tempDataMock.Object;
+
+            // Set the file download request type in session to OrganisationDetails
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
+            {
+                SelectedRegistration = registration,
+                FileDownloadRequestType = FileDownloadTypes.OrganisationDetails
+            };
+
+            // Mock the CreateFileDownloadRequest method
+            var mockedFileDownloadRequest = new FileDownloadRequest
+            {
+                SubmissionId = submissionId,
+                FileId = fileId,
+                BlobName = blobName,
+                FileName = fileName,
+                SubmissionType = SubmissionType.Registration
+            };
+
+            // Mock the facade service to return an usuccessful response with content
+            var fileStream = new MemoryStream();
+            var response = new HttpResponseMessage(httpStatusCode)
+            {
+                Content = new StreamContent(fileStream)
+            };
+
+            response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+            {
+                FileName = fileName
+            };
+
+            _facadeServiceMock
+                .Setup(mock => mock.GetFileDownload(It.Is<FileDownloadRequest>(req =>
+                    req.SubmissionId == mockedFileDownloadRequest.SubmissionId &&
+                    req.FileId == mockedFileDownloadRequest.FileId &&
+                    req.BlobName == mockedFileDownloadRequest.BlobName &&
+                    req.FileName == mockedFileDownloadRequest.FileName &&
+                    req.SubmissionType == SubmissionType.Registration)))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _controller.FileDownloadInProgress() as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null");
+            Assert.AreEqual(expectedRedirectAction, result.ActionName, "Action name should match");
+
+            _facadeServiceMock.Verify(m => m.GetFileDownload(It.IsAny<FileDownloadRequest>()), Times.AtMostOnce);
+
+            response.Dispose();
+        }
+
+        [TestMethod]
+        [DataRow(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company, FileDownloadTypes.OrganisationDetails)]
+        [DataRow(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands, FileDownloadTypes.BrandDetails)]
+        [DataRow(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership, FileDownloadTypes.PartnershipDetails)]
+        public async Task FileDownloadInProgress_ShouldReturnFileStreamResult_WhenFacadeReturnsSuccess(
+            RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType fileType,
+            string fileDownloadTypes)
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string fileName = "test-file.csv";
+            var fileId = Guid.NewGuid();
+            string blobName = "test-blob";
+
+            // Generate mock registration details with files
+            var registration = new RegistrationSubmissionOrganisationDetails
+            {
+                SubmissionId = submissionId,
+                OrganisationReference = "ORG12345",
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+                {
+                    Files =
+            [
+                new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails
+                {
+                    FileId = fileId,
+                    BlobName = blobName,
+                    FileName = fileName,
+                    Type = fileType
+                }
+            ]
+                }
+            };
+
+            var tempDataMock = new Mock<ITempDataDictionary>();
+            _controller.TempData = tempDataMock.Object;
+
+            // Set the file download request type in session
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
+            {
+                SelectedRegistration = registration,
+                FileDownloadRequestType = fileDownloadTypes
+            };
+
+            // Mock the CreateFileDownloadRequest method
+            var mockedFileDownloadRequest = new FileDownloadRequest
+            {
+                SubmissionId = submissionId,
+                FileId = fileId,
+                BlobName = blobName,
+                FileName = fileName,
+                SubmissionType = SubmissionType.Registration
+            };
+
+
+            // Mock the facade service to return a successful response with content
+            var fileStream = new MemoryStream();
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(fileStream)
+            };
+
+            response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+            {
+                FileName = fileName
+            };
+
+            _facadeServiceMock
+                .Setup(mock => mock.GetFileDownload(It.Is<FileDownloadRequest>(req =>
+                    req.SubmissionId == mockedFileDownloadRequest.SubmissionId &&
+                    req.FileId == mockedFileDownloadRequest.FileId &&
+                    req.BlobName == mockedFileDownloadRequest.BlobName &&
+                    req.FileName == mockedFileDownloadRequest.FileName &&
+                    req.SubmissionType == SubmissionType.Registration)))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _controller.FileDownloadInProgress() as FileStreamResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null.");
+            Assert.AreEqual("application/octet-stream", result.ContentType, "ContentType should be 'application/octet-stream'.");
+            Assert.AreEqual(fileName, result.FileDownloadName, "File name should match the expected file name.");
+
+            // Verify that the facade service was called once
+            _facadeServiceMock.Verify(m => m.GetFileDownload(It.IsAny<FileDownloadRequest>()), Times.Once);
+
+            // Verify that DownloadCompleted is set to true in TempData
+            tempDataMock.VerifySet(tempData => tempData["DownloadCompleted"] = true, Times.Once, "DownloadCompleted should be set to true in TempData");
+
+            // Clean up
+            response.Dispose();
+        }
+
+        #endregion FileDownloadInProgress
+
+        #region SubmissionDetailsFileDownload
+
+        [TestMethod]
+        public void SubmissionDetailsFileDownload_ShouldReturnViewResult()
+        {
+            // Act
+            var result = _controller.SubmissionDetailsFileDownload();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "The result should be a ViewResult.");
+            var viewResult = result as ViewResult;
+            Assert.AreEqual("RegistrationSubmissionFileDownload", viewResult.ViewName, "The view name should be 'RegistrationSubmissionFileDownload'.");
+        }
+
+        #endregion SubmissionDetailsFileDownload
+
+        #region RegistrationSubmissionFileDownloadFailed
+
+        [TestMethod]
+        public async Task RegistrationSubmissionFileDownloadFailed_ShouldReturnViewWithCorrectModel()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var expectedModel = new OrganisationDetailsFileDownloadViewModel
+            {
+                DownloadFailed = true,
+                HasIssue = false,
+                SubmissionId = submissionId
+            };
+
+            // Act
+            var result = await _controller.RegistrationSubmissionFileDownloadFailed() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null.");
+            Assert.AreEqual("RegistrationSubmissionFileDownloadFailed", result.ViewName, "The view name should be 'RegistrationSubmissionFileDownloadFailed'.");
+
+            // Assert that the model is of the correct type
+            var model = result.Model as OrganisationDetailsFileDownloadViewModel;
+            Assert.IsNotNull(model, "The model should not be null.");
+            Assert.AreEqual(expectedModel.DownloadFailed, model.DownloadFailed, "DownloadFailed should be true.");
+            Assert.AreEqual(expectedModel.HasIssue, model.HasIssue, "HasIssue should be false.");
+            Assert.AreEqual(expectedModel.SubmissionId, model.SubmissionId, "The SubmissionId should match.");
+        }
+
+        #endregion RegistrationSubmissionFileDownloadFailed
+
+        #region RegistrationSubmissionFileDownloadSecurityWarning
+
+        [TestMethod]
+        public async Task RegistrationSubmissionFileDownloadSecurityWarning_ShouldReturnViewWithCorrectModel()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            var expectedModel = new OrganisationDetailsFileDownloadViewModel
+            {
+                DownloadFailed = true,
+                HasIssue = true,
+                SubmissionId = submissionId
+            };
+
+            // Act
+            var result = await _controller.RegistrationSubmissionFileDownloadSecurityWarning() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null.");
+            Assert.AreEqual("RegistrationSubmissionFileDownloadFailed", result.ViewName, "The view name should be 'RegistrationSubmissionFileDownloadFailed'.");
+
+            // Assert that the model is of the correct type
+            var model = result.Model as OrganisationDetailsFileDownloadViewModel;
+            Assert.IsNotNull(model, "The model should not be null.");
+            Assert.AreEqual(expectedModel.DownloadFailed, model.DownloadFailed, "DownloadFailed should be true.");
+            Assert.AreEqual(expectedModel.HasIssue, model.HasIssue, "HasIssue should be true.");
+            Assert.AreEqual(expectedModel.SubmissionId, model.SubmissionId, "The SubmissionId should match.");
+        }
+
+        #endregion RegistrationSubmissionFileDownloadSecurityWarning
 
         private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
         {

@@ -8,7 +8,7 @@ public class CompliancePaymentRequest
 
     public DateTime SubmissionDate { get; set; }
 
-    public List<ComplianceSchemeMemberRequest> ComplianceSchemeMembers { get; set; }    
+    public IEnumerable<ComplianceSchemeMemberRequest> ComplianceSchemeMembers { get; set; }    
 }
 
 public class ComplianceSchemeMemberRequest

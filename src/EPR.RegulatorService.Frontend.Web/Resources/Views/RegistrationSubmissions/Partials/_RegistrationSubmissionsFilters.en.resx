@@ -124,7 +124,7 @@
     <value>Organisation name</value>
   </data>
   <data name="SubTitle.OrganisationReference" xml:space="preserve">
-    <value>Organisation ID</value>
+    <value>Organisation ID or Reference number</value>
   </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
     <value>Organisation Type</value>

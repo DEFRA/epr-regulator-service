@@ -17,7 +17,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
                 OnlineMarketplaceFee = 25.00m,
                 SubsidiaryFee = 30.00m,
                 SubsidiaryOnlineMarketPlaceFee = 40.00m,
-                TotalChargeableItems = 245.00m,
+                //TotalChargeableItems = 245.00m,
                 PreviousPaymentsReceived = 50.00m,
                 TotalOutstanding = 195.00m,
                 ProducerSize = "Medium",

@@ -20,8 +20,6 @@ public class CompliancePaymentResponse
 
     [JsonPropertyName("complianceSchemeMembersWithFees")]
     public List<ComplianceSchemeMember> ComplianceSchemeMembers { get; set; }
-
-    public decimal? OfflinePaymentAmount { get; set; } = null!;
 }
 
 [ExcludeFromCodeCoverage]
@@ -30,11 +28,14 @@ public class ComplianceSchemeMember
     [JsonPropertyName("memberId")]
     public string MemberId { get; set; }
 
+    [JsonPropertyName("memberType")]
+    public string MemberType { get; set; }
+
     [JsonPropertyName("memberRegistrationFee")]
-    public string MemberFee { get; set; }
+    public decimal MemberFee { get; set; }
 
     [JsonPropertyName("memberOnlineMarketPlaceFee")]
-    public string OnlineMarketPlaceFee { get; set; }
+    public decimal OnlineMarketPlaceFee { get; set; }
 
     [JsonPropertyName("memberLateRegistrationFee")]
     public decimal LateRegistrationFee { get; set; }

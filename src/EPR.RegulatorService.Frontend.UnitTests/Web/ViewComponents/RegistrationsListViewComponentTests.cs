@@ -82,9 +82,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         {
             // Arrange
             var registrations = _fixture.Build<PaginatedList<Registration>>()
-                .With(x => x.Items, _registrations)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
+                .With(x => x.items, _registrations)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 2)
                 .Create();
 
             _facadeServiceMock
@@ -126,9 +126,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 
             var model = result.ViewData.Model as RegistrationsListViewModel;
             model.Should().NotBeNull();
-            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.Items);
+            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.items);
             model.PagedOrganisationRegistrations.Count().Should().Be(2);
-            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.CurrentPage);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.currentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(registrations.TotalPages);
             model.RegulatorRegistrationFiltersModel.SearchOrganisationName.Should().BeEmpty();
             model.RegulatorRegistrationFiltersModel.IsDirectProducerChecked.Should().BeFalse();
@@ -162,12 +162,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         {
             // Arrange
             var registrations = _fixture.Build<PaginatedList<Registration>>()
-                .With(x => x.Items, _registrations)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
+                .With(x => x.items, _registrations)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 2)
                 .Create();
 
-            registrations.Items.RemoveAt(0);
+            registrations.items.RemoveAt(0);
 
             _facadeServiceMock
                 .Setup(x => x.GetOrganisationSubmissions<Registration>(
@@ -206,12 +206,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             // Assert
             result.Should().NotBeNull().And.BeOfType<ViewViewComponentResult>();
             model.Should().NotBeNull();
-            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.Items);
+            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.items);
             model.PagedOrganisationRegistrations.Count().Should().Be(1);
             model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationName.Should().Be(SweetsLtdCompanyName);
             model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationType.Should().Be(OrganisationType.ComplianceScheme);
             model.PagedOrganisationRegistrations.FirstOrDefault().Decision.Should().Be(ApprovedStatus);
-            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.CurrentPage);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.currentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(registrations.TotalPages);
             model.RegulatorRegistrationFiltersModel.SearchOrganisationName.Should().Be(SweetsLtdCompanyName);
             model.RegulatorRegistrationFiltersModel.IsDirectProducerChecked.Should().BeFalse();
@@ -226,9 +226,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         {
             // Arrange
             var registrations = _fixture.Build<PaginatedList<Registration>>()
-                .With(x => x.Items, _registrations)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
+                .With(x => x.items, _registrations)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 2)
                 .Create();
 
             _facadeServiceMock
@@ -271,12 +271,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         {
             // Arrange
             var registrations = _fixture.Build<PaginatedList<Registration>>()
-                .With(x => x.Items, _registrations)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
+                .With(x => x.items, _registrations)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 2)
                 .Create();
 
-            registrations.Items.RemoveAt(0);
+            registrations.items.RemoveAt(0);
 
             _facadeServiceMock
                 .Setup(x => x.GetOrganisationSubmissions<Registration>(
@@ -316,13 +316,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             // Assert
             result.Should().NotBeNull().And.BeOfType<ViewViewComponentResult>();
             model.Should().NotBeNull();
-            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.Items);
+            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.items);
             model.PagedOrganisationRegistrations.Count().Should().Be(1);
             model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationName.Should().Be(SweetsLtdCompanyName);
             model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationType.Should()
                 .Be(OrganisationType.ComplianceScheme);
             model.PagedOrganisationRegistrations.FirstOrDefault().Decision.Should().Be(ApprovedStatus);
-            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.CurrentPage);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.currentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(registrations.TotalPages);
             model.RegulatorRegistrationFiltersModel.SearchOrganisationName.Should().Be(SweetsLtdCompanyName);
             model.RegulatorRegistrationFiltersModel.IsDirectProducerChecked.Should().BeFalse();
@@ -338,12 +338,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         {
             // Arrange
             var registrations = _fixture.Build<PaginatedList<Registration>>()
-                .With(x => x.Items, _registrations)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
+                .With(x => x.items, _registrations)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 2)
                 .Create();
 
-            registrations.Items.RemoveAt(0);
+            registrations.items.RemoveAt(0);
 
             _facadeServiceMock
                 .Setup(x => x.GetOrganisationSubmissions<Registration>(
@@ -383,13 +383,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             // Assert
             result.Should().NotBeNull().And.BeOfType<ViewViewComponentResult>();
             model.Should().NotBeNull();
-            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.Items);
+            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.items);
             model.PagedOrganisationRegistrations.Count().Should().Be(1);
             model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationName.Should().Be(SweetsLtdCompanyName);
             model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationType.Should()
                 .Be(OrganisationType.ComplianceScheme);
             model.PagedOrganisationRegistrations.FirstOrDefault().Decision.Should().Be(ApprovedStatus);
-            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.CurrentPage);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.currentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(registrations.TotalPages);
             model.RegulatorRegistrationFiltersModel.SearchOrganisationName.Should().Be(SweetsLtdCompanyName);
             model.RegulatorRegistrationFiltersModel.IsDirectProducerChecked.Should().BeFalse();
@@ -404,12 +404,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         {
             // Arrange
             var registrations = _fixture.Build<PaginatedList<Registration>>()
-                .With(x => x.Items, _registrations)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
+                .With(x => x.items, _registrations)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 2)
                 .Create();
 
-            registrations.Items.RemoveAt(0);
+            registrations.items.RemoveAt(0);
 
             _facadeServiceMock
                 .Setup(x => x.GetOrganisationSubmissions<Registration>(
@@ -449,13 +449,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
             // Assert
             result.Should().NotBeNull().And.BeOfType<ViewViewComponentResult>();
             model.Should().NotBeNull();
-            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.Items);
+            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.items);
             model.PagedOrganisationRegistrations.Count().Should().Be(1);
             model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationName.Should().Be(SweetsLtdCompanyName);
             model.PagedOrganisationRegistrations.FirstOrDefault().OrganisationType.Should()
                 .Be(OrganisationType.ComplianceScheme);
             model.PagedOrganisationRegistrations.FirstOrDefault().Decision.Should().Be(ApprovedStatus);
-            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.CurrentPage);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.currentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(registrations.TotalPages);
             model.RegulatorRegistrationFiltersModel.SearchOrganisationName.Should().Be(SweetsLtdCompanyName);
             model.RegulatorRegistrationFiltersModel.IsDirectProducerChecked.Should().BeTrue();
@@ -470,9 +470,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
         {
             // Arrange
             var registrations = _fixture.Build<PaginatedList<Registration>>()
-                .With(x => x.Items, _registrations)
-                .With(x => x.CurrentPage, 1)
-                .With(x => x.TotalItems, 2)
+                .With(x => x.items, _registrations)
+                .With(x => x.currentPage, 1)
+                .With(x => x.totalItems, 2)
                 .Create();
 
             _facadeServiceMock
@@ -514,9 +514,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 
             var model = result.ViewData.Model as RegistrationsListViewModel;
             model.Should().NotBeNull();
-            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.Items);
+            model.PagedOrganisationRegistrations.Should().BeEquivalentTo(registrations.items);
             model.PagedOrganisationRegistrations.Count().Should().Be(2);
-            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.CurrentPage);
+            model.PaginationNavigationModel.CurrentPage.Should().Be(registrations.currentPage);
             model.PaginationNavigationModel.PageCount.Should().Be(registrations.TotalPages);
             model.RegulatorRegistrationFiltersModel.SearchOrganisationName.Should().BeEmpty();
             model.RegulatorRegistrationFiltersModel.IsDirectProducerChecked.Should().BeFalse();

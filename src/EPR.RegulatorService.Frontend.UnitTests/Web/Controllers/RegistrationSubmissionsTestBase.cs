@@ -142,26 +142,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 SubmittedOnTime = true,
                 SubmittedBy = "Sally Smith",
                 AccountRole = Frontend.Core.Enums.ServiceRole.ApprovedPerson,
+                AccountRoleId = (int)Frontend.Core.Enums.ServiceRole.ApprovedPerson,
                 Telephone = "07553 937 831",
                 Email = "sally.smith@email.com",
                 DeclaredBy = "Sally Smith",
                 Files =
                     [
-                        new() { Label = "SubmissionDetails.OrganisationDetails", FileName = "org.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "SubmissionDetails.BrandDetails", FileName = "brand.details.acme.csv", DownloadUrl = "#" },
-                        new() { Label = "SubmissionDetails.PartnerDetails", FileName = "partner.details.acme.csv", DownloadUrl = "#" }
-                    ]
-            },
-            PaymentDetails = new PaymentDetailsViewModel
-            {
-                ApplicationProcessingFee = 134522.56M,
-                OnlineMarketplaceFee = 2534534.23M,
-                SubsidiaryFee = 1.34M,
-                PreviousPaymentsReceived = 20M
+                    ],
             },
             ProducerComments = "producer comment",
             RegulatorComments = "regulator comment",
-            RegistrationYear = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture)
+            RegistrationYear = DateTime.Now.Year
         };
 
         protected static PaymentDetailsViewModel GenerateValidPaymentDetailsViewModel() => new PaymentDetailsViewModel

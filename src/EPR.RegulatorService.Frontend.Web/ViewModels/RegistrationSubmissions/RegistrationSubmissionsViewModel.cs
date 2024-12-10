@@ -1,5 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
+    using System.Diagnostics.CodeAnalysis;
+
+    [ExcludeFromCodeCoverage]
     public class RegistrationSubmissionsViewModel
     {
         public RegistrationSubmissionsListViewModel ListViewModel { get; set; }
@@ -7,5 +10,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public string PowerBiLogin { get; set; }
 
         public string? AgencyName { get; set; }
+        public int NationId { get; internal set; }
     }
 }
