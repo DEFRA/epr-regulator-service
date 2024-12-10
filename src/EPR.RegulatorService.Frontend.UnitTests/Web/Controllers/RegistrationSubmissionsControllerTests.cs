@@ -4030,7 +4030,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region RegistrationSubmissionFileDownloadFailed
 
         [TestMethod]
-        public void RegistrationSubmissionFileDownloadFailed_ShouldReturnViewWithCorrectModel()
+        public async Task RegistrationSubmissionFileDownloadFailed_ShouldReturnViewWithCorrectModel()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -4049,7 +4049,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             // Act
-            var result = _controller.RegistrationSubmissionFileDownloadFailed() as ViewResult;
+            var result = await _controller.RegistrationSubmissionFileDownloadFailed() as ViewResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null.");
@@ -4068,7 +4068,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region RegistrationSubmissionFileDownloadSecurityWarning
 
         [TestMethod]
-        public void RegistrationSubmissionFileDownloadSecurityWarning_ShouldReturnViewWithCorrectModel()
+        public async Task RegistrationSubmissionFileDownloadSecurityWarning_ShouldReturnViewWithCorrectModel()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -4087,7 +4087,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             // Act
-            var result = _controller.RegistrationSubmissionFileDownloadSecurityWarning() as ViewResult;
+            var result = await _controller.RegistrationSubmissionFileDownloadSecurityWarning() as ViewResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null.");

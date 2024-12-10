@@ -707,7 +707,7 @@ public partial class RegistrationSubmissionsController(
 
         var response = await _facadeService.GetFileDownload(fileDownloadModel);
 
-        if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+        if (response.StatusCode == HttpStatusCode.Forbidden)
         {
             return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning));
         }
@@ -728,16 +728,13 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionDetailsFileDownload)]
-    public IActionResult SubmissionDetailsFileDownload()
-    {
-        return View("RegistrationSubmissionFileDownload");
-    }
+    public IActionResult SubmissionDetailsFileDownload() => View("RegistrationSubmissionFileDownload");
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionFileDownloadFailed)]
-    public IActionResult RegistrationSubmissionFileDownloadFailed()
+    public async Task<IActionResult> RegistrationSubmissionFileDownloadFailed()
     {
-        _currentSession = _sessionManager.GetSessionAsync(HttpContext.Session).Result;
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
         var model = new OrganisationDetailsFileDownloadViewModel(true, false, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId);
         return View("RegistrationSubmissionFileDownloadFailed", model);
@@ -745,9 +742,9 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionFileDownloadSecurityWarning)]
-    public IActionResult RegistrationSubmissionFileDownloadSecurityWarning()
+    public async Task<IActionResult> RegistrationSubmissionFileDownloadSecurityWarning()
     {
-        _currentSession = _sessionManager.GetSessionAsync(HttpContext.Session).Result;
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
         var model = new OrganisationDetailsFileDownloadViewModel(true, true, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId);
         return View("RegistrationSubmissionFileDownloadFailed", model);
