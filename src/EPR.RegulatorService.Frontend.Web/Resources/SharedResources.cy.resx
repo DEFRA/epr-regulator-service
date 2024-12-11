@@ -150,9 +150,6 @@
   <data name="View" xml:space="preserve">
     <value>Gweld</value>
   </data>
-  <data name="Table.Header.Company" xml:space="preserve">
-    <value />
-  </data>
   <data name="Button.Accept" xml:space="preserve">
     <value>Derbyn</value>
   </data>
@@ -175,16 +172,16 @@
     <value>WGo to home</value>
   </data>
   <data name="Link.LogIntoPowerBI" xml:space="preserve">
-    <value>mewngofnodwch i Power-BI</value>
+    <value>mewngofnodwch i Power BI</value>
   </data>
   <data name="Button.Cancel" xml:space="preserve">
     <value>Canslo</value>
   </data>
   <data name="ApplyFilters" xml:space="preserve">
-    <value>Defnyddio hidlyddion</value>
+    <value>Defnyddio hidlydd</value>
   </data>
   <data name="ClearFilters" xml:space="preserve">
-    <value>Clirio hidlyddion</value>
+    <value>Clirio'r hidlyddion</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Llwyddiant</value>
