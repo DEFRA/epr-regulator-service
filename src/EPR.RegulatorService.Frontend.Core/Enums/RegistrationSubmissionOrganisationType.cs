@@ -1,7 +1,11 @@
 using System.ComponentModel;
+using System.Text.Json.Serialization;
+
+using EPR.RegulatorService.Frontend.Core.Converters;
 
 namespace EPR.RegulatorService.Frontend.Core.Enums;
 
+[JsonConverter(typeof(RegistrationSubmissionOrganisationTypeConverter))]
 public enum RegistrationSubmissionOrganisationType
 {
     [Description("RegistrationSubmissionOrganisationType.NotSpecified")]

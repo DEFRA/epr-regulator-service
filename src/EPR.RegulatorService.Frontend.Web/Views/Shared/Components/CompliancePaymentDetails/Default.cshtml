@@ -5,7 +5,9 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 
 @model CompliancePaymentDetailsViewModel
-
+@{
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
         <h2 class="govuk-summary-card__title">@Localizer["CompliancePaymentDetails.Title"]</h2>
@@ -14,6 +16,140 @@
         </ul>
     </div>
     <div class="govuk-summary-card__content" style="padding-bottom: 0px;">
-        <p class="govuk-body">Compliance scheme payment details not yet available</p>
+        @if (Model is not null)
+        {
+            <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+
+                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                    <dd class="govuk-summary-list__value" style="width: 285px;">
+                        <strong>@Localizer["CompliancePaymentDetails.Items"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value" style="width: 410px;">
+                        <strong>@Localizer["CompliancePaymentDetails.Description"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__actions" style="text-align: right; flex-grow: 1;">
+                        <strong>@Localizer["CompliancePaymentDetails.Amount"]</strong>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                    <dd class="govuk-summary-list__value" style="width: 285px;">
+                        <strong>@Localizer["CompliancePaymentDetails.ApplicationFee"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value" style="width: 410px;">
+                        @Localizer["CompliancePaymentDetails.ApplicationFeeDescription"]
+                    </dd>
+                    <payment-amount amount="@Model.ApplicationFee"></payment-amount>
+                </div>
+                @if (Model.SchemeMemberCount > 0)
+                {
+                    @if (Model.SmallProducerCount > 0)
+                    {
+                        <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                            <dd class="govuk-summary-list__value" style="width: 285px;">
+                                <strong>@Localizer["CompliancePaymentDetails.SchemeMemberDescription"]</strong>
+                            </dd>
+                            <dd class="govuk-summary-list__value" style="width: 410px;">
+                                @Localizer[Model.SmallProducerCount == 1
+                                         ? "CompliancePaymentDetails.SmallProducerDescription1"
+                                         : "CompliancePaymentDetails.SmallProducerDescription2", Model.SmallProducerCount]
+                            </dd>
+                            <payment-amount amount="@Model.SmallProducerFee"></payment-amount>
+                        </div>
+                    }
+
+                    @if (Model.LargeProducerCount > 0)
+                    {
+                        <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                            <dd class="govuk-summary-list__value" style="width: 285px;">
+                            </dd>
+                            <dd class="govuk-summary-list__value" style="width: 410px;">
+                                @Localizer[Model.LargeProducerCount == 1
+                                         ? "CompliancePaymentDetails.LargeProducerDescription1"
+                                         : "CompliancePaymentDetails.LargeProducerDescription2", Model.LargeProducerCount]
+                            </dd>
+                            <payment-amount amount="@Model.LargeProducerFee"></payment-amount>
+                        </div>
+                    }
+
+                    @if (Model.OnlineMarketPlaceCount > 0)
+                    {
+                        <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                            <dd class="govuk-summary-list__value" style="width: 285px;">
+                            </dd>
+                            <dd class="govuk-summary-list__value" style="width: 410px;">
+                                @Localizer[Model.OnlineMarketPlaceCount == 1
+                                         ? "CompliancePaymentDetails.OnlineMarketPlaceDescription1"
+                                         : "CompliancePaymentDetails.OnlineMarketPlaceDescription2", Model.OnlineMarketPlaceCount]
+                            </dd>
+                            <payment-amount amount="@Model.OnlineMarketPlaceFee"></payment-amount>
+                        </div>
+                    }
+
+                    @if (Model.SubsidiariesCompanyCount > 0)
+                    {
+                        <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                            <dd class="govuk-summary-list__value" style="width: 285px;">
+                            </dd>
+                            <dd class="govuk-summary-list__value" style="width: 410px;">
+                                @Localizer[Model.SubsidiariesCompanyCount == 1
+                                         ? "CompliancePaymentDetails.SubsidiariesCompanyDescription1"
+                                         : "CompliancePaymentDetails.SubsidiariesCompanyDescription2", Model.SubsidiariesCompanyCount]
+                            </dd>
+                            <payment-amount amount="@Model.SubsidiariesCompanyFee"></payment-amount>
+                        </div>
+                    }
+
+                    @if (Model.LateProducerCount > 0)
+                    {
+                        <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                            <dd class="govuk-summary-list__value" style="width: 285px;">
+                            </dd>
+                            <dd class="govuk-summary-list__value" style="width: 410px;">
+                                @Localizer[Model.LateProducerCount == 1
+                                         ? "CompliancePaymentDetails.LateProducerDescription1"
+                                         : "CompliancePaymentDetails.LateProducerDescription2", Model.LateProducerCount]
+                            </dd>
+                            <payment-amount amount="@Model.LateProducerFee"></payment-amount>
+                        </div>
+                    }
+                }
+                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                    <dd class="govuk-summary-list__value" style="width: 285px;">
+                        <strong>@Localizer["CompliancePaymentDetails.SubTotalDescription"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
+                    <payment-amount amount="@Model.SubTotal" property-name="SubTotal"></payment-amount>
+                </div>
+
+                @if (Model.PreviousPaymentReceived > 0)
+                {
+                    <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                        <dd class="govuk-summary-list__value" style="width: 285px;">
+                            <strong>@Localizer["CompliancePaymentDetails.PreviousPaymentReceived"]</strong>
+                        </dd>
+                        <dd class="govuk-summary-list__value" style="width: 410px;">
+                            @Localizer["CompliancePaymentDetails.PreviousPaymentReceivedDescription"]
+                        </dd>
+                        <payment-amount amount="@Model.PreviousPaymentReceived" property-name="PreviousPaymentReceived"></payment-amount>
+                    </div>
+                }
+
+                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                    <dd class="govuk-summary-list__value" style="width: 285px;">
+                        <strong>@Localizer["CompliancePaymentDetails.TotalOutstanding"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
+                    <payment-amount amount="@Model.TotalOutstanding" property-name="TotalOutstanding"></payment-amount>
+                </div>
+            </dl>
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+            @await Html.PartialAsync("Partials/_OfflinePayment", Model as PaymentDetailsViewModel)
+        }
+        else
+        {
+            <p class="govuk-body">Unable to retrieve compliance payment details</p>
+        }
     </div>
 </div>

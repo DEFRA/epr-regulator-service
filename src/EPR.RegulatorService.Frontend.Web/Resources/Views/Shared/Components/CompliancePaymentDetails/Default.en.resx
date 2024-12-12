@@ -120,79 +120,67 @@
   <data name="CompliancePaymentDetails.Amount" xml:space="preserve">
     <value>Amount</value>
   </data>
-  <data name="CompliancePaymentDetails.ApplicationProcessingFee" xml:space="preserve">
-    <value>Application processing fee</value>
+  <data name="CompliancePaymentDetails.ApplicationFee" xml:space="preserve">
+    <value>Application fee</value>
   </data>
-  <data name="CompliancePaymentDetails.ChargeableItems" xml:space="preserve">
-    <value>Chargeable items</value>
+  <data name="CompliancePaymentDetails.ApplicationFeeDescription" xml:space="preserve">
+    <value>Compliance scheme</value>
   </data>
   <data name="CompliancePaymentDetails.Description" xml:space="preserve">
     <value>Description</value>
   </data>
-  <data name="CompliancePaymentDetails.FeeForOwningAnOnlineMarketplace" xml:space="preserve">
-    <value>Fee for owning an online marketplace</value>
-  </data>
-  <data name="CompliancePaymentDetails.FeeForProducerSize" xml:space="preserve">
-    <value>Fee for producer size</value>
-  </data>
-  <data name="CompliancePaymentDetails.FeeForSubsidiaryOnlineMarketPlace" xml:space="preserve">
-    <value>Fee for the 25 subsidiaries of which 0 are an online marketplace</value>
-  </data>
   <data name="CompliancePaymentDetails.Items" xml:space="preserve">
     <value>Items</value>
   </data>
-  <data name="CompliancePaymentDetails.OfflinePaymentDetailsHint" xml:space="preserve">
-    <value>Include details of any offline payments, for example, £600.00 or £193.54. Adjustments can also be added, including for negative amounts.</value>
+  <data name="CompliancePaymentDetails.LargeProducerDescription1" xml:space="preserve">
+    <value>{0} Large producer</value>
   </data>
-  <data name="CompliancePaymentDetails.OfflinePaymentDetailsSubmit" xml:space="preserve">
-    <value>Submit offline payment</value>
+  <data name="CompliancePaymentDetails.LargeProducerDescription2" xml:space="preserve">
+    <value>{0} Large producers</value>
   </data>
-  <data name="CompliancePaymentDetails.OfflinePaymentDetailsTitle" xml:space="preserve">
-    <value>Offline payment details</value>
+  <data name="CompliancePaymentDetails.LateProducerDescription1" xml:space="preserve">
+    <value>{0} late producer fee</value>
   </data>
-  <data name="CompliancePaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
-    <value>Online marketplace fee</value>
+  <data name="CompliancePaymentDetails.LateProducerDescription2" xml:space="preserve">
+    <value>{0} late producer fees</value>
   </data>
-  <data name="CompliancePaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
-    <value>Previous payments received</value>
+  <data name="CompliancePaymentDetails.OnlineMarketPlaceDescription1" xml:space="preserve">
+    <value>{0} is an online marketplace</value>
   </data>
-  <data name="CompliancePaymentDetails.SubsidiaryFee" xml:space="preserve">
-    <value>Subsidiary fee</value>
+  <data name="CompliancePaymentDetails.OnlineMarketPlaceDescription2" xml:space="preserve">
+    <value>{0} are online marketplaces</value>
+  </data>
+  <data name="CompliancePaymentDetails.PreviousPaymentReceived" xml:space="preserve">
+    <value>Previous payments</value>
+  </data>
+  <data name="CompliancePaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
+    <value>Total payments received</value>
+  </data>
+  <data name="CompliancePaymentDetails.SchemeMemberDescription" xml:space="preserve">
+    <value>Scheme members</value>
+  </data>
+  <data name="CompliancePaymentDetails.ServiceIssueDescription" xml:space="preserve">
+    <value>Unable to retrieve compliance scheme payment details</value>
+  </data>
+  <data name="CompliancePaymentDetails.SmallProducerDescription1" xml:space="preserve">
+    <value>{0} Small producer</value>
+  </data>
+  <data name="CompliancePaymentDetails.SmallProducerDescription2" xml:space="preserve">
+    <value>{0} Small producers</value>
+  </data>
+  <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription1" xml:space="preserve">
+    <value>{0} subsidiary company</value>
+  </data>
+  <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription2" xml:space="preserve">
+    <value>{0} subsidiaries companies</value>
+  </data>
+  <data name="CompliancePaymentDetails.SubTotalDescription" xml:space="preserve">
+    <value>Sub-total</value>
   </data>
   <data name="CompliancePaymentDetails.Title" xml:space="preserve">
-    <value>Compliance Payment details</value>
-  </data>
-  <data name="CompliancePaymentDetails.TotalChargeableItems" xml:space="preserve">
-    <value>Total chargeable items</value>
+    <value>Payment details</value>
   </data>
   <data name="CompliancePaymentDetails.TotalOutstanding" xml:space="preserve">
     <value>Total outstanding</value>
-  </data>
-  <data name="CompliancePaymentDetails.TotalPaymentsReceived" xml:space="preserve">
-    <value>Total previous payments received by the regulator</value>
-  </data>
-  <data name="CompliancePaymentDetails.LateRegistrationFeeTitle" xml:space="preserve">
-    <value>Late Fee</value>
-  </data>
-  <data name="CompliancePaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
-    <value>Late fee description</value>
-  </data>
-  <data name="CompliancePaymentValidation.ValueIsTooHigh" xml:space="preserve">
-    <value>Amount must be less than £10,000,000</value>
-  </data>
-  <data name="CompliancePaymentValidation.FormatIsInvalid" xml:space="preserve">
-    <value>Amount can only include pounds and pence.</value>
-  </data>
-  <data name="CompliancePaymentValidation.TheAmountIsRequired" xml:space="preserve">
-    <value>Enter an amount</value>
-  </data>
-  <data name="CompliancePaymentValidation.InvalidCharacters" xml:space="preserve">
-    <value>Enter a valid number</value>
-  </data>
-  <data name="CompliancePaymentValidation.NonNumericCharacters" xml:space="preserve">
-    <value>Amount must be a number</value>
-  </data>
-  <data name="CompliancePaymentValidation.ValueCannotBeZero" xml:space="preserve">
-    <value>Amount cannot be zero</value>
   </data>
 </root>

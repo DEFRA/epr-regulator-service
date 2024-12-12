@@ -120,8 +120,11 @@
   <data name="ProducerPaymentDetails.Amount" xml:space="preserve">
     <value>Swm</value>
   </data>
-  <data name="ProducerPaymentDetails.ApplicationProcessingFee" xml:space="preserve">
+  <data name="ProducerPaymentDetails.ApplicationFee" xml:space="preserve">
     <value>Ffi ymgeisio</value>
+  </data>
+  <data name="ProducerPaymentDetails.ApplicationFeeDescription" xml:space="preserve">
+    <value>{0} ffi cofrestru sefydliad</value>
   </data>
   <data name="ProducerPaymentDetails.Description" xml:space="preserve">
     <value>Disgrifiad</value>
@@ -141,14 +144,8 @@
   <data name="ProducerPaymentDetails.Items" xml:space="preserve">
     <value>Eitemau</value>
   </data>
-  <data name="ProducerPaymentDetails.OfflinePaymentDetailsHint" xml:space="preserve">
-    <value>Cynhwyswch fanylion taliadau all-lein yma, er enghraifft £600 neu £193.54.  Gall addasiadau gael eu hychwanegu hefyd, gan gynnwys symiau negyddol.</value>
-  </data>
-  <data name="ProducerPaymentDetails.OfflinePaymentDetailsSubmit" xml:space="preserve">
-    <value>Cyflwyno taliad all-lein</value>
-  </data>
-  <data name="ProducerPaymentDetails.OfflinePaymentDetailsTitle" xml:space="preserve">
-    <value>Manylion taliadau all-lein</value>
+  <data name="ProducerPaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
+    <value>Ffi hwyr</value>
   </data>
   <data name="ProducerPaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
     <value>Ffi marchnad ar-lein</value>
@@ -156,13 +153,28 @@
   <data name="ProducerPaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
     <value>Taliadau blaenorol</value>
   </data>
+  <data name="ProducerPaymentDetails.ServiceIssueDescription" xml:space="preserve">
+    <value>Methu nôl manylion taliad cynhyrchydd</value>
+  </data>
   <data name="ProducerPaymentDetails.SubsidiaryFee" xml:space="preserve">
     <value>Ffi atodol</value>
+  </data>  
+  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription1" xml:space="preserve">
+    <value>{0} is-gwmni</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription2" xml:space="preserve">
+    <value>{0} is-gwmnïau</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription1" xml:space="preserve">
+    <value>Mae {0} yn farchnad ar-lein</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription2" xml:space="preserve">
+    <value>Mae {0} yn farchnadoedd ar-lein</value>
   </data>
   <data name="ProducerPaymentDetails.Title" xml:space="preserve">
     <value>Manylion y taliad</value>
   </data>
-  <data name="ProducerPaymentDetails.TotalChargeableItems" xml:space="preserve">
+  <data name="ProducerPaymentDetails.SubTotalDescription" xml:space="preserve">
     <value>Is-gyfanswm</value>
   </data>
   <data name="ProducerPaymentDetails.TotalOutstanding" xml:space="preserve">

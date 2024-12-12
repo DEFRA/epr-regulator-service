@@ -51,15 +51,15 @@
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.ApplicationDate"]
                         </span>
-                        @organisation.RegistrationDateTime.ToLongDateString()
+                        @organisation.RegistrationDateTime.ToString("dd MMMM yyyy")
                         <br />
-                        @organisation.RegistrationDateTime.ToLongTimeString()
+                        @organisation.RegistrationDateTime.ToString("HH:mm:ss")
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.Year"]
                         </span>
-                        @organisation.RegistrationDateTime.Year
+                        @organisation.RegistrationYear
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align tag">
                         <span class="responsive-table__heading" aria-hidden="true">

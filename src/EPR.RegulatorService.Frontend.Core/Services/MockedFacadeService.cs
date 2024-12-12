@@ -31,7 +31,6 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
     private static readonly List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
     private static readonly List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
     private static readonly List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
-    private static readonly List<RegistrationSubmissionOrganisationDetails> _registrationSubmissions = GenerateRegistrationSubmissionDataCollection();
 
     public async Task<string> GetTestMessageAsync()
     {
@@ -83,16 +82,16 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
         var response = new PaginatedList<OrganisationApplications>
         {
-            Items = results
+            items = results
                 .OrderByDescending(x => x.Enrolments.HasApprovedPending)
                 .ThenBy(x => x.LastUpdate)
                 .ThenBy(x => x.OrganisationName)
                 .Skip((currentPage - 1) * _config.PageSize)
                 .Take(_config.PageSize)
                 .ToList(),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
+            currentPage = currentPage,
+            totalItems = results.Count,
+            pageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
         };
 
         return Task.FromResult(response);
@@ -242,14 +241,14 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
         var response = new PaginatedList<OrganisationSearchResult>
         {
-            Items = results
+            items = results
                 .OrderByDescending(x => x.OrganisationName)
                 .Skip((currentPage - 1) * _config.PageSize)
                 .Take(_config.PageSize)
                 .ToList(),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
+            currentPage = currentPage,
+            totalItems = results.Count,
+            pageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
         };
 
         return Task.FromResult(response);
@@ -298,10 +297,10 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
         var response = new PaginatedList<T>
         {
-            Items = await FilterSubmissions<T>(results, currentPage),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = _config.PageSize
+            items = await FilterSubmissions<T>(results, currentPage),
+            currentPage = currentPage,
+            totalItems = results.Count,
+            pageSize = _config.PageSize
         };
 
         return response;
@@ -373,22 +372,12 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
     public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
     {
-        filters.PageSize ??= _config.PageSize;
-
-        // this is where the Facade is actually called
-        var results = FilterAndOrderRegistrations([.. _registrationSubmissions], filters);
-
-        if (filters.PageNumber > (int)Math.Ceiling(results.Item1 / (double)_config.PageSize))
-        {
-            filters.PageNumber = (int)Math.Ceiling(results.Item1 / (double)_config.PageSize);
-        }
-
         var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
         {
-            Items = results.Item2,
-            CurrentPage = filters.PageNumber.Value,
-            TotalItems = results.Item1,
-            PageSize = filters.PageSize.Value
+            items = [],
+            currentPage = filters.PageNumber.Value,
+            totalItems = 0,
+            pageSize = filters.PageSize.Value
         };
 
         return response;
@@ -396,13 +385,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
     public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
     {
-        var objRet = _registrationSubmissions.Find(x => x.SubmissionId == submissionId);
-
-        if (null != objRet)
-        {
-            objRet.SubmissionDetails = objRet.SubmissionDetails ?? GenerateRandomSubmissionData(objRet.SubmissionStatus);
-            objRet.PaymentDetails = objRet.PaymentDetails ?? GeneratePaymentDetails();
-        }
+        RegistrationSubmissionOrganisationDetails objRet = null;
 
         return await Task.FromResult(objRet);
     }

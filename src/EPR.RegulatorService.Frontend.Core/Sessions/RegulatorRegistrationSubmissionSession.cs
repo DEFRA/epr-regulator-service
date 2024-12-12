@@ -35,5 +35,7 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
                 }
             }
         }
+
+        public string FileDownloadRequestType { get; set; }
     }
 }

@@ -34,10 +34,10 @@
 
                 <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                     <dd class="govuk-summary-list__value" style="width: 285px;">
-                        <strong>@Localizer["ProducerPaymentDetails.ApplicationProcessingFee"]</strong>
+                        <strong>@Localizer["ProducerPaymentDetails.ApplicationFee"]</strong>
                     </dd>
                     <dd class="govuk-summary-list__value" style="width: 410px;">
-                        @Localizer["ProducerPaymentDetails.FeeForProducerSize", Model.ProducerSize]
+                        @Localizer["ProducerPaymentDetails.ApplicationFeeDescription", Model.ProducerSize]
                     </dd>
                     <payment-amount amount="@Model.ApplicationProcessingFee"></payment-amount>
                 </div>
@@ -58,7 +58,7 @@
                         <dd class="govuk-summary-list__value" style="width: 285px;">
                         </dd>
                         <dd class="govuk-summary-list__value" style="width: 410px;">
-                            @Localizer["ProducerPaymentDetails.OnelineMarketPlaceFeeDescription"]
+                            @Localizer["ProducerPaymentDetails.OnlineMarketPlaceFeeDescription"]
                         </dd>
                         <payment-amount amount="@Model.OnlineMarketplaceFee"></payment-amount>
                     </div>
@@ -70,7 +70,9 @@
                             <strong>@Localizer["ProducerPaymentDetails.SubsidiaryFee"]</strong>
                         </dd>
                         <dd class="govuk-summary-list__value" style="width: 410px;">
-                            @Localizer["ProducerPaymentDetails.SubsidiaryFeeDescription", Model.NumberOfSubsidiaries]
+                            @Localizer[Model.NumberOfSubsidiaries == 1
+                                     ? "ProducerPaymentDetails.SubsidiaryFeeDescription1" : "ProducerPaymentDetails.SubsidiaryFeeDescription2"
+                                     , Model.NumberOfSubsidiaries]
                         </dd>
                         <payment-amount amount="@Model.SubsidiaryFee"></payment-amount>
                     </div>
@@ -80,7 +82,9 @@
                             <dd class="govuk-summary-list__value" style="width: 285px;">
                             </dd>
                             <dd class="govuk-summary-list__value" style="width: 410px;">
-                                @Localizer["ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription", Model.NumberOfSubsidiariesBeingOnlineMarketplace]
+                                @Localizer[Model.NumberOfSubsidiariesBeingOnlineMarketplace == 1
+                                         ? "ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription1" : "ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription2"
+                                         , Model.NumberOfSubsidiariesBeingOnlineMarketplace]
                             </dd>
                             <payment-amount amount="@Model.SubsidiaryOnlineMarketPlaceFee"></payment-amount>
                         </div>
@@ -89,10 +93,10 @@
 
                 <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                     <dd class="govuk-summary-list__value" style="width: 285px;">
-                        <strong>@Localizer["ProducerPaymentDetails.TotalChargeableItems"]</strong>
+                        <strong>@Localizer["ProducerPaymentDetails.SubTotalDescription"]</strong>
                     </dd>
                     <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
-                    <payment-amount amount="@Model.TotalChargeableItems" property-name="TotalChargeableItems"></payment-amount>
+                    <payment-amount amount="@Model.SubTotal" property-name="SubTotal"></payment-amount>
                 </div>
 
                 @if (Model.PreviousPaymentsReceived > 0)
@@ -118,34 +122,7 @@
             </dl>
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-            @using (Html.BeginRouteForm("SubmitPaymentInfo", new { submissionId = ViewBag.OrganisationId }, FormMethod.Post))
-            {
-                <div class="govuk-!-width-one-half govuk-form-group @(errorsViewModel.HasErrorKey(nameof(Model.OfflinePayment)) ? " govuk-form-group--error" : "")">
-                    <label class="govuk-label" for="@nameof(Model.OfflinePayment)">
-                        @Localizer["ProducerPaymentDetails.OfflinePaymentDetailsTitle"]
-                    </label>
-                    <br>
-                    <div id="@nameof(Model.OfflinePayment)-hint" class="govuk-hint">
-                        @Localizer["ProducerPaymentDetails.OfflinePaymentDetailsHint"]
-                    </div>
-                    @(await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(PaymentDetailsViewModel.OfflinePayment)]))
-                    <div class="govuk-input__wrapper">
-                        <div class="govuk-input__prefix" aria-hidden="true">£</div>
-                        <input class="govuk-input govuk-input--width-10 @(errorsViewModel.HasErrorKey(nameof(Model.OfflinePayment)) ? " govuk-input--error" : "")"
-                               id="@nameof(Model.OfflinePayment)"
-                               name="@nameof(Model.OfflinePayment)"
-                               type="text"
-                               value="@Model.OfflinePayment"
-                               spellcheck="false"
-                               aria-describedby="@nameof(Model.OfflinePayment)-hint">
-                    </div>
-                    <button type="submit"
-                            class="govuk-button epr-horizontal-control epr-horizontal-control-button govuk-!-margin-right-6"
-                            data-module="govuk-button">
-                        @Localizer["ProducerPaymentDetails.OfflinePaymentDetailsSubmit"]
-                    </button>
-                </div>
-            }
+            @await Html.PartialAsync("Partials/_OfflinePayment", Model as PaymentDetailsViewModel)
         }
         else
         {

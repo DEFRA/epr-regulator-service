@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 
-using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +25,8 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(new CompliancePaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
-                Regulator = ((Core.Enums.CountryName)viewModel.NationId).GetDescription(), /*get the nation code in a new property*/
-                ComplianceSchemeMembers =
-                [
-                    new ComplianceSchemeMemberRequest { MemberId = "addhere", MemberType = "addhere" }
-                ],
+                Regulator = viewModel.NationCode,
+                ComplianceSchemeMembers = viewModel.CSOMembershipDetails?.Select(x => (ComplianceSchemeMemberRequest)x),
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*payment facade in utc format*/
             });
 
@@ -38,8 +35,32 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
                 return View(default(CompliancePaymentDetailsViewModel));
             }
 
-            // To do:: map the domain to view model as part of https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_workitems/edit/477227
-            return View(new CompliancePaymentDetailsViewModel());
+            (var smallProducers, var largeProducers) = compliancePaymentResponse.ComplianceSchemeMembers
+                .GetIndividualProducers(viewModel.CSOMembershipDetails);
+            var lateProducers = compliancePaymentResponse.ComplianceSchemeMembers.GetLateProducers();
+            var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.GetOnlineMarketPlaces();
+            var subsidiariesCompanies = compliancePaymentResponse.ComplianceSchemeMembers.GetSubsidiariesCompanies();
+
+            var compliancePaymentDetailsViewModel = new CompliancePaymentDetailsViewModel
+            {
+                ApplicationFee = ConvertToPoundsFromPence(compliancePaymentResponse.ApplicationProcessingFee),
+                SubTotal = ConvertToPoundsFromPence(compliancePaymentResponse.TotalChargeableItems),
+                PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
+                TotalOutstanding = ConvertToPoundsFromPence(compliancePaymentResponse.TotalOutstanding),
+                SchemeMemberCount = compliancePaymentResponse.ComplianceSchemeMembers.Count,
+                LargeProducerCount = largeProducers.Count,
+                LargeProducerFee = ConvertToPoundsFromPence(largeProducers.GetFees()),
+                SmallProducerCount = smallProducers.Count,
+                SmallProducerFee = ConvertToPoundsFromPence(smallProducers.GetFees()),
+                LateProducerCount = lateProducers.Count,
+                LateProducerFee = ConvertToPoundsFromPence(lateProducers.Sum()),
+                OnlineMarketPlaceCount = onlineMarketPlaces.Count,
+                OnlineMarketPlaceFee = ConvertToPoundsFromPence(onlineMarketPlaces.Sum()),
+                SubsidiariesCompanyCount = subsidiariesCompanies.Count,
+                SubsidiariesCompanyFee = ConvertToPoundsFromPence(subsidiariesCompanies.Sum())
+            };
+
+            return View(compliancePaymentDetailsViewModel);
         }
         catch (Exception ex)
         {
@@ -50,4 +71,6 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
             return View(default(CompliancePaymentDetailsViewModel));
         }
     }
+
+    private static decimal ConvertToPoundsFromPence(decimal amount) => amount / 100;
 }

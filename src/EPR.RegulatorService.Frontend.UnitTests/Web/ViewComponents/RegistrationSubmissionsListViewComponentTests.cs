@@ -51,7 +51,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
                 OrganisationType = DrinksLtdType,
                 SubmissionStatus = DrinksLtdStatus,
                 SubmissionDate = _drinksLtdRegistrationTime,
-                RegistrationYear = _drinksLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
+                RelevantYear = _drinksLtdRegistrationTime.Year
             },
             new()
             {
@@ -61,7 +61,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
                 OrganisationType = SweetsLtdType,
                 SubmissionStatus = SweetsLtdStatus,
                 SubmissionDate = _sweetsLtdRegistrationTime,
-                RegistrationYear = _sweetsLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
+                RelevantYear = _sweetsLtdRegistrationTime.Year
             },
             new()
             {
@@ -71,7 +71,7 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
                 OrganisationType = FlyByLtdType,
                 SubmissionStatus = FlyByLtdStatus,
                 SubmissionDate = _flyByLtdRegistrationTime,
-                RegistrationYear = _flyByLtdRegistrationTime.Year.ToString(CultureInfo.InvariantCulture)
+                RelevantYear = _flyByLtdRegistrationTime.Year
             }
         };
     }
@@ -80,9 +80,9 @@ public class RegistrationSubmissionListViewComponentTests : ViewComponentsTestBa
     public async Task InvokeAsync_ReturnsCorrectViewAndModel_Where_NoFiltersSet()
     {
         var submissions = _fixture.Build<PaginatedList<RegistrationSubmissionOrganisationDetails>>()
-            .With(x => x.Items, _submissions)
-            .With(x => x.CurrentPage, 1)
-            .With(x => x.TotalItems, 3)
+            .With(x => x.items, _submissions)
+            .With(x => x.currentPage, 1)
+            .With(x => x.totalItems, 3)
             .Create();
 
         _facadeServiceMock

@@ -120,6 +120,9 @@
   <data name="BackToAllSubmissions" xml:space="preserve">
     <value>Ewch yn ôl i bob cyflwyniad</value>
   </data>
+  <data name="Caption" xml:space="preserve">
+    <value>Rheoli cyflwyniadau cofrestru</value>
+  </data>
   <data name="ErrorMessage" xml:space="preserve">
     <value>Dewiswch ydw os hoffech chi ganiatáu'r cais yma am gofrestru</value>
   </data>
