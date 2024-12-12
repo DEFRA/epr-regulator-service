@@ -120,52 +120,46 @@
   <data name="FilterOptions.Title" xml:space="preserve">
     <value>Opsiynau hidlo</value>
   </data>
-  <data name="FilterResults.Title" xml:space="preserve">
-    <value>[Welsh]Filtered results:</value>
-  </data>
   <data name="SubTitle.OrganisationName" xml:space="preserve">
-    <value>[Welsh]Organisation name</value>
+    <value>Enw'r sefydliad</value>
   </data>
   <data name="SubTitle.OrganisationReference" xml:space="preserve">
-    <value>[Welsh]Organisation ID</value>
+    <value>ID y sefydliad neu rif cyfeirnod</value>
   </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
-    <value>[Welsh]Organisation Type</value>
+    <value>Math o sefydliad</value>
   </data>
   <data name="SubTitle.SubmissionStatus" xml:space="preserve">
-    <value>[Welsh]Submission status</value>
+    <value>Statws y cyflwyniad</value>
   </data>
   <data name="SubTitle.RelevantYear" xml:space="preserve">
-    <value>[Welsh]Relevant year</value>
+    <value>Y flwyddyn berthnasol</value>
   </data>
   <data name="Checkbox.OrganisationType.Compliance" xml:space="preserve">
-    <value>[Welsh]Compliance Scheme</value>
+    <value>Cynllun cydymffurfio</value>
   </data>
   <data name="Checkbox.OrganisationType.LargeProducer" xml:space="preserve">
-    <value>[Welsh]Large producer</value>
+    <value>Cynhyrchydd mawr</value>
   </data>
   <data name="Checkbox.OrganisationType.SmallProducer" xml:space="preserve">
-    <value>[Welsh]Small producer</value>
+    <value>Cynhyrchydd bach</value>
   </data>
   <data name="Checkbox.SubmissionStatus.Pending" xml:space="preserve">
-    <value>[Welsh]Pending</value>
+    <value>Ar ei hanner</value>
   </data>
   <data name="Checkbox.SubmissionStatus.Granted" xml:space="preserve">
-    <value>[Welsh]Granted</value>
+    <value>Wedi'i ganiatáu</value>
   </data>
   <data name="Checkbox.SubmissionStatus.Refused" xml:space="preserve">
-    <value>[Welsh]Refused</value>
+    <value>Wedi'i wrthod</value>
   </data>
   <data name="Checkbox.SubmissionStatus.Queried" xml:space="preserve">
-    <value>[Welsh]Queried</value>
+    <value>Wedi'i gwestiynu</value>
   </data>
   <data name="Checkbox.SubmissionStatus.Cancelled" xml:space="preserve">
-    <value>[Welsh]Cancelled</value>
-  </data>
-  <data name="Checkbox.SubmissionStatus.Updated" xml:space="preserve">
-    <value>[Welsh]Updated</value>
+    <value>Wedi'i ganslo</value>
   </data>
   <data name="Checkbox.Year-2025" xml:space="preserve">
-    <value>[Welsh]2025</value>
+    <value>2025</value>
   </data>
 </root>

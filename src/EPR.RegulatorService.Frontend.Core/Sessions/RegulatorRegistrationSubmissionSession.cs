@@ -1,15 +1,20 @@
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 namespace EPR.RegulatorService.Frontend.Core.Sessions
 {
     public class RegulatorRegistrationSubmissionSession
     {
         private bool _clearFilters = false;
-        public List<string> Journey { get; set; } = new();
+
+        public List<string> Journey { get; set; } = [];
+
         public RegistrationSubmissionOrganisationDetails SelectedRegistration { get; set; }
+
         public int? CurrentPageNumber { get; set; }
+
         public RegistrationSubmissionsFilterModel LatestFilterChoices { get; set; }
+
+        public IDictionary<Guid, RegistrationSubmissionOrganisationDetails> OrganisationDetailsChangeHistory { get; set; } = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>();
 
         public bool ClearFilters
         {
@@ -17,6 +22,7 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
             set
             {
                 _clearFilters = value;
+
                 if (value)
                 {
                     CurrentPageNumber = 1;
@@ -29,5 +35,7 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
                 }
             }
         }
+
+        public string FileDownloadRequestType { get; set; }
     }
 }

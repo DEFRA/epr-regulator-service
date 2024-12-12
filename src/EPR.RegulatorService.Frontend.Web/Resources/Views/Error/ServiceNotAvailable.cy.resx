@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ServiceNotAvailable.Headline" xml:space="preserve">
-    <value>[Welsh]There is a problem with this service.</value>
+    <value>Mae yna broblem gyda'r gwasanaeth yma.</value>
   </data>
   <data name="ServiceNotAvailable.Message1" xml:space="preserve">
-    <value>[Welsh]The issue has been recorded.</value>
+    <value>Mae'r mater wedi'i gofnodi.</value>
   </data>
   <data name="ServiceNotAvailable.Message2" xml:space="preserve">
-    <value>[Welsh]Please follow this</value>
+    <value>Dilynwch</value>
   </data>
   <data name="ServiceNotAvailable.Message3" xml:space="preserve">
-    <value>[Welsh]link</value>
+    <value>y ddolen yma</value>
   </data>
   <data name="ServiceNotAvailable.Message4" xml:space="preserve">
-    <value>[Welsh]to return to your previous page and try again.</value>
+    <value>i ddychwelyd i'ch tudalen blaenorol a rhoi cynnig arall arni.</value>
   </data>
   <data name="ServiceNotAvailable.Message5" xml:space="preserve">
-    <value>If the error persists, please contact support.</value>
+    <value>Os bydd y gwall yn parhau, cysylltwch â'r adran cymorth.</value>
   </data>
   <data name="ServiceNotAvailable.PageTitle" xml:space="preserve">
-    <value>[Welsh]Service Not Available</value>
+    <value>Nid yw'r gwasanaeth ar gael</value>
   </data>
 </root>

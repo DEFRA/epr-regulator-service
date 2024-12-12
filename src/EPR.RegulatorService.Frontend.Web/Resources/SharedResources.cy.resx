@@ -150,9 +150,6 @@
   <data name="View" xml:space="preserve">
     <value>Gweld</value>
   </data>
-  <data name="Table.Header.Company" xml:space="preserve">
-    <value />
-  </data>
   <data name="Button.Accept" xml:space="preserve">
     <value>Derbyn</value>
   </data>
@@ -175,16 +172,16 @@
     <value>WGo to home</value>
   </data>
   <data name="Link.LogIntoPowerBI" xml:space="preserve">
-    <value>mewngofnodwch i Power-BI</value>
+    <value>mewngofnodwch i Power BI</value>
   </data>
   <data name="Button.Cancel" xml:space="preserve">
     <value>Canslo</value>
   </data>
   <data name="ApplyFilters" xml:space="preserve">
-    <value>Defnyddio hidlyddion</value>
+    <value>Defnyddio hidlydd</value>
   </data>
   <data name="ClearFilters" xml:space="preserve">
-    <value>Clirio hidlyddion</value>
+    <value>Clirio'r hidlyddion</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Llwyddiant</value>
@@ -250,7 +247,7 @@
     <value>Person a ddirprwywyd</value>
   </data>
   <data name="Link.Download" xml:space="preserve">
-    <value>WDownload</value>
+    <value>lawrlwytho</value>
   </data>
   <data name="NotListed" xml:space="preserve">
     <value>WNot listed</value>
@@ -259,60 +256,90 @@
     <value>WYou can enter up to 500 characters</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.ComplianceScheme" xml:space="preserve">
-    <value>[Welsh]Compliance Scheme</value>
+    <value>Cynllun cydymffurfio</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.LargeProducer" xml:space="preserve">
-    <value>[Welsh]Large Producer</value>
+    <value>Cynhyrchydd mawr</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.NotSpecified" xml:space="preserve">
-    <value>[Welsh]Not specified</value>
+    <value>Heb ei bennu</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.SmallProducer" xml:space="preserve">
-    <value>[Welsh]Small Producer</value>
+    <value>Cynhyrchydd bach</value>
   </data>
   <data name="RegistrationSubmissionStatus.Cancelled" xml:space="preserve">
-    <value>[Welsh]Cancelled</value>
+    <value>Wedi'i ganslo</value>
   </data>
   <data name="RegistrationSubmissionStatus.Granted" xml:space="preserve">
-    <value>[Welsh]Granted</value>
+    <value>Wedi'i ganiatáu</value>
   </data>
   <data name="RegistrationSubmissionStatus.NotSpecified" xml:space="preserve">
-    <value>[Welsh]Not specified</value>
+    <value>Heb ei bennu</value>
   </data>
   <data name="RegistrationSubmissionStatus.Pending" xml:space="preserve">
-    <value>[Welsh]Pending</value>
+    <value>Ar ei hanner</value>
   </data>
   <data name="RegistrationSubmissionStatus.Queried" xml:space="preserve">
-    <value>[Welsh]Queried</value>
+    <value>Wedi'i gwestiynu</value>
   </data>
   <data name="RegistrationSubmissionStatus.Refused" xml:space="preserve">
-    <value>[Welsh]Refused</value>
+    <value>Wedi'i wrthod</value>
   </data>
   <data name="RegistrationSubmissionStatus.Updated" xml:space="preserve">
-    <value>[Welsh]Updated</value>
+    <value>Wedi'i ddiweddaru</value>
   </data>
   <data name="ServiceRole.ApprovedPerson" xml:space="preserve">
-    <value>[Welsh]Approved person</value>
+    <value>Person wedi'i gymeradwyo</value>
   </data>
   <data name="ServiceRole.DelegatedPerson" xml:space="preserve">
-    <value>[Welsh]Delegated person</value>
+    <value>Person wedi'i ddirprwyo</value>
   </data>
   <data name="ServiceRole.ProducerOther" xml:space="preserve">
-    <value>[Welsh]Producer other</value>
+    <value>Cynhyrchydd - arall</value>
   </data>
   <data name="ServiceRole.RegulatorAdmin" xml:space="preserve">
-    <value>[Welsh]Regulator admin</value>
+    <value>Rheoleiddiwr - gweinyddol</value>
   </data>
   <data name="ServiceRole.RegulatorBasic" xml:space="preserve">
-    <value>[Welsh]Regulator basic</value>
+    <value>Rheoleiddiwr - sylfaenol</value>
   </data>
   <data name="BackToAllSubmissions" xml:space="preserve">
-    <value>[Welsh]Go back to all submissions</value>
+    <value>Ewch yn ôl i bob cyflwyniad</value>
   </data>
   <data name="ManageRegistrationSubmissions.Caption" xml:space="preserve">
-    <value>[Welsh]Manage registration submissions</value>
+    <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="SaveAndContinue" xml:space="preserve">
-    <value>[Welsh]Save and continue</value>
+    <value>Cadw a pharhau</value>
+  </data>
+  <data name="Link.BackToSubmissionDetails" xml:space="preserve">
+    <value>Ewch yn ôl i bob cyflwyniad</value>
+  </data>  
+  <data name="PaymentValidation.FormatIsInvalid" xml:space="preserve">
+    <value>Rhaid i'r swm gynnwys punnoedd a cheiniogau yn unig</value>
+  </data>
+  <data name="PaymentValidation.InvalidCharacters" xml:space="preserve">
+    <value>Rhowch rif dilys</value>
+  </data>
+  <data name="PaymentValidation.NonNumericCharacters" xml:space="preserve">
+    <value>Rhaid i'r swm fod yn rhif</value>
+  </data>
+  <data name="PaymentValidation.TheAmountIsRequired" xml:space="preserve">
+    <value>Rhowch swm</value>
+  </data>
+  <data name="PaymentValidation.ValueCannotBeZero" xml:space="preserve">
+    <value>Chaiff y swm ddim bod yn sero</value>
+  </data>
+  <data name="PaymentValidation.ValueIsTooHigh" xml:space="preserve">
+    <value>Rhaid i'r swm fod yn llai na £10,000,000</value>
+  </data>
+  <data name="PaymentDetail.OfflinePaymentDetailsHint" xml:space="preserve">
+    <value>Cynhwyswch fanylion taliadau all-lein yma, er enghraifft £600 neu £193.54.  Gall addasiadau gael eu hychwanegu hefyd, gan gynnwys symiau negyddol.</value>
+  </data>
+  <data name="PaymentDetail.OfflinePaymentDetailsSubmit" xml:space="preserve">
+    <value>Cyflwyno taliad all-lein</value>
+  </data>
+  <data name="PaymentDetail.OfflinePaymentDetailsTitle" xml:space="preserve">
+    <value>Manylion taliadau all-lein</value>
   </data>
 </root>
