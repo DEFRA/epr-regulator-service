@@ -158,41 +158,31 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
         private async Task<IActionResult> ProcessOfflinePaymentAsync(RegistrationSubmissionDetailsViewModel existingModel, string offlinePayment)
         {
-            try
+            string regulator = ((CountryName)existingModel.NationId).GetDescription();
+            var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
             {
-                string regulator = ((CountryName)existingModel.NationId).GetDescription();
-                var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
-                {
-                    Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
-                    Description = "Registration fee",
-                    Reference = existingModel.ApplicationReferenceNumber,
-                    Regulator = regulator,
-                    UserId = (Guid)_currentSession.UserData.Id
-                });
+                Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
+                Description = "Registration fee",
+                Reference = existingModel.ApplicationReferenceNumber,
+                Regulator = regulator,
+                UserId = (Guid)_currentSession.UserData.Id
+            });
 
-                if (response == Core.Models.EndpointResponseStatus.Success)
-                {
-                    response = await _facadeService.SubmitRegistrationFeePaymentAsync(new RegistrationFeePaymentRequest
-                    {
-                        PaidAmount = offlinePayment,
-                        PaymentMethod = "Offline",
-                        PaymentStatus = "Paid",
-                        SubmissionId = existingModel.SubmissionId,
-                        UserId = (Guid)_currentSession.UserData.Id
-                    });
-
-                    if (response == Core.Models.EndpointResponseStatus.Success)
-                    {
-                        return Redirect(Url.RouteUrl("SubmissionDetails", new { existingModel.SubmissionId }));
-                    }
-                }
-            }
-            catch (Exception ex)
+            if (response == EndpointResponseStatus.Fail)
             {
-                _logControllerError.Invoke(logger, $"Exception received while processing offline payment {nameof(RegistrationSubmissionsController)}.{nameof(ProcessOfflinePaymentAsync)}", ex);
+                return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
             }
 
-            return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
+            await _facadeService.SubmitRegistrationFeePaymentAsync(new RegistrationFeePaymentRequest
+            {
+                PaidAmount = offlinePayment,
+                PaymentMethod = "Offline",
+                PaymentStatus = "Paid",
+                SubmissionId = existingModel.SubmissionId,
+                UserId = (Guid)_currentSession.UserData.Id
+            });
+
+            return Redirect(Url.RouteUrl("SubmissionDetails", new { existingModel.SubmissionId }));
         }
 
         private static string GetRegulatorAgencyName(int nationId) => nationId switch

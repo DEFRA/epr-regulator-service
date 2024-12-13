@@ -14,6 +14,7 @@ using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 namespace EPR.RegulatorService.Frontend.Core.Services;
@@ -45,23 +46,32 @@ public class FacadeService : IFacadeService
     private readonly ITokenAcquisition _tokenAcquisition;
     private readonly PaginationConfig _paginationConfig;
     private readonly FacadeApiConfig _facadeApiConfig;
+    private readonly ILogger<FacadeService> _logger;
 
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
 
+    private static readonly Action<ILogger, string, Exception?> _logFacadeServiceError =
+        LoggerMessage.Define<string>(
+            LogLevel.Error,
+            new EventId(1001, nameof(FacadeService)),
+            "An error occurred while processing a message: {ErrorMessage}");
+
     public FacadeService(
         HttpClient httpClient,
         ITokenAcquisition tokenAcquisition,
         IOptions<PaginationConfig> paginationOptions,
-        IOptions<FacadeApiConfig> facadeApiOptions)
+        IOptions<FacadeApiConfig> facadeApiOptions,
+        ILogger<FacadeService> logger)
     {
         _httpClient = httpClient;
         _tokenAcquisition = tokenAcquisition;
         _paginationConfig = paginationOptions.Value;
         _facadeApiConfig = facadeApiOptions.Value;
         _scopes = [_facadeApiConfig.DownstreamScope];
+        _logger = logger;
     }
 
     private static readonly Dictionary<Type, string> _typeToEndpointMap = new()
@@ -421,13 +431,19 @@ public class FacadeService : IFacadeService
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
-    public async Task<EndpointResponseStatus> SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request)
+    public async Task SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request)
     {
-        await PrepareAuthenticatedClient();
+        try
+        {
+            await PrepareAuthenticatedClient();
 
-        string path = _facadeApiConfig.Endpoints[SubmitRegistrationFeePaymentPath];
-        var response = await _httpClient.PostAsJsonAsync(path, request);
-
-        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+            string path = _facadeApiConfig.Endpoints[SubmitRegistrationFeePaymentPath];
+            var response = await _httpClient.PostAsJsonAsync(path, request);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            _logFacadeServiceError.Invoke(_logger, $"Exception occurred while submitting registration fee payment {nameof(FacadeService)}.{nameof(SubmitRegistrationFeePaymentAsync)}", ex);
+        }
     }
 }
