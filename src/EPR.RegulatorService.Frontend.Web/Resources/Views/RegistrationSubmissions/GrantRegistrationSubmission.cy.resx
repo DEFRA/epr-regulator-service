@@ -118,15 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BackToAllSubmissions" xml:space="preserve">
-    <value>[Welsh]Go back to all submissions</value>
+    <value>Ewch yn ôl i bob cyflwyniad</value>
+  </data>
+  <data name="Caption" xml:space="preserve">
+    <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="ErrorMessage" xml:space="preserve">
-    <value>[Welsh]Select yes if you want to grant this registration</value>
+    <value>Dewiswch ydw os hoffech chi ganiatáu'r cais yma am gofrestru</value>
   </data>
   <data name="PageHeading" xml:space="preserve">
-    <value>[Welsh]Are you sure you want to grant this registration?</value>
+    <value>Ydych chi'n siŵr yr hoffech chi ganiatáu'r cofrestriad yma?</value>
   </data>
   <data name="PageTitle" xml:space="preserve">
-    <value>[Welsh]Grant registration confirmation</value>
+    <value>Rhoi cadarnhad cofrestru</value>
   </data>
 </root>

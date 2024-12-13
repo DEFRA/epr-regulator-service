@@ -113,10 +113,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             _httpRequestMock.Setup(x => x.Path).Returns("/home");
 
             var authenticationServiceMock = new Mock<IAuthenticationService>();
-            authenticationServiceMock.Setup(x => x.SignInAsync(It.IsAny<HttpContext>(),It.IsAny<string>(),It.IsAny<ClaimsPrincipal>(),It.IsAny<AuthenticationProperties>())).Returns(Task.CompletedTask);
+            authenticationServiceMock.Setup(x => x.SignInAsync(It.IsAny<HttpContext>(), It.IsAny<string>(), It.IsAny<ClaimsPrincipal>(), It.IsAny<AuthenticationProperties>())).Returns(Task.CompletedTask);
 
             var serviceProviderMock = new Mock<IServiceProvider>();
-            serviceProviderMock.Setup(x => x.GetService(typeof(IAuthenticationService))).Returns(authenticationServiceMock.Object);            
+            serviceProviderMock.Setup(x => x.GetService(typeof(IAuthenticationService))).Returns(authenticationServiceMock.Object);
 
             _httpContextMock.SetupGet(x => x.RequestServices).Returns(serviceProviderMock.Object);
             _httpContextMock.Setup(x => x.Request).Returns(_httpRequestMock.Object);
@@ -129,7 +129,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
                     Id = Guid.NewGuid().ToString(),
                     Name = "org.Name",
                     OrganisationRole = "org.OrganisationRole",
-                    OrganisationType = "org.OrganisationType"
+                    OrganisationType = "org.OrganisationType",
+                    NationId = 1
                 }
             };
 
@@ -170,7 +171,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
 
         private void SetupControllerName(string controllerName)
         {
-            var controllerActionDescriptor = new ControllerActionDescriptor {ControllerName = controllerName};
+            var controllerActionDescriptor = new ControllerActionDescriptor { ControllerName = controllerName };
 
             var metadata = new List<object> { controllerActionDescriptor };
 

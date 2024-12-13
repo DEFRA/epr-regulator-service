@@ -118,72 +118,75 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PaymentDetails.Amount" xml:space="preserve">
-    <value>[Welsh]Amount</value>
+    <value>Swm</value>
   </data>
   <data name="PaymentDetails.ApplicationProcessingFee" xml:space="preserve">
     <value>[Welsh]Application processing fee</value>
   </data>
   <data name="PaymentDetails.ChargeableItems" xml:space="preserve">
-    <value>[Welsh]Chargeable items</value>
+    <value>Eitemau taladwy</value>
   </data>
   <data name="PaymentDetails.Description" xml:space="preserve">
-    <value>[Welsh]Description</value>
+    <value>Disgrifiad</value>
   </data>
   <data name="PaymentDetails.FeeForOwningAnOnlineMarketplace" xml:space="preserve">
-    <value>[Welsh]Fee for owning an online marketplace</value>
+    <value>Ffi am fod yn berchennog marchnad</value>
   </data>
   <data name="PaymentDetails.FeeForProducerSize" xml:space="preserve">
-    <value>[Welsh]Fee for producer size</value>
+    <value>Ffi maint y cynhyrchydd</value>
   </data>
   <data name="PaymentDetails.FeeForSubsidiaryOnlineMarketPlace" xml:space="preserve">
-    <value>[Welsh]Fee for the 25 subsidiaries of which 0 are an online marketplace</value>
+    <value>Ffi am yr 25 o is-gwmnïau, y mae 0 ohonyn nhw yn farchnad ar-lein</value>
   </data>
   <data name="PaymentDetails.Items" xml:space="preserve">
-    <value>[Welsh]Items</value>
+    <value>Eitemau</value>
   </data>
   <data name="PaymentDetails.OfflinePaymentDetailsHint" xml:space="preserve">
-    <value>[Welsh]Include details of any offline payments, for example, £600.00 or £193.54. Adjustments can also be added, including for negative amounts.</value>
+    <value>Cynhwyswch fanylion taliadau all-lein yma, er enghraifft £600 neu £193.54.  Gall addasiadau gael eu hychwanegu hefyd, gan gynnwys symiau negyddol.</value>
   </data>
   <data name="PaymentDetails.OfflinePaymentDetailsSubmit" xml:space="preserve">
-    <value>[Welsh]Submit offline payment</value>
+    <value>Cyflwyno taliad all-lein</value>
   </data>
   <data name="PaymentDetails.OfflinePaymentDetailsTitle" xml:space="preserve">
-    <value>[Welsh]Offline payment details</value>
+    <value>Manylion taliadau all-lein</value>
   </data>
   <data name="PaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
-    <value>[Welsh]Online marketplace fee</value>
+    <value>Ffi marchnad ar-lein</value>
   </data>
   <data name="PaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
-    <value>[Welsh]Previous payments received</value>
+    <value>Taliadau blaenorol sydd wedi dod i law</value>
   </data>
   <data name="PaymentDetails.SubsidiaryFee" xml:space="preserve">
-    <value>[Welsh]Subsidiary fee</value>
+    <value>Ffi atodol</value>
   </data>
   <data name="PaymentDetails.Title" xml:space="preserve">
-    <value>[Welsh]Payment details</value>
+    <value>Manylion y taliad</value>
   </data>
   <data name="PaymentDetails.TotalChargeableItems" xml:space="preserve">
-    <value>[Welsh]Total chargeable items</value>
+    <value>Cyfanswm yr eitemau taladwy</value>
   </data>
   <data name="PaymentDetails.TotalOutstanding" xml:space="preserve">
-    <value>[Welsh]Total outstanding</value>
+    <value>Y cyfanswm sydd heb ei dalu</value>
   </data>
   <data name="PaymentDetails.TotalPaymentsReceived" xml:space="preserve">
-    <value>[Welsh]Total previous payments received by the regulator</value>
+    <value>Cyfanswm y taliadau blaenorol sydd wedi dod i law'r rheoleiddiwr</value>
   </data>
   <data name="PaymentValidation.FormatIsInvalid" xml:space="preserve">
-    <value>[Welsh]Amount can only include pounds and pence</value>
+    <value>Rhaid i'r swm gynnwys punnoedd a cheiniogau yn unig</value>
   </data>
   <data name="PaymentValidation.ValueIsTooHigh" xml:space="preserve">
-    <value>[Welsh]Amount must be less than £10,000,000</value>
+    <value>Rhaid i'r swm fod yn llai na £10,000,000</value>
   </data>
   <data name="PaymentValidation.TheAmountIsRequired" xml:space="preserve">
-    <value>[Welsh]Enter an amount</value>
+    <value>Rhowch swm</value>
   </data>
   <data name="PaymentValidation.InvalidCharacters" xml:space="preserve">
-    <value>[Welsh]Enter a valid number</value>
+    <value>Rhowch rif dilys</value>
   </data>
   <data name="PaymentValidation.NonNumericCharacters" xml:space="preserve">
-    <value>[Welsh]Amount must be a number</value>
+    <value>Rhaid i'r swm fod yn rhif</value>
+  </data>
+  <data name="PaymentValidation.ValueCannotBeZero" xml:space="preserve">
+    <value>Chaiff y swm ddim bod yn sero</value>
   </data>
 </root>

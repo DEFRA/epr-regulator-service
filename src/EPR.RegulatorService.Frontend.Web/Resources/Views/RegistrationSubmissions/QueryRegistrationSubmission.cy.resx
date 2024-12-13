@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Error.Query" xml:space="preserve">
-    <value>[Welsh]Enter the reason you are querying this registration application</value>
+    <value>Rhowch y rheswm pam rydych chi'n cwestiynu'r cais yma am gofrestru</value>
   </data>
   <data name="Error.QueryTooLong" xml:space="preserve">
-    <value>[Welsh]Reason for querying application must be 400 characters or less</value>
+    <value>Rhaid i'r rheswm dros gwestiynu'r cais fod yn 400 o gymeriadau neu lai</value>
   </data>
   <data name="QueryRegistrationSubmission.Caption" xml:space="preserve">
-    <value>[Welsh]Manage registration submissions</value>
+    <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="QueryRegistrationSubmission.Description" xml:space="preserve">
-    <value>[Welsh]Explain the reason for querying this registration. If you query this application, the Producer or Compliance Scheme will need to resubmit their application.</value>
+    <value>Os byddwch chi'n cwestiynu'r cyflwyniad yma, bydd angen i'r sefydliad ailgyflwyno'u cais.</value>
   </data>
   <data name="QueryRegistrationSubmission.Heading" xml:space="preserve">
-    <value>[Welsh]Why are you querying this registration application?</value>
+    <value>Pam rydych chi'n cwestiynu'r cais yma am gofrestru?</value>
   </data>
   <data name="QueryRegistrationSubmission.Title" xml:space="preserve">
-    <value>[Welsh]Why are you querying this registration application?</value>
+    <value>Pam rydych chi'n cwestiynu'r cais yma am gofrestru?</value>
   </data>
 </root>

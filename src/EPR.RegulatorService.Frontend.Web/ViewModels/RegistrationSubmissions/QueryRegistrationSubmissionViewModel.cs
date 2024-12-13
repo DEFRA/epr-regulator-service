@@ -1,12 +1,12 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
-    using EPR.RegulatorService.Frontend.Web.Attributes; 
+    using System.ComponentModel.DataAnnotations;
 
     public class QueryRegistrationSubmissionViewModel
     {
         public Guid SubmissionId { get; set; }
 
-        [CharacterCount("Error.Query", "Error.QueryTooLong", 400)]
+        [StringLength(400, ErrorMessage = "Error.QueryTooLong")]
         public string? Query { get; set; }
 
     }

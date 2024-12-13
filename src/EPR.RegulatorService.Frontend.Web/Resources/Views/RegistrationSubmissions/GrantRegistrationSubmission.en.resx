@@ -120,6 +120,9 @@
   <data name="BackToAllSubmissions" xml:space="preserve">
     <value>Go back to all submissions</value>
   </data>
+  <data name="Caption" xml:space="preserve">
+    <value>Manage registration submissions</value>
+  </data>
   <data name="ErrorMessage" xml:space="preserve">
     <value>Select yes if you want to grant this registration</value>
   </data>
