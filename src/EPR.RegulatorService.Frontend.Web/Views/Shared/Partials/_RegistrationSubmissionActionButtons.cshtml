@@ -4,10 +4,22 @@
 @model RegistrationSubmissionDetailsViewModel
 
 <div class="govuk-button-group">
-    @if (Model.Status == RegistrationSubmissionStatus.Queried ||
-    Model.Status != RegistrationSubmissionStatus.Granted &&
-    Model.Status != RegistrationSubmissionStatus.Refused &&
-    Model.Status != RegistrationSubmissionStatus.Cancelled)
+    @if (Model.Status == RegistrationSubmissionStatus.Pending)
+    {
+        <a class="govuk-button " href="@Url.Action(
+                "GrantRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  submissionId = Model.SubmissionId
+                })">
+            @Localizer["RegistrationSubmissionDetails.GrantRegistration"]
+        </a>
+    }
+    else if (Model.Status == RegistrationSubmissionStatus.Queried ||
+             Model.Status != RegistrationSubmissionStatus.Granted &&
+             Model.Status != RegistrationSubmissionStatus.Refused &&
+             Model.Status != RegistrationSubmissionStatus.Cancelled)
     {
         <ul class="govuk-list govuk-list__horizontal govuk-list__last-spaced">
             <li>
@@ -19,7 +31,7 @@
                   submissionId = Model.SubmissionId
                 })">
                     @Localizer["RegistrationSubmissionDetails.GrantRegistration"]
-                </a> 
+                </a>
             </li>
             <li>
                 <a class="govuk-button govuk-button--inverse" href="@Url.Action(
@@ -41,11 +53,10 @@
                   submissionId = Model.SubmissionId
                 })">
                     @Localizer["RegistrationSubmissionDetails.RefuseRegistration"]
-                </a> 
+                </a>
             </li>
         </ul>
     }
-
     @if (Model.Status == RegistrationSubmissionStatus.Granted)
     {
         <a class="govuk-button govuk-button--secondary" href="@Url.Action(
