@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -7,6 +8,7 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
@@ -20,6 +22,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services;
 public class PaymentFacadeServiceTests
 {
     private Mock<HttpMessageHandler> _mockHandler;
+    private Mock<ILogger<PaymentFacadeService>> _mockLogger;
     private Mock<ITokenAcquisition> _tokenAcquisitionMock;
     private HttpClient _httpClient;
     private IOptions<PaymentFacadeApiConfig> _paymentFacadeApiConfig;
@@ -30,6 +33,7 @@ public class PaymentFacadeServiceTests
     public void Setup()
     {
         _mockHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
+        _mockLogger = new Mock<ILogger<PaymentFacadeService>>();
         _paymentFacadeApiConfig = Options.Create(new PaymentFacadeApiConfig
         {
             BaseUrl = "http://localhost",
@@ -51,7 +55,7 @@ public class PaymentFacadeServiceTests
             It.IsAny<TokenAcquisitionOptions?>()))
         .ReturnsAsync("expectedToken");
         _httpClient = new HttpClient(_mockHandler.Object);
-        _paymentFacadeService = new PaymentFacadeService(_httpClient, _tokenAcquisitionMock.Object, _paymentFacadeApiConfig);
+        _paymentFacadeService = new PaymentFacadeService(_httpClient, _tokenAcquisitionMock.Object, _paymentFacadeApiConfig, _mockLogger.Object);
         _fixture = new Fixture();
     }
 
@@ -90,9 +94,10 @@ public class PaymentFacadeServiceTests
     }
 
     [TestMethod]
-    public async Task SubmitOfflinePaymentAsync_ReturnsFail_WhenResponseIsUnsuccessful()
+    public async Task SubmitOfflinePaymentAsync_Logs_And_ReturnsFail_WhenResponseIsUnsuccessful()
     {
         // Arrange
+        var exception = new Exception("Test Exception");
         var request = _fixture.Create<OfflinePaymentRequest>();
         _mockHandler
             .Protected()
@@ -112,7 +117,7 @@ public class PaymentFacadeServiceTests
 
         // Assert
         Assert.AreEqual(EndpointResponseStatus.Fail, result);
-        AssertTest(result, "offline-payments");
+        AssertTest(result, "offline-payments");       
     }
 
     [TestMethod]

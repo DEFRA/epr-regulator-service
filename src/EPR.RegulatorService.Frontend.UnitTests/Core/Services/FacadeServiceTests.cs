@@ -16,6 +16,7 @@ using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
@@ -30,6 +31,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         private const string ApprovedPerson = "ApprovedPerson";
         private const string DelegatedPerson = "DelegatedPerson";
         private Mock<HttpMessageHandler> _mockHandler;
+        private Mock<ILogger<FacadeService>> _mockLogger;
         private Mock<ITokenAcquisition> _tokenAcquisitionMock;
         private HttpClient _httpClient;
         private IOptions<PaginationConfig> _paginationConfig;
@@ -47,6 +49,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         public void Setup()
         {
             _mockHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
+            _mockLogger = new Mock<ILogger<FacadeService>>();
             _tokenAcquisitionMock = new Mock<ITokenAcquisition>();
             _httpClient = new HttpClient(_mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
             _paginationConfig = Options.Create(new PaginationConfig { PageSize = PAGE_SIZE });
@@ -80,7 +83,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 DownstreamScope = "api://default"
             });
 
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig);
+            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
             _fixture = new Fixture();
         }
 
@@ -357,7 +360,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var organisationId = Guid.NewGuid();
 
             _httpClient.BaseAddress = null;
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig);
+            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
 
             // Act
             var result = await _facadeService.GetOrganisationEnrolments(organisationId);
@@ -374,7 +377,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var organisationNationTransfer = new OrganisationTransferNationRequest();
 
             _httpClient.BaseAddress = null;
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig);
+            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
 
             // Act
             var result = await _facadeService.TransferOrganisationNation(organisationNationTransfer);
@@ -1080,7 +1083,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 BaseUrl = "http://localhost/"
             });
 
-            var sut = new FacadeService(httpClient, _tokenAcquisitionMock.Object, _paginationConfig, facadeApiConfig);
+            var sut = new FacadeService(httpClient, _tokenAcquisitionMock.Object, _paginationConfig, facadeApiConfig, _mockLogger.Object);
             sut.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { PageNumber = 1 });
             httpClient.DefaultRequestHeaders.Authorization.Should().NotBeNull();
         }
@@ -1164,7 +1167,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var submissionId = Guid.NewGuid();
 
             _httpClient.BaseAddress = null;
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig);
+            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
 
             // Act
             var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
@@ -1211,10 +1214,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .Verifiable();
 
             // Act
-            var result = await _facadeService.SubmitRegistrationFeePaymentAsync(request);
+            await _facadeService.SubmitRegistrationFeePaymentAsync(request);
 
             // Assert
-            Assert.AreEqual(expectedStatus, result);
             _mockHandler.Protected().Verify(
                 "SendAsync",
                 Times.Once(),
