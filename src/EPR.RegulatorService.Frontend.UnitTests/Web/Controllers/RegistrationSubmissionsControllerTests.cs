@@ -2187,7 +2187,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 SubmissionId = submissionId,
-                IsOfflinePaymentConfirmed = false,
+                IsOfflinePaymentConfirmed = true,
                 OfflinePaymentAmount = offlinePaymentAmount
             };
 
@@ -2241,7 +2241,35 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_WhenOrgsanisationIdIsEmpty()
+        public async Task ConfirmOfflinePaymentSubmission_Post_ReturnsToSubmissionDetails_WhenNotConfirmed()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var submissionDetails = GenerateTestSubmissionDetailsViewModel(submissionId);
+            _controller.TempData["OfflinePaymentAmount"] = "200.45";
+
+            SetupJourneySession(null, submissionDetails);
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                SubmissionId = submissionId,
+                OfflinePaymentAmount = "200.45",
+                IsOfflinePaymentConfirmed = false
+            };
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.RouteName.Should().Be("SubmissionDetails");
+            var routeValues = result.RouteValues.First();
+            routeValues.Key.Should().Be("SubmissionId");
+            routeValues.Value.Should().Be(submissionId);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_WhenOrganisationIdIsEmpty()
         {
             // Arrange
             var model = new ConfirmOfflinePaymentSubmissionViewModel();
