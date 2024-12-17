@@ -490,6 +490,10 @@ public partial class RegistrationSubmissionsController(
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId }), false);
             return View(nameof(ConfirmOfflinePaymentSubmission), model);
         }
+        else if (!(bool)model.IsOfflinePaymentConfirmed)
+        {
+            return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
+        }
 
         TempData.Remove("OfflinePaymentAmount");
         return string.IsNullOrWhiteSpace(model.OfflinePaymentAmount)
