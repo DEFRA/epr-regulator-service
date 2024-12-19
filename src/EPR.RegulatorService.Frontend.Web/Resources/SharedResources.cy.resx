@@ -314,7 +314,7 @@
   </data>
   <data name="Link.BackToSubmissionDetails" xml:space="preserve">
     <value>Ewch yn ôl i bob cyflwyniad</value>
-  </data>  
+  </data>
   <data name="PaymentValidation.FormatIsInvalid" xml:space="preserve">
     <value>Rhaid i'r swm gynnwys punnoedd a cheiniogau yn unig</value>
   </data>
@@ -341,5 +341,8 @@
   </data>
   <data name="PaymentDetail.OfflinePaymentDetailsTitle" xml:space="preserve">
     <value>Manylion taliadau all-lein</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>W Export</value>
   </data>
 </root>

@@ -155,6 +155,8 @@
             }
             @Html.Hidden("isFilteredSearch", true)
             <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button">@SharedLocalizer["ApplyFilters"].Value</button>
+            <button type="submit" name="export" value="true" class="govuk-body govuk-link epr-filter-panel-control epr-link-no-visited-state govuk-!-margin-left-3" data-module="govuk-button">@SharedLocalizer["Export"].Value</button>
+
             @Html.ActionLink(SharedLocalizer["ClearFilters"].Value,
               "Registrations",
               "Registrations",
