@@ -2,8 +2,11 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
-
+using CsvHelper;
+using CsvHelper.Configuration;
+using EPR.RegulatorService.Frontend.Core.ClassMaps;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -253,6 +256,53 @@ public class FacadeService : IFacadeService
         return await response.Content.ReadFromJsonAsync<PaginatedList<T>>();
     }
 
+    public async Task<Stream> GetRegistrationSubmissionsCsv(GetRegistrationSubmissionsCsvRequest request)
+    {
+        var submissions = (
+            await GetAllOrganisationSubmissions<Registration>(
+                request.SearchOrganisationName,
+                request.SearchOrganisationId,
+                GetFilterOrganisationType(request.IsDirectProducerChecked, request.IsComplianceSchemeChecked),
+                GetFilterStatuses(request.IsPendingRegistrationChecked, request.IsAcceptedRegistrationChecked, request.IsRejectedRegistrationChecked),
+                request.SearchSubmissionYears,
+                request.SearchSubmissionPeriods)
+            ).Select(x => new SubmissionCsvModel
+            {
+                Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
+                OrganisationId = x.OrganisationReference,
+                SubmissionDate = x.RegistrationDate.ToString("d MMMM yyyy HH:mm:ss"),
+                SubmissionPeriod = x.SubmissionPeriod,
+                Status = x.Decision
+
+            }).ToList();
+
+        return await CreateSubmissionsCsv(submissions);
+    }
+
+    public async Task<Stream> GetPackagingSubmissionsCsv(GetPackagingSubmissionsCsvRequest request)
+    {
+        var submissions = (
+            await GetAllOrganisationSubmissions<Submission>(
+                request.SearchOrganisationName,
+                request.SearchOrganisationId,
+                GetFilterOrganisationType(request.IsDirectProducerChecked, request.IsComplianceSchemeChecked),
+                GetFilterStatuses(request.IsPendingSubmissionChecked, request.IsAcceptedSubmissionChecked, request.IsRejectedSubmissionChecked),
+                request.SearchSubmissionYears,
+                request.SearchSubmissionPeriods)
+            ).Select(x => new SubmissionCsvModel
+            {
+                Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
+                OrganisationId = x.OrganisationReference,
+                SubmissionDate = x.SubmittedDate.ToString("d MMMM yyyy HH:mm:ss"),
+                SubmissionPeriod = !string.IsNullOrEmpty(x.ActualSubmissionPeriod)
+                    ? string.Join(", ", x.ActualSubmissionPeriod.Split(","))
+                    : x.SubmissionPeriod,
+                Status = x.Decision
+            }).ToList();
+
+        return await CreateSubmissionsCsv(submissions);
+    }
+
     public async Task<EndpointResponseStatus> SubmitPoMDecision(RegulatorPoMDecisionCreateRequest request)
     {
         await PrepareAuthenticatedClient();
@@ -445,5 +495,149 @@ public class FacadeService : IFacadeService
         {
             _logFacadeServiceError.Invoke(_logger, $"Exception occurred while submitting registration fee payment {nameof(FacadeService)}.{nameof(SubmitRegistrationFeePaymentAsync)}", ex);
         }
+    }
+
+    private async Task<List<T>> GetAllOrganisationSubmissions<T>(
+        string? organisationName,
+        string? organisationReference,
+        OrganisationType? organisationType,
+        string[]? status,
+        int[]? submissionYears,
+        string[]? submissionPeriods) where T : AbstractSubmission
+    {
+        const int pageSize = 200;
+
+        await PrepareAuthenticatedClient();
+
+        var query = new Dictionary<string, string>
+        {
+            ["pageSize"] = pageSize.ToString(CultureInfo.InvariantCulture),
+        };
+
+        if (!string.IsNullOrEmpty(organisationName))
+        {
+            query["organisationName"] = organisationName;
+        }
+
+        if (!string.IsNullOrEmpty(organisationReference))
+        {
+            query["organisationReference"] = organisationReference;
+        }
+
+        if (organisationType.HasValue)
+        {
+            query["organisationType"] = organisationType.ToString();
+        }
+        else
+        {
+            query["organisationType"] = "All";
+        }
+
+        if (status?.Length > 0)
+        {
+            query["statuses"] = string.Join(',', status);
+        }
+
+        if (submissionYears?.Length > 0)
+        {
+            query["submissionYears"] = string.Join(',', submissionYears);
+        }
+
+        if (submissionPeriods?.Length > 0)
+        {
+            query["submissionPeriods"] = string.Join(',', submissionPeriods);
+        }
+
+        string queryString = string.Join("&", query.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
+        string endpointKey = _typeToEndpointMap[typeof(T)];
+        string path = $"{_facadeApiConfig.Endpoints[endpointKey]}?{queryString}";
+
+        var submissions = new List<T>();
+
+        var response = await _httpClient.GetAsync($"{path}&pageNumber={1}");
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<PaginatedList<T>>();
+
+        int totalPages = result.TotalPages;
+
+        if (result.items.Count > 0)
+        {
+            submissions.AddRange(result.items);
+        }
+
+        if (totalPages > 1)
+        {
+            for (int i = 2; i <= totalPages; i++)
+            {
+                response = await _httpClient.GetAsync($"{path}&pageNumber={i}");
+                response.EnsureSuccessStatusCode();
+                result = await response.Content.ReadFromJsonAsync<PaginatedList<T>>();
+
+                submissions.AddRange(result.items);
+            }
+        }
+
+        return submissions;
+    }
+
+    private OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
+    {
+        if (isDirectProducerChecked && !isComplianceSchemeChecked)
+        {
+            return OrganisationType.DirectProducer;
+        }
+
+        if (isComplianceSchemeChecked && !isDirectProducerChecked)
+        {
+            return OrganisationType.ComplianceScheme;
+        }
+
+        return null;
+    }
+
+    private string[] GetFilterStatuses(bool isPendingStatusChecked, bool isAcceptedStatusChecked, bool isRejectedStatusChecked)
+    {
+        var submissionStatuses = new List<string>();
+
+        if (isPendingStatusChecked)
+        {
+            submissionStatuses.Add("Pending");
+        }
+
+        if (isAcceptedStatusChecked)
+        {
+            submissionStatuses.Add("Accepted");
+        }
+
+        if (isRejectedStatusChecked)
+        {
+            submissionStatuses.Add("Rejected");
+        }
+
+        return submissionStatuses.ToArray();
+    }
+
+    private string FormatOrganisationName(string organisationName, OrganisationType organisationType)
+    {
+        return organisationName + " (" + (organisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme") + ")";
+    }
+
+    private async Task<Stream> CreateSubmissionsCsv(IEnumerable<SubmissionCsvModel> submissions)
+    {
+        var stream = new MemoryStream();
+
+        await using (var writer = new StreamWriter(stream, leaveOpen: true, encoding: Encoding.UTF8))
+        {
+            await using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+            {
+                csv.Context.RegisterClassMap<SubmissionClassMap>();
+                csv.WriteRecordsAsync(submissions);
+            }
+
+            await writer.FlushAsync();
+        }
+
+        stream.Position = 0;
+        return stream;
     }
 }

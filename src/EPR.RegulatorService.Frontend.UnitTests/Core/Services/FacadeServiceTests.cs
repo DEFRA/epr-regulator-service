@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -702,6 +703,140 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ItExpr.IsAny<CancellationToken>());
 
             httpResponseMessage.Dispose();
+        }
+
+        [TestMethod]
+        public async Task GetRegistrationSubmissionsCsv_ParamsAdded_ShouldPassToFacadeAndReturnCsv()
+        {
+            // Arrange
+
+            var registration = _fixture.Create<Registration>();
+            var testOrgAppList = new PaginatedList<Registration>
+            {
+                currentPage = 1,
+                pageSize = 200,
+                totalItems = 1,
+                items = new List<Registration> { registration }
+            };
+
+            string jsonContent = JsonSerializer.Serialize(testOrgAppList);
+
+            using var httpResponseMessage = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(jsonContent, Encoding.UTF8, "application/json"),
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpResponseMessage);
+
+            int[] submissionYears = new[] { 2023, 2024 };
+            string[] submissionPeriods = new[] { "January to June 2023", "January to June 2024" };
+
+            string organisationType = registration.OrganisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme";
+
+            string expectedQueryString = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024";
+            string expectedCsv = $"organisation,organisation_id,submission_date_and_time,submission_period,status\r\n{registration.OrganisationName} ({organisationType}),{registration.OrganisationReference},{registration.RegistrationDate:d MMMM yyyy HH:mm:ss},{registration.SubmissionPeriod},{registration.Decision}\r\n";
+
+            // Act
+
+            var result = await _facadeService.GetRegistrationSubmissionsCsv(new GetRegistrationSubmissionsCsvRequest
+            {
+                SearchOrganisationName = "orgName",
+                SearchOrganisationId = "orgRef",
+                IsComplianceSchemeChecked = true,
+                IsPendingRegistrationChecked = true,
+                IsAcceptedRegistrationChecked = true,
+                SearchSubmissionYears = submissionYears,
+                SearchSubmissionPeriods = submissionPeriods
+            });
+
+            using var reader = new StreamReader(result);
+            string csvString = await reader.ReadToEndAsync();
+
+            // Assert
+
+            _mockHandler.Protected()
+                .Verify<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    Times.Once(),
+                    ItExpr.Is<HttpRequestMessage>(
+                        req => req.RequestUri.AbsoluteUri.Contains("RegistrationSubmissions")
+                         && req.RequestUri.AbsoluteUri.Contains(expectedQueryString)),
+                    ItExpr.IsAny<CancellationToken>());
+
+            csvString.Should().Be(expectedCsv);
+        }
+
+        [TestMethod]
+        public async Task GetPackagingSubmissionsCsv_ParamsAdded_ShouldPassToFacadeAndReturnCsv()
+        {
+            // Arrange
+
+            var submission = _fixture.Create<Submission>();
+            var testPomAppList = new PaginatedList<Submission>
+            {
+                currentPage = 1,
+                pageSize = 200,
+                totalItems = 1,
+                items = new List<Submission> { submission }
+            };
+
+            string jsonContent = JsonSerializer.Serialize(testPomAppList);
+
+            using var httpResponseMessage = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(jsonContent, Encoding.UTF8, "application/json"),
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpResponseMessage);
+
+            int[] submissionYears = new[] { 2023, 2024 };
+            string[] submissionPeriods = new[] { "January to June 2023", "January to June 2024" };
+
+            string organisationType = submission.OrganisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme";
+
+            string expectedQueryString = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024";
+            string expectedCsv = $"organisation,organisation_id,submission_date_and_time,submission_period,status\r\n{submission.OrganisationName} ({organisationType}),{submission.OrganisationReference},{submission.SubmittedDate:d MMMM yyyy HH:mm:ss},{submission.ActualSubmissionPeriod},{submission.Decision}\r\n";
+
+            // Act
+
+            var result = await _facadeService.GetPackagingSubmissionsCsv(new GetPackagingSubmissionsCsvRequest
+            {
+                SearchOrganisationName = "orgName",
+                SearchOrganisationId = "orgRef",
+                IsComplianceSchemeChecked = true,
+                IsPendingSubmissionChecked = true,
+                IsAcceptedSubmissionChecked = true,
+                SearchSubmissionYears = submissionYears,
+                SearchSubmissionPeriods = submissionPeriods
+            });
+
+            using var reader = new StreamReader(result);
+            string csvString = await reader.ReadToEndAsync();
+
+            // Assert
+
+            _mockHandler.Protected()
+                .Verify<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    Times.Once(),
+                    ItExpr.Is<HttpRequestMessage>(
+                        req => req.RequestUri.AbsoluteUri.Contains("PomSubmissions")
+                         && req.RequestUri.AbsoluteUri.Contains(expectedQueryString)),
+                    ItExpr.IsAny<CancellationToken>());
+
+            csvString.Should().Be(expectedCsv);
         }
 
         [TestMethod]

@@ -1,3 +1,7 @@
+using CsvHelper.Configuration;
+using CsvHelper;
+
+using EPR.RegulatorService.Frontend.Core.ClassMaps;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData;
@@ -13,9 +17,12 @@ using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using Microsoft.Extensions.Options;
 
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography;
+using System.Text;
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 [ExcludeFromCodeCoverage]
@@ -306,6 +313,55 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         return response;
     }
 
+    public async Task<Stream> GetRegistrationSubmissionsCsv(GetRegistrationSubmissionsCsvRequest request)
+    {
+        var submissions = _allRegistrations.Cast<AbstractSubmission>()
+            .AsQueryable()
+            .FilterByOrganisationNameAndOrganisationReference(request.SearchOrganisationName, request.SearchOrganisationId)
+            .FilterByOrganisationType(GetFilterOrganisationType(request.IsDirectProducerChecked, request.IsComplianceSchemeChecked))
+            .FilterByStatus(GetFilterStatuses(request.IsPendingRegistrationChecked, request.IsAcceptedRegistrationChecked, request.IsRejectedRegistrationChecked))
+            .FilterBySubmissionYears(request.SearchSubmissionYears)
+            .FilterBySubmissionPeriods(request.SearchSubmissionPeriods)
+            .Cast<Registration>()
+            .Select(x => new SubmissionCsvModel
+            {
+                Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
+                OrganisationId = x.OrganisationReference,
+                SubmissionDate = x.RegistrationDate.ToString("d MMMM yyyy HH:mm:ss"),
+                SubmissionPeriod = x.SubmissionPeriod,
+                Status = x.Decision
+            }).ToList();
+
+
+        return await CreateSubmissionsCsv(submissions);
+    }
+
+    public async Task<Stream> GetPackagingSubmissionsCsv(GetPackagingSubmissionsCsvRequest request)
+    {
+        var submissions = _allSubmissions.Cast<AbstractSubmission>()
+            .AsQueryable()
+            .FilterByOrganisationNameAndOrganisationReference(request.SearchOrganisationName, request.SearchOrganisationId)
+            .FilterByOrganisationType(GetFilterOrganisationType(request.IsDirectProducerChecked, request.IsComplianceSchemeChecked))
+            .FilterByStatus(GetFilterStatuses(request.IsPendingSubmissionChecked, request.IsAcceptedSubmissionChecked, request.IsRejectedSubmissionChecked))
+            .FilterBySubmissionYears(request.SearchSubmissionYears)
+            .FilterBySubmissionPeriods(request.SearchSubmissionPeriods)
+            .Cast<Submission>()
+            .AsEnumerable()
+            .Select(x => new SubmissionCsvModel
+            {
+                Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
+                OrganisationId = x.OrganisationReference,
+                SubmissionDate = x.SubmittedDate.ToString("d MMMM yyyy HH:mm:ss"),
+                SubmissionPeriod = !string.IsNullOrEmpty(x.ActualSubmissionPeriod)
+                    ? string.Join(", ", x.ActualSubmissionPeriod.Split(","))
+                    : x.SubmissionPeriod,
+                Status = x.Decision
+            }).ToList();
+
+
+        return await CreateSubmissionsCsv(submissions);
+    }
+
     private static List<Registration> GenerateRegulatorRegistrations()
     {
         var allItems = new List<Registration>();
@@ -395,4 +451,65 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
 
     public async Task SubmitRegistrationFeePaymentAsync(
         RegistrationFeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+
+    private OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
+    {
+        if (isDirectProducerChecked && !isComplianceSchemeChecked)
+        {
+            return OrganisationType.DirectProducer;
+        }
+
+        if (isComplianceSchemeChecked && !isDirectProducerChecked)
+        {
+            return OrganisationType.ComplianceScheme;
+        }
+
+        return null;
+    }
+
+    private string[] GetFilterStatuses(bool isPendingStatusChecked, bool isAcceptedStatusChecked, bool isRejectedStatusChecked)
+    {
+        var submissionStatuses = new List<string>();
+
+        if (isPendingStatusChecked)
+        {
+            submissionStatuses.Add("Pending");
+        }
+
+        if (isAcceptedStatusChecked)
+        {
+            submissionStatuses.Add("Accepted");
+        }
+
+        if (isRejectedStatusChecked)
+        {
+            submissionStatuses.Add("Rejected");
+        }
+
+        return submissionStatuses.ToArray();
+    }
+
+    private string FormatOrganisationName(string organisationName, OrganisationType organisationType)
+    {
+        return organisationName + " (" + (organisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme") + ")";
+    }
+
+    private async Task<Stream> CreateSubmissionsCsv(IEnumerable<SubmissionCsvModel> submissions)
+    {
+        var stream = new MemoryStream();
+
+        await using (var writer = new StreamWriter(stream, leaveOpen: true, encoding: Encoding.UTF8))
+        {
+            await using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+            {
+                csv.Context.RegisterClassMap<SubmissionClassMap>();
+                csv.WriteRecordsAsync(submissions);
+            }
+
+            await writer.FlushAsync();
+        }
+
+        stream.Position = 0;
+        return stream;
+    }
 }
