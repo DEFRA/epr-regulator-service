@@ -48,6 +48,10 @@ public interface IFacadeService
         string[]? submissionPeriods,
         int currentPage = 1) where T : AbstractSubmission;
 
+    Task<Stream> GetRegistrationSubmissionsCsv(GetRegistrationSubmissionsCsvRequest request);
+
+    Task<Stream> GetPackagingSubmissionsCsv(GetPackagingSubmissionsCsvRequest request);
+
     Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request);
 
     Task<EndpointResponseStatus> SubmitRegistrationDecision(RegulatorRegistrationDecisionCreateRequest request);

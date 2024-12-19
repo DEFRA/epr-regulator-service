@@ -342,6 +342,29 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task Submissions_WithExportTrue_ReturnsCsvFile()
+        {
+            // Arrange
+            var data = new byte[1] { 1 };
+
+            _facadeServiceMock.Setup(x => x.GetPackagingSubmissionsCsv(It.IsAny<GetPackagingSubmissionsCsvRequest>()))
+                .ReturnsAsync(new MemoryStream(data));
+
+            // Act
+            var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel(), null, null, true);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<FileStreamResult>();
+
+            var fileStreamResult = result as FileStreamResult;
+            fileStreamResult.ContentType.Should().Be("text/csv");
+            fileStreamResult.FileDownloadName.Should().Be("packaging-submissions.csv");
+            fileStreamResult.FileStream.ReadByte().Should().Be(data[0]);
+            fileStreamResult.FileStream.ReadByte().Should().Be(-1);
+        }
+
+        [TestMethod]
         public async Task GivenOnSubmissionDetailsPost_WhenJourneyTypeIsAccept_ThenRedirectToAcceptSubmission()
         {
             // Arrange
