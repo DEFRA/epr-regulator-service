@@ -58,9 +58,9 @@ variables:
       value: PRD1
     - template: vars/${{ parameters.envToDeploy }}.yaml
 # Release tags reference
-  - template: pipelines/image-tags/${{ parameters.envToDeploy }}.yaml@ReleaseTags
-  - ${{ if eq(parameters.envToDeploy, 'development') }}:
-    - template: pipelines/image-tags/${{ parameters.teamName }}-${{ parameters.envToDeploy }}.yaml@ReleaseTags
+  # - template: pipelines/image-tags/${{ parameters.envToDeploy }}.yaml@ReleaseTags
+  # - ${{ if eq(parameters.envToDeploy, 'development') }}:
+  #   - template: pipelines/image-tags/${{ parameters.teamName }}-${{ parameters.envToDeploy }}.yaml@ReleaseTags
 
 resources:
   repositories:
@@ -79,10 +79,10 @@ resources:
 extends:
   template: epr-deployment-pipeline.yaml@CommonTemplates
   parameters:
-    ${{ if contains(parameters.imageTag, 'RELEASE') }}:
-      imageTag: $(DEVRWDWEBWAx411)
-    ${{ else }}:
-      imageTag: ${{ parameters.imageTag }}
+    # ${{ if contains(parameters.imageTag, 'RELEASE') }}:
+    #   imageTag: $(DEVRWDWEBWAx411)
+    # ${{ else }}:
+    imageTag: ${{ parameters.imageTag }}
     azureSubscription: $(azureSubscription)
     acrName: $(acr.azureContainerRegistryName)
     registryName: $(acr.repositoryName)
