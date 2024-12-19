@@ -25,6 +25,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 {
     [FeatureGate(FeatureFlags.ManageRegistrations)]
     [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
+    [Route("[controller]/[action]")]
     public class RegistrationsController : Controller
     {
         private const string DeclaredByComplianceScheme = "Not required (compliance scheme)";
@@ -214,7 +215,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
             var result = await _facadeService.SubmitRegistrationDecision(request);
 
-            var organisationName = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationName;
+            string organisationName = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationName;
             session.RegulatorRegistrationSession.OrganisationRegistration = null;
 
             return await SaveSessionAndRedirect(
@@ -279,7 +280,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             };
             var result = await _facadeService.SubmitRegistrationDecision(request);
 
-            var organisationName = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationName;
+            string organisationName = session.RegulatorRegistrationSession.OrganisationRegistration.OrganisationName;
             session.RegulatorRegistrationSession.OrganisationRegistration = null;
 
             return await SaveSessionAndRedirect(
@@ -352,7 +353,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             {
                 var fileStream = await response.Content.ReadAsStreamAsync();
                 var contentDisposition = response.Content.Headers.ContentDisposition;
-                var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.OrganisationDetailsFileName;
+                string fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.OrganisationDetailsFileName;
                 TempData["DownloadCompleted"] = true;
 
                 return File(fileStream, "application/octet-stream", fileName);
@@ -466,7 +467,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
 
         private static void ClearRestOfJourney(JourneySession session, string currentPagePath)
         {
-            var index = session.RegulatorRegistrationSession.Journey.IndexOf(currentPagePath);
+            int index = session.RegulatorRegistrationSession.Journey.IndexOf(currentPagePath);
 
             // this also cover if current page not found (index = -1) then it clears all pages
             session.RegulatorRegistrationSession.Journey = session.RegulatorRegistrationSession.Journey.Take(index + 1).ToList();

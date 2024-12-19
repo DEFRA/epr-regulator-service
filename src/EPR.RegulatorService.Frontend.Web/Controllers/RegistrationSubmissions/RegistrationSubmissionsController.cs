@@ -26,6 +26,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 
 [FeatureGate(FeatureFlags.ManageRegistrationSubmissions)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
+[Route("[controller]/[action]")]
 public partial class RegistrationSubmissionsController(
                 IFacadeService facade,
                 IPaymentFacadeService paymentFacade,
@@ -247,7 +248,6 @@ public partial class RegistrationSubmissionsController(
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
             _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;  // this will force a reload of the item in SubmissionDetails
-            //await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
 
             SaveSession(_currentSession);
 
@@ -719,7 +719,7 @@ public partial class RegistrationSubmissionsController(
         {
             var fileStream = await response.Content.ReadAsStreamAsync();
             var contentDisposition = response.Content.Headers.ContentDisposition;
-            var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.SubmissionDetails.Files[0].FileName ?? $"{registration.OrganisationReference}_details.csv";
+            string fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.SubmissionDetails.Files[0].FileName ?? $"{registration.OrganisationReference}_details.csv";
             TempData["DownloadCompleted"] = true;
 
             return File(fileStream, "application/octet-stream", fileName);

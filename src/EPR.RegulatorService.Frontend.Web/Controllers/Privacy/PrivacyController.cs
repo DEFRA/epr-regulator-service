@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Privacy;
 
 [AllowAnonymous]
+[Route("[controller]/[action]")]
 public class PrivacyController : Controller
 {
     private readonly ExternalUrlsOptions _urlOptions;

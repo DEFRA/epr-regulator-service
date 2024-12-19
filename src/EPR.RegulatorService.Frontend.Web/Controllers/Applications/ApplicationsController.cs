@@ -16,6 +16,7 @@ using System.Resources;
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
 {
     [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
+    [Route("[controller]/[action]")]
     public class ApplicationsController : RegulatorSessionBaseController
     {
         private const string CommentsFieldRequiredErrorMessage = "The Comments field is required.";
@@ -293,7 +294,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
 
             if (!ModelState.IsValid)
             {
-                foreach (var key in ModelState.Keys)
+                foreach (string key in ModelState.Keys)
                 {
                     var state = ModelState[key];
                     var requiredError = state.Errors.FirstOrDefault(x => x.ErrorMessage == CommentsFieldRequiredErrorMessage);

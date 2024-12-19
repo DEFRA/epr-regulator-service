@@ -1,4 +1,4 @@
-﻿using EPR.RegulatorService.Frontend.Web.Configs;
+using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Cookies;
 using EPR.RegulatorService.Frontend.Web.Extensions;
@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Cookies;
 
 [AllowAnonymous]
+[Route("[controller]/[action]")]
 public class CookiesController : Controller
 {
     private readonly ICookieService _cookieService;

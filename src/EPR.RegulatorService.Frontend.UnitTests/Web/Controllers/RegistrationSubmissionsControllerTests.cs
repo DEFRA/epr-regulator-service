@@ -655,7 +655,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -679,7 +679,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange 
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -713,7 +713,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
             _controller.Url = mockUrlHelper.Object;
 
             // Act
@@ -731,7 +731,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Act
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
             {
@@ -889,7 +889,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -945,7 +945,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -970,7 +970,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1010,7 +1010,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1047,7 +1047,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1077,7 +1077,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1123,7 +1123,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1174,7 +1174,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
@@ -1215,7 +1215,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
@@ -1261,7 +1261,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
@@ -1357,7 +1357,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1382,7 +1382,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1413,7 +1413,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1450,7 +1450,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1479,7 +1479,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1524,7 +1524,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
-            var mockUrlHelper = CreateUrlHelper(id, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(id);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -1691,14 +1691,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Email, model.SubmissionDetails.Email);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.DeclaredBy, model.SubmissionDetails.DeclaredBy);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Files.Count, model.SubmissionDetails.Files.Count);
-
-            //// Assert PaymentDetailsViewModel properties
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.ApplicationProcessingFee, model.PaymentDetails.ApplicationProcessingFee);
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.OnlineMarketplaceFee, model.PaymentDetails.OnlineMarketplaceFee);
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.SubsidiaryFee, model.PaymentDetails.SubsidiaryFee);
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.TotalChargeableItems, model.PaymentDetails.TotalChargeableItems);
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.PreviousPaymentsReceived, model.PaymentDetails.PreviousPaymentsReceived);
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.TotalOutstanding, model.PaymentDetails.TotalOutstanding);
 
             // Assert business address
             Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingName, model.BusinessAddress.BuildingName);
@@ -2517,7 +2509,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -2575,7 +2567,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -2625,7 +2617,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -2773,7 +2765,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedRejectReason = "Valid reject reason";
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.RejectReason = expectedRejectReason;
 
@@ -2946,7 +2938,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.Status = Frontend.Core.Enums.RegistrationSubmissionStatus.Refused;
@@ -2990,7 +2982,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.RejectReason = "Valid reason.";
@@ -3038,7 +3030,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.RejectReason = "Valid reason";
@@ -3082,7 +3074,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.RejectReason = "Valid reason";
@@ -3194,7 +3186,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
             var model = new CancelDateRegistrationSubmissionViewModel
             {
                 SubmissionId = submissionId,
@@ -3229,7 +3221,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = SetupJourneySessionForCancellation(submissionId, cancellationReason);
 
@@ -3289,7 +3281,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
@@ -3345,7 +3337,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.CancellationReason = "Valid cancellation reason";
@@ -3396,7 +3388,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.CancellationReason = "Valid cancellation reason";
@@ -3590,7 +3582,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
 
-            var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
+            var mockUrlHelper = CreateUrlHelper(locationUrl);
 
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             detailsModel.CancellationReason = "Valid cancellation reason";
@@ -4044,7 +4036,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #endregion RegistrationSubmissionFileDownloadSecurityWarning
 
-        private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
+        private static Mock<IUrlHelper> CreateUrlHelper(string locationUrl)
         {
             var mockUrlHelper = new Mock<IUrlHelper>();
             mockUrlHelper

@@ -73,11 +73,11 @@ public class AccountController : Controller
             return Ok();
         }
 
-        var selectedCulture = HttpContext.Session.GetString(Language.SessionLanguageKey);
+        string selectedCulture = HttpContext.Session.GetString(Language.SessionLanguageKey);
         var queryParams = !string.IsNullOrEmpty(selectedCulture) ? new { culture = selectedCulture } : null;
 
         scheme ??= OpenIdConnectDefaults.AuthenticationScheme;
-        var callbackUrl = Url.Action(action: "SignedOut", controller: "Home", values: queryParams, protocol: Request.Scheme);
+        string callbackUrl = Url.Action(action: "SignedOut", controller: "Home", values: queryParams, protocol: Request.Scheme);
         return SignOut(
              new AuthenticationProperties
              {
@@ -98,7 +98,7 @@ public class AccountController : Controller
     {
         scheme ??= OpenIdConnectDefaults.AuthenticationScheme;
 
-        var redirectUrl = Url.Content("~/");
+        string redirectUrl = Url.Content("~/");
         var properties = new AuthenticationProperties
         {
             RedirectUri = redirectUrl,

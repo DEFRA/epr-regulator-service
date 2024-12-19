@@ -8,6 +8,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Accessibility;
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Accessibility;
 
 [AllowAnonymous]
+[Route("[controller]/[action]")]
 public class AccessibilityController : Controller
 {
     private readonly ExternalUrlsOptions _urlOptions;
