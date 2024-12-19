@@ -100,22 +100,6 @@
                                     </div>
                                     <div class="epr-filter-panel-checkbox-layout">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
-                                            @Html.CheckBoxFor(x => x.IsStatusRefusedChecked,
-                                                     new { id = "is-status-refused-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-status-refused-checked-label" })
-                                            @Html.LabelFor(x => x.IsStatusRefusedChecked, Localizer["Checkbox.SubmissionStatus.Refused"].Value,
-                                                     new { id = "is-status-refused-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-status-refused-checked-check" })
-                                        </div>
-                                    </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
-                                        <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
-                                            @Html.CheckBoxFor(x => x.IsStatusQueriedChecked,
-                                                     new { id = "is-status-queried-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-status-queried-checked-label" })
-                                            @Html.LabelFor(x => x.IsStatusQueriedChecked, Localizer["Checkbox.SubmissionStatus.Queried"].Value,
-                                                     new { id = "is-status-queried-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-status-queried-checked-check" })
-                                        </div>
-                                    </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
-                                        <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsStatusCancelledChecked,
                                                      new { id = "is-status-cancelled-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-status-cancelled-checked-label" })
                                             @Html.LabelFor(x => x.IsStatusCancelledChecked, Localizer["Checkbox.SubmissionStatus.Cancelled"].Value,
@@ -145,12 +129,12 @@
                         <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button"
                                 name="filterType"
                                 value="SubmitFilters">
-                                @SharedLocalizer["ApplyFilters"].Value
+                            @SharedLocalizer["ApplyFilters"].Value
                         </button>
                         <button type="submit" class="styled-as-anchor govuk-body govuk-link epr-filter-panel-control epr-link-no-visited-state" data-module="govuk-button"
                                 name="filterType"
                                 value="ClearFilters">
-                                @SharedLocalizer["ClearFilters"].Value
+                            @SharedLocalizer["ClearFilters"].Value
                         </button>
                     </div>
                 </div>
