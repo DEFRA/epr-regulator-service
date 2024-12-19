@@ -601,17 +601,17 @@ public class FacadeService : IFacadeService
 
         if (isPendingStatusChecked)
         {
-            submissionStatuses.Add("Pending");
+            submissionStatuses.Add(nameof(OrganisationSubmissionStatus.Pending));
         }
 
         if (isAcceptedStatusChecked)
         {
-            submissionStatuses.Add("Accepted");
+            submissionStatuses.Add(nameof(OrganisationSubmissionStatus.Accepted));
         }
 
         if (isRejectedStatusChecked)
         {
-            submissionStatuses.Add("Rejected");
+            submissionStatuses.Add(nameof(OrganisationSubmissionStatus.Rejected));
         }
 
         return submissionStatuses.ToArray();
