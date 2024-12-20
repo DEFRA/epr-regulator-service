@@ -58,6 +58,7 @@ variables:
       value: PRD1
     - template: vars/${{ parameters.envToDeploy }}.yaml
 # Release tags reference
+
   - template: pipelines/image-tags/${{ parameters.envToDeploy }}.yaml@ReleaseTags
   - ${{ if eq(parameters.envToDeploy, 'development') }}:
     - template: pipelines/image-tags/${{ parameters.teamName }}-${{ parameters.envToDeploy }}.yaml@ReleaseTags
@@ -65,33 +66,29 @@ variables:
 resources:
   repositories:
     - repository: CommonTemplates
-      name: RWD-CPR-EPR4P-ADO/epr-webapps-code-deploy-templates
-      type: git
+      name: defra/epr-webapps-code-deploy-templates
+      type: github
+      endpoint: defra
       ref: main
 
     # The repo will be reference the repo by a release tag (if the imageTag parameter contains 'release') otherwise it will pull down the main branch.
     - repository: ReleaseTags
-      name: RWD-CPR-EPR4P-ADO/epr-app-config-settings
-      type: git
-      ref: ${{ replace(replace(contains(parameters.imageTag, 'RELEASE'),'True',replace('refs/tags/RELEASETAG','RELEASETAG', parameters.imageTag)),'False','main') }}
-
-    - repository: AutomationTesting #this repo contain the automation testing script
-      name: RWD-CPR-EPR4P-ADO/epr-playwright-bdd
-      type: git
-      ref: main
+       name: RWD-CPR-EPR4P-ADO/epr-app-config-settings
+       type: git
+       ref: ${{ replace(replace(contains(parameters.imageTag, 'RELEASE'),'True',replace('refs/tags/RELEASETAG','RELEASETAG', parameters.imageTag)),'False','main') }}
 
 extends:
   template: epr-deployment-pipeline.yaml@CommonTemplates
   parameters:
-    ${{ if contains(parameters.imageTag, 'RELEASE') }}:
-      imageTag: $(DEVRWDWEBWAX411)
-    ${{ else }}:
-      imageTag: ${{ parameters.imageTag }}
+     ${{ if contains(parameters.imageTag, 'RELEASE') }}:
+       imageTag: $(DEVRWDWEBWAx411)
+     ${{ else }}:
+    imageTag: ${{ parameters.imageTag }}
     azureSubscription: $(azureSubscription)
     acrName: $(acr.azureContainerRegistryName)
     registryName: $(acr.repositoryName)
     serviceName: $(serviceName)
-    ${{ if eq(parameters.envToDeploy, 'development') }}:
+    ${{ if or( eq(parameters.envToDeploy, 'development'), eq(parameters.envToDeploy, 'qa-dev4') )}}:
       targetEnvironment: 'development'
     ${{ else }}:
       targetEnvironment: '$(env)'
