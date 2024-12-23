@@ -270,7 +270,7 @@ public class FacadeService : IFacadeService
             {
                 Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
                 OrganisationId = x.OrganisationReference,
-                SubmissionDate = x.RegistrationDate.ToString("d MMMM yyyy HH:mm:ss"),
+                SubmissionDate = x.RegistrationDate.ToString("d MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
                 SubmissionPeriod = x.SubmissionPeriod,
                 Status = x.Decision
 
@@ -293,7 +293,7 @@ public class FacadeService : IFacadeService
             {
                 Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
                 OrganisationId = x.OrganisationReference,
-                SubmissionDate = x.SubmittedDate.ToString("d MMMM yyyy HH:mm:ss"),
+                SubmissionDate = x.SubmittedDate.ToString("d MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
                 SubmissionPeriod = !string.IsNullOrEmpty(x.ActualSubmissionPeriod)
                     ? string.Join(", ", x.ActualSubmissionPeriod.Split(","))
                     : x.SubmissionPeriod,
@@ -580,7 +580,7 @@ public class FacadeService : IFacadeService
         return submissions;
     }
 
-    private OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
+    private static OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
     {
         if (isDirectProducerChecked && !isComplianceSchemeChecked)
         {
@@ -595,7 +595,7 @@ public class FacadeService : IFacadeService
         return null;
     }
 
-    private string[] GetFilterStatuses(bool isPendingStatusChecked, bool isAcceptedStatusChecked, bool isRejectedStatusChecked)
+    private static string[] GetFilterStatuses(bool isPendingStatusChecked, bool isAcceptedStatusChecked, bool isRejectedStatusChecked)
     {
         var submissionStatuses = new List<string>();
 
@@ -617,12 +617,12 @@ public class FacadeService : IFacadeService
         return submissionStatuses.ToArray();
     }
 
-    private string FormatOrganisationName(string organisationName, OrganisationType organisationType)
+    private static string FormatOrganisationName(string organisationName, OrganisationType organisationType)
     {
         return organisationName + " (" + (organisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme") + ")";
     }
 
-    private async Task<Stream> CreateSubmissionsCsv(IEnumerable<SubmissionCsvModel> submissions)
+    private static async Task<Stream> CreateSubmissionsCsv(IEnumerable<SubmissionCsvModel> submissions)
     {
         var stream = new MemoryStream();
 

@@ -20,7 +20,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
 namespace EPR.RegulatorService.Frontend.Core.Services;
@@ -327,7 +326,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
             {
                 Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
                 OrganisationId = x.OrganisationReference,
-                SubmissionDate = x.RegistrationDate.ToString("d MMMM yyyy HH:mm:ss"),
+                SubmissionDate = x.RegistrationDate.ToString("d MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
                 SubmissionPeriod = x.SubmissionPeriod,
                 Status = x.Decision
             }).ToList();
@@ -351,7 +350,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
             {
                 Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
                 OrganisationId = x.OrganisationReference,
-                SubmissionDate = x.SubmittedDate.ToString("d MMMM yyyy HH:mm:ss"),
+                SubmissionDate = x.SubmittedDate.ToString("d MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
                 SubmissionPeriod = !string.IsNullOrEmpty(x.ActualSubmissionPeriod)
                     ? string.Join(", ", x.ActualSubmissionPeriod.Split(","))
                     : x.SubmissionPeriod,
@@ -452,7 +451,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
     public async Task SubmitRegistrationFeePaymentAsync(
         RegistrationFeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 
-    private OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
+    private static OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
     {
         if (isDirectProducerChecked && !isComplianceSchemeChecked)
         {
@@ -467,7 +466,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         return null;
     }
 
-    private string[] GetFilterStatuses(bool isPendingStatusChecked, bool isAcceptedStatusChecked, bool isRejectedStatusChecked)
+    private static string[] GetFilterStatuses(bool isPendingStatusChecked, bool isAcceptedStatusChecked, bool isRejectedStatusChecked)
     {
         var submissionStatuses = new List<string>();
 
@@ -489,12 +488,12 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         return submissionStatuses.ToArray();
     }
 
-    private string FormatOrganisationName(string organisationName, OrganisationType organisationType)
+    private static string FormatOrganisationName(string organisationName, OrganisationType organisationType)
     {
         return organisationName + " (" + (organisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme") + ")";
     }
 
-    private async Task<Stream> CreateSubmissionsCsv(IEnumerable<SubmissionCsvModel> submissions)
+    private static async Task<Stream> CreateSubmissionsCsv(IEnumerable<SubmissionCsvModel> submissions)
     {
         var stream = new MemoryStream();
 
