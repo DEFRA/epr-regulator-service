@@ -962,13 +962,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             string organisationType = registrations[0].OrganisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme";
 
-            string expectedQueryString = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted%2CRejected&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024";
-            string expectedCsv =
-                $"""
-                    organisation,organisation_id,submission_date_and_time,submission_period,status\r\n
-                    {registrations[0].OrganisationName} ({organisationType}),{registrations[0].OrganisationReference},{registrations[0].RegistrationDate:d MMMM yyyy HH:mm:ss},{registrations[0].SubmissionPeriod},{registrations[0].Decision}\r\n
-                    {registrations[1].OrganisationName} ({organisationType}),{registrations[1].OrganisationReference},{registrations[1].RegistrationDate:d MMMM yyyy HH:mm:ss},{registrations[1].SubmissionPeriod},{registrations[1].Decision}\r\n
-                """;
+            string expectedQueryStringPage1 = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted%2CRejected&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024&pageNumber=1";
+            string expectedQueryStringPage2 = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted%2CRejected&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024&pageNumber=2";
+            string expectedCsv = $"organisation,organisation_id,submission_date_and_time,submission_period,status\r\n{registrations[0].OrganisationName} ({organisationType}),{registrations[0].OrganisationReference},{registrations[0].RegistrationDate:d MMMM yyyy HH:mm:ss},{registrations[0].SubmissionPeriod},{registrations[0].Decision}\r\n{ registrations[1].OrganisationName} ({organisationType}),{registrations[1].OrganisationReference},{registrations[1].RegistrationDate:d MMMM yyyy HH:mm:ss},{registrations[1].SubmissionPeriod},{registrations[1].Decision}\r\n";
 
             // Act
 
@@ -995,7 +991,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(
                         req => req.RequestUri.AbsoluteUri.Contains("RegistrationSubmissions")
-                         && req.RequestUri.AbsoluteUri.Contains(expectedQueryString)),
+                         && req.RequestUri.AbsoluteUri.Contains(expectedQueryStringPage1)),
+                    ItExpr.IsAny<CancellationToken>());
+
+            _mockHandler.Protected()
+                .Verify<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    Times.Once(),
+                    ItExpr.Is<HttpRequestMessage>(
+                        req => req.RequestUri.AbsoluteUri.Contains("RegistrationSubmissions")
+                         && req.RequestUri.AbsoluteUri.Contains(expectedQueryStringPage2)),
                     ItExpr.IsAny<CancellationToken>());
 
             csvString.Should().Be(expectedCsv);
