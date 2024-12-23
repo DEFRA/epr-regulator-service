@@ -909,6 +909,99 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        public async Task GetRegistrationSubmissionsCsv_ParamsAdded_WithMultiplePages_ShouldPassToFacadeAndReturnCsv()
+        {
+            // Arrange
+
+            var registrations = _fixture
+                .Build<Registration>()
+                .With(x => x.OrganisationType, OrganisationType.DirectProducer)
+                .CreateMany(2)
+                .ToList();
+
+            var testOrgAppListPage1 = new PaginatedList<Registration>
+            {
+                currentPage = 1,
+                pageSize = 1,
+                totalItems = registrations.Count,
+                items = new List<Registration> { registrations[0] }
+            };
+
+            var testOrgAppListPage2 = new PaginatedList<Registration>
+            {
+                currentPage = 2,
+                pageSize = 1,
+                totalItems = registrations.Count,
+                items = new List<Registration> { registrations[1] }
+            };
+
+            string jsonContentPage1 = JsonSerializer.Serialize(testOrgAppListPage1);
+            string jsonContentPage2 = JsonSerializer.Serialize(testOrgAppListPage2);
+
+            using var httpResponseMessagePage1 = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(jsonContentPage1, Encoding.UTF8, "application/json"),
+            };
+            using var httpResponseMessagePage2 = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(jsonContentPage2, Encoding.UTF8, "application/json"),
+            };
+
+            _mockHandler.Protected()
+                .SetupSequence<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(httpResponseMessagePage1)
+                .ReturnsAsync(httpResponseMessagePage2);
+
+            int[] submissionYears = new[] { 2023, 2024 };
+            string[] submissionPeriods = new[] { "January to June 2023", "January to June 2024" };
+
+            string organisationType = registrations[0].OrganisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme";
+
+            string expectedQueryString = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted%2CRejected&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024";
+            string expectedCsv =
+                $"""
+                    organisation,organisation_id,submission_date_and_time,submission_period,status\r\n
+                    {registrations[0].OrganisationName} ({organisationType}),{registrations[0].OrganisationReference},{registrations[0].RegistrationDate:d MMMM yyyy HH:mm:ss},{registrations[0].SubmissionPeriod},{registrations[0].Decision}\r\n
+                    {registrations[1].OrganisationName} ({organisationType}),{registrations[1].OrganisationReference},{registrations[1].RegistrationDate:d MMMM yyyy HH:mm:ss},{registrations[1].SubmissionPeriod},{registrations[1].Decision}\r\n
+                """;
+
+            // Act
+
+            var result = await _facadeService.GetRegistrationSubmissionsCsv(new GetRegistrationSubmissionsCsvRequest
+            {
+                SearchOrganisationName = "orgName",
+                SearchOrganisationId = "orgRef",
+                IsComplianceSchemeChecked = true,
+                IsPendingRegistrationChecked = true,
+                IsAcceptedRegistrationChecked = true,
+                IsRejectedRegistrationChecked = true,
+                SearchSubmissionYears = submissionYears,
+                SearchSubmissionPeriods = submissionPeriods
+            });
+
+            using var reader = new StreamReader(result);
+            string csvString = await reader.ReadToEndAsync();
+
+            // Assert
+
+            _mockHandler.Protected()
+                .Verify<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    Times.Once(),
+                    ItExpr.Is<HttpRequestMessage>(
+                        req => req.RequestUri.AbsoluteUri.Contains("RegistrationSubmissions")
+                         && req.RequestUri.AbsoluteUri.Contains(expectedQueryString)),
+                    ItExpr.IsAny<CancellationToken>());
+
+            csvString.Should().Be(expectedCsv);
+        }
+
+        [TestMethod]
         public async Task GetPackagingSubmissionsCsv_ParamsAdded_ShouldPassToFacadeAndReturnCsv()
         {
             // Arrange
