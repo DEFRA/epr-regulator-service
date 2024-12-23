@@ -115,7 +115,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.IsOnlineMarketPlace, request.IsOnlineMarketplace);
             Assert.AreEqual(dto.IsLateFeeApplicable, request.IsLateFeeApplicable);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
-            Assert.AreEqual(dto.NumberOfSubsidiaries, request.NoOfSubsidiariesOnlineMarketplace); // Maps dto.NumberOfSubsidiaries to NoOfSubsidiariesOnlineMarketplace
+            Assert.AreEqual(dto.NoOfSubsidiariesOnlineMarketplace, request.NoOfSubsidiariesOnlineMarketplace);
         }
 
         [TestMethod]
