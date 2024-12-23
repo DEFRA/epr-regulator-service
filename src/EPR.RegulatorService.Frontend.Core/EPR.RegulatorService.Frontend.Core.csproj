@@ -31,7 +31,7 @@
     </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.cpd.exclusions">
       <Value>
-        **/MockedAcceptedRegistrations.cs,**/MockedPendingRegistrations.cs,**/MockedRejectedRegistrations.cs,**/ServiceProviderExtension.cs,**/MockedAcceptedSubmissions.cs,**/MockedPendingSubmissions.cs,**/MockedRejectedSubmissions.cs,**/OrganisationResponse.cs,**/TransferDetails.cs,**/User.cs,**/UserDataResponse.cs,**/UserDetails.cs,**/UserEnrolment.cs,**/MockedFacadeService.cs,**/JourneySession.cs,**/PermissionManagementSessionItem.cs,**/RejectUserJourneyData.cs,**/MockedAcceptedRegistrations.cs,**/RegistrationFilters.cs,**/Registration.cs
+        **/MockedAcceptedRegistrations.cs,**/MockedPendingRegistrations.cs,**/MockedRejectedRegistrations.cs,**/ServiceProviderExtension.cs,**/MockedAcceptedSubmissions.cs,**/MockedPendingSubmissions.cs,**/MockedRejectedSubmissions.cs,**/OrganisationResponse.cs,**/TransferDetails.cs,**/User.cs,**/UserDataResponse.cs,**/UserDetails.cs,**/UserEnrolment.cs,**/MockedFacadeService.cs,**/JourneySession.cs,**/PermissionManagementSessionItem.cs,**/RejectUserJourneyData.cs,**/MockedAcceptedRegistrations.cs,**/RegistrationFilters.cs,**/Registration.cs,**/GetRegistrationSubmissionsCsvRequest.cs,**/FacadeService.cs
       </Value>
     </SonarQubeSetting>
   </ItemGroup>
