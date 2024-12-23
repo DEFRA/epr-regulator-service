@@ -739,7 +739,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             string organisationType = registration.OrganisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme";
 
-            string expectedQueryString = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024";
+            string expectedQueryString = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted%2CRejected&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024";
             string expectedCsv = $"organisation,organisation_id,submission_date_and_time,submission_period,status\r\n{registration.OrganisationName} ({organisationType}),{registration.OrganisationReference},{registration.RegistrationDate:d MMMM yyyy HH:mm:ss},{registration.SubmissionPeriod},{registration.Decision}\r\n";
 
             // Act
@@ -751,6 +751,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 IsComplianceSchemeChecked = true,
                 IsPendingRegistrationChecked = true,
                 IsAcceptedRegistrationChecked = true,
+                IsRejectedRegistrationChecked = true,
                 SearchSubmissionYears = submissionYears,
                 SearchSubmissionPeriods = submissionPeriods
             });
@@ -806,7 +807,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             string organisationType = submission.OrganisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme";
 
-            string expectedQueryString = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024";
+            string expectedQueryString = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted%2CRejected&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024";
             string expectedCsv = $"organisation,organisation_id,submission_date_and_time,submission_period,status\r\n{submission.OrganisationName} ({organisationType}),{submission.OrganisationReference},{submission.SubmittedDate:d MMMM yyyy HH:mm:ss},{submission.ActualSubmissionPeriod},{submission.Decision}\r\n";
 
             // Act
@@ -818,6 +819,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 IsComplianceSchemeChecked = true,
                 IsPendingSubmissionChecked = true,
                 IsAcceptedSubmissionChecked = true,
+                IsRejectedSubmissionChecked = true,
                 SearchSubmissionYears = submissionYears,
                 SearchSubmissionPeriods = submissionPeriods
             });
