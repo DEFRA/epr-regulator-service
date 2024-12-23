@@ -58,8 +58,35 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             bool? clearFilters,
             EndpointResponseStatus? rejectRegistrationResult = null,
             EndpointResponseStatus? acceptRegistrationResult = null,
-            string? organisationName = null)
+            string? organisationName = null,
+            bool? export = null)
         {
+            registrationFiltersModel.SearchSubmissionYears = registrationFiltersModel.SearchSubmissionYears
+                ?.Where(x => _submissionFiltersOptions.Years.Contains(x))
+                .ToArray();
+
+            registrationFiltersModel.SearchSubmissionPeriods = registrationFiltersModel.SearchSubmissionPeriods
+                ?.Where(x => _submissionFiltersOptions.OrgPeriods.Contains(x))
+                .ToArray();
+
+            if (export == true)
+            {
+                var stream = await _facadeService.GetRegistrationSubmissionsCsv(new GetRegistrationSubmissionsCsvRequest
+                {
+                   SearchOrganisationName = registrationFiltersModel.SearchOrganisationName,
+                   SearchOrganisationId = registrationFiltersModel.SearchOrganisationId,
+                   IsDirectProducerChecked = registrationFiltersModel.IsDirectProducerChecked,
+                   IsComplianceSchemeChecked = registrationFiltersModel.IsComplianceSchemeChecked,
+                   IsPendingRegistrationChecked = registrationFiltersModel.IsPendingRegistrationChecked,
+                   IsAcceptedRegistrationChecked = registrationFiltersModel.IsAcceptedRegistrationChecked,
+                   IsRejectedRegistrationChecked = registrationFiltersModel.IsRejectedRegistrationChecked,
+                   SearchSubmissionPeriods = registrationFiltersModel.SearchSubmissionPeriods,
+                   SearchSubmissionYears = registrationFiltersModel.SearchSubmissionYears
+                });
+
+                return File(stream, "text/csv", "registration-submissions.csv");
+            }
+
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             session ??= new JourneySession();
             session.RegulatorRegistrationSession.RegistrationFiltersModel ??= new RegistrationFiltersModel();
@@ -70,14 +97,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             }
 
             SetCustomBackLink();
-
-            registrationFiltersModel.SearchSubmissionYears = registrationFiltersModel.SearchSubmissionYears
-                ?.Where(x => _submissionFiltersOptions.Years.Contains(x))
-                .ToArray();
-
-            registrationFiltersModel.SearchSubmissionPeriods = registrationFiltersModel.SearchSubmissionPeriods
-                ?.Where(x => _submissionFiltersOptions.OrgPeriods.Contains(x))
-                .ToArray();
 
             SetOrResetFilterValuesInSession(session, registrationFiltersModel);
 

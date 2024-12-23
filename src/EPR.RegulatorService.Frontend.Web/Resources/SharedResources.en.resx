@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -347,5 +347,8 @@
   </data>
   <data name="PaymentDetail.OfflinePaymentDetailsTitle" xml:space="preserve">
     <value>Offline payment details</value>
-  </data>  
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
 </root>
