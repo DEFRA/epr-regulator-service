@@ -1,7 +1,5 @@
-using System.Globalization;
 using System.Threading.Tasks;
 
-using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -26,11 +24,11 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
-                NoOfSubsidiariesOnlineMarketplace = viewModel.NoOfSubsidiariesOnlineMarketPlace,
-                NumberOfSubsidiaries = viewModel.NoOfSubsidiaries,
-                IsLateFeeApplicable = viewModel.IsLateFeeApplicable,
-                IsProducerOnlineMarketplace = viewModel.IsProducerOnlineMarketplace,
-                ProducerType = viewModel.OrganisationSize,
+                NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
+                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
+                IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
+                IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
+                ProducerType = viewModel.ProducerDetails.ProducerType,
                 Regulator = viewModel.NationCode,
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime)
             });
@@ -50,8 +48,8 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
                 TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
-                ProducerSize = $"{char.ToUpperInvariant(viewModel.OrganisationSize[0])}{viewModel.OrganisationSize[1..]}",
-                NumberOfSubsidiaries = viewModel.NoOfSubsidiaries,
+                ProducerSize = $"{char.ToUpperInvariant(viewModel.ProducerDetails.ProducerType[0])}{viewModel.ProducerDetails.ProducerType[1..]}",
+                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
                 NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount
             };
 
@@ -65,6 +63,5 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
             return View(default(ProducerPaymentDetailsViewModel));
         }
     }
-
     private static decimal ConvertToPoundsFromPence(decimal amount) => amount / 100;
 }

@@ -5,6 +5,7 @@
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.Helpers
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 
 @model RegistrationSubmissionDetailsViewModel
@@ -75,14 +76,16 @@
                 </div>
 
                 @await Component.InvokeAsync("SubmissionDetails", new { model = Model.SubmissionDetails })
-
+                @{
+                    var model = Model as BaseSubmissionDetailsViewModel;
+                }
                 @if (Model.OrganisationType == RegistrationSubmissionOrganisationType.compliance)
                 {
-                  @await Component.InvokeAsync("CompliancePaymentDetails", new { viewModel = Model })
+                    @await Component.InvokeAsync("CompliancePaymentDetails", new { viewModel = @model })
                 }
                 else
                 {
-                    @await Component.InvokeAsync("ProducerPaymentDetails", new { viewModel = Model })
+                    @await Component.InvokeAsync("ProducerPaymentDetails", new { viewModel = @model })
                 }
 
                 @await Component.InvokeAsync("RegistrationSubmissionComments",
