@@ -14,6 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="EPR.Common.Authorization" Version="1.0.17" />
     <PackageReference Include="libphonenumber-csharp" Version="8.13.44" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
@@ -30,7 +31,7 @@
     </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.cpd.exclusions">
       <Value>
-        **/MockedAcceptedRegistrations.cs,**/MockedPendingRegistrations.cs,**/MockedRejectedRegistrations.cs,**/ServiceProviderExtension.cs,**/MockedAcceptedSubmissions.cs,**/MockedPendingSubmissions.cs,**/MockedRejectedSubmissions.cs,**/OrganisationResponse.cs,**/TransferDetails.cs,**/User.cs,**/UserDataResponse.cs,**/UserDetails.cs,**/UserEnrolment.cs,**/MockedFacadeService.cs,**/JourneySession.cs,**/PermissionManagementSessionItem.cs,**/RejectUserJourneyData.cs,**/MockedAcceptedRegistrations.cs,**/RegistrationFilters.cs,**/Registration.cs
+        **/MockedAcceptedRegistrations.cs,**/MockedPendingRegistrations.cs,**/MockedRejectedRegistrations.cs,**/ServiceProviderExtension.cs,**/MockedAcceptedSubmissions.cs,**/MockedPendingSubmissions.cs,**/MockedRejectedSubmissions.cs,**/OrganisationResponse.cs,**/TransferDetails.cs,**/User.cs,**/UserDataResponse.cs,**/UserDetails.cs,**/UserEnrolment.cs,**/MockedFacadeService.cs,**/JourneySession.cs,**/PermissionManagementSessionItem.cs,**/RejectUserJourneyData.cs,**/MockedAcceptedRegistrations.cs,**/RegistrationFilters.cs,**/Registration.cs,**/GetRegistrationSubmissionsCsvRequest.cs,**/FacadeService.cs
       </Value>
     </SonarQubeSetting>
   </ItemGroup>
