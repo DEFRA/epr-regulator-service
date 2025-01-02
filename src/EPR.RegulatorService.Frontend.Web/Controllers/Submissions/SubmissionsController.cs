@@ -19,8 +19,6 @@ using EPR.RegulatorService.Frontend.Web.Helpers;
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
-
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 {
     [FeatureGate(FeatureFlags.ManagePoMSubmissions)]
@@ -283,7 +281,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                     });
             }
 
-            SetBackLink(session, PagePath.ConfirmOfflinePaymentSubmission);
+            SetBackLink(PagePath.SubmissionDetails);
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
@@ -467,6 +465,19 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         private void SetBackLink(JourneySession session, string currentPagePath) =>
             ViewBag.BackLinkToDisplay =
                 session.RegulatorSubmissionSession.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
+
+        private void SetBackLink(string path, bool hasPathBase = true)
+        {
+            if (hasPathBase)
+            {
+                string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
+                ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
+            }
+            else
+            {
+                ViewBag.BackLinkToDisplay = path;
+            }
+        }
 
         private static void ClearFilters(JourneySession session)
         {
