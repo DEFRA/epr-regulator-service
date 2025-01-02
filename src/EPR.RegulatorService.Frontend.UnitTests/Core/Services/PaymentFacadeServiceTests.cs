@@ -140,7 +140,7 @@ public class PaymentFacadeServiceTests
             .Verifiable();
 
         // Act
-        var result = await _paymentFacadeService.GetProducerPaymentDetailsAsync(request);
+        var result = await _paymentFacadeService.GetProducerPaymentDetailsAsync<ProducerPaymentResponse>(request);
 
         // Assert
         AssertTest<ProducerPaymentResponse>(result, "producer/registration-fee");
@@ -166,7 +166,7 @@ public class PaymentFacadeServiceTests
             .Verifiable();
 
         // Act
-        var result = await _paymentFacadeService.GetCompliancePaymentDetailsAsync(request);
+        var result = await _paymentFacadeService.GetCompliancePaymentDetailsAsync<CompliancePaymentResponse>(request);
 
         // Assert
         AssertTest<CompliancePaymentResponse>(result, "compliance-scheme/registration-fee");

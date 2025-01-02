@@ -60,24 +60,24 @@ public class PaymentFacadeService : IPaymentFacadeService
         return EndpointResponseStatus.Fail;
     }
 
-    public async Task<ProducerPaymentResponse?> GetProducerPaymentDetailsAsync(ProducerPaymentRequest request)
+    public async Task<T?> GetProducerPaymentDetailsAsync<T>(ProducerPaymentRequest request)
     {
         await SetAuthorisationHeaderAsync();
 
         var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[GetProducerPaymentDetailsPath], request);
         response.EnsureSuccessStatusCode();
 
-        return JsonSerializer.Deserialize<ProducerPaymentResponse>(await response.Content.ReadAsStringAsync());
+        return JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync());
     }
 
-    public async Task<CompliancePaymentResponse?> GetCompliancePaymentDetailsAsync(CompliancePaymentRequest request)
+    public async Task<T?> GetCompliancePaymentDetailsAsync<T>(CompliancePaymentRequest request)
     {
         await SetAuthorisationHeaderAsync();
 
         var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[GetCompliancePaymentDetailsPath], request);
         response.EnsureSuccessStatusCode();
 
-        return JsonSerializer.Deserialize<CompliancePaymentResponse>(await response.Content.ReadAsStringAsync());
+        return JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync());
     }
 
     private async Task SetAuthorisationHeaderAsync()

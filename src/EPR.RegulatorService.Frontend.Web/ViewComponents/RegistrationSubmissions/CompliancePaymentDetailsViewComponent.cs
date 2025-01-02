@@ -22,7 +22,8 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
     {
         try
         {
-            var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(new CompliancePaymentRequest
+            var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync<CompliancePaymentResponse>
+                (new CompliancePaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
                 Regulator = viewModel.NationCode,

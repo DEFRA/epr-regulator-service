@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
@@ -22,7 +23,7 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
     {
         try
         {
-            var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
+            var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync<PackagingProducerPaymentResponse>(new ProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber ?? "PEPR10577624P1",
                 NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails?.NoOfSubsidiariesOnlineMarketPlace ?? 0,
@@ -41,7 +42,7 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
 
             var packagingProducerPaymentDetailsViewModel = new PackagingProducerPaymentDetailsViewModel
             {
-                ResubmissionFee = 0.00M,
+                ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
                 SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
                 TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
