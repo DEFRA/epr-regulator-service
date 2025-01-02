@@ -236,7 +236,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         }
 
         [HttpPost]
-        [Route(PagePath.SubmissionDetails, Name = "SubmitPaymentInformation")]
+        [Route(PagePath.SubmissionDetails, Name = "ResubmissionPaymentInfo")]
         public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
@@ -269,7 +269,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
 
-            string offlinePayment = TempData.Peek("OfflinePaymentAmount").ToString();
+            string offlinePayment = TempData.Peek("OfflinePaymentAmount")?.ToString() ?? "10.00";
 
             if (string.IsNullOrWhiteSpace(offlinePayment))
             {
@@ -308,7 +308,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             }
             else if (!(bool)model.IsOfflinePaymentConfirmed)
             {
-                return RedirectToRoute("SubmissionDetails", new { submission.SubmissionId });
+                return RedirectToAction("SubmissionDetails");
             }
 
             TempData.Remove("OfflinePaymentAmount");

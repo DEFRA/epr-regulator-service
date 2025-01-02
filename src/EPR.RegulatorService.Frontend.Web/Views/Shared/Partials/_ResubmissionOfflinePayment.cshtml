@@ -1,0 +1,37 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+
+@model PaymentDetailsViewModel
+@{
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), SharedLocalizer);
+}
+
+@using (Html.BeginRouteForm("ResubmissionPaymentInfo", new { submissionId = ViewBag.OrganisationId }, FormMethod.Post))
+{
+    <div class="govuk-!-width-one-half govuk-form-group @(errorsViewModel.HasErrorKey(nameof(Model.OfflinePayment)) ? " govuk-form-group--error" : "")">
+        <label class="govuk-label" for="@nameof(Model.OfflinePayment)">
+            @SharedLocalizer["PaymentDetail.OfflinePaymentDetailsTitle"]
+        </label>
+        <br>
+        <div id="@nameof(Model.OfflinePayment)-hint" class="govuk-hint">
+            @SharedLocalizer["PaymentDetail.OfflinePaymentDetailsHint"]
+        </div>
+        @(await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(PaymentDetailsViewModel.OfflinePayment)]))
+        <div class="govuk-input__wrapper">
+            <div class="govuk-input__prefix" aria-hidden="true">£</div>
+            <input class="govuk-input govuk-input--width-10 @(errorsViewModel.HasErrorKey(nameof(Model.OfflinePayment)) ? " govuk-input--error" : "")"
+                   id="@nameof(Model.OfflinePayment)"
+                   name="@nameof(Model.OfflinePayment)"
+                   type="text"
+                   value="@Model.OfflinePayment"
+                   spellcheck="false"
+                   aria-describedby="@nameof(Model.OfflinePayment)-hint">
+        </div>
+        <button type="submit"
+                class="govuk-button epr-horizontal-control epr-horizontal-control-button govuk-!-margin-right-6"
+                data-module="govuk-button">
+            @SharedLocalizer["PaymentDetail.OfflinePaymentDetailsSubmit"]
+        </button>
+    </div>
+}
