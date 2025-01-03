@@ -31,56 +31,10 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*payment facade in utc format*/
             });
 
-            ////var csoMembershipDetailsDtos = new List<ComplianceSchemeMemberRequest> {
-            ////    new() {
-            ////        IsLateFeeApplicable = true,
-            ////        IsOnlineMarketplace = true,
-            ////        MemberId = "109223",
-            ////        MemberType = "large",
-            ////        NoOfSubsidiariesOnlineMarketplace = 23,
-            ////        NumberOfSubsidiaries = 68
-            ////    },
-            ////    new() {
-            ////        IsLateFeeApplicable = true,
-            ////        IsOnlineMarketplace = true,
-            ////        MemberId = "109222",
-            ////        MemberType = "large",
-            ////        NoOfSubsidiariesOnlineMarketplace = 60,
-            ////        NumberOfSubsidiaries = 105
-            ////    }
-            ////};
-
-            ////var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync<PackagingCompliancePaymentResponse>(new CompliancePaymentRequest
-            ////{
-            ////    ApplicationReferenceNumber = "PEPR10380624P1",
-            ////    Regulator = "GB-ENG",
-            ////    ComplianceSchemeMembers = csoMembershipDetailsDtos,
-            ////    SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(new DateTime(2024, 12, 20, 15, 01, 37, DateTimeKind.Utc)) /*payment facade in utc format*/
-            ////});
-
             if (compliancePaymentResponse is null)
             {
                 return View(default(PackagingCompliancePaymentDetailsViewModel));
             }
-
-            ////viewModel.CSOMembershipDetails = [
-            ////    new() {
-            ////        IsLateFeeApplicable = true,
-            ////        IsOnlineMarketPlace = true,
-            ////        MemberId = "109223",
-            ////        MemberType = "large",
-            ////        NoOfSubsidiariesOnlineMarketplace = 23,
-            ////        NumberOfSubsidiaries = 68
-            ////    },
-            ////    new() {
-            ////        IsLateFeeApplicable = true,
-            ////        IsOnlineMarketPlace = true,
-            ////        MemberId = "109222",
-            ////        MemberType = "large",
-            ////        NoOfSubsidiariesOnlineMarketplace = 60,
-            ////        NumberOfSubsidiaries = 105
-            ////    }
-            ////];
 
             var compliancePaymentDetailsViewModel = new PackagingCompliancePaymentDetailsViewModel
             {

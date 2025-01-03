@@ -25,14 +25,14 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
         {
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync<PackagingProducerPaymentResponse>(new ProducerPaymentRequest
             {
-                ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber ?? "PEPR10577624P1",
-                NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails?.NoOfSubsidiariesOnlineMarketPlace ?? 0,
-                NumberOfSubsidiaries = viewModel.ProducerDetails?.NoOfSubsidiaries ?? 0,
-                IsLateFeeApplicable = viewModel.ProducerDetails?.IsLateFeeApplicable ?? false,
-                IsProducerOnlineMarketplace = viewModel.ProducerDetails?.IsProducerOnlineMarketplace ?? false,
-                ProducerType = viewModel.ProducerDetails?.ProducerType ?? "Large",
-                Regulator = viewModel.NationCode ?? "GB-ENG",
-                SubmissionDate = new DateTime(2024, 12, 20, 18, 56, 00, DateTimeKind.Utc) //TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime)
+                ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
+                NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
+                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
+                IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
+                IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
+                ProducerType = viewModel.ProducerDetails.ProducerType,
+                Regulator = viewModel.NationCode,
+                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime)
             });
 
             if (producerPaymentResponse is null)
