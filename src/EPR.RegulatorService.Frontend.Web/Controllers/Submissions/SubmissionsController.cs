@@ -285,11 +285,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         [Route(PagePath.ConfirmOfflinePaymentSubmission)]
         public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
         {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
             if (!ModelState.IsValid)
             {
-                SetBackLink(session, PagePath.ConfirmOfflinePaymentSubmission);
+                SetBackLink(PagePath.SubmissionDetails);
                 return View(nameof(ConfirmOfflinePaymentSubmission), model);
             }
             else if (!(bool)model.IsOfflinePaymentConfirmed)
@@ -308,7 +306,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                         backLink = PagePath.SubmissionDetails
                     })
                 : RedirectToAction("SubmissionDetails");
-            // TO DO: We need to call ProcessOfflinePaymentAsync and somehow pass through the submission ID, applicationReferenceNumber
+            // TO DO: We need to call ProcessOfflinePaymentAsync (not yet copied) and somehow pass through the submission ID, applicationReferenceNumber
             // and NationCode from the session objects in order to process the offline payment. This will be addressed in a future story
         }
 
