@@ -17,7 +17,8 @@ using System.Globalization;
 using System.Text.Json;
 using EPR.RegulatorService.Frontend.Web.Helpers;
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
-
+using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Enums;
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 {
     [FeatureGate(FeatureFlags.ManagePoMSubmissions)]
@@ -82,7 +83,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 IsPendingSubmissionChecked = session.RegulatorSubmissionSession.IsPendingSubmissionChecked,
                 IsAcceptedSubmissionChecked = session.RegulatorSubmissionSession.IsAcceptedSubmissionChecked,
                 IsRejectedSubmissionChecked = session.RegulatorSubmissionSession.IsRejectedSubmissionChecked,
-                PageNumber =  session.RegulatorSubmissionSession.CurrentPageNumber,
+                PageNumber = session.RegulatorSubmissionSession.CurrentPageNumber,
                 PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
                 SubmissionYears = _submissionFiltersOptions.Years,
                 SubmissionPeriods = _submissionFiltersOptions.PomPeriods,
@@ -177,7 +178,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
 
-            var model = new SubmissionDetailsViewModel
+            var model = new ViewModels.Submissions.SubmissionDetailsViewModel
             {
                 OrganisationName = submission.OrganisationName,
                 OrganisationType = submission.OrganisationType,
@@ -205,7 +206,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 
         [HttpPost]
         [Route(PagePath.SubmissionDetails)]
-        public async Task<IActionResult> SubmissionDetails(SubmissionDetailsViewModel model, string journeyType)
+        public async Task<IActionResult> SubmissionDetails(ViewModels.Submissions.SubmissionDetailsViewModel model, string journeyType)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -232,6 +233,83 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 null);
         }
 
+        [HttpPost]
+        [Route(PagePath.SubmissionDetails, Name = "ResubmissionPaymentInfo")]
+        public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(SubmissionDetails));
+            }
+
+            if (decimal.TryParse(paymentDetailsViewModel.OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))
+            {
+                paymentDetailsViewModel.OfflinePayment = parsedValue.ToString("F2", CultureInfo.InvariantCulture);
+            }
+
+            TempData["OfflinePaymentAmount"] = paymentDetailsViewModel.OfflinePayment;
+
+            await SaveSessionAndJourney(
+                session,
+                PagePath.SubmissionDetails,
+                PagePath.ConfirmOfflinePaymentSubmission);
+
+            return RedirectToAction("ConfirmOfflinePaymentSubmission");
+        }
+
+        [HttpGet]
+        [Route(PagePath.ConfirmOfflinePaymentSubmission)]
+        public async Task<IActionResult> ConfirmOfflinePaymentSubmission()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
+
+            // To do: The ?? £10.00 needs to be removed in the future, this is just so that the page can be rendered
+            // with an arbitrary offline payment value if it's not set in TempData
+            string offlinePayment = TempData.Peek("OfflinePaymentAmount")?.ToString() ?? "10.00";
+
+            SetBackLink(PagePath.SubmissionDetails);
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                SubmissionId = submission.SubmissionId,
+                OfflinePaymentAmount = offlinePayment
+            };
+
+            return View(nameof(ConfirmOfflinePaymentSubmission), model);
+        }
+
+        [HttpPost]
+        [Route(PagePath.ConfirmOfflinePaymentSubmission)]
+        public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                SetBackLink(PagePath.SubmissionDetails);
+                return View(nameof(ConfirmOfflinePaymentSubmission), model);
+            }
+            else if (!(bool)model.IsOfflinePaymentConfirmed)
+            {
+                return RedirectToAction("SubmissionDetails");
+            }
+
+            TempData.Remove("OfflinePaymentAmount");
+            return string.IsNullOrWhiteSpace(model.OfflinePaymentAmount)
+                ? RedirectToAction(
+                    PagePath.Error,
+                    "Error",
+                    new
+                    {
+                        statusCode = 404,
+                        backLink = PagePath.SubmissionDetails
+                    })
+                : RedirectToAction("SubmissionDetails");
+            // TO DO: We need to call ProcessOfflinePaymentAsync (not yet copied) and somehow pass through the submission ID, applicationReferenceNumber
+            // and NationCode from the session objects in order to process the offline payment. This will be addressed in a future story
+        }
+
         [HttpGet]
         [Route(PagePath.AcceptSubmission)]
         public async Task<IActionResult> AcceptSubmission()
@@ -245,7 +323,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             await SaveSessionAndJourney(session, PagePath.SubmissionDetails, PagePath.AcceptSubmission);
             SetBackLink(session, PagePath.AcceptSubmission);
 
-            return View(nameof(AcceptSubmission) ,model);
+            return View(nameof(AcceptSubmission), model);
         }
 
         [HttpPost]
@@ -359,7 +437,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             SetBackLink(session, PagePath.Submissions);
 
             return await SaveSessionAndRedirect(session, PagePath.Error, "Error", PagePath.Submissions,
-                PagePath.PageNotFoundPath, new {statusCode = 404, backLink = PagePath.Submissions});
+                PagePath.PageNotFoundPath, new { statusCode = 404, backLink = PagePath.Submissions });
         }
 
         public string FormatTimeAndDateForSubmission(DateTime timeAndDateOfSubmission)
@@ -373,6 +451,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         private void SetBackLink(JourneySession session, string currentPagePath) =>
             ViewBag.BackLinkToDisplay =
                 session.RegulatorSubmissionSession.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
+
+        private void SetBackLink(string path)
+        {
+            string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
+            ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
+        }
 
         private static void ClearFilters(JourneySession session)
         {
@@ -414,16 +498,16 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         }
 
         private static bool IsFilterable(SubmissionFiltersModel submissionFiltersModel) =>
-            (
-                (!string.IsNullOrEmpty(submissionFiltersModel.SearchOrganisationName) ||
+
+                !string.IsNullOrEmpty(submissionFiltersModel.SearchOrganisationName) ||
                  submissionFiltersModel.IsDirectProducerChecked ||
                  submissionFiltersModel.IsComplianceSchemeChecked ||
                  submissionFiltersModel.IsPendingSubmissionChecked ||
                  submissionFiltersModel.IsAcceptedSubmissionChecked ||
-                 submissionFiltersModel.IsRejectedSubmissionChecked)
+                 submissionFiltersModel.IsRejectedSubmissionChecked
              || submissionFiltersModel.SearchSubmissionYears?.Length > 0
              || submissionFiltersModel.SearchSubmissionPeriods?.Length > 0
-             || submissionFiltersModel.IsFilteredSearch);
+             || submissionFiltersModel.IsFilteredSearch;
 
         private async Task<RedirectToActionResult> SaveSessionAndRedirect(
             JourneySession session,
