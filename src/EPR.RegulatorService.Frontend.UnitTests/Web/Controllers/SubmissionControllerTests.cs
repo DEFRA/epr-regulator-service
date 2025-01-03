@@ -492,6 +492,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_GET_AssignsOfflinePaymentCorrectly_WhenTempDataNotPreviouslySet()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            {
+                SubmissionId = submissionId
+            };
+
+            // Act
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
+
+            // Assert
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.ViewName.Should().Be(nameof(_systemUnderTest.ConfirmOfflinePaymentSubmission));
+
+            var model = viewResult.Model as ConfirmOfflinePaymentSubmissionViewModel;
+            model.Should().NotBeNull();
+            model!.SubmissionId.Should().Be(submissionId);
+            model.OfflinePaymentAmount.Should().Be(DefaultOfflinePaymentAmount);
+        }
+
+        [TestMethod]
         public async Task ConfirmOfflinePaymentSubmission_GET_SetsBackLinkCorrectly()
         {
             // Arrange
