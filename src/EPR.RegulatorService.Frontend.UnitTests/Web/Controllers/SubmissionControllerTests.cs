@@ -4,7 +4,9 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
+using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +21,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         private const int PageNumberTwo = 2;
         private const string SearchOrganisationName = "Test Organisation";
         private const string UserName = "Test User";
+        private const string DefaultOfflinePaymentAmount = "10.00";
         private Fixture _fixture;
 
         [TestInitialize]
@@ -229,7 +232,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(JourneySessionMock);
 
             var submission = _fixture.Create<Submission>();
-            string submissionString =  JsonSerializer.Serialize(submission);
+            string submissionString = JsonSerializer.Serialize(submission);
 
             // Act
             var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel(), null, submissionString);
@@ -276,7 +279,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(JourneySessionMock);
 
             // Act
-            var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel{ClearFilters = true}, FilterActions.ClearFilters);
+            var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel { ClearFilters = true }, FilterActions.ClearFilters);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>();
@@ -372,7 +375,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(JourneySessionMock);
 
             // Act
-            var result = await _systemUnderTest.SubmissionDetails(new SubmissionDetailsViewModel(), JourneyType.Accept);
+            var result = await _systemUnderTest.SubmissionDetails(
+                new Frontend.Web.ViewModels.Submissions.SubmissionDetailsViewModel(),
+                JourneyType.Accept);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>();
@@ -387,9 +392,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
-            var submissionDetailsViewModel = new SubmissionDetailsViewModel
+            var submissionDetailsViewModel = new Frontend.Web.ViewModels.Submissions.SubmissionDetailsViewModel
             {
-                OrganisationName = SearchOrganisationName, SubmissionId = Guid.NewGuid(), SubmittedBy = UserName
+                OrganisationName = SearchOrganisationName,
+                SubmissionId = Guid.NewGuid(),
+                SubmittedBy = UserName
             };
 
             // Act
@@ -453,5 +460,145 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionPeriods.Should().BeEquivalentTo(submissionFiltersModel.SearchSubmissionPeriods);
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(DefaultPageNumber);
         }
+
+        #region ConfirmOfflinePaymentSubmission
+
+        #region GET
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_GET_ReturnsViewResult_WithExpectedModel()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            {
+                SubmissionId = submissionId
+            };
+
+            _tempDataDictionary["OfflinePaymentAmount"] = DefaultOfflinePaymentAmount;
+
+            // Act
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
+
+            // Assert
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.ViewName.Should().Be(nameof(_systemUnderTest.ConfirmOfflinePaymentSubmission));
+
+            var model = viewResult.Model as ConfirmOfflinePaymentSubmissionViewModel;
+            model.Should().NotBeNull();
+            model!.SubmissionId.Should().Be(submissionId);
+            model.OfflinePaymentAmount.Should().Be(DefaultOfflinePaymentAmount);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_GET_SetsBackLinkCorrectly()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            {
+                SubmissionId = submissionId
+            };
+
+            _tempDataDictionary["OfflinePaymentAmount"] = DefaultOfflinePaymentAmount;
+
+            // Act
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
+
+            // Assert
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            AssertBackLink(viewResult!, $"/regulators/{PagePath.SubmissionDetails}");
+        }
+
+        #endregion GET
+
+        #region POST
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_POST_ReturnsViewResult_WithInvalidModelState()
+        {
+            // Arrange
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                IsOfflinePaymentConfirmed = null, // Invalid state
+                OfflinePaymentAmount = null
+            };
+            _systemUnderTest.ModelState.AddModelError("Key", "Invalid state");
+
+            // Act
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.ViewName.Should().Be(nameof(_systemUnderTest.ConfirmOfflinePaymentSubmission));
+            viewResult.Model.Should().Be(model);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_POST_RedirectsToSubmissionDetails_WhenPaymentNotConfirmed()
+        {
+            // Arrange
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                IsOfflinePaymentConfirmed = false
+            };
+
+            // Act
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult!.ActionName.Should().Be("SubmissionDetails");
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_POST_RedirectsToError_WhenOfflinePaymentAmountIsNullOrEmpty()
+        {
+            // Arrange
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                IsOfflinePaymentConfirmed = true,
+                OfflinePaymentAmount = null
+            };
+
+            // Act
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult!.ActionName.Should().Be(PagePath.Error);
+            redirectResult.ControllerName.Should().Be("Error");
+            redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>("statusCode", 404));
+            redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>("backLink", PagePath.SubmissionDetails));
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_POST_RedirectsToSubmissionDetails_WhenOfflinePaymentAmountIsProvided()
+        {
+            // Arrange
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                IsOfflinePaymentConfirmed = true,
+                OfflinePaymentAmount = "100.00"
+            };
+
+            // Act
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult!.ActionName.Should().Be("SubmissionDetails");
+        }
+
+        #endregion POST
+
+        #endregion ConfirmOfflinePaymentSubmission
+
     }
 }

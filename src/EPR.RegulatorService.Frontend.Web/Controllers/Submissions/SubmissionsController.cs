@@ -267,19 +267,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
             var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
 
+            // To do: The ?? £10.00 needs to be removed in the future, this is just so that the page can be rendered
+            // with an arbitrary offline payment value if it's not set in TempData
             string offlinePayment = TempData.Peek("OfflinePaymentAmount")?.ToString() ?? "10.00";
-
-            if (string.IsNullOrWhiteSpace(offlinePayment))
-            {
-                RedirectToAction(
-                    PagePath.Error,
-                    "Error",
-                    new
-                    {
-                        statusCode = 404,
-                        backLink = PagePath.SubmissionDetails
-                    });
-            }
 
             SetBackLink(PagePath.SubmissionDetails);
 
