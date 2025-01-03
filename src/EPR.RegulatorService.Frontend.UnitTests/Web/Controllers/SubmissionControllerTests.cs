@@ -600,5 +600,77 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #endregion ConfirmOfflinePaymentSubmission
 
+        #region SubmitOfflinePayment
+
+        [TestMethod]
+        public async Task SubmitOfflinePayment_ReturnsViewResult_WithInvalidModelState()
+        {
+            // Arrange
+            var model = new PaymentDetailsViewModel
+            {
+                OfflinePayment = null // Invalid state
+            };
+            _systemUnderTest.ModelState.AddModelError("Key", "Invalid state");
+
+            // Act
+            var result = await _systemUnderTest.SubmitOfflinePayment(model);
+
+            // Assert
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.ViewName.Should().Be(nameof(_systemUnderTest.SubmissionDetails));
+        }
+
+        [TestMethod]
+        public async Task SubmitOfflinePayment_SetsOfflinePaymentAmountInTempData_WhenValidPaymentAmountProvided()
+        {
+            // Arrange
+            var model = new PaymentDetailsViewModel
+            {
+                OfflinePayment = "100.00" // Valid payment amount
+            };
+
+            // Act
+            await _systemUnderTest.SubmitOfflinePayment(model);
+
+            // Assert
+            _systemUnderTest.TempData["OfflinePaymentAmount"].Should().Be("100.00");
+        }
+
+        [TestMethod]
+        public async Task SubmitOfflinePayment_FormatsOfflinePaymentAmountCorrectly_WhenValueIsParsable()
+        {
+            // Arrange
+            var model = new PaymentDetailsViewModel
+            {
+                OfflinePayment = "£100.00" // Input with currency symbol
+            };
+
+            // Act
+            await _systemUnderTest.SubmitOfflinePayment(model);
+
+            // Assert
+            _systemUnderTest.TempData["OfflinePaymentAmount"].Should().Be("£100.00");
+        }
+
+        [TestMethod]
+        public async Task SubmitOfflinePayment_RedirectsToConfirmOfflinePaymentSubmission_WhenModelIsValid()
+        {
+            // Arrange
+            var model = new PaymentDetailsViewModel
+            {
+                OfflinePayment = "£100.00"
+            };
+
+            // Act
+            var result = await _systemUnderTest.SubmitOfflinePayment(model);
+
+            // Assert
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.Should().NotBeNull();
+            redirectResult!.ActionName.Should().Be("ConfirmOfflinePaymentSubmission");
+        }
+
+        #endregion SubmitOfflinePayment
     }
 }

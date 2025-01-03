@@ -238,7 +238,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
 
             if (!ModelState.IsValid)
             {
@@ -257,7 +256,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 PagePath.SubmissionDetails,
                 PagePath.ConfirmOfflinePaymentSubmission);
 
-            return Redirect(Url.RouteUrl("ConfirmOfflinePaymentSubmission", new { submission.SubmissionId }));
+            return RedirectToAction("ConfirmOfflinePaymentSubmission");
         }
 
         [HttpGet]
@@ -287,7 +286,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
 
             if (!ModelState.IsValid)
             {
@@ -456,17 +454,10 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             ViewBag.BackLinkToDisplay =
                 session.RegulatorSubmissionSession.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
 
-        private void SetBackLink(string path, bool hasPathBase = true)
+        private void SetBackLink(string path)
         {
-            if (hasPathBase)
-            {
-                string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
-                ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
-            }
-            else
-            {
-                ViewBag.BackLinkToDisplay = path;
-            }
+            string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
+            ViewBag.BackLinkToDisplay = $"/{pathBase}/{path}";
         }
 
         private static void ClearFilters(JourneySession session)
