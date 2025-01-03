@@ -5,15 +5,15 @@ using System.Text.Json.Serialization;
 
 [ExcludeFromCodeCoverage]
 public class PackagingCompliancePaymentResponse
-{
-    [JsonPropertyName("resubmissionFee")]
-    public decimal ResubmissionFee { get; set; }
+{        
+    [JsonPropertyName("memberCount")]
+    public int MemberCount { get; set; }
 
-    [JsonPropertyName("previousPayment")]
+    [JsonPropertyName("previousPayments")]
     public decimal PreviousPaymentsReceived { get; set; }
 
-    [JsonPropertyName("totalFee")]
-    public decimal TotalChargeableItems { get; set; }
+    [JsonPropertyName("totalResubmissionFee")]
+    public decimal ResubmissionFee { get; set; }
 
     [JsonPropertyName("outstandingPayment")]
     public decimal TotalOutstanding { get; set; }

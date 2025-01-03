@@ -51,14 +51,6 @@
                     <payment-amount amount="@Model.ResubmissionFee"></payment-amount>
                 </div>
 
-                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
-                    <dd class="govuk-summary-list__value" style="width: 285px;">
-                        <strong>@SharedLocalizer["PaymentDetails.SubTotalDescription"]</strong>
-                    </dd>
-                    <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
-                    <payment-amount amount="@Model.SubTotal" property-name="SubTotal"></payment-amount>
-                </div>
-
                 @if (Model.PreviousPaymentReceived > 0)
                 {
                     <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">

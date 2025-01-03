@@ -6,6 +6,7 @@ using System.Net.Http;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 
 using Microsoft.Extensions.Logging;
@@ -41,7 +42,9 @@ public class PaymentFacadeServiceTests
             {
                 ["SubmitOfflinePaymentPath"] = "offline-payments",
                 ["GetProducerPaymentDetailsPath"] = "producer/registration-fee",
-                ["GetCompliancePaymentDetailsPath"] = "compliance-scheme/registration-fee"
+                ["GetCompliancePaymentDetailsPath"] = "compliance-scheme/registration-fee",
+                ["GetProducerPaymentDetailsForResubmissionPath"] = "producer/resubmission-fee",
+                ["GetCompliancePaymentDetailsResubmissionPath"] = "compliance-scheme/resubmission-fee"
             },
             DownstreamScope = "api://default"
         });
@@ -97,7 +100,6 @@ public class PaymentFacadeServiceTests
     public async Task SubmitOfflinePaymentAsync_Logs_And_ReturnsFail_WhenResponseIsUnsuccessful()
     {
         // Arrange
-        var exception = new Exception("Test Exception");
         var request = _fixture.Create<OfflinePaymentRequest>();
         _mockHandler
             .Protected()
@@ -140,7 +142,7 @@ public class PaymentFacadeServiceTests
             .Verifiable();
 
         // Act
-        var result = await _paymentFacadeService.GetProducerPaymentDetailsAsync<ProducerPaymentResponse>(request);
+        var result = await _paymentFacadeService.GetProducerPaymentDetailsAsync(request);
 
         // Assert
         AssertTest<ProducerPaymentResponse>(result, "producer/registration-fee");
@@ -166,10 +168,62 @@ public class PaymentFacadeServiceTests
             .Verifiable();
 
         // Act
-        var result = await _paymentFacadeService.GetCompliancePaymentDetailsAsync<CompliancePaymentResponse>(request);
+        var result = await _paymentFacadeService.GetCompliancePaymentDetailsAsync(request);
 
         // Assert
         AssertTest<CompliancePaymentResponse>(result, "compliance-scheme/registration-fee");
+    }
+
+    [TestMethod]
+    public async Task GetProducerPaymentDetailsForResubmissionAsync_ReturnsCorrectResponse_When_SuccessStatusCode()
+    {
+        // Arrange
+        var request = _fixture.Create<PackagingProducerPaymentRequest>();
+        _mockHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>()
+            )
+            .ReturnsAsync(() => new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new PackagingProducerPaymentResponse()))
+            })
+            .Verifiable();
+
+        // Act
+        var result = await _paymentFacadeService.GetProducerPaymentDetailsForResubmissionAsync(request);
+
+        // Assert
+        AssertTest<PackagingProducerPaymentResponse>(result, "producer/resubmission-fee");
+    }
+
+    [TestMethod]
+    public async Task GetCompliancePaymentDetailsForResubmissionAsync_ReturnsCorrectResponse_When_SuccessStatusCode()
+    {
+        // Arrange
+        var request = _fixture.Create<PackagingCompliancePaymentRequest>();
+        _mockHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>()
+            )
+            .ReturnsAsync(() => new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new PackagingCompliancePaymentResponse()))
+            })
+            .Verifiable();
+
+        // Act
+        var result = await _paymentFacadeService.GetCompliancePaymentDetailsForResubmissionAsync(request);
+
+        // Assert
+        AssertTest<PackagingCompliancePaymentResponse>(result, "compliance-scheme/resubmission-fee");
     }
 
     private void AssertTest<T>(T result, string requestUri)

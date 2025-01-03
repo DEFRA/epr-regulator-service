@@ -5,6 +5,7 @@ using System.Text.Json;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,6 +18,8 @@ public class PaymentFacadeService : IPaymentFacadeService
     private const string SubmitOfflinePaymentPath = "SubmitOfflinePaymentPath";
     private const string GetProducerPaymentDetailsPath = "GetProducerPaymentDetailsPath";
     private const string GetCompliancePaymentDetailsPath = "GetCompliancePaymentDetailsPath";
+    private const string GetProducerPaymentDetailsForResubmissionPath = "GetProducerPaymentDetailsForResubmissionPath";
+    private const string GetCompliancePaymentDetailsResubmissionPath = "GetCompliancePaymentDetailsResubmissionPath";
 
     private readonly HttpClient _httpClient;
     private readonly ITokenAcquisition _tokenAcquisition;
@@ -60,24 +63,44 @@ public class PaymentFacadeService : IPaymentFacadeService
         return EndpointResponseStatus.Fail;
     }
 
-    public async Task<T?> GetProducerPaymentDetailsAsync<T>(ProducerPaymentRequest request)
+    public async Task<ProducerPaymentResponse?> GetProducerPaymentDetailsAsync(ProducerPaymentRequest request)
     {
         await SetAuthorisationHeaderAsync();
 
         var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[GetProducerPaymentDetailsPath], request);
         response.EnsureSuccessStatusCode();
 
-        return JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync());
+        return JsonSerializer.Deserialize<ProducerPaymentResponse>(await response.Content.ReadAsStringAsync());
     }
 
-    public async Task<T?> GetCompliancePaymentDetailsAsync<T>(CompliancePaymentRequest request)
+    public async Task<CompliancePaymentResponse?> GetCompliancePaymentDetailsAsync(CompliancePaymentRequest request)
     {
         await SetAuthorisationHeaderAsync();
 
         var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[GetCompliancePaymentDetailsPath], request);
         response.EnsureSuccessStatusCode();
 
-        return JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync());
+        return JsonSerializer.Deserialize<CompliancePaymentResponse>(await response.Content.ReadAsStringAsync());
+    }
+
+    public async Task<PackagingProducerPaymentResponse?> GetProducerPaymentDetailsForResubmissionAsync(PackagingProducerPaymentRequest request)
+    {
+        await SetAuthorisationHeaderAsync();
+
+        var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[GetProducerPaymentDetailsForResubmissionPath], request);
+        response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PackagingProducerPaymentResponse>(await response.Content.ReadAsStringAsync());
+    }
+
+    public async Task<PackagingCompliancePaymentResponse?> GetCompliancePaymentDetailsForResubmissionAsync(PackagingCompliancePaymentRequest request)
+    {
+        await SetAuthorisationHeaderAsync();
+
+        var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[GetCompliancePaymentDetailsResubmissionPath], request);
+        response.EnsureSuccessStatusCode();
+
+        return JsonSerializer.Deserialize<PackagingCompliancePaymentResponse>(await response.Content.ReadAsStringAsync());
     }
 
     private async Task SetAuthorisationHeaderAsync()

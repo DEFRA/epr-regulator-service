@@ -1,8 +1,6 @@
 using System;
 using System.Threading.Tasks;
 
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.ViewComponents.Submissions;
@@ -28,7 +26,7 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         {
             ApplicationReferenceNumber = "SomeGuid",
             RegistrationDateTime = DateTime.Now.AddDays(-1),
-            ProducerDetails = new ProducerDetailsDto()
+            NationCode = "gb-eng"
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _sut = new PackagingProducerPaymentDetailsViewComponent(_paymentFacadeServiceMock.Object, _loggerMock.Object);
@@ -45,28 +43,24 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         // Assert
         Assert.IsNotNull(result);
         result.Should().BeOfType<ViewViewComponentResult>();
-        var model = result.ViewData.Model as ProducerPaymentResponse;
+        var model = result.ViewData.Model as PackagingProducerPaymentResponse;
         model.Should().BeNull();
-        _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync<PackagingProducerPaymentResponse>(
-            It.IsAny<ProducerPaymentRequest>()), Times.AtMostOnce);
+        _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(
+            It.IsAny<PackagingProducerPaymentRequest>()), Times.AtMostOnce);
     }
 
     [TestMethod]
-    [DataRow("large", "Large")]
-    [DataRow("small", "Small")]
-    public async Task InvokeAsync_Returns_CorrectView_With_Model(string organisationSize, string expectedProducerSize)
+    public async Task InvokeAsync_Returns_CorrectView_With_Model()
     {
         // Arrange
-        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync<PackagingProducerPaymentResponse>(
-            It.IsAny<ProducerPaymentRequest>()))
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsForResubmissionAsync(
+            It.IsAny<PackagingProducerPaymentRequest>()))
         .ReturnsAsync(new PackagingProducerPaymentResponse // all values in pence
         {
             ResubmissionFee = 10000,
             PreviousPaymentsReceived = 500,
             TotalOutstanding = 9500,
-            TotalChargeableItems = 10000
         });
-        _submissionDetailsViewModel.ProducerDetails.ProducerType = organisationSize;
 
         // Act
         var result = await _sut.InvokeAsync(_submissionDetailsViewModel);
@@ -78,11 +72,10 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         model.Should().NotBeNull();
         // all values converted to pounds
         model.ResubmissionFee.Should().Be(100.00M);
-        model.SubTotal.Should().Be(100.00M);
         model.PreviousPaymentsReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(95.00M);
-        _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync<PackagingProducerPaymentResponse>(
-            It.IsAny<ProducerPaymentRequest>()), Times.AtMostOnce);
+        _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(
+            It.IsAny<PackagingProducerPaymentRequest>()), Times.AtMostOnce);
     }
 
     [TestMethod]
@@ -90,8 +83,8 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
     {
         // Arrange
         var exception = new Exception("error");
-        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync<PackagingProducerPaymentResponse>(
-            It.IsAny<ProducerPaymentRequest>()))
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsForResubmissionAsync(
+            It.IsAny<PackagingProducerPaymentRequest>()))
             .ThrowsAsync(exception);
 
         // Act
@@ -102,8 +95,8 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         result.Should().BeOfType<ViewViewComponentResult>();
         var model = result.ViewData.Model as PackagingProducerPaymentResponse;
         model.Should().BeNull();
-        _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync<PackagingProducerPaymentResponse>(
-            It.IsAny<ProducerPaymentRequest>()), Times.AtMostOnce);
+        _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(
+            It.IsAny<PackagingProducerPaymentRequest>()), Times.AtMostOnce);
         _loggerMock.Verify(logger =>
                logger.Log(
                    LogLevel.Error,

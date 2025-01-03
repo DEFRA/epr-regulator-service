@@ -8,8 +8,6 @@ public class PackagingProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 {
     public decimal ResubmissionFee { get; set; }
 
-    public decimal SubTotal { get; set; }
-
     public decimal PreviousPaymentsReceived { get; set; }
 
     public decimal TotalOutstanding { get; set; }

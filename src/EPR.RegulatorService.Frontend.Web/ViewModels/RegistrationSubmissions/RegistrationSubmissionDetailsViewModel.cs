@@ -3,6 +3,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 
 public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewModel
@@ -43,10 +44,13 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
 
     public string? CancellationReason { get; set; } = string.Empty;
 
+    public List<CsoMembershipDetailsDto> CSOMembershipDetails { get; set; }
+
+    public ProducerDetailsDto ProducerDetails { get; set; }
+
     // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
     public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
     {
-        IsRegistrationSubmission = true,
         SubmissionId = details.SubmissionId,
         OrganisationId = details.OrganisationId,
         OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],

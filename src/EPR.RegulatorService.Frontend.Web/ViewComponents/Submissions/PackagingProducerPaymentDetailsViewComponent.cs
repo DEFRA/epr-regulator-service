@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
@@ -23,14 +22,10 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
     {
         try
         {
-            var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync<PackagingProducerPaymentResponse>(new ProducerPaymentRequest
+            var producerPaymentResponse = await paymentFacadeService
+                .GetProducerPaymentDetailsForResubmissionAsync(new PackagingProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
-                NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
-                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
-                IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
-                IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
-                ProducerType = viewModel.ProducerDetails.ProducerType,
                 Regulator = viewModel.NationCode,
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime)
             });
@@ -42,9 +37,8 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
 
             var packagingProducerPaymentDetailsViewModel = new PackagingProducerPaymentDetailsViewModel
             {
-                ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
-                SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
+                ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
             };
 

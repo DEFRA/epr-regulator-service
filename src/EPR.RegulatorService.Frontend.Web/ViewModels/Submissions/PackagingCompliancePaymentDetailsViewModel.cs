@@ -7,11 +7,11 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 [ExcludeFromCodeCoverage]
 public class PackagingCompliancePaymentDetailsViewModel : PaymentDetailsViewModel
 {
-    public decimal ResubmissionFee { get; set; }
-
-    public decimal SubTotal { get; set; }
+    public int MemberCount { get; set; }
 
     public decimal PreviousPaymentReceived { get; set; }
+
+    public decimal ResubmissionFee { get; set; }
 
     public decimal TotalOutstanding { get; set; }
 }

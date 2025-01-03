@@ -23,11 +23,12 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
     {
         try
         {
-            var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync<PackagingCompliancePaymentResponse>(new CompliancePaymentRequest
+            var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsForResubmissionAsync(
+                new PackagingCompliancePaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
+                MemberCount = viewModel.MemberCount,
                 Regulator = viewModel.NationCode,
-                ComplianceSchemeMembers = viewModel.CSOMembershipDetails?.Select(x => (ComplianceSchemeMemberRequest)x),
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*payment facade in utc format*/
             });
 
@@ -38,9 +39,9 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
 
             var compliancePaymentDetailsViewModel = new PackagingCompliancePaymentDetailsViewModel
             {
-                ResubmissionFee = ConvertToPoundsFromPence(compliancePaymentResponse.ResubmissionFee),
-                SubTotal = ConvertToPoundsFromPence(compliancePaymentResponse.TotalChargeableItems),
+                MemberCount = compliancePaymentResponse.MemberCount,
                 PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
+                ResubmissionFee = ConvertToPoundsFromPence(compliancePaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(compliancePaymentResponse.TotalOutstanding),
             };
 

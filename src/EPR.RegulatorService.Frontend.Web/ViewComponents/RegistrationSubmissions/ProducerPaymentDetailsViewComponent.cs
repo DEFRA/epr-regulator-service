@@ -21,8 +21,7 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
     {
         try
         {
-            var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync<ProducerPaymentResponse>(
-                new ProducerPaymentRequest
+            var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
                 NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
