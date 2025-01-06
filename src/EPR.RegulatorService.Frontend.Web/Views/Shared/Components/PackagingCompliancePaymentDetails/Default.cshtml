@@ -6,9 +6,6 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
 
 @model PackagingCompliancePaymentDetailsViewModel
-@{
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
-}
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
         <h2 class="govuk-summary-card__title">@SharedLocalizer["PaymentDetails.Title"]</h2>
