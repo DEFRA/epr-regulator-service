@@ -76,7 +76,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers
             var model = new RegistrationSubmissionDetailsViewModel
             {
                 Status = RegistrationSubmissionStatus.Granted,
-                ApplicationReferenceNumber = "REG456",
+                ReferenceNumber = "REG456",
                 RegistrationReferenceNumber = "REG123"
             };
 
@@ -94,7 +94,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers
             var model = new RegistrationSubmissionDetailsViewModel
             {
                 Status = RegistrationSubmissionStatus.Pending,
-                ApplicationReferenceNumber = "APP456"
+                ReferenceNumber = "APP456"
             };
 
             // Act

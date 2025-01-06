@@ -23,7 +23,7 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
         {
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
-                ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
+                ApplicationReferenceNumber = viewModel.ReferenceNumber,
                 NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
                 IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,

@@ -26,11 +26,18 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsForResubmissionAsync(
                 new PackagingCompliancePaymentRequest
             {
-                ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
-                MemberCount = viewModel.MemberCount,
-                Regulator = viewModel.NationCode,
-                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*payment facade in utc format*/
-            });
+                    // To Do:: Remove the hardcoded and uncomment the dynamic assignment once we have the confirmation about the input params
+                    ReferenceNumber = "dgregerg",
+                    MemberCount = 1,
+                    Regulator = "GB-ENG",
+                    ResubmissionDate = new DateTime(2025, 01, 06, 11, 50, 47, 499, DateTimeKind.Utc)
+                    /*
+                    ReferenceNumber = viewModel.ReferenceNumber,
+                    MemberCount = viewModel.MemberCount,
+                    Regulator = viewModel.NationCode,
+                    ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) //payment facade in utc format
+                    */
+                });
 
             if (compliancePaymentResponse is null)
             {

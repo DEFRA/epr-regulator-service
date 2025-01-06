@@ -24,7 +24,7 @@ public class PackagingCompliancePaymentDetailsViewComponentTests : ViewComponent
     {
         _submissionDetailsViewModel = new SubmissionDetailsViewModel
         {
-            ApplicationReferenceNumber = "SomeGuid",
+            ReferenceNumber = "SomeGuid",
             RegistrationDateTime = DateTime.Now.AddDays(-1),
             NationCode = "GB-ENG"
         };

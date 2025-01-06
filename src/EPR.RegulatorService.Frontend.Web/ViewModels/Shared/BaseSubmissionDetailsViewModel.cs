@@ -2,7 +2,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 
 public abstract class BaseSubmissionDetailsViewModel
 {
-    public string ApplicationReferenceNumber { get; set; }
+    public string ReferenceNumber { get; set; }
 
     public string NationCode { get; set; }
 

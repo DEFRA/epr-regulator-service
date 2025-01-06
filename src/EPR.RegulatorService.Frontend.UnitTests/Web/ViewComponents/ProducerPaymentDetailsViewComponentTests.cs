@@ -25,7 +25,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     {
         _registrationSumissionDetailsViewModel = new RegistrationSubmissionDetailsViewModel
         {
-            ApplicationReferenceNumber = "SomeGuid",
+            ReferenceNumber = "SomeGuid",
             RegistrationDateTime = DateTime.Now.AddDays(-1),
             ProducerDetails = new ProducerDetailsDto()
         };

@@ -1676,7 +1676,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.SubmissionId, model.SubmissionId);
             Assert.AreEqual(expectedViewModel.OrganisationReference, model.OrganisationReference);
             Assert.AreEqual(expectedViewModel.OrganisationName, model.OrganisationName);
-            Assert.AreEqual(expectedViewModel.ApplicationReferenceNumber, model.ApplicationReferenceNumber);
+            Assert.AreEqual(expectedViewModel.ReferenceNumber, model.ReferenceNumber);
             Assert.AreEqual(expectedViewModel.RegistrationReferenceNumber, model.RegistrationReferenceNumber);
             Assert.AreEqual(expectedViewModel.OrganisationType, model.OrganisationType);
 

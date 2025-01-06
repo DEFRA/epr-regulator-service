@@ -25,10 +25,16 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
             var producerPaymentResponse = await paymentFacadeService
                 .GetProducerPaymentDetailsForResubmissionAsync(new PackagingProducerPaymentRequest
             {
-                ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
+                // To Do:: Remove the hardcoded and uncomment the dynamic assignment once we have the confirmation about the input params
+                ReferenceNumber = "dgregerg",
+                Regulator = "GB-ENG",
+                ResubmissionDate = new DateTime(2025, 01, 06, 11, 50, 47, 499, DateTimeKind.Utc)
+                /*
+                ReferenceNumber = viewModel.ReferenceNumber,
                 Regulator = viewModel.NationCode,
-                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime)
-            });
+                ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) //payment facade in utc format
+                */
+                });
 
             if (producerPaymentResponse is null)
             {
@@ -40,6 +46,7 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
+                PaymentRouteName = "ResubmissionPaymentInfo"
             };
 
             return View(packagingProducerPaymentDetailsViewModel);

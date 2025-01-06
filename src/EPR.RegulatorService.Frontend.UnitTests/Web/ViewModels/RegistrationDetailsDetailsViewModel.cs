@@ -49,7 +49,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.AreEqual(details.OrganisationId, viewModel.OrganisationId);
         Assert.AreEqual(details.OrganisationReference[..10], viewModel.OrganisationReference);
         Assert.AreEqual(details.OrganisationName, viewModel.OrganisationName);
-        Assert.AreEqual(details.ApplicationReferenceNumber, viewModel.ApplicationReferenceNumber);
+        Assert.AreEqual(details.ApplicationReferenceNumber, viewModel.ReferenceNumber);
         Assert.AreEqual(details.RegistrationReferenceNumber, viewModel.RegistrationReferenceNumber);
         Assert.AreEqual(details.OrganisationType, viewModel.OrganisationType);
         Assert.AreEqual(details.CompaniesHouseNumber, viewModel.CompaniesHouseNumber);
@@ -77,7 +77,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             OrganisationId = Guid.NewGuid(),
             OrganisationReference = "ORGREF1234",
             OrganisationName = "Test Organisation",
-            ApplicationReferenceNumber = "APP123",
+            ReferenceNumber = "APP123",
             RegistrationReferenceNumber = "REG123",
             OrganisationType = RegistrationSubmissionOrganisationType.small,
             CompaniesHouseNumber = "CH987654",
@@ -102,7 +102,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.IsNotNull(viewModel.OrganisationId);
         Assert.AreEqual("ORGREF1234", viewModel.OrganisationReference);
         Assert.AreEqual("Test Organisation", viewModel.OrganisationName);
-        Assert.AreEqual("APP123", viewModel.ApplicationReferenceNumber);
+        Assert.AreEqual("APP123", viewModel.ReferenceNumber);
         Assert.AreEqual("REG123", viewModel.RegistrationReferenceNumber);
         Assert.AreEqual(RegistrationSubmissionOrganisationType.small, viewModel.OrganisationType);
         Assert.AreEqual("CH987654", viewModel.CompaniesHouseNumber);
@@ -151,7 +151,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         RegistrationSubmissionDetailsViewModel viewModel = details;
 
         // Assert
-        Assert.AreEqual(string.Empty, viewModel.ApplicationReferenceNumber);
+        Assert.AreEqual(string.Empty, viewModel.ReferenceNumber);
         Assert.AreEqual(string.Empty, viewModel.RegistrationReferenceNumber);
         Assert.IsNull(viewModel.BusinessAddress.BuildingName);
         Assert.IsNull(viewModel.BusinessAddress.SubBuildingName);

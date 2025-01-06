@@ -10,6 +10,6 @@ namespace EPR.RegulatorService.Frontend.Web.Helpers
 
         public static string GetPanelContent(RegistrationSubmissionDetailsViewModel model) => !string.IsNullOrWhiteSpace(model.RegistrationReferenceNumber)
             ? model.RegistrationReferenceNumber
-            : model.ApplicationReferenceNumber;
+            : model.ReferenceNumber;
     }
 }
