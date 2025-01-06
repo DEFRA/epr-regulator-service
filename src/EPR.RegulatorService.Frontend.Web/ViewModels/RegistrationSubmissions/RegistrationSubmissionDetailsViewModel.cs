@@ -18,8 +18,6 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
 
     public RegistrationSubmissionOrganisationType OrganisationType { get; set; }
 
-    public OrganisationType OrganisationType1 { get; set; }
-
     public BusinessAddress BusinessAddress { get; set; }
 
     public string CompaniesHouseNumber { get; set; }
