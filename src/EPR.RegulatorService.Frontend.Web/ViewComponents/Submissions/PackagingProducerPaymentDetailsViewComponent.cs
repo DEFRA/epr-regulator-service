@@ -46,7 +46,6 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
-                PaymentRouteName = "ResubmissionPaymentInfo"
             };
 
             return View(packagingProducerPaymentDetailsViewModel);
