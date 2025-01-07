@@ -1,0 +1,46 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
+
+@model SubmissionDetailsFileDownloadViewModel
+@{
+    ViewData["Title"] = Localizer["PackagingDataFileDownloadFailed.Title"];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                @if (Model.DownloadFailed && !Model.HasIssue)
+                {
+                    <partial name="Partials/_FileNotDownloadingTryAgain" />
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-full">
+                            @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
+                                     "SubmissionsDetails",
+                                     "Submissions",
+                                     null,
+                                     new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
+                        </div>
+                    </div>
+                }
+                else if (Model.HasIssue)
+                {
+                    <partial name="Partials/_FileIsDownloadingVirusError" />
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-full">
+                            @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
+                                     "SubmissionDetails",
+                                     "Submissions",
+                                     null,
+                                     new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p>Invalid Request</p>
+                }
+            </div>
+        </div>
+    </main>
+</div>
+

@@ -20,4 +20,6 @@ public class SubmissionDetailsViewModel
     public string RejectionReason { get; set; }
     public bool ResubmissionRequired { get; set; }
     public string PreviousRejectionComments { get; set; }
+    public string SubmissionFileName { get; set; }
+    public string SubmissionBlobName { get; set; }
 }
