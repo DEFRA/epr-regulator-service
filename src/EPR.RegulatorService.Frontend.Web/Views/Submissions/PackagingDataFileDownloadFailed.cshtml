@@ -11,7 +11,7 @@
             <div class="govuk-grid-column-full">
                 @if (Model.DownloadFailed && !Model.HasIssue)
                 {
-                    <partial name="Partials/_FileNotDownloadingTryAgain" />
+                    <partial name="Partials/_PomFileNotDownloadingTryAgain" />
                     <div class="govuk-grid-row">
                         <div class="govuk-grid-column-full">
                             @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
@@ -24,7 +24,7 @@
                 }
                 else if (Model.HasIssue)
                 {
-                    <partial name="Partials/_FileIsDownloadingVirusError" />
+                    <partial name="Partials/_PomFileIsDownloadingVirusError" />
                     <div class="govuk-grid-row">
                         <div class="govuk-grid-column-full">
                             @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,

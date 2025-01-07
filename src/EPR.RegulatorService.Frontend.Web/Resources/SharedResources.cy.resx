@@ -345,4 +345,7 @@
   <data name="Export" xml:space="preserve">
     <value>W Export</value>
   </data>
+  <data name="FileDownload.RejectSubmission" xml:space="preserve">
+    <value>W Reject submission</value>
+  </data>
 </root>

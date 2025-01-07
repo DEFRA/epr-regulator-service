@@ -371,7 +371,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 
         [HttpGet]
         [Route(PagePath.SubmissionsFileDownload)]
-        public async Task<IActionResult> SubmissionsFileDownload(string packagingDataSubmissionBlobName)
+        public async Task<IActionResult> SubmissionsFileDownload()
         {
             TempData["DownloadCompleted"] = false;
 
