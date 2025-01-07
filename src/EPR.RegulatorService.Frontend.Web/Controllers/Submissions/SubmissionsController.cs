@@ -450,7 +450,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             var fileDownloadModel = new FileDownloadRequest
             {
                 SubmissionId = submission.SubmissionId,
-                SubmissionType = SubmissionType.Registration,
+                SubmissionType = SubmissionType.Producer,
                 FileId = submission.FileId,
                 BlobName =  submission.PomBlobName,
                 FileName = submission.PomFileName,
