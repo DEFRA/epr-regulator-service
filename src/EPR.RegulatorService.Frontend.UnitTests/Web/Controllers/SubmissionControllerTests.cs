@@ -646,6 +646,38 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task FileDownloadInProgress_DownloadFailed_ReturnsRedirectToActionXXXXXX()
+        {
+            // Arrange
+            var submission = _fixture.Create<Submission>();
+            submission.PomBlobName = null;
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                    OrganisationSubmission = submission
+                }
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            using (var response = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest))
+            {
+                _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+
+                // Act
+                var result = await _systemUnderTest.FileDownloadInProgress();
+
+                // Assert
+                result.Should().NotBeNull();
+                result.Should().BeOfType<RedirectToActionResult>();
+                var redirectResult = result as RedirectToActionResult;
+                redirectResult.ActionName.Should().Be("PackagingDataFileDownloadFailed");
+                redirectResult.ControllerName.Should().BeNull();
+            }
+        }
+
+        [TestMethod]
         public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_MorningTime()
         {
             // Arrange
