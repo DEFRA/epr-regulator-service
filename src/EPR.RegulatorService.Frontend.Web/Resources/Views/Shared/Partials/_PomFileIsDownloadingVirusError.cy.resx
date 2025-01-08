@@ -98,16 +98,16 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
-  <data name="OrganisationFileDownload.VirusPageInfo1" xml:space="preserve">
+  <data name="PomFileDownload.VirusPageInfo1" xml:space="preserve">
     <value>Mae’r ffeil yma heb gael ei lawrlwytho.</value>
   </data>
-  <data name="OrganisationFileDownload.VirusPageInfo2" xml:space="preserve">
+  <data name="PomFileDownload.VirusPageInfo2" xml:space="preserve">
     <value>Beth mae angen ichi ei wneud nesaf</value>
   </data>
-  <data name="OrganisationFileDownload.VirusPageInfo3" xml:space="preserve">
+  <data name="PomFileDownload.VirusPageInfo3" xml:space="preserve">
     <value>Mae angen i chi wrthod cyflwyniad manylion y sefydliad a chyfarwyddo'r cynhyrchydd neu'r cynllun cydymffurfio i ailgyflwyno manylion eu sefydliad.</value>
   </data>
-  <data name="OrganisationFileDownload.VirusPageTitle" xml:space="preserve">
+  <data name="PomFileDownload.VirusPageTitle" xml:space="preserve">
     <value>Roedd yna broblem wrth lawrlwytho'r ffeil yma</value>
   </data>
 </root>
