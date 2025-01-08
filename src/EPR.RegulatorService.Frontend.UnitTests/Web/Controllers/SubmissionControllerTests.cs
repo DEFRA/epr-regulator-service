@@ -503,20 +503,43 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
 
         [TestMethod]
-        public void PackagingDataFileDownloadSecurityWarning_ReturnsViewWithViewModel()
+        public async Task PackagingDataFileDownloadSecurityWarning_ReturnsViewWithViewModel()
         {
+            // Arrange
+            var submission = _fixture.Create<Submission>();
+            submission.FirstName = "fstName";
+            submission.LastName = "lstName";    
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                    OrganisationSubmission = submission,
+                    
+                    
+                }
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
             // Act
-            var result = _systemUnderTest.PackagingDataFileDownloadSecurityWarning();
+            var result = await _systemUnderTest.PackagingDataFileDownloadSecurityWarning();
 
             // Assert
             result.Should().NotBeNull();
             result.Should().BeOfType<ViewResult>();
+
             var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
             viewResult.Model.Should().NotBeNull();
             viewResult.Model.Should().BeOfType<SubmissionDetailsFileDownloadViewModel>();
+
             var model = (SubmissionDetailsFileDownloadViewModel)viewResult.Model;
             model.DownloadFailed.Should().BeTrue();
             model.HasIssue.Should().BeTrue();
+            model.SubmittedBy.Should().Be("fstName lstName"); // Validate the submittedBy field
+
             viewResult.ViewName.Should().Be("PackagingDataFileDownloadFailed");
         }
 

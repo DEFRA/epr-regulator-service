@@ -84,7 +84,26 @@
           @Model.Email
         </dd>
       </div>
-
+                @if (!string.IsNullOrEmpty(Model.SubmissionFileName))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @Localizer["SummaryList.PackagingData"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.SubmissionFileName
+                        </dd>
+                        <dd class="govuk-summary-list__value epr-summary-list-download-link">
+                            @Html.ActionLink(SharedLocalizer["Link.Download"],
+                                     "SubmissionsFileDownload",
+                                     "Submissions",
+                                     new
+                                     {
+                                         packagingDataSubmissionBlobName = Model.SubmissionBlobName
+                                     })
+                        </dd>
+                    </div>
+                }
       @if (!string.IsNullOrEmpty(Model.PreviousRejectionComments) && Model.Status != SubmissionStatus.Accepted)
       {
         <div class="govuk-summary-list__row">

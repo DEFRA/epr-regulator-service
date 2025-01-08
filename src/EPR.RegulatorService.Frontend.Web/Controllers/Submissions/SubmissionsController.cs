@@ -431,9 +431,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 
         [HttpGet]
         [Route(PagePath.PackagingDataFileDownloadSecurityWarning)]
-        public IActionResult PackagingDataFileDownloadSecurityWarning()
+        public async Task<IActionResult> PackagingDataFileDownloadSecurityWarning()
         {
-            var model = new SubmissionDetailsFileDownloadViewModel(true, true);
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
+            string submittedBy = $"{submission.FirstName} {submission.LastName}";
+            var model = new SubmissionDetailsFileDownloadViewModel(true, true, null, submittedBy);
             return View("PackagingDataFileDownloadFailed", model);
         }
 
