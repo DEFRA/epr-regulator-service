@@ -365,6 +365,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>_EnrolmentRequestApprovedUser.en.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Submissions\ConfirmOfflinePaymentSubmission.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Submissions\ConfirmOfflinePaymentSubmission.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Compile Update="Resources\Views\RemoveApprovedUser\Confirm.cy.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
