@@ -62,6 +62,30 @@ public class RegistrationsControllerTests : RegistrationTestBase
     }
 
     [TestMethod]
+    public async Task RegistrationsGet_ExportTrue_ReturnsCsvFile()
+    {
+        // Arrange
+        var data = new byte[1] { 1 };
+
+        _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionsCsv(It.IsAny<GetRegistrationSubmissionsCsvRequest>()))
+            .ReturnsAsync(new MemoryStream(data));
+
+        // Act
+
+        var result = await _sut.Registrations(new RegistrationFiltersModel(), null, false, null, null, null, true);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<FileStreamResult>();
+
+        var fileStreamResult = result as FileStreamResult;
+        fileStreamResult.ContentType.Should().Be("text/csv");
+        fileStreamResult.FileDownloadName.Should().Be("registration-submissions.csv");
+        fileStreamResult.FileStream.ReadByte().Should().Be(data[0]);
+        fileStreamResult.FileStream.ReadByte().Should().Be(-1);
+    }
+
+    [TestMethod]
     public async Task RegistrationsPost_WithNullSession_CreatesNewSessionAndReturnsView()
     {
         // Act

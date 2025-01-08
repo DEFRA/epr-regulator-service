@@ -98,8 +98,41 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 
         [HttpPost]
         [Route(PagePath.Submissions)]
-        public async Task<IActionResult> Submissions(SubmissionsRequestViewModel viewModel, string? filterType = null, string? jsonSubmission = null)
+        public async Task<IActionResult> Submissions(SubmissionsRequestViewModel viewModel, string? filterType = null, string? jsonSubmission = null, bool? export = null)
         {
+            SubmissionFiltersModel submissionFiltersModel = new SubmissionFiltersModel()
+            {
+                SearchOrganisationName = viewModel.SearchOrganisationName,
+                SearchOrganisationId = viewModel.SearchOrganisationId,
+                IsDirectProducerChecked = viewModel.IsDirectProducerChecked,
+                IsComplianceSchemeChecked = viewModel.IsComplianceSchemeChecked,
+                IsPendingSubmissionChecked = viewModel.IsPendingSubmissionChecked,
+                IsAcceptedSubmissionChecked = viewModel.IsAcceptedSubmissionChecked,
+                IsRejectedSubmissionChecked = viewModel.IsRejectedSubmissionChecked,
+                SearchSubmissionYears = viewModel.SearchSubmissionYears?.Where(x => _submissionFiltersOptions.Years.Contains(x)).ToArray(),
+                SearchSubmissionPeriods = viewModel.SearchSubmissionPeriods?.Where(x => _submissionFiltersOptions.PomPeriods.Contains(x)).ToArray(),
+                IsFilteredSearch = viewModel.IsFilteredSearch,
+                ClearFilters = viewModel.ClearFilters
+            };
+
+            if (export == true)
+            {
+                var stream = await _facadeService.GetPackagingSubmissionsCsv(new GetPackagingSubmissionsCsvRequest
+                {
+                    SearchOrganisationName = submissionFiltersModel.SearchOrganisationName,
+                    SearchOrganisationId = submissionFiltersModel.SearchOrganisationId,
+                    IsDirectProducerChecked = submissionFiltersModel.IsDirectProducerChecked,
+                    IsComplianceSchemeChecked = submissionFiltersModel.IsComplianceSchemeChecked,
+                    IsPendingSubmissionChecked = submissionFiltersModel.IsPendingSubmissionChecked,
+                    IsAcceptedSubmissionChecked = submissionFiltersModel.IsAcceptedSubmissionChecked,
+                    IsRejectedSubmissionChecked = submissionFiltersModel.IsRejectedSubmissionChecked,
+                    SearchSubmissionPeriods = submissionFiltersModel.SearchSubmissionPeriods,
+                    SearchSubmissionYears = submissionFiltersModel.SearchSubmissionYears
+                });
+
+                return File(stream, "text/csv", "packaging-submissions.csv");
+            }
+
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new();
 
             // if not filtering
@@ -126,21 +159,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             {
                 viewModel.ClearFilters = true;
             }
-
-            SubmissionFiltersModel submissionFiltersModel = new SubmissionFiltersModel()
-            {
-                SearchOrganisationName = viewModel.SearchOrganisationName,
-                SearchOrganisationId = viewModel.SearchOrganisationId,
-                IsDirectProducerChecked = viewModel.IsDirectProducerChecked,
-                IsComplianceSchemeChecked = viewModel.IsComplianceSchemeChecked,
-                IsPendingSubmissionChecked = viewModel.IsPendingSubmissionChecked,
-                IsAcceptedSubmissionChecked = viewModel.IsAcceptedSubmissionChecked,
-                IsRejectedSubmissionChecked = viewModel.IsRejectedSubmissionChecked,
-                SearchSubmissionYears = viewModel.SearchSubmissionYears?.Where(x => _submissionFiltersOptions.Years.Contains(x)).ToArray(),
-                SearchSubmissionPeriods = viewModel.SearchSubmissionPeriods?.Where(x => _submissionFiltersOptions.PomPeriods.Contains(x)).ToArray(),
-                IsFilteredSearch = viewModel.IsFilteredSearch,
-                ClearFilters = viewModel.ClearFilters
-            };
 
             SetOrResetFilterValuesInSession(session, submissionFiltersModel);
 

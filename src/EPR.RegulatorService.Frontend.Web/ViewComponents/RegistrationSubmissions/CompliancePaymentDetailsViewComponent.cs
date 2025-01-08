@@ -35,7 +35,7 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
                 return View(default(CompliancePaymentDetailsViewModel));
             }
 
-            (var smallProducers, var largeProducers) = compliancePaymentResponse.ComplianceSchemeMembers
+            (var largeProducers, var smallProducers) = compliancePaymentResponse.ComplianceSchemeMembers
                 .GetIndividualProducers(viewModel.CSOMembershipDetails);
             var lateProducers = compliancePaymentResponse.ComplianceSchemeMembers.GetLateProducers();
             var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.GetOnlineMarketPlaces();
@@ -56,7 +56,7 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
                 LateProducerFee = ConvertToPoundsFromPence(lateProducers.Sum()),
                 OnlineMarketPlaceCount = onlineMarketPlaces.Count,
                 OnlineMarketPlaceFee = ConvertToPoundsFromPence(onlineMarketPlaces.Sum()),
-                SubsidiariesCompanyCount = subsidiariesCompanies.Count,
+                SubsidiariesCompanyCount = viewModel.CSOMembershipDetails.Sum(r => r.NumberOfSubsidiaries),
                 SubsidiariesCompanyFee = ConvertToPoundsFromPence(subsidiariesCompanies.Sum())
             };
 
