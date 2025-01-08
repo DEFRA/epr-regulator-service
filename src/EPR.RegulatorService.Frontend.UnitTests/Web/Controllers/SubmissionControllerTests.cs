@@ -1,9 +1,12 @@
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -452,6 +455,171 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionYears.Should().BeEquivalentTo(submissionFiltersModel.SearchSubmissionYears);
             JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionPeriods.Should().BeEquivalentTo(submissionFiltersModel.SearchSubmissionPeriods);
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(DefaultPageNumber);
+        }
+
+        [TestMethod]
+        public async Task SubmissionsFileDownload_RedirectsToPackagingDataFileDownload()
+        {
+            // Act
+            var result = await _systemUnderTest.SubmissionsFileDownload();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.ActionName.Should().Be("PackagingDataFileDownload");
+            redirectResult.ControllerName.Should().Be("Submissions");
+        }
+
+        [TestMethod]
+        public void PackagingDataFileDownload_ReturnsViewWithViewModel()
+        {
+            // Act
+            var result = _systemUnderTest.PackagingDataFileDownload();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            ((Microsoft.AspNetCore.Mvc.ViewResult)result).ViewName.Should().Be("PackagingDataFileDownload");
+        }
+
+        [TestMethod]
+        public void PackagingDataFileDownloadFailed_ReturnsViewWithViewModel()
+        {
+            // Act
+            var result = _systemUnderTest.PackagingDataFileDownloadFailed();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Model.Should().NotBeNull();
+            viewResult.Model.Should().BeOfType<SubmissionDetailsFileDownloadViewModel>();
+            var model = (SubmissionDetailsFileDownloadViewModel)viewResult.Model;
+            model.DownloadFailed.Should().BeTrue();
+            model.HasIssue.Should().BeFalse();
+            viewResult.ViewName.Should().Be("PackagingDataFileDownloadFailed");
+        }
+
+
+        [TestMethod]
+        public void PackagingDataFileDownloadSecurityWarning_ReturnsViewWithViewModel()
+        {
+            // Act
+            var result = _systemUnderTest.PackagingDataFileDownloadSecurityWarning();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Model.Should().NotBeNull();
+            viewResult.Model.Should().BeOfType<SubmissionDetailsFileDownloadViewModel>();
+            var model = (SubmissionDetailsFileDownloadViewModel)viewResult.Model;
+            model.DownloadFailed.Should().BeTrue();
+            model.HasIssue.Should().BeTrue();
+            viewResult.ViewName.Should().Be("PackagingDataFileDownloadFailed");
+        }
+
+
+        [TestMethod]
+        public async Task FileDownloadInProgress_ValidRequest_ReturnsFile()
+        {
+            // Arrange
+            var submission = _fixture.Create<Submission>();
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                     OrganisationSubmission = submission
+                }
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            using (var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
+            {
+                Content = new StringContent("file content")
+            })
+            {
+                response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+                {
+                    FileName = "testfile.txt"
+                };
+
+                _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+
+                // Act
+                var result = await _systemUnderTest.FileDownloadInProgress();
+
+                // Assert
+                result.Should().NotBeNull();
+                result.Should().BeOfType<FileStreamResult>();
+                var fileResult = result as FileStreamResult;
+                fileResult.ContentType.Should().Be("application/octet-stream");
+                fileResult.FileDownloadName.Should().Be("testfile.txt");
+            }
+        }
+
+        [TestMethod]
+        public async Task FileDownloadInProgress_FileInfected_ReturnsRedirectToAction()
+        {
+            // Arrange
+            var submission = _fixture.Create<Submission>();
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                    OrganisationSubmission = submission
+                }
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            using var response = new HttpResponseMessage(System.Net.HttpStatusCode.Forbidden);
+
+            _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+
+            // Act
+            var result = await _systemUnderTest.FileDownloadInProgress();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.ActionName.Should().Be("PackagingDataFileDownloadSecurityWarning");
+            redirectResult.ControllerName.Should().BeNull();
+        }
+
+
+        [TestMethod]
+        public async Task FileDownloadInProgress_DownloadFailed_ReturnsRedirectToAction()
+        {
+            // Arrange
+            var submission = _fixture.Create<Submission>();
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                    OrganisationSubmission = submission
+                }
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            using (var response = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest))
+            {
+                _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+
+                // Act
+                var result = await _systemUnderTest.FileDownloadInProgress();
+
+                // Assert
+                result.Should().NotBeNull();
+                result.Should().BeOfType<RedirectToActionResult>();
+                var redirectResult = result as RedirectToActionResult;
+                redirectResult.ActionName.Should().Be("PackagingDataFileDownloadFailed");
+                redirectResult.ControllerName.Should().BeNull();
+            }
         }
     }
 }
