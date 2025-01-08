@@ -7,7 +7,7 @@
 @model SubmissionDetailsViewModel
 @{
     ViewData["Title"] = Localizer["ManagePackagingDataSubmissionsDetails.Title"];
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), SharedLocalizer);
 }
 
 <div class="govuk-width-container">
