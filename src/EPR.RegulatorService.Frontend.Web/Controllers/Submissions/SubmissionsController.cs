@@ -190,70 +190,31 @@ public partial class SubmissionsController : Controller
     }
 
     [HttpPost]
-    [Route(PagePath.SubmissionDetails)]
-    public async Task<IActionResult> SubmissionDetails(
-    [FromForm] ViewModels.Submissions.SubmissionDetailsViewModel submissionDetailsModel,
-    [FromForm] PaymentDetailsViewModel paymentDetailsViewModel,
-    string journeyType)
+    [Route(PagePath.SubmissionDetails, Name = "ResubmissionPaymentInfo")]
+    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        // Handle SubmissionDetails scenario
-        if (submissionDetailsModel != null && !string.IsNullOrEmpty(journeyType))
+        if (!ModelState.IsValid)
         {
-            if (journeyType == JourneyType.Accept)
-            {
-                return await SaveSessionAndRedirect(
-                    session,
-                    nameof(AcceptSubmission),
-                    PagePath.SubmissionDetails,
-                    PagePath.AcceptSubmission,
-                    null);
-            }
-
-            session.RegulatorSubmissionSession.RejectSubmissionJourneyData = new RejectSubmissionJourneyData
-            {
-                SubmittedBy = submissionDetailsModel.SubmittedBy
-            };
-
-            return await SaveSessionAndRedirect(
-                session,
-                nameof(RejectSubmission),
-                PagePath.SubmissionDetails,
-                PagePath.RejectSubmission,
-                null);
+            SetBackLink(session, PagePath.SubmissionDetails);
+            var model = GetSubmissionDetailsViewModel(session);
+            return View(nameof(SubmissionDetails), model);
         }
 
-        // Handle SubmitOfflinePayment scenario
-        if (paymentDetailsViewModel != null)
+        if (decimal.TryParse(paymentDetailsViewModel.OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))
         {
-            // Remove ModelState errors unrelated to PaymentDetailsViewModel
-            RemoveModelStateErrorsFor<ViewModels.Submissions.SubmissionDetailsViewModel>(keysToExclude: ["journeyType"]);
-
-            if (!ModelState.IsValid)
-            {
-                SetBackLink(session, PagePath.SubmissionDetails);
-                var model = GetSubmissionDetailsViewModel(session);
-                return View(nameof(SubmissionDetails), model);
-            }
-
-            if (decimal.TryParse(paymentDetailsViewModel.OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))
-            {
-                paymentDetailsViewModel.OfflinePayment = parsedValue.ToString("F2", CultureInfo.InvariantCulture);
-            }
-
-            TempData["OfflinePaymentAmount"] = paymentDetailsViewModel.OfflinePayment;
-
-            await SaveSessionAndJourney(
-                session,
-                PagePath.SubmissionDetails,
-                PagePath.ConfirmOfflinePaymentSubmission);
-
-            return RedirectToAction("ConfirmOfflinePaymentSubmission");
+            paymentDetailsViewModel.OfflinePayment = parsedValue.ToString("F2", CultureInfo.InvariantCulture);
         }
 
-        // Default case if neither model is provided
-        return BadRequest("Invalid request parameters.");
+        TempData["OfflinePaymentAmount"] = paymentDetailsViewModel.OfflinePayment;
+
+        await SaveSessionAndJourney(
+            session,
+            PagePath.SubmissionDetails,
+            PagePath.ConfirmOfflinePaymentSubmission);
+
+        return RedirectToAction("ConfirmOfflinePaymentSubmission");
     }
 
     [HttpGet]
@@ -263,7 +224,7 @@ public partial class SubmissionsController : Controller
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
         var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
 
-        string offlinePayment = TempData.Peek("OfflinePaymentAmount")?.ToString();
+        string offlinePayment = TempData.Peek("OfflinePaymentAmount").ToString();
 
         SetBackLink(PagePath.SubmissionDetails);
 
@@ -280,6 +241,9 @@ public partial class SubmissionsController : Controller
     [Route(PagePath.ConfirmOfflinePaymentSubmission)]
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
     {
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
+
         if (!ModelState.IsValid)
         {
             SetBackLink(PagePath.SubmissionDetails);
@@ -302,7 +266,7 @@ public partial class SubmissionsController : Controller
                 })
             : RedirectToAction("SubmissionDetails");
 
-        //await ProcessOfflinePaymentAsync(submissionId, referenceNumber, nationCode model.OfflinePaymentAmount);
+        //await ProcessOfflinePaymentAsync(submission.SubmissionId, referenceNumber, nationCode model.OfflinePaymentAmount);
 
         //reference, userId, amount, description = packaging data, date (optional), user notes (optional),
         // regulator (GB-ENG, GB-SCT, GB-WLS, GB-NIR)
@@ -316,6 +280,7 @@ public partial class SubmissionsController : Controller
     public async Task<IActionResult> AcceptSubmission()
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
         var model = new AcceptSubmissionViewModel
         {
             OrganisationName = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
@@ -374,10 +339,15 @@ public partial class SubmissionsController : Controller
     public async Task<IActionResult> RejectSubmission()
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var rejectSubmissionJourneyData = session.RegulatorSubmissionSession.RejectSubmissionJourneyData;
+
+        session.RegulatorSubmissionSession.RejectSubmissionJourneyData = new RejectSubmissionJourneyData
+        {
+            SubmittedBy = $"{session.RegulatorSubmissionSession.OrganisationSubmission.FirstName} {session.RegulatorSubmissionSession.OrganisationSubmission.LastName}"
+        };
+
         var model = new RejectSubmissionViewModel
         {
-            SubmittedBy = rejectSubmissionJourneyData.SubmittedBy
+            SubmittedBy = session.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmittedBy
         };
 
         await SaveSessionAndJourney(session, PagePath.SubmissionDetails, PagePath.RejectSubmission);

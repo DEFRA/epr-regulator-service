@@ -186,14 +186,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         //    RegistrationSubmissionDetailsViewModel existingModel,
         //    string offlinePayment)
         //{
-        //    string regulator = ((CountryName)existingModel.NationId).GetDescription();
+        //    string regulator = ((CountryName)nationId).GetDescription();
         //    var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
         //    {
         //        Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
         //        Description = "Packaging data",
         //        Reference = existingModel.ReferenceNumber,
         //        Regulator = regulator,
-        //        UserId = (Guid)_currentSession.UserData.Id
+        //        UserId = userId
         //    });
 
         //    if (response == EndpointResponseStatus.Fail)
@@ -206,11 +206,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         //        PaidAmount = offlinePayment,
         //        PaymentMethod = "Offline",
         //        PaymentStatus = "Paid",
-        //        SubmissionId = existingModel.SubmissionId,
-        //        UserId = (Guid)_currentSession.UserData.Id
+        //        SubmissionId = submissionId,
+        //        UserId = userId
         //    });
 
-        //    return Redirect(Url.RouteUrl("SubmissionDetails", new { existingModel.SubmissionId }));
+        //    return RedirectToAction("SubmissionDetails");
         //}
     }
 }
