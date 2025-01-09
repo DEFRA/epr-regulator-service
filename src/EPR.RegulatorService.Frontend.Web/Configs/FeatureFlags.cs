@@ -18,4 +18,6 @@ public static class FeatureFlags
     public const string RegistrationDataPeriodAndTime = "RegistrationDataPeriodAndTime";
 
     public const string ManageRegistrationSubmissions = "ManageRegistrationSubmissions";
+
+    public const string MultiFeatureChanges = "MultiFeatureChanges";
 }
