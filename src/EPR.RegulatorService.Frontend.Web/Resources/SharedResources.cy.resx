@@ -345,4 +345,28 @@
   <data name="Export" xml:space="preserve">
     <value>W Export</value>
   </data>
+  <data name="PaymentDetails.Amount" xml:space="preserve">
+  <value>Swm</value>
+</data>
+  <data name="PaymentDetails.Description" xml:space="preserve">
+  <value>Disgrifiad</value>
+</data>
+  <data name="PaymentDetails.Items" xml:space="preserve">
+  <value>Eitemau</value>
+</data>
+  <data name="PaymentDetails.Title" xml:space="preserve">
+  <value>Manylion y taliad</value>
+</data>
+  <data name="PaymentDetails.TotalOutstanding" xml:space="preserve">
+  <value>Y cyfanswm sydd heb ei dalu</value>
+</data>
+  <data name="PaymentDetails.SubTotalDescription" xml:space="preserve">
+  <value>Is-gyfanswm</value>
+</data>
+  <data name="PaymentDetails.CsoServiceIssueDescription" xml:space="preserve">
+  <value>Methu nôl manylion taliad cynllun cydymffurfio</value>
+</data>
+  <data name="PaymentDetails.ProducerServiceIssueDescription" xml:space="preserve">
+  <value>Methu nôl manylion taliad cynhyrchydd</value>
+</data>
 </root>

@@ -24,7 +24,7 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
         {
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(new CompliancePaymentRequest
             {
-                ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
+                ApplicationReferenceNumber = viewModel.ReferenceNumber,
                 Regulator = viewModel.NationCode,
                 ComplianceSchemeMembers = viewModel.CSOMembershipDetails?.Select(x => (ComplianceSchemeMemberRequest)x),
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) /*payment facade in utc format*/

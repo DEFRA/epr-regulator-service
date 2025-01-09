@@ -1,0 +1,82 @@
+@using EPR.RegulatorService.Frontend.Core.Extensions
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+@using System.Globalization
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
+
+@model PackagingCompliancePaymentDetailsViewModel
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
+        <h2 class="govuk-summary-card__title">@SharedLocalizer["PaymentDetails.Title"]</h2>
+        <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action"></li>
+        </ul>
+    </div>
+    <div class="govuk-summary-card__content" style="padding-bottom: 0px;">
+        @if (Model is not null)
+        {
+            <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+
+                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                    <dd class="govuk-summary-list__value" style="width: 285px;">
+                        <strong>@SharedLocalizer["PaymentDetails.Items"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value" style="width: 410px;">
+                        <strong>@SharedLocalizer["PaymentDetails.Description"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__actions" style="text-align: right; flex-grow: 1;">
+                        <strong>@SharedLocalizer["PaymentDetails.Amount"]</strong>
+                    </dd>
+                </div>
+
+                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                    <dd class="govuk-summary-list__value" style="width: 285px;">
+                        <strong>Chargeable items</strong>
+                    </dd>
+                    @* <dd class="govuk-summary-list__value" style="width: 410px;">
+                </dd> *@
+                </div>
+
+                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                    <dd class="govuk-summary-list__value" style="width: 285px;">
+                        @Localizer["PackagingCompliancePaymentDetails.ResubmissionFee"]
+                    </dd>
+                    <dd class="govuk-summary-list__value" style="width: 410px;">
+                        @Localizer[Model.MemberCount == 1 ? "PackagingCompliancePaymentDetails.ResubmissionFeeDescription1"
+                                : "PackagingCompliancePaymentDetails.ResubmissionFeeDescription2", Model.MemberCount]
+                    </dd>
+                    <payment-amount amount="@Model.ResubmissionFee"></payment-amount>
+                </div>
+
+                @if (Model.PreviousPaymentReceived > 0)
+                {
+                    <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                        <dd class="govuk-summary-list__value" style="width: 285px;">
+                            <strong>@Localizer["CompliancePaymentDetails.PreviousPaymentReceived"]</strong>
+                        </dd>
+                        <dd class="govuk-summary-list__value" style="width: 410px;">
+                            @Localizer["CompliancePaymentDetails.PreviousPaymentReceivedDescription"]
+                        </dd>
+                        <payment-amount amount="@Model.PreviousPaymentReceived" property-name="PreviousPaymentReceived"></payment-amount>
+                    </div>
+                }
+
+                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                    <dd class="govuk-summary-list__value" style="width: 285px;">
+                        <strong>@SharedLocalizer["PaymentDetails.TotalOutstanding"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
+                    <payment-amount amount="@Model.TotalOutstanding" property-name="TotalOutstanding"></payment-amount>
+                </div>
+            </dl>
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+            @await Html.PartialAsync("Partials/_OfflinePayment", Model as PaymentDetailsViewModel)
+        }
+        else
+        {
+            <p class="govuk-body">Unable to retrieve compliance payment details</p>
+        }
+    </div>
+</div>

@@ -119,7 +119,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             OrganisationReference = "215 148",
             OrganisationName = "Acme org Ltd.",
             RegistrationReferenceNumber = "REF001",
-            ApplicationReferenceNumber = "REF002",
+            ReferenceNumber = "REF002",
             OrganisationType = RegistrationSubmissionOrganisationType.large,
             BusinessAddress = new BusinessAddress
             {

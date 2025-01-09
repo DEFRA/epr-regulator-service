@@ -1,4 +1,5 @@
 @using EPR.RegulatorService.Frontend.Core.Enums
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
@@ -6,7 +7,7 @@
 @model SubmissionDetailsViewModel
 @{
     ViewData["Title"] = Localizer["ManagePackagingDataSubmissionsDetails.Title"];
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), SharedLocalizer);
 }
 
 <div class="govuk-width-container">
@@ -54,6 +55,22 @@
         }
       </div>
     </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                @{
+                    var model = Model as BaseSubmissionDetailsViewModel;
+                }
+                @if (Model.OrganisationType == OrganisationType.ComplianceScheme)
+                {
+                    @await Component.InvokeAsync("PackagingCompliancePaymentDetails", new { viewModel = @model })
+                }
+                else
+                {
+                    @await Component.InvokeAsync("PackagingProducerPaymentDetails", new { viewModel = @model })
+                }
+            </div>
+        </div>
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">

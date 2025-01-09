@@ -163,7 +163,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             {
                 Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
                 Description = "Registration fee",
-                Reference = existingModel.ApplicationReferenceNumber,
+                Reference = existingModel.ReferenceNumber,
                 Regulator = regulator,
                 UserId = (Guid)_currentSession.UserData.Id
             });
@@ -241,7 +241,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             RegistrationSubmissionDetailsViewModel existingModel,
             RegistrationSubmissionStatus status) => new()
             {
-                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
+                ApplicationReferenceNumber = existingModel.ReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
                 // For generating reference

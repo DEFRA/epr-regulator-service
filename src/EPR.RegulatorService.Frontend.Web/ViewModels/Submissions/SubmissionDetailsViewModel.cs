@@ -2,13 +2,14 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Core.Enums;
 
-public class SubmissionDetailsViewModel
+using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
+
+public class SubmissionDetailsViewModel: BaseSubmissionDetailsViewModel
 {
     public string OrganisationName { get; set; }
     public OrganisationType OrganisationType { get; set; }
     public string OrganisationReferenceNumber { get; set; }
     public string FormattedTimeAndDateOfSubmission { get; set; }
-    public Guid SubmissionId { get; set; }
     public string SubmittedBy { get; set; }
     public string SubmissionPeriod { get; set; }
     public string AccountRole { get; set; }

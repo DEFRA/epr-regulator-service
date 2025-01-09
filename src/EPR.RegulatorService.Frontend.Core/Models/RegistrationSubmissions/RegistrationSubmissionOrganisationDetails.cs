@@ -34,11 +34,6 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionStatus SubmissionStatus { get; set; }
     public DateTime? StatusPendingDate { get; set; }
-
-    public int NumberOfSubsidiaries { get; set; }
-    public int NumberOfOnlineSubsidiaries { get; set; }
-    public bool IsOnlineMarketPlace { get; set; }
-
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
     public DateTime? RegulatorDecisionDate { get; set; }
@@ -64,12 +59,11 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public RegistrationSubmissionsOrganisationPaymentDetails PaymentDetails { get; set; }
     public string? RegulatorDescisionDate { get; set; }
 
-    public bool IsLateSubmission { get; set; }
     public bool? IsComplianceScheme { get; set; }
-    public string OrganisationSize { get; set; }
-
     public string SubmissionPeriod { get; set; }
     public List<CsoMembershipDetailsDto> CsoMembershipDetails { get; set; }
+
+    public ProducerDetailsDto ProducerDetails { get; set; }
 
     public override bool Equals(object? obj) => Equals(obj as RegistrationSubmissionOrganisationDetails);
     public bool Equals(RegistrationSubmissionOrganisationDetails? other) => other is not null && OrganisationId.Equals(other.OrganisationId);
@@ -129,15 +123,17 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             Country = response.Country,
             Postcode = response.Postcode,
             IsComplianceScheme = response.IsComplianceScheme,
-            OrganisationSize = response.OrganisationSize,
-            NumberOfSubsidiaries = response.NumberOfSubsidiaries,
-            NumberOfOnlineSubsidiaries = response.NumberOfOnlineSubsidiaries,
             SubmissionDetails = response.SubmissionDetails,
-            IsLateSubmission = response.IsLateSubmission,
             RegulatorDecisionDate = response.RegulatorDecisionDate,
             ProducerCommentDate = response.ProducerCommentDate,
-            IsOnlineMarketPlace = response.IsOnlineMarketPlace,
             SubmissionPeriod = response.SubmissionPeriod,
-            CsoMembershipDetails = response.CsoMembershipDetails
+            CsoMembershipDetails = response.CsoMembershipDetails,
+            ProducerDetails = new ProducerDetailsDto {
+                IsLateFeeApplicable = response.IsLateSubmission,
+                IsProducerOnlineMarketplace = response.IsOnlineMarketPlace,
+                NoOfSubsidiaries = response.NumberOfSubsidiaries,
+                NoOfSubsidiariesOnlineMarketPlace = response.NumberOfOnlineSubsidiaries,
+                ProducerType = response.OrganisationSize
+            }
         };
 }
