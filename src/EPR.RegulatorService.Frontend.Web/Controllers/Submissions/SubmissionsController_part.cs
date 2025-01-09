@@ -162,26 +162,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             return model;
         }
 
-        // Generic helper method to remove ModelState errors for a given view model type with exclusions
-        private void RemoveModelStateErrorsFor<TViewModel>(IEnumerable<string> keysToExclude = null)
-        {
-            var modelProperties = typeof(TViewModel).GetProperties()
-                .Select(p => p.Name)
-                .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            var excludedKeys = keysToExclude?.ToHashSet(StringComparer.OrdinalIgnoreCase) ?? [];
-
-            // Filter ModelState keys to remove
-            var keysToRemove = ModelState.Keys
-                .Where(key => modelProperties.Contains(key) || excludedKeys.Contains(key)) // Include both model properties and explicitly excluded keys
-                .ToList();
-
-            foreach (string key in keysToRemove)
-            {
-                ModelState.Remove(key);
-            }
-        }
-
         private async Task<IActionResult> ProcessOfflinePaymentAsync(
             int nationId,
             string referenceNumber,

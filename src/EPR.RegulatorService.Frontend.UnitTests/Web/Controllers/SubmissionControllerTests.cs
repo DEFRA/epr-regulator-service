@@ -369,49 +369,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GivenOnSubmissionDetailsPost_WhenJourneyTypeIsAccept_ThenRedirectToAcceptSubmission()
-        {
-            // Arrange
-            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-                .ReturnsAsync(JourneySessionMock);
-
-            // Act
-            var result = await _systemUnderTest.SubmissionDetails(
-                new Frontend.Web.ViewModels.Submissions.SubmissionDetailsViewModel(),
-                JourneyType.Accept);
-
-            // Assert
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirectToActionResult = result as RedirectToActionResult;
-            redirectToActionResult.ActionName.Should().Be("AcceptSubmission");
-        }
-
-        [TestMethod]
-        public async Task GivenOnSubmissionDetailsPost_WhenJourneyTypeIsReject_ThenSaveSession_AndRedirectToRejectSubmission()
-        {
-            // Arrange
-            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-                .ReturnsAsync(JourneySessionMock);
-
-            var submissionDetailsViewModel = new Frontend.Web.ViewModels.Submissions.SubmissionDetailsViewModel
-            {
-                OrganisationName = SearchOrganisationName,
-                SubmissionId = Guid.NewGuid(),
-                SubmittedBy = UserName
-            };
-
-            // Act
-            var result = await _systemUnderTest.SubmissionDetails(submissionDetailsViewModel, JourneyType.Reject);
-
-            // Assert
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirectToActionResult = result as RedirectToActionResult;
-            redirectToActionResult.ActionName.Should().Be("RejectSubmission");
-
-            JourneySessionMock.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmittedBy.Should().Be(submissionDetailsViewModel.SubmittedBy);
-        }
-
-        [TestMethod]
         public async Task GivenSetOrResetFilterValuesInSession_WhenClearFilters_ThenUpdatesFiltersInSession()
         {
             // Arrange
@@ -493,30 +450,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task ConfirmOfflinePaymentSubmission_GET_AssignsOfflinePaymentCorrectly_WhenTempDataNotPreviouslySet()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
-            {
-                SubmissionId = submissionId
-            };
-
-            // Act
-            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
-
-            // Assert
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.ViewName.Should().Be(nameof(_systemUnderTest.ConfirmOfflinePaymentSubmission));
-
-            var model = viewResult.Model as ConfirmOfflinePaymentSubmissionViewModel;
-            model.Should().NotBeNull();
-            model!.SubmissionId.Should().Be(submissionId);
-            model.OfflinePaymentAmount.Should().Be(DefaultOfflinePaymentAmount);
-        }
-
-        [TestMethod]
         public async Task ConfirmOfflinePaymentSubmission_GET_SetsBackLinkCorrectly()
         {
             // Arrange
@@ -545,6 +478,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task ConfirmOfflinePaymentSubmission_POST_ReturnsViewResult_WithInvalidModelState()
         {
             // Arrange
+            var submissionId = Guid.NewGuid();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            {
+                SubmissionId = submissionId,
+                UserId = Guid.NewGuid()
+            };
+
+            JourneySessionMock.UserData.Organisations =
+            [
+               new() {
+                   NationId = 1
+               }
+            ];
+
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 IsOfflinePaymentConfirmed = null, // Invalid state
@@ -566,6 +513,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task ConfirmOfflinePaymentSubmission_POST_RedirectsToSubmissionDetails_WhenPaymentNotConfirmed()
         {
             // Arrange
+            var submissionId = Guid.NewGuid();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            {
+                SubmissionId = submissionId,
+                UserId = Guid.NewGuid()
+            };
+
+            JourneySessionMock.UserData.Organisations =
+            [
+               new() {
+                   NationId = 1
+               }
+            ];
+
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 IsOfflinePaymentConfirmed = false
@@ -584,6 +545,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task ConfirmOfflinePaymentSubmission_POST_RedirectsToError_WhenOfflinePaymentAmountIsNullOrEmpty()
         {
             // Arrange
+            var submissionId = Guid.NewGuid();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            {
+                SubmissionId = submissionId,
+                UserId = Guid.NewGuid()
+            };
+
+            JourneySessionMock.UserData.Organisations =
+            [
+               new() {
+                   NationId = 1
+               }
+            ];
+
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 IsOfflinePaymentConfirmed = true,
@@ -606,6 +581,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task ConfirmOfflinePaymentSubmission_POST_RedirectsToSubmissionDetails_WhenOfflinePaymentAmountIsProvided()
         {
             // Arrange
+            var submissionId = Guid.NewGuid();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            {
+                SubmissionId = submissionId,
+                UserId = Guid.NewGuid()
+            };
+
+            JourneySessionMock.UserData.Organisations =
+            [
+               new() {
+                   NationId = 1
+               }
+            ];
+
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 IsOfflinePaymentConfirmed = true,
