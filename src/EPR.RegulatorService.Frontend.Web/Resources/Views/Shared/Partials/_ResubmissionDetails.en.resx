@@ -147,4 +147,7 @@
   <data name="SummaryList.ReSubmissionPeriodSuffix" xml:space="preserve">
     <value>submission period</value>
   </data>
+  <data name="SummaryList.PackagingData" xml:space="preserve">
+    <value>Packaging data</value>
+  </data>
 </root>

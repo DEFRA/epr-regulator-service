@@ -45,4 +45,7 @@
   <data name="SummaryList.Information.Text" xml:space="preserve">
     <value>Chaiff {0} ddim ailgyflwyno nes bod y cyflwyniad yma wedi’i weithredu.</value>
   </data>
+  <data name="SummaryList.PackagingData" xml:space="preserve">
+    <value>W Packaging data</value>
+  </data>
 </root>
