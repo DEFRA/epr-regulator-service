@@ -32,6 +32,7 @@ public partial class SubmissionsController : Controller
     private readonly SubmissionFiltersOptions _submissionFiltersOptions;
     private readonly ExternalUrlsOptions _externalUrlsOptions;
     private readonly IFacadeService _facadeService;
+    private readonly IPaymentFacadeService _paymentFacadeService;
     private const string SubmissionResultAccept = "SubmissionResultAccept";
     private const string SubmissionResultReject = "SubmissionResultReject";
     private const string SubmissionResultOrganisationName = "SubmissionResultOrganisationName";
@@ -41,13 +42,15 @@ public partial class SubmissionsController : Controller
         IConfiguration configuration,
         IOptions<SubmissionFiltersOptions> submissionFiltersOptions,
         IOptions<ExternalUrlsOptions> externalUrlsOptions,
-        IFacadeService facadeService)
+        IFacadeService facadeService,
+        IPaymentFacadeService paymentFacadeService)
     {
         _sessionManager = sessionManager;
         _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
         _submissionFiltersOptions = submissionFiltersOptions.Value;
         _externalUrlsOptions = externalUrlsOptions.Value;
         _facadeService = facadeService;
+        _paymentFacadeService = paymentFacadeService;
     }
 
     [HttpGet]

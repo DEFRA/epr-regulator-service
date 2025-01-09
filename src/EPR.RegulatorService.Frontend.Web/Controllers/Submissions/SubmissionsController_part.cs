@@ -2,11 +2,15 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 {
     using System.Globalization;
 
+    using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
+    using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.Submissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.Helpers;
+    using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
     using Microsoft.AspNetCore.Mvc;
 
@@ -156,6 +160,28 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             };
 
             return model;
+        }
+
+        private async Task<IActionResult> ProcessOfflinePaymentAsync(
+            RegistrationSubmissionDetailsViewModel existingModel,
+            string offlinePayment)
+        {
+            string regulator = ((CountryName)existingModel.NationId).GetDescription();
+            var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
+            {
+                Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
+                Description = "Registration fee",
+                Reference = existingModel.ReferenceNumber,
+                Regulator = regulator,
+                UserId = (Guid)_currentSession.UserData.Id
+            });
+
+            if (response == EndpointResponseStatus.Fail)
+            {
+                return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
+            }
+
+            return Redirect(Url.RouteUrl("SubmissionDetails", new { existingModel.SubmissionId }));
         }
     }
 }
