@@ -243,6 +243,7 @@ public partial class SubmissionsController : Controller
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
         var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
+        int nationId = session.UserData.Organisations[0].NationId.Value;
 
         if (!ModelState.IsValid)
         {
@@ -264,9 +265,12 @@ public partial class SubmissionsController : Controller
                     statusCode = 404,
                     backLink = PagePath.SubmissionDetails
                 })
-            : RedirectToAction("SubmissionDetails");
-
-        //await ProcessOfflinePaymentAsync(submission.SubmissionId, referenceNumber, nationCode model.OfflinePaymentAmount);
+            : await ProcessOfflinePaymentAsync(
+                nationId,
+                "referenceNumber",
+                model.OfflinePaymentAmount,
+                submission.UserId.Value,
+                submission.SubmissionId);
 
         //reference, userId, amount, description = packaging data, date (optional), user notes (optional),
         // regulator (GB-ENG, GB-SCT, GB-WLS, GB-NIR)

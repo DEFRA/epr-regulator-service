@@ -182,35 +182,38 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             }
         }
 
-        //private async Task<IActionResult> ProcessOfflinePaymentAsync(
-        //    RegistrationSubmissionDetailsViewModel existingModel,
-        //    string offlinePayment)
-        //{
-        //    string regulator = ((CountryName)nationId).GetDescription();
-        //    var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
-        //    {
-        //        Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
-        //        Description = "Packaging data",
-        //        Reference = existingModel.ReferenceNumber,
-        //        Regulator = regulator,
-        //        UserId = userId
-        //    });
+        private async Task<IActionResult> ProcessOfflinePaymentAsync(
+            int nationId,
+            string referenceNumber,
+            string offlinePaymentAmount,
+            Guid userId,
+            Guid submissionId)
+        {
+            string regulator = ((CountryName)nationId).GetDescription();
+            var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
+            {
+                Amount = (int)(decimal.Parse(offlinePaymentAmount, CultureInfo.InvariantCulture) * 100),
+                Description = "Packaging data",
+                Reference = referenceNumber,
+                Regulator = regulator,
+                UserId = userId
+            });
 
-        //    if (response == EndpointResponseStatus.Fail)
-        //    {
-        //        return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
-        //    }
+            if (response == EndpointResponseStatus.Fail)
+            {
+                return RedirectToRoute("ServiceNotAvailable", new { backLink = PagePath.SubmissionDetails });
+            }
 
-        //    await _facadeService.SubmitPackagingDataResubmissionFeePaymentEvent(new PackagingDataResubmissionFeePaymentCreateRequest
-        //    {
-        //        PaidAmount = offlinePayment,
-        //        PaymentMethod = "Offline",
-        //        PaymentStatus = "Paid",
-        //        SubmissionId = submissionId,
-        //        UserId = userId
-        //    });
+            //await _facadeService.SubmitPackagingDataResubmissionFeePaymentEvent(new PackagingDataResubmissionFeePaymentCreateRequest
+            //{
+            //    PaidAmount = offlinePayment,
+            //    PaymentMethod = "Offline",
+            //    PaymentStatus = "Paid",
+            //    SubmissionId = submissionId,
+            //    UserId = userId
+            //});
 
-        //    return RedirectToAction("SubmissionDetails");
-        //}
+            return RedirectToAction("SubmissionDetails");
+        }
     }
 }
