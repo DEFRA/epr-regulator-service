@@ -19,5 +19,5 @@ public static class FeatureFlags
 
     public const string ManageRegistrationSubmissions = "ManageRegistrationSubmissions";
 
-    public const string RegulatorFE = "RegulatorFE";
+    public const string MultiFeatureChanges = "MultiFeatureChanges";
 }
