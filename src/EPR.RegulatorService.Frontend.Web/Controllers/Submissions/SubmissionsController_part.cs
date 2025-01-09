@@ -162,26 +162,55 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             return model;
         }
 
-        private async Task<IActionResult> ProcessOfflinePaymentAsync(
-            RegistrationSubmissionDetailsViewModel existingModel,
-            string offlinePayment)
+        // Generic helper method to remove ModelState errors for a given view model type with exclusions
+        private void RemoveModelStateErrorsFor<TViewModel>(IEnumerable<string> keysToExclude = null)
         {
-            string regulator = ((CountryName)existingModel.NationId).GetDescription();
-            var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
-            {
-                Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
-                Description = "Registration fee",
-                Reference = existingModel.ReferenceNumber,
-                Regulator = regulator,
-                UserId = (Guid)_currentSession.UserData.Id
-            });
+            var modelProperties = typeof(TViewModel).GetProperties()
+                .Select(p => p.Name)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            if (response == EndpointResponseStatus.Fail)
+            var excludedKeys = keysToExclude?.ToHashSet(StringComparer.OrdinalIgnoreCase) ?? [];
+
+            // Filter ModelState keys to remove
+            var keysToRemove = ModelState.Keys
+                .Where(key => modelProperties.Contains(key) || excludedKeys.Contains(key)) // Include both model properties and explicitly excluded keys
+                .ToList();
+
+            foreach (string key in keysToRemove)
             {
-                return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
+                ModelState.Remove(key);
             }
-
-            return Redirect(Url.RouteUrl("SubmissionDetails", new { existingModel.SubmissionId }));
         }
+
+        //private async Task<IActionResult> ProcessOfflinePaymentAsync(
+        //    RegistrationSubmissionDetailsViewModel existingModel,
+        //    string offlinePayment)
+        //{
+        //    string regulator = ((CountryName)existingModel.NationId).GetDescription();
+        //    var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
+        //    {
+        //        Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
+        //        Description = "Packaging data",
+        //        Reference = existingModel.ReferenceNumber,
+        //        Regulator = regulator,
+        //        UserId = (Guid)_currentSession.UserData.Id
+        //    });
+
+        //    if (response == EndpointResponseStatus.Fail)
+        //    {
+        //        return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
+        //    }
+
+        //    await _facadeService.SubmitPackagingDataResubmissionFeePaymentEvent(new PackagingDataResubmissionFeePaymentCreateRequest
+        //    {
+        //        PaidAmount = offlinePayment,
+        //        PaymentMethod = "Offline",
+        //        PaymentStatus = "Paid",
+        //        SubmissionId = existingModel.SubmissionId,
+        //        UserId = (Guid)_currentSession.UserData.Id
+        //    });
+
+        //    return Redirect(Url.RouteUrl("SubmissionDetails", new { existingModel.SubmissionId }));
+        //}
     }
 }
