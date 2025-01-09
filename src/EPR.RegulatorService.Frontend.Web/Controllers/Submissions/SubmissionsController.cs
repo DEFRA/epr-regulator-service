@@ -263,9 +263,7 @@ public partial class SubmissionsController : Controller
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
         var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
 
-        // To do: The ?? £10.00 needs to be removed in the future, this is just so that the page can be rendered
-        // with an arbitrary offline payment value if it's not set in TempData
-        string offlinePayment = TempData.Peek("OfflinePaymentAmount")?.ToString() ?? "10.00";
+        string offlinePayment = TempData.Peek("OfflinePaymentAmount")?.ToString();
 
         SetBackLink(PagePath.SubmissionDetails);
 
