@@ -172,7 +172,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
             {
                 Amount = (int)(decimal.Parse(offlinePaymentAmount, CultureInfo.InvariantCulture) * 100),
-                Description = "Packaging data",
+                Description = "Packaging data resubmission fee",
                 Reference = referenceNumber,
                 Regulator = regulator,
                 UserId = userId
