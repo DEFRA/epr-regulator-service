@@ -79,7 +79,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["OrganisationRegistrationSubmissionDecisionPath"] = "organisation-registration-submission-decision",
                     ["GetOrganisationRegistrationSubmissionDetailsPath"] = "registrations-submission-details/submissionId/{0}",
                     ["GetOrganisationRegistrationSubmissionsPath"] = "organisation-registration-submissions",
-                    ["SubmitRegistrationFeePaymentPath"] = "organisation-registration-fee-payment"
+                    ["SubmitRegistrationFeePaymentPath"] = "organisation-registration-fee-payment",
+                    ["PackagingDataResubmissionFeePaymentPath"] = "organisation-packaging-data-resubmission-fee-payment",
                 },
                 DownstreamScope = "api://default"
             });
@@ -964,7 +965,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             string expectedQueryStringPage1 = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted%2CRejected&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024&pageNumber=1";
             string expectedQueryStringPage2 = "pageSize=200&organisationName=orgName&organisationReference=orgRef&organisationType=ComplianceScheme&statuses=Pending%2CAccepted%2CRejected&submissionYears=2023%2C2024&submissionPeriods=January%20to%20June%202023%2CJanuary%20to%20June%202024&pageNumber=2";
-            string expectedCsv = $"organisation,organisation_id,submission_date_and_time,submission_period,status\r\n{registrations[0].OrganisationName} ({organisationType}),{registrations[0].OrganisationReference},{registrations[0].RegistrationDate:d MMMM yyyy HH:mm:ss},{registrations[0].SubmissionPeriod},{registrations[0].Decision}\r\n{ registrations[1].OrganisationName} ({organisationType}),{registrations[1].OrganisationReference},{registrations[1].RegistrationDate:d MMMM yyyy HH:mm:ss},{registrations[1].SubmissionPeriod},{registrations[1].Decision}\r\n";
+            string expectedCsv = $"organisation,organisation_id,submission_date_and_time,submission_period,status\r\n{registrations[0].OrganisationName} ({organisationType}),{registrations[0].OrganisationReference},{registrations[0].RegistrationDate:d MMMM yyyy HH:mm:ss},{registrations[0].SubmissionPeriod},{registrations[0].Decision}\r\n{registrations[1].OrganisationName} ({organisationType}),{registrations[1].OrganisationReference},{registrations[1].RegistrationDate:d MMMM yyyy HH:mm:ss},{registrations[1].SubmissionPeriod},{registrations[1].Decision}\r\n";
 
             // Act
 
@@ -1593,6 +1594,60 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 ItExpr.Is<HttpRequestMessage>(req =>
                     req.Method == HttpMethod.Post &&
                     req.RequestUri.ToString().Contains("organisation-registration-fee-payment")),
+                ItExpr.IsAny<CancellationToken>());
+
+            stringContent?.Dispose();
+        }
+
+        [TestMethod]
+        [DataRow(HttpStatusCode.OK, EndpointResponseStatus.Success)]
+        [DataRow(HttpStatusCode.BadRequest, EndpointResponseStatus.Fail)]
+        [DataRow(HttpStatusCode.InternalServerError, EndpointResponseStatus.Fail)]
+        [DataRow(HttpStatusCode.ServiceUnavailable, EndpointResponseStatus.Fail)]
+        public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync_Returns_Correct_Status_BasedOn_Response(
+            HttpStatusCode statusCode,
+            EndpointResponseStatus expectedStatus)
+        {
+            // Arrange
+
+            StringContent stringContent = null;
+
+            if (statusCode == HttpStatusCode.BadRequest)
+            {
+                string jsonRequest = JsonSerializer.Serialize(new ValidationProblemDetails { Status = 400 });
+                stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+            }
+            else if (statusCode != HttpStatusCode.OK)
+            {
+                string jsonRequest = JsonSerializer.Serialize(new ProblemDetails { Status = 500 });
+                stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+            }
+
+            var request = _fixture.Create<RegistrationFeePaymentRequest>();
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(() => new HttpResponseMessage
+                {
+                    StatusCode = statusCode,
+                    Content = stringContent
+                })
+                .Verifiable();
+
+            // Act
+            await _facadeService.SubmitPackagingDataResubmissionFeePaymentEventAsync(request);
+
+            // Assert
+            _mockHandler.Protected().Verify(
+                "SendAsync",
+                Times.Once(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.RequestUri.ToString().Contains("organisation-packaging-data-resubmission-fee-payment")),
                 ItExpr.IsAny<CancellationToken>());
 
             stringContent?.Dispose();
