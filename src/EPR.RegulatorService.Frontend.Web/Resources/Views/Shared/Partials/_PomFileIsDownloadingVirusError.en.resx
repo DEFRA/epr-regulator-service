@@ -99,13 +99,13 @@
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
   <data name="PomFileDownload.VirusPageInfo1" xml:space="preserve">
-    <value>This file can not be downloaded.</value>
+    <value>This file cannot be downloaded.</value>
   </data>
   <data name="PomFileDownload.VirusPageInfo2" xml:space="preserve">
-    <value>What you need to do next.</value>
+    <value>What you need to do next</value>
   </data>
   <data name="PomFileDownload.VirusPageInfo3" xml:space="preserve">
-    <value>You need to reject the organisation details submission and instruct the producer or compliance scheme to resubmit their organisation details.</value>
+    <value>You will need to reject the packaging data submission and instruct the &lt;br /&gt; producer or compliance scheme to resubmit their packaging details.</value>
   </data>
   <data name="PomFileDownload.VirusPageTitle" xml:space="preserve">
     <value>There is a problem with this file</value>

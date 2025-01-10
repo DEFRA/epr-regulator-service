@@ -346,6 +346,9 @@
     <value>W Export</value>
   </data>
   <data name="FileDownload.RejectSubmission" xml:space="preserve">
-    <value>W Reject submission</value>
+    <value>Gwrthod y cyflwyniad</value>
+  </data>
+  <data name="FileDownload.TryAgainButton" xml:space="preserve">
+    <value>W Try Again</value>
   </data>
 </root>

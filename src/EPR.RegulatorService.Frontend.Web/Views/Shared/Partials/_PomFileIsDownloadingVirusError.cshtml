@@ -5,6 +5,7 @@
 <form class="govuk-!-display-inline-block" method="POST" asp-controller="Submissions" asp-action="SubmissionDetails">
 
     <input type="hidden" name="submittedBy" value="@Model.SubmittedBy" />
+    <input type="hidden" name="SubmissionRejected" value="true" />
     <button class="govuk-button" data-module="govuk-button">
         @SharedLocalizer["FileDownload.RejectSubmission"]
     </button>

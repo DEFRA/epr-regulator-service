@@ -15,103 +15,116 @@
 
 @using (Html.BeginForm("RejectSubmission", "Submissions", FormMethod.Post))
 {
-  <div class="govuk-width-container">
-    <main class="govuk-main-wrapper" id="main-content" role="main">
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          @if (!ViewData.ModelState.IsValid)
-          {
-            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-          }
-            <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@Localizer["RejectSubmission.Title"]</h1>
-            <p class="govuk-body govuk-!-margin-bottom-8">@Localizer["Description.Title", Model.SubmittedBy]</p>
-        </div>
-      </div>
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
 
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
-            <div class="govuk-form-group @(reasonForRejectionErrorExists ? "govuk-form-group--error" : string.Empty)">
-              <h2 class="govuk-label-wrapper">
-                <label class="govuk-label govuk-label--m" for="@nameof(Model.ReasonForRejection)">
-                  @Localizer["Subtitle.RejectionReason"]
-                </label>
-              </h2>
-              @if (reasonForRejectionErrorExists)
-              {
-                @await Html.PartialAsync("Partials/Govuk/_InlineError", reasonForRejectionError)
-              }
-              <textarea class="govuk-textarea govuk-textarea--error govuk-js-character-count @(reasonForRejectionErrorExists ? "epr-textarea--error" : string.Empty)" id="@nameof(Model.ReasonForRejection)" name="@nameof(Model.ReasonForRejection)" rows="5" aria-describedby="@nameof(Model.ReasonForRejection)-info">@reasonForRejection</textarea>
-            </div>
-            <div id="@nameof(Model.ReasonForRejection)-info" class="govuk-hint govuk-character-count__message">
-              You can enter up to 500 characters
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-          <div class="govuk-form-group @(isResubmissionErrorExists ? "govuk-form-group--error" : string.Empty)">
-            <fieldset class="govuk-fieldset">
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
-                  @Localizer["Subtitle.ResubmissionRequired"]
-                </h2>
-              </legend>
-              @if (isResubmissionErrorExists)
-              {
-                @await Html.PartialAsync("Partials/Govuk/_InlineError", isResubmissionError)
-              }
-              <div class="govuk-radios" data-module="govuk-radios">
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input"
-                         type="radio"
-                         aria-labelledby="radio-label-requires-resubmission-true"
-                         gov-for="IsResubmissionRequired"
-                         gov-first-option="true"
-                         gov-value=true>
-                  <label id="radio-label-requires-resubmission-true"
-                         class="govuk-label govuk-radios__label"
-                         gov-for="IsResubmissionRequired"
-                         gov-first-option="true"
-                         gov-value=true>
-                    @SharedLocalizer["Yes"]
-                  </label>
+            @if (!Model.SubmissionRejected)
+            {
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds">
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                        }
+                        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@Localizer["RejectSubmission.Title"]</h1>
+                        <p class="govuk-body govuk-!-margin-bottom-8">@Localizer["Description.Title", Model.SubmittedBy]</p>
+                    </div>
                 </div>
-                <div class="govuk-radios__item">
-                  <input class="govuk-radios__input"
-                         type="radio"
-                         aria-labelledby="radio-label-requires-resubmission-false"
-                         gov-for="IsResubmissionRequired"
-                         gov-first-option="false"
-                         gov-value=false>
-                  <label id="radio-label-requires-resubmission-false"
-                         class="govuk-label govuk-radios__label"
-                         gov-for="IsResubmissionRequired"
-                         gov-first-option="false"
-                         gov-value=false>
-                    @SharedLocalizer["No"]
-                  </label>
-                </div>
-              </div>
-            </fieldset>
-          </div>
-        </div>
-      </div>
+            }
 
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-          <button class="govuk-button epr-horizontal-control epr-horizontal-control-button" data-module="govuk-button">
-            @SharedLocalizer["Continue"]
-          </button>
-          @Html.ActionLink(SharedLocalizer["Cancel"],
-            "SubmissionDetails",
-            "Submissions",
-            null,
-            new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-horizontal-control epr-horizontal-control-link" })
-        </div>
-      </div>
-    </main>
-  </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+                        <div class="govuk-form-group @(reasonForRejectionErrorExists ? "govuk-form-group--error" : string.Empty)">
+                            <h2 class="govuk-label-wrapper">
+                                <label class="govuk-label govuk-label--m" for="@nameof(Model.ReasonForRejection)">
+                                    @Localizer["Subtitle.RejectionReason"]
+                                </label>
+                            </h2>
+                            @if (Model.SubmissionRejected)
+                            {
+                                <p class="govuk-body">@Localizer["RejectSubmission.UseOfInfoExplanation"]</p>
+                            }
+                            @if (reasonForRejectionErrorExists)
+                            {
+                                @await Html.PartialAsync("Partials/Govuk/_InlineError", reasonForRejectionError)
+                            }
+                            <textarea class="govuk-textarea govuk-textarea--error govuk-js-character-count @(reasonForRejectionErrorExists ? "epr-textarea--error" : string.Empty)" id="@nameof(Model.ReasonForRejection)" name="@nameof(Model.ReasonForRejection)" rows="5" aria-describedby="@nameof(Model.ReasonForRejection)-info">@reasonForRejection</textarea>
+                        </div>
+                        <div id="@nameof(Model.ReasonForRejection)-info" class="govuk-hint govuk-character-count__message">
+                            You can enter up to 500 characters
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (!Model.SubmissionRejected)
+            {
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-full">
+                        <div class="govuk-form-group @(isResubmissionErrorExists? "govuk-form-group--error" : string.Empty)">
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                    <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
+                                        @Localizer["Subtitle.ResubmissionRequired"]
+                                    </h2>
+                                </legend>
+                                @if (isResubmissionErrorExists)
+                                {
+                                    @await Html.PartialAsync("Partials/Govuk/_InlineError", isResubmissionError)
+                                }
+                                <div class="govuk-radios" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               aria-labelledby="radio-label-requires-resubmission-true"
+                                               gov-for="IsResubmissionRequired"
+                                               gov-first-option="true"
+                                               gov-value=true>
+                                        <label id="radio-label-requires-resubmission-true"
+                                               class="govuk-label govuk-radios__label"
+                                               gov-for="IsResubmissionRequired"
+                                               gov-first-option="true"
+                                               gov-value=true>
+                                            @SharedLocalizer["Yes"]
+                                        </label>
+                                    </div>
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input"
+                                               type="radio"
+                                               aria-labelledby="radio-label-requires-resubmission-false"
+                                               gov-for="IsResubmissionRequired"
+                                               gov-first-option="false"
+                                               gov-value=false>
+                                        <label id="radio-label-requires-resubmission-false"
+                                               class="govuk-label govuk-radios__label"
+                                               gov-for="IsResubmissionRequired"
+                                               gov-first-option="false"
+                                               gov-value=false>
+                                            @SharedLocalizer["No"]
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <button class="govuk-button epr-horizontal-control epr-horizontal-control-button" data-module="govuk-button">
+                        @SharedLocalizer["Continue"]
+                    </button>
+                    @Html.ActionLink(SharedLocalizer["Cancel"],
+                             "SubmissionDetails",
+                             "Submissions",
+                             null,
+                             new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-horizontal-control epr-horizontal-control-link" })
+                </div>
+            </div>
+        </main>
+    </div>
 }

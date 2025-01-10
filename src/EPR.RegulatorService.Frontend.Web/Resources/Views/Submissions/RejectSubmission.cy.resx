@@ -139,4 +139,7 @@ gwrthod y cyflwyniad yma</value>
   <data name="Error.ResubmissionRequired" xml:space="preserve">
     <value>Dewiswch ‘Oes’ os oes arnoch chi angen ailgyflwyniad</value>
   </data>
+  <data name="RejectSubmission.UseOfInfoExplanation" xml:space="preserve">
+    <value>Byddwn ni'n defnyddio'r wybodaeth yma mewn neges ebost at y bobl a gymeradwywyd a'r bobl a ddirprwywyd gan y sefydliad. Caiff ei hychwanegu hefyd at fanylion y cyflwyniad.</value>
+  </data>
 </root>
