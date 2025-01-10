@@ -64,4 +64,6 @@ public interface IFacadeService
     Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request);
 
     Task SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request);
+
+    Task SubmitPackagingDataResubmissionFeePaymentEventAsync(RegistrationFeePaymentRequest request);
 }

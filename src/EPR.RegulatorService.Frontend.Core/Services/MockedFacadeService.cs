@@ -451,6 +451,9 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
     public async Task SubmitRegistrationFeePaymentAsync(
         RegistrationFeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 
+    public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync(
+        RegistrationFeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+
     private static OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
     {
         if (isDirectProducerChecked && !isComplianceSchemeChecked)

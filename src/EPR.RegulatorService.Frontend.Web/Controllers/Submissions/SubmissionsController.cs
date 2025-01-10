@@ -271,12 +271,6 @@ public partial class SubmissionsController : Controller
                 model.OfflinePaymentAmount,
                 submission.UserId.Value,
                 submission.SubmissionId);
-
-        //reference, userId, amount, description = packaging data, date (optional), user notes (optional),
-        // regulator (GB-ENG, GB-SCT, GB-WLS, GB-NIR)
-
-        // TO DO: We need to call ProcessOfflinePaymentAsync (not yet copied) and somehow pass through the submission ID, applicationReferenceNumber
-        // and NationCode from the session objects in order to process the offline payment. This will be addressed in a future story
     }
 
     [HttpGet]

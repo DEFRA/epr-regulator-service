@@ -10,7 +10,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.Helpers;
-    using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
     using Microsoft.AspNetCore.Mvc;
 
@@ -184,14 +183,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 return RedirectToRoute("ServiceNotAvailable", new { backLink = PagePath.SubmissionDetails });
             }
 
-            //await _facadeService.SubmitPackagingDataResubmissionFeePaymentEvent(new PackagingDataResubmissionFeePaymentCreateRequest
-            //{
-            //    PaidAmount = offlinePayment,
-            //    PaymentMethod = "Offline",
-            //    PaymentStatus = "Paid",
-            //    SubmissionId = submissionId,
-            //    UserId = userId
-            //});
+            await _facadeService.SubmitPackagingDataResubmissionFeePaymentEventAsync(new RegistrationFeePaymentRequest
+            {
+                PaidAmount = offlinePaymentAmount,
+                PaymentMethod = "Offline",
+                PaymentStatus = "Paid",
+                SubmissionId = submissionId,
+                UserId = userId
+            });
 
             return RedirectToAction("SubmissionDetails");
         }

@@ -4,8 +4,10 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+
 using CsvHelper;
 using CsvHelper.Configuration;
+
 using EPR.RegulatorService.Frontend.Core.ClassMaps;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -43,6 +45,7 @@ public class FacadeService : IFacadeService
     private const string GetOrganisationRegistrationSubmissionDetailsPath = "GetOrganisationRegistrationSubmissionDetailsPath";
     private const string GetOrganisationRegistationSubmissionsPath = "GetOrganisationRegistrationSubmissionsPath";
     private const string SubmitRegistrationFeePaymentPath = "SubmitRegistrationFeePaymentPath";
+    private const string PackagingDataResubmissionFeePaymentPath = "PackagingDataResubmissionFeePaymentPath";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -458,7 +461,8 @@ public class FacadeService : IFacadeService
         return result;
     }
 
-    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content) {
+    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content)
+    {
         try
         {
             var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
@@ -494,6 +498,25 @@ public class FacadeService : IFacadeService
         catch (Exception ex)
         {
             _logFacadeServiceError.Invoke(_logger, $"Exception occurred while submitting registration fee payment {nameof(FacadeService)}.{nameof(SubmitRegistrationFeePaymentAsync)}", ex);
+        }
+    }
+
+    public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync(RegistrationFeePaymentRequest request)
+    {
+        try
+        {
+            await PrepareAuthenticatedClient();
+
+            string path = _facadeApiConfig.Endpoints[PackagingDataResubmissionFeePaymentPath];
+            var response = await _httpClient.PostAsJsonAsync(path, request);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception exception)
+        {
+            _logFacadeServiceError.Invoke(
+                _logger,
+                $"Exception occurred while submitting packaging data resubmission fee payment {nameof(FacadeService)}.{nameof(SubmitPackagingDataResubmissionFeePaymentEventAsync)}",
+                exception);
         }
     }
 
