@@ -9,6 +9,7 @@ using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -189,7 +190,6 @@ public partial class SubmissionsController : Controller
         return View(nameof(SubmissionDetails), model);
     }
 
-    [HttpPost]
     [Route(PagePath.SubmissionDetails, Name = "ResubmissionPaymentInfo")]
     public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel)
     {
@@ -408,5 +408,4 @@ public partial class SubmissionsController : Controller
         return await SaveSessionAndRedirect(session, PagePath.Error, "Error", PagePath.Submissions,
             PagePath.PageNotFoundPath, new { statusCode = 404, backLink = PagePath.Submissions });
     }
-
 }
