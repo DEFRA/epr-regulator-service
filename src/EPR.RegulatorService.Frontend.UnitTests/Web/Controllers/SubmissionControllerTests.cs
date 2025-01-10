@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
@@ -608,6 +609,54 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectResult = result as RedirectToActionResult;
             redirectResult.Should().NotBeNull();
             redirectResult!.ActionName.Should().Be("SubmissionDetails");
+
+            _paymentFacadeServiceMock.Verify(r =>
+                r.SubmitOfflinePaymentAsync(
+                    It.IsAny<OfflinePaymentRequest>()),
+                    Times.AtMostOnce);
+
+            _facadeServiceMock.Verify(r =>
+                r.SubmitPackagingDataResubmissionFeePaymentEventAsync(
+                    It.IsAny<RegistrationFeePaymentRequest>()),
+                    Times.AtMostOnce);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_POST_RedirectsToServiceNotAvailable_WhenPaymentFacade_ReturnsNonSuccess()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            {
+                SubmissionId = submissionId,
+                UserId = Guid.NewGuid()
+            };
+
+            JourneySessionMock.UserData.Organisations =
+            [
+               new() {
+                   NationId = 1
+               }
+            ];
+
+            _paymentFacadeServiceMock.Setup(r =>
+                r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                IsOfflinePaymentConfirmed = true,
+                OfflinePaymentAmount = "100.00"
+            };
+
+            // Act
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission(model) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            // Veryify the redirect URL
+            result.RouteName.Should().Be("ServiceNotAvailable");
+            _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
         }
 
         #endregion POST
