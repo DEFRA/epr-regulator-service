@@ -57,7 +57,7 @@
             </li>
         </ul>
     }
-    @if (Model.Status == RegistrationSubmissionStatus.Granted)
+@*     @if (Model.Status == RegistrationSubmissionStatus.Granted)
     {
         <a class="govuk-button govuk-button--secondary" href="@Url.Action(
                 "CancelRegistrationSubmission",
@@ -68,5 +68,5 @@
                 })">
             @Localizer["RegistrationSubmissionDetails.CancelRegistration"]
         </a>
-    }
+    } *@
 </div>
