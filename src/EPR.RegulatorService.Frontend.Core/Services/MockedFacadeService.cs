@@ -449,10 +449,10 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         RegulatorDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 
     public async Task SubmitRegistrationFeePaymentAsync(
-        RegistrationFeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+        FeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 
     public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync(
-        RegistrationFeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+        FeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 
     private static OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
     {

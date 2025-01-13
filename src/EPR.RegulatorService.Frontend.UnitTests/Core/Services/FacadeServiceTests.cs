@@ -1569,7 +1569,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
             }
 
-            var request = _fixture.Create<RegistrationFeePaymentRequest>();
+            var request = _fixture.Create<FeePaymentRequest>();
             _mockHandler
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(
@@ -1623,7 +1623,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
             }
 
-            var request = _fixture.Create<RegistrationFeePaymentRequest>();
+            var request = _fixture.Create<FeePaymentRequest>();
             _mockHandler
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(

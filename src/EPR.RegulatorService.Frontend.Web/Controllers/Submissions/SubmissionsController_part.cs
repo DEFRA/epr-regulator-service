@@ -183,7 +183,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 return RedirectToRoute("ServiceNotAvailable", new { backLink = PagePath.SubmissionDetails });
             }
 
-            await _facadeService.SubmitPackagingDataResubmissionFeePaymentEventAsync(new RegistrationFeePaymentRequest
+            await _facadeService.SubmitPackagingDataResubmissionFeePaymentEventAsync(new FeePaymentRequest
             {
                 PaidAmount = offlinePaymentAmount,
                 PaymentMethod = "Offline",

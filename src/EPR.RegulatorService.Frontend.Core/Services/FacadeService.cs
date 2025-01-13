@@ -485,7 +485,7 @@ public class FacadeService : IFacadeService
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
-    public async Task SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request)
+    public async Task SubmitRegistrationFeePaymentAsync(FeePaymentRequest request)
     {
         try
         {
@@ -501,7 +501,7 @@ public class FacadeService : IFacadeService
         }
     }
 
-    public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync(RegistrationFeePaymentRequest request)
+    public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync(FeePaymentRequest request)
     {
         try
         {

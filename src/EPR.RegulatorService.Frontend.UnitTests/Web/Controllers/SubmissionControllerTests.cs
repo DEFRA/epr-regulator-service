@@ -617,7 +617,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _facadeServiceMock.Verify(r =>
                 r.SubmitPackagingDataResubmissionFeePaymentEventAsync(
-                    It.IsAny<RegistrationFeePaymentRequest>()),
+                    It.IsAny<FeePaymentRequest>()),
                     Times.AtMostOnce);
         }
 
