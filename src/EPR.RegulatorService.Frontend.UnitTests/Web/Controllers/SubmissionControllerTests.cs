@@ -747,5 +747,21 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             result.Should().Be(expectedOutput);
         }
+
+        [TestMethod]
+        public async Task Submissions_GetSessionIsNull_CreatesNewSessionAndReturnsView()
+        {
+            // Arrange
+            _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync((JourneySession)null);
+
+            // Act
+            var result = await _systemUnderTest.Submissions();
+
+            // Assert
+            Assert.IsNotNull(result);
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.Model, typeof(SubmissionsViewModel));
+        }
     }
 }
