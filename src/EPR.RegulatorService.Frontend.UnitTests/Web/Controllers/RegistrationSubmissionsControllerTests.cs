@@ -2135,7 +2135,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedRedirectUrl = _controller.Url.RouteUrl("SubmissionDetails", new { submissionId });
             Assert.AreEqual(expectedRedirectUrl, redirectResult.Url);
             _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
-            _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>()), Times.AtMostOnce);
+            _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<FeePaymentRequest>()), Times.AtMostOnce);
         }
 
         [TestMethod]
@@ -2318,7 +2318,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             result.RouteName.Should().Be("ServiceNotAvailable");
             result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
             _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
-            _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>()), Times.Never);
+            _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<FeePaymentRequest>()), Times.Never);
         }
 
         #endregion

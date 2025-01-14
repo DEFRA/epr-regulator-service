@@ -2,122 +2,118 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
 @model SubmissionDetailsViewModel
 
-@using (Html.BeginForm("SubmissionDetails", "Submissions", FormMethod.Post))
-{
 <div class="govuk-summary-card">
-  <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">
-                @Localizer["SummaryList.Title"]
-                @if (!string.IsNullOrEmpty(Model.SubmissionPeriod))
+    <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">
+            @Localizer["SummaryList.Title"]
+            @if (!string.IsNullOrEmpty(Model.SubmissionPeriod))
+            {
+                <span> - @Model.SubmissionPeriod</span>
+                @Localizer["SummaryList.ReSubmissionPeriodSuffix"]
+            }
+        </h2>
+        <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+                @switch (Model.Status)
                 {
-                    <span> - @Model.SubmissionPeriod</span>
-                    @Localizer["SummaryList.ReSubmissionPeriodSuffix"]
+                    case SubmissionStatus.Pending:
+                        <strong class="govuk-tag govuk-tag--blue">@SharedLocalizer["Tag.Pending"]</strong>
+                        break;
+                    case SubmissionStatus.Accepted:
+                        <strong class="govuk-tag govuk-tag--green">@SharedLocalizer["Tag.Accepted"]</strong>
+                        break;
+                    case SubmissionStatus.Rejected:
+                        <strong class="govuk-tag govuk-tag--red">@SharedLocalizer["Tag.Rejected"]</strong>
+                        break;
                 }
-            </h2>
-    <ul class="govuk-summary-card__actions">
-      <li class="govuk-summary-card__action">
-        @switch (Model.Status)
-        {
-          case SubmissionStatus.Pending:
-            <strong class="govuk-tag govuk-tag--blue">@SharedLocalizer["Tag.Pending"]</strong>
-            break;
-          case SubmissionStatus.Accepted:
-            <strong class="govuk-tag govuk-tag--green">@SharedLocalizer["Tag.Accepted"]</strong>
-            break;
-          case SubmissionStatus.Rejected:
-            <strong class="govuk-tag govuk-tag--red">@SharedLocalizer["Tag.Rejected"]</strong>
-            break;
-        }
-      </li>
-    </ul>
-  </div>
-  <div class="govuk-summary-card__content">
-    <dl class="govuk-summary-list">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          @Localizer["SummaryList.SubTitle.TimeAndDateOfSubmission"]
-        </dt>
-        <dd class="govuk-summary-list__value">
-          @Model.FormattedTimeAndDateOfSubmission
-        </dd>
-      </div>
+            </li>
+        </ul>
+    </div>
+    <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @Localizer["SummaryList.SubTitle.TimeAndDateOfSubmission"]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.FormattedTimeAndDateOfSubmission
+                </dd>
+            </div>
 
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          @Localizer["SummaryList.SubTitle.SubmittedBy"]
-        </dt>
-        <dd class="govuk-summary-list__value">
-          @Model.SubmittedBy
-        </dd>
-      </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @Localizer["SummaryList.SubTitle.SubmittedBy"]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubmittedBy
+                </dd>
+            </div>
 
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          @Localizer["SummaryList.SubTitle.AccountRole"]
-        </dt>
-        <dd class="govuk-summary-list__value">
-          @if (Model.AccountRole.Equals("Approved Person"))
-          {
-            @SharedLocalizer["Tag.ApprovedPerson"]
-          }
-          else
-          {
-            @SharedLocalizer["Tag.DelegatedPerson"]
-          }
-        </dd>
-      </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @Localizer["SummaryList.SubTitle.AccountRole"]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @if (Model.AccountRole.Equals("Approved Person"))
+                    {
+                        @SharedLocalizer["Tag.ApprovedPerson"]
+                    }
+                    else
+                    {
+                        @SharedLocalizer["Tag.DelegatedPerson"]
+                    }
+                </dd>
+            </div>
 
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          @Localizer["SummaryList.SubTitle.Telephone"]
-        </dt>
-        <dd class="govuk-summary-list__value">
-          @Model.Telephone
-        </dd>
-      </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @Localizer["SummaryList.SubTitle.Telephone"]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Telephone
+                </dd>
+            </div>
 
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-          @Localizer["SummaryList.SubTitle.Email"]
-        </dt>
-        <dd class="govuk-summary-list__value">
-          @Model.Email
-        </dd>
-      </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @Localizer["SummaryList.SubTitle.Email"]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Email
+                </dd>
+            </div>
 
-      @if (!string.IsNullOrEmpty(Model.PreviousRejectionComments) && Model.Status != SubmissionStatus.Accepted)
-      {
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            @Localizer["SummaryList.SubTitle.ReasonForRejection"]
-          </dt>
-          <dd class="govuk-summary-list__value">
-            @Model.PreviousRejectionComments
-          </dd>
-        </div>
-      }
-
-      @if (Model.Status == SubmissionStatus.Rejected)
-      {
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            @Localizer["SummaryList.SubTitle.ResubmissionRequired"]
-          </dt>
-          <dd class="govuk-summary-list__value">
-            @if (Model.ResubmissionRequired)
+            @if (!string.IsNullOrEmpty(Model.PreviousRejectionComments) && Model.Status != SubmissionStatus.Accepted)
             {
-              @SharedLocalizer["Yes"]
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @Localizer["SummaryList.SubTitle.ReasonForRejection"]
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.PreviousRejectionComments
+                    </dd>
+                </div>
             }
-            else
-            {
-              @SharedLocalizer["No"]
-            }
-          </dd>
-        </div>
-      }
 
-    </dl>
-  </div>
+            @if (Model.Status == SubmissionStatus.Rejected)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @Localizer["SummaryList.SubTitle.ResubmissionRequired"]
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @if (Model.ResubmissionRequired)
+                        {
+                            @SharedLocalizer["Yes"]
+                        }
+                        else
+                        {
+                            @SharedLocalizer["No"]
+                        }
+                    </dd>
+                </div>
+            }
+        </dl>
+    </div>
 </div>
-}
 
