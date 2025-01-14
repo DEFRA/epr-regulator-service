@@ -42,7 +42,4 @@
   <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
     <value>Angen ailgyflwyniad</value>
   </data>
-  <data name="SummaryList.Information.Text" xml:space="preserve">
-    <value>Chaiff {0} ddim ailgyflwyno nes bod y cyflwyniad yma wedi’i weithredu.</value>
-  </data>
 </root>

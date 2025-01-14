@@ -141,9 +141,6 @@
   <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
     <value>Resubmission required</value>
   </data>
-  <data name="SummaryList.Information.Text" xml:space="preserve">
-    <value>{0} cannot resubmit until this submission has been actioned.</value>
-  </data>
   <data name="SummaryList.SubmissionPeriodSuffix" xml:space="preserve">
     <value>submission period</value>
   </data>
