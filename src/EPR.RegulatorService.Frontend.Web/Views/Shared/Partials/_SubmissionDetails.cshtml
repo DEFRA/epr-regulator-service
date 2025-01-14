@@ -1,12 +1,27 @@
 @using EPR.RegulatorService.Frontend.Web.Constants
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
 @model SubmissionDetailsViewModel
+@{
+    var title = "SummaryList.Title";
+    var timeAndDateOfSubmission = "SummaryList.SubTitle.TimeAndDateOfSubmission";
+    var submittedBy = "SummaryList.SubTitle.SubmittedBy";
+    var rejectReasonTitle = "SummaryList.SubTitle.ReasonForRejection";
+    var rejectReason = Model.RejectionReason;
 
+    if (Model.IsResubmission)
+    {
+        title = "SummaryList.TitleForResubmission";
+        timeAndDateOfSubmission = "SummaryList.SubTitle.TimeAndDateOfReSubmission";
+        submittedBy = "SummaryList.SubTitle.ReSubmittedBy";
+        rejectReasonTitle = "SummaryList.SubTitle.ReSubmissionReasonForRejection";
+        rejectReason = Model.PreviousRejectionComments;
+    }
+}
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper">
         <h2 class="govuk-summary-card__title">
-            @Localizer["SummaryList.Title"]
-            @if (!string.IsNullOrEmpty(Model.SubmissionPeriod))
+            @Localizer[@title]
+            @if (!string.IsNullOrWhiteSpace(Model.SubmissionPeriod))
             {
                 <span> - @Model.SubmissionPeriod</span>
                 @Localizer["SummaryList.SubmissionPeriodSuffix"]
@@ -33,7 +48,7 @@
         <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    @Localizer["SummaryList.SubTitle.TimeAndDateOfSubmission"]
+                    @Localizer[timeAndDateOfSubmission]
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @Model.FormattedTimeAndDateOfSubmission
@@ -42,7 +57,7 @@
 
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    @Localizer["SummaryList.SubTitle.SubmittedBy"]
+                    @Localizer[@submittedBy]
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @Model.SubmittedBy
@@ -83,14 +98,14 @@
                 </dd>
             </div>
 
-            @if (!string.IsNullOrEmpty(Model.RejectionReason) && Model.Status != SubmissionStatus.Accepted)
+            @if (!string.IsNullOrWhiteSpace(rejectReason) && Model.Status != SubmissionStatus.Accepted)
             {
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        @Localizer["SummaryList.SubTitle.ReasonForRejection"]
+                        @Localizer[rejectReasonTitle]
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.RejectionReason
+                        @rejectReason
                     </dd>
                 </div>
             }
