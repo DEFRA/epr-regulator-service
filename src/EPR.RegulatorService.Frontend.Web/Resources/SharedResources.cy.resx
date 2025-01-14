@@ -370,10 +370,10 @@
   <value>Methu nôl manylion taliad cynhyrchydd</value>
 </data>
 
-<data name="ProducerPaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
+<data name="PaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
   <value>Taliadau blaenorol</value>
 </data>
-<data name="ProducerPaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
+<data name="PaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
   <value>Cyfanswm y taliadau sydd wedi dod i law</value>
 </data>
 </root>
