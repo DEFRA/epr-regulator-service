@@ -375,4 +375,10 @@
   <data name="PaymentDetails.SubTotalDescription" xml:space="preserve">
   <value>Sub-total</value>
 </data>
+  <data name="ProducerPaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
+  <value>Previous payments</value>
+</data>
+  <data name="ProducerPaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
+  <value>Total payments received</value>
+</data>
 </root>

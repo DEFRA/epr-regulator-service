@@ -34,8 +34,6 @@
                     <dd class="govuk-summary-list__value" style="width: 285px;">
                         <strong>Chargeable items</strong>
                     </dd>
-                    @* <dd class="govuk-summary-list__value" style="width: 410px;">
-                    </dd> *@
                 </div>
 
                 <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
@@ -52,10 +50,10 @@
                 {
                     <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                         <dd class="govuk-summary-list__value" style="width: 285px;">
-                            <strong>@Localizer["ProducerPaymentDetails.PreviousPaymentsReceived"]</strong>
+                            <strong>@SharedLocalizer["ProducerPaymentDetails.PreviousPaymentsReceived"]</strong>
                         </dd>
                         <dd class="govuk-summary-list__value" style="width: 410px;">
-                            @Localizer["ProducerPaymentDetails.TotalPaymentsReceived"]
+                            @SharedLocalizer["ProducerPaymentDetails.PreviousPaymentReceivedDescription"]
                         </dd>
                         <payment-amount amount="@Model.PreviousPaymentsReceived" property-name="PreviousPaymentsReceived"></payment-amount>
                     </div>
