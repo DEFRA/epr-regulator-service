@@ -267,7 +267,7 @@ public partial class SubmissionsController : Controller
                 })
             : await ProcessOfflinePaymentAsync(
                 nationId,
-                "referenceNumber", // To do: This will be added once we have the input data
+                "dgregerg", // To do: This will be added once we have the input data
                 model.OfflinePaymentAmount,
                 submission.UserId.Value,
                 submission.SubmissionId);
