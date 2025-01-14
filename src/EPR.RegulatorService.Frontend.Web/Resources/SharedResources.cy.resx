@@ -351,4 +351,7 @@
   <data name="FileDownload.TryAgainButton" xml:space="preserve">
     <value>W Try Again</value>
   </data>
+  <data name="FileDownload.TryAgainButton.AgainStartingWithSmallLetter" xml:space="preserve">
+    <value>W Try again</value>
+  </data>
 </root>
