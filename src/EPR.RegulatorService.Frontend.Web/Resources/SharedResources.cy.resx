@@ -349,9 +349,9 @@
     <value>Gwrthod y cyflwyniad</value>
   </data>
   <data name="FileDownload.TryAgainButton" xml:space="preserve">
-    <value>W Try Again</value>
+    <value>Rhowch gynnig arall arni</value>
   </data>
   <data name="FileDownload.TryAgainButton.AgainStartingWithSmallLetter" xml:space="preserve">
-    <value>W Try again</value>
+    <value>Rhowch gynnig arall arni</value>
   </data>
 </root>
