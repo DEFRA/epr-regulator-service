@@ -79,7 +79,7 @@ resources:
 extends:
   template: epr-deployment-pipeline.yaml@CommonTemplates
   parameters:
-    ${{ if contains(parameters.imageTag, 'RELEASE') }}:
+    ${{ if contains(parameters.imageTag, 'RELEASE-') }}:
       imageTag: $(DEVRWDWEBWAx411)
     ${{ else }}:
       imageTag: ${{ parameters.imageTag }}
