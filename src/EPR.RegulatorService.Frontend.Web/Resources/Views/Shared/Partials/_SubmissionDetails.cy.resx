@@ -42,7 +42,16 @@
   <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
     <value>Angen ailgyflwyniad</value>
   </data>
-  <data name="SummaryList.Information.Text" xml:space="preserve">
-    <value>Chaiff {0} ddim ailgyflwyno nes bod y cyflwyniad yma wedi’i weithredu.</value>
+  <data name="SummaryList.TitleForResubmission" xml:space="preserve">
+    <value>Manylion yr Ailgyflwyniad</value>
+  </data>
+  <data name="SummaryList.SubTitle.TimeAndDateOfReSubmission" xml:space="preserve">
+    <value>Amser a dyddiad ailgyflwyno</value>
+  </data>
+  <data name="SummaryList.SubTitle.ReSubmittedBy" xml:space="preserve">
+    <value>Wedi'i ailgyflwyno gan</value>
+  </data>
+  <data name="SummaryList.SubTitle.ReSubmissionReasonForRejection" xml:space="preserve">
+    <value>Rheswm dros wrthod y cyflwyniad blaenorol</value>
   </data>
 </root>

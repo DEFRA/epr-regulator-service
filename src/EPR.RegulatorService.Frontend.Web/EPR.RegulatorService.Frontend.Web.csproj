@@ -208,8 +208,6 @@
     <EmbeddedResource Remove="Resources\SharedResources.en-gb.resx" />
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_SubmissionDetails.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_SubmissionDetails.en.resx" />
-    <EmbeddedResource Update="Resources\Views\Shared\Partials\_ResubmissionDetails.cy.resx" />
-    <EmbeddedResource Update="Resources\Views\Shared\Partials\_ResubmissionDetails.en.resx" />
     <EmbeddedResource Update="Resources\Views\RemoveApprovedUser\Confirm.cy.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Confirm.cy.Designer.cs</LastGenOutput>
