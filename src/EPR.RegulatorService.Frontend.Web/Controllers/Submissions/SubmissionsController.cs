@@ -211,7 +211,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 
         [HttpPost]
         [Route(PagePath.SubmissionDetails)]
-        public async Task<IActionResult> SubmissionDetails(SubmissionDetailsViewModel model, string journeyType, bool submissionRejected = false)
+        public async Task<IActionResult> SubmissionDetails(SubmissionDetailsViewModel model, string journeyType)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -228,7 +228,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             session.RegulatorSubmissionSession.RejectSubmissionJourneyData = new RejectSubmissionJourneyData
             {
                 SubmittedBy = model.SubmittedBy,
-                SubmissionRejected = submissionRejected
             };
 
             return await SaveSessionAndRedirect(
@@ -307,7 +306,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             var model = new RejectSubmissionViewModel
             {
                 SubmittedBy = rejectSubmissionJourneyData.SubmittedBy,
-                SubmissionRejected = rejectSubmissionJourneyData.SubmissionRejected
             };
 
             await SaveSessionAndJourney(session, PagePath.SubmissionDetails, PagePath.RejectSubmission);
@@ -327,8 +325,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             if (!ModelState.IsValid)
             {
                 model.SubmittedBy = session.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmittedBy;
-                model.SubmissionRejected = session.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmissionRejected;
-
+               
                 SetBackLink(session, PagePath.RejectSubmission);
                 return View(nameof(RejectSubmission), model);
             }
