@@ -1,8 +1,10 @@
 using EPR.RegulatorService.Frontend.Web.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
 {
+    [ExcludeFromCodeCoverage]
     public class RejectSubmissionViewModel
     {
         public string? SubmittedBy { get; set; }

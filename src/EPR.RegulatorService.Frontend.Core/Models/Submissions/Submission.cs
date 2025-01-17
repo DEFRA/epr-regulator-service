@@ -7,4 +7,6 @@ public class Submission : AbstractSubmission
     public string? ProducerType { get; set; }
     public Guid? ComplianceSchemeId { get; set; }
     public string? ActualSubmissionPeriod { get; set; }
+    public string PomFileName { get; set; }
+    public string PomBlobName { get; set; }
 }

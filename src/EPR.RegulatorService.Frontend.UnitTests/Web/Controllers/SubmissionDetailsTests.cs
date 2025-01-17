@@ -52,6 +52,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model!.OrganisationName.Should().Be(submissionFromSession.OrganisationName);
             model.SubmissionId.Should().Be(submissionFromSession.SubmissionId);
             model.SubmittedBy.Should().Be($"{submissionFromSession.FirstName} {submissionFromSession.LastName}");
+            model.SubmissionBlobName.Should().Be(submissionFromSession.PomBlobName);
+            model.SubmissionFileName.Should().Be(submissionFromSession.PomFileName);
 
             AssertBackLink(result, PagePath.Submissions);
         }

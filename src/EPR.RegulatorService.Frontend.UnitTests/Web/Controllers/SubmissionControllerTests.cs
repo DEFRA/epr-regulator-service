@@ -1,9 +1,12 @@
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -452,6 +455,313 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionYears.Should().BeEquivalentTo(submissionFiltersModel.SearchSubmissionYears);
             JourneySessionMock.RegulatorSubmissionSession.SearchSubmissionPeriods.Should().BeEquivalentTo(submissionFiltersModel.SearchSubmissionPeriods);
             JourneySessionMock.RegulatorSubmissionSession.CurrentPageNumber.Should().Be(DefaultPageNumber);
+        }
+
+        [TestMethod]
+        public async Task SubmissionsFileDownload_RedirectsToPackagingDataFileDownload()
+        {
+            // Act
+            var result = await _systemUnderTest.SubmissionsFileDownload();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.ActionName.Should().Be("PackagingDataFileDownload");
+            redirectResult.ControllerName.Should().Be("Submissions");
+        }
+
+        [TestMethod]
+        public void PackagingDataFileDownload_ReturnsViewWithViewModel()
+        {
+            // Act
+            var result = _systemUnderTest.PackagingDataFileDownload();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            ((Microsoft.AspNetCore.Mvc.ViewResult)result).ViewName.Should().Be("PackagingDataFileDownload");
+        }
+
+        [TestMethod]
+        public void PackagingDataFileDownloadFailed_ReturnsViewWithViewModel()
+        {
+            // Act
+            var result = _systemUnderTest.PackagingDataFileDownloadFailed();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Model.Should().NotBeNull();
+            viewResult.Model.Should().BeOfType<SubmissionDetailsFileDownloadViewModel>();
+            var model = (SubmissionDetailsFileDownloadViewModel)viewResult.Model;
+            model.DownloadFailed.Should().BeTrue();
+            model.HasIssue.Should().BeFalse();
+            viewResult.ViewName.Should().Be("PackagingDataFileDownloadFailed");
+        }
+
+
+        [TestMethod]
+        public async Task PackagingDataFileDownloadSecurityWarning_ReturnsViewWithViewModel()
+        {
+            // Arrange
+            var submission = _fixture.Create<Submission>();
+            submission.FirstName = "fstName";
+            submission.LastName = "lstName";    
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                    OrganisationSubmission = submission,
+                    
+                    
+                }
+            };
+
+            _sessionManagerMock
+                .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(session);
+
+            // Act
+            var result = await _systemUnderTest.PackagingDataFileDownloadSecurityWarning();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().NotBeNull();
+            viewResult.Model.Should().BeOfType<SubmissionDetailsFileDownloadViewModel>();
+
+            var model = (SubmissionDetailsFileDownloadViewModel)viewResult.Model;
+            model.DownloadFailed.Should().BeTrue();
+            model.HasIssue.Should().BeTrue();
+            model.SubmittedBy.Should().Be("fstName lstName"); // Validate the submittedBy field
+
+            viewResult.ViewName.Should().Be("PackagingDataFileDownloadFailed");
+        }
+
+
+        [TestMethod]
+        public async Task FileDownloadInProgress_ValidRequest_ReturnsFile()
+        {
+            // Arrange
+            var submission = _fixture.Create<Submission>();
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                     OrganisationSubmission = submission
+                }
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            using (var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
+            {
+                Content = new StringContent("file content")
+            })
+            {
+                response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+                {
+                    FileName = "testfile.txt"
+                };
+
+                _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+
+                // Act
+                var result = await _systemUnderTest.FileDownloadInProgress();
+
+                // Assert
+                result.Should().NotBeNull();
+                result.Should().BeOfType<FileStreamResult>();
+                var fileResult = result as FileStreamResult;
+                fileResult.ContentType.Should().Be("application/octet-stream");
+                fileResult.FileDownloadName.Should().Be("testfile.txt");
+            }
+        }
+
+        [TestMethod]
+        public async Task FileDownloadInProgress_FileInfected_ReturnsRedirectToAction()
+        {
+            // Arrange
+            var submission = _fixture.Create<Submission>();
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                    OrganisationSubmission = submission
+                }
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            using var response = new HttpResponseMessage(System.Net.HttpStatusCode.Forbidden);
+
+            _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+
+            // Act
+            var result = await _systemUnderTest.FileDownloadInProgress();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.ActionName.Should().Be("PackagingDataFileDownloadSecurityWarning");
+            redirectResult.ControllerName.Should().BeNull();
+        }
+
+
+        [TestMethod]
+        public async Task FileDownloadInProgress_DownloadFailed_ReturnsRedirectToAction()
+        {
+            // Arrange
+            var submission = _fixture.Create<Submission>();
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                    OrganisationSubmission = submission
+                }
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            using (var response = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest))
+            {
+                _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+
+                // Act
+                var result = await _systemUnderTest.FileDownloadInProgress();
+
+                // Assert
+                result.Should().NotBeNull();
+                result.Should().BeOfType<RedirectToActionResult>();
+                var redirectResult = result as RedirectToActionResult;
+                redirectResult.ActionName.Should().Be("PackagingDataFileDownloadFailed");
+                redirectResult.ControllerName.Should().BeNull();
+            }
+        }
+
+        [TestMethod]
+        public async Task FileDownloadInProgress_DownloadFailed_ReturnsRedirectToActionXXXXXX()
+        {
+            // Arrange
+            var submission = _fixture.Create<Submission>();
+            submission.PomBlobName = null;
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                    OrganisationSubmission = submission
+                }
+            };
+
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
+
+            using (var response = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest))
+            {
+                _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
+
+                // Act
+                var result = await _systemUnderTest.FileDownloadInProgress();
+
+                // Assert
+                result.Should().NotBeNull();
+                result.Should().BeOfType<RedirectToActionResult>();
+                var redirectResult = result as RedirectToActionResult;
+                redirectResult.ActionName.Should().Be("PackagingDataFileDownloadFailed");
+                redirectResult.ControllerName.Should().BeNull();
+            }
+        }
+
+        [TestMethod]
+        public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_MorningTime()
+        {
+            // Arrange
+            
+            var inputDate = new DateTime(2025, 1, 8, 9, 30, 0); // 9:30 AM, 8th January 2025
+            var expectedOutput = "9:30am on 08 January 2025";
+
+            // Act
+            var result = _systemUnderTest.FormatTimeAndDateForSubmission(inputDate);
+
+            // Assert
+            result.Should().Be(expectedOutput);
+        }
+
+        [TestMethod]
+        public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_AfternoonTime()
+        {
+            // Arrange
+            var inputDate = new DateTime(2025, 1, 8, 14, 15, 0); // 2:15 PM, 8th January 2025
+            var expectedOutput = "2:15pm on 08 January 2025";
+
+            // Act
+            var result = _systemUnderTest.FormatTimeAndDateForSubmission(inputDate);
+
+            // Assert
+            result.Should().Be(expectedOutput);
+        }
+
+        [TestMethod]
+        public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_EdgeCaseMidnight()
+        {
+            // Arrange
+            var inputDate = new DateTime(2025, 1, 8, 0, 0, 0); // Midnight, 8th January 2025
+            var expectedOutput = "12:00am on 08 January 2025";
+
+            // Act
+            var result = _systemUnderTest.FormatTimeAndDateForSubmission(inputDate);
+
+            // Assert
+            result.Should().Be(expectedOutput);
+        }
+
+        [TestMethod]
+        public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_EdgeCaseNoon()
+        {
+            // Arrange
+            var inputDate = new DateTime(2025, 1, 8, 12, 0, 0); // Noon, 8th January 2025
+            var expectedOutput = "12:00pm on 08 January 2025";
+
+            // Act
+            var result = _systemUnderTest.FormatTimeAndDateForSubmission(inputDate);
+
+            // Assert
+            result.Should().Be(expectedOutput);
+        }
+
+        [TestMethod]
+        public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_LeapYear()
+        {
+            // Arrange
+            var inputDate = new DateTime(2024, 2, 29, 8, 45, 0); // 8:45 AM, 29th February 2024 (leap year)
+            var expectedOutput = "8:45am on 29 February 2024";
+
+            // Act
+            var result = _systemUnderTest.FormatTimeAndDateForSubmission(inputDate);
+
+            // Assert
+            result.Should().Be(expectedOutput);
+        }
+
+        [TestMethod]
+        public async Task Submissions_GetSessionIsNull_CreatesNewSessionAndReturnsView()
+        {
+            // Arrange
+            _sessionManagerMock.Setup(m => m.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync((JourneySession)null);
+
+            // Act
+            var result = await _systemUnderTest.Submissions();
+
+            // Assert
+            Assert.IsNotNull(result);
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+            Assert.IsInstanceOfType(viewResult.Model, typeof(SubmissionsViewModel));
         }
     }
 }

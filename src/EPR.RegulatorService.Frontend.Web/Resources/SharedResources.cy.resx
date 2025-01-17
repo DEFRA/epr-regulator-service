@@ -345,4 +345,13 @@
   <data name="Export" xml:space="preserve">
     <value>W Export</value>
   </data>
+  <data name="FileDownload.RejectSubmission" xml:space="preserve">
+    <value>Gwrthod y cyflwyniad</value>
+  </data>
+  <data name="FileDownload.TryAgainButton" xml:space="preserve">
+    <value>Rhowch gynnig arall arni</value>
+  </data>
+  <data name="FileDownload.TryAgainButton.AgainStartingWithSmallLetter" xml:space="preserve">
+    <value>Rhowch gynnig arall arni</value>
+  </data>
 </root>
