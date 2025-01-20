@@ -29,9 +29,9 @@
   </data>
 
   <data name="Content.WhenAccountIsCreated" xml:space="preserve">
-      <value>WOnce {0} has made an application to change their account permissions to submit data, you will need to accept or reject the request.</value>
+      <value>WOnce {0} has made an application to change their account permissions to submit data, you will need to accept or reject the request. 333</value>
   </data>
   <data name="Content.DoesNotApply" xml:space="preserve">
-      <value>WIf {0} does not apply to be an approved user, you will need to contact them.</value>
+      <value>Os na fydd {0} yn gwneud cais am fod yn ddefnyddiwr a gymeradwywyd, bydd angen ichi gysylltu â nhw.</value>
   </data>
 </root>
