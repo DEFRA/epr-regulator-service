@@ -19,16 +19,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Page.Title" xml:space="preserve">
-    <value>WWhat is their email address?</value>
+    <value>Beth yw eu cyfeiriad ebost nhw?</value>
   </data>
   <data name="Email.HintText" xml:space="preserve">
-    <value>WAn email will be sent to them telling them how to apply to be a nominated person. You will need to accept or reject their application.</value>
+    <value>Anfonir neges ebost atyn nhw yn dweud sut i wneud cais am fod yn berson a gymeradwywyd. Bydd angen i chithau dderbyn neu wrthod eu cais.</value>
   </data>
   <data name="ErrorSummary.Title" xml:space="preserve">
-    <value>WThere is a problem</value>
+    <value>Mae yna broblem</value>
   </data>
   <data name="ErrorTitle.NullEmail" xml:space="preserve">
-    <value>WEnter their email address</value>
+    <value>Rhowch eu cyfeiriad ebost</value>
   </data>
   <data name="ErrorTitle.InvalidEmail" xml:space="preserve">
     <value>WEnter an email in the correct format, like name example.com</value>
@@ -40,7 +40,7 @@
     <value>WEmail</value>
   </data>
   <data name="PersonEmail.MissingError" xml:space="preserve">
-    <value>WEnter their email address</value>
+    <value>Rhowch eu cyfeiriad ebost</value>
   </data>
   <data name="PersonEmail.TooLongError" xml:space="preserve">
     <value>WEmail address must be 254 characters or less</value>

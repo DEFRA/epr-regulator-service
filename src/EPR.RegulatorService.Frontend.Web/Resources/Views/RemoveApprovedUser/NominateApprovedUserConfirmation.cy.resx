@@ -19,10 +19,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Page.Title" xml:space="preserve">
-      <value>WCheck your answers before confirming nominated approved person</value>
+      <value>Gwiriwch eich atebion cyn cadarnhau'r person a gymeradwywyd sydd wedi'i enwebu</value>
   </data>
   <data name="Question.HasAnApprovedPersonBeenNominated" xml:space="preserve">
-      <value>WHas a new approved person been nominated?</value>
+      <value>Oes person a gymeradwywyd newydd wedi'i enwebu?</value>
   </data>
   <data name="Question.Name" xml:space="preserve">
       <value>WName</value>

@@ -19,13 +19,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Page.Panel" xml:space="preserve">
-      <value>WAccount permissions have changed</value>
+      <value>Mae caniatadau'r cyfrif wedi'u newid</value>
   </data>
   <data name="Page.RemoveAndNominate" xml:space="preserve">
-      <value>WYou have removed {0} from {1}. We've sent an email to {2} asking them to apply to be an approved person.</value>
+      <value>Rydych chi wedi tynnu {0} o {1}.Rydyn ni wedi anfon neges ebost at {2} yn gofyn iddyn nhw wneud cais am fod yn berson a gymeradwywyd drwy greu cyfrif.</value>
   </data>
   <data name="Page.Heading" xml:space="preserve">
-      <value>WWhat you need to do next</value>
+      <value>Beth mae angen ichi ei wneud nesaf</value>
   </data>
 
   <data name="Content.WhenAccountIsCreated" xml:space="preserve">

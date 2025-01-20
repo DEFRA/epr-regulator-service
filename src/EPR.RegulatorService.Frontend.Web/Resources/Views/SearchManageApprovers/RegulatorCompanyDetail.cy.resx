@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Subheading.OrganisationID" xml:space="preserve">
-    <value>WOrganisation ID</value>
+    <value>ID y sefydliad</value>
   </data>
   <data name="Subheading.OrganisationType" xml:space="preserve">
-    <value>WOrganisation type</value>
+    <value>Math o sefydliad</value>
   </data>
   <data name="Subheading.RegisteredAddress" xml:space="preserve">
-    <value>WRegistered address</value>
+    <value>Cyfeiriad cofrestredig</value>
   </data>
   <data name="Subheading.CompaniesHouseNumber" xml:space="preserve">
-    <value>WCompanies House number</value>
+    <value>Rhif Tŷ'r Cwmnïau</value>
   </data>
   <data name="Text.NotListed" xml:space="preserve">
-    <value>WNot listed</value>
+    <value>Heb ei restru</value>
   </data>
   <data name="link.CompaniesHouseRegister" xml:space="preserve">
     <value>WView on Companies House register</value>
@@ -139,16 +139,16 @@
     <value>WContents</value>
   </data>
   <data name="Tab.ApprovedPerson" xml:space="preserve">
-    <value>WApproved person</value>
+    <value>Person a gymeradwywyd</value>
   </data>
   <data name="Tab.DelegatedPersons" xml:space="preserve">
-    <value>WDelegated persons</value>
+    <value>Personau a ddirprwywyd</value>
   </data>
   <data name="Tab.AdminUsers" xml:space="preserve">
-    <value>WAdmin users</value>
+    <value>Defnyddwyr gweinyddol</value>
   </data>
   <data name="Tab.BasicUsers" xml:space="preserve">
-    <value>WBasic users</value>
+    <value>Defnyddwyr sylfaenol</value>
   </data>
   <data name="TextAssist.Warning" xml:space="preserve">
     <value>WWarning</value>
@@ -157,13 +157,13 @@
     <value>WThere is currently no approved person for this organisation</value>
   </data>
   <data name="Text.NoDelegatedPersons" xml:space="preserve">
-    <value>WThere are no delegated persons for this organisation</value>
+    <value>Does dim personau a ddirprwywyd ar gyfer y sefydliad yma</value>
   </data>
   <data name="Text.NoAdminUsers" xml:space="preserve">
-    <value>WThere are no admin users for this organisation</value>
+    <value>Does dim defnyddwyr gweinyddol ar gyfer y sefydliad yma</value>
   </data>
   <data name="Text.NoBasicUsers" xml:space="preserve">
-    <value>WThere are no basic users for this organisation</value>
+    <value>Does dim defnyddwyr sylfaenol ar gyfer y sefydliad yma</value>
   </data>
   <data name="Button.NominateNewApprovedPerson" xml:space="preserve">
     <value>WNominate new approved person</value>

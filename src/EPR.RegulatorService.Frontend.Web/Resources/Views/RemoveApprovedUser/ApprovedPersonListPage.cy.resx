@@ -18,13 +18,13 @@
   </resheader>
 
   <data name="Page.Title" xml:space="preserve">
-    <value>WWho has been nominated to apply as the new approved person?</value>
+    <value>Pwy sydd wedi'i enwebu i wneud cais fel y person a gymeradwywyd newydd?</value>
   </data>
   <data name="Page.Title.Hint" xml:space="preserve">
-    <value>WSelect an existing member of this account, or someone new.</value>
+    <value>Dewiswch aelod presennol o'r cyfrif yma, neu rywun newydd.</value>
   </data>
   <data name="Someone.new" xml:space="preserve">
-    <value>WSomeone new</value>
+    <value>Rhywun newydd</value>
   </data>
   <data name="SelectNominatedApprovedPerson" xml:space="preserve">
     <value>WSelect who has been nominated to be an approved person</value>
