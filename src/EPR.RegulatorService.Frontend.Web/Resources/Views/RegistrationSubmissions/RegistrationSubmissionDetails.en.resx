@@ -157,7 +157,7 @@
     <value>Registered address</value>
   </data>
   <data name="RegistrationSubmissionDetails.RegistrationReferenceNumber" xml:space="preserve">
-    <value>Registration reference number</value>
+    <value>Producer registration number</value>
   </data>
   <data name="RegistrationSubmissionDetails.ProducerTitle" xml:space="preserve">
     <value>Producer Comment</value>
