@@ -22,10 +22,10 @@
       <value>Ydy'r sefydliad wedi enwebu person a gymeradwywyd newydd?</value>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value>WYes</value>
+    <value>Ydy</value>
   </data>
   <data name="No" xml:space="preserve">
-      <value>WNo</value>
+      <value>Nac ydy</value>
   </data>
   <data name="NominateApproved.Decision.Error" xml:space="preserve">
     <value>WSelect whether a new approved person has been nominated or not</value>

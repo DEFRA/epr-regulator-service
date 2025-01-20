@@ -71,12 +71,12 @@
     <value>WOrganisation ID must be 3 digits or more</value>
   </data>
   <data name="SearchTerm.MissingError" xml:space="preserve">
-    <value>WEnter the name or ID of the organisation</value>
+    <value>Rhowch enw neu ID y sefydliad</value>
   </data>
   <data name="Page.Title" xml:space="preserve">
     <value>Beth yw enw neu ID y sefydliad yr hoffech ei reoli?</value>
   </data>
   <data name="SearchPage.HintText" xml:space="preserve">
-    <value>WFor example, Acme Org Ltd or 123 456</value>
+    <value>Er enghraifft, Acme Org Ltd or 123 456</value>
   </data>
 </root>
