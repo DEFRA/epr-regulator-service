@@ -31,7 +31,7 @@
     <value>Rhowch eu cyfeiriad ebost</value>
   </data>
   <data name="ErrorTitle.InvalidEmail" xml:space="preserve">
-    <value>WEnter an email in the correct format, like name example.com</value>
+    <value>WEnter an email in the correct format, like name example.com 111</value>
   </data>
   <data name="ErrorTitle.InvalidEmailLength" xml:space="preserve">
     <value>WEmail address must be 254 characters or less</value>
@@ -46,6 +46,6 @@
     <value>WEmail address must be 254 characters or less</value>
   </data>
   <data name="PersonEmail.InvalidFormat" xml:space="preserve">
-    <value>WEnter an email in the correct format, like name@example.com</value>
+    <value>WEnter an email in the correct format, like name@example.com 222</value>
   </data>
 </root>
