@@ -32,15 +32,7 @@
 
                 <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                     <dd class="govuk-summary-list__value" style="width: 285px;">
-                        <strong>Chargeable items</strong>
-                    </dd>
-                    @* <dd class="govuk-summary-list__value" style="width: 410px;">
-                </dd> *@
-                </div>
-
-                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
-                    <dd class="govuk-summary-list__value" style="width: 285px;">
-                        @Localizer["PackagingCompliancePaymentDetails.ResubmissionFee"]
+                        <strong>@Localizer["PackagingCompliancePaymentDetails.ResubmissionFee"]</strong>
                     </dd>
                     <dd class="govuk-summary-list__value" style="width: 410px;">
                         @Localizer[Model.MemberCount == 1 ? "PackagingCompliancePaymentDetails.ResubmissionFeeDescription1"
