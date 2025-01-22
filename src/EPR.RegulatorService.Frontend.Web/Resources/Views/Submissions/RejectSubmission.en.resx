@@ -138,4 +138,7 @@
   <data name="Error.ResubmissionRequired" xml:space="preserve">
     <value>Select yes if you require a resubmission</value>
   </data>
+  <data name="RejectSubmission.UseOfInfoExplanation" xml:space="preserve">
+    <value>We'll use this information in an email to the organisation's approved and &#xA;delegated people. It will also be added to the submission details.</value>
+  </data>
 </root>
