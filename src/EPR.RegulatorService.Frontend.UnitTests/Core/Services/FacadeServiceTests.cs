@@ -1749,7 +1749,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var submissionId = Guid.NewGuid();
             var expectedResult = new RegistrationSubmissionOrganisationDetailsResponse
             {
-                ApplicationReferenceNumber = "TEST"
+                ApplicationReferenceNumber = "TEST",
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails()
             };
 
             string json = JsonSerializer.Serialize(expectedResult);
