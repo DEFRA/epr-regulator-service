@@ -34,4 +34,6 @@ public class RegistrationSubmissionOrganisationSubmissionSummaryDetails
     public string DeclaredBy { get; set; }
 
     public List<FileDetails> Files { get; set; } = [];
+
+    public bool IsResubmission { get; set; }
 }

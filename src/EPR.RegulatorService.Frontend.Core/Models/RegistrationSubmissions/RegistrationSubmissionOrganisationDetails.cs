@@ -91,12 +91,20 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 StatusPendingDate = response.StatusPendingDate,
                 ProducerCommentDate = response.ProducerCommentDate,
                 RegulatorDecisionDate = response.RegulatorCommentDate,
-                IsResubmission = response.IsResubmission
+                IsResubmission = response.IsResubmission,
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails {
+                    IsResubmission = response.IsResubmission
+                }
             };
 
-    public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionOrganisationDetailsResponse response) => response is null
-        ? null
-        : new RegistrationSubmissionOrganisationDetails
+    public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionOrganisationDetailsResponse response)
+    {
+        if (response is null)
+        {
+            return default;
+        }
+
+        var registrationSubmissionOrganisationDetails = new RegistrationSubmissionOrganisationDetails
         {
             SubmissionId = response.SubmissionId,
             OrganisationId = response.OrganisationId,
@@ -131,7 +139,8 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             SubmissionPeriod = response.SubmissionPeriod,
             CsoMembershipDetails = response.CsoMembershipDetails,
             IsResubmission = response.IsResubmission,
-            ProducerDetails = new ProducerDetailsDto {
+            ProducerDetails = new ProducerDetailsDto
+            {
                 IsLateFeeApplicable = response.IsLateSubmission,
                 IsProducerOnlineMarketplace = response.IsOnlineMarketPlace,
                 NoOfSubsidiaries = response.NumberOfSubsidiaries,
@@ -139,4 +148,8 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 ProducerType = response.OrganisationSize
             }
         };
+
+        registrationSubmissionOrganisationDetails.SubmissionDetails.IsResubmission = response.IsResubmission;
+        return registrationSubmissionOrganisationDetails;
+    }
 }

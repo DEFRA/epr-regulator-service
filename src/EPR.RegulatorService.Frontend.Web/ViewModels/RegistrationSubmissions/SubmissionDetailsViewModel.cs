@@ -70,6 +70,8 @@ public class SubmissionDetailsViewModel
     public List<FileDetails> Files { get; set; }
     public int? AccountRoleId { get; set; }
 
+    public bool IsResubmission { get; set; }
+
     public SubmissionDetailsViewModel()
     {
         Files = [];
@@ -96,17 +98,19 @@ public class SubmissionDetailsViewModel
             return null;
         }
 
-        var result = new RegistrationSubmissionOrganisationSubmissionSummaryDetails();
-
-        result.AccountRoleId = details.AccountRoleId;
-        result.Telephone = details.Telephone;
-        result.Email = details.Email;
-        result.DeclaredBy = details.DeclaredBy;
-        result.SubmittedBy = details.SubmittedBy;
-        result.DecisionDate = details.DecisionDate;
-        result.Status = details.Status;
-        result.SubmittedOnTime = details.SubmittedOnTime;
-        result.TimeAndDateOfSubmission = details.TimeAndDateOfSubmission;
+        var result = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+        {
+            AccountRoleId = details.AccountRoleId,
+            Telephone = details.Telephone,
+            Email = details.Email,
+            DeclaredBy = details.DeclaredBy,
+            SubmittedBy = details.SubmittedBy,
+            DecisionDate = details.DecisionDate,
+            Status = details.Status,
+            SubmittedOnTime = details.SubmittedOnTime,
+            TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
+            IsResubmission = details.IsResubmission
+        };
 
         if (details.Files != null)
         {
@@ -138,7 +142,8 @@ public class SubmissionDetailsViewModel
             Status = details.Status,
             SubmittedOnTime = details.SubmittedOnTime,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
-            Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList()
+            Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList(),
+            IsResubmission = details.IsResubmission
         };
     }
 

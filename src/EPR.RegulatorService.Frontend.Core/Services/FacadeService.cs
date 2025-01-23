@@ -466,7 +466,6 @@ public class FacadeService : IFacadeService
         try
         {
             var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
-
             return response;
         }
         catch (Exception ex)
