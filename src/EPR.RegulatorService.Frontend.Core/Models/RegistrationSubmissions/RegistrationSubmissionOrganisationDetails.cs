@@ -64,6 +64,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public List<CsoMembershipDetailsDto> CsoMembershipDetails { get; set; }
 
     public ProducerDetailsDto ProducerDetails { get; set; }
+    public bool IsResubmission { get; set; }
 
     public override bool Equals(object? obj) => Equals(obj as RegistrationSubmissionOrganisationDetails);
     public bool Equals(RegistrationSubmissionOrganisationDetails? other) => other is not null && OrganisationId.Equals(other.OrganisationId);
@@ -89,7 +90,8 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 SubmissionStatus = response.SubmissionStatus,
                 StatusPendingDate = response.StatusPendingDate,
                 ProducerCommentDate = response.ProducerCommentDate,
-                RegulatorDecisionDate = response.RegulatorCommentDate
+                RegulatorDecisionDate = response.RegulatorCommentDate,
+                IsResubmission = response.IsResubmission
             };
 
     public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionOrganisationDetailsResponse response) => response is null
@@ -128,6 +130,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             ProducerCommentDate = response.ProducerCommentDate,
             SubmissionPeriod = response.SubmissionPeriod,
             CsoMembershipDetails = response.CsoMembershipDetails,
+            IsResubmission = response.IsResubmission,
             ProducerDetails = new ProducerDetailsDto {
                 IsLateFeeApplicable = response.IsLateSubmission,
                 IsProducerOnlineMarketplace = response.IsOnlineMarketPlace,

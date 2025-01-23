@@ -46,6 +46,8 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
 
     public ProducerDetailsDto ProducerDetails { get; set; }
 
+    public bool IsResubmission { get; set; }
+
     // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
     public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
     {
@@ -80,7 +82,8 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
         RejectReason = details.RejectReason,
         CancellationReason = details.CancellationReason,
         ProducerDetails = details.ProducerDetails,
-        CSOMembershipDetails = details.CsoMembershipDetails
+        CSOMembershipDetails = details.CsoMembershipDetails,
+        IsResubmission = details.IsResubmission
     };
 
     //Implicit operator from RegistrationSubmissionDetailsViewModel to RegistrationSubmissionOrganisationDetails
@@ -113,6 +116,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
         RejectReason = details.RejectReason,
         CancellationReason = details.CancellationReason,
         CsoMembershipDetails = details.CSOMembershipDetails?.ToList(),
-        ProducerDetails = details.ProducerDetails
+        ProducerDetails = details.ProducerDetails,
+        IsResubmission = details.IsResubmission
     };
 }
