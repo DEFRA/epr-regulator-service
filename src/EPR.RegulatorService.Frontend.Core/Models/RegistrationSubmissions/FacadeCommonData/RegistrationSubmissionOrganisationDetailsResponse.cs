@@ -51,4 +51,6 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public bool IsComplianceScheme { get; set; }
     public string SubmissionPeriod { get; set; }
     public List<CsoMembershipDetailsDto> CsoMembershipDetails { get; set; }
+
+    public bool IsResubmission { get; set; }
 }

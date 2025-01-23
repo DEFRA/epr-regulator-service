@@ -37,5 +37,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.Faca
         public DateTime? RegulatorCommentDate { get; set; }
         public DateTime? ProducerCommentDate { get; set; }
         public Guid? RegulatorUserId { get; set; }
+
+        public bool IsResubmission { get; set; }
     }
 }
