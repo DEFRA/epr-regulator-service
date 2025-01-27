@@ -105,8 +105,14 @@
                          }
                          )
 
-
-                @await Html.PartialAsync("Partials/_RegistrationSubmissionActionButtons", Model)
+                @if (Model.IsResubmission)
+                {
+                    @await Html.PartialAsync("Partials/_RegistrationResubmissionActionButtons", Model)
+                }
+                else
+                {
+                    @await Html.PartialAsync("Partials/_RegistrationSubmissionActionButtons", Model)
+                }
 
             </div>
             <div class="govuk-grid-column-full">
