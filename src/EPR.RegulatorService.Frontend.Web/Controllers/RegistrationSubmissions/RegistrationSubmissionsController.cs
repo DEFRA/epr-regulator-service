@@ -350,7 +350,8 @@ public partial class RegistrationSubmissionsController(
 
         var model = new RejectRegistrationSubmissionViewModel
         {
-            SubmissionId = submissionId.Value
+            SubmissionId = submissionId.Value,
+            IsResubmission = existingModel.IsResubmission
         };
 
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");

@@ -1391,7 +1391,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             var expectedViewModel = new RejectRegistrationSubmissionViewModel
             {
-                SubmissionId = id
+                SubmissionId = id,
+                IsResubmission = detailsModel.IsResubmission
             };
 
             // Act
