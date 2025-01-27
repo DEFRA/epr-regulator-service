@@ -127,7 +127,7 @@
     <value>Parhau</value>
   </data>
   <data name="Confirm" xml:space="preserve">
-    <value>WConfirm</value>
+    <value>Cadarnhau</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Canslo</value>
@@ -223,10 +223,10 @@
     <value>Ebost</value>
   </data>
   <data name="Regulator.CompanyDetail.CompanyRole" xml:space="preserve">
-    <value>WCompany role</value>
+    <value>Rôl yn y cwmni</value>
   </data>
   <data name="Regulator.CompanyDetail.Remove" xml:space="preserve">
-    <value>WRemove</value>
+    <value>Tynnu</value>
   </data>
   <data name="Regulator.CompanyDetail.EmployeeOfOrganisation" xml:space="preserve">
     <value>WEmployee of organisation</value>

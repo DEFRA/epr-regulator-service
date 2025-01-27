@@ -19,18 +19,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Page.Title" xml:space="preserve">
-    <value>WCheck the details of the nominated approved person before confirming</value>
+    <value>Gwiriwch fanylion y person a gymeradwywyd sydd wedi'i enwebu cyn cadarnhau</value>
   </data>
   <data name="User.Prompt.HasANewApprovedPersonBeenNominated" xml:space="preserve">
-    <value>WHas a new approved person been nominated?</value>
+    <value>Oes person a gymeradwywyd newydd wedi'i enwebu?</value>
   </data>
   <data name="Change" xml:space="preserve">
-    <value>WChange</value>
+    <value>Newid</value>
   </data>
   <data name="User.Prompt.InvitedApprovedPersonFullName" xml:space="preserve">
-    <value>WName</value>
+    <value>Enw</value>
   </data>
   <data name="User.Prompt.InvitedApprovedPersonEmail" xml:space="preserve">
-    <value>WEmail address</value>
+    <value>Cyfeiriad ebost</value>
   </data>
 </root>

@@ -19,19 +19,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Page.Title" xml:space="preserve">
-    <value>WWhat is the name of the nominated approved person?</value>
+    <value>Beth yw enw'r person a gymeradwywyd sydd wedi'i enwebu?</value>
   </data>
   <data name="LastName.Label" xml:space="preserve">
-    <value>WLast name</value>
+    <value>Enw olaf</value>
   </data>
   <data name="FirstName.Label" xml:space="preserve">
-    <value>WFirst name</value>
+    <value>Enw cyntaf</value>
   </data>
   <data name="ErrorSummary.Title" xml:space="preserve">
-    <value>WThere is a problem</value>
+    <value>Mae yna broblem</value>
   </data>
   <data name="ErrorTitle.FirstNameNull" xml:space="preserve">
-    <value>WEnter their first name</value>
+    <value>Rhowch eu henw cyntaf</value>
   </data>
   <data name="ErrorTitle.FirstNameDigits" xml:space="preserve">
     <value>WFirst name must not include numbers</value>
@@ -40,7 +40,7 @@
     <value>WFirst name must be 35 characters or less</value>
   </data>
   <data name="ErrorTitle.LastNameNull" xml:space="preserve">
-    <value>WEnter their last name</value>
+    <value>Rhowch eu henw olaf</value>
   </data>
   <data name="ErrorTitle.LastNameDigits" xml:space="preserve">
     <value>WLast name must not include numbers</value>
