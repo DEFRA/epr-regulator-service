@@ -1,0 +1,45 @@
+@using EPR.RegulatorService.Frontend.Web.Constants
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Core.Enums
+@model RegistrationSubmissionDetailsViewModel
+
+<div class="govuk-button-group">
+    @if (Model.Status == RegistrationSubmissionStatus.Granted)
+    {
+        <ul class="govuk-list govuk-list__horizontal govuk-list__last-spaced">
+            <li>
+                <a class="govuk-button " href="@Url.Action(
+                "GrantRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  submissionId = Model.SubmissionId
+                })">
+                    @Localizer["RegistrationResubmissionDetails.Approve"]
+                </a>
+            </li>
+            <li>
+                <a class="govuk-button govuk-button--warning" href="@Url.Action(
+                "RejectRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  submissionId = Model.SubmissionId
+                })">
+                    @Localizer["RegistrationResubmissionDetails.Reject"]
+                </a>
+            </li>
+            <li>
+                <a class="govuk-button govuk-button--secondary" href="@Url.Action(
+                "CancelRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  submissionId = Model.SubmissionId
+                })">
+                    @Localizer["RegistrationResubmissionDetails.Cancel"]
+                </a>
+            </li>
+        </ul>
+    }   
+</div>
