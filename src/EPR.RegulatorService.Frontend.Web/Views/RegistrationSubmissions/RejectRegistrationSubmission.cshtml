@@ -4,7 +4,15 @@
 
 @model RejectRegistrationSubmissionViewModel
 @{
-    ViewData["Title"] = Localizer["RejectRegistrationSubmission.Title"];
+    if (Model.IsResubmission)
+    {
+        ViewData["Title"] = Localizer["RejectResubmission.Title"];
+    }
+    else
+    {
+        ViewData["Title"] = Localizer["RejectRegistrationSubmission.Title"];
+    }
+
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer, nameof(Model.RejectReason));
     var rejectReason = string.IsNullOrEmpty(Model.RejectReason) ? string.Empty : Model.RejectReason;
     var rejectReasonError = errorsViewModel.Errors.Find(x => x.Key == nameof(Model.RejectReason));
@@ -22,14 +30,24 @@
                         @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
                     }
                     <span class="govuk-caption-xl">
-                        @Localizer["RejectRegistrationSubmission.Caption"]
+                        @SharedLocalizer["ManageRegistrationSubmissions.Caption"]
                     </span>
                     <h1 class="govuk-heading-xl govuk-!-margin-bottom-4" for="@nameof(Model.RejectReason)">
-                        @Localizer["RejectRegistrationSubmission.Heading"]
+                        @if (Model.IsResubmission)
+                        {
+                            @Localizer["RejectResubmission.Heading"]
+                        }
+                        else
+                        {
+                            @Localizer["RejectRegistrationSubmission.Heading"]
+                        }
                     </h1>
-                    <p class="govuk-body govuk-!-margin-bottom-4">
-                        @Localizer["RejectRegistrationSubmission.Description"]
-                    </p>
+                    @if (!Model.IsResubmission)
+                    {
+                        <p class="govuk-body govuk-!-margin-bottom-4">
+                            @Localizer["RejectRegistrationSubmission.Description"]
+                        </p>
+                    }
                 </div>
             </div>
 
