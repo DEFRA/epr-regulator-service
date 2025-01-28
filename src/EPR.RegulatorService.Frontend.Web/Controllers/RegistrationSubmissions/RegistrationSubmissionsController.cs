@@ -379,6 +379,7 @@ public partial class RegistrationSubmissionsController(
 
         _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason = model.RejectReason;
         existingModel.RegulatorComments = model.RejectReason;
+        existingModel.RejectReason = model.RejectReason;
 
         if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out var organisationDetailsChangeHistory))
         {

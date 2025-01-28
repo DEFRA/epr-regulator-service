@@ -314,7 +314,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             {
                 var regulatorDecisionRequest = GetDecisionRequest(registrationSubmissionDetailsViewModel, Core.Enums.RegistrationSubmissionStatus.Refused);
 
-                regulatorDecisionRequest.Comments = registrationSubmissionDetailsViewModel.RegulatorComments;
+                regulatorDecisionRequest.Comments = registrationSubmissionDetailsViewModel.RejectReason;
 
                 var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
