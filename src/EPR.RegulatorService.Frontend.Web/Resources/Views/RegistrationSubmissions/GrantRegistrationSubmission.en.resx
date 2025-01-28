@@ -124,12 +124,18 @@
     <value>Manage registration submissions</value>
   </data>
   <data name="ErrorMessage" xml:space="preserve">
-    <value>Select yes if you want to grant this registration</value>
+    <value>Please select an option</value>
   </data>
   <data name="PageHeading" xml:space="preserve">
     <value>Are you sure you want to grant this registration?</value>
   </data>
+  <data name="PageHeading.Resubmission" xml:space="preserve">
+    <value>Are you sure you want to approve this resubmitted data?</value>
+  </data>
   <data name="PageTitle" xml:space="preserve">
     <value>Grant registration confirmation</value>
+  </data>
+  <data name="PageTitle.Resubmission" xml:space="preserve">
+    <value>Approve resubmitted data confirmation</value>
   </data>
 </root>

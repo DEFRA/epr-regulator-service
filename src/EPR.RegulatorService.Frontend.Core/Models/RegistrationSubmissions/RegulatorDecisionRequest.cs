@@ -32,4 +32,6 @@ public class RegulatorDecisionRequest
     public string? OrganisationReference { get; init; } 
     public string? OrganisationEmail { get; init; } 
     public bool? IsWelsh { get; init; } = false;
+
+    public bool IsResubmission { get; set; }
 }

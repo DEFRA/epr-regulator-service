@@ -8,4 +8,6 @@ public class GrantRegistrationSubmissionViewModel
 
     [Required(ErrorMessage = "ErrorMessage")]
     public bool? IsGrantRegistrationConfirmed { get; set; }
+
+    public bool IsResubmission { get; set; }
 }
