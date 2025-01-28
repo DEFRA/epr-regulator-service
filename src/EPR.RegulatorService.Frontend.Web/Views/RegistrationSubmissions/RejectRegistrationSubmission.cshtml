@@ -33,14 +33,7 @@
                         @SharedLocalizer["ManageRegistrationSubmissions.Caption"]
                     </span>
                     <h1 class="govuk-heading-xl govuk-!-margin-bottom-4" for="@nameof(Model.RejectReason)">
-                        @if (Model.IsResubmission)
-                        {
-                            @Localizer["RejectResubmission.Heading"]
-                        }
-                        else
-                        {
-                            @Localizer["RejectRegistrationSubmission.Heading"]
-                        }
+                        @Localizer[Model.IsResubmission ? "RejectResubmission.Heading" : "RejectRegistrationSubmission.Heading"]
                     </h1>
                     @if (!Model.IsResubmission)
                     {

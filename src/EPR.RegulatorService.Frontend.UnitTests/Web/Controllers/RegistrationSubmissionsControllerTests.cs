@@ -1460,7 +1460,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             var expectedViewModel = new RejectRegistrationSubmissionViewModel
             {
-                SubmissionId = Guid.NewGuid()
+                SubmissionId = Guid.NewGuid(),
+                IsResubmission = detailsModel.IsResubmission
             };
 
             _controller.Url = mockUrlHelper.Object;
@@ -1489,7 +1490,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             var model = new RejectRegistrationSubmissionViewModel
             {
-                SubmissionId = id
+                SubmissionId = id,
+                IsResubmission = detailsModel.IsResubmission
             };
 
             // Simulate an error in ModelState
@@ -1535,7 +1537,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new RejectRegistrationSubmissionViewModel
             {
                 SubmissionId = id,
-                RejectReason = new string('A', 401) // Exceeds 400 character limit
+                RejectReason = new string('A', 401), // Exceeds 400 character limit
+                IsResubmission = detailsModel.IsResubmission
             };
 
             // Simulate model state error for the RejectReason property
@@ -1587,7 +1590,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new RejectRegistrationSubmissionViewModel
             {
                 SubmissionId = detailsModel.SubmissionId,
-                RejectReason = detailsModel.RejectReason
+                RejectReason = detailsModel.RejectReason,
+                IsResubmission = detailsModel.IsResubmission
             };
 
             // Act

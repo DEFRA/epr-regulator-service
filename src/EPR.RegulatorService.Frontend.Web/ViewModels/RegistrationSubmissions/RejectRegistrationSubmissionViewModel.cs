@@ -9,6 +9,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         [StringLength(400, ErrorMessage = "Error.RejectReasonTooLong")]
         public string? RejectReason { get; set; }
 
-        public bool IsResubmission { get; set; } = false;
+        public bool IsResubmission { get; set; }
     }
 }
