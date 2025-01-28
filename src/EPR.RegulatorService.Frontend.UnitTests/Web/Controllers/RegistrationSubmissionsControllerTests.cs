@@ -1618,6 +1618,61 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(detailsModel.SubmissionId, routeValues[0].Value);
         }
 
+        [TestMethod]
+        [DataRow("Valid reject reason")]
+        [DataRow("")]
+        [DataRow(" ")]
+        [DataRow("             valid reason")]
+        public async Task RejectRegistrationSubmission_Post_SavesAndReturnsSuccessAndRedirectsCorrectly_ForValidReSubmissionRefusal(string rejectReason)
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.RejectReason = rejectReason;
+            detailsModel.IsResubmission = true;
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(submissionId, detailsModel);
+
+            var model = new RejectRegistrationSubmissionViewModel
+            {
+                SubmissionId = detailsModel.SubmissionId,
+                RejectReason = detailsModel.RejectReason,
+                IsResubmission = detailsModel.IsResubmission
+            };
+
+            // Act
+            // Set up successful submission status
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success);
+
+            var result = await _controller.RejectRegistrationSubmission(model) as RedirectToActionResult;
+
+            // Assert - Successful refuse and redirection
+            Assert.IsNotNull(result);
+            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+
+            // Assert - Successful save in session
+            Assert.IsTrue(_journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason == rejectReason);
+
+            bool isRegistrationSubmissionOrganisationDetailsChanged =
+                _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestRegistrationSubmissionOrganisationDetails);
+
+            isRegistrationSubmissionOrganisationDetailsChanged.Should().BeTrue();
+            latestRegistrationSubmissionOrganisationDetails.Should().NotBeNull();
+            latestRegistrationSubmissionOrganisationDetails.RejectReason.Should().Be(rejectReason);
+            latestRegistrationSubmissionOrganisationDetails.RegulatorComments.Should().Be(rejectReason.ToString());
+        }
+
         #endregion POST
 
         #endregion
