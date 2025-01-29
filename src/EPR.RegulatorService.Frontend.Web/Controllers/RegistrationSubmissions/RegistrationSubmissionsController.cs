@@ -350,7 +350,8 @@ public partial class RegistrationSubmissionsController(
 
         var model = new RejectRegistrationSubmissionViewModel
         {
-            SubmissionId = submissionId.Value
+            SubmissionId = submissionId.Value,
+            IsResubmission = existingModel.IsResubmission
         };
 
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
@@ -378,6 +379,7 @@ public partial class RegistrationSubmissionsController(
 
         _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason = model.RejectReason;
         existingModel.RegulatorComments = model.RejectReason;
+        existingModel.RejectReason = model.RejectReason;
 
         if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out var organisationDetailsChangeHistory))
         {
@@ -392,7 +394,9 @@ public partial class RegistrationSubmissionsController(
             PagePath.RejectRegistrationSubmission,
             PagePath.ConfirmRegistrationRefusal);
 
-        return RedirectToRoute("ConfirmRegistrationRefusal", new { submissionId = existingModel.SubmissionId });
+        return existingModel.IsResubmission
+            ? await SubmitRegulatorRejectDecisionAsync(existingModel)
+            : RedirectToRoute("ConfirmRegistrationRefusal", new { submissionId = existingModel.SubmissionId });
     }
 
     [HttpGet]
@@ -572,38 +576,7 @@ public partial class RegistrationSubmissionsController(
             return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
         }
 
-        try
-        {
-            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Refused);
-
-            regulatorDecisionRequest.Comments = existingModel.RejectReason;
-
-            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
-
-            await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
-
-            return status == Core.Models.EndpointResponseStatus.Success
-                ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
-                : RedirectToRoute("ServiceNotAvailable",
-                new
-                {
-                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
-                });
-        }
-        catch (Exception ex)
-        {
-            _logControllerError.Invoke(
-                logger,
-                $"Exception received while refusing submission" +
-                $"{nameof(RegistrationSubmissionsController)}.{nameof(ConfirmRegistrationRefusal)}", ex);
-
-            return RedirectToRoute(
-                "ServiceNotAvailable",
-                new
-                {
-                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
-                });
-        }
+        return await SubmitRegulatorRejectDecisionAsync(existingModel);
 
     }
 

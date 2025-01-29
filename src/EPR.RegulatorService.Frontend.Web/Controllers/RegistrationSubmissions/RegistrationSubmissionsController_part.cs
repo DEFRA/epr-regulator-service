@@ -308,5 +308,40 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return fileDownloadModel;
         }
 
+        private async Task<IActionResult> SubmitRegulatorRejectDecisionAsync(RegistrationSubmissionDetailsViewModel registrationSubmissionDetailsViewModel)
+        {
+            try
+            {
+                var regulatorDecisionRequest = GetDecisionRequest(registrationSubmissionDetailsViewModel, Core.Enums.RegistrationSubmissionStatus.Refused);
+
+                regulatorDecisionRequest.Comments = registrationSubmissionDetailsViewModel.RejectReason;
+
+                var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
+
+                await UpdateOrganisationDetailsChangeHistoryAsync(registrationSubmissionDetailsViewModel, status, regulatorDecisionRequest);
+
+                return status == Core.Models.EndpointResponseStatus.Success
+                    ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
+                    : RedirectToRoute("ServiceNotAvailable",
+                    new
+                    {
+                        backLink = $"{PagePath.RegistrationSubmissionDetails}/{registrationSubmissionDetailsViewModel.SubmissionId}"
+                    });
+            }
+            catch (Exception ex)
+            {
+                _logControllerError.Invoke(
+                    logger,
+                    $"Exception received while refusing submission" +
+                    $"{nameof(RegistrationSubmissionsController)}.{nameof(ConfirmRegistrationRefusal)}", ex);
+
+                return RedirectToRoute(
+                    "ServiceNotAvailable",
+                    new
+                    {
+                        backLink = $"{PagePath.RegistrationSubmissionDetails}/{registrationSubmissionDetailsViewModel.SubmissionId}"
+                    });
+            }
+        }
     }
 }
