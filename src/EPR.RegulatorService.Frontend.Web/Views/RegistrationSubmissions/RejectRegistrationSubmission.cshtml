@@ -4,14 +4,8 @@
 
 @model RejectRegistrationSubmissionViewModel
 @{
-    if (Model.IsResubmission)
-    {
-        ViewData["Title"] = Localizer["RejectResubmission.Title"];
-    }
-    else
-    {
-        ViewData["Title"] = Localizer["RejectRegistrationSubmission.Title"];
-    }
+
+    ViewData["Title"] = Localizer[Model.IsResubmission ? "RejectResubmission.Title" : "RejectRegistrationSubmission.Title"];
 
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer, nameof(Model.RejectReason));
     var rejectReason = string.IsNullOrEmpty(Model.RejectReason) ? string.Empty : Model.RejectReason;
