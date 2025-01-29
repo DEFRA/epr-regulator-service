@@ -34,4 +34,6 @@ public class RegulatorDecisionRequest
     public bool? IsWelsh { get; init; } = false;
 
     public bool IsResubmission { get; set; }
+
+    public string ExistingRegRefNumber { get; set; }
 }

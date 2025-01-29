@@ -894,6 +894,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(EndpointResponseStatus.Success)
                 .Callback<RegulatorDecisionRequest>((request) =>
                 {
+                    request.ExistingRegRefNumber.Should().NotBeNullOrWhiteSpace();
                     request.CountryName.Should().BeNullOrWhiteSpace();
                     request.RegistrationSubmissionType.Should().Be(RegistrationSubmissionType.NotSet);
                     request.TwoDigitYear.Should().BeNullOrWhiteSpace();
