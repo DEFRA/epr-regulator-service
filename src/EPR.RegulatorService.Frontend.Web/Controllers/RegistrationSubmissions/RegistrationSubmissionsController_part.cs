@@ -239,25 +239,37 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
         private static RegulatorDecisionRequest GetDecisionRequest(
             RegistrationSubmissionDetailsViewModel existingModel,
-            RegistrationSubmissionStatus status) => new()
+            RegistrationSubmissionStatus status)
+        {
+            var request = new RegulatorDecisionRequest
             {
                 ApplicationReferenceNumber = existingModel.ReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
-                // For generating reference
-                Status = status.ToString(),
-                CountryName = GetCountryCodeInitial(existingModel.NationId),
-                RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
-                TwoDigitYear = (existingModel.RegistrationYear % 100).ToString(CultureInfo.InvariantCulture),
-                OrganisationAccountManagementId = existingModel.OrganisationReference,
                 // For sending emails
                 OrganisationName = existingModel.OrganisationName,
                 OrganisationEmail = existingModel.SubmissionDetails.Email,
                 OrganisationReference = existingModel.OrganisationReference,
                 AgencyName = GetRegulatorAgencyName(existingModel.NationId),
                 AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
-                IsWelsh = existingModel.NationId == 4
+                IsWelsh = existingModel.NationId == 4,
+                Status = status.ToString(),
+                IsResubmission = existingModel.IsResubmission
             };
+
+            if (status == RegistrationSubmissionStatus.Granted && request.IsResubmission)
+            {
+                request.ExistingRegRefNumber = existingModel.RegistrationReferenceNumber;
+                return request;
+            }
+
+            // For generating reference
+            request.CountryName = GetCountryCodeInitial(existingModel.NationId);
+            request.RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType();
+            request.TwoDigitYear = (existingModel.RegistrationYear % 100).ToString(CultureInfo.InvariantCulture);
+            request.OrganisationAccountManagementId = existingModel.OrganisationReference;
+            return request;
+        }
 
         private static FileDownloadRequest CreateFileDownloadRequest(JourneySession session, RegistrationSubmissionOrganisationDetails registration)
         {

@@ -883,6 +883,36 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task GrantRegistrationSubmission_Post_Should_Not_Set_Vars_Needed_For_Reference_In_Resubmission()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, 1, "Eng");
+            detailsModel.IsResubmission = true;
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success)
+                .Callback<RegulatorDecisionRequest>((request) =>
+                {
+                    request.ExistingRegRefNumber.Should().NotBeNullOrWhiteSpace();
+                    request.CountryName.Should().BeNullOrWhiteSpace();
+                    request.RegistrationSubmissionType.Should().Be(RegistrationSubmissionType.NotSet);
+                    request.TwoDigitYear.Should().BeNullOrWhiteSpace();
+                    request.OrganisationAccountManagementId.Should().BeNullOrWhiteSpace();
+                });
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true, IsResubmission = true }) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.RouteName.Should().Be("SubmissionDetails");
+            result.RouteValues.First().Value.Should().Be(submissionId);
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+        }
+
+        [TestMethod]
         public async Task GrantRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
         {
             // Arrange

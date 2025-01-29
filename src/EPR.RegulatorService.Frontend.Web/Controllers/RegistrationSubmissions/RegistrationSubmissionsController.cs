@@ -210,7 +210,8 @@ public partial class RegistrationSubmissionsController(
 
         var model = new GrantRegistrationSubmissionViewModel
         {
-            SubmissionId = existingModel.SubmissionId
+            SubmissionId = existingModel.SubmissionId,
+            IsResubmission = existingModel.IsResubmission
         };
 
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
