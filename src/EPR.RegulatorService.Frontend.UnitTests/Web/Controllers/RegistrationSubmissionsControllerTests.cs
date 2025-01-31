@@ -897,8 +897,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     request.ExistingRegRefNumber.Should().NotBeNullOrWhiteSpace();
                     request.CountryName.Should().BeNullOrWhiteSpace();
                     request.RegistrationSubmissionType.Should().Be(RegistrationSubmissionType.NotSet);
-                    request.TwoDigitYear.Should().BeNullOrWhiteSpace();
-                    request.OrganisationAccountManagementId.Should().BeNullOrWhiteSpace();
                 });
 
             // Act

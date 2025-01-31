@@ -246,6 +246,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 ApplicationReferenceNumber = existingModel.ReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
+                // For generating reference and send email
+                TwoDigitYear = (existingModel.RegistrationYear % 100).ToString(CultureInfo.InvariantCulture),
+                OrganisationAccountManagementId = existingModel.OrganisationReference,
                 // For sending emails
                 OrganisationName = existingModel.OrganisationName,
                 OrganisationEmail = existingModel.SubmissionDetails.Email,
@@ -266,8 +269,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             // For generating reference
             request.CountryName = GetCountryCodeInitial(existingModel.NationId);
             request.RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType();
-            request.TwoDigitYear = (existingModel.RegistrationYear % 100).ToString(CultureInfo.InvariantCulture);
-            request.OrganisationAccountManagementId = existingModel.OrganisationReference;
             return request;
         }
 
