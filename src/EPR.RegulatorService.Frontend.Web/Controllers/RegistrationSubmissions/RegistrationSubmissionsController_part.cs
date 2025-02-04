@@ -260,7 +260,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 IsResubmission = existingModel.IsResubmission
             };
 
-            if (status == RegistrationSubmissionStatus.Granted && request.IsResubmission)
+            if (request.IsResubmission)
             {
                 request.ExistingRegRefNumber = existingModel.RegistrationReferenceNumber;
                 return request;
