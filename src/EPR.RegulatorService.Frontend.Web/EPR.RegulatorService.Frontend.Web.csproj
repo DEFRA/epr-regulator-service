@@ -467,7 +467,8 @@
         **/_RegistrationResubmissionDetails.cshtml,
         **/_RegistrationSubmissionDetails.cshtml,
         **/_ResubmissionDetails.cshtml,
-        **/_SubmissionDetails.cshtml
+        **/_SubmissionDetails.cshtml,
+        **/loadingspinner.js
       </Value>
     </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.cpd.exclusions">
