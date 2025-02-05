@@ -477,9 +477,6 @@
     </SonarQubeSetting>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="assets\images\" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
     <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
   </ItemGroup>

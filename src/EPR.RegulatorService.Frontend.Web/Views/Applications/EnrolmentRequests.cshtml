@@ -10,6 +10,7 @@
     ViewData["Title"] = Localizer["Page.Title"];
 
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
 }
 
 @functions
@@ -24,91 +25,71 @@
 
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        @if (!ViewData.ModelState.IsValid)
-        {
-          @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-        }
-
-        @if(Model.RejectionStatus == EndpointResponseStatus.Success && Model.RejectedServiceRole == ServiceRole.DelegatedPerson)
-        {
-          @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["RejectedDelegatedPerson", Model.RejectedUserName])
-        }
-
-        @if(Model.AcceptStatus == EndpointResponseStatus.Success)
-        {
-          @await Html.PartialAsync("Partials/Govuk/_ApplicationAccept", Model)
-        }
-
-        @if (Model.Transfer != null)
-        {
-          <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-            <div class="govuk-notification-banner__header">
-              <h2 class="govuk-notification-banner__title govuk-notification-content__title-full-width" id="govuk-notification-banner-title">
-                @Localizer["Page.Important"]
-              </h2>
-            </div>
-            <div class="govuk-notification-banner__content govuk-notification-content__title-full-width">
-              <p class="govuk-notification-banner__heading ">
-                @Localizer["Page.TransferredFrom"] @Model.Transfer.OldRegulatorName @Localizer["Page.To"] @Model.Transfer.NewRegulatorName:
-                <br/>
-                @Model.Transfer.TransferredDate.DateTime.ToString("d MMMM yyyy")
-              </p>
-            </div>
-          </div>
-        }
-
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@Model.OrganisationName</h1>
-
-        <div class="govuk-!-margin-bottom-4">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationType"]</h3>
-            <p class="govuk-body">@Model.OrganisationType</p>
-        </div>
-
-        <div class="govuk-!-margin-bottom-4">
-          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.RegisteredAddress"]</h3>
-          <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.BuildingNumber @Model.BusinessAddress.BuildingName</p>
-          <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.Street</p>
-          <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.County</p>
-          <p class="govuk-body">@Model.BusinessAddress.PostCode</p>
-        </div>
-
-        <div class="govuk-!-margin-bottom-4">
-          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.CompaniesHouseNumber"]</h3>
-          @if (!string.IsNullOrEmpty(Model.CompaniesHouseNumber))
-          {
-            <p class="govuk-body">@Model.CompaniesHouseNumber</p>
-            <companies-house-link gov-value="@Model.CompaniesHouseNumber" class="govuk-link govuk-link--no-visited-state">
-              @Localizer["link.CompaniesHouseRegister"]
-            </companies-house-link>
-          }
-          else
-          {
-            <p class="govuk-body">@Localizer["Text.NotListed"]</p>
-          }
-        </div>
-      </div>
-    </div>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-      </div>
-    </div>
-    @if (!Model.IsComplianceScheme)
-    {
+    <div id="enrolmentWrapper">
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half govuk-!-text-align-left">
-          <span class="govuk-body"><b>@Localizer["Subheading.RegisteredNation"]</b>
-            @SharedLocalizer[GetNationTag(@Model.RegisteredNation)]
-          </span>
-        </div>
-        <div class="govuk-grid-column-one-half govuk-!-text-align-right epr-text-align-left-override">
-          @Html.ActionLink(@Localizer["link.TransferToAnotherRegulator"].Value,
-            "TransferApplication",
-            "Applications",
-            null,
-            new {@class = "govuk-link govuk-link--no-visited-state"})
+        <div class="govuk-grid-column-full">
+          @if (!ViewData.ModelState.IsValid)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+          }
+
+          @if(Model.RejectionStatus == EndpointResponseStatus.Success && Model.RejectedServiceRole == ServiceRole.DelegatedPerson)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_SuccessBanner", Localizer["RejectedDelegatedPerson", Model.RejectedUserName])
+          }
+
+          @if(Model.AcceptStatus == EndpointResponseStatus.Success)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_ApplicationAccept", Model)
+          }
+
+          @if (Model.Transfer != null)
+          {
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+              <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title govuk-notification-content__title-full-width" id="govuk-notification-banner-title">
+                  @Localizer["Page.Important"]
+                </h2>
+              </div>
+              <div class="govuk-notification-banner__content govuk-notification-content__title-full-width">
+                <p class="govuk-notification-banner__heading ">
+                  @Localizer["Page.TransferredFrom"] @Model.Transfer.OldRegulatorName @Localizer["Page.To"] @Model.Transfer.NewRegulatorName:
+                  <br/>
+                  @Model.Transfer.TransferredDate.DateTime.ToString("d MMMM yyyy")
+                </p>
+              </div>
+            </div>
+          }
+
+          <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@Model.OrganisationName</h1>
+
+          <div class="govuk-!-margin-bottom-4">
+              <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationType"]</h3>
+              <p class="govuk-body">@Model.OrganisationType</p>
+          </div>
+
+          <div class="govuk-!-margin-bottom-4">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.RegisteredAddress"]</h3>
+            <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.BuildingNumber @Model.BusinessAddress.BuildingName</p>
+            <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.Street</p>
+            <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.County</p>
+            <p class="govuk-body">@Model.BusinessAddress.PostCode</p>
+          </div>
+
+          <div class="govuk-!-margin-bottom-4">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.CompaniesHouseNumber"]</h3>
+            @if (!string.IsNullOrEmpty(Model.CompaniesHouseNumber))
+            {
+              <p class="govuk-body">@Model.CompaniesHouseNumber</p>
+              <companies-house-link gov-value="@Model.CompaniesHouseNumber" class="govuk-link govuk-link--no-visited-state">
+                @Localizer["link.CompaniesHouseRegister"]
+              </companies-house-link>
+            }
+            else
+            {
+              <p class="govuk-body">@Localizer["Text.NotListed"]</p>
+            }
+          </div>
         </div>
       </div>
       <div class="govuk-grid-row">
@@ -116,25 +97,56 @@
           <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
         </div>
       </div>
-    }
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        @await Component.InvokeAsync("EnrolmentRequestDetails", new
-               {
-                 isApprovedPersonAccepted = Model.IsApprovedUserAccepted,
-                 approvedUser = Model.ApprovedUser,
-                 delegatedUsers = Model.DelegatedUsers
-               })
+      @if (!Model.IsComplianceScheme)
+      {
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-one-half govuk-!-text-align-left">
+            <span class="govuk-body"><b>@Localizer["Subheading.RegisteredNation"]</b>
+              @SharedLocalizer[GetNationTag(@Model.RegisteredNation)]
+            </span>
+          </div>
+          <div class="govuk-grid-column-one-half govuk-!-text-align-right epr-text-align-left-override">
+            @Html.ActionLink(@Localizer["link.TransferToAnotherRegulator"].Value,
+              "TransferApplication",
+              "Applications",
+              null,
+              new {@class = "govuk-link govuk-link--no-visited-state"})
+          </div>
+        </div>
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-full">
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+          </div>
+        </div>
+      }
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          @await Component.InvokeAsync("EnrolmentRequestDetails", new
+                  {
+                    isApprovedPersonAccepted = Model.IsApprovedUserAccepted,
+                    approvedUser = Model.ApprovedUser,
+                    delegatedUsers = Model.DelegatedUsers
+                  })
+        </div>
+      </div>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            @Html.ActionLink(@Localizer["link.BackToAllApplications"].Value,
+                  "Applications",
+                  "Applications",
+                  null,
+                  new {@class = "govuk-link govuk-link--no-visited-state"})
+        </div>
       </div>
     </div>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-         @Html.ActionLink(@Localizer["link.BackToAllApplications"].Value,
-               "Applications",
-               "Applications",
-               null,
-               new {@class = "govuk-link govuk-link--no-visited-state"})
-      </div>
-    </div>
+    @await Html.PartialAsync("Partials/_Spinner", "regulators/enrolment-requests")
   </main>
 </div>
+
+@section Scripts
+{
+    <script src="~/js/loadingspinner.js"></script>
+    <script nonce="@scriptNonce">
+        document.addEventListener("DOMContentLoaded", InitSpinner("enrolmentWrapper", "acceptApprovedPersonButton"));
+    </script>
+}
