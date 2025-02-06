@@ -121,7 +121,7 @@
     <value>Dileu'r cofrestriad</value>
   </data>
   <data name="RegistrationResubmissionDetails.Approve" xml:space="preserve">
-    <value>[Welsh]Approve resubmitted data</value>
+    <value>[Welsh]Accept data</value>
   </data>
   <data name="RegistrationResubmissionDetails.Reject" xml:space="preserve">
     <value>[Welsh]Reject data</value>

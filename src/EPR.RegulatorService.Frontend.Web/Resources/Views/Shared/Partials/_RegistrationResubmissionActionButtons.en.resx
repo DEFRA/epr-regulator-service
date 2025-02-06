@@ -121,7 +121,7 @@
     <value>Cancel registration</value>
   </data>
   <data name="RegistrationResubmissionDetails.Approve" xml:space="preserve">
-    <value>Approve resubmitted data</value>
+    <value>Accept data</value>
   </data>
   <data name="RegistrationResubmissionDetails.Reject" xml:space="preserve">
     <value>Reject data</value>

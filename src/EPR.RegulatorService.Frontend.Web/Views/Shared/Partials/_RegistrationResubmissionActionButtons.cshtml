@@ -8,7 +8,7 @@
     {
         <ul class="govuk-list govuk-list__horizontal govuk-list__last-spaced">
             <li>
-                <a class="govuk-button " href="@Url.Action(
+                <a id="accept-data" class="govuk-button " href="@Url.Action(
                 "GrantRegistrationSubmission",
                 "RegistrationSubmissions",
                 new
@@ -19,7 +19,7 @@
                 </a>
             </li>
             <li>
-                <a class="govuk-button govuk-button--warning" href="@Url.Action(
+                <a id="reject-data" class="govuk-button govuk-button--warning" href="@Url.Action(
                 "RejectRegistrationSubmission",
                 "RegistrationSubmissions",
                 new
@@ -30,7 +30,7 @@
                 </a>
             </li>
             <li>
-                <a class="govuk-button govuk-button--secondary" href="@Url.Action(
+                <a id="cancel-registration" class="govuk-button govuk-button--secondary" href="@Url.Action(
                 "CancelRegistrationSubmission",
                 "RegistrationSubmissions",
                 new
