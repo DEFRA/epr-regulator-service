@@ -133,9 +133,9 @@
     <value>Pam rydych chi'n gwrthod y cais yma am gofrestru?</value>
   </data>
   <data name="RejectResubmission.Heading" xml:space="preserve">
-    <value>[Welsh]Why are you refusing this resubmitted data?</value>
+    <value>Pam rydych chi'n gwrthod y data yma sydd wedi'i ailgyflwyno?</value>
   </data>
   <data name="RejectResubmission.Title" xml:space="preserve">
-    <value>[Welsh]Why are you refusing this resubmitted data?</value>
+    <value>Pam rydych chi'n gwrthod y data yma sydd wedi'i ailgyflwyno?</value>
   </data>
 </root>

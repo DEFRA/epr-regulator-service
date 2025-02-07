@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PackagingCompliancePaymentDetails.ResubmissionFee" xml:space="preserve">
-    <value>Re-submission fee</value>
+    <value>Resubmission fee</value>
   </data>
   <data name="PackagingCompliancePaymentDetails.ResubmissionFeeDescription1" xml:space="preserve">
-    <value>Re-submitting a report for {0} member</value>
+    <value>Resubmitting a report for {0} member</value>
   </data>
   <data name="PackagingCompliancePaymentDetails.ResubmissionFeeDescription2" xml:space="preserve">
-    <value>Re-submitting a report for {0} members</value>
+    <value>Resubmitting a report for {0} members</value>
   </data>
 </root>
