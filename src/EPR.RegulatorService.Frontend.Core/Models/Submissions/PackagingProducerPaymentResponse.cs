@@ -12,4 +12,6 @@ public class PackagingProducerPaymentResponse
 
     [JsonPropertyName("outstandingPayment")]
     public decimal TotalOutstanding { get; set; }
+
+    public string ReferenceNumber { get; set; }
 }

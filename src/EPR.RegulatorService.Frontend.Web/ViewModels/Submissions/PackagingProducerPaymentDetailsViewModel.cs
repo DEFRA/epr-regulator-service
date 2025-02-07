@@ -11,4 +11,6 @@ public class PackagingProducerPaymentDetailsViewModel : PaymentDetailsViewModel
     public decimal PreviousPaymentsReceived { get; set; }
 
     public decimal TotalOutstanding { get; set; }
+
+    public string ReferenceNumber { get; set; }
 }

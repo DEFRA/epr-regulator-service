@@ -46,6 +46,7 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
+                ReferenceNumber = producerPaymentResponse.ReferenceNumber,
             };
 
             return View(packagingProducerPaymentDetailsViewModel);

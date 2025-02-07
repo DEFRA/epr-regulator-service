@@ -9,6 +9,12 @@
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
         <h2 class="govuk-summary-card__title">@SharedLocalizer["PaymentDetails.Title"]</h2>
+        <div class="epr-payment-reference-number-section">
+            <p>
+                <strong>@Localizer["PackagingProducerPaymentDetails.PaymentReferenceNumber"]</strong><br>
+                @Model.ReferenceNumber
+            </p>
+        </div>
         <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action"></li>
         </ul>
