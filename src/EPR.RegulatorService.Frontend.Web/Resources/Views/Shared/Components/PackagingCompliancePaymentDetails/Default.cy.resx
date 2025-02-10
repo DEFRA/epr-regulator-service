@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PackagingCompliancePaymentDetails.ResubmissionFee" xml:space="preserve">
-    <value>[Welsh]Re-submission fee</value>
+    <value>Ffi ailgyflwyno</value>
   </data>
   <data name="PackagingCompliancePaymentDetails.ResubmissionFeeDescription1" xml:space="preserve">
-    <value>[Welsh]Re-submitting a report for {0} member</value>
+    <value>Ailgyflwyno adroddiad ar ran {0} aelod</value>
   </data>
   <data name="PackagingCompliancePaymentDetails.ResubmissionFeeDescription2" xml:space="preserve">
-    <value>[Welsh]Re-submitting a report for {0} members</value>
+    <value>Ailgyflwyno adroddiad ar ran {0} o aelodau</value>
   </data>
 </root>

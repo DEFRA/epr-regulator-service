@@ -369,11 +369,22 @@
   <data name="PaymentDetails.ProducerServiceIssueDescription" xml:space="preserve">
   <value>Methu nôl manylion taliad cynhyrchydd</value>
 </data>
-
 <data name="PaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
   <value>Taliadau blaenorol</value>
 </data>
 <data name="PaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
   <value>Cyfanswm y taliadau sydd wedi dod i law</value>
+</data>
+  <data name="ResubmissionStatus" xml:space="preserve">
+  <value>Ailgyflwyniad</value>
+</data>
+  <data name="Resubmission.Accepted" xml:space="preserve">
+  <value>Ailgyflwyniad wedi'i dderbyn</value>
+</data>
+  <data name="Resubmission.Pending" xml:space="preserve">
+  <value>Ailgyflwyniad yn yr arfaeth</value>
+</data>
+  <data name="Resubmission.Rejected" xml:space="preserve">
+  <value>Ailgyflwyniad wedi'i wrthod</value>
 </data>
 </root>

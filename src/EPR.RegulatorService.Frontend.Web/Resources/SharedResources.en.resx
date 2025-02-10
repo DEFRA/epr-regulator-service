@@ -381,4 +381,16 @@
   <data name="PaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
   <value>Total payments received</value>
 </data>
+<data name="ResubmissionStatus" xml:space="preserve">
+  <value>Resubmission</value>
+</data>
+<data name="Resubmission.Accepted" xml:space="preserve">
+  <value>Resubmission accepted</value>
+</data>
+<data name="Resubmission.Pending" xml:space="preserve">
+  <value>Resubmission pending</value>
+</data>
+<data name="Resubmission.Rejected" xml:space="preserve">
+  <value>Resubmission rejected</value>
+</data>
 </root>

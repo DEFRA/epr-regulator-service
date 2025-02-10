@@ -123,6 +123,9 @@
   <data name="Table.Header.Status" xml:space="preserve">
     <value>Statws y cyflwyniad</value>
   </data>
+  <data name="Table.Header.ResubmissionStatus" xml:space="preserve">
+    <value>Statws yr ailgyflwyniad</value>
+  </data>
   <data name="Table.Header.CompanyId" xml:space="preserve">
     <value>ID y sefydliad</value>
   </data>
