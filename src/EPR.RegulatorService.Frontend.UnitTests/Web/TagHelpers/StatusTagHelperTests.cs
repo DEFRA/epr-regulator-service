@@ -57,6 +57,8 @@ public class StatusTagHelperTests
     [DataRow("Pending", "govuk-tag--blue")]
     [DataRow("Updated", "govuk-tag--yellow")]
     [DataRow("Cancelled", "status__cancelled")]
+    [DataRow("Accepted", "govuk-tag--light-blue")]
+    [DataRow("Rejected", "govuk-tag--light-blue")]
     public void Process_ShouldAddCorrectStatusClass(string status, string expectedClass)
     {
         // Arrange
