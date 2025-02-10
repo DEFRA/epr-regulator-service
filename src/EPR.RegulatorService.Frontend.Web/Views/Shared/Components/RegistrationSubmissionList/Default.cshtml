@@ -12,10 +12,11 @@
         <thead role="rowgroup" class="govuk-table__head">
             <tr role="row" class="govuk-table__row">
                 <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.Company"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.CompanyId"]</th>
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.CompanyId"]</th>
                 <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.ApplicationDate"]</th>
                 <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.Year"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent tag">@Localizer["Table.Header.Status"]</th>
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.Status"]</th>
+                <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.ResubmissionStatus"]</th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -61,12 +62,21 @@
                         </span>
                         @organisation.RegistrationYear
                     </td>
-                    <td role="gridcell" class="govuk-table__cell vertical-middle-align tag">
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.Status"]
                         </span>
                         <govuk-tag status="@organisation.Status" content="@SharedLocalizer[organisation.Status.GetDescription()]" />
                     </td>
+                    @if (organisation.ResubmissionStatus != null)
+                    {
+                      <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                          <span class="responsive-table__heading" aria-hidden="true">
+                              @Localizer["Table.Header.ResubmissionStatus"]
+                          </span>
+                          <govuk-tag status="@organisation.ResubmissionStatus" content="@SharedLocalizer[organisation.ResubmissionStatus.GetDescription()]" />
+                      </td>
+                    }
                 </tr>
             }
         </tbody>

@@ -32,11 +32,15 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
                 "Pending" => "govuk-tag--blue",
                 "Updated" => "govuk-tag--yellow",
                 "Cancelled" => "status__cancelled",
+                "Accepted" => "govuk-tag--light-blue",
+                "Rejected" => "govuk-tag--light-blue",
                 _ => string.Empty
             }, HtmlEncoder.Default);
 
-
-            output.Content.AppendHtml($"<span class=\"content\">{Content}</span>");
+            if (!string.IsNullOrWhiteSpace(Status))
+            {
+                output.Content.AppendHtml($"<span class=\"content\">{Content}</span>");
+            }
         }
     }
 }
