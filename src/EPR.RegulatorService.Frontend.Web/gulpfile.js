@@ -32,6 +32,11 @@ gulp.task('copy-custom-javascript', () => {
     .pipe(gulp.dest('wwwroot/js', { overwrite: true }))
 })
 
+gulp.task('copy-custom-images', () => {
+  return gulp.src('assets/images/*')
+    .pipe(gulp.dest('wwwroot/images', { overwrite: true }))
+})
+
 gulp.task('copy-javascript', gulp.series('copy-govuk-javascript', 'copy-custom-javascript'))
 
-gulp.task('build-frontend', gulp.series('compile-scss', 'copy-fonts', 'copy-images', 'copy-javascript'))
+gulp.task('build-frontend', gulp.series('compile-scss', 'copy-fonts', 'copy-images', 'copy-javascript', 'copy-custom-images'))
