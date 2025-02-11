@@ -70,10 +70,13 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         result.Should().BeOfType<ViewViewComponentResult>();
         var model = result.ViewData.Model as PackagingProducerPaymentDetailsViewModel;
         model.Should().NotBeNull();
+        model.Should().NotBeNull();
         // all values converted to pounds
         model.ResubmissionFee.Should().Be(100.00M);
         model.PreviousPaymentsReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(95.00M);
+        model.ReferenceNumber.Should().Be(_submissionDetailsViewModel.ReferenceNumber);
+       
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(
             It.IsAny<PackagingProducerPaymentRequest>()), Times.AtMostOnce);
     }

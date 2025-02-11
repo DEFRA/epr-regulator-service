@@ -90,10 +90,7 @@ public class PaymentFacadeService : IPaymentFacadeService
         var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[GetProducerPaymentDetailsForResubmissionPath], request);
         response.EnsureSuccessStatusCode();
 
-        var result = JsonSerializer.Deserialize<PackagingProducerPaymentResponse>(await response.Content.ReadAsStringAsync());
-        result.ReferenceNumber = request.ReferenceNumber;
-
-        return result;
+        return JsonSerializer.Deserialize<PackagingProducerPaymentResponse>(await response.Content.ReadAsStringAsync());
     }
 
     public async Task<PackagingCompliancePaymentResponse?> GetCompliancePaymentDetailsForResubmissionAsync(PackagingCompliancePaymentRequest request)
