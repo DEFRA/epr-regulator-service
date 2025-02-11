@@ -68,7 +68,7 @@
                         </span>
                         <govuk-tag status="@organisation.Status" content="@SharedLocalizer[organisation.Status.GetDescription()]" />
                     </td>
-                    @if (organisation.ResubmissionStatus != null)
+                    @if (organisation.ResubmissionStatus != null && organisation.IsResubmission)
                     {
                       <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                           <span class="responsive-table__heading" aria-hidden="true">
