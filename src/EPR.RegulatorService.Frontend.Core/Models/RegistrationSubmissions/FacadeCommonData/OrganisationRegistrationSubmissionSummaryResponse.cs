@@ -1,11 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+
     using EPR.RegulatorService.Frontend.Core.Enums;
 
     [ExcludeFromCodeCoverage]
@@ -30,6 +27,8 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.Faca
         public int RegistrationYear { get; set; }
 
         public RegistrationSubmissionStatus SubmissionStatus { get; set; }
+
+        public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
 
         public DateTime? StatusPendingDate { get; set; }
 
