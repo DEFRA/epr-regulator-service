@@ -41,12 +41,13 @@
                             {
                                 @await Html.PartialAsync("Partials/Govuk/_InlineError", queryError)
                             }
-                            <textarea
-                              class="govuk-textarea govuk-textarea--error govuk-js-character-count @(queryErrorExists ? "epr-textarea--error" : string.Empty)"
-                              id="@nameof(Model.Query)"
-                              name="@nameof(Model.Query)"
-                              rows="5"
-                              aria-describedby="@nameof(Model.Query)-info">@query</textarea>
+                            <textarea class="govuk-textarea govuk-textarea--error govuk-js-character-count @(queryErrorExists ? "epr-textarea--error" : string.Empty)"
+                                      id="@nameof(Model.Query)"
+                                      name="@nameof(Model.Query)"
+                                      rows="5"
+                                      aria-title="@nameof(Model.Query)"
+                                      aria-label="@nameof(Model.Query)"
+                                      aria-describedby="@nameof(Model.Query)-info">@query</textarea>
                         </div>
                         <div id="@nameof(Model.Query)-info" class="govuk-hint govuk-character-count__message">
                             @SharedLocalizer["CharacterLimit.NoJavaScript"]
