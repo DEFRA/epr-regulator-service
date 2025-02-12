@@ -39,10 +39,7 @@
                     <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.OrganisationIdSubTitle"] @Model.OrganisationReference</p>
                 </div>
 
-                <status-panel heading="@Localizer[ReferenceNumberPanelHelper.GetPanelTitle(Model)].Value"
-                              content="@ReferenceNumberPanelHelper.GetPanelContent(Model)"
-                              status="@SharedLocalizer[Model.Status.ToString()]">
-                </status-panel>
+                <reference-number-panel model="Model"></reference-number-panel>
 
                 <div class="govuk-!-margin-bottom-4">
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.RegisteredAddress"]</h3>
