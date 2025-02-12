@@ -19,6 +19,9 @@ public class RegistrationSubmissionOrganisationSubmissionSummaryDetails
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionStatus Status { get; set; }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
+
     public DateTime? DecisionDate { get; set; }
 
     public DateTime TimeAndDateOfSubmission { get; set; }

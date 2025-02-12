@@ -39,7 +39,7 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
             output.TagMode = TagMode.StartTagAndEndTag;
             output.Attributes.SetAttribute("class", $"info-panel {statusClassName}");
 
-            // If the status is granted and resubmission is required
+            // If the status is granted and is a resubmission
             if (Status == "Granted" && headings.Length > 1 && contents.Length > 1)
             {
                 output.Content.AppendHtml($"<h3>{headings[0]}</h3><p>{contents[0]}</p><br>");

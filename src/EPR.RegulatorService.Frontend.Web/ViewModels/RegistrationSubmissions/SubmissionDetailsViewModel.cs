@@ -55,6 +55,7 @@ public class SubmissionDetailsViewModel
     }
 
     public RegistrationSubmissionStatus Status { get; set; }
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
     public DateTime? DecisionDate { get; set; }
     public DateTime? StatusPendingDate { get; set; }
 
@@ -107,6 +108,7 @@ public class SubmissionDetailsViewModel
             SubmittedBy = details.SubmittedBy,
             DecisionDate = details.DecisionDate,
             Status = details.Status,
+            ResubmissionStatus = details.ResubmissionStatus,
             SubmittedOnTime = details.SubmittedOnTime,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
             IsResubmission = details.IsResubmission
@@ -140,6 +142,7 @@ public class SubmissionDetailsViewModel
             SubmittedBy = details.SubmittedBy,
             DecisionDate = details.DecisionDate,
             Status = details.Status,
+            ResubmissionStatus = details.ResubmissionStatus ?? RegistrationSubmissionStatus.Accepted,
             SubmittedOnTime = details.SubmittedOnTime,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
             Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList(),
@@ -147,7 +150,7 @@ public class SubmissionDetailsViewModel
         };
     }
 
-    private static ServiceRole? GetAccountRole ( int? serviceRoleId )
+    private static ServiceRole? GetAccountRole(int? serviceRoleId)
     {
         ServiceRole? retVal = serviceRoleId.HasValue ? (ServiceRole)serviceRoleId : null;
 
