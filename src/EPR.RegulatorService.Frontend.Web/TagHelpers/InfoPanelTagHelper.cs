@@ -20,6 +20,10 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
+            // Handle multiple values in Heading and Content for resubmission
+            string[] headings = Heading?.Split(',') ?? [];
+            string[] contents = Content?.Split(',') ?? [];
+
             string statusClassName = Status switch
             {
                 "Granted" => "info-panel__granted",
@@ -34,7 +38,17 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
             output.TagName = "div";
             output.TagMode = TagMode.StartTagAndEndTag;
             output.Attributes.SetAttribute("class", $"info-panel {statusClassName}");
-            output.Content.AppendHtml($"<h3>{Heading}</h3><p>{Content}</p>");
+
+            // If the status is granted and resubmission is required
+            if (Status == "Granted" && headings.Length > 1 && contents.Length > 1)
+            {
+                output.Content.AppendHtml($"<h3>{headings[0]}</h3><p>{contents[0]}</p><br>");
+                output.Content.AppendHtml($"<h3>{headings[1]}</h3><p>{contents[1]}</p>");
+            }
+            else
+            {
+                output.Content.AppendHtml($"<h3>{headings[0]}</h3><p>{contents[0]}</p>");
+            }
         }
     }
 }
