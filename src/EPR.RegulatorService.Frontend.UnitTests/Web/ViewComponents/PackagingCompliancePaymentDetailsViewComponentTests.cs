@@ -72,6 +72,7 @@ public class PackagingCompliancePaymentDetailsViewComponentTests : ViewComponent
         model.ResubmissionFee.Should().Be(100.00M);
         model.PreviousPaymentReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(95.00M);
+        model.ReferenceNumber.Should().Be(_submissionDetailsViewModel.ReferenceNumber);
         _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsForResubmissionAsync(
             It.IsAny<PackagingCompliancePaymentRequest>()), Times.AtMostOnce);
     }

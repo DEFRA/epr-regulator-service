@@ -123,7 +123,4 @@
   <data name="PackagingProducerPaymentDetails.ResubmissionFeeDescription" xml:space="preserve">
     <value>Packaging data resubmission</value>
   </data>
-  <data name="PackagingProducerPaymentDetails.PaymentReferenceNumber" xml:space="preserve">
-    <value>Payment reference number</value>
-  </data>
 </root>

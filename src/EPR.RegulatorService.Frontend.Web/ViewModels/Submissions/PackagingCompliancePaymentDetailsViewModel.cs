@@ -14,4 +14,6 @@ public class PackagingCompliancePaymentDetailsViewModel : PaymentDetailsViewMode
     public decimal ResubmissionFee { get; set; }
 
     public decimal TotalOutstanding { get; set; }
+
+    public string ReferenceNumber { get; set; }
 }

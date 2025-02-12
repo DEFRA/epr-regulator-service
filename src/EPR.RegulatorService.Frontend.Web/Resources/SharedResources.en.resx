@@ -393,4 +393,7 @@
 <data name="Resubmission.Rejected" xml:space="preserve">
   <value>Resubmission rejected</value>
 </data>
+<data name="PackagingProducerPaymentDetails.PaymentReferenceNumber" xml:space="preserve">
+  <value>Payment reference number</value>
+</data>  
 </root>

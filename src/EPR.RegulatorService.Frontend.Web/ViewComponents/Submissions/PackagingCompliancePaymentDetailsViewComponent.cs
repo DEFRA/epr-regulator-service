@@ -50,6 +50,11 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
                 PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(compliancePaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(compliancePaymentResponse.TotalOutstanding),
+
+                // TO Do:: Remove the hardcoded ReferenceNumber and uncomment the commenetd Referencenumber.
+                // null check added for unit tests
+                ReferenceNumber = viewModel.ReferenceNumber ?? "dgregerg",
+                //ReferenceNumber = viewModel.ReferenceNumber,
             };
 
             return View(compliancePaymentDetailsViewModel);

@@ -123,7 +123,4 @@
   <data name="PackagingProducerPaymentDetails.ResubmissionFeeDescription" xml:space="preserve">
     <value>Ailgyflwyniad data pecynwaith</value>
   </data>
-  <data name="PackagingProducerPaymentDetails.PaymentReferenceNumber" xml:space="preserve">
-    <value>Rhif cyfeirnod y taliad</value>
-  </data>
 </root>
