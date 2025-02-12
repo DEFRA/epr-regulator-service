@@ -33,6 +33,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionStatus SubmissionStatus { get; set; }
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
     public DateTime? StatusPendingDate { get; set; }
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
@@ -88,11 +89,13 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 NationId = response.NationId,
                 RelevantYear = response.RegistrationYear,
                 SubmissionStatus = response.SubmissionStatus,
+                ResubmissionStatus = response.ResubmissionStatus,
                 StatusPendingDate = response.StatusPendingDate,
                 ProducerCommentDate = response.ProducerCommentDate,
                 RegulatorDecisionDate = response.RegulatorCommentDate,
                 IsResubmission = response.IsResubmission,
-                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails {
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+                {
                     IsResubmission = response.IsResubmission
                 }
             };
@@ -116,6 +119,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             RelevantYear = response.RelevantYear,
             SubmissionDate = response.SubmissionDate,
             SubmissionStatus = response.SubmissionStatus,
+            ResubmissionStatus = response.ResubmissionStatus,
             StatusPendingDate = response.StatusPendingDate,
             RegulatorComments = response.RegulatorComments,
             ProducerComments = response.ProducerComments,

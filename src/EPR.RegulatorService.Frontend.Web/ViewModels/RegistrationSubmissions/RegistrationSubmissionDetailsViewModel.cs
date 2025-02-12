@@ -48,6 +48,8 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
 
     public bool IsResubmission { get; set; }
 
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
+
     // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
     public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
     {
@@ -63,6 +65,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
         NationId = details.NationId,
         NationCode = details.NationCode,
         Status = details.SubmissionStatus,
+        ResubmissionStatus = details.ResubmissionStatus,
         RegistrationDateTime = details.SubmissionDate,
         RegistrationYear = details.RelevantYear,
         RegulatorComments = details.RegulatorComments,
@@ -99,6 +102,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
         CompaniesHouseNumber = details.CompaniesHouseNumber,
         Country = details.RegisteredNation,
         SubmissionStatus = details.Status,
+        ResubmissionStatus = details.ResubmissionStatus,
         SubmissionDate = details.RegistrationDateTime,
         RelevantYear = details.RegistrationYear,
         RegulatorComments = details.RegulatorComments,
