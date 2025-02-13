@@ -73,9 +73,12 @@
                           <span class="responsive-table__heading" aria-hidden="true">
                               @Localizer["Table.Header.ResubmissionStatus"]
                           </span>
-                        @if (organisation.ResubmissionStatus != null && organisation.IsResubmission)
+                        @if (organisation.IsResubmission && organisation.ResubmissionStatus != null)
                         {
-                          <govuk-tag status="@organisation.ResubmissionStatus" content="@SharedLocalizer[organisation.ResubmissionStatus.GetDescription()]" />
+                          <govuk-tag
+                            status="@organisation.ResubmissionStatus"
+                            content="@SharedLocalizer[organisation.ResubmissionStatus.GetDescription()]"
+                            useLightColour=true/>
                         }
                       </td>
                 </tr>
