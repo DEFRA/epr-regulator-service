@@ -144,6 +144,9 @@
   <data name="SubmissionDetails.Telephone" xml:space="preserve">
     <value>Telephone</value>
   </data>
+  <data name="SubmissionDetails.TimeAndDateOfResubmission" xml:space="preserve">
+    <value>Time and date of resubmission</value>
+  </data>
   <data name="SubmissionDetails.TimeAndDateOfSubmission" xml:space="preserve">
     <value>Time and date of submission</value>
   </data>
