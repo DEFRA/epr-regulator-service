@@ -28,17 +28,20 @@
                 </dd>
             </div>
 
-            @if (Model.IsResubmission)
+            @if (Model.ResubmissionStatus != null)
             {
                 <div class="govuk-summary-list__row">
                     <dd class="govuk-summary-list__value">
                         <strong>@Localizer["SubmissionDetails.TimeAndDateOfResubmission"]</strong>
                     </dd>
                     <dd class="govuk-summary-list__value">
-                        @Model.TimeAndDateOfSubmission.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)
+                        @Model.TimeAndDateOfResubmission?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <govuk-tag status="@Model.ResubmissionStatus" content="@SharedLocalizer[Model.ResubmissionStatus.GetDescription()]" />
+                        <govuk-tag
+                          status="@Model.ResubmissionStatus"
+                          content="@SharedLocalizer[Model.ResubmissionStatus.GetDescription()]"
+                          useLightColour=true/>
                     </dd>
                 </div>
             }

@@ -25,6 +25,8 @@ public class RegistrationSubmissionOrganisationSubmissionSummaryDetails
     public DateTime? DecisionDate { get; set; }
 
     public DateTime TimeAndDateOfSubmission { get; set; }
+    public DateTime? TimeAndDateOfResubmission { get; set; }
+    public DateTime? RegistrationDate { get; set; }
     public bool SubmittedOnTime { get; set; }
     public Guid? SubmittedByUserId { get; set; }
     public string SubmissionPeriod { get; set; }

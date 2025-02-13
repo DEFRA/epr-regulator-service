@@ -60,6 +60,8 @@ public class SubmissionDetailsViewModel
     public DateTime? StatusPendingDate { get; set; }
 
     public DateTime TimeAndDateOfSubmission { get; set; }
+    public DateTime? TimeAndDateOfResubmission { get; set; }
+    public DateTime? RegistrationDate { get; set; }
     public bool SubmittedOnTime { get; set; }
     public string SubmittedBy { get; set; }
     public ServiceRole? AccountRole { get; set; }
@@ -111,6 +113,8 @@ public class SubmissionDetailsViewModel
             ResubmissionStatus = details.ResubmissionStatus,
             SubmittedOnTime = details.SubmittedOnTime,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
+            TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,
+            RegistrationDate = details.RegistrationDate,
             IsResubmission = details.IsResubmission
         };
 
@@ -142,9 +146,11 @@ public class SubmissionDetailsViewModel
             SubmittedBy = details.SubmittedBy,
             DecisionDate = details.DecisionDate,
             Status = details.Status,
-            ResubmissionStatus = details.ResubmissionStatus ?? RegistrationSubmissionStatus.Accepted,
+            ResubmissionStatus = details.ResubmissionStatus ?? RegistrationSubmissionStatus.Pending,
             SubmittedOnTime = details.SubmittedOnTime,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
+            TimeAndDateOfResubmission = details.TimeAndDateOfResubmission ?? details.TimeAndDateOfSubmission,
+            RegistrationDate = details.RegistrationDate,
             Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList(),
             IsResubmission = details.IsResubmission
         };

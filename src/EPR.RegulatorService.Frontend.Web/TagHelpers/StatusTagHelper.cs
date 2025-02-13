@@ -10,12 +10,16 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
     {
         private const string ContentAttributeName = "content";
         private const string StatusAttributeName = "status";
+        private const string UseLightColourAttributeName = "useLightColour";
 
         [HtmlAttributeName(ContentAttributeName)]
         public string? Content { get; set; }
 
         [HtmlAttributeName(StatusAttributeName)]
         public string? Status { get; set; }
+
+        [HtmlAttributeName(UseLightColourAttributeName)]
+        public bool UseLightColour { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -29,7 +33,7 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
                 "Granted" => "govuk-tag--green",
                 "Refused" => "govuk-tag--red",
                 "Queried" => "govuk-tag--purple",
-                "Pending" => "govuk-tag--blue",
+                "Pending" => UseLightColour ? "govuk-tag--light-blue" : "govuk-tag--blue",
                 "Updated" => "govuk-tag--yellow",
                 "Cancelled" => "status__cancelled",
                 "Accepted" => "govuk-tag--light-blue",

@@ -30,6 +30,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public string NationCode { get; set; }
     public int RelevantYear { get; set; }
     public DateTime SubmissionDate { get; set; }
+    public DateTime? RegistrationDate { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionStatus SubmissionStatus { get; set; }
