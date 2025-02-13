@@ -102,4 +102,42 @@ public class StatusTagHelperTests
         // Assert
         output.Attributes["class"].Value.ToString().Should().NotContain("govuk-tag--");
     }
+
+    [TestMethod]
+    public void Process_ShouldUseLightBlueForPending_WhenUseLightColourIsTrue()
+    {
+        // Arrange
+        var tagHelper = new StatusTagHelper
+        {
+            Status = "Pending",
+            UseLightColour = true
+        };
+        var context = new TagHelperContext([], new Dictionary<object, object>(), Guid.NewGuid().ToString());
+        var output = new TagHelperOutput("govuk-tag", [], (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+
+        // Act
+        tagHelper.Process(context, output);
+
+        // Assert
+        output.Attributes["class"].Value.ToString().Should().Contain("govuk-tag--light-blue");
+    }
+
+    [TestMethod]
+    public void Process_ShouldUseBlueForPending_WhenUseLightColourIsFalse()
+    {
+        // Arrange
+        var tagHelper = new StatusTagHelper
+        {
+            Status = "Pending",
+            UseLightColour = false
+        };
+        var context = new TagHelperContext([], new Dictionary<object, object>(), Guid.NewGuid().ToString());
+        var output = new TagHelperOutput("govuk-tag", [], (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+
+        // Act
+        tagHelper.Process(context, output);
+
+        // Assert
+        output.Attributes["class"].Value.ToString().Should().Contain("govuk-tag--blue");
+    }
 }
