@@ -128,6 +128,39 @@
                         <div class="govuk-form-group">
                             <fieldset class="govuk-fieldset">
                                 <legend>
+                                    <span class="govuk-label govuk-label--m">Resubmission status</span>
+                                </legend>
+                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                    <div class="epr-filter-panel-checkbox-layout">
+                                        <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                                            @Html.CheckBoxFor(x => x.IsResubmissionPendingRegistrationChecked,
+                                                     new { id = "is-pending-resubmission-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-pending-resubmission-type-checked-label" })
+                                            @Html.LabelFor(x => x.IsResubmissionPendingRegistrationChecked, SharedLocalizer["Tag.Pending"].Value,
+                                                     new { id = "is-pending-resubmission-type-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-pending-resubmission-type-checked-check" })
+                                        </div>
+                                    </div>
+                                    <div class="epr-filter-panel-checkbox-layout">
+                                        <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                                            @Html.CheckBoxFor(x => x.IsResubmissionAcceptedRegistrationChecked,
+                                                     new { id = "is-accepted-resubmission-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-accepted-sreubmission-type-checked-label" })
+                                            @Html.LabelFor(x => x.IsResubmissionAcceptedRegistrationChecked, SharedLocalizer["Tag.Accepted"].Value,
+                                                     new { id = "is-accepted-resubmission-type-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-accepted-resubmission-type-checked-check" })
+                                        </div>
+                                    </div>
+                                    <div class="epr-filter-panel-checkbox-layout">
+                                        <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                                            @Html.CheckBoxFor(x => x.IsResubmissionRejectedRegistrationChecked,
+                                                     new { id = "is-rejected-resubmission-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-rejected-resubmission-type-checked-label" })
+                                            @Html.LabelFor(x => x.IsResubmissionRejectedRegistrationChecked, SharedLocalizer["Tag.Rejected"].Value,
+                                                     new { id = "is-rejected-resubmission-type-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-rejected-resubmission-type-checked-check" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="govuk-form-group">
+                            <fieldset class="govuk-fieldset">
+                                <legend>
                                     <span class="govuk-label govuk-label--m">@Localizer["SubTitle.RelevantYear"].Value</span>
                                 </legend>
                                 <div class="govuk-checkboxes" data-module="govuk-checkboxes">

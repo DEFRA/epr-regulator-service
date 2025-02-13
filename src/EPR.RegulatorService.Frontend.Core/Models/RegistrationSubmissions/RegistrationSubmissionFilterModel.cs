@@ -1,13 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using EPR.RegulatorService.Frontend.Core.Enums;
 
 /// <summary>
 /// Used to filter results from the Facade API for RegistrationSubmissions
@@ -40,13 +35,19 @@ public  class RegistrationSubmissionsFilterModel
     public string? OrganisationReference { get; set; } = string.Empty;
 
     public string? OrganisationType { get; set; }
+
     public string? Statuses { get; set; }
+
+    public string? ResubmissionStatuses { get; set; }
 
     public string? RelevantYears { get; set; }
 
     public string? ApplicationReferenceNumber { get; set; }
+
     public string? RegistrationReferenceNumber { get; set; }
+
     public int? PageNumber { get; set; } = 1;
+
     public int? PageSize { get; set; } = 20;
 
     public int NationId { get; set; }
