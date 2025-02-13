@@ -9,22 +9,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
     [TestClass]
     public class InfoPanelTagHelperTests
     {
-        private static TagHelperContext MakeTagHelperContext()
-        {
-            return new TagHelperContext(
+        private static TagHelperContext MakeTagHelperContext() => new(
                 tagName: "status-panel",
-                allAttributes: new TagHelperAttributeList(),
+                allAttributes: [],
                 items: new Dictionary<object, object>(),
                 uniqueId: "test"
             );
-        }
 
-        private static TagHelperOutput MakeTagHelperOutput()
-        {
-            return new TagHelperOutput("status-panel",
+        private static TagHelperOutput MakeTagHelperOutput() => new("status-panel",
                 new TagHelperAttributeList(),
                 (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
-        }
 
         [TestMethod]
         [DataRow("Granted", "info-panel info-panel__granted")]
@@ -57,6 +51,46 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
             Assert.AreEqual(expectedClass, classAttribute.Value);
             Assert.IsTrue(output.Content.GetContent().Contains("<h3>Test Heading</h3>"));
             Assert.IsTrue(output.Content.GetContent().Contains("<p>Test Content</p>"));
+        }
+
+        [TestMethod]
+        public void Process_WhenResubmissionWithMultipleHeadingsAndContents_GeneratesCorrectHtml()
+        {
+            var tagHelper = new StatusPanelTagHelper
+            {
+                Heading = "Heading 1,Heading 2",
+                Content = "Content 1,Content 2",
+                Status = "Granted"
+            };
+
+            var context = MakeTagHelperContext();
+            var output = MakeTagHelperOutput();
+
+            tagHelper.Process(context, output);
+
+            string result = output.Content.GetContent();
+            Assert.IsTrue(result.Contains("<h3>Heading 1</h3><p>Content 1</p><br>"));
+            Assert.IsTrue(result.Contains("<h3>Heading 2</h3><p>Content 2</p>"));
+        }
+
+        [TestMethod]
+        public void Process_WhenSingleHeadingAndContent_GeneratesCorrectHtml()
+        {
+            var tagHelper = new StatusPanelTagHelper
+            {
+                Heading = "Single Heading",
+                Content = "Single Content",
+                Status = "Pending"
+            };
+
+            var context = MakeTagHelperContext();
+            var output = MakeTagHelperOutput();
+
+            tagHelper.Process(context, output);
+
+            string result = output.Content.GetContent();
+            Assert.IsTrue(result.Contains("<h3>Single Heading</h3>"));
+            Assert.IsTrue(result.Contains("<p>Single Content</p>"));
         }
     }
 }
