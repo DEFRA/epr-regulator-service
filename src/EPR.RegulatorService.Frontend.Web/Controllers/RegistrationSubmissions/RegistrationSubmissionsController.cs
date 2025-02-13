@@ -706,7 +706,13 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionDetailsFileDownload)]
-    public IActionResult SubmissionDetailsFileDownload() => View("RegistrationSubmissionFileDownload");
+    public async Task<IActionResult> SubmissionDetailsFileDownload()
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId }), false);
+
+        return View("RegistrationSubmissionFileDownload");
+    }
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionFileDownloadFailed)]
