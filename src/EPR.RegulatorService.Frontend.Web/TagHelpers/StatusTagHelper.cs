@@ -2,15 +2,19 @@ using System.Text.Encodings.Web;
 
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Localization;
 
 namespace EPR.RegulatorService.Frontend.Web.TagHelpers
 {
     [HtmlTargetElement("govuk-tag", TagStructure = TagStructure.NormalOrSelfClosing)]
-    public class StatusTagHelper : TagHelper
+    public class StatusTagHelper(IStringLocalizer<SharedResources> sharedLocalizer) : TagHelper
     {
         private const string ContentAttributeName = "content";
         private const string StatusAttributeName = "status";
         private const string UseLightColourAttributeName = "useLightColour";
+        private const string UseResubmissionPrefixAttributeName = "useResubmissionPrefix";
+
+        public IStringLocalizer<SharedResources> SharedLocalizer { get; } = sharedLocalizer;
 
         [HtmlAttributeName(ContentAttributeName)]
         public string? Content { get; set; }
@@ -20,6 +24,9 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
 
         [HtmlAttributeName(UseLightColourAttributeName)]
         public bool UseLightColour { get; set; }
+
+        [HtmlAttributeName(UseResubmissionPrefixAttributeName)]
+        public bool UseResubmissionPrefix { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -43,11 +50,11 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
 
             if (!string.IsNullOrWhiteSpace(Status))
             {
-                Content = (UseLightColour, Status) switch
+                Content = (UseResubmissionPrefix, Status) switch
                 {
-                    (true, "Pending") => "Resubmission.Pending",
-                    (true, "Accepted") => "Resubmission.Accepted",
-                    (true, "Rejected") => "Resubmission.Rejected",
+                    (true, "Pending") => SharedLocalizer["Resubmission.Pending"],
+                    (true, "Accepted") => SharedLocalizer["Resubmission.Accepted"],
+                    (true, "Rejected") => SharedLocalizer["Resubmission.Rejected"],
                     _ => Content
                 };
 

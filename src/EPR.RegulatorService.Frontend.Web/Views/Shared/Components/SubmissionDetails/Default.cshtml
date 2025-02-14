@@ -34,11 +34,12 @@
             @if (Model.ResubmissionStatus != null)
             {
                 <div class="govuk-summary-list__row">
-                    <dd class="govuk-summary-list__row">
+                    <dd class="govuk-summary-list__value">
                         <govuk-tag
                           status="@Model.ResubmissionStatus"
                           content="@SharedLocalizer[Model.ResubmissionStatus.GetDescription()]"
-                          useLightColour=true/>
+                          useLightColour=true
+                          useResubmissionPrefix=true/>
                     </dd>
                     @if (Model.ResubmissionStatus == EPR.RegulatorService.Frontend.Core.Enums.RegistrationSubmissionStatus.Pending)
                     {
