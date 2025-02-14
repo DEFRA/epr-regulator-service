@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Web;
 using EPR.RegulatorService.Frontend.Web.TagHelpers;
 
@@ -145,15 +146,22 @@ public class StatusTagHelperTests
     }
 
     [TestMethod]
-    public void Process_ShouldUseResubmissionPrefix_WhenUseResubmissionPrefixIsTrue()
+    [DataRow("Pending")]
+    [DataRow("Accepted")]
+    [DataRow("Rejected")]
+    public void Process_ShouldUseResubmissionPrefix_WhenUseResubmissionPrefixIsTrue(string resubmissionStatus)
     {
         // Arrange
         var mockLocalizer = new Mock<IStringLocalizer<SharedResources>>();
-        mockLocalizer.Setup(x => x["Resubmission.Pending"]).Returns(new LocalizedString("Resubmission.Pending", "Resubmission Pending"));
-        mockLocalizer.Setup(x => x["Resubmission.Accepted"]).Returns(new LocalizedString("Resubmission.Accepted", "Resubmission Accepted"));
-        mockLocalizer.Setup(x => x["Resubmission.Rejected"]).Returns(new LocalizedString("Resubmission.Rejected", "Resubmission Rejected"));
+        mockLocalizer.Setup(ml => ml["Resubmission.Pending"]).Returns(new LocalizedString("Resubmission.Pending", "Resubmission Pending"));
+        mockLocalizer.Setup(ml => ml["Resubmission.Accepted"]).Returns(new LocalizedString("Resubmission.Accepted", "Resubmission Accepted"));
+        mockLocalizer.Setup(ml => ml["Resubmission.Rejected"]).Returns(new LocalizedString("Resubmission.Rejected", "Resubmission Rejected"));
 
-        var tagHelper = CreateTagHelper(status: "Pending", useResubmissionPrefix: true, sharedLocalizer: mockLocalizer.Object);
+        var tagHelper = CreateTagHelper(
+            status: resubmissionStatus,
+            useResubmissionPrefix: true,
+            sharedLocalizer: mockLocalizer.Object);
+
         var context = new TagHelperContext([], new Dictionary<object, object>(), Guid.NewGuid().ToString());
         var output = new TagHelperOutput("govuk-tag", [], (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
 
@@ -161,6 +169,6 @@ public class StatusTagHelperTests
         tagHelper.Process(context, output);
 
         // Assert
-        Assert.IsTrue(output.Content.GetContent().Contains("Resubmission Pending"));
+        Assert.IsTrue(output.Content.GetContent().Contains($"Resubmission {resubmissionStatus}"));
     }
 }
