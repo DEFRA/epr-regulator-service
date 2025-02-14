@@ -2,21 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using EPR.RegulatorService.Frontend.Web;
 using EPR.RegulatorService.Frontend.Web.TagHelpers;
 
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Localization;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.TagHelpers;
 
 [TestClass]
 public class StatusTagHelperTests
 {
-    private static StatusTagHelper CreateTagHelper(string content = "Test", string status = "granted")
+    private static StatusTagHelper CreateTagHelper(
+        string content = "Test",
+        string status = "Granted",
+        bool useLightColour = false,
+        bool useResubmissionPrefix = false,
+        IStringLocalizer<SharedResources> sharedLocalizer = null)
     {
-        return new StatusTagHelper
+        sharedLocalizer ??= new Mock<IStringLocalizer<SharedResources>>().Object;
+
+        return new StatusTagHelper(sharedLocalizer)
         {
             Content = content,
-            Status = status
+            Status = status,
+            UseLightColour = useLightColour,
+            UseResubmissionPrefix = useResubmissionPrefix
         };
     }
 
@@ -107,11 +118,7 @@ public class StatusTagHelperTests
     public void Process_ShouldUseLightBlueForPending_WhenUseLightColourIsTrue()
     {
         // Arrange
-        var tagHelper = new StatusTagHelper
-        {
-            Status = "Pending",
-            UseLightColour = true
-        };
+        var tagHelper = CreateTagHelper(status: "Pending", useLightColour: true);
         var context = new TagHelperContext([], new Dictionary<object, object>(), Guid.NewGuid().ToString());
         var output = new TagHelperOutput("govuk-tag", [], (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
 
@@ -119,18 +126,14 @@ public class StatusTagHelperTests
         tagHelper.Process(context, output);
 
         // Assert
-        output.Attributes["class"].Value.ToString().Should().Contain("govuk-tag--light-blue");
+        Assert.IsTrue(output.Attributes["class"].Value.ToString().Contains("govuk-tag--light-blue"));
     }
 
     [TestMethod]
     public void Process_ShouldUseBlueForPending_WhenUseLightColourIsFalse()
     {
         // Arrange
-        var tagHelper = new StatusTagHelper
-        {
-            Status = "Pending",
-            UseLightColour = false
-        };
+        var tagHelper = CreateTagHelper(status: "Pending", useLightColour: false);
         var context = new TagHelperContext([], new Dictionary<object, object>(), Guid.NewGuid().ToString());
         var output = new TagHelperOutput("govuk-tag", [], (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
 
@@ -138,6 +141,26 @@ public class StatusTagHelperTests
         tagHelper.Process(context, output);
 
         // Assert
-        output.Attributes["class"].Value.ToString().Should().Contain("govuk-tag--blue");
+        Assert.IsTrue(output.Attributes["class"].Value.ToString().Contains("govuk-tag--blue"));
+    }
+
+    [TestMethod]
+    public void Process_ShouldUseResubmissionPrefix_WhenUseResubmissionPrefixIsTrue()
+    {
+        // Arrange
+        var mockLocalizer = new Mock<IStringLocalizer<SharedResources>>();
+        mockLocalizer.Setup(x => x["Resubmission.Pending"]).Returns(new LocalizedString("Resubmission.Pending", "Resubmission Pending"));
+        mockLocalizer.Setup(x => x["Resubmission.Accepted"]).Returns(new LocalizedString("Resubmission.Accepted", "Resubmission Accepted"));
+        mockLocalizer.Setup(x => x["Resubmission.Rejected"]).Returns(new LocalizedString("Resubmission.Rejected", "Resubmission Rejected"));
+
+        var tagHelper = CreateTagHelper(status: "Pending", useResubmissionPrefix: true, sharedLocalizer: mockLocalizer.Object);
+        var context = new TagHelperContext([], new Dictionary<object, object>(), Guid.NewGuid().ToString());
+        var output = new TagHelperOutput("govuk-tag", [], (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+
+        // Act
+        tagHelper.Process(context, output);
+
+        // Assert
+        Assert.IsTrue(output.Content.GetContent().Contains("Resubmission Pending"));
     }
 }
