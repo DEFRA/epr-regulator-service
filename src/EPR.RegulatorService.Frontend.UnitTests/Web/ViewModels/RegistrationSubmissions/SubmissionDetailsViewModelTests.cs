@@ -11,6 +11,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
         private Guid _testFileId;
         private DateTime _decisionDate;
         private DateTime _submissionDate;
+        private DateTime _registrationDate;
         private DateTime _statusPendingDate;
 
         private SubmissionDetailsViewModel.FileDetails _testFileDetailsCompany;
@@ -26,6 +27,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             _testFileId = Guid.NewGuid();
             _decisionDate = new DateTime(2023, 12, 1, 14, 30, 0, DateTimeKind.Unspecified);
             _submissionDate = new DateTime(2023, 12, 5, 16, 45, 0, DateTimeKind.Unspecified);
+            _registrationDate = new DateTime(2024, 12, 5, 16, 45, 0, DateTimeKind.Unspecified);
             _statusPendingDate = new DateTime(2023, 12, 27, 12, 15, 0, DateTimeKind.Unspecified);
 
             _testFileDetailsCompany = new SubmissionDetailsViewModel.FileDetails
@@ -140,10 +142,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
         }
 
         [TestMethod]
-        [DataRow(RegistrationSubmissionStatus.Granted)]
         [DataRow(RegistrationSubmissionStatus.Refused)]
         [DataRow(RegistrationSubmissionStatus.Queried)]
         [DataRow(RegistrationSubmissionStatus.Updated)]
+        [DataRow(RegistrationSubmissionStatus.Accepted)]
+        [DataRow(RegistrationSubmissionStatus.Rejected)]
         public void DisplayAppropriateSubmissionDate_ShouldReturnFormattedDate_BasedOnStatusNotCancelled(
             RegistrationSubmissionStatus status)
         {
@@ -160,6 +163,27 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
 
             // Assert
             Assert.AreEqual("01 December 2023 14:30:00", result);
+        }
+
+        [TestMethod]
+        [DataRow(RegistrationSubmissionStatus.Granted)]
+        public void DisplayAppropriateSubmissionDate_ShouldReturnFormattedDate_BasedOnStatusGranted(
+            RegistrationSubmissionStatus status)
+        {
+            // Arrange
+            var viewModel = new SubmissionDetailsViewModel
+            {
+                Status = status,
+                LatestDecisionDate = _decisionDate,
+                TimeAndDateOfSubmission = _submissionDate,
+                RegistrationDate = _registrationDate,
+            };
+
+            // Act
+            string result = viewModel.DisplayAppropriateSubmissionDate();
+
+            // Assert
+            Assert.AreEqual("05 December 2024 16:45:00", result);
         }
 
         [TestMethod]

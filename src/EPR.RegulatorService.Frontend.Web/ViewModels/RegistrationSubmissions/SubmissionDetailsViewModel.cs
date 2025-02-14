@@ -86,10 +86,12 @@ public class SubmissionDetailsViewModel
 
         var targetDate = Status switch
         {
-            RegistrationSubmissionStatus.Granted => RegistrationDate,
+            RegistrationSubmissionStatus.Granted => RegistrationDate, // This will display the incorrect date for accepted resubmissions
             RegistrationSubmissionStatus.Refused or
             RegistrationSubmissionStatus.Queried or
-            RegistrationSubmissionStatus.Updated => LatestDecisionDate,
+            RegistrationSubmissionStatus.Updated or
+            RegistrationSubmissionStatus.Accepted or
+            RegistrationSubmissionStatus.Rejected => LatestDecisionDate,
             RegistrationSubmissionStatus.Cancelled => StatusPendingDate ?? LatestDecisionDate,
             _ => TimeAndDateOfSubmission,
         } ?? TimeAndDateOfSubmission;
