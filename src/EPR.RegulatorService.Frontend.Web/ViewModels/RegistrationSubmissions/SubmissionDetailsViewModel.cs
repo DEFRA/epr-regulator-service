@@ -56,7 +56,7 @@ public class SubmissionDetailsViewModel
 
     public RegistrationSubmissionStatus Status { get; set; }
     public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
-    public DateTime? DecisionDate { get; set; }
+    public DateTime? LatestDecisionDate { get; set; }
     public DateTime? StatusPendingDate { get; set; }
 
     public DateTime TimeAndDateOfSubmission { get; set; }
@@ -86,8 +86,11 @@ public class SubmissionDetailsViewModel
 
         var targetDate = Status switch
         {
-            RegistrationSubmissionStatus.Granted or RegistrationSubmissionStatus.Refused or RegistrationSubmissionStatus.Queried or RegistrationSubmissionStatus.Updated => DecisionDate,
-            RegistrationSubmissionStatus.Cancelled => StatusPendingDate ?? DecisionDate,
+            RegistrationSubmissionStatus.Granted => RegistrationDate,
+            RegistrationSubmissionStatus.Refused or
+            RegistrationSubmissionStatus.Queried or
+            RegistrationSubmissionStatus.Updated => LatestDecisionDate,
+            RegistrationSubmissionStatus.Cancelled => StatusPendingDate ?? LatestDecisionDate,
             _ => TimeAndDateOfSubmission,
         } ?? TimeAndDateOfSubmission;
 
@@ -108,7 +111,7 @@ public class SubmissionDetailsViewModel
             Email = details.Email,
             DeclaredBy = details.DeclaredBy,
             SubmittedBy = details.SubmittedBy,
-            DecisionDate = details.DecisionDate,
+            DecisionDate = details.LatestDecisionDate,
             Status = details.Status,
             ResubmissionStatus = details.ResubmissionStatus,
             SubmittedOnTime = details.SubmittedOnTime,
@@ -144,12 +147,12 @@ public class SubmissionDetailsViewModel
             Email = details.Email,
             DeclaredBy = details.DeclaredBy,
             SubmittedBy = details.SubmittedBy,
-            DecisionDate = details.DecisionDate,
+            LatestDecisionDate = details.DecisionDate,
             Status = details.Status,
-            ResubmissionStatus = details.ResubmissionStatus ?? RegistrationSubmissionStatus.Pending,
+            ResubmissionStatus = details.ResubmissionStatus,
             SubmittedOnTime = details.SubmittedOnTime,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
-            TimeAndDateOfResubmission = details.TimeAndDateOfResubmission ?? details.TimeAndDateOfSubmission,
+            TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,
             RegistrationDate = details.RegistrationDate,
             Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList(),
             IsResubmission = details.IsResubmission

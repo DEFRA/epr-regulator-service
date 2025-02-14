@@ -1770,7 +1770,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert SubmissionDetailsViewModel properties
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Status, model.SubmissionDetails.Status);
-            Assert.AreEqual(expectedViewModel.SubmissionDetails.DecisionDate, model.SubmissionDetails.DecisionDate);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.LatestDecisionDate, model.SubmissionDetails.LatestDecisionDate);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.TimeAndDateOfSubmission, model.SubmissionDetails.TimeAndDateOfSubmission);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.SubmittedOnTime, model.SubmissionDetails.SubmittedOnTime);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.SubmittedBy, model.SubmissionDetails.SubmittedBy);

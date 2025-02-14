@@ -223,7 +223,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 existingModel.RegulatorComments = regulatorDecisionRequest.Comments;
                 existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
                 existingModel.SubmissionDetails.Status = existingModel.Status;
-                existingModel.SubmissionDetails.DecisionDate = DateTime.UtcNow;
+                existingModel.SubmissionDetails.LatestDecisionDate = DateTime.UtcNow;
 
                 if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
                 {

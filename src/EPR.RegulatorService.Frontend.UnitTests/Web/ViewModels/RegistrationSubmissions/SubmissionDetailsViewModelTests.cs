@@ -151,7 +151,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             var viewModel = new SubmissionDetailsViewModel
             {
                 Status = status,
-                DecisionDate = _decisionDate,
+                LatestDecisionDate = _decisionDate,
                 TimeAndDateOfSubmission = _submissionDate
             };
 
@@ -204,7 +204,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             var viewModel = new SubmissionDetailsViewModel
             {
                 Status = RegistrationSubmissionStatus.Cancelled,
-                DecisionDate = _decisionDate,
+                LatestDecisionDate = _decisionDate,
                 TimeAndDateOfSubmission = _submissionDate
             };
 
@@ -222,7 +222,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             var viewModel = new SubmissionDetailsViewModel
             {
                 Status = RegistrationSubmissionStatus.Pending,
-                DecisionDate = null,
+                LatestDecisionDate = null,
                 TimeAndDateOfSubmission = _submissionDate
             };
 
@@ -244,7 +244,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
                 Email = "test@example.com",
                 DeclaredBy = "John Doe",
                 SubmittedBy = "Jane Smith",
-                DecisionDate = _decisionDate,
+                LatestDecisionDate = _decisionDate,
                 Status = RegistrationSubmissionStatus.Granted,
                 SubmittedOnTime = true,
                 TimeAndDateOfSubmission = _submissionDate,
@@ -261,7 +261,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             Assert.AreEqual(viewModel.Email, result.Email);
             Assert.AreEqual(viewModel.DeclaredBy, result.DeclaredBy);
             Assert.AreEqual(viewModel.SubmittedBy, result.SubmittedBy);
-            Assert.AreEqual(viewModel.DecisionDate, result.DecisionDate);
+            Assert.AreEqual(viewModel.LatestDecisionDate, result.DecisionDate);
             Assert.AreEqual(viewModel.Status, result.Status);
             Assert.AreEqual(viewModel.SubmittedOnTime, result.SubmittedOnTime);
             Assert.AreEqual(viewModel.TimeAndDateOfSubmission, result.TimeAndDateOfSubmission);

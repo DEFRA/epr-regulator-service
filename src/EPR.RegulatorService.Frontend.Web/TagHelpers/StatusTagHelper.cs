@@ -43,6 +43,14 @@ namespace EPR.RegulatorService.Frontend.Web.TagHelpers
 
             if (!string.IsNullOrWhiteSpace(Status))
             {
+                Content = (UseLightColour, Status) switch
+                {
+                    (true, "Pending") => "Resubmission.Pending",
+                    (true, "Accepted") => "Resubmission.Accepted",
+                    (true, "Rejected") => "Resubmission.Rejected",
+                    _ => Content
+                };
+
                 output.Content.AppendHtml($"<span class=\"content\">{Content}</span>");
             }
         }
