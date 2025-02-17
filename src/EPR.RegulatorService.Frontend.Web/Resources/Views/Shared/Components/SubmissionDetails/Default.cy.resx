@@ -144,9 +144,6 @@
   <data name="SubmissionDetails.Telephone" xml:space="preserve">
     <value>Ffôn</value>
   </data>
-  <data name="SubmissionDetails.TimeAndDateOfResubmission" xml:space="preserve">
-    <value>[Welsh]Time and date of resubmission</value>
-  </data>
   <data name="SubmissionDetails.TimeAndDateOfSubmission" xml:space="preserve">
     <value>Amser a dyddiad y cyflwyniad</value>
   </data>

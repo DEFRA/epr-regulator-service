@@ -56,6 +56,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
         [TestMethod]
         public void Process_WhenResubmissionWithMultipleHeadingsAndContents_GeneratesCorrectHtml()
         {
+            // Arrange
             var tagHelper = new StatusPanelTagHelper
             {
                 Heading = "Heading 1,Heading 2",
@@ -68,7 +69,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
 
             tagHelper.Process(context, output);
 
+            // Act
             string result = output.Content.GetContent();
+
+            // Assert
             Assert.IsTrue(result.Contains("<h3>Heading 1</h3><p>Content 1</p><br>"));
             Assert.IsTrue(result.Contains("<h3>Heading 2</h3><p>Content 2</p>"));
         }
@@ -76,6 +80,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
         [TestMethod]
         public void Process_WhenSingleHeadingAndContent_GeneratesCorrectHtml()
         {
+            // Arrange
             var tagHelper = new StatusPanelTagHelper
             {
                 Heading = "Single Heading",
@@ -88,7 +93,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.TagHelpers
 
             tagHelper.Process(context, output);
 
+            // Act
             string result = output.Content.GetContent();
+
+            // Assert
             Assert.IsTrue(result.Contains("<h3>Single Heading</h3>"));
             Assert.IsTrue(result.Contains("<p>Single Content</p>"));
         }
