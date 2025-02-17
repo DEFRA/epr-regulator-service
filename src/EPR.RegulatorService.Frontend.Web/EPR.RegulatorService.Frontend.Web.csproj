@@ -101,6 +101,7 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionDetails.en.resx">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancelRegistrationSubmission.en.resx">
       <SubType>Designer</SubType>

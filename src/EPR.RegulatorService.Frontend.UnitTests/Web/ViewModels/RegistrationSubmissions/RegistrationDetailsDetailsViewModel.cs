@@ -22,7 +22,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             OrganisationType = RegistrationSubmissionOrganisationType.large,
             CompaniesHouseNumber = "CH123456",
             SubmissionStatus = RegistrationSubmissionStatus.Pending,
-            SubmissionDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
+            RegistrationDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
             BuildingName = "Building A",
             SubBuildingName = "Sub A",
             BuildingNumber = "123",
@@ -46,7 +46,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.AreEqual(details.CompaniesHouseNumber, viewModel.CompaniesHouseNumber);
         Assert.AreEqual(details.Country, viewModel.RegisteredNation);
         Assert.AreEqual(details.SubmissionStatus, viewModel.Status);
-        Assert.AreEqual(details.SubmissionDate, viewModel.RegistrationDateTime);
+        Assert.AreEqual(details.RegistrationDate, viewModel.RegistrationDateTime);
 
         // Check Business Address mapping
         Assert.AreEqual(details.BuildingName, viewModel.BusinessAddress.BuildingName);

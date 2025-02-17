@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers
 {
+    using System.Text;
+
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Web.Helpers;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -12,26 +14,34 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers
         [TestMethod]
         public void GetPanelTitle_WhenRegistrationNumberIsProvided_ReturnsRegistrationReferenceNumberTitle()
         {
+            // Arrange
             var model = new RegistrationSubmissionDetailsViewModel
             {
                 Status = RegistrationSubmissionStatus.Granted,
                 RegistrationReferenceNumber = "REGNUM"
             };
 
+            // Act
             string? result = ReferenceNumberPanelHelper.GetPanelTitle(model);
+
+            // Assert
             Assert.AreEqual("RegistrationSubmissionDetails.RegistrationReferenceNumber", result);
         }
 
         [TestMethod]
         public void GetPanelTitle_WhenRegistrationNumberIsNotProvided_ReturnsApplicationReferenceNumber()
         {
+            // Arrange
             var model = new RegistrationSubmissionDetailsViewModel
             {
                 Status = RegistrationSubmissionStatus.Granted,
                 RegistrationReferenceNumber = string.Empty
             };
 
+            // Act
             string? result = ReferenceNumberPanelHelper.GetPanelTitle(model);
+
+            // Assert
             Assert.AreEqual("RegistrationSubmissionDetails.ApplicationReferenceNumber", result);
         }
 
@@ -50,6 +60,23 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers
 
             // Assert
             Assert.AreEqual("RegistrationSubmissionDetails.RegistrationReferenceNumber", result);
+        }
+
+        [TestMethod]
+        public void GetPanelTitle_WhenStatusIsGrantedAndIsResubmission_ReturnsBothTitles()
+        {
+            // Arrange
+            var model = new RegistrationSubmissionDetailsViewModel
+            {
+                Status = RegistrationSubmissionStatus.Granted,
+                IsResubmission = true
+            };
+
+            // Act
+            string? result = ReferenceNumberPanelHelper.GetPanelTitle(model);
+
+            // Assert
+            Assert.AreEqual("RegistrationSubmissionDetails.RegistrationReferenceNumber|RegistrationSubmissionDetails.ApplicationReferenceNumber", result);
         }
 
         [TestMethod]
@@ -102,6 +129,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers
 
             // Assert
             Assert.AreEqual("APP456", result);
+        }
+
+        [TestMethod]
+        public void GetPanelContent_WhenStatusIsGrantedAndIsResubmission_ReturnsBothNumbers()
+        {
+            // Arrange
+            var model = new RegistrationSubmissionDetailsViewModel
+            {
+                Status = RegistrationSubmissionStatus.Granted,
+                IsResubmission = true,
+                RegistrationReferenceNumber = "REG123",
+                ReferenceNumber = "APP456"
+            };
+
+            // Act
+            string? result = ReferenceNumberPanelHelper.GetPanelContent(model);
+
+            // Assert
+            string expected = new StringBuilder()
+                .AppendLine("REG123")
+                .AppendLine("APP456")
+                .ToString();
+
+            Assert.AreEqual(expected, result);
         }
     }
 }
