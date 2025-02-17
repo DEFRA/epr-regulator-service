@@ -55,10 +55,13 @@ public class SubmissionDetailsViewModel
     }
 
     public RegistrationSubmissionStatus Status { get; set; }
-    public DateTime? DecisionDate { get; set; }
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
+    public DateTime? LatestDecisionDate { get; set; }
     public DateTime? StatusPendingDate { get; set; }
 
     public DateTime TimeAndDateOfSubmission { get; set; }
+    public DateTime? TimeAndDateOfResubmission { get; set; }
+    public DateTime? RegistrationDate { get; set; }
     public bool SubmittedOnTime { get; set; }
     public string SubmittedBy { get; set; }
     public ServiceRole? AccountRole { get; set; }
@@ -83,8 +86,13 @@ public class SubmissionDetailsViewModel
 
         var targetDate = Status switch
         {
-            RegistrationSubmissionStatus.Granted or RegistrationSubmissionStatus.Refused or RegistrationSubmissionStatus.Queried or RegistrationSubmissionStatus.Updated => DecisionDate,
-            RegistrationSubmissionStatus.Cancelled => StatusPendingDate ?? DecisionDate,
+            RegistrationSubmissionStatus.Granted => RegistrationDate, // This will display the incorrect date for accepted resubmissions
+            RegistrationSubmissionStatus.Refused or
+            RegistrationSubmissionStatus.Queried or
+            RegistrationSubmissionStatus.Updated or
+            RegistrationSubmissionStatus.Accepted or
+            RegistrationSubmissionStatus.Rejected => LatestDecisionDate,
+            RegistrationSubmissionStatus.Cancelled => StatusPendingDate ?? LatestDecisionDate,
             _ => TimeAndDateOfSubmission,
         } ?? TimeAndDateOfSubmission;
 
@@ -105,10 +113,13 @@ public class SubmissionDetailsViewModel
             Email = details.Email,
             DeclaredBy = details.DeclaredBy,
             SubmittedBy = details.SubmittedBy,
-            DecisionDate = details.DecisionDate,
+            DecisionDate = details.LatestDecisionDate,
             Status = details.Status,
+            ResubmissionStatus = details.ResubmissionStatus,
             SubmittedOnTime = details.SubmittedOnTime,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
+            TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,
+            RegistrationDate = details.RegistrationDate,
             IsResubmission = details.IsResubmission
         };
 
@@ -138,16 +149,19 @@ public class SubmissionDetailsViewModel
             Email = details.Email,
             DeclaredBy = details.DeclaredBy,
             SubmittedBy = details.SubmittedBy,
-            DecisionDate = details.DecisionDate,
+            LatestDecisionDate = details.DecisionDate,
             Status = details.Status,
+            ResubmissionStatus = details.ResubmissionStatus,
             SubmittedOnTime = details.SubmittedOnTime,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
+            TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,
+            RegistrationDate = details.RegistrationDate,
             Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList(),
             IsResubmission = details.IsResubmission
         };
     }
 
-    private static ServiceRole? GetAccountRole ( int? serviceRoleId )
+    private static ServiceRole? GetAccountRole(int? serviceRoleId)
     {
         ServiceRole? retVal = serviceRoleId.HasValue ? (ServiceRole)serviceRoleId : null;
 

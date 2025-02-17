@@ -157,7 +157,7 @@
     <value>Cyfeiriad cofrestredig</value>
   </data>
   <data name="RegistrationSubmissionDetails.RegistrationReferenceNumber" xml:space="preserve">
-    <value>Rhif cyfeirnod y cofrestriad</value>
+    <value>[Welsh]Producer registration number</value>
   </data>
   <data name="RegistrationSubmissionDetails.ProducerTitle" xml:space="preserve">
     <value>Sylw gan y cynhyrchydd</value>

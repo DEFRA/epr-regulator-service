@@ -6,7 +6,7 @@ public abstract class BaseSubmissionDetailsViewModel
 
     public string NationCode { get; set; }
 
-    public DateTime RegistrationDateTime { get; set; }
+    public DateTime? RegistrationDateTime { get; set; }
 
     public Guid SubmissionId { get; set; }
 
