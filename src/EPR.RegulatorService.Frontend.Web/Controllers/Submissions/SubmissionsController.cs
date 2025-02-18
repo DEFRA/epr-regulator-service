@@ -86,7 +86,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 IsPendingSubmissionChecked = session.RegulatorSubmissionSession.IsPendingSubmissionChecked,
                 IsAcceptedSubmissionChecked = session.RegulatorSubmissionSession.IsAcceptedSubmissionChecked,
                 IsRejectedSubmissionChecked = session.RegulatorSubmissionSession.IsRejectedSubmissionChecked,
-                PageNumber =  session.RegulatorSubmissionSession.CurrentPageNumber,
+                PageNumber = session.RegulatorSubmissionSession.CurrentPageNumber,
                 PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
                 SubmissionYears = _submissionFiltersOptions.Years,
                 SubmissionPeriods = _submissionFiltersOptions.PomPeriods,
@@ -189,7 +189,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 FormattedTimeAndDateOfSubmission = DateTimeHelpers.FormatTimeAndDateForSubmission(submission.SubmittedDate),
                 SubmissionId = submission.SubmissionId,
                 SubmittedBy = $"{submission.FirstName} {submission.LastName}",
-                SubmissionPeriod = submission.SubmissionPeriod,
+                SubmissionPeriod = submission.ActualSubmissionPeriod,
                 AccountRole = submission.ServiceRole,
                 Telephone = submission.Telephone,
                 Email = submission.Email,
@@ -251,7 +251,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             await SaveSessionAndJourney(session, PagePath.SubmissionDetails, PagePath.AcceptSubmission);
             SetBackLink(session, PagePath.AcceptSubmission);
 
-            return View(nameof(AcceptSubmission) ,model);
+            return View(nameof(AcceptSubmission), model);
         }
 
         [HttpPost]
@@ -325,7 +325,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             if (!ModelState.IsValid)
             {
                 model.SubmittedBy = session.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmittedBy;
-               
+
                 SetBackLink(session, PagePath.RejectSubmission);
                 return View(nameof(RejectSubmission), model);
             }
@@ -367,7 +367,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             SetBackLink(session, PagePath.Submissions);
 
             return await SaveSessionAndRedirect(session, PagePath.Error, "Error", PagePath.Submissions,
-                PagePath.PageNotFoundPath, new {statusCode = 404, backLink = PagePath.Submissions});
+                PagePath.PageNotFoundPath, new { statusCode = 404, backLink = PagePath.Submissions });
         }
 
 
@@ -457,7 +457,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 SubmissionId = submission.SubmissionId,
                 SubmissionType = SubmissionType.Producer,
                 FileId = submission.FileId,
-                BlobName =  submission.PomBlobName,
+                BlobName = submission.PomBlobName,
                 FileName = submission.PomFileName,
             };
 
@@ -513,16 +513,16 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         }
 
         private static bool IsFilterable(SubmissionFiltersModel submissionFiltersModel) =>
-            (
-                (!string.IsNullOrEmpty(submissionFiltersModel.SearchOrganisationName) ||
+
+                !string.IsNullOrEmpty(submissionFiltersModel.SearchOrganisationName) ||
                  submissionFiltersModel.IsDirectProducerChecked ||
                  submissionFiltersModel.IsComplianceSchemeChecked ||
                  submissionFiltersModel.IsPendingSubmissionChecked ||
                  submissionFiltersModel.IsAcceptedSubmissionChecked ||
-                 submissionFiltersModel.IsRejectedSubmissionChecked)
+                 submissionFiltersModel.IsRejectedSubmissionChecked
              || submissionFiltersModel.SearchSubmissionYears?.Length > 0
              || submissionFiltersModel.SearchSubmissionPeriods?.Length > 0
-             || submissionFiltersModel.IsFilteredSearch);
+             || submissionFiltersModel.IsFilteredSearch;
 
         private async Task<RedirectToActionResult> SaveSessionAndRedirect(
             JourneySession session,
