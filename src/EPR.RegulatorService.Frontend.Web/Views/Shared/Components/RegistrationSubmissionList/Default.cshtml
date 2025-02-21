@@ -28,9 +28,9 @@
                             @Localizer["Table.Header.Company"]
                         </span>
                         @(Html.RouteLink(@organisation.OrganisationName,
-                                         "SubmissionDetails",
-                                         new { submissionId = @organisation.SubmissionId},
-                                         new { @class = "govuk-link govuk-link--no-visited-state"}))
+                            "SubmissionDetails",
+                            new { submissionId = @organisation.SubmissionId },
+                            new { @class = "govuk-link govuk-link--no-visited-state" }))
                         <br />
                         <span class="orgNameFilter">@SharedLocalizer[organisation.OrganisationType.GetDescription()]</span>
                     </td>
@@ -48,14 +48,28 @@
                             @organisation.ReferenceNumber
                         }
                     </td>
-                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                        <span class="responsive-table__heading" aria-hidden="true">
-                            @Localizer["Table.Header.ApplicationDate"]
-                        </span>
-                        @organisation.RegistrationDateTime?.ToString("dd MMMM yyyy")
-                        <br />
-                        @organisation.RegistrationDateTime?.ToString("HH:mm:ss")
-                    </td>
+                    @if (organisation.IsResubmission)
+                    {
+                        <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                            <span class="responsive-table__heading" aria-hidden="true">
+                                @Localizer["Table.Header.ApplicationDate"]
+                            </span>
+                            @organisation.SubmissionDetails.TimeAndDateOfResubmission?.ToString("dd MMMM yyyy")
+                            <br />
+                            @organisation.SubmissionDetails.TimeAndDateOfResubmission?.ToString("HH:mm:ss")
+                        </td>
+                    }
+                    else
+                    {
+                        <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                            <span class="responsive-table__heading" aria-hidden="true">
+                                @Localizer["Table.Header.ApplicationDate"]
+                            </span>
+                            @organisation.SubmissionDetails.TimeAndDateOfSubmission.ToString("dd MMMM yyyy")
+                            <br />
+                            @organisation.SubmissionDetails.TimeAndDateOfSubmission.ToString("HH:mm:ss")
+                        </td>
+                    }
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.Year"]
@@ -68,19 +82,18 @@
                         </span>
                         <govuk-tag status="@organisation.Status" content="@SharedLocalizer[organisation.Status.GetDescription()]" />
                     </td>
-                    
-                      <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                          <span class="responsive-table__heading" aria-hidden="true">
-                              @Localizer["Table.Header.ResubmissionStatus"]
-                          </span>
+
+                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                        <span class="responsive-table__heading" aria-hidden="true">
+                            @Localizer["Table.Header.ResubmissionStatus"]
+                        </span>
                         @if (organisation.IsResubmission && organisation.ResubmissionStatus != null)
                         {
-                          <govuk-tag
-                            status="@organisation.ResubmissionStatus"
-                            content="@SharedLocalizer[organisation.ResubmissionStatus.GetDescription()]"
-                            useLightColour=true/>
+                            <govuk-tag status="@organisation.ResubmissionStatus"
+                                       content="@SharedLocalizer[organisation.ResubmissionStatus.GetDescription()]"
+                                       useLightColour=true />
                         }
-                      </td>
+                    </td>
                 </tr>
             }
         </tbody>
