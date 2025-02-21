@@ -81,6 +81,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["GetOrganisationRegistrationSubmissionsPath"] = "organisation-registration-submissions",
                     ["SubmitRegistrationFeePaymentPath"] = "organisation-registration-fee-payment",
                     ["PackagingDataResubmissionFeePaymentPath"] = "organisation-packaging-data-resubmission-fee-payment",
+                    ["GetPomResubmissionPaycalParameters"] = "pom/get-resubmission-paycal-parameters",
                 },
                 DownstreamScope = "api://default"
             });
@@ -1820,7 +1821,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Assert handled by ExpectedException
         }
 
-
         [TestMethod]
         public async Task ReadRequiredJsonContent_ValidJson_ReturnsDeserializedObject()
         {
@@ -1896,6 +1896,79 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             result.Should().BeOfType<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>();
         }
 
+        [TestMethod]
+        public async Task GetPomPayCalParameters_Should_Return_Correct_Response()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var csoId = Guid.NewGuid();
+
+            string jsonRequest = JsonSerializer.Serialize(new PomPayCalParametersResponse());
+            var stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(() => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = stringContent
+                })
+                .Verifiable();
+
+            // Act
+            var result = await _facadeService.GetPomPayCalParameters(submissionId, csoId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            _mockHandler.Protected().Verify(
+                "SendAsync",
+                Times.Once(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Get &&
+                    req.RequestUri.ToString().Contains("pom/get-resubmission-paycal-parameters")),
+                ItExpr.IsAny<CancellationToken>());
+
+            stringContent?.Dispose();
+        }
+
+        [TestMethod]
+        public async Task GetPomPayCalParameters_Should_LogError_Return_Default_Response()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var csoId = Guid.NewGuid();
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(() => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                })
+                .Verifiable();
+
+            // Act
+            var result = await _facadeService.GetPomPayCalParameters(submissionId, csoId);
+
+            // Assert
+            Assert.IsNull(result);
+            _mockHandler.Protected().Verify(
+                "SendAsync",
+                Times.Once(),
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Get &&
+                    req.RequestUri.ToString().Contains("pom/get-resubmission-paycal-parameters")),
+                ItExpr.IsAny<CancellationToken>());
+        }
 
         public static class PaginatedListHelper
         {
