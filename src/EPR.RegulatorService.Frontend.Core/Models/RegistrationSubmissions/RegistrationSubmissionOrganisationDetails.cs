@@ -92,12 +92,15 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 SubmissionStatus = response.SubmissionStatus,
                 ResubmissionStatus = response.ResubmissionStatus,
                 StatusPendingDate = response.StatusPendingDate,
-                ProducerCommentDate = response.ProducerCommentDate,
-                RegulatorDecisionDate = response.RegulatorCommentDate,
                 IsResubmission = response.IsResubmission,
                 SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
                 {
-                    IsResubmission = response.IsResubmission
+                    IsResubmission = response.IsResubmission,
+                    RegistrationDate = response.RegistrationDate,
+                    TimeAndDateOfSubmission = response.SubmissionDate,
+                    TimeAndDateOfResubmission = response.ResubmissionDate,
+                    ResubmissionStatus = response.ResubmissionStatus
+                    
                 }
             };
 
