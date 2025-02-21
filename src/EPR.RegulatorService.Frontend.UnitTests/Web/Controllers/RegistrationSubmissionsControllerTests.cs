@@ -4043,8 +4043,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region SubmissionDetailsFileDownload
 
         [TestMethod]
-        public async void SubmissionDetailsFileDownload_ShouldReturnViewResult()
+        public async Task SubmissionDetailsFileDownload_ShouldReturnViewResult()
         {
+            // Arrange
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
             // Act
             var result = await _controller.SubmissionDetailsFileDownload();
 

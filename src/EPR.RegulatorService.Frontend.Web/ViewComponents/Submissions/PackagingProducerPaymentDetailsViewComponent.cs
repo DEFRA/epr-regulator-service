@@ -22,19 +22,24 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
     {
         try
         {
+            if (viewModel.ReferenceFieldNotAvailable) {
+                this.ViewBag.NoReferenceField = this.ViewBag.NoReferenceNumber = true;
+                return View(default(PackagingProducerPaymentDetailsViewModel));
+            }
+
+            if (viewModel.ReferenceNotAvailable)
+            {
+                this.ViewBag.NoReferenceNumber = true;
+                return View(default(PackagingProducerPaymentDetailsViewModel));
+            }
+
             var producerPaymentResponse = await paymentFacadeService
                 .GetProducerPaymentDetailsForResubmissionAsync(new PackagingProducerPaymentRequest
             {
-                // To Do:: Remove the hardcoded and uncomment the dynamic assignment once we have the confirmation about the input params
-                ReferenceNumber = "dgregerg",
-                Regulator = "GB-ENG",
-                ResubmissionDate = new DateTime(2025, 01, 06, 11, 50, 47, 499, DateTimeKind.Utc)
-                /*
                 ReferenceNumber = viewModel.ReferenceNumber,
                 Regulator = viewModel.NationCode,
-                ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) //payment facade in utc format
-                */
-                });
+                ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime.Value) //payment facade in utc format
+            });
 
             if (producerPaymentResponse is null)
             {
@@ -46,11 +51,7 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
-
-                // TO Do:: Remove the hardcoded ReferenceNumber and uncomment the commenetd Referencenumber.
-                // null check added for unit tests
-                ReferenceNumber = viewModel.ReferenceNumber ?? "dgregerg",
-                //ReferenceNumber = viewModel.ReferenceNumber,
+                ReferenceNumber = viewModel.ReferenceNumber
             };
 
             return View(packagingProducerPaymentDetailsViewModel);

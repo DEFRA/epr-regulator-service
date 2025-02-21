@@ -66,4 +66,6 @@ public interface IFacadeService
     Task SubmitRegistrationFeePaymentAsync(FeePaymentRequest request);
 
     Task SubmitPackagingDataResubmissionFeePaymentEventAsync(FeePaymentRequest request);
+
+    Task<PomPayCalParametersResponse> GetPomPayCalParameters(Guid submissionId, Guid? complianceSchemeId);
 }

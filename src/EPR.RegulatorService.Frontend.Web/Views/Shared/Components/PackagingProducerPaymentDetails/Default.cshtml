@@ -6,13 +6,20 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
 
 @model PackagingProducerPaymentDetailsViewModel
+@{
+    var referenceNumber = "---";
+    if (Model is not null)
+    {
+        referenceNumber = Model.ReferenceNumber;
+    }
+}
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
         <h2 class="govuk-summary-card__title">@SharedLocalizer["PaymentDetails.Title"]</h2>
         <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">
                 <strong>@SharedLocalizer["PackagingProducerPaymentDetails.PaymentReferenceNumber"]</strong><br>
-                <span class="govuk-body">@Model.ReferenceNumber</span>
+                <span class="govuk-body">@referenceNumber</span>
             </li>
         </ul>
     </div>
@@ -70,7 +77,15 @@
         }
         else
         {
-            <p class="govuk-body">Unable to retrieve producer payment details</p>
+            <p class="govuk-body">@SharedLocalizer["PaymentDetails.ProducerServiceIssueDescription"]</p>
+            if (ViewBag.NoReferenceField is not null && ViewBag.NoReferenceField)
+            {
+                <p class="govuk-body">Database is not up-to-date</p>
+            }
+            if (ViewBag.NoReferenceNumber is not null && ViewBag.NoReferenceNumber)
+            {
+                <p class="govuk-body">Reference number doesn't exist</p>
+            }
         }
     </div>
 </div>

@@ -184,6 +184,20 @@ public partial class SubmissionsController : Controller
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
         var model = GetSubmissionDetailsViewModel(session);
 
+        var payCalParameters = await _facadeService.GetPomPayCalParameters(
+            session.RegulatorSubmissionSession.OrganisationSubmission.SubmissionId,
+            session.RegulatorSubmissionSession.OrganisationSubmission.ComplianceSchemeId);
+
+        model.ReferenceFieldNotAvailable = model.ReferenceNotAvailable = true;
+        if (payCalParameters is not null)
+        {
+            model.ReferenceNumber = payCalParameters.Reference;
+            model.ReferenceFieldNotAvailable = payCalParameters.ReferenceFieldNotAvailable;
+            model.ReferenceNotAvailable = payCalParameters.ReferenceNotAvailable;
+            model.MemberCount = payCalParameters.MemberCount ?? 0;
+            model.RegistrationDateTime = payCalParameters.ResubmissionDate;
+        }
+
         await SaveSessionAndJourney(session, PagePath.Submissions, PagePath.SubmissionDetails);
         SetBackLink(session, PagePath.SubmissionDetails);
 

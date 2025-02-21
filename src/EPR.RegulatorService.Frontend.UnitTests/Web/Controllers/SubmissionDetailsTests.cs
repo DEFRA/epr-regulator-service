@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
@@ -39,6 +40,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionFromSession = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission;
+            _facadeServiceMock.Setup(r => r.GetPomPayCalParameters(It.IsAny<Guid>(), null))
+                .ReturnsAsync(new PomPayCalParametersResponse {
+                    Reference = "12345",
+                    MemberCount = 1,
+                    ResubmissionDate = DateTime.UtcNow
+                });
 
             // Act
             var result = await _systemUnderTest.SubmissionDetails() as ViewResult;
@@ -52,7 +59,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model!.OrganisationName.Should().Be(submissionFromSession.OrganisationName);
             model.SubmissionId.Should().Be(submissionFromSession.SubmissionId);
             model.SubmittedBy.Should().Be($"{submissionFromSession.FirstName} {submissionFromSession.LastName}");
-
+            model.ReferenceFieldNotAvailable.Should().BeFalse();
+            model.ReferenceNotAvailable.Should().BeFalse();
             AssertBackLink(result, PagePath.Submissions);
         }
     }

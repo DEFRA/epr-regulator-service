@@ -454,6 +454,9 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
     public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync(
         FeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
 
+    public async Task<PomPayCalParametersResponse> GetPomPayCalParameters(
+       Guid submissionId, Guid? complianceSchemeId) => await Task.FromResult(new PomPayCalParametersResponse());
+
     private static OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
     {
         if (isDirectProducerChecked && !isComplianceSchemeChecked)

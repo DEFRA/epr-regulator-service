@@ -33,6 +33,44 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
     }
 
     [TestMethod]
+    public async Task InvokeAsync_Returns_CorrectView_With_NoReferenceField_InViewBag()
+    {
+        // Arrange
+        _submissionDetailsViewModel.ReferenceFieldNotAvailable = true;
+
+        // Act
+        var result = await _sut.InvokeAsync(_submissionDetailsViewModel);
+
+        // Assert
+        Assert.IsNotNull(result);
+        result.Should().BeOfType<ViewViewComponentResult>();
+        var model = result.ViewData.Model as PackagingProducerPaymentResponse;
+        model.Should().BeNull();
+        var noReferenceField = _sut.ViewBag.NoReferenceField;
+        Assert.IsTrue(noReferenceField);
+        _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(It.IsAny<PackagingProducerPaymentRequest>()), Times.Never);
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_Returns_CorrectView_With_NoReferenceNumber_InViewBag()
+    {
+        // Arrange
+        _submissionDetailsViewModel.ReferenceNotAvailable = true;
+
+        // Act
+        var result = await _sut.InvokeAsync(_submissionDetailsViewModel);
+
+        // Assert
+        Assert.IsNotNull(result);
+        result.Should().BeOfType<ViewViewComponentResult>();
+        var model = result.ViewData.Model as PackagingProducerPaymentResponse;
+        model.Should().BeNull();
+        var noReferenceNumber = _sut.ViewBag.NoReferenceNumber;
+        Assert.IsTrue(noReferenceNumber);
+        _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(It.IsAny<PackagingProducerPaymentRequest>()), Times.Never);
+    }
+
+    [TestMethod]
     public async Task InvokeAsync_Returns_CorrectView_With_DefaultModel_When_ServiceReturns_Null()
     {
         // Arrange

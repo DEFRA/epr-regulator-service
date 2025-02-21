@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
@@ -23,20 +22,25 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
     {
         try
         {
+            if (viewModel.ReferenceFieldNotAvailable)
+            {
+                this.ViewBag.NoReferenceField = this.ViewBag.NoReferenceNumber = true;
+                return View(default(PackagingCompliancePaymentDetailsViewModel));
+            }
+
+            if (viewModel.ReferenceNotAvailable)
+            {
+                this.ViewBag.NoReferenceNumber = true;
+                return View(default(PackagingCompliancePaymentDetailsViewModel));
+            }
+
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsForResubmissionAsync(
                 new PackagingCompliancePaymentRequest
             {
-                    // To Do:: Remove the hardcoded and uncomment the dynamic assignment once we have the confirmation about the input params
-                    ReferenceNumber = "dgregerg",
-                    MemberCount = 1,
-                    Regulator = "GB-ENG",
-                    ResubmissionDate = new DateTime(2025, 01, 06, 11, 50, 47, 499, DateTimeKind.Utc)
-                    /*
                     ReferenceNumber = viewModel.ReferenceNumber,
                     MemberCount = viewModel.MemberCount,
                     Regulator = viewModel.NationCode,
-                    ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime) //payment facade in utc format
-                    */
+                    ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime.Value) //payment facade in utc format                    
                 });
 
             if (compliancePaymentResponse is null)
@@ -50,11 +54,7 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
                 PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(compliancePaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(compliancePaymentResponse.TotalOutstanding),
-
-                // TO Do:: Remove the hardcoded ReferenceNumber and uncomment the commenetd Referencenumber.
-                // null check added for unit tests
-                ReferenceNumber = viewModel.ReferenceNumber ?? "dgregerg",
-                //ReferenceNumber = viewModel.ReferenceNumber,
+                ReferenceNumber = viewModel.ReferenceNumber
             };
 
             return View(compliancePaymentDetailsViewModel);
