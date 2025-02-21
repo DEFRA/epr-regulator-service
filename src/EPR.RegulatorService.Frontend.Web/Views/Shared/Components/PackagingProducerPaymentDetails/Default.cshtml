@@ -7,11 +7,7 @@
 
 @model PackagingProducerPaymentDetailsViewModel
 @{
-    var referenceNumber = "---";
-    if (Model is not null)
-    {
-        referenceNumber = Model.ReferenceNumber;
-    }
+    var referenceNumber = Model?.ReferenceNumber ?? ViewBag.ReferenceNumber ?? "---";
 }
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">

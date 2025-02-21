@@ -61,6 +61,7 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
             _logViewComponentError.Invoke(logger,
                $"Unable to retrieve the packaging producer payment details for {viewModel.SubmissionId} in {nameof(PackagingProducerPaymentDetailsViewComponent)}.{nameof(InvokeAsync)}", ex);
 
+            ViewBag.ReferenceNumber = viewModel.ReferenceNumber;
             return View(default(PackagingProducerPaymentDetailsViewModel));
         }
     }

@@ -7,12 +7,15 @@ public class PomPayCalParametersResponse
 {
     public bool? IsResubmission { get; set; }
 
+    [JsonPropertyName(name: "resubmissionDate")]
     public DateTime? ResubmissionDate { get; set; }
 
+    [JsonPropertyName(name: "memberCount")]
     public int? MemberCount { get; set; }
 
+    [JsonPropertyName(name: "reference")]
     public string? Reference { get; set; }
-
+    
     [JsonPropertyName(name: "referenceNotAvailable")]
     public bool ReferenceNotAvailable { get; set; }
 

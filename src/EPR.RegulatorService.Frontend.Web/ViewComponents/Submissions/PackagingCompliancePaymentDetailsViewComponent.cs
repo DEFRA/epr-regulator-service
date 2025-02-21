@@ -65,6 +65,8 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
                 $"Unable to retrieve the packaging compliance scheme payment details for " +
                 $"{viewModel.SubmissionId} in {nameof(PackagingCompliancePaymentDetailsViewComponent)}.{nameof(InvokeAsync)}", ex);
 
+            ViewBag.ReferenceNumber = viewModel.ReferenceNumber;
+
             return View(default(PackagingCompliancePaymentDetailsViewModel));
         }
     }
