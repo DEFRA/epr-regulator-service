@@ -4,7 +4,7 @@
 @model RegistrationSubmissionDetailsViewModel
 
 <div class="govuk-button-group">
-    @if (Model.Status == RegistrationSubmissionStatus.Granted)
+    @if (Model.ResubmissionStatus == RegistrationSubmissionStatus.Pending)
     {
         <ul class="govuk-list govuk-list__horizontal govuk-list__last-spaced">
             <li>
@@ -41,5 +41,17 @@
                 </a>
             </li>
         </ul>
-    }   
+    }
+    else if (Model.Status == RegistrationSubmissionStatus.Granted)
+    {
+        <a class="govuk-button govuk-button--secondary" href="@Url.Action(
+                "CancelRegistrationSubmission",
+                "RegistrationSubmissions",
+                new
+                {
+                  submissionId = Model.SubmissionId
+                })">
+            @Localizer["RegistrationResubmissionDetails.Cancel"]
+        </a>
+    }
 </div>
