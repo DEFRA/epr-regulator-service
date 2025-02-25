@@ -11,7 +11,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.TestData
             new()
             {
                 SubmissionId = Guid.NewGuid(),
-                SubmittedDate = new DateTime(2023, 03, 03, 03, 03, 33),
+                SubmittedDate = new DateTime(2023, 03, 03, 03, 03, 33, DateTimeKind.Unspecified),
                 Decision = SubmissionStatus.Pending,
                 IsResubmission = false,
                 IsResubmissionRequired = false,
@@ -25,7 +25,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.TestData
                 FirstName = "Test",
                 LastName = "User",
                 Telephone = "0123 456 789",
-                ServiceRole = "Approved person"
+                ServiceRole = "Approved person",
+                PomBlobName = "A blob name",
+                PomFileName = "A Pom File.csv"
             };
     }
 }

@@ -97,7 +97,7 @@
             </div>
             @if(Model.SubmissionYears?.Any() == true)
             {
-                <div class="govuk-form-group">
+                <div class="govuk-form-group submission-years">
                     <fieldset class="govuk-fieldset">
                         <legend>
                             <span class="govuk-label govuk-label--m">@Localizer["SubTitle.SubmissionYear"]</span>
@@ -126,7 +126,7 @@
             }
             @if (Model.SubmissionPeriods?.Any() == true)
             {
-                <div class="govuk-form-group">
+                <div class="govuk-form-group submission-periods">
                     <fieldset class="govuk-fieldset">
                         <legend>
                             <span class="govuk-label govuk-label--m">@Localizer["SubTitle.SubmissionPeriod"]</span>
@@ -155,6 +155,11 @@
             }
             @Html.Hidden("isFilteredSearch", true)
             <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button">@SharedLocalizer["ApplyFilters"].Value</button>
+            <feature name="EnableCsvDownload">
+              <button type="submit" name="export" value="true" class="govuk-body govuk-link epr-filter-panel-control epr-link-no-visited-state govuk-!-margin-left-3" data-module="govuk-button">@SharedLocalizer["Export"].Value</button>
+            </feature>
+            
+
             @Html.ActionLink(SharedLocalizer["ClearFilters"].Value,
               "Registrations",
               "Registrations",

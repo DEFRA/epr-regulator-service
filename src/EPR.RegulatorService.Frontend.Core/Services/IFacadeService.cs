@@ -3,6 +3,7 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
@@ -47,8 +48,20 @@ public interface IFacadeService
         string[]? submissionPeriods,
         int currentPage = 1) where T : AbstractSubmission;
 
+    Task<Stream> GetRegistrationSubmissionsCsv(GetRegistrationSubmissionsCsvRequest request);
+
+    Task<Stream> GetPackagingSubmissionsCsv(GetPackagingSubmissionsCsvRequest request);
+
     Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request);
 
     Task<EndpointResponseStatus> SubmitRegistrationDecision(RegulatorRegistrationDecisionCreateRequest request);
     Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request);
+
+    Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters);
+
+    Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId);
+
+    Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request);
+
+    Task SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request);
 }

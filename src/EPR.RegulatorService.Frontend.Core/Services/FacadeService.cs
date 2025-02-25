@@ -2,19 +2,24 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
-
+using CsvHelper;
+using CsvHelper.Configuration;
+using EPR.RegulatorService.Frontend.Core.ClassMaps;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
-
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 public class FacadeService : IFacadeService
@@ -33,30 +38,43 @@ public class FacadeService : IFacadeService
     private const string OrganisationsRemoveApprovedUserPath = "OrganisationsRemoveApprovedUser";
     private const string AddRemoveApprovedUserPath = "AddRemoveApprovedUser";
     private const string RegistrationSubmissionDecisionPath = "RegistrationSubmissionDecisionPath";
+    private const string OrgsanisationRegistrationSubmissionDecisionPath = "OrganisationRegistrationSubmissionDecisionPath";
     private const string FileDownloadPath = "FileDownload";
+    private const string GetOrganisationRegistrationSubmissionDetailsPath = "GetOrganisationRegistrationSubmissionDetailsPath";
+    private const string GetOrganisationRegistationSubmissionsPath = "GetOrganisationRegistrationSubmissionsPath";
+    private const string SubmitRegistrationFeePaymentPath = "SubmitRegistrationFeePaymentPath";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
     private readonly ITokenAcquisition _tokenAcquisition;
     private readonly PaginationConfig _paginationConfig;
     private readonly FacadeApiConfig _facadeApiConfig;
+    private readonly ILogger<FacadeService> _logger;
 
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
 
+    private static readonly Action<ILogger, string, Exception?> _logFacadeServiceError =
+        LoggerMessage.Define<string>(
+            LogLevel.Error,
+            new EventId(1001, nameof(FacadeService)),
+            "An error occurred while processing a message: {ErrorMessage}");
+
     public FacadeService(
         HttpClient httpClient,
         ITokenAcquisition tokenAcquisition,
         IOptions<PaginationConfig> paginationOptions,
-        IOptions<FacadeApiConfig> facadeApiOptions)
+        IOptions<FacadeApiConfig> facadeApiOptions,
+        ILogger<FacadeService> logger)
     {
         _httpClient = httpClient;
         _tokenAcquisition = tokenAcquisition;
         _paginationConfig = paginationOptions.Value;
         _facadeApiConfig = facadeApiOptions.Value;
-        _scopes = new[] {_facadeApiConfig.DownstreamScope};
+        _scopes = [_facadeApiConfig.DownstreamScope];
+        _logger = logger;
     }
 
     private static readonly Dictionary<Type, string> _typeToEndpointMap = new()
@@ -68,12 +86,7 @@ public class FacadeService : IFacadeService
     public async Task<string> GetTestMessageAsync()
     {
         var response = await _httpClient.GetAsync("/api/test");
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        return response.ToString();
+        return response.StatusCode == HttpStatusCode.OK ? await response.Content.ReadAsStringAsync() : response.ToString();
     }
 
     public async Task<PaginatedList<OrganisationApplications>> GetUserApplicationsByOrganisation(
@@ -85,7 +98,8 @@ public class FacadeService : IFacadeService
 
         var query = new Dictionary<string, string>
         {
-            ["currentPage"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture), ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["currentPage"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
         };
         if (!string.IsNullOrEmpty(organisationName))
         {
@@ -97,8 +111,8 @@ public class FacadeService : IFacadeService
             query["applicationType"] = applicationType;
         }
 
-        var queryString = string.Join("&", query.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
-        var path = $"{_facadeApiConfig.Endpoints[PendingApplicationsEndpointKey]}?{queryString}";
+        string queryString = string.Join("&", query.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
+        string path = $"{_facadeApiConfig.Endpoints[PendingApplicationsEndpointKey]}?{queryString}";
 
         var response = await _httpClient.GetAsync(path);
         response.EnsureSuccessStatusCode();
@@ -109,7 +123,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        var path = _facadeApiConfig.Endpoints[OrganisationEnrolmentsPath]
+        string path = _facadeApiConfig.Endpoints[OrganisationEnrolmentsPath]
             .Replace("{0}", organisationId.ToString());
 
         var response = await _httpClient.GetAsync(path);
@@ -137,12 +151,9 @@ public class FacadeService : IFacadeService
         await PrepareAuthenticatedClient();
         string path = _facadeApiConfig.Endpoints[OrganisationTransferNationPath];
         var response = await _httpClient.PostAsJsonAsync(path, organisationNationTransfer);
-        if (response.StatusCode == HttpStatusCode.NoContent)
-        {
-            return EndpointResponseStatus.Success;
-        }
-
-        throw (new Exception(response.Content.ToString()));
+        return response.StatusCode == HttpStatusCode.NoContent
+            ? EndpointResponseStatus.Success
+            : throw (new Exception(response.Content.ToString()));
     }
 
     public async Task<EndpointResponseStatus> UpdateEnrolment(UpdateEnrolment updateEnrolment)
@@ -236,13 +247,60 @@ public class FacadeService : IFacadeService
             query["submissionPeriods"] = string.Join(',', submissionPeriods);
         }
 
-        var queryString = string.Join("&", query.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
-        var endpointKey = _typeToEndpointMap[typeof(T)];
-        var path = $"{_facadeApiConfig.Endpoints[endpointKey]}?{queryString}";
+        string queryString = string.Join("&", query.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
+        string endpointKey = _typeToEndpointMap[typeof(T)];
+        string path = $"{_facadeApiConfig.Endpoints[endpointKey]}?{queryString}";
 
         var response = await _httpClient.GetAsync(path);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<PaginatedList<T>>();
+    }
+
+    public async Task<Stream> GetRegistrationSubmissionsCsv(GetRegistrationSubmissionsCsvRequest request)
+    {
+        var submissions = (
+            await GetAllOrganisationSubmissions<Registration>(
+                request.SearchOrganisationName,
+                request.SearchOrganisationId,
+                GetFilterOrganisationType(request.IsDirectProducerChecked, request.IsComplianceSchemeChecked),
+                GetFilterStatuses(request.IsPendingRegistrationChecked, request.IsAcceptedRegistrationChecked, request.IsRejectedRegistrationChecked),
+                request.SearchSubmissionYears,
+                request.SearchSubmissionPeriods)
+            ).Select(x => new SubmissionCsvModel
+            {
+                Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
+                OrganisationId = x.OrganisationReference,
+                SubmissionDate = x.RegistrationDate.ToString("d MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+                SubmissionPeriod = x.SubmissionPeriod,
+                Status = x.Decision
+
+            }).ToList();
+
+        return await CreateSubmissionsCsv(submissions);
+    }
+
+    public async Task<Stream> GetPackagingSubmissionsCsv(GetPackagingSubmissionsCsvRequest request)
+    {
+        var submissions = (
+            await GetAllOrganisationSubmissions<Submission>(
+                request.SearchOrganisationName,
+                request.SearchOrganisationId,
+                GetFilterOrganisationType(request.IsDirectProducerChecked, request.IsComplianceSchemeChecked),
+                GetFilterStatuses(request.IsPendingSubmissionChecked, request.IsAcceptedSubmissionChecked, request.IsRejectedSubmissionChecked),
+                request.SearchSubmissionYears,
+                request.SearchSubmissionPeriods)
+            ).Select(x => new SubmissionCsvModel
+            {
+                Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
+                OrganisationId = x.OrganisationReference,
+                SubmissionDate = x.SubmittedDate.ToString("d MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+                SubmissionPeriod = !string.IsNullOrEmpty(x.ActualSubmissionPeriod)
+                    ? string.Join(", ", x.ActualSubmissionPeriod.Split(","))
+                    : x.SubmissionPeriod,
+                Status = x.Decision
+            }).ToList();
+
+        return await CreateSubmissionsCsv(submissions);
     }
 
     public async Task<EndpointResponseStatus> SubmitPoMDecision(RegulatorPoMDecisionCreateRequest request)
@@ -259,7 +317,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        var path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[OrganisationsSearchPath], currentPage, _paginationConfig.PageSize, searchTerm);
+        string path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[OrganisationsSearchPath], currentPage, _paginationConfig.PageSize, searchTerm);
         var response = await _httpClient.GetAsync(path);
 
         response.EnsureSuccessStatusCode();
@@ -270,7 +328,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        var path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[GetOrganisationUsersByOrganisationExternalIdPath], externalId);
+        string path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[GetOrganisationUsersByOrganisationExternalIdPath], externalId);
 
         var response = await _httpClient.GetAsync(path);
 
@@ -282,7 +340,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        var path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath],
+        string path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath],
             request.RemovedConnectionExternalId, request.OrganisationId, request.PromotedPersonExternalId);
 
         var response = await _httpClient.PostAsJsonAsync(path, request);
@@ -293,7 +351,7 @@ public class FacadeService : IFacadeService
     public async Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request)
     {
         await PrepareAuthenticatedClient();
-        var path = _facadeApiConfig.Endpoints[AddRemoveApprovedUserPath];
+        string path = _facadeApiConfig.Endpoints[AddRemoveApprovedUserPath];
 
         var response = await _httpClient.PostAsJsonAsync(path, request);
 
@@ -314,7 +372,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        var path = string.Format(CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[FileDownloadPath]);
+        string path = string.Format(CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[FileDownloadPath]);
 
         var response = await _httpClient.PostAsJsonAsync(path, request);
 
@@ -326,9 +384,260 @@ public class FacadeService : IFacadeService
         if (_httpClient.BaseAddress == null)
         {
             _httpClient.BaseAddress = new Uri(_facadeApiConfig.BaseUrl);
-            var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(_scopes);
+            string accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(_scopes);
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue(Constants.Bearer, accessToken);
         }
-    }   
+    }
+
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = _facadeApiConfig.Endpoints[GetOrganisationRegistationSubmissionsPath];
+
+        HttpResponseMessage response = await _httpClient.PostAsJsonAsync(path, filters);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var commonData = await ReadRequiredJsonContent(response.Content);
+            var responseData = commonData.items.Select(x => (RegistrationSubmissionOrganisationDetails)x).ToList();
+
+            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                items = responseData,
+                currentPage = commonData.currentPage,
+                totalItems = commonData.totalItems,
+                pageSize = commonData.pageSize
+            };
+        }
+        else
+        {
+            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                items = [],
+                currentPage = 1,
+                totalItems = 0,
+                pageSize = 20
+            };
+        }
+
+        return null;
+    }
+
+    public static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
+    {
+        string jsonContent = await content.ReadAsStringAsync();
+
+        try
+        {
+            var response = JsonSerializer.Deserialize<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>(jsonContent, _jsonSerializerOptions);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidDataException("Cannot parse data from Facade for Submission Summaries", ex);
+        }
+    }
+
+    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath].Replace("{0}", submissionId.ToString());
+
+        var response = await _httpClient.GetAsync(path);
+
+        response.EnsureSuccessStatusCode();
+
+        string content = await response.Content.ReadAsStringAsync();
+
+        RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFE(content);
+
+        return result;
+    }
+
+    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content) {
+        try
+        {
+            var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidDataException("Cannot parse data from Facade for Submission Details", ex);
+        }
+    }
+
+    public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = _facadeApiConfig.Endpoints[OrgsanisationRegistrationSubmissionDecisionPath];
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+
+        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+    }
+
+    public async Task SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request)
+    {
+        try
+        {
+            await PrepareAuthenticatedClient();
+
+            string path = _facadeApiConfig.Endpoints[SubmitRegistrationFeePaymentPath];
+            var response = await _httpClient.PostAsJsonAsync(path, request);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            _logFacadeServiceError.Invoke(_logger, $"Exception occurred while submitting registration fee payment {nameof(FacadeService)}.{nameof(SubmitRegistrationFeePaymentAsync)}", ex);
+        }
+    }
+
+    private async Task<List<T>> GetAllOrganisationSubmissions<T>(
+        string? organisationName,
+        string? organisationReference,
+        OrganisationType? organisationType,
+        string[]? status,
+        int[]? submissionYears,
+        string[]? submissionPeriods) where T : AbstractSubmission
+    {
+        const int pageSize = 200;
+
+        await PrepareAuthenticatedClient();
+
+        var query = new Dictionary<string, string>
+        {
+            ["pageSize"] = pageSize.ToString(CultureInfo.InvariantCulture),
+        };
+
+        if (!string.IsNullOrEmpty(organisationName))
+        {
+            query["organisationName"] = organisationName;
+        }
+
+        if (!string.IsNullOrEmpty(organisationReference))
+        {
+            query["organisationReference"] = organisationReference;
+        }
+
+        if (organisationType.HasValue)
+        {
+            query["organisationType"] = organisationType.ToString();
+        }
+        else
+        {
+            query["organisationType"] = "All";
+        }
+
+        if (status?.Length > 0)
+        {
+            query["statuses"] = string.Join(',', status);
+        }
+
+        if (submissionYears?.Length > 0)
+        {
+            query["submissionYears"] = string.Join(',', submissionYears);
+        }
+
+        if (submissionPeriods?.Length > 0)
+        {
+            query["submissionPeriods"] = string.Join(',', submissionPeriods);
+        }
+
+        string queryString = string.Join("&", query.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
+        string endpointKey = _typeToEndpointMap[typeof(T)];
+        string path = $"{_facadeApiConfig.Endpoints[endpointKey]}?{queryString}";
+
+        var submissions = new List<T>();
+
+        var response = await _httpClient.GetAsync($"{path}&pageNumber={1}");
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<PaginatedList<T>>();
+
+        int totalPages = result.TotalPages;
+
+        if (result.items.Count > 0)
+        {
+            submissions.AddRange(result.items);
+        }
+
+        if (totalPages > 1)
+        {
+            for (int i = 2; i <= totalPages; i++)
+            {
+                response = await _httpClient.GetAsync($"{path}&pageNumber={i}");
+                response.EnsureSuccessStatusCode();
+                result = await response.Content.ReadFromJsonAsync<PaginatedList<T>>();
+
+                submissions.AddRange(result.items);
+            }
+        }
+
+        return submissions;
+    }
+
+    private static OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
+    {
+        if (isDirectProducerChecked && !isComplianceSchemeChecked)
+        {
+            return OrganisationType.DirectProducer;
+        }
+
+        if (isComplianceSchemeChecked && !isDirectProducerChecked)
+        {
+            return OrganisationType.ComplianceScheme;
+        }
+
+        return null;
+    }
+
+    private static string[] GetFilterStatuses(bool isPendingStatusChecked, bool isAcceptedStatusChecked, bool isRejectedStatusChecked)
+    {
+        var submissionStatuses = new List<string>();
+
+        if (isPendingStatusChecked)
+        {
+            submissionStatuses.Add(nameof(OrganisationSubmissionStatus.Pending));
+        }
+
+        if (isAcceptedStatusChecked)
+        {
+            submissionStatuses.Add(nameof(OrganisationSubmissionStatus.Accepted));
+        }
+
+        if (isRejectedStatusChecked)
+        {
+            submissionStatuses.Add(nameof(OrganisationSubmissionStatus.Rejected));
+        }
+
+        return submissionStatuses.ToArray();
+    }
+
+    private static string FormatOrganisationName(string organisationName, OrganisationType organisationType)
+    {
+        return organisationName + " (" + (organisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme") + ")";
+    }
+
+    private static async Task<Stream> CreateSubmissionsCsv(IEnumerable<SubmissionCsvModel> submissions)
+    {
+        var stream = new MemoryStream();
+
+        await using (var writer = new StreamWriter(stream, leaveOpen: true, encoding: Encoding.UTF8))
+        {
+            await using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+            {
+                csv.Context.RegisterClassMap<SubmissionClassMap>();
+                csv.WriteRecordsAsync(submissions);
+            }
+
+            await writer.FlushAsync();
+        }
+
+        stream.Position = 0;
+        return stream;
+    }
 }

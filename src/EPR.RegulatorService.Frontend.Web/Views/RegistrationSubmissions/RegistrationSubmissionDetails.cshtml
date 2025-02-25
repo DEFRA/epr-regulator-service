@@ -1,0 +1,116 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
+@using EPR.RegulatorService.FronRegistrationSubmissionCommenttend.Web.ViewModels.RegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Core.Extensions
+@using EPR.RegulatorService.Frontend.Web.Constants
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.Helpers
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+
+@model RegistrationSubmissionDetailsViewModel
+
+@{
+    ViewData["Title"] = Localizer["RegistrationSubmissionDetails.PageTitle"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <span class="govuk-caption-xl">
+                    @Localizer["RegistrationSubmissionDetails.Caption"]
+                </span>
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-4" for="@nameof(Model.OrganisationName)">
+                    @Model.OrganisationName
+                </h1>
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                }
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.OrganisationType"]</h3>
+                    <p class="govuk-body">@SharedLocalizer[Model.OrganisationType.GetDescription()]</p>
+                </div>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.OrganisationIdTitle"]</h3>
+                    <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.OrganisationIdSubTitle"] @Model.OrganisationReference</p>
+                </div>
+
+                <status-panel heading="@Localizer[ReferenceNumberPanelHelper.GetPanelTitle(Model)].Value"
+                              content="@ReferenceNumberPanelHelper.GetPanelContent(Model)"
+                              status="@SharedLocalizer[Model.Status.ToString()]">
+                </status-panel>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.RegisteredAddress"]</h3>
+                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.BuildingNumber @Model.BusinessAddress.BuildingName</p>
+                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.Street</p>
+                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.BusinessAddress.County</p>
+                    <p class="govuk-body">@Model.BusinessAddress.PostCode</p>
+                </div>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.CompaniesHouseNumber"]</h3>
+                    @if (!string.IsNullOrEmpty(Model.CompaniesHouseNumber))
+                    {
+                        <p class="govuk-body govuk-!-margin-bottom-0">@Model.CompaniesHouseNumber</p>
+                        <companies-house-link gov-value="@Model.CompaniesHouseNumber" class="govuk-body govuk-link--no-visited-state">
+                            @Localizer["RegistrationSubmissionDetails.CompaniesHouseRegister"]
+                        </companies-house-link>
+                    }
+                    else
+                    {
+                        <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.NotListed"]</p>
+                    }
+                </div>
+
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.PowerBiTitle"]</h3>
+                    <p class="govuk-body">
+                        @Localizer["RegistrationSubmissionDetails.PowerBiSubTitle"]
+                        <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
+                    </p>
+                </div>
+
+                @await Component.InvokeAsync("SubmissionDetails", new { model = Model.SubmissionDetails })
+
+                @if (Model.OrganisationType == RegistrationSubmissionOrganisationType.compliance)
+                {
+                  @await Component.InvokeAsync("CompliancePaymentDetails", new { viewModel = Model })
+                }
+                else
+                {
+                    @await Component.InvokeAsync("ProducerPaymentDetails", new { viewModel = Model })
+                }
+
+                @await Component.InvokeAsync("RegistrationSubmissionComments",
+                         new
+                         {
+                             Comment = Model.ProducerComments,
+                             Title = "RegistrationSubmissionDetails.ProducerTitle"
+                         }
+                         )
+
+
+                @await Component.InvokeAsync("RegistrationSubmissionComments",
+                         new
+                         {
+                             Comment = Model.RegulatorComments,
+                             Title = "RegistrationSubmissionDetails.RegulatorTitle"
+                         }
+                         )
+
+
+                @await Html.PartialAsync("Partials/_RegistrationSubmissionActionButtons", Model)
+
+            </div>
+            <div class="govuk-grid-column-full">
+                <a href="@ViewBag.BackLinkToDisplay" class="govuk-link govuk-link--no-visited-state">
+                    @Localizer["RegistrationSubmissionDetails.BackToAllSubmissions"]
+                </a>
+            </div>
+        </div>
+    </main>
+</div>

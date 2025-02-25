@@ -32,6 +32,13 @@
   </Target>
 
   <ItemGroup>
+    <Compile Remove="out\**" />
+    <Content Remove="out\**" />
+    <EmbeddedResource Remove="out\**" />
+    <None Remove="out\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.8" />
@@ -50,6 +57,54 @@
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentRequests.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.en.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\EnrolmentDecision.cy.resx" />
+    <EmbeddedResource Update="Resources\Views\Error\ServiceNotAvailable.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Error\ServiceNotAvailable.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmRegistrationRefusal.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmRegistrationRefusal.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\GrantRegistrationSubmission.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\GrantRegistrationSubmission.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancellationConfirmation.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancellationConfirmation.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancelRegistrationSubmission.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmOfflinePaymentSubmission.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmOfflinePaymentSubmission.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionFileDownloadFailed.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionFileDownloadFailed.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionDetails.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RegistrationSubmissionDetails.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\CancelRegistrationSubmission.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\RejectRegistrationSubmission.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -71,6 +126,34 @@
     <EmbeddedResource Update="Resources\Views\RegulatorEnrolment\FullName.en.resx" />
     <EmbeddedResource Update="Resources\Views\SearchManageApprovers\RegulatorSearchPage.cy.resx" />
     <EmbeddedResource Update="Resources\Views\SearchManageApprovers\RegulatorSearchPage.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Components\CompliancePaymentDetails\Default.cy.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\CompliancePaymentDetails\Default.en.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\ProducerPaymentDetails\Default.cy.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\ProducerPaymentDetails\Default.en.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\SubmissionDetails\Default.cy.resx">
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Components\SubmissionDetails\Default.en.resx">
+      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\ManageApprovedUser\_DelegatedPersons.cy.resx">
       <LastGenOutput>_ApprovedPerson.en.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -84,8 +167,17 @@
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_EnrolmentRequestDelegatedUser.en.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\Applications.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Applications\Applications.en.resx" />
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_FileIsDownloadingStatus.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_FileIsDownloadingStatus.en.resx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_FileIsDownloadingVirusError.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\Shared\Partials\_FileNotDownloadingTryAgain.cy.resx">
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_RegulatorApplicationFilters.cy.resx" />
     <EmbeddedResource Update="Resources\Views\Shared\Partials\_RegulatorApplicationFilters.en.resx" />
@@ -353,6 +445,7 @@
         **/ServiceSettingsOptions.cs,
         **/SiteDateOptions.cs,
         **/gulpfile.js,
+        **/submissionFilterState.js,
         **/HealthCheckOptionBuilder.cs,
         **/AnalyticsCookieMiddleware.cs,
         **/Program.cs,
@@ -374,7 +467,8 @@
         **/_RegistrationResubmissionDetails.cshtml,
         **/_RegistrationSubmissionDetails.cshtml,
         **/_ResubmissionDetails.cshtml,
-        **/_SubmissionDetails.cshtml
+        **/_SubmissionDetails.cshtml,
+        **/loadingspinner.js
       </Value>
     </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.cpd.exclusions">
@@ -382,9 +476,6 @@
         **/RegistrationDetailsViewModel.cs, Views/**/*.cshtml
       </Value>
     </SonarQubeSetting>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="assets\images\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />

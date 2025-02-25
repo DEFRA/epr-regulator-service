@@ -1,0 +1,35 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
+@model CancellationConfirmationViewModel
+
+@{
+    ViewData["Title"] = Localizer["CancellationConfirmation.PageTitle"];
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <h1 class="govuk-visually-hidden">@Localizer["CancellationConfirmation.BannerTitle"] @Model.OrganisationName</h1>
+                <div id="notification-banner"
+                     class="govuk-notification-banner govuk-notification-banner--success"
+                     role="alert"
+                     aria-labelledby="govuk-notification-banner-title"
+                     data-module="govuk-notification-banner">
+                    <div class="govuk-notification-banner__header">
+                        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                            @SharedLocalizer["Success"]
+                        </h2>
+                    </div>
+                    <div class="govuk-notification-banner__content govuk-notification-content__title-full-width">
+                        <h2 class="govuk-notification-banner__heading">
+                            @Localizer["CancellationConfirmation.BannerTitle"] @Model.OrganisationName
+                        </h2>
+                    </div>
+                </div>
+                <a id="back-to-all-submissions" href="@ViewBag.BackToAllSubmissionsUrl" class="govuk-link govuk-link--no-visited-state">
+                    @SharedLocalizer["BackToAllSubmissions"]
+                </a>
+            </div>
+        </div>
+    </main>
+</div>

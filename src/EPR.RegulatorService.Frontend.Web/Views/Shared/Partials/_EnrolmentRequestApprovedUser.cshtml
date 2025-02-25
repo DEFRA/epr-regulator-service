@@ -62,15 +62,14 @@
       @Html.HiddenFor(x => x.User.Enrolment.ServiceRole)
       <div class="govuk-inset-text">@Localizer["Summary.RejectionMessage"]</div>
       <div class="govuk-button-group govuk-!-margin-top-2">
-        <button class="govuk-button" data-module="govuk-button" name="journeyType" value="@JourneyType.Accept">
-            @SharedLocalizer["Button.Accept"]
-          </button>
-          <button class="govuk-button govuk-button--warning" data-module="govuk-button" name="journeyType" value="@JourneyType.Reject">
-            @SharedLocalizer["Button.Reject"]
-          </button>
+        <button class="govuk-button" data-module="govuk-button" name="journeyType" id="acceptApprovedPersonButton" value="@JourneyType.Accept">
+          @SharedLocalizer["Button.Accept"]
+        </button>
+        <button class="govuk-button govuk-button--warning" data-module="govuk-button" name="journeyType" value="@JourneyType.Reject">
+          @SharedLocalizer["Button.Reject"]
+        </button>
       </div>
     }
   </div>
 </div> 
 }
-

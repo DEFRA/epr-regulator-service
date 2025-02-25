@@ -138,4 +138,7 @@
   <data name="Link.BackToSubmissions" xml:space="preserve">
     <value>Yn ôl i bob cais</value>
   </data>
+  <data name="SubTitle.PowerBI" xml:space="preserve">
+    <value>Power BI</value>
+  </data>
 </root>

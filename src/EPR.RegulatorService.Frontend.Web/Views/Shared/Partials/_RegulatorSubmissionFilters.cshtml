@@ -94,9 +94,9 @@
                 </div>
               </fieldset>
             </div>
-            @if(Model.SubmissionYears?.Length > 0)
+            @if(Model.SubmissionYears?.Any() == true)
             {
-                <div class="govuk-form-group">
+                <div class="govuk-form-group submission-years">
                     <fieldset class="govuk-fieldset">
                         <legend>
                             <span class="govuk-label govuk-label--m">@Localizer["SubTitle.SubmissionYear"]</span>
@@ -123,9 +123,9 @@
                     </fieldset>
                 </div>
             }
-            @if (Model.SubmissionPeriods?.Length > 0)
+            @if (Model.SubmissionPeriods?.Any() == true)
             {
-                <div class="govuk-form-group">
+                <div class="govuk-form-group submission-periods">
                     <fieldset class="govuk-fieldset">
                         <legend>
                             <span class="govuk-label govuk-label--m">@Localizer["SubTitle.SubmissionPeriod"]</span>
@@ -154,6 +154,9 @@
             }
             @Html.Hidden("isFilteredSearch", true)
             <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button" name="filterType" value="SubmitFilters">@SharedLocalizer["ApplyFilters"].Value</button>
+            <feature name="EnableCsvDownload">
+              <button type="submit" class="govuk-body govuk-link epr-filter-panel-control epr-link-no-visited-state styled-as-anchor" data-module="govuk-button" name="export" value="true">@SharedLocalizer["Export"].Value</button>
+            </feature>
             <button type="submit" class="govuk-body govuk-link epr-filter-panel-control epr-link-no-visited-state styled-as-anchor" data-module="govuk-button" name="filterType" value="ClearFilters">@SharedLocalizer["ClearFilters"].Value</button>
           </div>
         </div>

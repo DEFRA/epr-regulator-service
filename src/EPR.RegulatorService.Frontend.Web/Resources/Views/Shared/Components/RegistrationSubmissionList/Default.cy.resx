@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,18 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Table.Header.Year" xml:space="preserve">
-    <value>[Welsh]Submission year</value>
+    <value>Y flwyddyn berthnasol</value>
   </data>
   <data name="Table.Header.Status" xml:space="preserve">
-    <value>[Welsh]Submission Status</value>
+    <value>Statws y cyflwyniad</value>
   </data>
   <data name="Table.Header.CompanyId" xml:space="preserve">
-    <value>[Welsh]Organisation ID</value>
+    <value>ID y sefydliad</value>
   </data>
   <data name="Table.Header.Company" xml:space="preserve">
-    <value>[Welsh]Organisation</value>
+    <value>Sefydliad</value>
   </data>
   <data name="Table.Header.ApplicationDate" xml:space="preserve">
-    <value>[Welsh]Submission date and time</value>
+    <value>Dyddiad ac amser y cyflwyniad</value>
+  </data>
+  <data name="Body.NoResultsFound" xml:space="preserve">
+    <value>Dim cofnodion wedi'u canfod</value>
   </data>
 </root>

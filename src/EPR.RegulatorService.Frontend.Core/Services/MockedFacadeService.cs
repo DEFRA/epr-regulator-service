@@ -1,3 +1,7 @@
+using CsvHelper.Configuration;
+using CsvHelper;
+
+using EPR.RegulatorService.Frontend.Core.ClassMaps;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData;
@@ -7,33 +11,32 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+
 using Microsoft.Extensions.Options;
+
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
-
+using System.Text;
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 [ExcludeFromCodeCoverage]
-public class MockedFacadeService : IFacadeService
+public partial class MockedFacadeService(IOptions<PaginationConfig> options) : IFacadeService
 {
     private const string ApprovedPerson = "ApprovedPerson";
     private const string DelegatedPerson = "DelegatedPerson";
     private const string Pending = "Pending";
     private const string Accepted = "Accepted";
     private const string Rejected = "Rejected";
-    private readonly PaginationConfig _config;
-    private static List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
-    private static List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
-    private static List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
-    private static List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
-
-    public MockedFacadeService(IOptions<PaginationConfig> options)
-    {
-        _config = options.Value;
-    }
+    private readonly PaginationConfig _config = options.Value;
+    private static readonly List<OrganisationApplications> _allItems = GenerateOrganisationApplications();
+    private static readonly List<Submission> _allSubmissions = GenerateOrganisationSubmissions();
+    private static readonly List<OrganisationSearchResult> _allSearchResults = GenerateOrganisationSearchResults();
+    private static readonly List<Registration> _allRegistrations = GenerateRegulatorRegistrations();
 
     public async Task<string> GetTestMessageAsync()
     {
@@ -85,16 +88,16 @@ public class MockedFacadeService : IFacadeService
 
         var response = new PaginatedList<OrganisationApplications>
         {
-            Items = results
+            items = results
                 .OrderByDescending(x => x.Enrolments.HasApprovedPending)
                 .ThenBy(x => x.LastUpdate)
                 .ThenBy(x => x.OrganisationName)
                 .Skip((currentPage - 1) * _config.PageSize)
                 .Take(_config.PageSize)
                 .ToList(),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
+            currentPage = currentPage,
+            totalItems = results.Count,
+            pageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
         };
 
         return Task.FromResult(response);
@@ -103,11 +106,11 @@ public class MockedFacadeService : IFacadeService
     private static List<OrganisationApplications> GenerateOrganisationApplications()
     {
         var allItems = new List<OrganisationApplications>();
-        
+
         for (int i = 1; i <= 1000; i++)
         {
-            var hasApprovedPending = (i % 2) == 0; 
-            var hasDelegatedPending = (i % 4) < 2;
+            bool hasApprovedPending = (i % 2) == 0;
+            bool hasDelegatedPending = (i % 4) < 2;
 
             string organisationName = string.Empty;
 
@@ -125,6 +128,9 @@ public class MockedFacadeService : IFacadeService
                     // Extra long name with spaces
                     organisationName += $"Organisation{i}Ltd ReallyReallyReallyReallyReallyReallyReally Really Long Name";
                     break;
+                default:
+                    organisationName = $"Organisation {i} Ltd With an even more and even longer meaningless name that will never fit in any view";
+                    break;
             }
 
             allItems.Add(new OrganisationApplications
@@ -134,7 +140,8 @@ public class MockedFacadeService : IFacadeService
                 LastUpdate = DateTime.Now.AddDays(-(i % 15)),
                 Enrolments = new()
                 {
-                    HasApprovedPending = hasApprovedPending, HasDelegatePending = hasDelegatedPending
+                    HasApprovedPending = hasApprovedPending,
+                    HasDelegatePending = hasDelegatedPending
                 }
             });
         }
@@ -163,7 +170,7 @@ public class MockedFacadeService : IFacadeService
     private static List<OrganisationSearchResult> GenerateOrganisationSearchResults()
     {
         var allItems = new List<OrganisationSearchResult>();
-        var random = RandomNumberGenerator.GetInt32(0, 2);
+        int random = RandomNumberGenerator.GetInt32(0, 2);
 
         for (int i = 1; i <= 1000; i++)
         {
@@ -240,14 +247,14 @@ public class MockedFacadeService : IFacadeService
 
         var response = new PaginatedList<OrganisationSearchResult>
         {
-            Items = results
+            items = results
                 .OrderByDescending(x => x.OrganisationName)
                 .Skip((currentPage - 1) * _config.PageSize)
                 .Take(_config.PageSize)
                 .ToList(),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
+            currentPage = currentPage,
+            totalItems = results.Count,
+            pageSize = (int)Math.Ceiling(results.Count / (double)_config.PageSize)
         };
 
         return Task.FromResult(response);
@@ -296,13 +303,62 @@ public class MockedFacadeService : IFacadeService
 
         var response = new PaginatedList<T>
         {
-            Items = await FilterSubmissions<T>(results, currentPage),
-            CurrentPage = currentPage,
-            TotalItems = results.Count,
-            PageSize = _config.PageSize
+            items = await FilterSubmissions<T>(results, currentPage),
+            currentPage = currentPage,
+            totalItems = results.Count,
+            pageSize = _config.PageSize
         };
 
         return response;
+    }
+
+    public async Task<Stream> GetRegistrationSubmissionsCsv(GetRegistrationSubmissionsCsvRequest request)
+    {
+        var submissions = _allRegistrations.Cast<AbstractSubmission>()
+            .AsQueryable()
+            .FilterByOrganisationNameAndOrganisationReference(request.SearchOrganisationName, request.SearchOrganisationId)
+            .FilterByOrganisationType(GetFilterOrganisationType(request.IsDirectProducerChecked, request.IsComplianceSchemeChecked))
+            .FilterByStatus(GetFilterStatuses(request.IsPendingRegistrationChecked, request.IsAcceptedRegistrationChecked, request.IsRejectedRegistrationChecked))
+            .FilterBySubmissionYears(request.SearchSubmissionYears)
+            .FilterBySubmissionPeriods(request.SearchSubmissionPeriods)
+            .Cast<Registration>()
+            .Select(x => new SubmissionCsvModel
+            {
+                Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
+                OrganisationId = x.OrganisationReference,
+                SubmissionDate = x.RegistrationDate.ToString("d MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+                SubmissionPeriod = x.SubmissionPeriod,
+                Status = x.Decision
+            }).ToList();
+
+
+        return await CreateSubmissionsCsv(submissions);
+    }
+
+    public async Task<Stream> GetPackagingSubmissionsCsv(GetPackagingSubmissionsCsvRequest request)
+    {
+        var submissions = _allSubmissions.Cast<AbstractSubmission>()
+            .AsQueryable()
+            .FilterByOrganisationNameAndOrganisationReference(request.SearchOrganisationName, request.SearchOrganisationId)
+            .FilterByOrganisationType(GetFilterOrganisationType(request.IsDirectProducerChecked, request.IsComplianceSchemeChecked))
+            .FilterByStatus(GetFilterStatuses(request.IsPendingSubmissionChecked, request.IsAcceptedSubmissionChecked, request.IsRejectedSubmissionChecked))
+            .FilterBySubmissionYears(request.SearchSubmissionYears)
+            .FilterBySubmissionPeriods(request.SearchSubmissionPeriods)
+            .Cast<Submission>()
+            .AsEnumerable()
+            .Select(x => new SubmissionCsvModel
+            {
+                Organisation = FormatOrganisationName(x.OrganisationName, x.OrganisationType),
+                OrganisationId = x.OrganisationReference,
+                SubmissionDate = x.SubmittedDate.ToString("d MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+                SubmissionPeriod = !string.IsNullOrEmpty(x.ActualSubmissionPeriod)
+                    ? string.Join(", ", x.ActualSubmissionPeriod.Split(","))
+                    : x.SubmissionPeriod,
+                Status = x.Decision
+            }).ToList();
+
+
+        return await CreateSubmissionsCsv(submissions);
     }
 
     private static List<Registration> GenerateRegulatorRegistrations()
@@ -348,10 +404,11 @@ public class MockedFacadeService : IFacadeService
             return filteredItems.Cast<T>().ToList();
         }
 
-        return new List<T>();
+        return [];
     }
 
     public async Task<EndpointResponseStatus> AddRemoveApprovedUser(AddRemoveApprovedUserRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+
     public async Task<HttpResponseMessage> GetFileDownload(FileDownloadRequest request)
     {
         var response = new HttpResponseMessage(HttpStatusCode.OK)
@@ -366,5 +423,92 @@ public class MockedFacadeService : IFacadeService
         };
 
         return await Task.FromResult(response);
+    }
+
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
+    {
+        var response = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+        {
+            items = [],
+            currentPage = filters.PageNumber.Value,
+            totalItems = 0,
+            pageSize = filters.PageSize.Value
+        };
+
+        return response;
+    }
+
+    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
+    {
+        RegistrationSubmissionOrganisationDetails objRet = null;
+
+        return await Task.FromResult(objRet);
+    }
+
+    public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(
+        RegulatorDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+
+    public async Task SubmitRegistrationFeePaymentAsync(
+        RegistrationFeePaymentRequest request) => await Task.FromResult(EndpointResponseStatus.Success);
+
+    private static OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
+    {
+        if (isDirectProducerChecked && !isComplianceSchemeChecked)
+        {
+            return OrganisationType.DirectProducer;
+        }
+
+        if (isComplianceSchemeChecked && !isDirectProducerChecked)
+        {
+            return OrganisationType.ComplianceScheme;
+        }
+
+        return null;
+    }
+
+    private static string[] GetFilterStatuses(bool isPendingStatusChecked, bool isAcceptedStatusChecked, bool isRejectedStatusChecked)
+    {
+        var submissionStatuses = new List<string>();
+
+        if (isPendingStatusChecked)
+        {
+            submissionStatuses.Add(nameof(OrganisationSubmissionStatus.Pending));
+        }
+
+        if (isAcceptedStatusChecked)
+        {
+            submissionStatuses.Add(nameof(OrganisationSubmissionStatus.Accepted));
+        }
+
+        if (isRejectedStatusChecked)
+        {
+            submissionStatuses.Add(nameof(OrganisationSubmissionStatus.Rejected));
+        }
+
+        return submissionStatuses.ToArray();
+    }
+
+    private static string FormatOrganisationName(string organisationName, OrganisationType organisationType)
+    {
+        return organisationName + " (" + (organisationType == OrganisationType.DirectProducer ? "Direct Producer" : "Compliance Scheme") + ")";
+    }
+
+    private static async Task<Stream> CreateSubmissionsCsv(IEnumerable<SubmissionCsvModel> submissions)
+    {
+        var stream = new MemoryStream();
+
+        await using (var writer = new StreamWriter(stream, leaveOpen: true, encoding: Encoding.UTF8))
+        {
+            await using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+            {
+                csv.Context.RegisterClassMap<SubmissionClassMap>();
+                csv.WriteRecordsAsync(submissions);
+            }
+
+            await writer.FlushAsync();
+        }
+
+        stream.Position = 0;
+        return stream;
     }
 }

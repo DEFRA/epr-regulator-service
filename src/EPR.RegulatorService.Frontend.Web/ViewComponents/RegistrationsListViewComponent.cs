@@ -54,7 +54,7 @@ public class RegistrationsListViewComponent : ViewComponent
             _httpContextAccessor.HttpContext.Response.Redirect(PagePath.PageNotFoundPath);
         }
 
-        foreach(Registration item in pagedOrganisationRegistrations.Items)
+        foreach(Registration item in pagedOrganisationRegistrations.items)
        {
            item.OrganisationDetailsFileId = item.CompanyDetailsFileId;
            item.OrganisationDetailsFileName = item.CompanyDetailsFileName;
@@ -63,10 +63,10 @@ public class RegistrationsListViewComponent : ViewComponent
       
        var model = new RegistrationsListViewModel()
         {
-            PagedOrganisationRegistrations = pagedOrganisationRegistrations.Items,
+            PagedOrganisationRegistrations = pagedOrganisationRegistrations.items,
             PaginationNavigationModel = new PaginationNavigationModel
             {
-                CurrentPage = pagedOrganisationRegistrations.CurrentPage,
+                CurrentPage = pagedOrganisationRegistrations.currentPage,
                 PageCount = pagedOrganisationRegistrations.TotalPages,
                 ControllerName = "Registrations",
                 ActionName = nameof(RegistrationsController.Registrations)
@@ -107,23 +107,23 @@ public class RegistrationsListViewComponent : ViewComponent
 
     private static string[] SetFilteredStatus(bool isPendingStatusSelected, bool isAcceptedStatusSelected, bool isRejectedStatusSelected)
     {
-        List<string> registrationStatuses = new();
+        List<string> submissionStatuses = new();
 
         if (isPendingStatusSelected)
         {
-            registrationStatuses.Add(PendingStatus);
+            submissionStatuses.Add(PendingStatus);
         }
 
         if (isAcceptedStatusSelected)
         {
-            registrationStatuses.Add(AcceptedStatus);
+            submissionStatuses.Add(AcceptedStatus);
         }
 
         if (isRejectedStatusSelected)
         {
-            registrationStatuses.Add(RejectedStatus);
+            submissionStatuses.Add(RejectedStatus);
         }
 
-        return registrationStatuses.ToArray();
+        return submissionStatuses.ToArray();
     }
 }

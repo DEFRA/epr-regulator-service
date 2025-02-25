@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Core.Extensions;
 
+using EPR.RegulatorService.Frontend.Core.Enums;
+
 public static class EnumExtensionMethods
 {
     public static string GetDescription(this Enum genericEnum)
@@ -16,5 +18,21 @@ public static class EnumExtensionMethods
         }
 
         return genericEnum.ToString();
+    }
+
+    public static RegistrationSubmissionType GetRegistrationSubmissionType(this RegistrationSubmissionOrganisationType registrationSubmissionOrganisationType)
+    {
+        if (registrationSubmissionOrganisationType is RegistrationSubmissionOrganisationType.compliance)
+        {
+            return RegistrationSubmissionType.ComplianceScheme;
+        }
+
+        else if (registrationSubmissionOrganisationType is
+            RegistrationSubmissionOrganisationType.large or RegistrationSubmissionOrganisationType.small)
+        {
+            return RegistrationSubmissionType.Producer;
+        }
+
+        return RegistrationSubmissionType.NotSet;
     }
 }

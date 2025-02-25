@@ -13,7 +13,7 @@ public class MockedRegistrationFiltersTests
     private const string Rejected = "Rejected";
     private const string Pending = "Pending";
 
-    private static List<Registration> _allRegistrations = GenerateOrganisationRegistrations();
+    private static readonly List<Registration> _allRegistrations = GenerateOrganisationRegistrations();
 
     [TestMethod]
     public async Task Test_Filter_By_Organisation_Name_And_Organisation_Reference()

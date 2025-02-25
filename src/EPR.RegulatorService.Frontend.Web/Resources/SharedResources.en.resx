@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -258,10 +258,103 @@
   <data name="FileDownload.TryAgainButton" xml:space="preserve">
     <value>Try Again</value>
   </data>
+  <data name="FileDownload.TryAgainButton.AgainStartingWithSmallLetter" xml:space="preserve">
+    <value>Try again</value>
+  </data>
+  <data name="FileDownload.RejectSubmission" xml:space="preserve">
+    <value>Reject submission</value>
+  </data>
   <data name="Link.BackToSubmissionDetails" xml:space="preserve">
     <value>Go back to submission details</value>
   </data>
   <data name="FileDownload.RejectSubmission" xml:space="preserve">
     <value>Reject Submission</value>
+  </data>
+  <data name="RegistrationSubmissionOrganisationType.ComplianceScheme" xml:space="preserve">
+    <value>Compliance Scheme</value>
+  </data>
+  <data name="RegistrationSubmissionOrganisationType.LargeProducer" xml:space="preserve">
+    <value>Large Producer</value>
+  </data>
+  <data name="RegistrationSubmissionOrganisationType.NotSpecified" xml:space="preserve">
+    <value>Not specified</value>
+  </data>
+  <data name="RegistrationSubmissionOrganisationType.SmallProducer" xml:space="preserve">
+    <value>Small Producer</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Granted" xml:space="preserve">
+    <value>Granted</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.NotSpecified" xml:space="preserve">
+    <value>Not specified</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Queried" xml:space="preserve">
+    <value>Queried</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Refused" xml:space="preserve">
+    <value>Refused</value>
+  </data>
+  <data name="RegistrationSubmissionStatus.Updated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="ServiceRole.ApprovedPerson" xml:space="preserve">
+    <value>Approved person</value>
+  </data>
+  <data name="ServiceRole.DelegatedPerson" xml:space="preserve">
+    <value>Delegated person</value>
+  </data>
+  <data name="ServiceRole.ProducerOther" xml:space="preserve">
+    <value>Producer other</value>
+  </data>
+  <data name="ServiceRole.RegulatorAdmin" xml:space="preserve">
+    <value>Regulator admin</value>
+  </data>
+  <data name="ServiceRole.RegulatorBasic" xml:space="preserve">
+    <value>Regulator basic</value>
+  </data>
+  <data name="BackToAllSubmissions" xml:space="preserve">
+    <value>Go back to all submissions</value>
+  </data>
+  <data name="ManageRegistrationSubmissions.Caption" xml:space="preserve">
+    <value>Manage registration submissions</value>
+  </data>
+  <data name="SaveAndContinue" xml:space="preserve">
+    <value>Save and continue</value>
+  </data>
+  <data name="PaymentValidation.FormatIsInvalid" xml:space="preserve">
+    <value>Amount can only include pounds and pence.</value>
+  </data>
+  <data name="PaymentValidation.InvalidCharacters" xml:space="preserve">
+    <value>Enter a valid number</value>
+  </data>
+  <data name="PaymentValidation.NonNumericCharacters" xml:space="preserve">
+    <value>Amount must be a number</value>
+  </data>
+  <data name="PaymentValidation.TheAmountIsRequired" xml:space="preserve">
+    <value>Enter an amount</value>
+  </data>
+  <data name="PaymentValidation.ValueCannotBeZero" xml:space="preserve">
+    <value>Amount cannot be zero</value>
+  </data>
+  <data name="PaymentValidation.ValueIsTooHigh" xml:space="preserve">
+    <value>Amount must be less than £10,000,000</value>
+  </data>
+  <data name="PaymentDetail.OfflinePaymentDetailsHint" xml:space="preserve">
+    <value>Include details of any offline payments, for example, £600.00 or £193.54. Adjustments can also be added, including for negative amounts.</value>
+  </data>
+  <data name="PaymentDetail.OfflinePaymentDetailsSubmit" xml:space="preserve">
+    <value>Submit offline payment</value>
+  </data>
+  <data name="PaymentDetail.OfflinePaymentDetailsTitle" xml:space="preserve">
+    <value>Offline payment details</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
   </data>
 </root>

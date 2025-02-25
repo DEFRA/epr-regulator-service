@@ -28,4 +28,11 @@ public class ErrorController : Controller
 
         return View(errorView, new ErrorViewModel());
     }
+
+    [Route(PagePath.ServiceNotAvailable, Name = "ServiceNotAvailable")]
+    public ViewResult ServiceNotAvailable(string? backLink)
+    {
+        ViewBag.BackLinkToDisplay = backLink;
+        return View();
+    }
 }

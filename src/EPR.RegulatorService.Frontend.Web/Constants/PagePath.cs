@@ -33,12 +33,28 @@ public static class PagePath
     public const string EmailNominatedApprovedPerson = "email-nominated-approved-person";
     public const string AccountPermissionsChanged = "account-permissions-changed";
     public const string FileDownload = "file-download";
+    public const string SubmissionsFileDownload = "submissions-file-download";
     public const string OrganisationDetailsFileDownload = "organisation-details-file-download";
     public const string OrganisationDetailsFileDownloadFailed = "organisation-details-file-download-failed";
     public const string OrganisationDetailsFileDownloadSecurityWarning = "organisation-details-file-download-security-warning";
-    public const string RegistrationSubmissions = "manage-registration-submissions";
+    public const string RegistrationSubmissionsRoute = "manage-registration-submissions";
+    public const string RegistrationSubmissionsAction = "RegistrationSubmissions";
+    public const string GrantRegistrationSubmission = "manage-registration-submissions-grant";
     public const string QueryRegistrationSubmission = "manage-registration-submissions-query";
     public const string RejectRegistrationSubmission = "manage-registration-submissions-reject";
+    public const string RegistrationSubmissionDetails = "registration-submission-details";
+    public const string ConfirmOfflinePaymentSubmission = "confirm-offline-payment-submission";
+    public const string CancellationConfirmation = "cancellation-confirmation";
+    public const string CancelRegistrationSubmission = "manage-registration-submissions-cancel";
+    public const string ConfirmRegistrationRefusal = "refusal-confirmation";
+    public const string CancelDateRegistrationSubmission = "manage-registration-submissions-cancel-date";
+    public const string RegistrationSubmissionDetailsFileDownload = "registration-submission-file-download";
+    public const string RegistrationSubmissionFileDownloadFailed = "registration-submission-download-failed";
+    public const string RegistrationSubmissionFileDownloadSecurityWarning = "registration-submission-download-security-warning";
+    public const string RegistrationSubmissionsFileDownload = "submission-file-download";
+    public const string PackagingDataFileDownload = "packaging-data-file-download";
+    public const string PackagingDataFileDownloadFailed = "packaging-data-file-download-failed";
+    public const string PackagingDataFileDownloadSecurityWarning = "packaging-data-file-download-security-warning";
 
     // Non journey paths
     public const string Accessibility = "accessibility";
@@ -52,4 +68,5 @@ public static class PagePath
     public const string UpdateCookieAcceptance = "update-cookie-acceptance";
     public const string FullName = "full-name";
     public const string PageNotFoundPath = "page-not-found";
+    public const string ServiceNotAvailable = "service-not-available";
 }

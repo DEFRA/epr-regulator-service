@@ -123,19 +123,16 @@
   <data name="Error.QueryTooLong" xml:space="preserve">
     <value>Reason for querying application must be 400 characters or less</value>
   </data>
-  <data name="QueryRegistrationSubmission.BackToAllSubmissions" xml:space="preserve">
-    <value>Go back to all submissions</value>
-  </data>
   <data name="QueryRegistrationSubmission.Caption" xml:space="preserve">
     <value>Manage registration submissions</value>
   </data>
   <data name="QueryRegistrationSubmission.Description" xml:space="preserve">
-    <value>Explain the reason for querying this registration. If you query this application, the Producer or Compliance Scheme will need to resubmit their application.</value>
+    <value>If you query this submission, the organisation will need to resubmit their application.</value>
   </data>
   <data name="QueryRegistrationSubmission.Heading" xml:space="preserve">
-    <value>Why are you querying this registration application?</value>
+    <value>Why are you querying this registration submission?</value>
   </data>
   <data name="QueryRegistrationSubmission.Title" xml:space="preserve">
-    <value>Why are you querying this registration application?</value>
+    <value>Why are you querying this registration submission?</value>
   </data>
 </root>

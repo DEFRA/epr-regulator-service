@@ -19,12 +19,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Page.Title" xml:space="preserve">
-      <value>WYou have selected {0} to be removed from {1} account</value>
+      <value>Rydych chi wedi dewis {0} i gael ei dynnu o gyfrif {1}</value>
   </data>
   <data name="Warning.Submit.Packaging" xml:space="preserve">
-      <value>WThe organisation will not be able to submit packaging data until it has a new approved person.</value>
+      <value>Fydd y sefydliad ddim yn gallu cyflwyno data pecynwaith nes bod ganddo berson a gymeradwywyd newydd.</value>
   </data>
   <data name="Warning.Users" xml:space="preserve">
-      <value>WAny delegated persons linked to the organisation will receive an email telling them they are basic users and unable to submit data.</value>
+      <value>Bydd unrhyw bobl a ddirprwywyd sy'n gysylltiedig â'r sefydliad yn cael neges ebost yn dweud eu bod yn ddefnyddwyr sylfaenol ac yn methu cyflwyno data.</value>
   </data>
 </root>
