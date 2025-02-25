@@ -55,6 +55,8 @@
                 </div>
             }
 
+            @if (!Model.IsResubmission)
+            {
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
                     <strong>@Localizer["SubmissionDetails.SubmittedOnTime"]</strong>
@@ -63,6 +65,7 @@
                     @(Model.SubmittedOnTime ? @SharedLocalizer["Yes"] : @SharedLocalizer["No"])
                 </dd>
             </div>
+            }
 
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
