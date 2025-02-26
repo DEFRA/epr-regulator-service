@@ -3,10 +3,65 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
 @using EPR.RegulatorService.Frontend.Core.Enums
 
-@model RegistrationSubmissionsListViewModel
+@model DataGrid<dynamic>
 
-@await Html.PartialAsync("Partials/_RegistrationSubmissionsFilters", Model.RegistrationsFilterModel)
-@if (Model.PagedRegistrationSubmissions.Any())
+
+if (Model.Data != null && Model.Data.Any())
+{
+    <table class="govuk-table responsive-table" aria-label="@Model.AriaLabel">
+        <thead role="rowgroup" class="govuk-table__head">
+            <tr role="row" class="govuk-table__row">
+                @foreach (var header in Model.Headers)
+                {
+                    <th role="columnheader" scope="col" class="@header.Class">@header.DisplayName</th>
+                }
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            @foreach (var item in Model.Data)
+            {
+                <tr role="row" class="govuk-table__row">
+                    @foreach (var header in Model.Headers)
+                    {
+                        <td role="gridcell" class="govuk-table__cell vertical-middle-align @header.DataClass">
+                            <span class="responsive-table__heading" aria-hidden="true">
+                                @header.DisplayName
+                            </span>
+                            @if (header.Template != null)
+                            {
+                                @header.Template(item)
+                            }
+                            else if (header.PropertyName != null)
+                            {
+                                @{
+                                    var property = item.GetType().GetProperty(header.PropertyName);
+                                    if (property != null)
+                                    {
+                                        var value = property.GetValue(item);
+                                        @value
+                                    }
+                                }
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (Model.PaginationNavigationModel != null)
+    {
+        @await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel)
+    }
+}
+else
+{
+    <p class="govuk-body govuk-body govuk-!-font-weight-bold govuk-!-text-align-centre govuk-!-static-margin-9">@Model.NoResultsMessage</p>
+}
+
+
+
+@* @await Html.PartialAsync("Partials/_RegistrationSubmissionsFilters", Model.RegistrationsFilterModel)
+@if (Model.Data.Any())
 {
     <table class="govuk-table responsive-table" aria-label="Organisation Application Listing">
         <thead role="rowgroup" class="govuk-table__head">
@@ -19,7 +74,7 @@
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            @foreach (var organisation in Model.PagedRegistrationSubmissions)
+            @foreach (var organisation in Model.Data)
             {
                 <tr role="row" class="govuk-table__row">
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
@@ -77,3 +132,4 @@ else
 {
     <p class="govuk-body govuk-body govuk-!-font-weight-bold govuk-!-text-align-centre govuk-!-static-margin-9">@Localizer["Body.NoResultsFound"]</p>
 }
+ *@

@@ -2,25 +2,80 @@
 
 @model RegistrationSubmissionsViewModel
 
+
 @{
     ViewData["Title"] = Localizer["PageTitle"];
+    // EPR.RegulatorService.Frontend.Core.Services.IFacadeService facadeService;
+    // var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(Model.ListViewModel.RegistrationsFilterModel);
 }
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper" id="main-content" role="main">
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <h1 class="govuk-caption-xl">
-                    @Model.AgencyName
-                </h1>
-                <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">
-                    @Localizer["PageHeading"]
-                </h2>
-                <div id="contact-hint" class="govuk-hint">
-                    @Localizer["Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
-                </div>
-                @await Component.InvokeAsync("RegistrationSubmissionList", Model.ListViewModel)
-            </div>
+            <h1 class="govuk-caption-xl">
+                     @Model.AgencyName
+                 </h1>
+                 <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">
+                     @Localizer["PageHeading"]
+                 </h2>
+                 <div id="contact-hint" class="govuk-hint">
+                     @Localizer["Subtitle"] <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
+                 </div>
+                   @await Html.PartialAsync("Partials/_RegistrationSubmissionsFilters", Model.ListViewModel.RegistrationsFilterModel)
+                 @* @await Component.InvokeAsync("RegistrationSubmissionList", Model.ListViewModel) *@
+                 @await Component.InvokeAsync("RegistrationSubmissionList", new DataGrid<dynamic>
+                 {
+
+
+                 Data = pagedOrganisationRegistrations.items.Select(x => (RegistrationSubmissionDetailsViewModel)x),//Model.ListViewModel.PagedRegistrationSubmissions,
+                   Headers = new List<DataGridHeader>
+                 {
+                      new DataGridHeader
+                      {
+                      DisplayName = Localizer["Table.Header.Company"].ToString(),
+                      Template = (item) =>
+                      {
+                      // Dynamically generate the RouteLink HTML for the Organisation Name
+                      var organisationName = ((dynamic)item).OrganisationName;
+                      var submissionId = ((dynamic)item).SubmissionId;
+                      var organisationTypeDescription = SharedLocalizer[((dynamic)item).OrganisationType.GetDescription()];
+
+                      var routeLinkHtml = $"<a href='/SubmissionDetails?submissionId={submissionId}' class='govuk-link govuk-link--no-visited-state'>{organisationName}</a>";
+                      var organisationTypeHtml = $"<br /><span class='orgNameFilter'>{organisationTypeDescription}</span>";
+
+                      // Combine both parts into one string for the Template
+                      return Html.Raw(routeLinkHtml + organisationTypeHtml);
+                      },
+                      Class = "epr-width-thirty-percent"
+                },
+                 new DataGridHeader
+                 {
+                 DisplayName = (Localizer["Table.Header.CompanyId"]).ToString(),
+                 Template = (item) => Html.Raw(((dynamic)item).OrganisationReference + "<br />" + (((dynamic)item).Status == RegistrationSubmissionStatus.Granted ? ((dynamic)item).RegistrationReferenceNumber : ((dynamic)item).ApplicationReferenceNumber).ToString()),
+                 Class = "epr-width-thirty-percent"
+                 },
+                 new DataGridHeader
+                 {
+                 DisplayName = (Localizer["Table.Header.ApplicationDate"]).ToString(),
+                 Template = (item) => Html.Raw(((dynamic)item).RegistrationDateTime.ToString("dd MMMM yyyy") + "<br />" + ((dynamic)item).RegistrationDateTime.ToString("HH:mm:ss")),
+                 Class = "epr-width-thirty-percent"
+                 },
+                 new DataGridHeader
+                 {
+                 DisplayName = (Localizer["Table.Header.Year"]).ToString(),
+                 PropertyName = "RegistrationYear",
+                 Class = "epr-width-ten-percent"
+                 },
+                 new DataGridHeader
+                 {
+                 DisplayName = (Localizer["Table.Header.Status"]).ToString(),
+                 Template = (item) => Html.Raw($"<govuk-tag status=\"{((dynamic)item).Status}\" content=\"{SharedLocalizer[((dynamic)item).Status.GetDescription()]}\" />"),
+                 Class = "epr-width-ten-percent tag"
+                 }
+                 },
+                PaginationNavigationModel = Model.ListViewModel.PaginationNavigationModel,
+                AriaLabel = "Organisation Application Listing"
+            })
         </div>
     </main>
 </div>

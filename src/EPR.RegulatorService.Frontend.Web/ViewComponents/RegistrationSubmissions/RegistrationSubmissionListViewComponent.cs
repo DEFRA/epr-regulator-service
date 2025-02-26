@@ -16,25 +16,52 @@ namespace EPR.RegulatorService.Frontend.Web.ViewComponents;
 public class RegistrationSubmissionListViewComponent(IFacadeService facadeService) : ViewComponent
 {
     [ExcludeFromCodeCoverage]
-    public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionsListViewModel request)
+    //public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionsListViewModel request)
+    //{
+    //    var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(request.RegistrationsFilterModel);
+
+    //    request.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
+    //    request.PaginationNavigationModel = new PaginationNavigationModel
+    //    {
+    //        CurrentPage = pagedOrganisationRegistrations.currentPage,
+    //        PageCount = pagedOrganisationRegistrations.TotalPages,
+    ////        ControllerName = "RegistrationSubmissions",
+    //        ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
+    //    };
+
+    //    if ((request.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
+    //        request.PaginationNavigationModel.CurrentPage > 1) || request.PaginationNavigationModel.CurrentPage < 1)
+    //    {
+    //        request.PaginationNavigationModel.CurrentPage = 1;
+    //    }
+
+    //    return View(request);
+    //}
+    public async Task<IViewComponentResult> InvokeAsync(DataGrid<dynamic>  request)
     {
-        var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(request.RegistrationsFilterModel);
+        // Fetch the data based on the filter model and apply pagination logic
+        //var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(request.RegistrationsFilterModel);
 
-        request.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
-        request.PaginationNavigationModel = new PaginationNavigationModel
-        {
-            CurrentPage = pagedOrganisationRegistrations.currentPage,
-            PageCount = pagedOrganisationRegistrations.TotalPages,
-            ControllerName = "RegistrationSubmissions",
-            ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
-        };
+        //// Map fetched data to the DataGrid model
+        //request.Data = pagedOrganisationRegistrations.items.Select(x => (T)x);
+       
+        //// Set pagination details
+        //request.PaginationNavigationModel = new PaginationNavigationModel
+        //{
+        //    CurrentPage = request.currentPage,
+        //    PageCount = request.TotalPages,
+        //    ControllerName = request.contr //"RegistrationSubmissions",
+        //    //ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
+        //};
 
-        if ((request.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
-            request.PaginationNavigationModel.CurrentPage > 1) || request.PaginationNavigationModel.CurrentPage < 1)
-        {
-            request.PaginationNavigationModel.CurrentPage = 1;
-        }
+        //// Ensure current page is valid
+        //if ((request.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
+        //     request.PaginationNavigationModel.CurrentPage > 1) ||
+        //    request.PaginationNavigationModel.CurrentPage < 1)
+        //{
+        //    request.PaginationNavigationModel.CurrentPage = 1;
+        //}
 
-        return View(request);
+        return View(request); // Pass the DataGrid as the model
     }
 }
