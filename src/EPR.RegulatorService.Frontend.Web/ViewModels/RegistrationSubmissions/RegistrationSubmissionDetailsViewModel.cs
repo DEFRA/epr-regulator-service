@@ -49,6 +49,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
     public bool IsResubmission { get; set; }
 
     public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
+    public string ResubmissionFileId { get; set; }
 
     // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
     public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
@@ -86,7 +87,8 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
         CancellationReason = details.CancellationReason,
         ProducerDetails = details.ProducerDetails,
         CSOMembershipDetails = details.CsoMembershipDetails,
-        IsResubmission = details.IsResubmission
+        IsResubmission = details.IsResubmission,
+        ResubmissionFileId  = details.ResubmissionFileId
     };
 
     //Implicit operator from RegistrationSubmissionDetailsViewModel to RegistrationSubmissionOrganisationDetails

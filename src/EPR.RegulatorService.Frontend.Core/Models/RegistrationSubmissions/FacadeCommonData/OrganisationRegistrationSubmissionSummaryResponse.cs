@@ -47,5 +47,6 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.Faca
         public DateTime? RegistrationDate { get; set; }
 
         public DateTime? RegulatorDecisionDate { get; set; }
+        public string ResubmissionFileId { get; internal set; }
     }
 }
