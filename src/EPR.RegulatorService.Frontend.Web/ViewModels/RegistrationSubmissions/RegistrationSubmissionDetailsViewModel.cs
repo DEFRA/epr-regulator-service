@@ -123,6 +123,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
         CancellationReason = details.CancellationReason,
         CsoMembershipDetails = details.CSOMembershipDetails?.ToList(),
         ProducerDetails = details.ProducerDetails,
-        IsResubmission = details.IsResubmission
+        IsResubmission = details.IsResubmission,
+        ResubmissionFileId = details.ResubmissionFileId
     };
 }
