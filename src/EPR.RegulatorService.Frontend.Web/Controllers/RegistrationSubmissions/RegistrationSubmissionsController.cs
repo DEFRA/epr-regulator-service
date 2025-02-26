@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
-
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
@@ -72,6 +71,23 @@ public partial class RegistrationSubmissionsController(
                 nationId);
 
             await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
+                       
+            var pagedOrganisationRegistrations = await _facadeService.GetRegistrationSubmissions(viewModel.ListViewModel.RegistrationsFilterModel);
+            viewModel.ListViewModel.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
+            viewModel.ListViewModel.PaginationNavigationModel = new ViewModels.Shared.PaginationNavigationModel
+            {
+                CurrentPage = pagedOrganisationRegistrations.currentPage,
+                PageCount =   pagedOrganisationRegistrations.TotalPages,
+                ControllerName = "RegistrationSubmissions",
+                ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
+            };
+
+            if ((viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
+                viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > 1) || viewModel.ListViewModel.PaginationNavigationModel.CurrentPage < 1)
+            {
+                viewModel.ListViewModel.PaginationNavigationModel.CurrentPage = 1;
+            }
+
 
             return View(viewModel);
         }

@@ -33,14 +33,14 @@ if (Model.Data != null && Model.Data.Any())
                             }
                             else if (header.PropertyName != null)
                             {
-                                @{
+                               
                                     var property = item.GetType().GetProperty(header.PropertyName);
                                     if (property != null)
                                     {
                                         var value = property.GetValue(item);
                                         @value
                                     }
-                                }
+                                
                             }
                         </td>
                     }
