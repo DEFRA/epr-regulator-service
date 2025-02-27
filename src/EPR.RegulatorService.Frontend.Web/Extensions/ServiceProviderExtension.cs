@@ -138,6 +138,7 @@ public static class ServiceProviderExtension
             options.Cookie.IsEssential = true;
             options.Cookie.HttpOnly = true;
             options.Cookie.SameSite = SameSiteMode.Strict;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             options.Cookie.Path = "/";
         });
 
