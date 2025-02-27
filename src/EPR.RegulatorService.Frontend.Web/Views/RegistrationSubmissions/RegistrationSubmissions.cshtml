@@ -94,12 +94,28 @@
             // Safely get the status and its description
             var status = (RegistrationSubmissionStatus)((dynamic)item).Status;
             var statusDescription = status.GetDescription();
-            var localizedDescription = SharedLocalizer[statusDescription];
 
-            // Safely generate the HTML for govuk-tag
-            return Html.Raw($"<govuk-tag status=\"{status}\" content=\"{localizedDescription}\" />");
+            // Get the localized description using SharedLocalizer
+            var localizedDescription = SharedLocalizer[statusDescription].Value;
+
+            // If localization fails, fallback to the description itself
+            if (string.IsNullOrEmpty(localizedDescription))
+            {
+            localizedDescription = statusDescription;
+            }
+            string statusClass = status switch
+            {
+            RegistrationSubmissionStatus.Pending => "govuk-tag--blue",
+            RegistrationSubmissionStatus.Granted => "govuk-tag--green",
+            RegistrationSubmissionStatus.Refused => "govuk-tag--red",
+            // Add other statuses here as needed
+            _ => "govuk-tag--grey" // Default class
+            };
+
+            // Render the span with the dynamically determined class
+            return Html.Raw($"<span class=\"govuk-tag {statusClass}\">{localizedDescription}</span>");
             },
-            Class = "epr-width-ten-percent tag"
+              Class = "epr-width-ten-percent tag"
             }
             // Localize the description
             },
