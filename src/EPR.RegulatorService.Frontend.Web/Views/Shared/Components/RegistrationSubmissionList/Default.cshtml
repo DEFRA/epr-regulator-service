@@ -1,10 +1,9 @@
 @using EPR.RegulatorService.Frontend.Core.Extensions
-@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
 @using EPR.RegulatorService.Frontend.Core.Enums
 
-@model DataGrid<dynamic>
-
+@model DataGrid<ISubmissionDetails>
 
 @if (Model.Data != null && Model.Data.Any())
 {
@@ -23,7 +22,7 @@
                 <tr role="row" class="govuk-table__row">
                     @foreach (var header in Model.Headers)
                     {
-                        <td role="gridcell" class="govuk-table__cell vertical-middle-align @header.DataClass">
+                        <td role="gridcell" class="govuk-table__cell vertical-middle-align @header.Class">
                             <span class="responsive-table__heading" aria-hidden="true">
                                 @header.DisplayName
                             </span>
@@ -31,16 +30,9 @@
                             {
                                 @header.Template(item)
                             }
-                            else if (header.PropertyName != null)
+                            else if (header.ValueExpression != null)
                             {
-                               
-                                    var property = item.GetType().GetProperty(header.PropertyName);
-                                    if (property != null)
-                                    {
-                                        var value = property.GetValue(item);
-                                        @value
-                                    }
-                                
+                                @header.ValueExpression(item)
                             }
                         </td>
                     }
@@ -48,6 +40,7 @@
             }
         </tbody>
     </table>
+
     @if (Model.PaginationNavigationModel != null)
     {
         @await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel)
@@ -57,79 +50,3 @@ else
 {
     <p class="govuk-body govuk-body govuk-!-font-weight-bold govuk-!-text-align-centre govuk-!-static-margin-9">@Model.NoResultsMessage</p>
 }
-
-
-
-@* @await Html.PartialAsync("Partials/_RegistrationSubmissionsFilters", Model.RegistrationsFilterModel)
-@if (Model.Data.Any())
-{
-    <table class="govuk-table responsive-table" aria-label="Organisation Application Listing">
-        <thead role="rowgroup" class="govuk-table__head">
-            <tr role="row" class="govuk-table__row">
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.Company"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.CompanyId"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.ApplicationDate"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.Year"]</th>
-                <th role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent tag">@Localizer["Table.Header.Status"]</th>
-            </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-            @foreach (var organisation in Model.Data)
-            {
-                <tr role="row" class="govuk-table__row">
-                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                        <span class="responsive-table__heading" aria-hidden="true">
-                            @Localizer["Table.Header.Company"]
-                        </span>
-                        @(Html.RouteLink(@organisation.OrganisationName,
-                                         "SubmissionDetails",
-                                         new { submissionId = @organisation.SubmissionId},
-                                         new { @class = "govuk-link govuk-link--no-visited-state"}))
-                        <br />
-                        <span class="orgNameFilter">@SharedLocalizer[organisation.OrganisationType.GetDescription()]</span>
-                    </td>
-                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                        <span class="responsive-table__heading" aria-hidden="true">
-                            @Localizer["Table.Header.CompanyId"]
-                        </span>
-                        @organisation.OrganisationReference <br />
-                        @if (organisation.Status == RegistrationSubmissionStatus.Granted)
-                        {
-                            @organisation.RegistrationReferenceNumber
-                        }
-                        else
-                        {
-                            @organisation.ApplicationReferenceNumber
-                        }
-                    </td>
-                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                        <span class="responsive-table__heading" aria-hidden="true">
-                            @Localizer["Table.Header.ApplicationDate"]
-                        </span>
-                        @organisation.RegistrationDateTime.ToString("dd MMMM yyyy")
-                        <br />
-                        @organisation.RegistrationDateTime.ToString("HH:mm:ss")
-                    </td>
-                    <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-                        <span class="responsive-table__heading" aria-hidden="true">
-                            @Localizer["Table.Header.Year"]
-                        </span>
-                        @organisation.RegistrationYear
-                    </td>
-                    <td role="gridcell" class="govuk-table__cell vertical-middle-align tag">
-                        <span class="responsive-table__heading" aria-hidden="true">
-                            @Localizer["Table.Header.Status"]
-                        </span>
-                        <govuk-tag status="@organisation.Status" content="@SharedLocalizer[organisation.Status.GetDescription()]" />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    @await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel)
-}
-else
-{
-    <p class="govuk-body govuk-body govuk-!-font-weight-bold govuk-!-text-align-centre govuk-!-static-margin-9">@Localizer["Body.NoResultsFound"]</p>
-}
- *@

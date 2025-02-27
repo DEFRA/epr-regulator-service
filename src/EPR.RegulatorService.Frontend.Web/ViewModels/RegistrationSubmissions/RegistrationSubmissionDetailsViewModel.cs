@@ -7,7 +7,7 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 
-public class RegistrationSubmissionDetailsViewModel
+public class RegistrationSubmissionDetailsViewModel : ISubmissionDetails
 {
     public Guid SubmissionId { get; set; }
 

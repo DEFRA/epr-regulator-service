@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
+
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
@@ -55,49 +56,78 @@ public partial class RegistrationSubmissionsController(
     {
         try
         {
+            // 1. Load session and initialize state
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
             _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;
 
             int nationId = _currentSession.UserData.Organisations[0].NationId ?? 0;
 
+            // 2. Manage pagination state
             InitialiseOrContinuePaging(_currentSession.RegulatorRegistrationSubmissionSession, pageNumber);
 
+            // 3. Setup necessary ViewBag data for the view
             ViewBag.PowerBiLogin = _externalUrlsOptions.PowerBiLogin;
-
             SetBacklinkToHome();
 
+            // 4. Initialize the view model
             var viewModel = InitialiseOrCreateViewModel(
                 _currentSession.RegulatorRegistrationSubmissionSession,
                 nationId);
 
-            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
-                       
-            var pagedOrganisationRegistrations = await _facadeService.GetRegistrationSubmissions(viewModel.ListViewModel.RegistrationsFilterModel);
-            viewModel.ListViewModel.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
-            viewModel.ListViewModel.PaginationNavigationModel = new ViewModels.Shared.PaginationNavigationModel
-            {
-                CurrentPage = pagedOrganisationRegistrations.currentPage,
-                PageCount =   pagedOrganisationRegistrations.TotalPages,
-                ControllerName = "RegistrationSubmissions",
-                ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
-            };
+            // 5. Save session state and journey progress
+            await SaveSessionAndJourney(
+                _currentSession.RegulatorRegistrationSubmissionSession,
+                PagePath.RegistrationSubmissionsRoute,
+                PagePath.RegistrationSubmissionsRoute
+            );
 
-            if ((viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
-                viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > 1) || viewModel.ListViewModel.PaginationNavigationModel.CurrentPage < 1)
-            {
-                viewModel.ListViewModel.PaginationNavigationModel.CurrentPage = 1;
-            }
+            /**
+             * REMOVED CODE:
+             * --------------------------------------------------------------
+             * var pagedOrganisationRegistrations = await _facadeService.GetRegistrationSubmissions(viewModel.ListViewModel.RegistrationsFilterModel);
+             * viewModel.ListViewModel.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
+             * viewModel.ListViewModel.PaginationNavigationModel = new ViewModels.Shared.PaginationNavigationModel
+             * {
+             *     CurrentPage = pagedOrganisationRegistrations.currentPage,
+             *     PageCount = pagedOrganisationRegistrations.TotalPages,
+             *     ControllerName = "RegistrationSubmissions",
+             *     ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
+             * };
+             *
+             * if ((viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
+             *     viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > 1) || 
+             *     viewModel.ListViewModel.PaginationNavigationModel.CurrentPage < 1)
+             * {
+             *     viewModel.ListViewModel.PaginationNavigationModel.CurrentPage = 1;
+             * }
+             * --------------------------------------------------------------
+             * 
+             * WHY REMOVED:
+             * - The responsibility of fetching and transforming data is now delegated to the ViewComponent.
+             * - The ViewComponent handles pagination logic, ensuring consistent behavior across different views.
+             * - This keeps the controller's responsibility focused on navigation and session handling.
+             * 
+             * WHERE DID IT GO:
+             * - This logic now resides in the ViewComponent (`RegistrationSubmissionListViewComponent`).
+             * - The ViewComponent:
+             *   - Fetches data from `_facadeService.GetRegistrationSubmissions()`.
+             *   - Maps data to `RegistrationSubmissionDetailsViewModel`.
+             *   - Manages pagination state via `PaginationNavigationModel`.
+             *   - Constructs a `DataGrid<RegistrationSubmissionDetailsViewModel>` for rendering.
+             */
 
-
+            // 6. Return the view with the initialized view model
             return View(viewModel);
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex);
-            _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
+            _logControllerError.Invoke(logger,
+                $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
             return RedirectToAction(PagePath.Error, "Error");
         }
     }
+
 
     [HttpPost]
     [Route(PagePath.RegistrationSubmissionsRoute)]
