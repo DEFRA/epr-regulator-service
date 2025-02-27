@@ -132,4 +132,22 @@
   <data name="Subtitle" xml:space="preserve">
     <value>Mae'r rhestr yma yn dangos y cyflwyniadau cyfredol sydd Ar ei hanner a'r cyflwyniadau diweddaraf mae camau wedi'u cymryd ynglŷn â nhw. I weld cyflwyniadau hŷn</value>
   </data>
+  <data name="Table.Header.Year" xml:space="preserve">
+    <value>Y flwyddyn berthnasol</value>
+  </data>
+  <data name="Table.Header.Status" xml:space="preserve">
+    <value>Statws y cyflwyniad</value>
+  </data>
+  <data name="Table.Header.CompanyId" xml:space="preserve">
+    <value>ID y sefydliad</value>
+  </data>
+  <data name="Table.Header.Company" xml:space="preserve">
+    <value>Sefydliad</value>
+  </data>
+  <data name="Table.Header.ApplicationDate" xml:space="preserve">
+    <value>Dyddiad ac amser y cyflwyniad</value>
+  </data>
+  <data name="Body.NoResultsFound" xml:space="preserve">
+    <value>Dim cofnodion wedi'u canfod</value>
+  </data>
 </root>

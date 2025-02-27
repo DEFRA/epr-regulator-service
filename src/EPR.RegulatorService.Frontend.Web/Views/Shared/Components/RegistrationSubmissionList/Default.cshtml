@@ -6,7 +6,7 @@
 @model DataGrid<dynamic>
 
 
-if (Model.Data != null && Model.Data.Any())
+@if (Model.Data != null && Model.Data.Any())
 {
     <table class="govuk-table responsive-table" aria-label="@Model.AriaLabel">
         <thead role="rowgroup" class="govuk-table__head">

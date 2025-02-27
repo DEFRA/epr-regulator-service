@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -133,6 +133,24 @@
     <value />
   </data>
   <data name="FilterResults.Title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Table.Header.Year" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Table.Header.Status" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Table.Header.CompanyId" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Table.Header.Company" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Table.Header.ApplicationDate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Body.NoResultsFound" xml:space="preserve">
     <value />
   </data>
 </root>
