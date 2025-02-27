@@ -257,7 +257,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
                 IsWelsh = existingModel.NationId == 4,
                 Status = status.ToString(),
-                IsResubmission = existingModel.IsResubmission
+                IsResubmission = existingModel.IsResubmission,
+                FileId = existingModel.IsResubmission ? existingModel.ResubmissionFileId : null
             };
 
             if (request.IsResubmission)

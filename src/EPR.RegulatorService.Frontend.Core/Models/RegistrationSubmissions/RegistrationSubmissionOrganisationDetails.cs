@@ -68,6 +68,8 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public ProducerDetailsDto ProducerDetails { get; set; }
     public bool IsResubmission { get; set; }
 
+    public string ResubmissionFileId { get; set; }
+
     public override bool Equals(object? obj) => Equals(obj as RegistrationSubmissionOrganisationDetails);
     public bool Equals(RegistrationSubmissionOrganisationDetails? other) => other is not null && OrganisationId.Equals(other.OrganisationId);
     public override int GetHashCode() => HashCode.Combine(OrganisationId);
@@ -93,9 +95,11 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 ResubmissionStatus = response.ResubmissionStatus,
                 StatusPendingDate = response.StatusPendingDate,
                 IsResubmission = response.IsResubmission,
+                ResubmissionFileId = response.ResubmissionFileId,
                 SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
                 {
                     IsResubmission = response.IsResubmission,
+                    ResubmissionFileId = response.ResubmissionFileId,
                     RegistrationDate = response.RegistrationDate,
                     TimeAndDateOfSubmission = response.SubmissionDate,
                     TimeAndDateOfResubmission = response.ResubmissionDate,
@@ -147,6 +151,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             SubmissionPeriod = response.SubmissionPeriod,
             CsoMembershipDetails = response.CsoMembershipDetails,
             IsResubmission = response.IsResubmission,
+            ResubmissionFileId = response.ResubmissionFileId,
             ProducerDetails = new ProducerDetailsDto
             {
                 IsLateFeeApplicable = response.IsLateSubmission,
@@ -158,6 +163,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
         };
 
         registrationSubmissionOrganisationDetails.SubmissionDetails.IsResubmission = response.IsResubmission;
+        registrationSubmissionOrganisationDetails.SubmissionDetails.ResubmissionFileId = response.ResubmissionFileId;
         return registrationSubmissionOrganisationDetails;
     }
 }

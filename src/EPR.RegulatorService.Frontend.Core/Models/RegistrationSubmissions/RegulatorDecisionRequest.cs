@@ -36,4 +36,5 @@ public class RegulatorDecisionRequest
     public bool IsResubmission { get; set; }
 
     public string ExistingRegRefNumber { get; set; }
+    public object FileId { get; set; }
 }
