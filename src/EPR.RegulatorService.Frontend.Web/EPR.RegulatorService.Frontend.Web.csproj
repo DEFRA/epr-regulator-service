@@ -467,7 +467,8 @@
         **/_RegistrationResubmissionDetails.cshtml,
         **/_RegistrationSubmissionDetails.cshtml,
         **/_ResubmissionDetails.cshtml,
-        **/_SubmissionDetails.cshtml
+        **/_SubmissionDetails.cshtml,
+        **/loadingspinner.js
       </Value>
     </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.cpd.exclusions">
@@ -475,9 +476,6 @@
         **/RegistrationDetailsViewModel.cs, Views/**/*.cshtml
       </Value>
     </SonarQubeSetting>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="assets\images\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
