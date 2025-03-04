@@ -51,9 +51,11 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
-    [DataRow("large", "Large")]
-    [DataRow("small", "Small")]
-    public async Task InvokeAsync_Returns_CorrectView_With_Model(string organisationSize, string expectedProducerSize)
+    [DataRow("large", "Large", false)]
+    [DataRow("small", "Small", false)]
+    [DataRow("large", "Large", true)]
+    [DataRow("small", "Small", true)]
+    public async Task InvokeAsync_Returns_CorrectView_With_Model(string organisationSize, string expectedProducerSize, bool isResubmission)
     {
         // Arrange
         _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(
@@ -71,6 +73,12 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
                 { OnlineMarketPlaceSubsidiariesCount = 1, SubsidiaryOnlineMarketPlaceFee = 200.00M }
         });
         _registrationSumissionDetailsViewModel.ProducerDetails.ProducerType = organisationSize;
+        _registrationSumissionDetailsViewModel.IsResubmission = isResubmission;
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            RegistrationDate = DateTime.UtcNow.AddDays(-1),
+            TimeAndDateOfResubmission = DateTime.UtcNow
+        };
 
         // Act
         var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
@@ -98,6 +106,10 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     public async Task InvokeAsync_Logs_Error_And_Returns_CorrectView_With_DefaultModel_When_Service_Throws()
     {
         // Arrange
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            RegistrationDate = DateTime.UtcNow.AddDays(-1)
+        };
         var exception = new Exception("error");
         _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(
             It.IsAny<ProducerPaymentRequest>()))
