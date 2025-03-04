@@ -10,5 +10,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public string? RejectReason { get; set; }
 
         public bool IsResubmission { get; set; }
+
+        public string? ResubmissionFileId { get; set; }
     }
 }
