@@ -17,52 +17,16 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegulatorExporter.Home
     [Route(PagePath.RegulatorExporterHome)]
     public class RegulatorExporterHomeController : Controller
     {
-
         [HttpGet]
         public IActionResult Index()
         {
-            // Mock data for Registration
-            var registrationData = new List<ISubmissionDetailsViewModel>
+            var model = new RegulatorExporterHomeViewModel
             {
-                new RegistrationDetailsViewModel
-                {
-                    OrganisationName = "Green Ltd",
-                    SiteAddress = "23 Ruby St, London, E12 3SE",
-                    OrganisationType = "Reprocessor",
-                    Regulator = "Environment Agency (EA)"
-                },
-                new RegistrationDetailsViewModel
-                {
-                    OrganisationName = "Red Ltd",
-                    SiteAddress = "89 Gold St, Birmingham, B12 4RT",
-                    OrganisationType = "Producer",
-                    Regulator = "Environment Agency (EA)"
-                }
+                OrganisationName = "Green Ltd",
+                SiteAddress = "23 Ruby St, London, E12 3SE",
+                OrganisationType = "Reprocessor",
+                Regulator = "Environment Agency (EA)"
             };
-
-            // Mock data for Accreditation
-            var accreditationData = new List<ISubmissionDetailsViewModel>
-            {
-                new AccreditationDetailsViewModel
-                {
-                    OrganisationName = "Blue Ltd",
-                    SiteAddress = "47 Sapphire Ave, Manchester, M15 4SN",
-                    OrganisationType = "Exporter",
-                    Regulator = "Scottish Environment Protection Agency",
-                    AccreditationType = "Type A"
-                },
-                new AccreditationDetailsViewModel
-                {
-                    OrganisationName = "Yellow Ltd",
-                    SiteAddress = "32 Diamond Rd, Leeds, LS8 3TG",
-                    OrganisationType = "Recycler",
-                    Regulator = "Natural Resources Wales",
-                    AccreditationType = "Type B"
-                }
-            };
-
-            // Combine both datasets
-            var model = registrationData.Concat(accreditationData).ToList();
 
             return View(model);
         }
