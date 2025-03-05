@@ -1,0 +1,9 @@
+@model List<EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter.Common.Interfaces.ISubmissionDetailsViewModel>
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <h1 class="govuk-heading-l">Search Results</h1>
+
+        @await Component.InvokeAsync("RegExpSubmissionList", new { model = Model })
+    </main>
+</div>

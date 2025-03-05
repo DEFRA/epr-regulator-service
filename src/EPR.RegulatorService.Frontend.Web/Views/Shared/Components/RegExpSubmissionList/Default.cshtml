@@ -1,0 +1,40 @@
+@model List<EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter.Common.Interfaces.ISubmissionDetailsViewModel>
+
+<table class="govuk-table">
+    <thead>
+        <tr>
+            <th>Organisation Name</th>
+            <th>Site Address</th>
+            <th>Organisation Type</th>
+            <th>Regulator</th>
+            <th>Accreditation Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.OrganisationName</td>
+                <td>@item.SiteAddress</td>
+                <td>@item.OrganisationType</td>
+                <td>@item.Regulator</td>
+                <td>
+                    @if (item is EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter.AccreditationDetailsViewModel accreditationItem)
+                    {
+                        @accreditationItem.AccreditationType
+                    }
+                    else
+                    {
+                        <span class="govuk-body-s">N/A</span>
+                    }
+                </td>
+                <td>
+                    <a class="govuk-link" href="@Url.Action("Index", "RegulatorExporterHome", new { orgName = item.OrganisationName })">
+                        View Details
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
