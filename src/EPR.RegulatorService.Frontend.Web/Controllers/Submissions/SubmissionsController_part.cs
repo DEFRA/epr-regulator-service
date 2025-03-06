@@ -155,7 +155,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 RejectionReason = submission.Comments,
                 ResubmissionRequired = submission.IsResubmissionRequired,
                 PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
-                PreviousRejectionComments = submission.PreviousRejectionComments
+                PreviousRejectionComments = submission.PreviousRejectionComments,
+                SubmittedDate = submission.SubmittedDate
             };
 
             return model;

@@ -191,6 +191,7 @@ public partial class SubmissionsController : Controller
         model.ReferenceFieldNotAvailable = model.ReferenceNotAvailable = true;
         if (payCalParameters is not null)
         {
+            model.NationCode = payCalParameters.NationCode;
             model.ReferenceNumber = payCalParameters.Reference;
             model.ReferenceFieldNotAvailable = payCalParameters.ReferenceFieldNotAvailable;
             model.ReferenceNotAvailable = payCalParameters.ReferenceNotAvailable;

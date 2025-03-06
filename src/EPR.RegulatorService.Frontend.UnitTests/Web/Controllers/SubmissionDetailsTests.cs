@@ -44,7 +44,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(new PomPayCalParametersResponse {
                     Reference = "12345",
                     MemberCount = 1,
-                    ResubmissionDate = DateTime.UtcNow
+                    ResubmissionDate = DateTime.UtcNow,
+                    NationCode = "GB-ENG"
                 });
 
             // Act
