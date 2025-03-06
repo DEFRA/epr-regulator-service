@@ -10,7 +10,8 @@
 
 @using (Html.BeginForm("ConfirmOfflinePaymentSubmission", "Submissions", FormMethod.Post))
 {
-  @Html.Hidden("OfflinePaymentAmount", Model.OfflinePaymentAmount)
+    @Html.HiddenFor(r => r.OfflinePaymentAmount)
+    @Html.HiddenFor(r => r.NationCode)
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper" id="main-content" role="main">
             <div class="govuk-grid-row">

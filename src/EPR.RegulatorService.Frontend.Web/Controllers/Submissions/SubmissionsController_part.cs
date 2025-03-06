@@ -163,19 +163,18 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
         }
 
         private async Task<IActionResult> ProcessOfflinePaymentAsync(
-            int nationId,
+            string nationCode,
             string referenceNumber,
             string offlinePaymentAmount,
             Guid userId,
             Guid submissionId)
         {
-            string regulator = ((CountryName)nationId).GetDescription();
             var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
             {
                 Amount = (int)(decimal.Parse(offlinePaymentAmount, CultureInfo.InvariantCulture) * 100),
                 Description = "Packaging data resubmission fee",
                 Reference = referenceNumber,
-                Regulator = regulator,
+                Regulator = nationCode,
                 UserId = userId
             });
 

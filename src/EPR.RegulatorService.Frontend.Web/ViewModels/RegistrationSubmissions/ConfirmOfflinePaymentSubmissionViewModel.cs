@@ -10,5 +10,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
         public bool? IsOfflinePaymentConfirmed { get; set; }
 
         public string? OfflinePaymentAmount { get; set; }
+
+        public string? NationCode { get; set; }
     }
 }

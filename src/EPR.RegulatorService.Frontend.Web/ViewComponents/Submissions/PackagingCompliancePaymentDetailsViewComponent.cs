@@ -54,7 +54,8 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
                 PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(compliancePaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(compliancePaymentResponse.TotalOutstanding),
-                ReferenceNumber = viewModel.ReferenceNumber
+                ReferenceNumber = viewModel.ReferenceNumber,
+                NationCode = viewModel.NationCode
             };
 
             return View(compliancePaymentDetailsViewModel);
