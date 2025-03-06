@@ -63,7 +63,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         _registrationSumissionDetailsViewModel.IsResubmission = isResubmission;
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
         {
-            RegistrationDate = DateTime.UtcNow.AddDays(-1),
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
             TimeAndDateOfResubmission = DateTime.UtcNow
         };
         _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
@@ -109,7 +109,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         };
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
         {
-            RegistrationDate = DateTime.UtcNow.AddDays(-1),
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
             TimeAndDateOfResubmission = DateTime.UtcNow
         };
         _registrationSumissionDetailsViewModel.CSOMembershipDetails = complianceSchemeMembers;

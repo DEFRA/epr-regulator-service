@@ -27,9 +27,9 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
                 ApplicationReferenceNumber = viewModel.ReferenceNumber,
                 Regulator = viewModel.NationCode,
                 ComplianceSchemeMembers = viewModel.CSOMembershipDetails?.Select(x => (ComplianceSchemeMemberRequest)x),
-                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(!viewModel.IsResubmission
-                ? viewModel.SubmissionDetails.RegistrationDate.Value
-                : viewModel.SubmissionDetails.TimeAndDateOfResubmission.Value)
+                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
+                ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.Value
+                : viewModel.SubmissionDetails.TimeAndDateOfSubmission)
             });
 
             if (compliancePaymentResponse is null)
