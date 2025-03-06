@@ -18,7 +18,7 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
             new EventId(1001, nameof(PackagingProducerPaymentDetailsViewComponent)),
             "An error occurred while retrieving the packaging payment details: {ErrorMessage}");
 
-    public async Task<ViewViewComponentResult> InvokeAsync(BaseSubmissionDetailsViewModel viewModel)
+    public async Task<ViewViewComponentResult> InvokeAsync(SubmissionDetailsViewModel viewModel)
     {
         try
         {
@@ -38,7 +38,7 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
             {
                 ReferenceNumber = viewModel.ReferenceNumber,
                 Regulator = viewModel.NationCode,
-                ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime.Value) //payment facade in utc format
+                ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format
             });
 
             if (producerPaymentResponse is null)
