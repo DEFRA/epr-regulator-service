@@ -30,9 +30,9 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
                 ProducerType = viewModel.ProducerDetails.ProducerType,
                 Regulator = viewModel.NationCode,
-                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(!viewModel.IsResubmission
-                ? viewModel.SubmissionDetails.RegistrationDate.Value
-                : viewModel.SubmissionDetails.TimeAndDateOfResubmission.Value)
+                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
+                ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.Value
+                : viewModel.SubmissionDetails.TimeAndDateOfSubmission)
             });
 
             if (producerPaymentResponse is null)

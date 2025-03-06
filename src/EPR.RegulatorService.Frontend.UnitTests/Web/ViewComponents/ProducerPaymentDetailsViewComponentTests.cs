@@ -76,7 +76,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         _registrationSumissionDetailsViewModel.IsResubmission = isResubmission;
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
         {
-            RegistrationDate = DateTime.UtcNow.AddDays(-1),
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
             TimeAndDateOfResubmission = DateTime.UtcNow
         };
 
@@ -108,7 +108,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         // Arrange
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
         {
-            RegistrationDate = DateTime.UtcNow.AddDays(-1)
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
         var exception = new Exception("error");
         _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(
