@@ -22,7 +22,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         private const int DefaultPageNumber = 1;
         private const int PageNumberTwo = 2;
         private const string SearchOrganisationName = "Test Organisation";
-        private const string UserName = "Test User";
         private const string DefaultOfflinePaymentAmount = "10.00";
         private const string DefaultNationCode = "GB-ENG";
         private Fixture _fixture;
@@ -436,7 +435,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             _tempDataDictionary["OfflinePaymentAmount"] = DefaultOfflinePaymentAmount;
-            _tempDataDictionary["NationCode"] = DefaultNationCode;
 
             // Act
             var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
@@ -450,7 +448,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.Should().NotBeNull();
             model!.SubmissionId.Should().Be(submissionId);
             model.OfflinePaymentAmount.Should().Be(DefaultOfflinePaymentAmount);
-            model.NationCode.Should().Be(DefaultNationCode);
         }
 
         [TestMethod]
@@ -590,7 +587,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
             {
                 SubmissionId = submissionId,
-                UserId = Guid.NewGuid()
+                UserId = Guid.NewGuid(),
+                ReferenceNumber = "degreg",
+                NationCode = "GB-ENG"
             };
 
             JourneySessionMock.UserData.Organisations =
@@ -604,7 +603,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 IsOfflinePaymentConfirmed = true,
                 OfflinePaymentAmount = DefaultOfflinePaymentAmount,
-                NationCode = DefaultNationCode
             };
 
             // Act
@@ -651,7 +649,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 IsOfflinePaymentConfirmed = true,
                 OfflinePaymentAmount = DefaultOfflinePaymentAmount,
-                NationCode = DefaultNationCode
             };
 
             // Act
@@ -699,7 +696,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new PaymentDetailsViewModel
             {
                 OfflinePayment = DefaultOfflinePaymentAmount, // Valid payment amount
-                NationCode = DefaultNationCode
             };
 
             // Act
@@ -707,7 +703,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert
             _systemUnderTest.TempData["OfflinePaymentAmount"].Should().Be(DefaultOfflinePaymentAmount);
-            _systemUnderTest.TempData["NationCode"].Should().Be(DefaultNationCode);
         }
 
         [TestMethod]
@@ -716,14 +711,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var model = new PaymentDetailsViewModel
             {
-                OfflinePayment = "£100.00" // Input with currency symbol
+                OfflinePayment = DefaultOfflinePaymentAmount // Input with currency symbol
             };
 
             // Act
             await _systemUnderTest.SubmitOfflinePayment(model);
 
             // Assert
-            _systemUnderTest.TempData["OfflinePaymentAmount"].Should().Be("£100.00");
+            _systemUnderTest.TempData["OfflinePaymentAmount"].Should().Be(DefaultOfflinePaymentAmount);
         }
 
         [TestMethod]
@@ -732,7 +727,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var model = new PaymentDetailsViewModel
             {
-                OfflinePayment = "£100.00"
+                OfflinePayment = DefaultOfflinePaymentAmount
             };
 
             // Act

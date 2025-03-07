@@ -1,4 +1,4 @@
-﻿namespace EPR.RegulatorService.Frontend.Core.Models;
+namespace EPR.RegulatorService.Frontend.Core.Models;
 
 using Enums;
 
@@ -21,4 +21,8 @@ public class AbstractSubmission
     public string? SubmissionPeriod { get; set; }
     public string? Comments { get; set; }
     public string? PreviousRejectionComments { get; set; }
+
+    public string? NationCode { get; set; }
+
+    public string? ReferenceNumber { get; set; }
 }
