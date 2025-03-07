@@ -25,7 +25,6 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         _submissionDetailsViewModel = new SubmissionDetailsViewModel
         {
             ReferenceNumber = "SomeGuid",
-            RegistrationDateTime = DateTime.Now.AddDays(-1),
             NationCode = "gb-eng"
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);

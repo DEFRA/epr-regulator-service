@@ -39,7 +39,7 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
             {
                     ReferenceNumber = viewModel.ReferenceNumber,
                     MemberCount = viewModel.MemberCount,
-                    Regulator = viewModel.NationCode,
+                    Regulator = viewModel.NationCode,                    
                     ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format                    
                 });
 

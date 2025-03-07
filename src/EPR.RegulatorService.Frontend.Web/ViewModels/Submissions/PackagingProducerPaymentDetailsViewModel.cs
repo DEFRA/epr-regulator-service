@@ -12,5 +12,7 @@ public class PackagingProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 
     public decimal TotalOutstanding { get; set; }
 
+    public string NationCode { get; set; }
+
     public string ReferenceNumber { get; set; }
 }

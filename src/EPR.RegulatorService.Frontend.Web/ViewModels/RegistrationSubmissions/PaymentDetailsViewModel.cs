@@ -19,8 +19,6 @@ public class PaymentDetailsViewModel
                         )]
     public string? OfflinePayment { get; set; }
 
-    public string NationCode { get; set; }
-
     public void EnsureTwoDecimalPlaces()
     {
         if (decimal.TryParse(OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))
