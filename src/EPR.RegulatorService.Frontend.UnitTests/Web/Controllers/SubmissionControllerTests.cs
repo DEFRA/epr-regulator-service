@@ -24,6 +24,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         private const string SearchOrganisationName = "Test Organisation";
         private const string UserName = "Test User";
         private const string DefaultOfflinePaymentAmount = "10.00";
+        private const string DefaultNationCode = "GB-ENG";
         private Fixture _fixture;
 
         [TestInitialize]
@@ -435,6 +436,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             _tempDataDictionary["OfflinePaymentAmount"] = DefaultOfflinePaymentAmount;
+            _tempDataDictionary["NationCode"] = DefaultNationCode;
 
             // Act
             var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
@@ -448,6 +450,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.Should().NotBeNull();
             model!.SubmissionId.Should().Be(submissionId);
             model.OfflinePaymentAmount.Should().Be(DefaultOfflinePaymentAmount);
+            model.NationCode.Should().Be(DefaultNationCode);
         }
 
         [TestMethod]
@@ -461,6 +464,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             _tempDataDictionary["OfflinePaymentAmount"] = DefaultOfflinePaymentAmount;
+            _tempDataDictionary["NationCode"] = DefaultNationCode;
 
             // Act
             var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
@@ -599,7 +603,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 IsOfflinePaymentConfirmed = true,
-                OfflinePaymentAmount = "100.00"
+                OfflinePaymentAmount = DefaultOfflinePaymentAmount,
+                NationCode = DefaultNationCode
             };
 
             // Act
@@ -645,7 +650,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
                 IsOfflinePaymentConfirmed = true,
-                OfflinePaymentAmount = "100.00"
+                OfflinePaymentAmount = DefaultOfflinePaymentAmount,
+                NationCode = DefaultNationCode
             };
 
             // Act
@@ -687,19 +693,21 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task SubmitOfflinePayment_SetsOfflinePaymentAmountInTempData_WhenValidPaymentAmountProvided()
+        public async Task SubmitOfflinePayment_SetsRequiredFieldsInTempData_WhenValidPaymentAmountProvided()
         {
             // Arrange
             var model = new PaymentDetailsViewModel
             {
-                OfflinePayment = "100.00" // Valid payment amount
+                OfflinePayment = DefaultOfflinePaymentAmount, // Valid payment amount
+                NationCode = DefaultNationCode
             };
 
             // Act
             await _systemUnderTest.SubmitOfflinePayment(model);
 
             // Assert
-            _systemUnderTest.TempData["OfflinePaymentAmount"].Should().Be("100.00");
+            _systemUnderTest.TempData["OfflinePaymentAmount"].Should().Be(DefaultOfflinePaymentAmount);
+            _systemUnderTest.TempData["NationCode"].Should().Be(DefaultNationCode);
         }
 
         [TestMethod]

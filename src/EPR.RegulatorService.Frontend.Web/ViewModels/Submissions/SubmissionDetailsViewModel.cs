@@ -21,4 +21,5 @@ public class SubmissionDetailsViewModel: BaseSubmissionDetailsViewModel
     public string RejectionReason { get; set; }
     public bool ResubmissionRequired { get; set; }
     public string PreviousRejectionComments { get; set; }
+    public DateTime SubmittedDate { get; set; }
 }

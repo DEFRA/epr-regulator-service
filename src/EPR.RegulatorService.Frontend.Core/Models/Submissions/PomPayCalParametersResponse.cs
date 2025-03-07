@@ -15,7 +15,10 @@ public class PomPayCalParametersResponse
 
     [JsonPropertyName(name: "reference")]
     public string? Reference { get; set; }
-    
+
+    [JsonPropertyName(name: "nationCode")]
+    public string? NationCode { get; set; }
+
     [JsonPropertyName(name: "referenceNotAvailable")]
     public bool ReferenceNotAvailable { get; set; }
 

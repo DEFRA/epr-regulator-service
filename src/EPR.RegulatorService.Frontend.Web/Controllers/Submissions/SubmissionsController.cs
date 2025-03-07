@@ -191,6 +191,7 @@ public partial class SubmissionsController : Controller
         model.ReferenceFieldNotAvailable = model.ReferenceNotAvailable = true;
         if (payCalParameters is not null)
         {
+            model.NationCode = payCalParameters.NationCode;
             model.ReferenceNumber = payCalParameters.Reference;
             model.ReferenceFieldNotAvailable = payCalParameters.ReferenceFieldNotAvailable;
             model.ReferenceNotAvailable = payCalParameters.ReferenceNotAvailable;
@@ -222,6 +223,7 @@ public partial class SubmissionsController : Controller
         }
 
         TempData["OfflinePaymentAmount"] = paymentDetailsViewModel.OfflinePayment;
+        TempData["NationCode"] = paymentDetailsViewModel.NationCode;
 
         await SaveSessionAndJourney(
             session,
@@ -239,13 +241,15 @@ public partial class SubmissionsController : Controller
         var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
 
         string offlinePayment = TempData.Peek("OfflinePaymentAmount").ToString();
+        string nationCode = TempData.Peek("NationCode").ToString();
 
         SetBackLink(PagePath.SubmissionDetails);
 
         var model = new ConfirmOfflinePaymentSubmissionViewModel
         {
             SubmissionId = submission.SubmissionId,
-            OfflinePaymentAmount = offlinePayment
+            OfflinePaymentAmount = offlinePayment,
+            NationCode = nationCode
         };
 
         return View(nameof(ConfirmOfflinePaymentSubmission), model);
@@ -257,7 +261,6 @@ public partial class SubmissionsController : Controller
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
         var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
-        int nationId = session.UserData.Organisations[0].NationId.Value;
 
         if (!ModelState.IsValid)
         {
@@ -270,6 +273,7 @@ public partial class SubmissionsController : Controller
         }
 
         TempData.Remove("OfflinePaymentAmount");
+        TempData.Remove("NationCode");
         return string.IsNullOrWhiteSpace(model.OfflinePaymentAmount)
             ? RedirectToAction(
                 PagePath.Error,
@@ -280,8 +284,8 @@ public partial class SubmissionsController : Controller
                     backLink = PagePath.SubmissionDetails
                 })
             : await ProcessOfflinePaymentAsync(
-                nationId,
-                "dgregerg", // To do: This will be added once we have the input data
+                model.NationCode,
+                "dgregerg", // To do: This will be done as part of 517712
                 model.OfflinePaymentAmount,
                 submission.UserId.Value,
                 submission.SubmissionId);
