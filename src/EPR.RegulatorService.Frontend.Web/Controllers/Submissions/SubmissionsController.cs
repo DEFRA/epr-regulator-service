@@ -188,10 +188,6 @@ public partial class SubmissionsController : Controller
             session.RegulatorSubmissionSession.OrganisationSubmission.SubmissionId,
             session.RegulatorSubmissionSession.OrganisationSubmission.ComplianceSchemeId);
 
-        payCalParameters.Reference = "dgregerg";
-        payCalParameters.ResubmissionDate = new DateTime(2025, 01, 06, 11, 50, 47, 499, DateTimeKind.Utc);
-        payCalParameters.NationCode = "GB-ENG";
-
         model.ReferenceFieldNotAvailable = model.ReferenceNotAvailable = true;
         if (payCalParameters is not null)
         {
