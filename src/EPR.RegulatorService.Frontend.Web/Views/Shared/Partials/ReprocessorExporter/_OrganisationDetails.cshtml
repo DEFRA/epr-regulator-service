@@ -1,0 +1,11 @@
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.ReprocessorExporterHomeViewModel
+
+<p class="govuk-body">
+    <strong>Organisation name :</strong> @Model.OrganisationName <br>
+    @if (!string.IsNullOrEmpty(Model.SiteAddress))
+    {
+        <strong>Site :</strong> @Model.SiteAddress <br>
+    }
+    <strong>Organisation type :</strong> @Model.OrganisationType <br>
+    <strong>Regulator :</strong> @Model.Regulator
+</p>

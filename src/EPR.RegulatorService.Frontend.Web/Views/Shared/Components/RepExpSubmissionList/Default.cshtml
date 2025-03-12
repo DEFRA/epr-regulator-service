@@ -1,4 +1,4 @@
-@model List<EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter.Common.Interfaces.ISubmissionDetailsViewModel>
+@model List<EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Common.Interfaces.ISubmissionDetailsViewModel>
 
 <table class="govuk-table">
     <thead>
@@ -20,7 +20,7 @@
                 <td>@item.OrganisationType</td>
                 <td>@item.Regulator</td>
                 <td>
-                    @if (item is EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter.AccreditationDetailsViewModel accreditationItem)
+                    @if (item is EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.AccreditationDetailsViewModel accreditationItem)
                     {
                         @accreditationItem.AccreditationType
                     }
@@ -30,7 +30,7 @@
                     }
                 </td>
                 <td>
-                    <a class="govuk-link" href="@Url.Action("Index", "RegulatorExporterHome", new { orgName = item.OrganisationName })">
+                    <a class="govuk-link" href="@Url.Action("Index", "ReprocessorExporterHome", new { orgName = item.OrganisationName })">
                         View Details
                     </a>
                 </td>

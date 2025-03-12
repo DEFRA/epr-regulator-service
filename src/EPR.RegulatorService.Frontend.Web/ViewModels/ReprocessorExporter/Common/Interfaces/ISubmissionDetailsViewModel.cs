@@ -1,4 +1,4 @@
-namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter.Common.Interfaces
+namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Common.Interfaces
 {
     public interface ISubmissionDetailsViewModel
     {

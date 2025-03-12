@@ -1,20 +1,28 @@
-namespace EPR.RegulatorService.Frontend.Web.Controllers.RegulatorExporter.Search
+using EPR;
+using EPR.RegulatorService;
+using EPR.RegulatorService.Frontend;
+using EPR.RegulatorService.Frontend.Web;
+using EPR.RegulatorService.Frontend.Web.Controllers;
+using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter;
+
+namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter
 {
     using EPR.Common.Authorization.Constants;
     using EPR.RegulatorService.Frontend.Web.Configs;
     using EPR.RegulatorService.Frontend.Web.Constants;
-    using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter;
-    using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter.Common.Interfaces;
+    using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
+    using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Common.Interfaces;
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.FeatureManagement.Mvc;
 
-    [FeatureGate(FeatureFlags.RegulatorExporter)]
+    [FeatureGate(FeatureFlags.ReprocessorExporter)]
     [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)] // PAUL -- need to create new policy going forward
-    [Route(PagePath.RegulatorExporterSearch)]
+    [Route(PagePath.ReprocessorExporterSearch)]
 
-    public class RegulatorExporterSearchController : Controller
+    public class SearchController : Controller
     {
         public IActionResult Index()
         {

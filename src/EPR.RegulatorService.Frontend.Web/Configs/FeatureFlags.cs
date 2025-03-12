@@ -19,5 +19,5 @@ public static class FeatureFlags
 
     public const string ManageRegistrationSubmissions = "ManageRegistrationSubmissions";
 
-    public const string RegulatorExporter = "RegulatorExporter";
+    public const string ReprocessorExporter = "ReprocessorExporter";
 }

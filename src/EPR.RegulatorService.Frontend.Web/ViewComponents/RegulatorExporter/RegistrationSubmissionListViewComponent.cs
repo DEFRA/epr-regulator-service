@@ -1,10 +1,10 @@
-namespace EPR.RegulatorService.Frontend.Web.ViewComponents.RegulatorExporter
+namespace EPR.RegulatorService.Frontend.Web.ViewComponents.ReprocessorExporter
 {
-    using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter.Common.Interfaces;
+    using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Common.Interfaces;
 
     using Microsoft.AspNetCore.Mvc;
 
-    public class RegExpSubmissionListViewComponent : ViewComponent
+    public class RepExpSubmissionListViewComponent : ViewComponent
     {
         public IViewComponentResult Invoke(List<ISubmissionDetailsViewModel> model)
         {

@@ -1,9 +1,7 @@
-using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter.Common.Interfaces;
-using EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter.Common.Interfaces;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Common.Interfaces;
 
-namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorExporter
+namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter
 {
-
     public class RegistrationDetailsViewModel : ISubmissionDetailsViewModel
     {
         public string OrganisationName { get; set; }

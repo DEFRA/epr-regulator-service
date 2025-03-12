@@ -1,0 +1,50 @@
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.ReprocessorExporterHomeViewModel
+
+@{
+    ViewData["Title"] = Model.IsRegistration ? "Manage Registration Application" : "Manage Accreditation Application";
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+
+                <!-- Breadcrumbs -->
+                <nav class="govuk-breadcrumbs">
+                    <ol class="govuk-breadcrumbs__list">
+                        <li class="govuk-breadcrumbs__list-item">
+                            <a class="govuk-breadcrumbs__link" href="/regulators/home">Home</a>
+                        </li>
+                        <li class="govuk-breadcrumbs__list-item">
+                            Manage @(Model.IsRegistration ? "registration" : "accreditation") application
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Page Title -->
+                <h1 class="govuk-heading-l govuk-!-margin-bottom-2">
+                    Manage @(Model.IsRegistration ? "Registrations" : "Accreditations")
+                </h1>
+
+                <!-- Organisation Details -->
+                @await Html.PartialAsync("Partials/ReprocessorExporter/_OrganisationDetails", Model)
+
+                <!-- Check Registrations & Assign Officer -->
+                @if (Model.IsRegistration)
+                  @await Html.PartialAsync("Partials/ReprocessorExporter/Registration/_CheckRegistrations", Model)                
+
+                <!-- Review Site Details -->
+                @await Html.PartialAsync("Partials/ReprocessorExporter/_ReviewSiteDetails", Model)
+
+                <!-- Review Plastic Registration / Accreditation -->
+                @if (Model.IsRegistration)
+                  @await Html.PartialAsync("Partials/ReprocessorExporter/Registration/_ReviewPlasticRegistration", Model)
+
+                <!-- Review Plastic Registration / Accreditation -->
+                @if (Model.IsRegistration)
+                  @await Html.PartialAsync("Partials/ReprocessorExporter/Registration/_ReviewSteelRegistration", Model)
+
+            </div>
+        </div>
+    </main>
+</div>
