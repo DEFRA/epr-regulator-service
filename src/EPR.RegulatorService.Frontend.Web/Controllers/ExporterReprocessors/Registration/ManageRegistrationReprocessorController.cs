@@ -12,6 +12,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ExporterReprocessors.Reg
         [HttpGet]
         public IActionResult Index()
         {
+            ViewBag.BackLinkToDisplay = "";
+
             return View();
         }
     }
