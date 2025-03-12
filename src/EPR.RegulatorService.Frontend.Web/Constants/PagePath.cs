@@ -51,7 +51,10 @@ public static class PagePath
     public const string RegistrationSubmissionFileDownloadFailed = "registration-submission-download-failed";
     public const string RegistrationSubmissionFileDownloadSecurityWarning = "registration-submission-download-security-warning";
     public const string RegistrationSubmissionsFileDownload = "submission-file-download";
-    public const string ReprocessorExporterHome = "regulator-exporter-home";
+    public const string ReprocessorExporterHome = "manage-registrations-reprocessor";
+    public const string ReprocessorExporterAccreditation = "manage-accreditation-reprocessor";
+    public const string ExporterRegistrationHome = "manage-registrations-exporter";
+    public const string ExporterAccreditationHome = "manage-accreditation-exporter";
     public const string ReprocessorExporterSearch = "regulator-exporter-search";
 
     // Non journey paths
