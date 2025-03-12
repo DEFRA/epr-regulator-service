@@ -478,7 +478,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\images\" />
-    <Folder Include="Controllers\ReprocessorExporter\Home\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
