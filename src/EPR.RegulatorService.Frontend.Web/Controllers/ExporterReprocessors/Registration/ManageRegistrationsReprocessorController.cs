@@ -7,7 +7,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ExporterReprocessors.Reg
 {
     [FeatureGate(FeatureFlags.ExporterReprocessors)]
     [Route(PagePath.ManageReprocessorRegistration)]
-    public class ManageRegistrationReprocessorController : Controller
+    public class ManageRegistrationsReprocessorController : Controller
     {
         [HttpGet]
         public IActionResult Index()
