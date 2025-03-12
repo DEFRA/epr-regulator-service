@@ -3,18 +3,17 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
-namespace EPR.RegulatorService.Frontend.Web.Controllers.ExporterReprocessors.Registration
-{
-    [FeatureGate(FeatureFlags.ExporterReprocessors)]
-    [Route(PagePath.ManageReprocessorRegistration)]
-    public class ManageRegistrationsReprocessorController : Controller
-    {
-        [HttpGet]
-        public IActionResult Index()
-        {
-            ViewBag.BackLinkToDisplay = "";
+namespace EPR.RegulatorService.Frontend.Web.Controllers.ExporterReprocessors.Registration;
 
-            return View();
-        }
+[FeatureGate(FeatureFlags.ExporterReprocessors)]
+[Route(PagePath.ManageReprocessorRegistration)]
+public class ManageRegistrationsReprocessorController : Controller
+{
+    [HttpGet]
+    public IActionResult Index()
+    {
+        ViewBag.BackLinkToDisplay = "";
+
+        return View();
     }
 }
