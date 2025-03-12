@@ -1,8 +1,10 @@
-﻿namespace EPR.RegulatorService.Frontend.Web.Controllers.ReExJourney.Accreditation
+namespace EPR.RegulatorService.Frontend.Web.Controllers.ReExJourney.Accreditation
 {
+    using EPR.RegulatorService.Frontend.Web.Controllers.ReExJourney.Common;
+
     using Microsoft.AspNetCore.Mvc;
 
-    public class AccreditationController : Controller
+    public class AccreditationController : BaseController
     {
         public IActionResult Index()
         {
