@@ -19,7 +19,7 @@ public static class FeatureFlags
 
     public const string ManageRegistrationSubmissions = "ManageRegistrationSubmissions";
 
-    public const string ExporterReprocessors = "ExporterReprocessors";
+    public const string ReprocessorExporter = "ReprocessorExporter";
 
     public const string EnableCsvDownload = "EnableCsvDownload";
 }

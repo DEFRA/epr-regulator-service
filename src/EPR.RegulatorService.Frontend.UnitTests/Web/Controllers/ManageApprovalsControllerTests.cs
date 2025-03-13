@@ -1,17 +1,17 @@
-using EPR.RegulatorService.Frontend.Web.Controllers.ExporterReprocessors.Registration;
+using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
 [TestClass]
-public class ManageRegistrationsReprocessorControllerTests
+public class ManageApprovalsControllerTests
 {
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
 
-    private ManageRegistrationsReprocessorController _controller;
+    private ManageApprovalsController _controller;
 
     [TestInitialize]
-    public void TestInitialize() => _controller = new ManageRegistrationsReprocessorController();
+    public void TestInitialize() => _controller = new ManageApprovalsController();
 
     [TestMethod]
     public void Index_ShouldDisplayBackLink()
