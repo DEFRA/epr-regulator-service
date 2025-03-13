@@ -55,7 +55,7 @@ public static class PagePath
     public const string PackagingDataFileDownload = "packaging-data-file-download";
     public const string PackagingDataFileDownloadFailed = "packaging-data-file-download-failed";
     public const string PackagingDataFileDownloadSecurityWarning = "packaging-data-file-download-security-warning";
-    public const string ManageApprovals = "manage-applications";
+    public const string ManageApplications = "manage-applications";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

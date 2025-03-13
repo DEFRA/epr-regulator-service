@@ -8,7 +8,7 @@ using Microsoft.FeatureManagement.Mvc;
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
-[Route(PagePath.ManageApprovals)]
+[Route(PagePath.ManageApplications)]
 public class ManageApplicationsController : Controller
 {
     [HttpGet]
