@@ -3955,10 +3955,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region SubmissionDetailsFileDownload
 
         [TestMethod]
-        public void SubmissionDetailsFileDownload_ShouldReturnViewResult()
+        public async void SubmissionDetailsFileDownload_ShouldReturnViewResult()
         {
             // Act
-            var result = _controller.SubmissionDetailsFileDownload();
+            var result = await _controller.SubmissionDetailsFileDownload();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult), "The result should be a ViewResult.");
