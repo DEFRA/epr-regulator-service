@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
 [TestClass]
-public class ManageApprovalsControllerTests
+public class ManageApplicationsControllerTests
 {
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
 
-    private ManageApprovalsController _controller;
+    private ManageApplicationsController _controller;
 
     [TestInitialize]
-    public void TestInitialize() => _controller = new ManageApprovalsController();
+    public void TestInitialize() => _controller = new ManageApplicationsController();
 
     [TestMethod]
     public void Index_ShouldDisplayBackLink()

@@ -1,6 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Core.Enums;
 
-public enum ApprovalOrganisationType
+public enum ApplicationOrganisationType
 {
     Reprocessor,
     Exporter

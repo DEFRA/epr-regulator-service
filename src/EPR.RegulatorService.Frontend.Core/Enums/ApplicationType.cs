@@ -1,6 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Core.Enums;
 
-public enum ApprovalType
+public enum ApplicationType
 {
     Registration,
     Accreditation
