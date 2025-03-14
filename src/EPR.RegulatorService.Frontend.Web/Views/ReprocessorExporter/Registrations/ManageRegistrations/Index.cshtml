@@ -3,8 +3,8 @@
 @model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.ManageRegistrationsViewModel
 
 @{
-    const string Title = "Manage Registrations";
-	ViewData["Title"] = $"{Title} - {Model.ApplicationOrganisationType}";
+    const string title = "Manage Registrations";
+    ViewData["Title"] = $"{title} - {Model.ApplicationOrganisationType}";
 }
 
 <div class="govuk-width-container">
@@ -14,7 +14,7 @@
 		<div class="govuk-grid-row">
 			<div class="govuk-grid-column-two-thirds govuk-!-margin-top-2 reprocessorExporter">
         <h1 class="govuk-heading-l">
-           @Title
+           @title
         </h1>
 
 		    @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_OrganisationDetails.cshtml", Model)
