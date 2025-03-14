@@ -1,0 +1,40 @@
+
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+
+@model AcceptRegistrationSubmissionViewModel
+@{
+    ViewData["Title"] = Localizer["AcceptSubmission.Title"];
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+@using (Html.BeginForm("AcceptRegistrationSubmission", "Registrations", FormMethod.Post))
+{
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+
+            Plastic
+            <h2 class="govuk-heading-m">Waste licences, permits or exemptions</h2>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                    }
+
+                    *********************page specific stuff here*******************
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <button class="govuk-button" data-module="govuk-button">
+                        @SharedLocalizer["Continue"]
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+}

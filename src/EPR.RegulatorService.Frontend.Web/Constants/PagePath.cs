@@ -57,6 +57,8 @@ public static class PagePath
     public const string PackagingDataFileDownloadSecurityWarning = "packaging-data-file-download-security-warning";
     public const string ManageApprovals = "manage-applications";
 
+    public const string WasteLicences = "check-waste-licences";
+
     // Non journey paths
     public const string Accessibility = "accessibility";
     public const string SignedOut = "signed-out";

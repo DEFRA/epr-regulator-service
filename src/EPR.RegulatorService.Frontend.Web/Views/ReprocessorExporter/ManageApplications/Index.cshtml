@@ -18,10 +18,13 @@
 
 		    @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/_OrganisationDetails.cshtml", Model)
 
-        @* @if (Model.ApplicationType == ApplicationType.Registration)
-        {
-		      @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_CheckRegistrations.cshtml", Model)
-        } *@
+
+            @if (Model.ApplicationType == ApplicationType.Registration)
+            {
+              @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_CheckRegistrations.cshtml", Model)
+              @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewPlasticRegistrations.cshtml", Model)
+            } 
+
 
         @* @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
 		    {
