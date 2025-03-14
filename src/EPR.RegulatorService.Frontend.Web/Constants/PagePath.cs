@@ -56,7 +56,10 @@ public static class PagePath
     public const string PackagingDataFileDownloadFailed = "packaging-data-file-download-failed";
     public const string PackagingDataFileDownloadSecurityWarning = "packaging-data-file-download-security-warning";
     public const string ManageApplications = "manage-applications";
-
+    public const string AuthorisedMaterials = "authorised-materials";
+    public const string Registration = "registration";
+    public const string Accreditation = "accreditation";
+    public const string UkSiteDetails="uksite-details";
     // Non journey paths
     public const string Accessibility = "accessibility";
     public const string SignedOut = "signed-out";
