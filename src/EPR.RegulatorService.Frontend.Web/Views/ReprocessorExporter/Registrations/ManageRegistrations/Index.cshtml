@@ -1,0 +1,37 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
+
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.ManageRegistrationsViewModel
+
+@{
+    const string title = "Manage Registrations";
+    ViewData["Title"] = $"{title} - {Model.ApplicationOrganisationType}";
+}
+
+<div class="govuk-width-container">
+
+	<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+
+		<div class="govuk-grid-row">
+			<div class="govuk-grid-column-two-thirds govuk-!-margin-top-2 reprocessorExporter">
+        <h1 class="govuk-heading-l">
+           @title
+        </h1>
+
+		    @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_OrganisationDetails.cshtml", Model)
+
+			@* @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_CheckRegistrations.cshtml", Model) *@
+
+            @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
+		        {
+		          @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewSiteDetails.cshtml", Model)
+		        } 
+        
+        @* @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Exporter)
+        {
+          @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewAddressAndPermits.cshtml", Model)
+        } *@
+
+      </div>
+    </div>
+  </main>
+</div>

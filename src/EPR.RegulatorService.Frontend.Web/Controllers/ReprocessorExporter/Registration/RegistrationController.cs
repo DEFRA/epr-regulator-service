@@ -24,7 +24,7 @@ public class RegistrationController : Controller
     [Route(PagePath.AuthorisedMaterials)]
     public IActionResult AuthorisedMaterials()
     {
-        ViewBag.BackLinkToDisplay = PagePath.ManageApplications;
+        ViewBag.BackLinkToDisplay = PagePath.ManageRegistrations;
 
         var model = new ManageRegistrationsViewModel
         {
@@ -32,6 +32,21 @@ public class RegistrationController : Controller
         };
 
         return View("~/Views/ReprocessorExporter/Reprocessor/AuthorisedMaterials.cshtml", model);
+
+    }
+    
+        [HttpGet]
+    [Route(PagePath.UkSiteDetails)]
+    public IActionResult UkSiteDetails()
+    {
+        ViewBag.BackLinkToDisplay = PagePath.ManageRegistrations;
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
+        };
+
+        return View("~/Views/ReprocessorExporter/Reprocessor/UkSiteDetails.cshtml", model);
 
     }
 
