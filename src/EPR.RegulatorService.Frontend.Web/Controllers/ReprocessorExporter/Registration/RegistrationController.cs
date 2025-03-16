@@ -17,7 +17,7 @@ using Microsoft.FeatureManagement.Mvc;
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
-[Route(PagePath.Registration)]
+[Route(PagePath.ReprocessorExporterRegistrations)]
 public class RegistrationController : Controller
 {
     [HttpGet]
@@ -26,28 +26,12 @@ public class RegistrationController : Controller
     {
         ViewBag.BackLinkToDisplay = PagePath.ManageApplications;
 
-        var model = new ManageApplicationsViewModel
+        var model = new ManageRegistrationsViewModel
         {
-            ApplicationType = ApplicationType.Registration,
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
         return View("~/Views/ReprocessorExporter/Reprocessor/AuthorisedMaterials.cshtml", model);
-
-    }
-    [HttpGet]
-    [Route(PagePath.UkSiteDetails)]
-    public IActionResult UkSiteDetails()
-    {
-        ViewBag.BackLinkToDisplay = PagePath.ManageApplications;
-
-        var model = new ManageApplicationsViewModel
-        {
-            ApplicationType = ApplicationType.Registration,
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-
-        return View("~/Views/ReprocessorExporter/Reprocessor/UkSiteDetails.cshtml", model);
 
     }
 
