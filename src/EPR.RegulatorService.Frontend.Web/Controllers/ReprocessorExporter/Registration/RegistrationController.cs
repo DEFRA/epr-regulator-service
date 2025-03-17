@@ -18,6 +18,8 @@ public class RegistrationController : Controller
     {
         ViewBag.BackLinkToDisplay = PagePath.ManageRegistrations;
 
+        ViewBag.BackLinkAriaLabel = "Click here if you wish to go back to the previous page";//will be added to localizer
+
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
