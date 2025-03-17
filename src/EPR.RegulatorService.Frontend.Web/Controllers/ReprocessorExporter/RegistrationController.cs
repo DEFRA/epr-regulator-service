@@ -26,7 +26,6 @@ public class RegistrationController : Controller
     public IActionResult WasteLicences()
     {
         ViewBag.BackLinkToDisplay = PagePath.WasteLicences;
-        ViewBag.Title = "io hiop";
 
         // TODO: 515218
         return View("~/Views/ReprocessorExporter/Registration/WasteLicences.cshtml");
