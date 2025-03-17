@@ -5,23 +5,22 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
-namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter;
+namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
-[Route(PagePath.ManageApprovals)]
-public class ManageApplicationsController : Controller
+[Route($"{PagePath.ReprocessorExporterRegistrations}/{PagePath.ManageRegistrations}")]
+public class ManageRegistrationsController : Controller
 {
     [HttpGet]
     public IActionResult Index()
     {
         ViewBag.BackLinkToDisplay = "";
 
-        var model = new ManageApplicationsViewModel
+        var model = new ManageRegistrationsViewModel
         {
-            ApplicationType = ApplicationType.Registration,
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/ManageApplications/Index.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations/Index.cshtml", model);
     }
 }
