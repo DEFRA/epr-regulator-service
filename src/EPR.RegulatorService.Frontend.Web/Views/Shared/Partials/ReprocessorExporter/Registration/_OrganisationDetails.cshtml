@@ -1,0 +1,15 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
+
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.ManageRegistrationsViewModel
+
+<ul class="govuk-list">
+  <li>Organisation name : Green Ltd</li>
+
+  @if(Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
+  {
+	<li>Site : 23 Ruby St, London, E12 3SE</li>
+  }
+
+  <li>Organisation type : @Model.ApplicationOrganisationType</li>
+  <li>Regulator :  Environment Agency (EA) </li>
+</ul>
