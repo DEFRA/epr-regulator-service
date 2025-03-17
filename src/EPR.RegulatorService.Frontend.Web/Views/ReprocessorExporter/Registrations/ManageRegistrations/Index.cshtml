@@ -20,7 +20,7 @@
 		    @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_OrganisationDetails.cshtml", Model)
 
 
-            @if (Model.ApplicationType == ApplicationType.Registration)
+                @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
             {
               @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_CheckRegistrations.cshtml", Model)
               @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewPlasticRegistrations.cshtml", Model)
