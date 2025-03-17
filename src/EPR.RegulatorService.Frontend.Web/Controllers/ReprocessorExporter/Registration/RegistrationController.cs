@@ -24,6 +24,5 @@ public class RegistrationController : Controller
         };
 
         return View("~/Views/ReprocessorExporter/Reprocessor/UkSiteDetails.cshtml", model);
-
     }
 }
