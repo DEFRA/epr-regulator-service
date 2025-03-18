@@ -21,9 +21,9 @@
         
         @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
         {
-		    @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewSiteDetails.cshtml")
-            @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewPlasticRegistrations.cshtml")
-		} 
+		      @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewSiteDetails.cshtml")
+          @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewMaterialRegistrations.cshtml")
+		    } 
         
       </div>
     </div>
