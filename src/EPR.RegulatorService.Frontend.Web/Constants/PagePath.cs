@@ -57,6 +57,7 @@ public static class PagePath
     public const string PackagingDataFileDownloadSecurityWarning = "packaging-data-file-download-security-warning";
     public const string ReprocessorExporterRegistrations = "registrations";
     public const string ManageRegistrations = "manage-registrations";
+    public const string UkSiteDetails = "uksite-details";
     public const string InputsAndOutputs = "reprocessing-throughputs";
 
     // Non journey paths
