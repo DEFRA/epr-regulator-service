@@ -2,12 +2,15 @@ using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 
 using FluentAssertions;
+using FluentAssertions.Execution;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,18 +25,41 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
         private RegistrationsController _controller;
         private Mock<ISessionManager<JourneySession>> _mockSessionManager;
         private Mock<IConfiguration> _mockConfiguration;
+        private Mock<HttpContext> _httpContextMock = null!;
+
 
         [TestInitialize]
         public void TestInitialize()
         {
+            _httpContextMock = new Mock<HttpContext>();
             _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
             _mockConfiguration = new Mock<IConfiguration>();
+            var configurationSectionMock = new Mock<IConfigurationSection>();
+            var mockRequest = new Mock<HttpRequest>();
+            var mockHeaders = new Mock<IHeaderDictionary>();
+
+            // Set up the Referer header to return a sample URL (or null for different tests)
+            mockHeaders.Setup(h => h["Referer"]).Returns("http://previous-page.com");
+
+            // Set the mock Request to the HttpContext
+            mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
+            _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+            configurationSectionMock
+                .Setup(section => section.Value)
+                .Returns("/regulators");
+
+            _mockConfiguration
+                .Setup(config => config.GetSection(ConfigKeys.PathBase))
+                .Returns(configurationSectionMock.Object);
 
             _mockSessionManager
-                .Setup(m => m.GetSessionAsync(It.IsAny<Microsoft.AspNetCore.Http.ISession>()))
+                .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(new JourneySession());
 
             _controller = new RegistrationsController(_mockSessionManager.Object, _mockConfiguration.Object);
+
+            _controller.ControllerContext.HttpContext = _httpContextMock.Object;
         }
 
         [TestMethod]
@@ -43,15 +69,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
             var result = await _controller.UkSiteDetails();
 
             // Assert
-            result.Should().BeOfType<ViewResult>();
 
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<ViewResult>();
 
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+                var viewResult = result as ViewResult;
+                viewResult.Should().NotBeNull();
+                viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+                var model = viewResult.Model as ManageRegistrationsViewModel;
+                model.Should().NotBeNull();
+                model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+            }
+
         }
 
         [TestMethod]
@@ -61,15 +92,19 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
             var result = await _controller.AuthorisedMaterials();
 
             // Assert
-            result.Should().BeOfType<ViewResult>();
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<ViewResult>();
 
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+                var viewResult = result as ViewResult;
+                viewResult.Should().NotBeNull();
+                viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
 
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+                var model = viewResult.Model as ManageRegistrationsViewModel;
+                model.Should().NotBeNull();
+                model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+            }
+
         }
     }
 }
