@@ -47,7 +47,7 @@ public class RegistrationController : RegulatorSessionBaseController
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Reprocessor/AuthorisedMaterials.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Registrations/Reprocessor/AuthorisedMaterials.cshtml", model);
 
     }
     
@@ -64,7 +64,7 @@ public class RegistrationController : RegulatorSessionBaseController
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Reprocessor/UkSiteDetails.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Registrations/Reprocessor/UkSiteDetails.cshtml", model);
     }
 
 }

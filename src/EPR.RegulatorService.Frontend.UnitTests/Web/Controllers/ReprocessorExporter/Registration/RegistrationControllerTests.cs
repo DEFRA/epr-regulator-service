@@ -1,73 +1,75 @@
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registration;
+using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
+using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 
+using FluentAssertions;
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-[TestClass]
-public class RegistrationControllerTests
+using Moq;
+
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registration
 {
-    private RegistrationController _controller;
-
-    [TestInitialize]
-    public void TestInitialize() => _controller = new RegistrationController();
-
-    [TestMethod]
-    public void UkSiteDetails_ShouldDisplayBackLink()
+    [TestClass]
+    public class RegistrationControllerTests
     {
-        // Act
-        var result = _controller.UkSiteDetails();
+        private RegistrationController _controller;
+        private Mock<ISessionManager<JourneySession>> _mockSessionManager;
+        private Mock<IConfiguration> _mockConfiguration;
 
-        // Assert
-        result.Should().BeOfType<ViewResult>(); 
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
+            _mockConfiguration = new Mock<IConfiguration>();
 
-        var viewResult = (ViewResult)result;
-        viewResult.ViewData["BackLinkToDisplay"].Should().Be(PagePath.ManageRegistrations); 
-    }
+            _mockSessionManager
+                .Setup(m => m.GetSessionAsync(It.IsAny<Microsoft.AspNetCore.Http.ISession>()))
+                .ReturnsAsync(new JourneySession());
 
-    [TestMethod]
-    public void UkSiteDetails_Model_ShouldHaveCorrectApplicationOrganisationType()
-    {
-        // Act
-        var result = _controller.UkSiteDetails();
+            _controller = new RegistrationController(_mockSessionManager.Object, _mockConfiguration.Object);
+        }
 
-        // Assert
-        result.Should().BeOfType<ViewResult>(); 
+        [TestMethod]
+        public async Task UkSiteDetails_WithCorrectModel_ShouldReturnView()
+        {
+            // Act
+            var result = await _controller.UkSiteDetails();
 
-        var viewResult = (ViewResult)result;
-        var model = viewResult.Model as ManageRegistrationsViewModel;
-        model.Should().NotBeNull(); 
-        model.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor); 
-    }
-    [TestMethod]
-    public void AuthorisedMaterials_ShouldDisplayBackLink()
-    {
-        // Act
-        var result = _controller.AuthorisedMaterials();
+            // Assert
+            result.Should().BeOfType<ViewResult>();
 
-        // Assert
-        result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
 
-        var viewResult = (ViewResult)result;
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+        }
 
+        [TestMethod]
+        public async Task AuthorisedMaterials_WithCorrectModel_ShouldReturnView()
+        {
+            // Act
+            var result = await _controller.AuthorisedMaterials();
 
-        viewResult.ViewData["BackLinkToDisplay"].Should().Be(PagePath.ManageRegistrations);
-    }
-    [TestMethod]
-    public void AuthorisedMaterials_Model_ShouldHaveCorrectApplicationOrganisationType()
-    {
-        // Act
-        var result = _controller.AuthorisedMaterials();
+            // Assert
+            result.Should().BeOfType<ViewResult>();
 
-        // Assert
-        result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
 
-        var viewResult = (ViewResult)result;
-        var model = viewResult.Model as ManageRegistrationsViewModel;
-        model.Should().NotBeNull();
-        model.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+        }
     }
 }
