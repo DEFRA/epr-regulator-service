@@ -16,6 +16,7 @@ using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registra
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -32,7 +33,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         _sessionManager = sessionManager;
     }
 
-   
+
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials()
@@ -40,8 +41,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
         SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.AuthorisedMaterials);
-        SetBackLink(session, PagePath.AuthorisedMaterials);
-        SetBackLinkAriaLabel();
+        SetBackLinkInfos(session, PagePath.AuthorisedMaterials);
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
@@ -50,7 +50,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         return View("~/Views/ReprocessorExporter/Registrations/AuthorisedMaterials.cshtml", model);
 
     }
-    
+
     [HttpGet]
     [Route(PagePath.UkSiteDetails)]
     public async Task<IActionResult> UkSiteDetails()
@@ -58,8 +58,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
         SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.UkSiteDetails);
-        SetBackLink(session, PagePath.UkSiteDetails);
-        SetBackLinkAriaLabel();
+        SetBackLinkInfos(session, PagePath.UkSiteDetails);
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
@@ -86,5 +85,13 @@ public class RegistrationsController : RegulatorSessionBaseController
     }
 
 
+    private void SetBackLinkInfos(JourneySession session, string currentPagePath)
+    {
+        if (string.IsNullOrEmpty(Request.Headers.Referer))
+            SetHomeBackLink();
+        else
+            SetBackLink(session, currentPagePath);
 
+        SetBackLinkAriaLabel();
+    }
 }
