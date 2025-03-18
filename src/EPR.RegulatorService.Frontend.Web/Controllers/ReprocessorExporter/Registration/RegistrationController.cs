@@ -25,6 +25,6 @@ public class RegistrationController : Controller
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Reprocessor/UkSiteDetails.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Registrations/Reprocessor/UkSiteDetails.cshtml", model);
     }
 }
