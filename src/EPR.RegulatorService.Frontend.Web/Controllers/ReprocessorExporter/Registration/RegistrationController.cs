@@ -1,7 +1,12 @@
+using System.Configuration;
+
 using EPR;
 using EPR.RegulatorService;
 using EPR.RegulatorService.Frontend;
 using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Extensions;
+using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -9,8 +14,8 @@ using EPR.RegulatorService.Frontend.Web.Controllers;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
+using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -18,13 +23,24 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
-public class RegistrationController : Controller
+public class RegistrationController : RegulatorSessionBaseController
 {
+    private readonly ISessionManager<JourneySession> _sessionManager;
+
+    public RegistrationController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration) : base(sessionManager, configuration)
+    {
+        _sessionManager = sessionManager;
+    }
+
+   
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
-    public IActionResult AuthorisedMaterials()
+    public async Task<IActionResult> AuthorisedMaterials()
     {
-        ViewBag.BackLinkToDisplay = PagePath.ManageRegistrations;
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
+        SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.AuthorisedMaterials);
+        SetBackLink(session, PagePath.AuthorisedMaterials);
 
         var model = new ManageRegistrationsViewModel
         {
@@ -35,14 +51,14 @@ public class RegistrationController : Controller
 
     }
     
-        [HttpGet]
+    [HttpGet]
     [Route(PagePath.UkSiteDetails)]
-    public IActionResult UkSiteDetails()
+    public async Task<IActionResult> UkSiteDetails()
     {
-        ViewBag.BackLinkToDisplay = PagePath.ManageRegistrations;
-
-        ViewBag.BackLinkAriaLabel = "Click here if you wish to go back to the previous page";//will be added to localizer
-
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
+        SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.UkSiteDetails);
+        SetBackLink(session, PagePath.UkSiteDetails);
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
