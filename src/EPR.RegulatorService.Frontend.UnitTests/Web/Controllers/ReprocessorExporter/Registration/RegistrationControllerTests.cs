@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 [TestClass]
 public class RegistrationControllerTests
 {
-    private RegistrationController _controller;
+    private RegistrationsController _controller;
 
     [TestInitialize]
-    public void TestInitialize() => _controller = new RegistrationController();
+    public void TestInitialize() => _controller = new RegistrationsController();
 
     [TestMethod]
     public void UkSiteDetails_ShouldDisplayBackLink()
