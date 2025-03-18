@@ -21,6 +21,6 @@ public class ManageRegistrationsController : Controller
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations/Index.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations.cshtml", model);
     }
 }
