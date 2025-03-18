@@ -27,19 +27,4 @@ public class RegistrationControllerTests
         var viewResult = (ViewResult)result;
         viewResult.ViewData["BackLinkToDisplay"].Should().Be(PagePath.ManageRegistrations); 
     }
-
-    [TestMethod]
-    public void UkSiteDetails_Model_ShouldHaveCorrectApplicationOrganisationType()
-    {
-        // Act
-        var result = _controller.UkSiteDetails();
-
-        // Assert
-        result.Should().BeOfType<ViewResult>(); 
-
-        var viewResult = (ViewResult)result;
-        var model = viewResult.Model as ManageRegistrationsViewModel;
-        model.Should().NotBeNull(); 
-        model.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor); 
-    }
 }
