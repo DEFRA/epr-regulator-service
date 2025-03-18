@@ -28,7 +28,7 @@ public class RegistrationsController : RegulatorSessionBaseController
     private readonly ISessionManager<JourneySession> _sessionManager;
 
     public RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration) : base(sessionManager, configuration)
-    {
+{
         _sessionManager = sessionManager;
     }
 

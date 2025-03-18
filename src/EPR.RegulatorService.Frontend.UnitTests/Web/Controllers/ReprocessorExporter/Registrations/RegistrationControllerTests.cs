@@ -16,14 +16,14 @@ using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations
 {
-    [TestClass]
-    public class RegistrationControllerTests
-    {
-        private RegistrationsController _controller;
+[TestClass]
+public class RegistrationControllerTests
+{
+    private RegistrationsController _controller;
         private Mock<ISessionManager<JourneySession>> _mockSessionManager;
         private Mock<IConfiguration> _mockConfiguration;
 
-        [TestInitialize]
+    [TestInitialize]
         public void TestInitialize()
         {
             _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
@@ -54,14 +54,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
             model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
         }
 
-        [TestMethod]
+    [TestMethod]
         public async Task AuthorisedMaterials_WithCorrectModel_ShouldReturnView()
-        {
-            // Act
+    {
+        // Act
             var result = await _controller.AuthorisedMaterials();
 
-            // Assert
-            result.Should().BeOfType<ViewResult>();
+        // Assert
+        result.Should().BeOfType<ViewResult>(); 
 
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
