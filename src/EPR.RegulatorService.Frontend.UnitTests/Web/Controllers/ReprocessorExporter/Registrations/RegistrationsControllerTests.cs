@@ -1,26 +1,19 @@
-using System.Threading.Tasks;
-
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
-
-using FluentAssertions;
 using FluentAssertions.Execution;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations
 {
     [TestClass]
-    public class RegistrationControllerTests
+    public class RegistrationsControllerTests
     {
         private RegistrationsController _controller;
         private Mock<ISessionManager<JourneySession>> _mockSessionManager;

@@ -1,21 +1,11 @@
-using System.Configuration;
-
-using EPR;
-using EPR.RegulatorService;
-using EPR.RegulatorService.Frontend;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
-using EPR.RegulatorService.Frontend.Core.Sessions;
-using EPR.RegulatorService.Frontend.Web;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.Controllers;
-using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
-using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -32,7 +22,6 @@ public class RegistrationsController : RegulatorSessionBaseController
         _sessionManager = sessionManager;
     }
 
-   
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials()
@@ -47,9 +36,8 @@ public class RegistrationsController : RegulatorSessionBaseController
         };
 
         return View("~/Views/ReprocessorExporter/Registrations/AuthorisedMaterials.cshtml", model);
-
     }
-    
+
     [HttpGet]
     [Route(PagePath.UkSiteDetails)]
     public async Task<IActionResult> UkSiteDetails()
@@ -75,5 +63,4 @@ public class RegistrationsController : RegulatorSessionBaseController
 
         SetBackLinkAriaLabel();
     }
-
 }
