@@ -11,6 +11,7 @@ using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.FileUpload;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
@@ -640,4 +641,6 @@ public class FacadeService : IFacadeService
         stream.Position = 0;
         return stream;
     }
+
+    public Task<HttpResponseMessage> SubmitFileUpload(FileUploadRequest request) => throw new NotImplementedException();
 }

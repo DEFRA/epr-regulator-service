@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text.Json;
 
 using EPR.Common.Authorization.Constants;
@@ -5,6 +6,7 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.FileUpload;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -350,6 +352,35 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         }
 
         [HttpGet]
+        [Route(PagePath.FileUpload)]
+        public async Task<IActionResult> FileUpload()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route(PagePath.FileUpload)]
+        [RequestSizeLimit(FileSizeLimit.FileSizeLimitInBytes)]
+        public async Task<IActionResult> FileUpload(FileUploadRequest fileUploadRequest)
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var allowedFileTypes = new[] { ".pdf", ".docx", ".xlsx" };
+
+            var fileExtension = System.IO.Path.GetExtension(fileUploadRequest.MyFile.FileName).ToLower();
+            if (!allowedFileTypes.Contains(fileExtension))
+            {
+                ViewBag.Message = "Invalid file type! Only PDF, DOCX, and XLSX files are allowed.";
+                return View();
+            }
+
+            _facadeService.SubmitFileUpload(fileUploadRequest);
+
+            ViewBag.Message = "File Uploaded.";
+            return View();
+        }
+
+
+            [HttpGet]
         public async Task<IActionResult> FileDownloadInProgress()
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);

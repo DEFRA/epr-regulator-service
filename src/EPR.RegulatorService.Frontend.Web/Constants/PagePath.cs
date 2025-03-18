@@ -33,6 +33,8 @@ public static class PagePath
     public const string EmailNominatedApprovedPerson = "email-nominated-approved-person";
     public const string AccountPermissionsChanged = "account-permissions-changed";
     public const string FileDownload = "file-download";
+    public const string FileUpload = "file-upload";
+
     public const string SubmissionsFileDownload = "submissions-file-download";
     public const string OrganisationDetailsFileDownload = "organisation-details-file-download";
     public const string OrganisationDetailsFileDownloadFailed = "organisation-details-file-download-failed";

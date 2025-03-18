@@ -22,6 +22,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using EPR.RegulatorService.Frontend.Core.Models.FileUpload;
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 [ExcludeFromCodeCoverage]
@@ -511,4 +512,6 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         stream.Position = 0;
         return stream;
     }
+
+    public async Task<HttpResponseMessage> SubmitFileUpload(FileUploadRequest request) => await Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
 }
