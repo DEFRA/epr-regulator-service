@@ -43,7 +43,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         SetBackLink(session, PagePath.AuthorisedMaterials);
         SetBackLinkAriaLabel();
         var model = new ManageRegistrationsViewModel
-        {
+{
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
@@ -61,7 +61,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         SetBackLink(session, PagePath.UkSiteDetails);
         SetBackLinkAriaLabel();
         var model = new ManageRegistrationsViewModel
-        {
+    {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 

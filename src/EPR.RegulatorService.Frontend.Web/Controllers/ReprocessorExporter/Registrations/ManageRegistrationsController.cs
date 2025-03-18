@@ -36,7 +36,7 @@ public class ManageRegistrationsController : Controller
         var registration = _registrationService.GetRegistrationById(id);
 
         if (registration == null)
-        {
+    {
             _logger.LogWarning("No registration found for ID: {Id}", id);
             return NotFound("Registration not found.");
         }
