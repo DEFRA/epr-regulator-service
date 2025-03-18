@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Sessions;
-using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
+using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 
@@ -14,12 +14,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Moq;
 
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registration
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations
 {
     [TestClass]
     public class RegistrationControllerTests
     {
-        private RegistrationController _controller;
+        private RegistrationsController _controller;
         private Mock<ISessionManager<JourneySession>> _mockSessionManager;
         private Mock<IConfiguration> _mockConfiguration;
 
@@ -33,7 +33,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
                 .Setup(m => m.GetSessionAsync(It.IsAny<Microsoft.AspNetCore.Http.ISession>()))
                 .ReturnsAsync(new JourneySession());
 
-            _controller = new RegistrationController(_mockSessionManager.Object, _mockConfiguration.Object);
+            _controller = new RegistrationsController(_mockSessionManager.Object, _mockConfiguration.Object);
         }
 
         [TestMethod]

@@ -1,8 +1,8 @@
-using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
+using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registration;
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
 [TestClass]
 public class ManageRegistrationsControllerTests

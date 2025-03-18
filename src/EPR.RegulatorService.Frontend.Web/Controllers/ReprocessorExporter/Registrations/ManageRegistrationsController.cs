@@ -6,7 +6,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
-namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
+namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route($"{PagePath.ReprocessorExporterRegistrations}/{PagePath.ManageRegistrations}")]
@@ -22,6 +22,6 @@ public class ManageRegistrationsController : Controller
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations/Index.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations.cshtml", model);
     }
 }

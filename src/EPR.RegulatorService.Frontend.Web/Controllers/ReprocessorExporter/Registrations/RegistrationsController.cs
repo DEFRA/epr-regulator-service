@@ -12,22 +12,22 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
-using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
+using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
-namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registration;
+namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
-public class RegistrationController : RegulatorSessionBaseController
+public class RegistrationsController : RegulatorSessionBaseController
 {
     private readonly ISessionManager<JourneySession> _sessionManager;
 
-    public RegistrationController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration) : base(sessionManager, configuration)
+    public RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration) : base(sessionManager, configuration)
     {
         _sessionManager = sessionManager;
     }
@@ -47,7 +47,7 @@ public class RegistrationController : RegulatorSessionBaseController
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/Reprocessor/AuthorisedMaterials.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Registrations/AuthorisedMaterials.cshtml", model);
 
     }
     
@@ -64,7 +64,7 @@ public class RegistrationController : RegulatorSessionBaseController
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/Reprocessor/UkSiteDetails.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
     }
 
 }
