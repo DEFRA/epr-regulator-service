@@ -41,7 +41,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
         SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.AuthorisedMaterials);
         SetBackLink(session, PagePath.AuthorisedMaterials);
-
+        SetBackLinkAriaLabel();
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
@@ -59,6 +59,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
         SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.UkSiteDetails);
         SetBackLink(session, PagePath.UkSiteDetails);
+        SetBackLinkAriaLabel();
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
@@ -66,5 +67,7 @@ public class RegistrationsController : RegulatorSessionBaseController
 
         return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
     }
+
+
 
 }
