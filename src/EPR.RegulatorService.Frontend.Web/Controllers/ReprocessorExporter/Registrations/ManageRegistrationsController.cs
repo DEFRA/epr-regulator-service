@@ -28,8 +28,6 @@ public class ManageRegistrationsController : Controller
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]  // When the view loads successfully
     [ProducesResponseType(StatusCodes.Status302Found)] // When redirecting to the error page
-    [ProducesResponseType(StatusCodes.Status400BadRequest)] // If ID is invalid
-    [ProducesResponseType(StatusCodes.Status404NotFound)] // If registration is not found
     public IActionResult Index([FromQuery] int id)
     {
         try
@@ -37,16 +35,16 @@ public class ManageRegistrationsController : Controller
             // Validate ID
             if (id <= 0)
             {
-                _logger.LogWarning("Invalid ID received in query string: {Id}", id);
-                return BadRequest("Invalid registration ID.");
+                _logger.LogError("Invalid ID received in query string: {Id}", id);
+                return RedirectToAction(PagePath.Error, "Error");
             }
 
             var registration = _registrationService.GetRegistrationById(id);
 
             if (registration == null)
             {
-                _logger.LogWarning("No registration found for ID: {Id}", id);
-                return NotFound("Registration not found.");
+                _logger.LogError("No registration found for ID: {Id}", id);
+                return RedirectToAction(PagePath.Error, "Error");
             }
 
             ViewBag.BackLinkToDisplay = "";
@@ -64,11 +62,7 @@ public class ManageRegistrationsController : Controller
         }
         catch (Exception ex)
         {
-            // Log and debug exception
-            Debug.WriteLine(ex);
             _logger.LogError(ex, "Exception occurred while processing ManageRegistrations request for ID: {Id}", id);
-
-            // Redirect to the error page to maintain a consistent user experience
             return RedirectToAction(PagePath.Error, "Error");
         }
     }

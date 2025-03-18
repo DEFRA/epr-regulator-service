@@ -103,7 +103,7 @@ public class ManageRegistrationsControllerTests
     }
 
     [TestMethod]
-    public void Index_InvalidId_ShouldReturnBadRequest()
+    public void Index_InvalidId_ShouldRedirectToErrorPage()
     {
         // Arrange
         var id = 0; // Invalid ID
@@ -112,19 +112,19 @@ public class ManageRegistrationsControllerTests
         var result = _controller.Index(id);
 
         // Assert
-        result.Should().BeOfType<BadRequestObjectResult>();
-        var badRequestResult = result as BadRequestObjectResult;
+        result.Should().BeOfType<RedirectToActionResult>();
 
+        var redirectResult = result as RedirectToActionResult;
         using (new AssertionScope())
         {
-            badRequestResult.Should().NotBeNull();
-            badRequestResult!.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-            badRequestResult.Value.Should().Be("Invalid registration ID.");
+            redirectResult.Should().NotBeNull();
+            redirectResult!.ActionName.Should().Be(PagePath.Error);
+            redirectResult.ControllerName.Should().Be("Error");
         }
 
         _loggerMock.Verify(
             x => x.Log(
-                LogLevel.Warning,
+                LogLevel.Error,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Invalid ID received")),
                 It.IsAny<Exception>(),
@@ -133,7 +133,7 @@ public class ManageRegistrationsControllerTests
     }
 
     [TestMethod]
-    public void Index_NonExistentId_ShouldReturnNotFound()
+    public void Index_NonExistentId_ShouldRedirectToErrorPage()
     {
         // Arrange
         var id = 9999;
@@ -143,19 +143,19 @@ public class ManageRegistrationsControllerTests
         var result = _controller.Index(id);
 
         // Assert
-        result.Should().BeOfType<NotFoundObjectResult>();
-        var notFoundResult = result as NotFoundObjectResult;
+        result.Should().BeOfType<RedirectToActionResult>();
 
+        var redirectResult = result as RedirectToActionResult;
         using (new AssertionScope())
         {
-            notFoundResult.Should().NotBeNull();
-            notFoundResult!.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-            notFoundResult.Value.Should().Be("Registration not found.");
+            redirectResult.Should().NotBeNull();
+            redirectResult!.ActionName.Should().Be(PagePath.Error);
+            redirectResult.ControllerName.Should().Be("Error");
         }
 
         _loggerMock.Verify(
             x => x.Log(
-                LogLevel.Warning,
+                LogLevel.Error,
                 It.IsAny<EventId>(),
                 It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("No registration found")),
                 It.IsAny<Exception>(),
