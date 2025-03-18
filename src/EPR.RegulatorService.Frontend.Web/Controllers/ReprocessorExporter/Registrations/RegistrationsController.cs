@@ -40,8 +40,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
         SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.AuthorisedMaterials);
-        SetBackLink(session, PagePath.AuthorisedMaterials);
-        SetBackLinkAriaLabel();
+        SetBackLinkInfos(session, PagePath.AuthorisedMaterials);
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
@@ -58,8 +57,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
         SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.UkSiteDetails);
-        SetBackLink(session, PagePath.UkSiteDetails);
-        SetBackLinkAriaLabel();
+        SetBackLinkInfos(session, PagePath.UkSiteDetails);
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
@@ -68,6 +66,14 @@ public class RegistrationsController : RegulatorSessionBaseController
         return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
     }
 
+    private void SetBackLinkInfos(JourneySession session, string currentPagePath)
+    {
+        if (string.IsNullOrEmpty(Request.Headers.Referer))
+            SetHomeBackLink();
+        else
+            SetBackLink(session, currentPagePath);
 
+        SetBackLinkAriaLabel();
+    }
 
 }
