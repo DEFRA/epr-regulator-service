@@ -54,7 +54,25 @@ public class RegistrationControllerTests
             model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
         }
 
-    [TestMethod]
+        [TestMethod]
+        public async Task BusinessAddress_WithCorrectModel_ShouldReturnView()
+        {
+            // Act
+            var result = await _controller.BusinessAddress();
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
+        }
+
+        [TestMethod]
         public async Task AuthorisedMaterials_WithCorrectModel_ShouldReturnView()
     {
         // Act
