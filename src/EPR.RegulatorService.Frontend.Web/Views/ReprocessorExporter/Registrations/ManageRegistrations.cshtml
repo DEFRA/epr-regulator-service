@@ -26,10 +26,10 @@
 		      @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_ReviewSiteDetails.cshtml", Model)
 		        } 
         
-        @* @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Exporter)
-        {
-          @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewAddressAndPermits.cshtml", Model)
-        } *@
+            @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Exporter)
+            {
+              @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewAddressAndPermits.cshtml", Model)
+            }
 
       </div>
     </div>

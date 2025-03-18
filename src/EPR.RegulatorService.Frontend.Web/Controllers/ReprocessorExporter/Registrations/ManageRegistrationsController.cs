@@ -19,7 +19,7 @@ public class ManageRegistrationsController : Controller
 
         var model = new ManageRegistrationsViewModel
         {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
         };
 
         return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations.cshtml", model);

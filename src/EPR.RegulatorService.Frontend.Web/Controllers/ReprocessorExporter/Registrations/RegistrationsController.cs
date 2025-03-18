@@ -68,6 +68,23 @@ public class RegistrationsController : RegulatorSessionBaseController
         return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
     }
 
+    [HttpGet]
+    [Route(PagePath.BusinessAddress)]
+    public async Task<IActionResult> BusinessAddress()
+    {
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
+        SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.BusinessAddress);
+        SetBackLink(session, PagePath.BusinessAddress);
+        SetBackLinkAriaLabel();
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/BusinessAddress.cshtml", model);
+    }
+
 
 
 }
