@@ -16,6 +16,7 @@ using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registra
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -32,7 +33,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         _sessionManager = sessionManager;
     }
 
-   
+
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials()
@@ -49,7 +50,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         return View("~/Views/ReprocessorExporter/Registrations/AuthorisedMaterials.cshtml", model);
 
     }
-    
+
     [HttpGet]
     [Route(PagePath.UkSiteDetails)]
     public async Task<IActionResult> UkSiteDetails()
@@ -77,19 +78,3 @@ public class RegistrationsController : RegulatorSessionBaseController
     }
 
 }
-[FeatureGate(FeatureFlags.ReprocessorExporter)]
-[Route(PagePath.ReprocessorExporterRegistrations)]
-public class RegistrationsController : Controller
-{
-    [HttpGet]
-    [Route(PagePath.UkSiteDetails)]
-    public IActionResult UkSiteDetails()
-    {
-        ViewBag.BackLinkToDisplay = PagePath.ManageRegistrations;
-
-        ViewBag.BackLinkAriaLabel = "Click here if you wish to go back to the previous page";//will be added to localizer
-
-        return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml");
-    }
-}
->>>>>>>>> Temporary merge branch 2
