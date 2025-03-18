@@ -1,6 +1,7 @@
 @using EPR.RegulatorService.Frontend.Web.Configs
 @using EPR.RegulatorService.Frontend.Web.Constants;
 @using EPR.RegulatorService.Frontend.Web.Extensions;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
 @using Microsoft.Extensions.Options
 
 @inject IOptions<ExternalUrlsOptions> ExternalUrlsOptions;
@@ -77,7 +78,12 @@
                 @await Component.InvokeAsync("LanguageSwitcher")
                 @if (ViewBag.BackLinkToDisplay != null)
                 {
-                    @await Html.PartialAsync("Partials/Govuk/_BackLink", (string)ViewBag.BackLinkToDisplay)
+                    @await Html.PartialAsync("Partials/Govuk/_BackLink",
+                             new BackLinkModel
+                              {
+                                  PagePath = (string)ViewBag.BackLinkToDisplay,
+                                  AriaLabel = (string)ViewBag.BackLinkAriaLabel
+                              })
                 }
                 @if (ViewBag.CustomBackLinkToDisplay != null)
                 {
