@@ -1,7 +1,5 @@
-using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -16,24 +14,32 @@ public class RegistrationsController : Controller
     [Route(PagePath.UkSiteDetails)]
     public IActionResult UkSiteDetails()
     {
-        ViewBag.BackLinkToDisplay = PagePath.ManageRegistrations;
+        CreateBackLinkToManageRegistrations();
 
-        ViewBag.BackLinkAriaLabel = "Click here if you wish to go back to the previous page";//will be added to localizer
+        return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml");
+    }
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
+    [HttpGet]
+    [Route(PagePath.WasteLicences)]
+    public IActionResult WasteLicences()
+    {
+        CreateBackLinkToManageRegistrations();
 
-        return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Registrations/WasteLicences.cshtml");
     }
 
     [HttpGet]
     [Route(PagePath.InputsAndOutputs)]
     public IActionResult InputsAndOutputs()
     {
-        ViewBag.BackLinkToDisplay = PagePath.ManageRegistrations;
+        CreateBackLinkToManageRegistrations();
 
         return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml");
+    }
+
+    private void CreateBackLinkToManageRegistrations()
+    {
+        ViewBag.BackLinkToDisplay = PagePath.ManageRegistrations;
+        ViewBag.BackLinkAriaLabel = "Click here if you wish to go back to the previous page"; // TODO: Add to localizer
     }
 }
