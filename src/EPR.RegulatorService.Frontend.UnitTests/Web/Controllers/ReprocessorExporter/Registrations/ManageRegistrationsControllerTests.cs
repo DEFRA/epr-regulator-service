@@ -1,11 +1,13 @@
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 
 using FluentAssertions.Execution;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -111,6 +113,23 @@ public class ManageRegistrationsControllerTests
 
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>();
+        var badRequestResult = result as BadRequestObjectResult;
+
+        using (new AssertionScope())
+        {
+            badRequestResult.Should().NotBeNull();
+            badRequestResult!.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            badRequestResult.Value.Should().Be("Invalid registration ID.");
+        }
+
+        _loggerMock.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Invalid ID received")),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+            Times.Once);
     }
 
     [TestMethod]
@@ -125,5 +144,53 @@ public class ManageRegistrationsControllerTests
 
         // Assert
         result.Should().BeOfType<NotFoundObjectResult>();
+        var notFoundResult = result as NotFoundObjectResult;
+
+        using (new AssertionScope())
+        {
+            notFoundResult.Should().NotBeNull();
+            notFoundResult!.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+            notFoundResult.Value.Should().Be("Registration not found.");
+        }
+
+        _loggerMock.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("No registration found")),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+            Times.Once);
+    }
+
+    [TestMethod]
+    public void Index_Exception_ShouldRedirectToErrorPage()
+    {
+        // Arrange
+        var id = 5;
+        _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Throws(new Exception("Test exception"));
+
+        // Act
+        var result = _controller.Index(id);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectResult = result as RedirectToActionResult;
+        using (new AssertionScope())
+        {
+            redirectResult.Should().NotBeNull();
+            redirectResult!.ActionName.Should().Be(PagePath.Error);
+            redirectResult.ControllerName.Should().Be("Error");
+        }
+
+        _loggerMock.Verify(
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception occurred while processing ManageRegistrations request")),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
+            Times.Once);
     }
 }
