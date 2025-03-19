@@ -4,6 +4,7 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -94,4 +95,25 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
                 model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
             }
         }
-    }
+
+        [TestMethod]
+        public async Task InputsAndOutputs_WithCorrectModel_ShouldReturnView()
+        {
+            // Act
+            var result = await _controller.AuthorisedMaterials();
+
+            // Assert
+            using (new AssertionScope())
+            {
+                result.Should().BeOfType<ViewResult>();
+
+                var viewResult = result as ViewResult;
+                viewResult.Should().NotBeNull();
+                viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+                var model = viewResult.Model as ManageRegistrationsViewModel;
+                model.Should().NotBeNull();
+                model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+            }
+        }
+}
