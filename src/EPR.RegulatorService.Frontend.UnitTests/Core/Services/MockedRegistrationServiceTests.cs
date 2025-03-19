@@ -91,4 +91,18 @@ public class MockedRegistrationServiceTests
         result.Should().NotBeNull();
         result!.Id.Should().Be(id); // Service should still return a mock object
     }
+
+    [TestMethod]
+    public void GetRegistrationById_WhenIdIs99999_ShouldThrowException()
+    {
+        // Arrange
+        var id = 99999;
+
+        // Act
+        var exception = Assert.ThrowsException<Exception>(() => _service.GetRegistrationById(id));
+
+        // Assert
+        exception.Message.Should().Be("Mocked exception for testing purposes.");
+    }
+
 }

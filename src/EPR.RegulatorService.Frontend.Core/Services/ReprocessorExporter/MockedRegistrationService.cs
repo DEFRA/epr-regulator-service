@@ -14,6 +14,11 @@ public class MockedRegistrationService : IRegistrationService
 {
     public Registration? GetRegistrationById(int id)
     {
+        if (id == 99999)
+        {
+            throw new Exception("Mocked exception for testing purposes.");
+        }
+
         // Determine if the registration is for an Exporter or Reprocessor
         // Even IDs return Reprocessor, Odd IDs return Exporter (mock convention)
         var organisationType = id % 2 == 0
