@@ -56,7 +56,7 @@ public class RegistrationsController : RegulatorSessionBaseController
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
-        SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.SamplingInspection);
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.SamplingInspection);
         SetBackLinkInfos(session, PagePath.SamplingInspection);
         var model = new ManageRegistrationsViewModel
         {
