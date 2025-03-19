@@ -72,4 +72,14 @@ public abstract class RegulatorSessionBaseController : Controller
     protected void SetBackLink(JourneySession session, string currentPagePath) =>
         ViewBag.BackLinkToDisplay =
             session.RegulatorSession.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
+
+    protected void SetBackLinkAriaLabel()
+    {
+        ViewBag.BackLinkAriaLabel = "Click here if you wish to go back to the previous page";//will be added to localizer
+    }
+    protected void SetHomeBackLink()
+    {
+        string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
+        ViewBag.BackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
+    }
 }
