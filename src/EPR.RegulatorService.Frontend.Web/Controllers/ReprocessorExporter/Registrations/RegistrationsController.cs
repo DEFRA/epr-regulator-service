@@ -1,3 +1,4 @@
+using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -6,12 +7,14 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
+[Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
 public class RegistrationsController : RegulatorSessionBaseController
 {
