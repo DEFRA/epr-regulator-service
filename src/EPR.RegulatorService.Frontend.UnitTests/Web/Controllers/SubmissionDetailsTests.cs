@@ -63,6 +63,43 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ReferenceFieldNotAvailable.Should().BeFalse();
             model.ReferenceNotAvailable.Should().BeFalse();
             AssertBackLink(result, PagePath.Submissions);
+            _facadeServiceMock.Verify(r => r.GetPomPayCalParameters(It.IsAny<Guid>(), null), Times.Never);
+        }
+
+        [TestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public async Task GivenOnSubmissionDetailsPage_WhenSubmissionDetailsHttpGetCalled_ThenAssertBackLinkSet_And_Set_Session_Resubmission(bool withResubmissionDate)
+        {
+            // Arrange
+            var submissionFromSession = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission;
+            submissionFromSession.IsResubmission = true;
+            submissionFromSession.SubmittedDate = DateTime.UtcNow;
+            _facadeServiceMock.Setup(r => r.GetPomPayCalParameters(It.IsAny<Guid>(), null))
+                .ReturnsAsync(new PomPayCalParametersResponse
+                {
+                    Reference = "12345",
+                    MemberCount = 1,
+                    ResubmissionDate = withResubmissionDate ? DateTime.UtcNow : null,
+                    NationCode = "GB-ENG",
+                });
+
+            // Act
+            var result = await _systemUnderTest.SubmissionDetails() as ViewResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result!.ViewName.Should().NotBeNull();
+            result.ViewName.Should().Be(ViewName);
+
+            var model = result!.Model as SubmissionDetailsViewModel;
+            model!.OrganisationName.Should().Be(submissionFromSession.OrganisationName);
+            model.SubmissionId.Should().Be(submissionFromSession.SubmissionId);
+            model.SubmittedBy.Should().Be($"{submissionFromSession.FirstName} {submissionFromSession.LastName}");
+            model.ReferenceFieldNotAvailable.Should().BeFalse();
+            model.ReferenceNotAvailable.Should().BeFalse();
+            AssertBackLink(result, PagePath.Submissions);
+            _facadeServiceMock.Verify(r => r.GetPomPayCalParameters(It.IsAny<Guid>(), null), Times.Once);
         }
     }
 }

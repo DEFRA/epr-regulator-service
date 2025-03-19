@@ -5,8 +5,6 @@ namespace EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 public class PomPayCalParametersResponse
 {
-    public bool? IsResubmission { get; set; }
-
     [JsonPropertyName(name: "resubmissionDate")]
     public DateTime? ResubmissionDate { get; set; }
 
