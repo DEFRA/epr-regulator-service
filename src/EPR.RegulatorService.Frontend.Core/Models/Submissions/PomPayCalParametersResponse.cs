@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace EPR.RegulatorService.Frontend.Core.Models.Submissions;
