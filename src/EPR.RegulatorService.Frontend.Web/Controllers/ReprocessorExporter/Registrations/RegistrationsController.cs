@@ -23,7 +23,7 @@ public class RegistrationsController : RegulatorSessionBaseController
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
-        SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.AuthorisedMaterials);
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.AuthorisedMaterials);
         SetBackLinkInfos(session, PagePath.AuthorisedMaterials);
         var model = new ManageRegistrationsViewModel
         {
@@ -38,7 +38,7 @@ public class RegistrationsController : RegulatorSessionBaseController
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
-        SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.UkSiteDetails);
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.UkSiteDetails);
         SetBackLinkInfos(session, PagePath.UkSiteDetails);
         var model = new ManageRegistrationsViewModel
         {
