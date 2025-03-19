@@ -61,7 +61,6 @@ public static class PagePath
     public const string Accreditation = "accreditation";
     public const string UkSiteDetails="uksite-details";
     public const string InputsAndOutputs = "reprocessing-throughputs";
-    public const string WasteLicences = "check-waste-licences";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

@@ -9,10 +9,11 @@ using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Moq;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
-[TestClass]
+    [TestClass]
     public class RegistrationsControllerTests
     {
         private RegistrationsController _controller;
@@ -176,7 +177,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
         // Assert
         using (new AssertionScope())
         {
-            result.Should().BeOfType<ViewResult>();
+        result.Should().BeOfType<ViewResult>();
 
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
