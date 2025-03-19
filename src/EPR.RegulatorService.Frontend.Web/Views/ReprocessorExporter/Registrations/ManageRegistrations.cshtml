@@ -17,7 +17,7 @@
            @title
         </h1>
 
-		    @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_OrganisationDetails.cshtml", Model)
+		    @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_OrganisationDetails.cshtml", Model)
 
 
                 @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
@@ -29,7 +29,7 @@
 
             @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
 		    {
-		      @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registration/_ReviewSiteDetails.cshtml", Model)
+		      @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_ReviewSiteDetails.cshtml", Model)
 		        } 
         
         @* @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Exporter)

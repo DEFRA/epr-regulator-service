@@ -1,62 +1,87 @@
+
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.ManageRegistrationsViewModel
 @{
-    ViewData["Title"] = "Site address";
+    ViewData["Title"] = "Materials authorised on site";
 }
 
 <div class="govuk-width-container ">
+
+    
+
+
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+
+
+        <!-- OVERVIEW AND CONTACTS -->
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
                 <h1 class="govuk-heading-l">
-                    Site address
+                    <span class="govuk-caption-l">Green Ltd: 2 Ruby St, London, E12 3SE</span>
+                    Materials authorised on site
                 </h1>
+
+
+
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Location
+                            Waste carrier, broker or dealer registration number
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            England
+                            DFG34573453
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Site address
+                            Aluminium
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            23 Ruby St, London, E12 3SE
+                            Not applying for registration
+                            <br><strong>Reason</strong>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Site grid reference
+                            Plastic
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            SJ 854 662
+                            Applying for registration
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Address for legal documents and official correspondence
+                            Steel
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            23 Ruby St, London, E12 3SE
+                            Applying for registration
                         </dd>
                     </div>
                 </dl>
+
+
                 <br>
+
                 <div class="govuk-button-group !-margin-top-6">
-                    <a href="site-complete" class="govuk-link">
+                    <a href="materials-complete" class="govuk-link">
                         <button type="submit" class="govuk-button" data-module="govuk-button">
                             Mark as complete
                         </button>
                     </a>
                     <a href="#" class="govuk-link">
                         <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-                            Query the site address
+                            Query the materials authorised on site
                         </button>
                     </a>
                 </div>
             </div>
-        </div>
+
+
+        </div><!--End of Contenet area-->
+        <!--START-->
+
+
+
+
     </main>
 </div>
