@@ -95,4 +95,75 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
                 model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
             }
         }
+
+    [TestMethod]
+    public async Task UkSiteDetails_WhenSessionIsNull_ShouldUseNewJourneySession()
+    {
+        // Arrange: Mock _sessionManager to return null
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!); // Simulating a null session
+
+        // Act
+        var result = await _controller.UkSiteDetails();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+        }
     }
+
+    [TestMethod]
+    public async Task AuthorisedMaterials_WhenSessionIsNull_ShouldUseNewJourneySession()
+    {
+        // Arrange: Mock _sessionManager to return null
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!); // Simulating a null session
+
+        // Act
+        var result = await _controller.AuthorisedMaterials();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+        }
+    }
+
+    [TestMethod]
+    public async Task AuthorisedMaterials_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockHeaders = new Mock<IHeaderDictionary>();
+        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null); // Simulating missing Referer header
+
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.AuthorisedMaterials();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+    }
+}
