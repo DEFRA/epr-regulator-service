@@ -1,5 +1,3 @@
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
-
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -8,6 +6,8 @@ using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 
 using FluentAssertions.Execution;
+
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 
 [TestClass]
 public class ManageRegistrationsMappingProfileTests

@@ -1,9 +1,9 @@
-namespace EPR.RegulatorService.Frontend.Web.Mappings;
-
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
+
+namespace EPR.RegulatorService.Frontend.Web.Mappings;
 
 public class ManageRegistrationsMappingProfile : Profile
 {
