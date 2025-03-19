@@ -186,7 +186,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
             model.Should().NotBeNull();
             model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
         }
-
     }
 
     [TestMethod]
