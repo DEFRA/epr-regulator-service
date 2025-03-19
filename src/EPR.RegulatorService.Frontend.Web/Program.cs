@@ -54,8 +54,6 @@ builder.Services.AddHsts(options =>
 
 builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
-builder.Services.AddAutoMapper(typeof(ManageRegistrationsMappingProfile));
-
 var app = builder.Build();
 
 app.UsePathBase(builder.Configuration.GetValue<string>("PATH_BASE"));
