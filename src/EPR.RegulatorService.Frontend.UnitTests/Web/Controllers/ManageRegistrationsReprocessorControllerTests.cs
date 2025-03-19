@@ -20,7 +20,7 @@ public class ManageRegistrationsReprocessorControllerTests
     public void TestInitialize() => _controller = new RegistrationsController();
 
     [TestMethod]
-    public void WasteLicencesScreen_ShouldRreturnViewResult()
+    public void WasteLicencesScreen_ShouldReturnViewResult()
     {
         var result = _controller.WasteLicences();
 
