@@ -67,17 +67,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GivenOnSubmissionDetailsPage_WhenSubmissionDetailsHttpGetCalled_ThenAssertBackLinkSet_And_Set_Session_Resubmission()
+        [DataRow(true)]
+        [DataRow(false)]
+        public async Task GivenOnSubmissionDetailsPage_WhenSubmissionDetailsHttpGetCalled_ThenAssertBackLinkSet_And_Set_Session_Resubmission(bool withResubmissionDate)
         {
             // Arrange
             var submissionFromSession = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission;
             submissionFromSession.IsResubmission = true;
+            submissionFromSession.SubmittedDate = DateTime.UtcNow;
             _facadeServiceMock.Setup(r => r.GetPomPayCalParameters(It.IsAny<Guid>(), null))
                 .ReturnsAsync(new PomPayCalParametersResponse
                 {
                     Reference = "12345",
                     MemberCount = 1,
-                    ResubmissionDate = DateTime.UtcNow,
+                    ResubmissionDate = withResubmissionDate ? DateTime.UtcNow : null,
                     NationCode = "GB-ENG",
                 });
 
