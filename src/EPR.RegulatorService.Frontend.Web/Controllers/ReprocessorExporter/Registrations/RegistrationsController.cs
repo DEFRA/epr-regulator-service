@@ -15,12 +15,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 [Route(PagePath.ReprocessorExporterRegistrations)]
 public class RegistrationsController : RegulatorSessionBaseController
 {
-    private readonly ISessionManager<JourneySession> _sessionManager;
-
-    public RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration) : base(sessionManager, configuration)
-    {
-        _sessionManager = sessionManager;
-    }
+    public RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration) : base(sessionManager, configuration) { }
 
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
@@ -34,7 +29,6 @@ public class RegistrationsController : RegulatorSessionBaseController
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
-
         return View("~/Views/ReprocessorExporter/Registrations/AuthorisedMaterials.cshtml", model);
     }
 
@@ -50,10 +44,8 @@ public class RegistrationsController : RegulatorSessionBaseController
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
-
         return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
     }
-
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
         if (string.IsNullOrEmpty(Request.Headers.Referer))

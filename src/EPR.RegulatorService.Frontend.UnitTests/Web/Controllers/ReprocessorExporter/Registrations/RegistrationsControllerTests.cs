@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
 
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations
-{
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
+
     [TestClass]
     public class RegistrationsControllerTests
     {
@@ -19,7 +19,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
         private Mock<ISessionManager<JourneySession>> _mockSessionManager;
         private Mock<IConfiguration> _mockConfiguration;
         private Mock<HttpContext> _httpContextMock = null!;
-
 
         [TestInitialize]
         public void TestInitialize()
@@ -62,7 +61,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
             var result = await _controller.UkSiteDetails();
 
             // Assert
-
             using (new AssertionScope())
             {
                 result.Should().BeOfType<ViewResult>();
@@ -75,7 +73,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
                 model.Should().NotBeNull();
                 model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
             }
-
         }
 
         [TestMethod]
@@ -97,7 +94,5 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
                 model.Should().NotBeNull();
                 model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
             }
-
         }
     }
-}
