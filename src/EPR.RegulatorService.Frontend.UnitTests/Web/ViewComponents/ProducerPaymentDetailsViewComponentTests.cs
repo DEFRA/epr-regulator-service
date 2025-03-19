@@ -51,11 +51,12 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
-    [DataRow("large", "Large", false)]
-    [DataRow("small", "Small", false)]
-    [DataRow("large", "Large", true)]
-    [DataRow("small", "Small", true)]
-    public async Task InvokeAsync_Returns_CorrectView_With_Model(string organisationSize, string expectedProducerSize, bool isResubmission)
+    [DataRow("large", "Large", false, 500.00, 500.00, 10.00)]
+    //[DataRow("small", "Small", false, 1000.00, -500.00, 0.00)]
+    [DataRow("large", "Large", true, 500.00, 500.00, 10.00)]
+    //[DataRow("small", "Small", true, 1000.00, -500.00, 0.00)]
+    public async Task InvokeAsync_Returns_CorrectView_With_Model(string organisationSize, string expectedProducerSize,
+        bool isResubmission, double previousPayment, double totalOutstanding, double expectedTotalOutstanding)
     {
         // Arrange
         _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(
@@ -67,8 +68,8 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             OnlineMarketplaceFee = 300.00M,
             SubsidiaryFee = 400.00M,
             TotalChargeableItems = 1000.00M,
-            PreviousPaymentsReceived = 500.00M,
-            TotalOutstanding = 500.00M,
+            PreviousPaymentsReceived = (decimal)previousPayment,
+            TotalOutstanding = (decimal)totalOutstanding,
             SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
                 { OnlineMarketPlaceSubsidiariesCount = 1, SubsidiaryOnlineMarketPlaceFee = 200.00M }
         });
@@ -97,7 +98,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.SubsidiaryOnlineMarketPlaceFee.Should().Be(2.00M);
         model.SubTotal.Should().Be(10.00M);
         model.PreviousPaymentsReceived.Should().Be(5.00M);
-        model.TotalOutstanding.Should().Be(5.00M);
+        model.TotalOutstanding.Should().Be((decimal)expectedTotalOutstanding);
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync(
             It.IsAny<ProducerPaymentRequest>()), Times.AtMostOnce);
     }

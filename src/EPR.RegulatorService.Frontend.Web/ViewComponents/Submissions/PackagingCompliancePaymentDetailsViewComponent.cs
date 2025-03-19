@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
@@ -53,7 +54,7 @@ public class PackagingCompliancePaymentDetailsViewComponent(IPaymentFacadeServic
                 MemberCount = compliancePaymentResponse.MemberCount,
                 PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(compliancePaymentResponse.ResubmissionFee),
-                TotalOutstanding = ConvertToPoundsFromPence(compliancePaymentResponse.TotalOutstanding),
+                TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(compliancePaymentResponse.TotalOutstanding)),
                 ReferenceNumber = viewModel.ReferenceNumber,
                 NationCode = viewModel.NationCode
             };

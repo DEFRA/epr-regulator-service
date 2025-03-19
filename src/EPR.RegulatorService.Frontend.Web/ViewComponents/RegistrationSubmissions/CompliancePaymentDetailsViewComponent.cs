@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Extensions;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +49,7 @@ public class CompliancePaymentDetailsViewComponent(IPaymentFacadeService payment
                 ApplicationFee = ConvertToPoundsFromPence(compliancePaymentResponse.ApplicationProcessingFee),
                 SubTotal = ConvertToPoundsFromPence(compliancePaymentResponse.TotalChargeableItems),
                 PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
-                TotalOutstanding = ConvertToPoundsFromPence(compliancePaymentResponse.TotalOutstanding),
+                TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(compliancePaymentResponse.TotalOutstanding)),
                 SchemeMemberCount = compliancePaymentResponse.ComplianceSchemeMembers.Count,
                 LargeProducerCount = largeProducers.Count,
                 LargeProducerFee = ConvertToPoundsFromPence(largeProducers.GetFees()),
