@@ -59,7 +59,12 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.InputsAndOutputs);
         SetBackLinkInfos(session, PagePath.InputsAndOutputs);
 
-        return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml");
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml", model);
     }
 
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
