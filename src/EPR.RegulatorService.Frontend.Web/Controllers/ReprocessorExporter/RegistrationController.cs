@@ -1,6 +1,8 @@
 
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -14,8 +16,13 @@ public class RegistrationController : Controller
     public IActionResult WasteLicences()
     {
         // tbd
-        ViewBag.BackLinkToDisplay = PagePath.WasteLicences;
+        ViewBag.BackLinkToDisplay = PagePath.ManageRegistrations;
 
-        return View("~/Views/ReprocessorExporter/Registration/WasteLicences.cshtml");
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/WasteLicences.cshtml", model);
     }
 }
