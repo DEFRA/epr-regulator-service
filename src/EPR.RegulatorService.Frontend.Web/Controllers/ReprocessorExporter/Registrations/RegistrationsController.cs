@@ -67,6 +67,23 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml", model);
     }
 
+    [HttpGet]
+    [Route(PagePath.MaterialDetails)]
+    public async Task<IActionResult> MaterialDetails()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.MaterialDetails);
+        SetBackLinkInfos(session, PagePath.MaterialDetails);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/MaterialDetails.cshtml", model);
+    }
+
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
         if (string.IsNullOrEmpty(Request.Headers.Referer))
