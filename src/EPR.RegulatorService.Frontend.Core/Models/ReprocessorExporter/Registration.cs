@@ -9,8 +9,7 @@ public class Registration
 {
     public int Id { get; init; }
 
-    [Required]
-    public string OrganisationName { get; init; } = string.Empty;
+    public required string OrganisationName { get; init; } = string.Empty;
 
     public string? SiteAddress { get; init; }
 
@@ -18,4 +17,3 @@ public class Registration
 
     public string Regulator { get; init; } = "Environment Agency (EA)";
 }
-

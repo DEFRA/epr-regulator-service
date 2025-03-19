@@ -18,10 +18,13 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route($"{PagePath.ReprocessorExporterRegistrations}/{PagePath.ManageRegistrations}")]
-public class ManageRegistrationsController(IRegistrationService registrationService, IMapper mapper) : Controller
+public class ManageRegistrationsController(IRegistrationService registrationService,
+    IMapper mapper,
+    IValidator<ManageRegistrationsRequest> validator) : Controller
 {
     private readonly IRegistrationService _registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
     private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    private readonly IValidator<ManageRegistrationsRequest> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -29,7 +32,7 @@ public class ManageRegistrationsController(IRegistrationService registrationServ
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Index([FromQuery] int id)
     {
-        var validationResult = new ManageRegistrationsValidator().Validate(new ManageRegistrationsRequest { Id = id });
+        var validationResult = _validator.Validate(new ManageRegistrationsRequest { Id = id });
 
         if (!validationResult.IsValid)
         {

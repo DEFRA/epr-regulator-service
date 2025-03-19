@@ -9,6 +9,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 using FluentAssertions.Execution;
 
 using FluentValidation;
+using FluentValidation.Results;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,14 +23,20 @@ public class ManageRegistrationsControllerTests
     private ManageRegistrationsController _controller;
     private Mock<IRegistrationService> _registrationServiceMock;
     private Mock<IMapper> _mapperMock;
+    private Mock<IValidator<ManageRegistrationsRequest>> _validatorMock;
 
     [TestInitialize]
     public void TestInitialize()
     {
         _registrationServiceMock = new Mock<IRegistrationService>();
         _mapperMock = new Mock<IMapper>();
+        _validatorMock = new Mock<IValidator<ManageRegistrationsRequest>>();
 
-        _controller = new ManageRegistrationsController(_registrationServiceMock.Object, _mapperMock.Object);
+        _controller = new ManageRegistrationsController(
+            _registrationServiceMock.Object,
+            _mapperMock.Object,
+            _validatorMock.Object
+        );
     }
 
     [TestMethod]
@@ -54,6 +61,10 @@ public class ManageRegistrationsControllerTests
             ApplicationOrganisationType = registration.OrganisationType,
             Regulator = registration.Regulator
         };
+
+        _validatorMock
+            .Setup(v => v.Validate(It.IsAny<ManageRegistrationsRequest>()))
+            .Returns(new ValidationResult());
 
         _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Returns(registration);
         _mapperMock.Setup(m => m.Map<ManageRegistrationsViewModel>(registration)).Returns(expectedModel);
@@ -96,6 +107,10 @@ public class ManageRegistrationsControllerTests
             Regulator = registration.Regulator
         };
 
+        _validatorMock
+            .Setup(v => v.Validate(It.IsAny<ManageRegistrationsRequest>()))
+            .Returns(new ValidationResult());
+
         _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Returns(registration);
         _mapperMock.Setup(m => m.Map<ManageRegistrationsViewModel>(registration)).Returns(expectedModel);
 
@@ -128,11 +143,20 @@ public class ManageRegistrationsControllerTests
     {
         // Arrange
         var id = 0; // Invalid ID
+        var validationFailures = new List<ValidationFailure>
+        {
+            new ValidationFailure(nameof(ManageRegistrationsRequest.Id), "ID must be greater than 0.")
+        };
+
+        _validatorMock
+            .Setup(v => v.Validate(It.IsAny<ManageRegistrationsRequest>()))
+            .Returns(new ValidationResult(validationFailures));
 
         // Act & Assert
         var exception = Assert.ThrowsException<ValidationException>(() => _controller.Index(id));
+
         exception.Errors.Should().NotBeNullOrEmpty();
-        exception.Errors.Select(e => e.ErrorMessage).Should().Contain(msg => msg.Contains("ID must be greater than 0."));
+        exception.Errors.Select(e => e.ErrorMessage).Should().Contain("ID must be greater than 0.");
     }
 
     [TestMethod]
@@ -140,6 +164,11 @@ public class ManageRegistrationsControllerTests
     {
         // Arrange
         var id = 5;
+
+        _validatorMock
+            .Setup(v => v.Validate(It.IsAny<ManageRegistrationsRequest>()))
+            .Returns(new ValidationResult());
+
         _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Throws(new Exception("Test exception"));
 
         // Act & Assert
