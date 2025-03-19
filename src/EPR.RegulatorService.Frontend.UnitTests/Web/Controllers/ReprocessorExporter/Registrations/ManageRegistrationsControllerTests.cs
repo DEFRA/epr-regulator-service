@@ -1,15 +1,16 @@
+using AutoMapper;
+
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 
 using FluentAssertions.Execution;
 
-using Microsoft.AspNetCore.Http;
+using FluentValidation;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
@@ -20,15 +21,15 @@ public class ManageRegistrationsControllerTests
 
     private ManageRegistrationsController _controller;
     private Mock<IRegistrationService> _registrationServiceMock;
-    private Mock<ILogger<ManageRegistrationsController>> _loggerMock;
+    private Mock<IMapper> _mapperMock;
 
     [TestInitialize]
     public void TestInitialize()
     {
         _registrationServiceMock = new Mock<IRegistrationService>();
-        _loggerMock = new Mock<ILogger<ManageRegistrationsController>>();
+        _mapperMock = new Mock<IMapper>();
 
-        _controller = new ManageRegistrationsController(_registrationServiceMock.Object, _loggerMock.Object);
+        _controller = new ManageRegistrationsController(_registrationServiceMock.Object, _mapperMock.Object);
     }
 
     [TestMethod]
@@ -36,7 +37,7 @@ public class ManageRegistrationsControllerTests
     {
         // Arrange
         var id = 1;
-        var registration = new RegistrationDto
+        var registration = new Registration
         {
             Id = id,
             OrganisationName = "Test Exporter Ltd",
@@ -45,7 +46,17 @@ public class ManageRegistrationsControllerTests
             Regulator = "Environment Agency (EA)"
         };
 
+        var expectedModel = new ManageRegistrationsViewModel
+        {
+            Id = registration.Id,
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
+            ApplicationOrganisationType = registration.OrganisationType,
+            Regulator = registration.Regulator
+        };
+
         _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Returns(registration);
+        _mapperMock.Setup(m => m.Map<ManageRegistrationsViewModel>(registration)).Returns(expectedModel);
 
         // Act
         var result = _controller.Index(id);
@@ -67,7 +78,7 @@ public class ManageRegistrationsControllerTests
     {
         // Arrange
         var id = 1;
-        var registration = new RegistrationDto
+        var registration = new Registration
         {
             Id = id,
             OrganisationName = "Test Exporter Ltd",
@@ -76,7 +87,17 @@ public class ManageRegistrationsControllerTests
             Regulator = "Environment Agency (EA)"
         };
 
+        var expectedModel = new ManageRegistrationsViewModel
+        {
+            Id = registration.Id,
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
+            ApplicationOrganisationType = registration.OrganisationType,
+            Regulator = registration.Regulator
+        };
+
         _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Returns(registration);
+        _mapperMock.Setup(m => m.Map<ManageRegistrationsViewModel>(registration)).Returns(expectedModel);
 
         // Act
         var result = _controller.Index(id);
@@ -95,102 +116,35 @@ public class ManageRegistrationsControllerTests
             var model = viewResult.Model as ManageRegistrationsViewModel;
             model.Should().NotBeNull();
             model!.Id.Should().Be(id);
-            model.OrganisationName.Should().Be(registration.OrganisationName);
-            model.SiteAddress.Should().Be(registration.SiteAddress);
-            model.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
-            model.Regulator.Should().Be(registration.Regulator);
+            model.OrganisationName.Should().Be(expectedModel.OrganisationName);
+            model.SiteAddress.Should().Be(expectedModel.SiteAddress);
+            model.ApplicationOrganisationType.Should().Be(expectedModel.ApplicationOrganisationType);
+            model.Regulator.Should().Be(expectedModel.Regulator);
         }
     }
 
     [TestMethod]
-    public void Index_InvalidId_ShouldRedirectToErrorPage()
+    public void Index_InvalidId_ShouldThrowValidationException()
     {
         // Arrange
         var id = 0; // Invalid ID
 
-        // Act
-        var result = _controller.Index(id);
-
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-
-        var redirectResult = result as RedirectToActionResult;
-        using (new AssertionScope())
-        {
-            redirectResult.Should().NotBeNull();
-            redirectResult!.ActionName.Should().Be(PagePath.Error);
-            redirectResult.ControllerName.Should().Be("Error");
-        }
-
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Invalid ID received")),
-                It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
-            Times.Once);
+        // Act & Assert
+        var exception = Assert.ThrowsException<ValidationException>(() => _controller.Index(id));
+        exception.Errors.Should().NotBeNullOrEmpty();
+        exception.Errors.Select(e => e.ErrorMessage).Should().Contain(msg => msg.Contains("ID must be greater than 0."));
     }
 
     [TestMethod]
-    public void Index_NonExistentId_ShouldRedirectToErrorPage()
-    {
-        // Arrange
-        var id = 9999;
-        _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Returns((RegistrationDto)null);
-
-        // Act
-        var result = _controller.Index(id);
-
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-
-        var redirectResult = result as RedirectToActionResult;
-        using (new AssertionScope())
-        {
-            redirectResult.Should().NotBeNull();
-            redirectResult!.ActionName.Should().Be(PagePath.Error);
-            redirectResult.ControllerName.Should().Be("Error");
-        }
-
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("No registration found")),
-                It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
-            Times.Once);
-    }
-
-    [TestMethod]
-    public void Index_Exception_ShouldRedirectToErrorPage()
+    public void Index_Exception_ShouldThrowException()
     {
         // Arrange
         var id = 5;
         _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Throws(new Exception("Test exception"));
 
-        // Act
-        var result = _controller.Index(id);
+        // Act & Assert
+        var exception = Assert.ThrowsException<Exception>(() => _controller.Index(id));
 
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-
-        var redirectResult = result as RedirectToActionResult;
-        using (new AssertionScope())
-        {
-            redirectResult.Should().NotBeNull();
-            redirectResult!.ActionName.Should().Be(PagePath.Error);
-            redirectResult.ControllerName.Should().Be("Error");
-        }
-
-        _loggerMock.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception occurred while processing ManageRegistrations request")),
-                It.IsAny<Exception>(),
-                It.Is<Func<It.IsAnyType, Exception, string>>((v, t) => true)),
-            Times.Once);
+        exception.Message.Should().Be("Test exception");
     }
 }

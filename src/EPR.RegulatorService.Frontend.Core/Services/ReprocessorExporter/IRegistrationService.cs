@@ -1,9 +1,8 @@
-namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter
-{
-    using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter;
+namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
-    public interface IRegistrationService
-    {
-        RegistrationDto? GetRegistrationById(int id);
-    }
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter;
+
+public interface IRegistrationService
+{
+    Registration? GetRegistrationById(int id);
 }

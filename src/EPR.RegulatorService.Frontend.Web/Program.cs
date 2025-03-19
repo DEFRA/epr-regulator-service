@@ -2,6 +2,7 @@ using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.FeatureManagement;
 using EPR.RegulatorService.Frontend.Web.HealthChecks;
+using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.Middleware;
 
 using Microsoft.AspNetCore.CookiePolicy;
@@ -53,6 +54,8 @@ builder.Services.AddHsts(options =>
 
 builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
+builder.Services.AddAutoMapper(typeof(ManageRegistrationsMappingProfile));
+
 var app = builder.Build();
 
 app.UsePathBase(builder.Configuration.GetValue<string>("PATH_BASE"));
@@ -86,7 +89,7 @@ app.UseMiddleware<AnalyticsCookieMiddleware>();
 app.MapControllerRoute(
     name: "Default",
     pattern: "{controller}/{action}",
-    defaults: new {controller = "Applications", action = "Applications"});
+    defaults: new { controller = "Applications", action = "Applications" });
 
 app.MapHealthChecks(
     builder.Configuration.GetValue<string>("HealthCheckPath"),
