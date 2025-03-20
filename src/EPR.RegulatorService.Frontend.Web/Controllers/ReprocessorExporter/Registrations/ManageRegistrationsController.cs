@@ -27,9 +27,6 @@ public class ManageRegistrationsController(IRegistrationService registrationServ
     private readonly IValidator<ManageRegistrationsRequest> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Index([FromQuery] int id)
     {
         _validator.ValidateAndThrow(new ManageRegistrationsRequest { Id = id });
