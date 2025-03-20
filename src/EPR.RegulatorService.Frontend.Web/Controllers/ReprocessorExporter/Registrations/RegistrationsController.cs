@@ -1,8 +1,11 @@
+using System.Net;
+
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.Controllers.Errors;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 
@@ -58,7 +61,12 @@ public class RegistrationsController : RegulatorSessionBaseController
     [Route(PagePath.BusinessAddress)]
     public async Task<IActionResult> BusinessAddress()
     {
-        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        if (session?.ReprocessorExporterSession?.Journey == null)
+        {
+            return RedirectToAction(PagePath.Error, nameof(ErrorController.Error), new { statusCode = (int)HttpStatusCode.InternalServerError });
+        }
+
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
         SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.BusinessAddress);
         SetBackLink(session, PagePath.BusinessAddress);
