@@ -1,4 +1,5 @@
 using System.Net;
+
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
@@ -22,6 +23,7 @@ public class RegistrationsController : RegulatorSessionBaseController
 {
     public RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration) : base(sessionManager, configuration) { }
 
+    private static string RegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
 
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
@@ -35,7 +37,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
-        return View("~/Views/ReprocessorExporter/Registrations/AuthorisedMaterials.cshtml", model);
+        return View(RegistrationsView(nameof(AuthorisedMaterials)), model);
     }
 
     [HttpGet]
@@ -50,7 +52,7 @@ public class RegistrationsController : RegulatorSessionBaseController
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
-        return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
+        return View(RegistrationsView(nameof(UkSiteDetails)), model);
     }
 
     [HttpGet]
@@ -66,7 +68,7 @@ public class RegistrationsController : RegulatorSessionBaseController
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/SamplingInspection.cshtml", model);
+        return View(RegistrationsView(nameof(SamplingInspection)), model);
     }
 
     [HttpGet]
@@ -88,16 +90,42 @@ public class RegistrationsController : RegulatorSessionBaseController
             ApplicationOrganisationType = ApplicationOrganisationType.Exporter
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/BusinessAddress.cshtml", model);
+        return View(RegistrationsView(nameof(BusinessAddress)), model);
     }
 
+    [HttpGet]
+    [Route(PagePath.WasteLicences)]
+    public async Task<IActionResult> WasteLicences()
+    {
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        if (session?.ReprocessorExporterSession?.Journey == null)
+        {
+            return RedirectToAction(PagePath.Error, nameof(ErrorController.Error), new { statusCode = (int)HttpStatusCode.InternalServerError });
+        }
+
+        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
+        SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.WasteLicences);
+        SetBackLink(session, PagePath.WasteLicences);
+        SetBackLinkAriaLabel();
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View(RegistrationsView(nameof(WasteLicences)), model);
+    }
 
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
         if (string.IsNullOrEmpty(Request.Headers.Referer))
+        {
             SetHomeBackLink();
+        }
         else
+        {
             SetBackLink(session, currentPagePath);
+        }
 
         SetBackLinkAriaLabel();
     }

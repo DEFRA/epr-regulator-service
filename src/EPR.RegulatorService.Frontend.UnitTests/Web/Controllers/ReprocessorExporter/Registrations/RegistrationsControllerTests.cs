@@ -317,6 +317,87 @@ public class RegistrationsControllerTests
         result.Should().BeOfType<ViewResult>();
     }
 
+
+    [TestMethod]
+    public async Task WasteLicences_WithCorrectModel_ShouldReturnView()
+    {
+        // Act
+        var result = await _controller.WasteLicences();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
+
+            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+        }
+    }
+
+    [TestMethod]
+    public async Task WasteLicences_WithNullSession_ShouldRedirectToError()
+    {
+        // Arrange
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync((JourneySession)null);
+
+        // Act
+        var result = await _controller.WasteLicences();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.ControllerName.Should().Be(nameof(ErrorController.Error));
+            redirectResult.RouteValues["statusCode"].Should().Be((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [TestMethod]
+    public async Task WasteLicences_WithNullReprocessorExporterSession_ShouldRedirectToError()
+    {
+        // Arrange
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(new JourneySession { ReprocessorExporterSession = null });
+
+        // Act
+        var result = await _controller.WasteLicences();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.ControllerName.Should().Be(nameof(ErrorController.Error));
+            redirectResult.RouteValues["statusCode"].Should().Be((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [TestMethod]
+    public async Task WasteLicences_WithNullJourney_ShouldRedirectToError()
+    {
+        // Arrange
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(new JourneySession { ReprocessorExporterSession = new ReprocessorExporterSession { Journey = null } });
+
+        // Act
+        var result = await _controller.WasteLicences();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectResult = result as RedirectToActionResult;
+            redirectResult.ControllerName.Should().Be(nameof(ErrorController.Error));
+            redirectResult.RouteValues["statusCode"].Should().Be((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
     protected static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
     {
         var hasBackLinkKey = viewResult.ViewData.TryGetValue(BackLinkViewDataKey, out var gotBackLinkObject);
