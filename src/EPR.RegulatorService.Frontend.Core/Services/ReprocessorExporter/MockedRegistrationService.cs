@@ -12,7 +12,7 @@ namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 /// </summary>
 public class MockedRegistrationService : IRegistrationService
 {
-    public Registration? GetRegistrationById(int id)
+    public Registration GetRegistrationById(int id)
     {
         if (id == 99999)
         {
