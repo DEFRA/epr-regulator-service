@@ -71,7 +71,7 @@ public class RegistrationsController : RegulatorSessionBaseController
 
     [HttpGet]
     [Route(PagePath.BusinessAddress)]
-    public async Task<IActionResult> BusinessAddress()
+    public async Task<IActionResult> BusinessAddress(int id)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
         if (session?.ReprocessorExporterSession?.Journey == null)
@@ -79,9 +79,9 @@ public class RegistrationsController : RegulatorSessionBaseController
             return RedirectToAction(PagePath.Error, nameof(ErrorController.Error), new { statusCode = (int)HttpStatusCode.InternalServerError });
         }
 
-        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
-        SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.BusinessAddress);
-        SetBackLink(session, PagePath.BusinessAddress);
+        string businessAddressPath = $"{PagePath.BusinessAddress}?id={id}";
+        SaveSessionAndJourney(session, businessAddressPath);
+        SetBackLink(session, businessAddressPath);
         SetBackLinkAriaLabel();
         var model = new ManageRegistrationsViewModel
         {

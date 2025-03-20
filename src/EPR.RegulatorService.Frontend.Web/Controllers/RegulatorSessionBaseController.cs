@@ -38,13 +38,17 @@ public abstract class RegulatorSessionBaseController : Controller
         return RedirectToAction(actionName, routeValues);
     }
 
-    protected async Task SaveSessionAndJourney(JourneySession session, string currentPagePath, string? nextPagePath)
+    protected async Task SaveSessionAndJourney(JourneySession session, string currentPagePath, string? nextPagePath = null)
     {
         ClearRestOfJourney(session, currentPagePath);
 
         session.RegulatorSession.Journey.AddIfNotExists(currentPagePath);
-        session.RegulatorSession.Journey.AddIfNotExists(nextPagePath);
 
+        if (nextPagePath != null)
+        {
+            session.RegulatorSession.Journey.AddIfNotExists(nextPagePath);
+        }
+ 
         await SaveSession(session);
     }
 
