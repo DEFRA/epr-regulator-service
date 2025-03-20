@@ -22,7 +22,6 @@ public class RegistrationsController : RegulatorSessionBaseController
 {
     public RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration) : base(sessionManager, configuration) { }
 
-
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials()
@@ -90,8 +89,6 @@ public class RegistrationsController : RegulatorSessionBaseController
 
         return View("~/Views/ReprocessorExporter/Registrations/BusinessAddress.cshtml", model);
     }
-
-
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
         if (string.IsNullOrEmpty(Request.Headers.Referer))
