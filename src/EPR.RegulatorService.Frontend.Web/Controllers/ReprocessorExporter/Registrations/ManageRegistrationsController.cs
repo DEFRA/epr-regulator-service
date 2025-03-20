@@ -32,12 +32,7 @@ public class ManageRegistrationsController(IRegistrationService registrationServ
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Index([FromQuery] int id)
     {
-        var validationResult = _validator.Validate(new ManageRegistrationsRequest { Id = id });
-
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
+        _validator.ValidateAndThrow(new ManageRegistrationsRequest { Id = id });
 
         var registration = _registrationService.GetRegistrationById(id);
 
