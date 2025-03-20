@@ -1,87 +1,57 @@
-
-@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.ManageRegistrationsViewModel
 @{
-    ViewData["Title"] = "Materials authorised on site";
+    ViewData["Title"] = "Sampling and inspection plan";
 }
 
 <div class="govuk-width-container ">
-
-    
-
-
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-
-
-        <!-- OVERVIEW AND CONTACTS -->
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
                 <h1 class="govuk-heading-l">
-                    <span class="govuk-caption-l">Green Ltd: 2 Ruby St, London, E12 3SE</span>
-                    Materials authorised on site
+                    <span class="govuk-caption-l">Plastic</span>
+                    Sampling and inspection plan
                 </h1>
-
-
-
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Waste carrier, broker or dealer registration number
+                            Uploaded file
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            DFG34573453
+
+                            <a href="#" class="govuk-link">sampling-file.doc</a>
+
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Aluminium
+                            Date  uploaded
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            Not applying for registration
-                            <br><strong>Reason</strong>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem
+                            22 March 2024
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            Plastic
+                            Uploaded by
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            Applying for registration
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Steel
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            Applying for registration
+                            Jack Black
                         </dd>
                     </div>
                 </dl>
-
-
                 <br>
-
                 <div class="govuk-button-group !-margin-top-6">
-                    <a href="materials-complete" class="govuk-link">
+                    <a href="sampling-plan-complete" class="govuk-link">
                         <button type="submit" class="govuk-button" data-module="govuk-button">
-                            Mark as complete
+                            Mark as approved
                         </button>
                     </a>
                     <a href="#" class="govuk-link">
                         <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-                            Query the materials authorised on site
+                            Query the sampling and inspection plan
                         </button>
                     </a>
                 </div>
             </div>
-
-
-        </div><!--End of Contenet area-->
-        <!--START-->
-
-
-
-
+        </div>
     </main>
 </div>
