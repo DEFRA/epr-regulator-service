@@ -1,12 +1,18 @@
+using System.Diagnostics.CodeAnalysis;
+
 using EPR.Common.Authorization.Extensions;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Cookies;
+using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.Middleware;
 using EPR.RegulatorService.Frontend.Web.Sessions;
-using StackExchange.Redis;
+using EPR.RegulatorService.Frontend.Web.Validations;
+
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.DataProtection;
@@ -14,14 +20,15 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
-using System.Diagnostics.CodeAnalysis;
+
+using StackExchange.Redis;
 
 namespace EPR.RegulatorService.Frontend.Web.Extensions;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceProviderExtension
 {
-   public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection RegisterWebComponents(this IServiceCollection services, IConfiguration configuration)
     {
         SetTempDataCookieOptions(services, configuration);
         ConfigureOptions(services, configuration);
@@ -30,34 +37,36 @@ public static class ServiceProviderExtension
         ConfigureAuthorization(services, configuration);
         ConfigureSession(services, configuration);
         RegisterServices(services);
+        RegisterFluentValidation(services);
+        RegisterAutoMapper(services);
 
         return services;
     }
 
-   public static IServiceCollection ConfigureMsalDistributedTokenOptions(this IServiceCollection services, IConfiguration configuration)
-   {
-       var loggerFactory = LoggerFactory.Create(builder => builder.AddApplicationInsights());
-       var buildLogger = loggerFactory.CreateLogger<Program>();
+    public static IServiceCollection ConfigureMsalDistributedTokenOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        var loggerFactory = LoggerFactory.Create(builder => builder.AddApplicationInsights());
+        var buildLogger = loggerFactory.CreateLogger<Program>();
 
-       services.Configure<MsalDistributedTokenCacheAdapterOptions>(options =>
-       {
-           options.DisableL1Cache = configuration.GetValue("MsalOptions:DisableL1Cache", true);
-           options.SlidingExpiration = TimeSpan.FromMinutes(configuration.GetValue("MsalOptions:L2SlidingExpiration", 20));
+        services.Configure<MsalDistributedTokenCacheAdapterOptions>(options =>
+        {
+            options.DisableL1Cache = configuration.GetValue("MsalOptions:DisableL1Cache", true);
+            options.SlidingExpiration = TimeSpan.FromMinutes(configuration.GetValue("MsalOptions:L2SlidingExpiration", 20));
 
-           options.OnL2CacheFailure = exception =>
-           {
-               if (exception is RedisConnectionException)
-               {
-                   buildLogger.LogError(exception, "L2 Cache Failure Redis connection exception: {Message}", exception.Message);
-                   return true;
-               }
+            options.OnL2CacheFailure = exception =>
+            {
+                if (exception is RedisConnectionException)
+                {
+                    buildLogger.LogError(exception, "L2 Cache Failure Redis connection exception: {Message}", exception.Message);
+                    return true;
+                }
 
-               buildLogger.LogError(exception, "L2 Cache Failure: {Message}", exception.Message);
-               return false;
-           };
-       });
-       return services;
-   }
+                buildLogger.LogError(exception, "L2 Cache Failure: {Message}", exception.Message);
+                return false;
+            };
+        });
+        return services;
+    }
 
     private static void ConfigureOptions(IServiceCollection services, IConfiguration configuration)
     {
@@ -160,12 +169,23 @@ public static class ServiceProviderExtension
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             })
-            .EnableTokenAcquisitionToCallDownstreamApi(new string[] {configuration.GetValue<string>("FacadeAPI:DownstreamScope")})
+            .EnableTokenAcquisitionToCallDownstreamApi(new string[] { configuration.GetValue<string>("FacadeAPI:DownstreamScope") })
             .AddDistributedTokenCaches();
     }
 
     private static void ConfigureAuthorization(IServiceCollection services, IConfiguration configuration)
     {
         services.RegisterPolicy<JourneySession>(configuration);
+    }
+
+    private static void RegisterFluentValidation(IServiceCollection services)
+    {
+        services.AddFluentValidationAutoValidation()
+                .AddValidatorsFromAssemblyContaining<ManageRegistrationsValidator>();
+    }
+
+    private static void RegisterAutoMapper(IServiceCollection services)
+    {
+        services.AddAutoMapper(typeof(ManageRegistrationsMappingProfile));
     }
 }
