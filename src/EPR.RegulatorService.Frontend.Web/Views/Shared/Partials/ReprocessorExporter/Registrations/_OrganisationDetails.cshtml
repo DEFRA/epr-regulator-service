@@ -3,13 +3,13 @@
 @model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.ManageRegistrationsViewModel
 
 <ul class="govuk-list">
-  <li>Organisation name : Green Ltd</li>
+  <li>Organisation name: @Model.OrganisationName</li>
 
   @if(Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
   {
-	<li>Site : 23 Ruby St, London, E12 3SE</li>
+        <li>Site: @Model.SiteAddress</li>
   }
 
-  <li>Organisation type : @Model.ApplicationOrganisationType</li>
-  <li>Regulator :  Environment Agency (EA) </li>
+    <li>Organisation type: @Model.ApplicationOrganisationType</li>
+    <li>Regulator: @Model.Regulator</li>
 </ul>
