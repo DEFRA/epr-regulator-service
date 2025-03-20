@@ -49,6 +49,23 @@ public class RegistrationsController : RegulatorSessionBaseController
         };
         return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
     }
+
+    [HttpGet]
+    [Route(PagePath.SamplingInspection)]
+    public async Task<IActionResult> SamplingInspection()
+    {
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.SamplingInspection);
+        SetBackLinkInfos(session, PagePath.SamplingInspection);
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/SamplingInspection.cshtml", model);
+    }
+
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
         if (string.IsNullOrEmpty(Request.Headers.Referer))
