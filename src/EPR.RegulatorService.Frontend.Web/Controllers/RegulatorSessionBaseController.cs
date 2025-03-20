@@ -38,17 +38,37 @@ public abstract class RegulatorSessionBaseController : Controller
         return RedirectToAction(actionName, routeValues);
     }
 
-    protected async Task SaveSessionAndJourney(JourneySession session, string currentPagePath, string? nextPagePath = null)
+    // TODO: Can we change the existing version or should we have a separate overload?
+    protected async Task SaveSessionAndJourney(JourneySession session, string currentPagePath)
     {
         session.RegulatorSession.Journey.AddIfNotExists(currentPagePath);
 
         ClearRestOfJourney(session, currentPagePath);
+
+        await SaveSession(session);
+    }
+
+    //protected async Task SaveSessionAndJourney(JourneySession session, string currentPagePath, string? nextPagePath = null)
+    //{
+    //    session.RegulatorSession.Journey.AddIfNotExists(currentPagePath);
+
+    //    ClearRestOfJourney(session, currentPagePath);
+
+    //    if (nextPagePath != null)
+    //    {
+    //        session.RegulatorSession.Journey.AddIfNotExists(nextPagePath);
+    //    }
+
+    //    await SaveSession(session);
+    //}
+
+    protected async Task SaveSessionAndJourney(JourneySession session, string currentPagePath, string? nextPagePath)
+    {
+        ClearRestOfJourney(session, currentPagePath);
+
+        session.RegulatorSession.Journey.AddIfNotExists(currentPagePath);
+        session.RegulatorSession.Journey.AddIfNotExists(nextPagePath);
         
-        if (nextPagePath != null)
-        {
-            session.RegulatorSession.Journey.AddIfNotExists(nextPagePath);
-        }
- 
         await SaveSession(session);
     }
 
