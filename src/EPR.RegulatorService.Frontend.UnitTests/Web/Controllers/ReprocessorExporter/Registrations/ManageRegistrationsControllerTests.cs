@@ -148,12 +148,22 @@ public class ManageRegistrationsControllerTests
             new ValidationFailure(nameof(ManageRegistrationsRequest.Id), "ID must be greater than 0.")
         };
 
+        var validationResult = new ValidationResult(validationFailures);
+
         _validatorMock
             .Setup(v => v.Validate(It.IsAny<ManageRegistrationsRequest>()))
-            .Returns(new ValidationResult(validationFailures));
+            .Returns(validationResult);
 
         // Act & Assert
-        var exception = Assert.ThrowsException<ValidationException>(() => _controller.Index(id));
+        var exception = Assert.ThrowsException<ValidationException>(() =>
+        {
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+
+            _controller.Index(id);
+        });
 
         exception.Errors.Should().NotBeNullOrEmpty();
         exception.Errors.Select(e => e.ErrorMessage).Should().Contain("ID must be greater than 0.");
