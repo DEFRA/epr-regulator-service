@@ -1,3 +1,4 @@
+using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -11,8 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
-
-using Common.Authorization.Constants;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
@@ -28,6 +27,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
 
         await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.AuthorisedMaterials);
         SetBackLinkInfos(session, PagePath.AuthorisedMaterials);
+
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
@@ -51,6 +51,24 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
 
         return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
     }
+
+    [HttpGet]
+    [Route(PagePath.SamplingInspection)]
+    public async Task<IActionResult> SamplingInspection()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.SamplingInspection);
+        SetBackLinkInfos(session, PagePath.SamplingInspection);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/SamplingInspection.cshtml", model);
+    }
+
 
     [HttpGet]
     [Route(PagePath.InputsAndOutputs)]
