@@ -40,10 +40,10 @@ public abstract class RegulatorSessionBaseController : Controller
 
     protected async Task SaveSessionAndJourney(JourneySession session, string currentPagePath, string? nextPagePath = null)
     {
-        ClearRestOfJourney(session, currentPagePath);
-
         session.RegulatorSession.Journey.AddIfNotExists(currentPagePath);
 
+        ClearRestOfJourney(session, currentPagePath);
+        
         if (nextPagePath != null)
         {
             session.RegulatorSession.Journey.AddIfNotExists(nextPagePath);

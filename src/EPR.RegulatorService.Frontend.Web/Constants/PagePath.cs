@@ -57,7 +57,9 @@ public static class PagePath
     public const string PackagingDataFileDownloadSecurityWarning = "packaging-data-file-download-security-warning";
     public const string AuthorisedMaterials = "authorised-materials";
     public const string ReprocessorExporterRegistrations = "registrations";
+    public const string ReprocessorExporterAccreditations = "accreditations";
     public const string ManageRegistrations = "manage-registrations";
+    public const string ManageAccreditations = "manage-accreditations";
     public const string Accreditation = "accreditation";
     public const string UkSiteDetails="uksite-details";
     public const string SamplingInspection = "sampling-inspection";

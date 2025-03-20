@@ -17,13 +17,12 @@ using Microsoft.FeatureManagement.Mvc;
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
-[Route($"{PagePath.ReprocessorExporterRegistrations}/{PagePath.ManageRegistrations}")]
-public class ManageRegistrationsController(IRegistrationService registrationService,
+[Route($"{PagePath.ReprocessorExporterRegistrations}/{PagePath.ManageAccreditations}")]
+public class ManageAccrediatationController(IRegistrationService registrationService,
     IMapper mapper,
     IValidator<ManageRegistrationsRequest> validator,
     ISessionManager<JourneySession> sessionManager,
     IConfiguration configuration) : RegulatorSessionBaseController(sessionManager, configuration)
-
 {
     private readonly IRegistrationService _registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
     private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -43,8 +42,8 @@ public class ManageRegistrationsController(IRegistrationService registrationServ
 
         var model = _mapper.Map<ManageRegistrationsViewModel>(registration);
 
-        //await SaveSessionAndJourney(session, PagePath.ManageRegistrations);
+        //await SaveSessionAndJourney(session, PagePath.ManageAccreditations);
 
-        return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Accreditation/ManageAccreditations.cshtml", model);
     }
 }

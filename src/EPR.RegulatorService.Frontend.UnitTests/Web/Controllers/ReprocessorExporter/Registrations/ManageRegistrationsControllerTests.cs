@@ -20,7 +20,7 @@ public class ManageRegistrationsControllerTests
 {
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
 
-    private ManageRegistrationsController _controller;
+    private ManageAccrediatationController _controller;
     private Mock<IRegistrationService> _registrationServiceMock;
     private Mock<IMapper> _mapperMock;
     private Mock<IValidator<ManageRegistrationsRequest>> _validatorMock;
