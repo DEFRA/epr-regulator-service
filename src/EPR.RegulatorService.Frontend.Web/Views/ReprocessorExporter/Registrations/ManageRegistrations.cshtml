@@ -21,6 +21,10 @@
 
             @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
             {
+                @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_ReviewSiteDetails.cshtml")
+                @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_ReviewMaterialRegistrations.cshtml")
+            }
+            {
               @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_CheckRegistrations.cshtml", Model)
               @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_ReviewPlasticRegistrations.cshtml", Model)
               @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_ReviewSiteDetails.cshtml", Model)
