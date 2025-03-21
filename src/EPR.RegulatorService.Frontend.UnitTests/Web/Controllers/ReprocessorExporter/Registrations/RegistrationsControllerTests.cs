@@ -36,7 +36,8 @@ public class RegistrationsControllerTests
 
         // Set up the Referer header to return a sample URL (or null for different tests)
         mockHeaders.Setup(h => h["Referer"]).Returns("http://previous-page.com");
-
+        mockHeaders.Setup(h => h.Referer).Returns("http://previous-page.com");
+        
         // Set the mock Request to the HttpContext
         mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
@@ -269,6 +270,8 @@ public class RegistrationsControllerTests
             var model = viewResult.Model as ManageRegistrationsViewModel;
             model.Should().NotBeNull();
             model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+
+            AssertBackLink(viewResult, PagePath.ManageRegistrations);
         }
     }
 
@@ -304,6 +307,7 @@ public class RegistrationsControllerTests
         // Arrange
         var mockHeaders = new Mock<IHeaderDictionary>();
         mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
+        mockHeaders.Setup(h => h.Referer).Returns((string?)null);
 
         var mockRequest = new Mock<HttpRequest>();
         mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
@@ -315,6 +319,41 @@ public class RegistrationsControllerTests
 
         // Assert
         result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/"+PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task SamplingInspection_WhenHeadersIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.SamplingInspection();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task SamplingInspection_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
+
+        // Act
+        var result = await _controller.SamplingInspection();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
 
 
