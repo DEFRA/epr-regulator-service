@@ -456,3 +456,74 @@ table.cookies-table {
     }
   }
 }
+
+.spinner-overlay {
+  display: none;
+}
+
+.app-task-list__items {
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin-bottom: 40px;
+  list-style: none;
+  padding-left: 0;
+
+  @media print {
+    font-family: sans-serif;
+  }
+
+  @media (min-width: 40.0625em) {
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+    margin-bottom: 60px;
+    padding-left: 30px;
+  }
+
+  @media print {
+    font-size: 14pt;
+    line-height: 1.15;
+  }
+}
+
+.reprocessorExporter {
+  .app-task-list__item {
+    border-bottom: 1px solid #b1b4b6;
+    margin-bottom: 0 !important;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    &:after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
+    &:first-child {
+      border-top: 1px solid #b1b4b6;
+    }
+  }
+
+  .app-task-list__task-name {
+    display: block;
+
+    @media (min-width: 28.125em) {
+      float: left;
+    }
+  }
+
+  .app-task-list__tag,
+  .app-task-list__task-completed {
+    margin-top: 10px;
+    margin-bottom: 5px;
+
+    @media (min-width: 28.125em) {
+      float: right;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+}

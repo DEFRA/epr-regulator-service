@@ -21,6 +21,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
+using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 
@@ -351,6 +355,7 @@ public partial class SubmissionsController : Controller
         return RedirectToAction("SubmissionDetails", "Submissions");
     }
 
+
     [HttpGet]
     [Route(PagePath.RejectSubmission)]
     public async Task<IActionResult> RejectSubmission()
@@ -372,6 +377,7 @@ public partial class SubmissionsController : Controller
 
         return View(nameof(RejectSubmission), model);
     }
+
 
     [HttpPost]
     [Route(PagePath.RejectSubmission)]
@@ -427,4 +433,95 @@ public partial class SubmissionsController : Controller
         return await SaveSessionAndRedirect(session, PagePath.Error, "Error", PagePath.Submissions,
             PagePath.PageNotFoundPath, new { statusCode = 404, backLink = PagePath.Submissions });
     }
+
+        [HttpGet]
+        [Route(PagePath.SubmissionsFileDownload)]
+        public async Task<IActionResult> SubmissionsFileDownload()
+        {
+            TempData["DownloadCompleted"] = false;
+
+            return RedirectToAction(nameof(PackagingDataFileDownload), "Submissions");
+        }
+
+
+        [HttpGet]
+        [Route(PagePath.PackagingDataFileDownload)]
+        public IActionResult PackagingDataFileDownload()
+        {
+            return View("PackagingDataFileDownload");
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> FileDownloadInProgress()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
+            var fileDownloadModel = CreateFileDownloadRequest(submission);
+
+            if (fileDownloadModel == null)
+            {
+                return RedirectToAction(nameof(PackagingDataFileDownloadFailed));
+            }
+
+            var response = await _facadeService.GetFileDownload(fileDownloadModel);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                return RedirectToAction(nameof(PackagingDataFileDownloadSecurityWarning));
+            }
+            else if (response.IsSuccessStatusCode)
+            {
+                var fileStream = await response.Content.ReadAsStreamAsync();
+                var contentDisposition = response.Content.Headers.ContentDisposition;
+                var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? submission.PomFileName;
+                TempData["DownloadCompleted"] = true;
+
+                return File(fileStream, "application/octet-stream", fileName);
+            }
+            else
+            {
+                return RedirectToAction(nameof(PackagingDataFileDownloadFailed));
+            }
+        }
+
+
+        [HttpGet]
+        [Route(PagePath.PackagingDataFileDownloadFailed)]
+        public IActionResult PackagingDataFileDownloadFailed()
+        {
+            var model = new SubmissionDetailsFileDownloadViewModel(true, false);
+            return View("PackagingDataFileDownloadFailed", model);
+        }
+
+        [HttpGet]
+        [Route(PagePath.PackagingDataFileDownloadSecurityWarning)]
+        public async Task<IActionResult> PackagingDataFileDownloadSecurityWarning()
+        {
+            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
+            string submittedBy = $"{submission.FirstName} {submission.LastName}";
+            var model = new SubmissionDetailsFileDownloadViewModel(true, true, null, submittedBy);
+            return View("PackagingDataFileDownloadFailed", model);
+        }
+
+        private static FileDownloadRequest CreateFileDownloadRequest(Submission submission)
+        {
+            var fileDownloadModel = new FileDownloadRequest
+            {
+                SubmissionId = submission.SubmissionId,
+                SubmissionType = SubmissionType.Producer,
+                FileId = submission.FileId,
+                BlobName = submission.PomBlobName,
+                FileName = submission.PomFileName,
+            };
+
+            if (fileDownloadModel.FileId == null || fileDownloadModel.BlobName == null || fileDownloadModel.FileName == null)
+            {
+                return null;
+            }
+
+            return fileDownloadModel;
+        }
+
 }

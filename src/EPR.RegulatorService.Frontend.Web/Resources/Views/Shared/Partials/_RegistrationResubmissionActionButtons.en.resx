@@ -126,4 +126,28 @@
   <data name="RegistrationResubmissionDetails.Reject" xml:space="preserve">
     <value>Reject data</value>
   </data>
+  <data name="SpinnerAltText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpinnerHeader" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpinnerJsParagraph1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpinnerJsParagraph2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpinnerNoscriptLinkText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpinnerNoscriptParagraph1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpinnerNoscriptParagraph2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpinnerNoscriptParagraph3" xml:space="preserve">
+    <value />
+  </data>
 </root>

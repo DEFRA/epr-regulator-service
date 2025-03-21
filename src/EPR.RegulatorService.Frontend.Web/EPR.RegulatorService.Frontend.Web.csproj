@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <UserSecretsId>8c277499-f889-42f1-b2d9-569b72dd51ae</UserSecretsId>
+    <UserSecretsId>522d7393-4c74-4943-83be-f9143842f27c</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup> 
@@ -39,6 +39,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.8" />
@@ -159,13 +162,9 @@
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Components\ProducerPaymentDetails\Default.cy.resx">
       <SubType>Designer</SubType>
-      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Components\ProducerPaymentDetails\Default.en.resx">
       <SubType>Designer</SubType>
-      <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Shared\Components\SubmissionDetails\Default.cy.resx">
       <LastGenOutput>Default.en.Designer.cs</LastGenOutput>
@@ -492,7 +491,8 @@
         **/_RegistrationResubmissionDetails.cshtml,
         **/_RegistrationSubmissionDetails.cshtml,
         **/_ResubmissionDetails.cshtml,
-        **/_SubmissionDetails.cshtml
+        **/_SubmissionDetails.cshtml,
+        **/loadingspinner.js
       </Value>
     </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.cpd.exclusions">
@@ -502,10 +502,10 @@
     </SonarQubeSetting>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="assets\images\" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
     <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\ReprocessorExporter\Accreditation\" />
   </ItemGroup>
 </Project>

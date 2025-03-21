@@ -54,4 +54,7 @@
   <data name="SummaryList.SubTitle.ReSubmissionReasonForRejection" xml:space="preserve">
     <value>Rheswm dros wrthod y cyflwyniad blaenorol</value>
   </data>
+  <data name="SummaryList.PackagingData" xml:space="preserve">
+    <value>Data pecynwaith</value>
+  </data>
 </root>

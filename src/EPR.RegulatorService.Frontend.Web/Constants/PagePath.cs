@@ -33,6 +33,7 @@ public static class PagePath
     public const string EmailNominatedApprovedPerson = "email-nominated-approved-person";
     public const string AccountPermissionsChanged = "account-permissions-changed";
     public const string FileDownload = "file-download";
+    public const string SubmissionsFileDownload = "submissions-file-download";
     public const string OrganisationDetailsFileDownload = "organisation-details-file-download";
     public const string OrganisationDetailsFileDownloadFailed = "organisation-details-file-download-failed";
     public const string OrganisationDetailsFileDownloadSecurityWarning = "organisation-details-file-download-security-warning";
@@ -51,7 +52,15 @@ public static class PagePath
     public const string RegistrationSubmissionFileDownloadFailed = "registration-submission-download-failed";
     public const string RegistrationSubmissionFileDownloadSecurityWarning = "registration-submission-download-security-warning";
     public const string RegistrationSubmissionsFileDownload = "submission-file-download";
-
+    public const string PackagingDataFileDownload = "packaging-data-file-download";
+    public const string PackagingDataFileDownloadFailed = "packaging-data-file-download-failed";
+    public const string PackagingDataFileDownloadSecurityWarning = "packaging-data-file-download-security-warning";
+    public const string AuthorisedMaterials = "authorised-materials";
+    public const string ReprocessorExporterRegistrations = "registrations";
+    public const string ManageRegistrations = "manage-registrations";
+    public const string Accreditation = "accreditation";
+    public const string UkSiteDetails="uksite-details";
+    public const string SamplingInspection = "sampling-inspection";
     // Non journey paths
     public const string Accessibility = "accessibility";
     public const string SignedOut = "signed-out";

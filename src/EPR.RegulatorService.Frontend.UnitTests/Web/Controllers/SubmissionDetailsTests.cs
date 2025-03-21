@@ -62,6 +62,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.SubmittedBy.Should().Be($"{submissionFromSession.FirstName} {submissionFromSession.LastName}");
             model.ReferenceFieldNotAvailable.Should().BeFalse();
             model.ReferenceNotAvailable.Should().BeFalse();
+            model.SubmissionBlobName.Should().Be(submissionFromSession.PomBlobName);
+            model.SubmissionFileName.Should().Be(submissionFromSession.PomFileName);
             AssertBackLink(result, PagePath.Submissions);
             _facadeServiceMock.Verify(r => r.GetPomPayCalParameters(It.IsAny<Guid>(), null), Times.Never);
         }

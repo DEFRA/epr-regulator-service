@@ -2,7 +2,10 @@ using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.FeatureManagement;
 using EPR.RegulatorService.Frontend.Web.HealthChecks;
+using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.Middleware;
+
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Logging;
@@ -19,7 +22,12 @@ builder.Services
     .ConfigureMsalDistributedTokenOptions(builder.Configuration);
 
 builder.Services
-    .AddAntiforgery(options => options.Cookie.Name = builder.Configuration.GetValue<string>("CookieOptions:AntiForgeryCookieName"))
+    .AddAntiforgery(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.Name = builder.Configuration.GetValue<string>("CookieOptions:AntiForgeryCookieName");
+    })
     .AddControllersWithViews()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
@@ -79,7 +87,7 @@ app.UseMiddleware<AnalyticsCookieMiddleware>();
 app.MapControllerRoute(
     name: "Default",
     pattern: "{controller}/{action}",
-    defaults: new {controller = "Applications", action = "Applications"});
+    defaults: new { controller = "Applications", action = "Applications" });
 
 app.MapHealthChecks(
     builder.Configuration.GetValue<string>("HealthCheckPath"),

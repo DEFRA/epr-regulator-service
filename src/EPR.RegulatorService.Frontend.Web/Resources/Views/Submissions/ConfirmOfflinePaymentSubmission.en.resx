@@ -126,4 +126,7 @@
   <data name="ConfirmOfflinePaymentSubmission.PageTitle" xml:space="preserve">
     <value>Confirm offline payment submission</value>
   </data>
+  <data name="SummaryList.PackagingData" xml:space="preserve">
+    <value>Packaging data</value>
+  </data>
 </root>

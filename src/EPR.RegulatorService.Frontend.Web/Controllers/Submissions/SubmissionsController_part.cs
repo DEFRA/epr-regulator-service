@@ -146,7 +146,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 FormattedTimeAndDateOfSubmission = DateTimeHelpers.FormatTimeAndDateForSubmission(submission.SubmittedDate),
                 SubmissionId = submission.SubmissionId,
                 SubmittedBy = $"{submission.FirstName} {submission.LastName}",
-                SubmissionPeriod = submission.SubmissionPeriod,
+                SubmissionPeriod = submission.ActualSubmissionPeriod,
                 AccountRole = submission.ServiceRole,
                 Telephone = submission.Telephone,
                 Email = submission.Email,
@@ -156,7 +156,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 ResubmissionRequired = submission.IsResubmissionRequired,
                 PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
                 PreviousRejectionComments = submission.PreviousRejectionComments,
-                SubmittedDate = submission.SubmittedDate
+                SubmittedDate = submission.SubmittedDate,
+                SubmissionFileName = submission.PomFileName,
+                SubmissionBlobName = submission.PomBlobName
             };
 
             return model;

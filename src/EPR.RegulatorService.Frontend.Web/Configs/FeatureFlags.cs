@@ -18,4 +18,8 @@ public static class FeatureFlags
     public const string RegistrationDataPeriodAndTime = "RegistrationDataPeriodAndTime";
 
     public const string ManageRegistrationSubmissions = "ManageRegistrationSubmissions";
+
+    public const string ReprocessorExporter = "ReprocessorExporter";
+
+    public const string EnableCsvDownload = "EnableCsvDownload";
 }

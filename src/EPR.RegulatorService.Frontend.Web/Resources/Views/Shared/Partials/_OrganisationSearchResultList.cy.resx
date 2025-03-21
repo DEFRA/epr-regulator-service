@@ -18,24 +18,24 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="Table.Title" xml:space="preserve">
-        <value>wResults</value>
+        <value>Canlyniadau</value>
     </data>
     <data name="Table.Header.Company" xml:space="preserve">
         <value>Sefydliad</value>
     </data>
     <data name="Table.Header.OrganisationId" xml:space="preserve">
-        <value>wOrganisation ID</value>
+        <value>ID y sefydliad</value>
     </data>
     <data name="Table.Header.CompanyHouseNumber" xml:space="preserve">
-        <value>wCompanies House number</value>
+        <value>Rhif Tŷ'r Cwmnïau</value>
     </data>
     <data name="OrgType.ComplianceScheme" xml:space="preserve">
-          <value>wCompliance scheme</value>
+          <value>Cynllun cydymffurfio</value>
       </data>
     <data name="OrgType.DirectProducer" xml:space="preserve">
-          <value>wDirect producer</value>
+          <value>Cynhyrchydd uniongyrchol</value>
     </data>
     <data name="OrgType.InDirectProducer" xml:space="preserve">
-          <value>wIndirect producer</value>
+          <value>Cynhyrchydd anuniongyrchol</value>
     </data>
 </root>
