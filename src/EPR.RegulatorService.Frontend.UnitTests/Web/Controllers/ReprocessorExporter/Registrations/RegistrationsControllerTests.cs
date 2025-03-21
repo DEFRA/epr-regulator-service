@@ -12,7 +12,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
-    [TestClass]
+using Frontend.Core.Exceptions;
+
+[TestClass]
     public class RegistrationsControllerTests
     {
         private RegistrationsController _controller;
@@ -104,48 +106,26 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync((JourneySession)null!); // Simulating a null session
 
-        // Act
-        var result = await _controller.UkSiteDetails();
-
-        // Assert
-        using (new AssertionScope())
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
+            await _controller.UkSiteDetails();
+        });
     }
 
     [TestMethod]
-    public async Task AuthorisedMaterials_WhenSessionIsNull_ShouldUseNewJourneySession()
+    public async Task AuthorisedMaterials_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange: Mock _sessionManager to return null
         _mockSessionManager
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync((JourneySession)null!); // Simulating a null session
 
-        // Act
-        var result = await _controller.AuthorisedMaterials();
-
-        // Assert
-        using (new AssertionScope())
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
+            await _controller.AuthorisedMaterials();
+        });
     }
 
     [TestMethod]
@@ -196,22 +176,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync((JourneySession)null!); // Simulating a null session
 
-        // Act
-        var result = await _controller.InputsAndOutputs();
-
-        // Assert
-        using (new AssertionScope())
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
+            await _controller.InputsAndOutputs();
+        });
     }
 
     [TestMethod]
@@ -241,24 +210,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
         // Arrange
         _mockSessionManager
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync((JourneySession)null!); 
+            .ReturnsAsync((JourneySession)null!);
 
-        // Act
-        var result = await _controller.SamplingInspection();
-
-        // Assert
-        using (new AssertionScope())
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
+            await _controller.SamplingInspection();
+        });
     }
 
     [TestMethod]

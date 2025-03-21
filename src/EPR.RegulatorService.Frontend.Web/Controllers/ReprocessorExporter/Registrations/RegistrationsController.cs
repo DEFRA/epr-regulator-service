@@ -1,6 +1,5 @@
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -17,7 +16,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
 public class RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration)
-    : RegulatorSessionBaseController(sessionManager, configuration)
+    : ReprocessorExporterBaseController(sessionManager, configuration)
 {
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
@@ -25,7 +24,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.AuthorisedMaterials);
+        await SaveSessionAndJourney(session, PagePath.AuthorisedMaterials);
         SetBackLinkInfos(session, PagePath.AuthorisedMaterials);
 
         var model = new ManageRegistrationsViewModel
@@ -41,7 +40,8 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.UkSiteDetails);
+        await SaveSessionAndJourney(session, PagePath.UkSiteDetails);
+
         SetBackLinkInfos(session, PagePath.UkSiteDetails);
 
         var model = new ManageRegistrationsViewModel
@@ -58,7 +58,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.SamplingInspection);
+        await SaveSessionAndJourney(session, PagePath.SamplingInspection);
         SetBackLinkInfos(session, PagePath.SamplingInspection);
 
         var model = new ManageRegistrationsViewModel
@@ -76,7 +76,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.InputsAndOutputs);
+        await SaveSessionAndJourney(session, PagePath.InputsAndOutputs);
         SetBackLinkInfos(session, PagePath.InputsAndOutputs);
 
         var model = new ManageRegistrationsViewModel
@@ -95,13 +95,5 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
             SetBackLink(session, currentPagePath);
 
         SetBackLinkAriaLabel();
-    }
-
-    private async Task<JourneySession> GetSession()
-    {
-        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
-
-        return session;
     }
 }
