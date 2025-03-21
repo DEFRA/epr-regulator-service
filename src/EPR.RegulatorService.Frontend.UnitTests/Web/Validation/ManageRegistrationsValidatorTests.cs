@@ -1,7 +1,7 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Validation;
 
 using EPR.RegulatorService.Frontend.Web.Validations;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentValidation.TestHelper;
 

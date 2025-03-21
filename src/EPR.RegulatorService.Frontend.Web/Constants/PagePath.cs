@@ -60,6 +60,8 @@ public static class PagePath
     public const string ManageRegistrations = "manage-registrations";
     public const string Accreditation = "accreditation";
     public const string UkSiteDetails="uksite-details";
+    public const string InputsAndOutputs = "reprocessing-throughputs";
+
     public const string SamplingInspection = "sampling-inspection";
     public const string BusinessAddress = "business-address";
     // Non journey paths
