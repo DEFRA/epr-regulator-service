@@ -1,0 +1,77 @@
+@{
+	const string title = "Waste licences, permits or exemptions";
+	ViewData["Title"] = title;
+}
+
+<div class="govuk-width-container ">
+
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+        <h1 class="govuk-heading-l">
+          <span class="govuk-caption-l">Plastic</span>
+          @title
+        </h1>
+
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Licences, permits or exemptions held&nbsp;
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Pollution, Prevention and Control (PPC) permit
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              PPC permit number
+            </dt>
+            <dd class="govuk-summary-list__value">
+              DFG34573453
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Authorised capacity (tonnes)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              50,000 tonnes/ Annually
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Maximum site capacity&nbsp;
+            </dt>
+            <dd class="govuk-summary-list__value">
+              50,000 tonnes/ Annually
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Contact person for plastic&nbsp;
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Freda Pinto <br> <a href="#" class="govuk-link govuk-link--no-visited-state"> freda.pinto@greenltd.com</a>
+            </dd>
+          </div>
+        </dl>
+
+        <br>
+
+        <div class="govuk-button-group !-margin-top-6">
+          <a href="waste-licence-complete" class="govuk-link">
+            <button type="submit" class="govuk-button" data-module="govuk-button">
+              Mark as complete
+            </button>
+          </a>
+          <a href="#" class="govuk-link">
+            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+              Query waste licences, permits or exemptions
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

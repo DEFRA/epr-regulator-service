@@ -54,6 +54,23 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     }
 
     [HttpGet]
+    [Route(PagePath.WasteLicences)]
+    public async Task<IActionResult> WasteLicences()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.WasteLicences);
+        SetBackLinkInfos(session, PagePath.InputsAndOutputs);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/WasteLicences.cshtml", model);
+    }
+
+    [HttpGet]
     [Route(PagePath.SamplingInspection)]
     public async Task<IActionResult> SamplingInspection()
     {

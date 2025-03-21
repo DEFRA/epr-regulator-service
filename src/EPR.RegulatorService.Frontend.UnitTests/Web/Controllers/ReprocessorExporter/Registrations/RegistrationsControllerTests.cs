@@ -176,7 +176,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
         // Assert
         using (new AssertionScope())
         {
-        result.Should().BeOfType<ViewResult>();
+            result.Should().BeOfType<ViewResult>();
 
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
@@ -278,5 +278,52 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
 
         // Assert
         result.Should().BeOfType<ViewResult>();
+    }
+
+    [TestMethod]
+    public async Task WasteLicences_WithCorrectModel_ShouldReturnView()
+    {
+        // Act
+        var result = await _controller.WasteLicences();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+        }
+    }
+
+    [TestMethod]
+    public async Task WasteLicences_WhenSessionIsNull_ShouldUseNewJourneySession()
+    {
+        // Arrange
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
+
+        // Act
+        var result = await _controller.WasteLicences();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+        }
     }
 }
