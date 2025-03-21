@@ -1,9 +1,12 @@
+using System.Net;
+
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.Controllers.Errors;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
@@ -32,7 +35,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
-        return View("~/Views/ReprocessorExporter/Registrations/AuthorisedMaterials.cshtml", model);
+        return View(RegistrationsView(nameof(AuthorisedMaterials)), model);
     }
 
     [HttpGet]
@@ -48,8 +51,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
-
-        return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
+        return View(RegistrationsView(nameof(UkSiteDetails)), model);
     }
 
     [HttpGet]
@@ -66,7 +68,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/SamplingInspection.cshtml", model);
+        return View(RegistrationsView(nameof(SamplingInspection)), model);
     }
 
 
@@ -84,15 +86,58 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml", model);
+        return View(RegistrationsView(nameof(InputsAndOutputs)), model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.BusinessAddress)]
+    public async Task<IActionResult> BusinessAddress()
+    {
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        if (session?.ReprocessorExporterSession?.Journey == null)
+        {
+            return RedirectToAction(PagePath.Error, nameof(ErrorController.Error), new { statusCode = (int)HttpStatusCode.InternalServerError });
+        }
+
+        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
+        SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.BusinessAddress);
+        SetBackLinkInfos(session, PagePath.BusinessAddress);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View(RegistrationsView(nameof(BusinessAddress)), model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.WasteLicences)]
+    public async Task<IActionResult> WasteLicences()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.WasteLicences);
+        SetBackLinkInfos(session, PagePath.WasteLicences);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View(RegistrationsView(nameof(WasteLicences)), model);
     }
 
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
-        if (string.IsNullOrEmpty(Request.Headers.Referer))
+        if (string.IsNullOrEmpty(Request?.Headers?.Referer))
+        {
             SetHomeBackLink();
+        }
         else
+        {
             SetBackLink(session, currentPagePath);
+        }
 
         SetBackLinkAriaLabel();
     }
@@ -104,4 +149,6 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
 
         return session;
     }
+
+    private static string RegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
 }
