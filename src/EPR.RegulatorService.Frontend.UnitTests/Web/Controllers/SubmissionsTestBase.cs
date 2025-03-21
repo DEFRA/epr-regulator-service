@@ -5,6 +5,7 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 using EPR.RegulatorService.Frontend.Web.Sessions;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -19,12 +20,13 @@ public abstract class SubmissionsTestBase
 {
     protected const string ModelErrorKey = "Error";
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
-    
+
     protected SubmissionsController _systemUnderTest = null!;
     protected Mock<HttpContext> _httpContextMock = null!;
     protected Mock<ClaimsPrincipal> _userMock = null!;
     protected Mock<ISessionManager<JourneySession>> _sessionManagerMock = null!;
     protected Mock<IFacadeService> _facadeServiceMock = null!;
+    protected Mock<IPaymentFacadeService> _paymentFacadeServiceMock = null!;
     protected JourneySession JourneySessionMock { get; set; }
     protected Mock<IOptions<SubmissionFiltersOptions>> _submissionFiltersMock = null!;
     protected Mock<IOptions<ExternalUrlsOptions>> _urlsOptionMock = null!;
@@ -41,6 +43,7 @@ public abstract class SubmissionsTestBase
         _urlsOptionMock = new Mock<IOptions<ExternalUrlsOptions>>();
         _tempDataDictionary = new TempDataDictionary(_httpContextMock.Object, Mock.Of<ITempDataProvider>());
         _facadeServiceMock = new Mock<IFacadeService>();
+        _paymentFacadeServiceMock = new Mock<IPaymentFacadeService>();
         _configurationMock = new Mock<IConfiguration>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
         configurationSectionMock.Setup(section => section.Value).Returns("/regulators");
@@ -62,13 +65,14 @@ public abstract class SubmissionsTestBase
         {
             PowerBiLogin = PowerBiLogin
         });
-        
+
         _systemUnderTest = new SubmissionsController(
             _sessionManagerMock.Object,
             _configurationMock.Object,
             _submissionFiltersMock.Object,
             _urlsOptionMock.Object,
-            _facadeServiceMock.Object);
+            _facadeServiceMock.Object,
+            _paymentFacadeServiceMock.Object);
 
         _systemUnderTest.ControllerContext.HttpContext = _httpContextMock.Object;
         _systemUnderTest.TempData = _tempDataDictionary;
@@ -85,7 +89,7 @@ public abstract class SubmissionsTestBase
         _userMock.Setup(x => x.Claims).Returns(claims);
         _httpContextMock.Setup(x => x.User).Returns(_userMock.Object);
     }
-    
+
     protected static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
     {
         var hasBackLinkKey = viewResult.ViewData.TryGetValue(BackLinkViewDataKey, out var gotBackLinkObject);

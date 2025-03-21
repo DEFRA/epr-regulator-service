@@ -2,21 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Web;
 using EPR.RegulatorService.Frontend.Web.TagHelpers;
 
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Localization;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.TagHelpers;
 
 [TestClass]
 public class StatusTagHelperTests
 {
-    private static StatusTagHelper CreateTagHelper(string content = "Test", string status = "granted")
+    private static StatusTagHelper CreateTagHelper(
+        string content = "Test",
+        string status = "Granted",
+        bool useLightColour = false,
+        bool useResubmissionPrefix = false,
+        IStringLocalizer<SharedResources> sharedLocalizer = null)
     {
-        return new StatusTagHelper
+        sharedLocalizer ??= new Mock<IStringLocalizer<SharedResources>>().Object;
+
+        return new StatusTagHelper(sharedLocalizer)
         {
             Content = content,
-            Status = status
+            Status = status,
+            UseLightColour = useLightColour,
+            UseResubmissionPrefix = useResubmissionPrefix
         };
     }
 
@@ -57,6 +69,8 @@ public class StatusTagHelperTests
     [DataRow("Pending", "govuk-tag--blue")]
     [DataRow("Updated", "govuk-tag--yellow")]
     [DataRow("Cancelled", "status__cancelled")]
+    [DataRow("Accepted", "govuk-tag--light-blue")]
+    [DataRow("Rejected", "govuk-tag--light-blue")]
     public void Process_ShouldAddCorrectStatusClass(string status, string expectedClass)
     {
         // Arrange
@@ -99,5 +113,62 @@ public class StatusTagHelperTests
 
         // Assert
         output.Attributes["class"].Value.ToString().Should().NotContain("govuk-tag--");
+    }
+
+    [TestMethod]
+    public void Process_ShouldUseLightBlueForPending_WhenUseLightColourIsTrue()
+    {
+        // Arrange
+        var tagHelper = CreateTagHelper(status: "Pending", useLightColour: true);
+        var context = new TagHelperContext([], new Dictionary<object, object>(), Guid.NewGuid().ToString());
+        var output = new TagHelperOutput("govuk-tag", [], (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+
+        // Act
+        tagHelper.Process(context, output);
+
+        // Assert
+        Assert.IsTrue(output.Attributes["class"].Value.ToString().Contains("govuk-tag--light-blue"));
+    }
+
+    [TestMethod]
+    public void Process_ShouldUseBlueForPending_WhenUseLightColourIsFalse()
+    {
+        // Arrange
+        var tagHelper = CreateTagHelper(status: "Pending", useLightColour: false);
+        var context = new TagHelperContext([], new Dictionary<object, object>(), Guid.NewGuid().ToString());
+        var output = new TagHelperOutput("govuk-tag", [], (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+
+        // Act
+        tagHelper.Process(context, output);
+
+        // Assert
+        Assert.IsTrue(output.Attributes["class"].Value.ToString().Contains("govuk-tag--blue"));
+    }
+
+    [TestMethod]
+    [DataRow("Pending")]
+    [DataRow("Accepted")]
+    [DataRow("Rejected")]
+    public void Process_ShouldUseResubmissionPrefix_WhenUseResubmissionPrefixIsTrue(string resubmissionStatus)
+    {
+        // Arrange
+        var mockLocalizer = new Mock<IStringLocalizer<SharedResources>>();
+        mockLocalizer.Setup(ml => ml["Resubmission.Pending"]).Returns(new LocalizedString("Resubmission.Pending", "Resubmission Pending"));
+        mockLocalizer.Setup(ml => ml["Resubmission.Accepted"]).Returns(new LocalizedString("Resubmission.Accepted", "Resubmission Accepted"));
+        mockLocalizer.Setup(ml => ml["Resubmission.Rejected"]).Returns(new LocalizedString("Resubmission.Rejected", "Resubmission Rejected"));
+
+        var tagHelper = CreateTagHelper(
+            status: resubmissionStatus,
+            useResubmissionPrefix: true,
+            sharedLocalizer: mockLocalizer.Object);
+
+        var context = new TagHelperContext([], new Dictionary<object, object>(), Guid.NewGuid().ToString());
+        var output = new TagHelperOutput("govuk-tag", [], (useCachedResult, encoder) => Task.FromResult<TagHelperContent>(new DefaultTagHelperContent()));
+
+        // Act
+        tagHelper.Process(context, output);
+
+        // Assert
+        Assert.IsTrue(output.Content.GetContent().Contains($"Resubmission {resubmissionStatus}"));
     }
 }

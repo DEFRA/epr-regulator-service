@@ -141,4 +141,7 @@
   <data name="SubTitle.PowerBI" xml:space="preserve">
     <value>Power BI</value>
   </data>
+  <data name="SummaryList.Information.Text" xml:space="preserve">
+    <value>Chaiff {0} ddim ailgyflwyno nes bod y cyflwyniad yma wedi’i weithredu.</value>
+  </data>
 </root>

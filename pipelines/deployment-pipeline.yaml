@@ -80,12 +80,12 @@ resources:
     - repository: ReleaseTags
       name: RWD-CPR-EPR4P-ADO/epr-app-config-settings
       type: git
-      ref: ${{ replace(replace(contains(parameters.imageTag, 'RELEASE'),'True',replace('refs/tags/RELEASETAG','RELEASETAG', parameters.imageTag)),'False','main') }}
+      ref: ${{ replace(replace(contains(parameters.imageTag, 'RELEASE-'),'True',replace('refs/tags/RELEASETAG','RELEASETAG', parameters.imageTag)),'False','main') }}
 
 extends:
   template: epr-deployment-pipeline.yaml@CommonTemplates
   parameters:
-    ${{ if contains(parameters.imageTag, 'RELEASE') }}:
+    ${{ if contains(parameters.imageTag, 'RELEASE-') }}:
       imageTag: $(DEVRWDWEBWAx411)
     ${{ else }}:
       imageTag: ${{ parameters.imageTag }}

@@ -15,6 +15,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             // Assert
             Assert.AreEqual(Guid.Empty, viewModel.SubmissionId, "SubmissionId should be Guid.Empty by default.");
             Assert.IsNull(viewModel.RejectReason, "RejectReason should be null by default.");
+            Assert.IsFalse(viewModel.IsResubmission, "IsResubmission should be false by default.");
         }
 
         [TestMethod]

@@ -19,15 +19,44 @@
     <div class="govuk-summary-card__content" style="padding-bottom: 0px;">
         <dl class="govuk-summary-list govuk-!-margin-bottom-4">
 
-            <div class="govuk-summary-list__row">
-                <dd class="govuk-summary-list__value">
-                    <strong>@Localizer["SubmissionDetails.TimeAndDateOfSubmission"]</strong>
-                </dd>
-                <dd class="govuk-summary-list__value">
-                    @Model.TimeAndDateOfSubmission.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)
-                </dd>
-            </div>
+            @if (!Model.IsResubmission)
+            {
+                <div class="govuk-summary-list__row">
+                    <dd class="govuk-summary-list__value">
+                        <strong>@Localizer["SubmissionDetails.TimeAndDateOfSubmission"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value">
+                        @Model.TimeAndDateOfSubmission.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)
+                    </dd>
+                </div>
+            }
 
+            @if (Model.ResubmissionStatus != null)
+            {
+                <div class="govuk-summary-list__row">
+                    <dd class="govuk-summary-list__value">
+                        <govuk-tag
+                          status="@Model.ResubmissionStatus"
+                          content="@SharedLocalizer[Model.ResubmissionStatus.GetDescription()]"
+                          useLightColour=true
+                          useResubmissionPrefix=true/>
+                    </dd>
+                    @if (Model.ResubmissionStatus == EPR.RegulatorService.Frontend.Core.Enums.RegistrationSubmissionStatus.Pending)
+                    {
+                        <dd class="govuk-summary-list__value">
+                            @Model.TimeAndDateOfResubmission?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)
+                        </dd>
+                    } else
+                    {
+                        <dd class="govuk-summary-list__value">
+                            @Model.LatestDecisionDate?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture)
+                        </dd>
+                    }
+                </div>
+            }
+
+            @if (!Model.IsResubmission)
+            {
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">
                     <strong>@Localizer["SubmissionDetails.SubmittedOnTime"]</strong>
@@ -36,6 +65,7 @@
                     @(Model.SubmittedOnTime ? @SharedLocalizer["Yes"] : @SharedLocalizer["No"])
                 </dd>
             </div>
+            }
 
             <div class="govuk-summary-list__row">
                 <dd class="govuk-summary-list__value">

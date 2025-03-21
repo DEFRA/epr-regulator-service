@@ -55,10 +55,13 @@ public class SubmissionDetailsViewModel
     }
 
     public RegistrationSubmissionStatus Status { get; set; }
-    public DateTime? DecisionDate { get; set; }
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
+    public DateTime? LatestDecisionDate { get; set; }
     public DateTime? StatusPendingDate { get; set; }
 
     public DateTime TimeAndDateOfSubmission { get; set; }
+    public DateTime? TimeAndDateOfResubmission { get; set; }
+    public DateTime? RegistrationDate { get; set; }
     public bool SubmittedOnTime { get; set; }
     public string SubmittedBy { get; set; }
     public ServiceRole? AccountRole { get; set; }
@@ -69,6 +72,10 @@ public class SubmissionDetailsViewModel
     // Files with download links
     public List<FileDetails> Files { get; set; }
     public int? AccountRoleId { get; set; }
+
+    public bool IsResubmission { get; set; }
+
+    public string ResubmissionFileId { get; set; }
 
     public SubmissionDetailsViewModel()
     {
@@ -81,8 +88,13 @@ public class SubmissionDetailsViewModel
 
         var targetDate = Status switch
         {
-            RegistrationSubmissionStatus.Granted or RegistrationSubmissionStatus.Refused or RegistrationSubmissionStatus.Queried or RegistrationSubmissionStatus.Updated => DecisionDate,
-            RegistrationSubmissionStatus.Cancelled => StatusPendingDate ?? DecisionDate,
+            RegistrationSubmissionStatus.Granted => RegistrationDate,
+            RegistrationSubmissionStatus.Refused or
+            RegistrationSubmissionStatus.Queried or
+            RegistrationSubmissionStatus.Updated or
+            RegistrationSubmissionStatus.Accepted or
+            RegistrationSubmissionStatus.Rejected => LatestDecisionDate,
+            RegistrationSubmissionStatus.Cancelled => StatusPendingDate ?? LatestDecisionDate,
             _ => TimeAndDateOfSubmission,
         } ?? TimeAndDateOfSubmission;
 
@@ -96,17 +108,23 @@ public class SubmissionDetailsViewModel
             return null;
         }
 
-        var result = new RegistrationSubmissionOrganisationSubmissionSummaryDetails();
-
-        result.AccountRoleId = details.AccountRoleId;
-        result.Telephone = details.Telephone;
-        result.Email = details.Email;
-        result.DeclaredBy = details.DeclaredBy;
-        result.SubmittedBy = details.SubmittedBy;
-        result.DecisionDate = details.DecisionDate;
-        result.Status = details.Status;
-        result.SubmittedOnTime = details.SubmittedOnTime;
-        result.TimeAndDateOfSubmission = details.TimeAndDateOfSubmission;
+        var result = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+        {
+            AccountRoleId = details.AccountRoleId,
+            Telephone = details.Telephone,
+            Email = details.Email,
+            DeclaredBy = details.DeclaredBy,
+            SubmittedBy = details.SubmittedBy,
+            DecisionDate = details.LatestDecisionDate,
+            Status = details.Status,
+            ResubmissionStatus = details.ResubmissionStatus,
+            SubmittedOnTime = details.SubmittedOnTime,
+            TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
+            TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,
+            RegistrationDate = details.RegistrationDate,
+            IsResubmission = details.IsResubmission,
+            ResubmissionFileId = details.ResubmissionFileId
+        };
 
         if (details.Files != null)
         {
@@ -134,15 +152,20 @@ public class SubmissionDetailsViewModel
             Email = details.Email,
             DeclaredBy = details.DeclaredBy,
             SubmittedBy = details.SubmittedBy,
-            DecisionDate = details.DecisionDate,
+            LatestDecisionDate = details.DecisionDate,
             Status = details.Status,
+            ResubmissionStatus = details.ResubmissionStatus,
             SubmittedOnTime = details.SubmittedOnTime,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
-            Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList()
+            TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,
+            RegistrationDate = details.RegistrationDate,
+            Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList(),
+            IsResubmission = details.IsResubmission,
+            ResubmissionFileId = details.ResubmissionFileId
         };
     }
 
-    private static ServiceRole? GetAccountRole ( int? serviceRoleId )
+    private static ServiceRole? GetAccountRole(int? serviceRoleId)
     {
         ServiceRole? retVal = serviceRoleId.HasValue ? (ServiceRole)serviceRoleId : null;
 

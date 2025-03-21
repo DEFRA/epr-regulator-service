@@ -141,13 +141,22 @@
   <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
     <value>Resubmission required</value>
   </data>
-  <data name="SummaryList.Information.Text" xml:space="preserve">
-    <value>{0} cannot resubmit until this submission has been actioned.</value>
-  </data>
   <data name="SummaryList.SubmissionPeriodSuffix" xml:space="preserve">
     <value>submission period</value>
   </data>
   <data name="SummaryList.PackagingData" xml:space="preserve">
     <value>Packaging data</value>
+  </data>
+  <data name="SummaryList.TitleForResubmission" xml:space="preserve">
+    <value>Resubmission details</value>
+  </data>
+  <data name="SummaryList.SubTitle.TimeAndDateOfReSubmission" xml:space="preserve">
+    <value>Time and date of resubmission</value>
+  </data>
+  <data name="SummaryList.SubTitle.ReSubmittedBy" xml:space="preserve">
+    <value>Resubmitted by</value>
+  </data>
+  <data name="SummaryList.SubTitle.ReSubmissionReasonForRejection" xml:space="preserve">
+    <value>Reason for rejection of previous submission</value>
   </data>
 </root>

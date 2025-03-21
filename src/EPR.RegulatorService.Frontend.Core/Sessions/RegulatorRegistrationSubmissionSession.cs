@@ -30,7 +30,7 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
                     {
                         LatestFilterChoices.PageNumber = 1;
                         LatestFilterChoices.OrganisationName = LatestFilterChoices.OrganisationReference = null;
-                        LatestFilterChoices.OrganisationType = LatestFilterChoices.RelevantYears = LatestFilterChoices.Statuses = null;
+                        LatestFilterChoices.OrganisationType = LatestFilterChoices.RelevantYears = LatestFilterChoices.Statuses = LatestFilterChoices.ResubmissionStatuses = null;
                     }
                 }
             }

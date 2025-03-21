@@ -19,9 +19,16 @@ public class RegistrationSubmissionOrganisationSubmissionSummaryDetails
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionStatus Status { get; set; }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
+
     public DateTime? DecisionDate { get; set; }
 
     public DateTime TimeAndDateOfSubmission { get; set; }
+
+    [JsonPropertyName("resubmissionDate")]
+    public DateTime? TimeAndDateOfResubmission { get; set; }
+    public DateTime? RegistrationDate { get; set; }
     public bool SubmittedOnTime { get; set; }
     public Guid? SubmittedByUserId { get; set; }
     public string SubmissionPeriod { get; set; }
@@ -34,4 +41,7 @@ public class RegistrationSubmissionOrganisationSubmissionSummaryDetails
     public string DeclaredBy { get; set; }
 
     public List<FileDetails> Files { get; set; } = [];
+
+    public bool IsResubmission { get; set; }
+    public string ResubmissionFileId { get; set; }
 }

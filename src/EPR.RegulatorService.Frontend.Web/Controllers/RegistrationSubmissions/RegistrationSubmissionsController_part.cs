@@ -163,7 +163,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             {
                 Amount = (int)(decimal.Parse(offlinePayment, CultureInfo.InvariantCulture) * 100),
                 Description = "Registration fee",
-                Reference = existingModel.ApplicationReferenceNumber,
+                Reference = existingModel.ReferenceNumber,
                 Regulator = regulator,
                 UserId = (Guid)_currentSession.UserData.Id
             });
@@ -173,7 +173,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
             }
 
-            await _facadeService.SubmitRegistrationFeePaymentAsync(new RegistrationFeePaymentRequest
+            await _facadeService.SubmitRegistrationFeePaymentAsync(new FeePaymentRequest
             {
                 PaidAmount = offlinePayment,
                 PaymentMethod = "Offline",
@@ -223,7 +223,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 existingModel.RegulatorComments = regulatorDecisionRequest.Comments;
                 existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
                 existingModel.SubmissionDetails.Status = existingModel.Status;
-                existingModel.SubmissionDetails.DecisionDate = DateTime.UtcNow;
+                existingModel.SubmissionDetails.LatestDecisionDate = DateTime.UtcNow;
 
                 if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
                 {
@@ -239,15 +239,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
         private static RegulatorDecisionRequest GetDecisionRequest(
             RegistrationSubmissionDetailsViewModel existingModel,
-            RegistrationSubmissionStatus status) => new()
+            RegistrationSubmissionStatus status)
+        {
+            var request = new RegulatorDecisionRequest
             {
-                ApplicationReferenceNumber = existingModel.ApplicationReferenceNumber,
+                ApplicationReferenceNumber = existingModel.ReferenceNumber,
                 OrganisationId = existingModel.OrganisationId,
                 SubmissionId = existingModel.SubmissionId,
-                // For generating reference
-                Status = status.ToString(),
-                CountryName = GetCountryCodeInitial(existingModel.NationId),
-                RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType(),
+                // For generating reference and send email
                 TwoDigitYear = (existingModel.RegistrationYear % 100).ToString(CultureInfo.InvariantCulture),
                 OrganisationAccountManagementId = existingModel.OrganisationReference,
                 // For sending emails
@@ -256,8 +255,23 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 OrganisationReference = existingModel.OrganisationReference,
                 AgencyName = GetRegulatorAgencyName(existingModel.NationId),
                 AgencyEmail = GetRegulatorAgencyEmail(existingModel.NationId),
-                IsWelsh = existingModel.NationId == 4
+                IsWelsh = existingModel.NationId == 4,
+                Status = status.ToString(),
+                IsResubmission = existingModel.IsResubmission,
+                FileId = existingModel.IsResubmission ? existingModel.ResubmissionFileId : null
             };
+
+            if (request.IsResubmission)
+            {
+                request.ExistingRegRefNumber = existingModel.RegistrationReferenceNumber;
+                return request;
+            }
+
+            // For generating reference
+            request.CountryName = GetCountryCodeInitial(existingModel.NationId);
+            request.RegistrationSubmissionType = existingModel.OrganisationType.GetRegistrationSubmissionType();
+            return request;
+        }
 
         private static FileDownloadRequest CreateFileDownloadRequest(JourneySession session, RegistrationSubmissionOrganisationDetails registration)
         {
@@ -308,5 +322,40 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return fileDownloadModel;
         }
 
+        private async Task<IActionResult> SubmitRegulatorRejectDecisionAsync(RegistrationSubmissionDetailsViewModel registrationSubmissionDetailsViewModel)
+        {
+            try
+            {
+                var regulatorDecisionRequest = GetDecisionRequest(registrationSubmissionDetailsViewModel, Core.Enums.RegistrationSubmissionStatus.Refused);
+
+                regulatorDecisionRequest.Comments = registrationSubmissionDetailsViewModel.RejectReason;
+
+                var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
+
+                await UpdateOrganisationDetailsChangeHistoryAsync(registrationSubmissionDetailsViewModel, status, regulatorDecisionRequest);
+
+                return status == Core.Models.EndpointResponseStatus.Success
+                    ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
+                    : RedirectToRoute("ServiceNotAvailable",
+                    new
+                    {
+                        backLink = $"{PagePath.RegistrationSubmissionDetails}/{registrationSubmissionDetailsViewModel.SubmissionId}"
+                    });
+            }
+            catch (Exception ex)
+            {
+                _logControllerError.Invoke(
+                    logger,
+                    $"Exception received while refusing submission" +
+                    $"{nameof(RegistrationSubmissionsController)}.{nameof(ConfirmRegistrationRefusal)}", ex);
+
+                return RedirectToRoute(
+                    "ServiceNotAvailable",
+                    new
+                    {
+                        backLink = $"{PagePath.RegistrationSubmissionDetails}/{registrationSubmissionDetailsViewModel.SubmissionId}"
+                    });
+            }
+        }
     }
 }

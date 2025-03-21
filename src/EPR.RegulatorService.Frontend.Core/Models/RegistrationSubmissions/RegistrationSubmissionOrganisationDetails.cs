@@ -30,15 +30,12 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public string NationCode { get; set; }
     public int RelevantYear { get; set; }
     public DateTime SubmissionDate { get; set; }
+    public DateTime? RegistrationDate { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionStatus SubmissionStatus { get; set; }
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
     public DateTime? StatusPendingDate { get; set; }
-
-    public int NumberOfSubsidiaries { get; set; }
-    public int NumberOfOnlineSubsidiaries { get; set; }
-    public bool IsOnlineMarketPlace { get; set; }
-
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
     public DateTime? RegulatorDecisionDate { get; set; }
@@ -64,12 +61,14 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public RegistrationSubmissionsOrganisationPaymentDetails PaymentDetails { get; set; }
     public string? RegulatorDescisionDate { get; set; }
 
-    public bool IsLateSubmission { get; set; }
     public bool? IsComplianceScheme { get; set; }
-    public string OrganisationSize { get; set; }
-
     public string SubmissionPeriod { get; set; }
     public List<CsoMembershipDetailsDto> CsoMembershipDetails { get; set; }
+
+    public ProducerDetailsDto ProducerDetails { get; set; }
+    public bool IsResubmission { get; set; }
+
+    public string ResubmissionFileId { get; set; }
 
     public override bool Equals(object? obj) => Equals(obj as RegistrationSubmissionOrganisationDetails);
     public bool Equals(RegistrationSubmissionOrganisationDetails? other) => other is not null && OrganisationId.Equals(other.OrganisationId);
@@ -93,14 +92,30 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 NationId = response.NationId,
                 RelevantYear = response.RegistrationYear,
                 SubmissionStatus = response.SubmissionStatus,
+                ResubmissionStatus = response.ResubmissionStatus,
                 StatusPendingDate = response.StatusPendingDate,
-                ProducerCommentDate = response.ProducerCommentDate,
-                RegulatorDecisionDate = response.RegulatorCommentDate
+                IsResubmission = response.IsResubmission,
+                ResubmissionFileId = response.ResubmissionFileId,
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+                {
+                    IsResubmission = response.IsResubmission,
+                    ResubmissionFileId = response.ResubmissionFileId,
+                    RegistrationDate = response.RegistrationDate,
+                    TimeAndDateOfSubmission = response.SubmissionDate,
+                    TimeAndDateOfResubmission = response.ResubmissionDate,
+                    ResubmissionStatus = response.ResubmissionStatus
+                    
+                }
             };
 
-    public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionOrganisationDetailsResponse response) => response is null
-        ? null
-        : new RegistrationSubmissionOrganisationDetails
+    public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionOrganisationDetailsResponse response)
+    {
+        if (response is null)
+        {
+            return default;
+        }
+
+        var registrationSubmissionOrganisationDetails = new RegistrationSubmissionOrganisationDetails
         {
             SubmissionId = response.SubmissionId,
             OrganisationId = response.OrganisationId,
@@ -112,6 +127,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             RelevantYear = response.RelevantYear,
             SubmissionDate = response.SubmissionDate,
             SubmissionStatus = response.SubmissionStatus,
+            ResubmissionStatus = response.ResubmissionStatus,
             StatusPendingDate = response.StatusPendingDate,
             RegulatorComments = response.RegulatorComments,
             ProducerComments = response.ProducerComments,
@@ -129,15 +145,25 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             Country = response.Country,
             Postcode = response.Postcode,
             IsComplianceScheme = response.IsComplianceScheme,
-            OrganisationSize = response.OrganisationSize,
-            NumberOfSubsidiaries = response.NumberOfSubsidiaries,
-            NumberOfOnlineSubsidiaries = response.NumberOfOnlineSubsidiaries,
             SubmissionDetails = response.SubmissionDetails,
-            IsLateSubmission = response.IsLateSubmission,
             RegulatorDecisionDate = response.RegulatorDecisionDate,
             ProducerCommentDate = response.ProducerCommentDate,
-            IsOnlineMarketPlace = response.IsOnlineMarketPlace,
             SubmissionPeriod = response.SubmissionPeriod,
-            CsoMembershipDetails = response.CsoMembershipDetails
+            CsoMembershipDetails = response.CsoMembershipDetails,
+            IsResubmission = response.IsResubmission,
+            ResubmissionFileId = response.ResubmissionFileId,
+            ProducerDetails = new ProducerDetailsDto
+            {
+                IsLateFeeApplicable = response.IsLateSubmission,
+                IsProducerOnlineMarketplace = response.IsOnlineMarketPlace,
+                NoOfSubsidiaries = response.NumberOfSubsidiaries,
+                NoOfSubsidiariesOnlineMarketPlace = response.NumberOfOnlineSubsidiaries,
+                ProducerType = response.OrganisationSize
+            }
         };
+
+        registrationSubmissionOrganisationDetails.SubmissionDetails.IsResubmission = response.IsResubmission;
+        registrationSubmissionOrganisationDetails.SubmissionDetails.ResubmissionFileId = response.ResubmissionFileId;
+        return registrationSubmissionOrganisationDetails;
+    }
 }

@@ -124,12 +124,18 @@
     <value>Rheoli cyflwyniadau cofrestru</value>
   </data>
   <data name="ErrorMessage" xml:space="preserve">
-    <value>Dewiswch ydw os hoffech chi ganiatáu'r cais yma am gofrestru</value>
+    <value>Dewiswch opsiwn</value>
   </data>
   <data name="PageHeading" xml:space="preserve">
     <value>Ydych chi'n siŵr yr hoffech chi ganiatáu'r cofrestriad yma?</value>
   </data>
+  <data name="PageHeading.Resubmission" xml:space="preserve">
+    <value>Ydych chi'n siŵr yr hoffech chi gymeradwyo'r data yma sydd wedi'i ailgyflwyno?</value>
+  </data>
   <data name="PageTitle" xml:space="preserve">
     <value>Rhoi cadarnhad cofrestru</value>
+  </data>
+  <data name="PageTitle.Resubmission" xml:space="preserve">
+    <value>Cadarnhau cymeradwyo data sydd wedi'i ailgyflwyno</value>
   </data>
 </root>

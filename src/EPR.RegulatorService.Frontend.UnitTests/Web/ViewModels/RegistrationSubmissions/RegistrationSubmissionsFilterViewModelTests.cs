@@ -21,6 +21,9 @@ public class RegistrationSubmissionsFilterTests
             IsStatusQueriedChecked = true,
             IsStatusRefusedChecked = true,
             IsStatusUpdatedChecked = true,
+            IsResubmissionAcceptedRegistrationChecked = true,
+            IsResubmissionRejectedRegistrationChecked = true,
+            IsResubmissionPendingRegistrationChecked = true,
             PageNumber = 2,
             Is2025Checked = true,
             // Act
@@ -37,6 +40,10 @@ public class RegistrationSubmissionsFilterTests
         Assert.IsFalse(viewModel.IsStatusQueriedChecked, "IsStatusQueriedChecked should be false");
         Assert.IsFalse(viewModel.IsStatusRefusedChecked, "IsStatusRefusedChecked should be false");
         Assert.IsFalse(viewModel.IsStatusUpdatedChecked, "IsStatusUpdatedChecked should be false");
+        Assert.IsFalse(viewModel.IsResubmissionAcceptedRegistrationChecked, "IsResubmissionAcceptedRegistrationChecked should be false");
+        Assert.IsFalse(viewModel.IsResubmissionRejectedRegistrationChecked, "IsResubmissionRejectedRegistrationChecked should be false");
+        Assert.IsFalse(viewModel.IsResubmissionPendingRegistrationChecked, "IsResubmissionPendingRegistrationChecked should be false");
+
         Assert.IsFalse(viewModel.Is2025Checked, "Is2025Checked should be false");
     }
 
@@ -148,6 +155,42 @@ public class RegistrationSubmissionsFilterTests
     }
 
     [TestMethod]
+    public void ModelToViewModel_MultipleResubmissionStatusesValues_ShouldSetCorrectFlags()
+    {
+        // Arrange
+        var model = new RegistrationSubmissionsFilterModel
+        {
+            ResubmissionStatuses = "pending accepted rejected"
+        };
+
+        // Act
+        RegistrationSubmissionsFilterViewModel viewModel = model;
+
+        // Assert
+        Assert.IsTrue(viewModel.IsResubmissionAcceptedRegistrationChecked);
+        Assert.IsTrue(viewModel.IsResubmissionPendingRegistrationChecked);
+        Assert.IsTrue(viewModel.IsResubmissionRejectedRegistrationChecked);
+    }
+    [TestMethod]
+    public void ModelToViewModel_PartialResubmissionStatusesValues_ShouldSetCorrectFlags()
+    {
+        // Arrange
+        var model = new RegistrationSubmissionsFilterModel
+        {
+            ResubmissionStatuses = "pending accepted"
+        };
+
+        // Act
+        RegistrationSubmissionsFilterViewModel viewModel = model;
+
+        // Assert
+        Assert.IsTrue(viewModel.IsResubmissionAcceptedRegistrationChecked);
+        Assert.IsTrue(viewModel.IsResubmissionPendingRegistrationChecked);
+        Assert.IsFalse(viewModel.IsResubmissionRejectedRegistrationChecked);
+    }
+
+
+    [TestMethod]
     public void ModelToViewModel_EmptyOrNullFields_ShouldMapToDefaults()
     {
         // Arrange
@@ -156,6 +199,7 @@ public class RegistrationSubmissionsFilterTests
             OrganisationName = null,
             OrganisationType = string.Empty,
             Statuses = null,
+            ResubmissionStatuses = null,
             PageNumber = null
         };
 
@@ -167,6 +211,10 @@ public class RegistrationSubmissionsFilterTests
         Assert.IsFalse(viewModel.IsOrganisationComplianceChecked);
         Assert.IsFalse(viewModel.IsOrganisationSmallChecked);
         Assert.IsFalse(viewModel.IsOrganisationLargeChecked);
+        Assert.IsFalse(viewModel.IsResubmissionAcceptedRegistrationChecked);
+        Assert.IsFalse(viewModel.IsResubmissionPendingRegistrationChecked);
+        Assert.IsFalse(viewModel.IsResubmissionRejectedRegistrationChecked);
+
         Assert.AreEqual(1, viewModel.PageNumber); // Default page number
     }
 

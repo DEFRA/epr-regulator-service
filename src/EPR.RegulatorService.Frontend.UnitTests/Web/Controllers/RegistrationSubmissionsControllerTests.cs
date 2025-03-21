@@ -883,6 +883,34 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task GrantRegistrationSubmission_Post_Should_Not_Set_Vars_Needed_For_Reference_In_Resubmission()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, 1, "Eng");
+            detailsModel.IsResubmission = true;
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration = detailsModel;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success)
+                .Callback<RegulatorDecisionRequest>((request) =>
+                {
+                    request.ExistingRegRefNumber.Should().NotBeNullOrWhiteSpace();
+                    request.CountryName.Should().BeNullOrWhiteSpace();
+                    request.RegistrationSubmissionType.Should().Be(RegistrationSubmissionType.NotSet);
+                });
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true, IsResubmission = true }) as RedirectToRouteResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.RouteName.Should().Be("SubmissionDetails");
+            result.RouteValues.First().Value.Should().Be(submissionId);
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+        }
+
+        [TestMethod]
         public async Task GrantRegistrationSubmission_Post_ReturnsView_WhenModelStateIsInvalid()
         {
             // Arrange
@@ -1391,7 +1419,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             var expectedViewModel = new RejectRegistrationSubmissionViewModel
             {
-                SubmissionId = id
+                SubmissionId = id,
+                IsResubmission = detailsModel.IsResubmission
             };
 
             // Act
@@ -1459,7 +1488,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             var expectedViewModel = new RejectRegistrationSubmissionViewModel
             {
-                SubmissionId = Guid.NewGuid()
+                SubmissionId = Guid.NewGuid(),
+                IsResubmission = detailsModel.IsResubmission
             };
 
             _controller.Url = mockUrlHelper.Object;
@@ -1488,7 +1518,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             var model = new RejectRegistrationSubmissionViewModel
             {
-                SubmissionId = id
+                SubmissionId = id,
+                IsResubmission = detailsModel.IsResubmission
             };
 
             // Simulate an error in ModelState
@@ -1534,7 +1565,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new RejectRegistrationSubmissionViewModel
             {
                 SubmissionId = id,
-                RejectReason = new string('A', 401) // Exceeds 400 character limit
+                RejectReason = new string('A', 401), // Exceeds 400 character limit
+                IsResubmission = detailsModel.IsResubmission
             };
 
             // Simulate model state error for the RejectReason property
@@ -1586,7 +1618,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = new RejectRegistrationSubmissionViewModel
             {
                 SubmissionId = detailsModel.SubmissionId,
-                RejectReason = detailsModel.RejectReason
+                RejectReason = detailsModel.RejectReason,
+                IsResubmission = detailsModel.IsResubmission
             };
 
             // Act
@@ -1611,6 +1644,61 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             Assert.AreEqual("submissionId", routeValues[0].Key);
             Assert.AreEqual(detailsModel.SubmissionId, routeValues[0].Value);
+        }
+
+        [TestMethod]
+        [DataRow("Valid reject reason")]
+        [DataRow("")]
+        [DataRow(" ")]
+        [DataRow("             valid reason")]
+        public async Task RejectRegistrationSubmission_Post_SavesAndReturnsSuccessAndRedirectsCorrectly_ForValidReSubmissionRefusal(string rejectReason)
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            detailsModel.RejectReason = rejectReason;
+            detailsModel.IsResubmission = true;
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(submissionId, detailsModel);
+
+            var model = new RejectRegistrationSubmissionViewModel
+            {
+                SubmissionId = detailsModel.SubmissionId,
+                RejectReason = detailsModel.RejectReason,
+                IsResubmission = detailsModel.IsResubmission
+            };
+
+            // Act
+            // Set up successful submission status
+            _facadeServiceMock
+                .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
+                .ReturnsAsync(EndpointResponseStatus.Success);
+
+            var result = await _controller.RejectRegistrationSubmission(model) as RedirectToActionResult;
+
+            // Assert - Successful refuse and redirection
+            Assert.IsNotNull(result);
+            Assert.AreEqual(PagePath.RegistrationSubmissionsAction, result.ActionName);
+
+            // Verify that the facade service was called the expected number of times
+            _facadeServiceMock.Verify(mock =>
+                mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
+
+            // Assert - Successful save in session
+            Assert.IsTrue(_journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason == rejectReason);
+
+            bool isRegistrationSubmissionOrganisationDetailsChanged =
+                _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestRegistrationSubmissionOrganisationDetails);
+
+            isRegistrationSubmissionOrganisationDetailsChanged.Should().BeTrue();
+            latestRegistrationSubmissionOrganisationDetails.Should().NotBeNull();
+            latestRegistrationSubmissionOrganisationDetails.RejectReason.Should().Be(rejectReason);
+            latestRegistrationSubmissionOrganisationDetails.RegulatorComments.Should().Be(rejectReason.ToString());
         }
 
         #endregion POST
@@ -1676,13 +1764,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.SubmissionId, model.SubmissionId);
             Assert.AreEqual(expectedViewModel.OrganisationReference, model.OrganisationReference);
             Assert.AreEqual(expectedViewModel.OrganisationName, model.OrganisationName);
-            Assert.AreEqual(expectedViewModel.ApplicationReferenceNumber, model.ApplicationReferenceNumber);
+            Assert.AreEqual(expectedViewModel.ReferenceNumber, model.ReferenceNumber);
             Assert.AreEqual(expectedViewModel.RegistrationReferenceNumber, model.RegistrationReferenceNumber);
             Assert.AreEqual(expectedViewModel.OrganisationType, model.OrganisationType);
 
             // Assert SubmissionDetailsViewModel properties
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Status, model.SubmissionDetails.Status);
-            Assert.AreEqual(expectedViewModel.SubmissionDetails.DecisionDate, model.SubmissionDetails.DecisionDate);
+            Assert.AreEqual(expectedViewModel.SubmissionDetails.LatestDecisionDate, model.SubmissionDetails.LatestDecisionDate);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.TimeAndDateOfSubmission, model.SubmissionDetails.TimeAndDateOfSubmission);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.SubmittedOnTime, model.SubmissionDetails.SubmittedOnTime);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.SubmittedBy, model.SubmissionDetails.SubmittedBy);
@@ -2135,7 +2223,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedRedirectUrl = _controller.Url.RouteUrl("SubmissionDetails", new { submissionId });
             Assert.AreEqual(expectedRedirectUrl, redirectResult.Url);
             _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
-            _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>()), Times.AtMostOnce);
+            _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<FeePaymentRequest>()), Times.AtMostOnce);
         }
 
         [TestMethod]
@@ -2318,7 +2406,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             result.RouteName.Should().Be("ServiceNotAvailable");
             result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
             _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
-            _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<RegistrationFeePaymentRequest>()), Times.Never);
+            _facadeServiceMock.Verify(r => r.SubmitRegistrationFeePaymentAsync(It.IsAny<FeePaymentRequest>()), Times.Never);
         }
 
         #endregion
@@ -3955,10 +4043,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region SubmissionDetailsFileDownload
 
         [TestMethod]
-        public void SubmissionDetailsFileDownload_ShouldReturnViewResult()
+        public async Task SubmissionDetailsFileDownload_ShouldReturnViewResult()
         {
+            // Arrange
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
             // Act
-            var result = _controller.SubmissionDetailsFileDownload();
+            var result = await _controller.SubmissionDetailsFileDownload();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult), "The result should be a ViewResult.");

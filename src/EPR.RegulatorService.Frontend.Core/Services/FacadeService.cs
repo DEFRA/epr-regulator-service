@@ -1,11 +1,15 @@
+using System;
 using System.Globalization;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+
 using CsvHelper;
 using CsvHelper.Configuration;
+
 using EPR.RegulatorService.Frontend.Core.ClassMaps;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -43,6 +47,8 @@ public class FacadeService : IFacadeService
     private const string GetOrganisationRegistrationSubmissionDetailsPath = "GetOrganisationRegistrationSubmissionDetailsPath";
     private const string GetOrganisationRegistationSubmissionsPath = "GetOrganisationRegistrationSubmissionsPath";
     private const string SubmitRegistrationFeePaymentPath = "SubmitRegistrationFeePaymentPath";
+    private const string PackagingDataResubmissionFeePaymentPath = "PackagingDataResubmissionFeePaymentPath";
+    private const string GetPomResubmissionPaycalParameters = "GetPomResubmissionPaycalParameters";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -458,11 +464,11 @@ public class FacadeService : IFacadeService
         return result;
     }
 
-    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content) {
+    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content)
+    {
         try
         {
             var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
-
             return response;
         }
         catch (Exception ex)
@@ -481,7 +487,7 @@ public class FacadeService : IFacadeService
         return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
     }
 
-    public async Task SubmitRegistrationFeePaymentAsync(RegistrationFeePaymentRequest request)
+    public async Task SubmitRegistrationFeePaymentAsync(FeePaymentRequest request)
     {
         try
         {
@@ -494,6 +500,55 @@ public class FacadeService : IFacadeService
         catch (Exception ex)
         {
             _logFacadeServiceError.Invoke(_logger, $"Exception occurred while submitting registration fee payment {nameof(FacadeService)}.{nameof(SubmitRegistrationFeePaymentAsync)}", ex);
+        }
+    }
+
+    public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync(FeePaymentRequest request)
+    {
+        try
+        {
+            await PrepareAuthenticatedClient();
+
+            string path = _facadeApiConfig.Endpoints[PackagingDataResubmissionFeePaymentPath];
+            var response = await _httpClient.PostAsJsonAsync(path, request);
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception exception)
+        {
+            _logFacadeServiceError.Invoke(
+                _logger,
+                $"Exception occurred while submitting packaging data resubmission fee payment {nameof(FacadeService)}.{nameof(SubmitPackagingDataResubmissionFeePaymentEventAsync)}",
+                exception);
+        }
+    }
+
+    public async Task<PomPayCalParametersResponse> GetPomPayCalParameters(Guid submissionId, Guid? complianceSchemeId)
+    {
+        try
+        {
+            await PrepareAuthenticatedClient();
+
+            string url = $"{_facadeApiConfig.Endpoints[GetPomResubmissionPaycalParameters]}/{submissionId}";
+            if (complianceSchemeId.HasValue)
+            {
+                url = $"{url}?ComplianceSchemeId={complianceSchemeId}";
+            }
+
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            string content = await response.Content.ReadAsStringAsync();
+            var payCalDetailsResponse = JsonSerializer.Deserialize<PomPayCalParametersResponse>(content);
+            return payCalDetailsResponse;
+        }
+        catch (Exception exception)
+        {
+            _logFacadeServiceError.Invoke(
+                _logger,
+                $"Exception occurred while retrieving pom resubmission pay cal parameters {nameof(FacadeService)}.{nameof(GetPomPayCalParameters)}",
+                exception);
+
+            return default;
         }
     }
 

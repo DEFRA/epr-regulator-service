@@ -1,6 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
-public class RegistrationFeePaymentRequest
+public class FeePaymentRequest
 {
     public required Guid SubmissionId { get; set; }
 

@@ -14,6 +14,7 @@ public static class RegistrationSubmissionsFilters
                         .FilterByOrganisationRef(filters.OrganisationReference)
                         .FilterByOrganisationType(filters.OrganisationType)
                         .FilterBySubmissionStatus(filters.Statuses)
+                        .FilterByReSubmissionStatus(filters.ResubmissionStatuses)
                         .FilterByRelevantYear(filters.RelevantYears);
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByOrganisationName(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? organisationName)
@@ -67,6 +68,18 @@ public static class RegistrationSubmissionsFilters
         {
             queryable = from q in queryable
                         where submissionStatus.Contains(q.SubmissionStatus.ToString())
+                        select q;
+        }
+
+        return queryable;
+    }
+
+    public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByReSubmissionStatus(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? resubmissionStatus)
+    {
+        if (!string.IsNullOrEmpty(resubmissionStatus) && resubmissionStatus.ToLower() != "none")
+        {
+            queryable = from q in queryable
+                        where resubmissionStatus.Contains(q.ResubmissionStatus.ToString())
                         select q;
         }
 
