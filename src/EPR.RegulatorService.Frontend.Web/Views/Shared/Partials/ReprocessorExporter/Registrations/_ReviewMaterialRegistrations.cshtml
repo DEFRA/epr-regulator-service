@@ -1,31 +1,49 @@
-<h2 class="govuk-heading-m">
-    Review plastic registration
-    <p class="govuk-body">Determination date is 4 June 2024  <a href="change-determination-date" class="govuk-link">Change</a></p>
+@using EPR.RegulatorService.Frontend.Core.Enums
+
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ManageRegistrationsViewModel
+
+<h2 class="govuk-heading-m"> Review plastic registration 
+	@* <p class="govuk-body">Determination date is 4 June 2024  <a href="change-determination-date" class="govuk-link">Change</a></p> *@
 </h2>
 
 <ul class="app-task-list__items govuk-!-padding-left-0" style="margin-bottom: 30px;">
 
-  @* <li class="app-task-list__item">
+	@if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
+	{
+		@* <li class="app-task-list__item">
         <span class="app-task-list__task-name">
-            <a href="@Url.ActionLink("WasteLicences", "Registrations")" aria-describedby="#" class="#"> Waste licences, permits or exemptions</a>
+            <a href="@Url.ActionLink("WasteLicences", "Registrations")" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Waste licences, permits or exemptions</a>
         </span>
         <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="contact-information-status">Not Started yet</strong><br>
-  </li> *@
+    </li> *@
     <li class="app-task-list__item">
         <span class="app-task-list__task-name">
-			<a href="@Url.ActionLink("InputsAndOutputs", "Registrations")" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Reprocessing inputs and outputs</a>
+				<a href="@Url.ActionLink("InputsAndOutputs", "Registrations")" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Reprocessing inputs and outputs</a>
         </span>
         <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="contact-information-status">Not Started yet</strong><br>
-  </li>
-  <li class="app-task-list__item">
-	  <span class="app-task-list__task-name">
+		</li>
+	}
+
+	@if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Exporter)
+	{
+    <li class="app-task-list__item">
+    <span class="app-task-list__task-name">
+				<a href="@Url.ActionLink("MaterialDetails", "Registrations")" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Material details and contact</a>
+               
+    </span>
+    <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="contact-information-status">Not Started yet</strong><br>
+    </li>
+	}
+
+	<li class="app-task-list__item">
+		<span class="app-task-list__task-name">
 			<a href="@Url.ActionLink("SamplingInspection", "Registrations")" aria-describedby="#" class="govuk-link govuk-link--no-visited-state">Sampling and inspection plan</a>
-	  </span>
-	  <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="contact-information-status">Not Started yet</strong><br>
-  </li>
+		</span>
+		<strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="contact-information-status">Not Started yet</strong><br>
+	</li>
     @* <li class="app-task-list__item">
     <span class="app-task-list__task-name">
-    <a href="update-status" aria-describedby="#" class="#"> Update registration outcome</a>
+    <a href="update-status" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Update registration outcome</a>
     </span>
     <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="contact-information-status">Not Started yet</strong><br>
     </li> *@

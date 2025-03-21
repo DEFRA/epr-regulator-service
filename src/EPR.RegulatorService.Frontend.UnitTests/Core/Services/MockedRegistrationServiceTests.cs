@@ -1,13 +1,9 @@
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
-using FluentAssertions;
 using FluentAssertions.Execution;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
+namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services;
 
 [TestClass]
 public class MockedRegistrationServiceTests

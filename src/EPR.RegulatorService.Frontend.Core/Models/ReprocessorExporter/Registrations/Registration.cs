@@ -1,9 +1,6 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-
 using EPR.RegulatorService.Frontend.Core.Enums;
 
-namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter;
+namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 public class Registration
 {
