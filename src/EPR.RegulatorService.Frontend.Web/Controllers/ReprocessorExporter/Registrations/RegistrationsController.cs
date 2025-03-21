@@ -80,8 +80,8 @@ public class RegistrationsController : RegulatorSessionBaseController
 
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
         SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.BusinessAddress);
-        SetBackLink(session, PagePath.BusinessAddress);
-        SetBackLinkAriaLabel();
+        SetBackLinkInfos(session, PagePath.BusinessAddress);
+
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Exporter
@@ -91,7 +91,7 @@ public class RegistrationsController : RegulatorSessionBaseController
     }
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
-        if (string.IsNullOrEmpty(Request.Headers.Referer))
+        if (string.IsNullOrEmpty(Request?.Headers?.Referer))
             SetHomeBackLink();
         else
             SetBackLink(session, currentPagePath);
