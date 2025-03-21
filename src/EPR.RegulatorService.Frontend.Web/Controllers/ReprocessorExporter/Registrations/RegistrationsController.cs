@@ -105,8 +105,7 @@ public class RegistrationsController : RegulatorSessionBaseController
 
         session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
         SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.WasteLicences);
-        SetBackLink(session, PagePath.WasteLicences);
-        SetBackLinkAriaLabel();
+        SetBackLinkInfos(session, PagePath.WasteLicences);
 
         var model = new ManageRegistrationsViewModel
         {
