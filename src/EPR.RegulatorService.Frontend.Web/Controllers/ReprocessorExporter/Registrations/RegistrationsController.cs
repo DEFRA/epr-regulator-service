@@ -1,5 +1,4 @@
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -55,6 +54,23 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     }
 
     [HttpGet]
+    [Route(PagePath.SamplingInspection)]
+    public async Task<IActionResult> SamplingInspection()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.SamplingInspection);
+        SetBackLinkInfos(session, PagePath.SamplingInspection);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/SamplingInspection.cshtml", model);
+    }
+
+    [HttpGet]
     [Route(PagePath.InputsAndOutputs)]
     public async Task<IActionResult> InputsAndOutputs()
     {
@@ -101,8 +117,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     private async Task<JourneySession> GetSession()
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
-
+        
         return session;
     }
 }

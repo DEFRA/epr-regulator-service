@@ -63,6 +63,7 @@ public static class PagePath
     public const string InputsAndOutputs = "reprocessing-throughputs";
     public const string MaterialDetails = "materials-contact";
 
+    public const string SamplingInspection = "sampling-inspection";
     // Non journey paths
     public const string Accessibility = "accessibility";
     public const string SignedOut = "signed-out";

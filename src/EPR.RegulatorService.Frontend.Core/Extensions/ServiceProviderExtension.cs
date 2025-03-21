@@ -1,7 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+
+using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using EPR.RegulatorService.Frontend.Core.Services;
-using System.Diagnostics.CodeAnalysis;
 
 namespace EPR.RegulatorService.Frontend.Core.Extensions;
 
@@ -14,10 +17,14 @@ public static class ServiceProviderExtension
         if (useMockData)
         {
             services.AddSingleton<IFacadeService, MockedFacadeService>();
+            services.AddSingleton<IRegistrationService, MockedRegistrationService>();
         }
         else
         {
             services.AddHttpClient<IFacadeService, FacadeService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("FacadeAPI:TimeoutSeconds")));
+
+            // Register the real RegistrationService here when implemented
+            //services.AddScoped<IRegistrationService, RegistrationService>();
         }
 
         services.AddHttpClient<IPaymentFacadeService, PaymentFacadeService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("PaymentFacadeApi:TimeoutSeconds")));
