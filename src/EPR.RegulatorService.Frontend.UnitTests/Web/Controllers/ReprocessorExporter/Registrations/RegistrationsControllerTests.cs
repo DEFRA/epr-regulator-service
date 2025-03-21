@@ -403,7 +403,6 @@ public class RegistrationsControllerTests
         AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
 
-
     [TestMethod]
     public async Task WasteLicences_WithCorrectModel_ShouldReturnView()
     {
@@ -428,10 +427,12 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
-    public async Task WasteLicences_WithNullSession_ShouldRedirectToError()
+    public async Task WasteLicences_WhenSessionIsNull_ShouldUseNewJourneySession()
     {
         // Arrange
-        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync((JourneySession)null);
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
 
         // Act
         var result = await _controller.WasteLicences();
@@ -439,50 +440,74 @@ public class RegistrationsControllerTests
         // Assert
         using (new AssertionScope())
         {
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirectResult = result as RedirectToActionResult;
-            redirectResult.ControllerName.Should().Be(nameof(ErrorController.Error));
-            redirectResult.RouteValues["statusCode"].Should().Be((int)HttpStatusCode.InternalServerError);
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
         }
     }
 
     [TestMethod]
-    public async Task WasteLicences_WithNullReprocessorExporterSession_ShouldRedirectToError()
+    public async Task WasteLicences_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
     {
         // Arrange
-        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(new JourneySession { ReprocessorExporterSession = null });
+        var mockHeaders = new Mock<IHeaderDictionary>();
+        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
+        mockHeaders.Setup(h => h.Referer).Returns((string?)null);
+
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
         var result = await _controller.WasteLicences();
 
         // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirectResult = result as RedirectToActionResult;
-            redirectResult.ControllerName.Should().Be(nameof(ErrorController.Error));
-            redirectResult.RouteValues["statusCode"].Should().Be((int)HttpStatusCode.InternalServerError);
-        }
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
 
     [TestMethod]
-    public async Task WasteLicences_WithNullJourney_ShouldRedirectToError()
+    public async Task WasteLicences_WhenHeadersIsMissing_ShouldSetHomeBackLink()
     {
         // Arrange
-        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(new JourneySession { ReprocessorExporterSession = new ReprocessorExporterSession { Journey = null } });
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
         var result = await _controller.WasteLicences();
 
         // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirectResult = result as RedirectToActionResult;
-            redirectResult.ControllerName.Should().Be(nameof(ErrorController.Error));
-            redirectResult.RouteValues["statusCode"].Should().Be((int)HttpStatusCode.InternalServerError);
-        }
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
+
+    [TestMethod]
+    public async Task WasteLicences_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
+
+        // Act
+        var result = await _controller.WasteLicences();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+
 
     protected static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
     {
