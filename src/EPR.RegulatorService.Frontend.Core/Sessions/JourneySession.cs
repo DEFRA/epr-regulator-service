@@ -17,5 +17,4 @@ public class JourneySession : IHasUserData
     public AddRemoveApprovedUserSession AddRemoveApprovedUserSession { get; set; } = new();
     public RegulatorRegistrationSession RegulatorRegistrationSession { get; set; } = new();
     public InviteNewApprovedPersonSession InviteNewApprovedPersonSession { get; set; } = new();
-    public ReprocessorExporterSession ReprocessorExporterSession { get; set; } = new();
 }

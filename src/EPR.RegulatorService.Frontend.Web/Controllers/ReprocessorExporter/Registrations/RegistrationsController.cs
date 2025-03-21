@@ -1,6 +1,5 @@
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -16,18 +15,18 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
-public class RegistrationsController : RegulatorSessionBaseController
+public class RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration)
+    : ReprocessorExporterBaseController(sessionManager, configuration)
 {
-    public RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration) : base(sessionManager, configuration) { }
-
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials()
     {
-        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
-        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.AuthorisedMaterials);
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.AuthorisedMaterials);
         SetBackLinkInfos(session, PagePath.AuthorisedMaterials);
+
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
@@ -39,10 +38,12 @@ public class RegistrationsController : RegulatorSessionBaseController
     [Route(PagePath.UkSiteDetails)]
     public async Task<IActionResult> UkSiteDetails()
     {
-        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
-        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.UkSiteDetails);
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.UkSiteDetails);
+
         SetBackLinkInfos(session, PagePath.UkSiteDetails);
+
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
@@ -54,10 +55,11 @@ public class RegistrationsController : RegulatorSessionBaseController
     [Route(PagePath.SamplingInspection)]
     public async Task<IActionResult> SamplingInspection()
     {
-        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
-        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.SamplingInspection);
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.SamplingInspection);
         SetBackLinkInfos(session, PagePath.SamplingInspection);
+
         var model = new ManageRegistrationsViewModel
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
