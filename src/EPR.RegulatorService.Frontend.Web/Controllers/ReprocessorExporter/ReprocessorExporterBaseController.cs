@@ -1,3 +1,4 @@
+using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Sessions;
@@ -11,7 +12,12 @@ public abstract class ReprocessorExporterBaseController(
 {
     protected async Task<JourneySession> GetSession()
     {
-        var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        if (session?.RegulatorSession?.Journey == null)
+        {
+            throw new SessionException("Session not found");
+        }
 
         return session;
     }
