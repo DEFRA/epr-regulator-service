@@ -22,8 +22,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 public class RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration)
     : RegulatorSessionBaseController(sessionManager, configuration)
 {
-    private static string RegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
-
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials()
@@ -151,4 +149,6 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
 
         return session;
     }
+
+    private static string RegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
 }
