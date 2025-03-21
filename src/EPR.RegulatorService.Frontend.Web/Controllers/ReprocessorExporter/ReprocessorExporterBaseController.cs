@@ -14,7 +14,7 @@ public abstract class ReprocessorExporterBaseController(
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (session?.RegulatorSession?.Journey == null)
+        if (session?.RegulatorSession.Journey == null)
         {
             throw new SessionException("Session not found");
         }
