@@ -1,7 +1,7 @@
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Web.Mappings;
 

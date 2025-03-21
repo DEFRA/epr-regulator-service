@@ -4,7 +4,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +48,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
+
         return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
     }
 
@@ -66,6 +67,24 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         };
 
         return View("~/Views/ReprocessorExporter/Registrations/SamplingInspection.cshtml", model);
+    }
+
+
+    [HttpGet]
+    [Route(PagePath.InputsAndOutputs)]
+    public async Task<IActionResult> InputsAndOutputs()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.InputsAndOutputs);
+        SetBackLinkInfos(session, PagePath.InputsAndOutputs);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml", model);
     }
 
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
