@@ -27,5 +27,11 @@ public enum RegistrationSubmissionStatus
     Cancelled = 40,
 
     [Description("RegistrationSubmissionStatus.Updated")]
-    Updated = 50
+    Updated = 50,
+
+    [Description("Tag.Accepted")]
+    Accepted = 60,
+
+    [Description("Tag.Rejected")]
+    Rejected = 70
 }

@@ -17,6 +17,11 @@ public class RegistrationSubmissionsFilterViewModel
     public bool IsStatusQueriedChecked { get; set; }
     public bool IsStatusUpdatedChecked { get; set; }
     public bool IsStatusCancelledChecked { get; set; }
+
+    public bool IsResubmissionPendingRegistrationChecked { get; set; }
+    public bool IsResubmissionAcceptedRegistrationChecked { get; set; }
+    public bool IsResubmissionRejectedRegistrationChecked { get; set; }
+
     public bool Is2025Checked { get; set; }
 
     public int PageNumber { get; set; } = 1;
@@ -33,6 +38,7 @@ public class RegistrationSubmissionsFilterViewModel
                 OrganisationName = OrganisationRef = null;
                 IsOrganisationComplianceChecked = IsOrganisationLargeChecked = IsOrganisationSmallChecked = false;
                 IsStatusCancelledChecked = IsStatusGrantedChecked = IsStatusPendingChecked = IsStatusQueriedChecked = IsStatusRefusedChecked = IsStatusUpdatedChecked = false;
+                IsResubmissionPendingRegistrationChecked = IsResubmissionAcceptedRegistrationChecked = IsResubmissionRejectedRegistrationChecked = false;
                 Is2025Checked = false;
             }
         }
@@ -63,6 +69,12 @@ public class RegistrationSubmissionsFilterViewModel
                                     viewModel.IsStatusQueriedChecked ? Core.Enums.RegistrationSubmissionStatus.Queried.ToString() : null,
                                     viewModel.IsStatusRefusedChecked ? Core.Enums.RegistrationSubmissionStatus.Refused.ToString() : null,
                                     viewModel.IsStatusUpdatedChecked ? Core.Enums.RegistrationSubmissionStatus.Updated.ToString() : null
+                               }.Where(x => !string.IsNullOrEmpty(x))),
+        ResubmissionStatuses = string.Join(" ", new[]
+                               {
+                                    viewModel.IsResubmissionPendingRegistrationChecked ? Core.Enums.RegistrationSubmissionStatus.Pending.ToString() : null,
+                                    viewModel.IsResubmissionAcceptedRegistrationChecked ? Core.Enums.RegistrationSubmissionStatus.Accepted.ToString() : null,
+                                    viewModel.IsResubmissionRejectedRegistrationChecked ? Core.Enums.RegistrationSubmissionStatus.Rejected.ToString() : null
                                }.Where(x => !string.IsNullOrEmpty(x)))
     };
 
@@ -79,6 +91,9 @@ public class RegistrationSubmissionsFilterViewModel
         IsStatusQueriedChecked = model.Statuses != null && model.Statuses.Contains("queried", StringComparison.OrdinalIgnoreCase),
         IsStatusUpdatedChecked = model.Statuses != null && model.Statuses.Contains("updated", StringComparison.OrdinalIgnoreCase),
         IsStatusCancelledChecked = model.Statuses != null && model.Statuses.Contains("cancelled", StringComparison.OrdinalIgnoreCase),
+        IsResubmissionPendingRegistrationChecked = model.ResubmissionStatuses != null && model.ResubmissionStatuses.Contains("pending", StringComparison.OrdinalIgnoreCase),
+        IsResubmissionAcceptedRegistrationChecked = model.ResubmissionStatuses != null && model.ResubmissionStatuses.Contains("accepted", StringComparison.OrdinalIgnoreCase),
+        IsResubmissionRejectedRegistrationChecked = model.ResubmissionStatuses != null && model.ResubmissionStatuses.Contains("rejected", StringComparison.OrdinalIgnoreCase),
         Is2025Checked = model.RelevantYears != null && model.RelevantYears.Contains("2025", StringComparison.OrdinalIgnoreCase),
         PageNumber = model.PageNumber ?? 1,
         PageSize = model.PageSize ?? 20,

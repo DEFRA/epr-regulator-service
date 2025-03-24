@@ -27,6 +27,4 @@ public class ProducerPaymentResponse
 
     [JsonPropertyName("subsidiariesFeeBreakdown")]
     public SubsidiariesFeeBreakdownResponse SubsidiariesFeeBreakdown { get; set; }
-
-    public decimal? OfflinePaymentAmount { get; set; } = null!;
 }
