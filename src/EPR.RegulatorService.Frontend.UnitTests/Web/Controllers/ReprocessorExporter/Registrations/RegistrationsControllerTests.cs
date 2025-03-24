@@ -281,10 +281,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
     }
 
     [TestMethod]
-    public async Task WasteLicences_WithCorrectModel_ShouldReturnView()
+    public async Task MaterialWasteLicences_WithCorrectModel_ShouldReturnView()
     {
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.MaterialWasteLicences();
 
         // Assert
         using (new AssertionScope())
@@ -302,7 +302,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
     }
 
     [TestMethod]
-    public async Task WasteLicences_WhenSessionIsNull_ShouldUseNewJourneySession()
+    public async Task MaterialWasteLicences_WhenSessionIsNull_ShouldUseNewJourneySession()
     {
         // Arrange
         _mockSessionManager
@@ -310,7 +310,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
             .ReturnsAsync((JourneySession)null!);
 
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.MaterialWasteLicences();
 
         // Assert
         using (new AssertionScope())

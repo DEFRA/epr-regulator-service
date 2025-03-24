@@ -62,7 +62,7 @@ public static class PagePath
     public const string UkSiteDetails="uksite-details";
     public const string InputsAndOutputs = "reprocessing-throughputs";
     public const string MaterialDetails = "materials-contact";
-    public const string WasteLicences = "permits-exemptions";
+    public const string MaterialWasteLicences = "permits-exemptions";
 
     public const string SamplingInspection = "sampling-inspection";
     // Non journey paths

@@ -54,12 +54,12 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     }
 
     [HttpGet]
-    [Route(PagePath.WasteLicences)]
-    public async Task<IActionResult> WasteLicences()
+    [Route(PagePath.MaterialWasteLicences)]
+    public async Task<IActionResult> MaterialWasteLicences()
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.WasteLicences);
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.MaterialWasteLicences);
         SetBackLinkInfos(session, PagePath.InputsAndOutputs);
 
         var model = new ManageRegistrationsViewModel
@@ -67,7 +67,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/WasteLicences.cshtml", model);
+        return View("~/Views/ReprocessorExporter/Registrations/MaterialWasteLicences.cshtml", model);
     }
 
     [HttpGet]
