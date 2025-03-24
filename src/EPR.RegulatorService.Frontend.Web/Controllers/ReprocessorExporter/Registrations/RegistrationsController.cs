@@ -90,6 +90,23 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     }
 
     [HttpGet]
+    [Route(PagePath.WasteLicences)]
+    public async Task<IActionResult> WasteLicences()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.WasteLicences);
+        SetBackLinkInfos(session, PagePath.WasteLicences);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View(RegistrationsView(nameof(WasteLicences)), model);
+    }
+
+    [HttpGet]
     [Route(PagePath.BusinessAddress)]
     public async Task<IActionResult> BusinessAddress()
     {
@@ -111,33 +128,12 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         return View(RegistrationsView(nameof(BusinessAddress)), model);
     }
 
-    [HttpGet]
-    [Route(PagePath.WasteLicences)]
-    public async Task<IActionResult> WasteLicences()
-    {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.WasteLicences);
-        SetBackLinkInfos(session, PagePath.WasteLicences);
-
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
-        };
-
-        return View(RegistrationsView(nameof(WasteLicences)), model);
-    }
-
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
         if (string.IsNullOrEmpty(Request?.Headers?.Referer))
-        {
             SetHomeBackLink();
-        }
         else
-        {
             SetBackLink(session, currentPagePath);
-        }
 
         SetBackLinkAriaLabel();
     }
