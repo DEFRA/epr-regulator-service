@@ -1,11 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+
     using EPR.RegulatorService.Frontend.Core.Enums;
 
     [ExcludeFromCodeCoverage]
@@ -31,11 +28,25 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.Faca
 
         public RegistrationSubmissionStatus SubmissionStatus { get; set; }
 
+        public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
+
         public DateTime? StatusPendingDate { get; set; }
 
         public int NationId { get; set; }
+
         public DateTime? RegulatorCommentDate { get; set; }
+
         public DateTime? ProducerCommentDate { get; set; }
+
         public Guid? RegulatorUserId { get; set; }
+
+        public bool IsResubmission { get; set; }
+
+        public DateTime? ResubmissionDate { get; set; }
+
+        public DateTime? RegistrationDate { get; set; }
+
+        public DateTime? RegulatorDecisionDate { get; set; }
+        public string ResubmissionFileId { get; internal set; }
     }
 }

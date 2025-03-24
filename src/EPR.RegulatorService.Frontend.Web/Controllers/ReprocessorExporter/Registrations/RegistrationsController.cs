@@ -31,7 +31,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
-        return View("~/Views/ReprocessorExporter/Registrations/AuthorisedMaterials.cshtml", model);
+        return View(RegistrationsView(nameof(AuthorisedMaterials)), model);
     }
 
     [HttpGet]
@@ -48,8 +48,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
-
-        return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
+        return View(RegistrationsView(nameof(UkSiteDetails)), model);
     }
 
     [HttpGet]
@@ -66,7 +65,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/SamplingInspection.cshtml", model);
+        return View(RegistrationsView(nameof(SamplingInspection)), model);
     }
     
     [HttpGet]
@@ -83,7 +82,24 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml", model);
+        return View(RegistrationsView(nameof(InputsAndOutputs)), model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.WasteLicences)]
+    public async Task<IActionResult> WasteLicences()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.WasteLicences);
+        SetBackLinkInfos(session, PagePath.WasteLicences);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View(RegistrationsView(nameof(WasteLicences)), model);
     }
 
     [HttpGet]
@@ -100,7 +116,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
             ApplicationOrganisationType = ApplicationOrganisationType.Exporter
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/BusinessAddress.cshtml", model);
+        return View(RegistrationsView(nameof(BusinessAddress)), model);
     }
 
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
@@ -112,4 +128,6 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
 
         SetBackLinkAriaLabel();
     }
+    
+    private static string RegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
 }
