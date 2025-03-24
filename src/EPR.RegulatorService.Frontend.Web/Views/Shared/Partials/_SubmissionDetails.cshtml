@@ -18,142 +18,140 @@
     }
 }
 <div class="govuk-summary-card">
-  <div class="govuk-summary-card__title-wrapper">
-      <h2 class="govuk-summary-card__title">
-          @Localizer[@title]
-          @if (!string.IsNullOrWhiteSpace(Model.SubmissionPeriod))
-          {
-              <span> - @Model.SubmissionPeriod</span>
-              @Localizer["SummaryList.SubmissionPeriodSuffix"]
-          }
-      </h2>
-      <ul class="govuk-summary-card__actions">
-          <li class="govuk-summary-card__action">
-              @switch (Model.Status)
-              {
-                  case SubmissionStatus.Pending:
-                      <strong class="govuk-tag govuk-tag--blue">@SharedLocalizer["Tag.Pending"]</strong>
-                      break;
-                  case SubmissionStatus.Accepted:
-                      <strong class="govuk-tag govuk-tag--green">@SharedLocalizer["Tag.Accepted"]</strong>
-                      break;
-                  case SubmissionStatus.Rejected:
-                      <strong class="govuk-tag govuk-tag--red">@SharedLocalizer["Tag.Rejected"]</strong>
-                      break;
-              }
-          </li>
-      </ul>
-  </div>
-  <div class="govuk-summary-card__content">
-      <dl class="govuk-summary-list">
-          <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                  @Localizer[timeAndDateOfSubmission]
-              </dt>
-              <dd class="govuk-summary-list__value">
-                  @Model.FormattedTimeAndDateOfSubmission
-              </dd>
-          </div>
+    <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">
+            @Localizer[@title]
+            @if (!string.IsNullOrWhiteSpace(Model.SubmissionPeriod))
+            {
+                <span> - @Model.SubmissionPeriod</span>
+                @Localizer["SummaryList.SubmissionPeriodSuffix"]
+            }
+        </h2>
+        <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+                @switch (Model.Status)
+                {
+                    case SubmissionStatus.Pending:
+                        <strong class="govuk-tag govuk-tag--blue">@SharedLocalizer["Tag.Pending"]</strong>
+                        break;
+                    case SubmissionStatus.Accepted:
+                        <strong class="govuk-tag govuk-tag--green">@SharedLocalizer["Tag.Accepted"]</strong>
+                        break;
+                    case SubmissionStatus.Rejected:
+                        <strong class="govuk-tag govuk-tag--red">@SharedLocalizer["Tag.Rejected"]</strong>
+                        break;
+                }
+            </li>
+        </ul>
+    </div>
+    <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @Localizer[timeAndDateOfSubmission]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.FormattedTimeAndDateOfSubmission
+                </dd>
+            </div>
 
-          <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                  @Localizer[@submittedBy]
-              </dt>
-              <dd class="govuk-summary-list__value">
-                  @Model.SubmittedBy
-              </dd>
-          </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @Localizer[@submittedBy]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.SubmittedBy
+                </dd>
+            </div>
 
-          <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                  @Localizer["SummaryList.SubTitle.AccountRole"]
-              </dt>
-              <dd class="govuk-summary-list__value">
-                  @if (Model.AccountRole.Equals("Approved Person"))
-                  {
-                      @SharedLocalizer["Tag.ApprovedPerson"]
-                  }
-                  else
-                  {
-                      @SharedLocalizer["Tag.DelegatedPerson"]
-                  }
-              </dd>
-          </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @Localizer["SummaryList.SubTitle.AccountRole"]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @if (Model.AccountRole.Equals("Approved Person"))
+                    {
+                        @SharedLocalizer["Tag.ApprovedPerson"]
+                    }
+                    else
+                    {
+                        @SharedLocalizer["Tag.DelegatedPerson"]
+                    }
+                </dd>
+            </div>
 
-          <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                  @Localizer["SummaryList.SubTitle.Telephone"]
-              </dt>
-              <dd class="govuk-summary-list__value">
-                  @Model.Telephone
-              </dd>
-          </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @Localizer["SummaryList.SubTitle.Telephone"]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Telephone
+                </dd>
+            </div>
 
-          <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                  @Localizer["SummaryList.SubTitle.Email"]
-              </dt>
-              <dd class="govuk-summary-list__value">
-                  @Model.Email
-              </dd>
-          </div>
-            
-          <feature name="EnableCsvDownload">
-                  @if (!string.IsNullOrEmpty(Model.SubmissionFileName))
-                  {
-                      <div class="govuk-summary-list__row">
-                          <dt class="govuk-summary-list__key">
-                              @Localizer["SummaryList.PackagingData"]
-                          </dt>
-                          <dd class="govuk-summary-list__value">
-                              @Model.SubmissionFileName
-                          </dd>
-                          <dd class="govuk-summary-list__value epr-summary-list-download-link">
-                              @Html.ActionLink(SharedLocalizer["Link.Download"],
-                                        "SubmissionsFileDownload",
-                                        "Submissions",
-                                        new
-                                        {
-                                            packagingDataSubmissionBlobName = Model.SubmissionBlobName
-                                        })
-                          </dd>
-                      </div>
-                      <div class="govuk-summary-list__row-separator"></div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @Localizer["SummaryList.SubTitle.Email"]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Email
+                </dd>
+            </div>
 
-                  }
-              </feature>
+            <feature name="EnableCsvDownload">
+                @if (!string.IsNullOrEmpty(Model.SubmissionFileName))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @Localizer["SummaryList.PackagingData"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.SubmissionFileName
+                        </dd>
+                        <dd class="govuk-summary-list__value epr-summary-list-download-link">
+                            @Html.ActionLink(SharedLocalizer["Link.Download"],
+                                     "SubmissionsFileDownload",
+                                     "Submissions",
+                                     new
+                                     {
+                                         packagingDataSubmissionBlobName = Model.SubmissionBlobName
+                                     })
+                        </dd>
+                    </div>
+                }
+            </feature>
 
-          @if (!string.IsNullOrWhiteSpace(rejectReason) && Model.Status != SubmissionStatus.Accepted)                   
-          {
-              <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                      @Localizer[rejectReasonTitle]
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                      @rejectReason
-                  </dd>
-              </div>
-          }
+            @if (!string.IsNullOrWhiteSpace(rejectReason) && Model.Status != SubmissionStatus.Accepted)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @Localizer[rejectReasonTitle]
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @rejectReason
+                    </dd>
+                </div>
+            }
 
-          @if (Model.Status == SubmissionStatus.Rejected)
-          {
-              <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                      @Localizer["SummaryList.SubTitle.ResubmissionRequired"]
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                      @if (Model.ResubmissionRequired)
-                      {
-                          @SharedLocalizer["Yes"]
-                      }
-                      else
-                      {
-                          @SharedLocalizer["No"]
-                      }
-                  </dd>
-              </div>
-          }
+            @if (Model.Status == SubmissionStatus.Rejected)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @Localizer["SummaryList.SubTitle.ResubmissionRequired"]
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @if (Model.ResubmissionRequired)
+                        {
+                            @SharedLocalizer["Yes"]
+                        }
+                        else
+                        {
+                            @SharedLocalizer["No"]
+                        }
+                    </dd>
+                </div>
+            }
 
-        </dl>          
-  </div>
+        </dl>
+    </div>
 </div>
