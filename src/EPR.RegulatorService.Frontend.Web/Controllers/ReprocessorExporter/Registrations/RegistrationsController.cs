@@ -1,4 +1,5 @@
 using System.Net;
+
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
@@ -34,7 +35,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
-        return View("~/Views/ReprocessorExporter/Registrations/AuthorisedMaterials.cshtml", model);
+        return View(RegistrationsView(nameof(AuthorisedMaterials)), model);
     }
 
     [HttpGet]
@@ -50,8 +51,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
-
-        return View("~/Views/ReprocessorExporter/Registrations/UkSiteDetails.cshtml", model);
+        return View(RegistrationsView(nameof(UkSiteDetails)), model);
     }
 
     [HttpGet]
@@ -68,7 +68,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/SamplingInspection.cshtml", model);
+        return View(RegistrationsView(nameof(SamplingInspection)), model);
     }
 
 
@@ -86,7 +86,24 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml", model);
+        return View(RegistrationsView(nameof(InputsAndOutputs)), model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.WasteLicences)]
+    public async Task<IActionResult> WasteLicences()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.WasteLicences);
+        SetBackLinkInfos(session, PagePath.WasteLicences);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View(RegistrationsView(nameof(WasteLicences)), model);
     }
 
     [HttpGet]
@@ -108,8 +125,9 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
             ApplicationOrganisationType = ApplicationOrganisationType.Exporter
         };
 
-        return View("~/Views/ReprocessorExporter/Registrations/BusinessAddress.cshtml", model);
+        return View(RegistrationsView(nameof(BusinessAddress)), model);
     }
+
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
         if (string.IsNullOrEmpty(Request?.Headers?.Referer))
@@ -127,4 +145,6 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
 
         return session;
     }
+
+    private static string RegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
 }
