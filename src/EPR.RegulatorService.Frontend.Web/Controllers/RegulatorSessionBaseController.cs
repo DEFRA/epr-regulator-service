@@ -57,8 +57,7 @@ public abstract class RegulatorSessionBaseController : Controller
         await SaveSession(session);
     }
 
-
-    private static void ClearRestOfJourney(JourneySession session, string currentPagePath)
+    protected static void ClearRestOfJourney(JourneySession session, string currentPagePath)
     {
         int index = session.RegulatorSession.Journey.IndexOf(currentPagePath);
 
