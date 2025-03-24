@@ -123,9 +123,6 @@
   <data name="Error.RejectReasonTooLong" xml:space="preserve">
     <value>Rhaid i'r rheswm dros wrthod y cais fod yn 400 o gymeriadau neu lai</value>
   </data>
-  <data name="RejectRegistrationSubmission.Caption" xml:space="preserve">
-    <value>Rheoli cyflwyniadau cofrestru</value>
-  </data>
   <data name="RejectRegistrationSubmission.Description" xml:space="preserve">
     <value>Os byddwch chi'n gwrthod y cyflwyniad yma, bydd angen i'r sefydliad ailgyflwyno'u cais a thalu unrhyw ffi berthynol.</value>
   </data>
@@ -134,5 +131,11 @@
   </data>
   <data name="RejectRegistrationSubmission.Title" xml:space="preserve">
     <value>Pam rydych chi'n gwrthod y cais yma am gofrestru?</value>
+  </data>
+  <data name="RejectResubmission.Heading" xml:space="preserve">
+    <value>Pam rydych chi'n gwrthod y data yma sydd wedi'i ailgyflwyno?</value>
+  </data>
+  <data name="RejectResubmission.Title" xml:space="preserve">
+    <value>Pam rydych chi'n gwrthod y data yma sydd wedi'i ailgyflwyno?</value>
   </data>
 </root>
