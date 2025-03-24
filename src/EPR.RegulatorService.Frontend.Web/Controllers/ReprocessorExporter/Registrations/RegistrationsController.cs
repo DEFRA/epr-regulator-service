@@ -1,9 +1,11 @@
+using System.Net;
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.Controllers.Errors;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
@@ -85,6 +87,28 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         };
 
         return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml", model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.BusinessAddress)]
+    public async Task<IActionResult> BusinessAddress()
+    {
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        if (session?.ReprocessorExporterSession?.Journey == null)
+        {
+            return RedirectToAction(PagePath.Error, nameof(ErrorController.Error), new { statusCode = (int)HttpStatusCode.InternalServerError });
+        }
+
+        session.ReprocessorExporterSession.Journey.AddIfNotExists(PagePath.ManageRegistrations);
+        SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.BusinessAddress);
+        SetBackLinkInfos(session, PagePath.BusinessAddress);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/BusinessAddress.cshtml", model);
     }
 
     [HttpGet]

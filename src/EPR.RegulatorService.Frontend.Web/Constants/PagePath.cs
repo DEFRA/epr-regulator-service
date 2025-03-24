@@ -64,6 +64,7 @@ public static class PagePath
     public const string OverseasReprocessorInterim = "overseas-interim-sites";
 
     public const string SamplingInspection = "sampling-inspection";
+    public const string BusinessAddress = "business-address";
     // Non journey paths
     public const string Accessibility = "accessibility";
     public const string SignedOut = "signed-out";
