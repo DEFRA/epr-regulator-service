@@ -1,23 +1,18 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
-using System.Collections.Generic;
-
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 
-public class RegistrationSubmissionDetailsViewModel
+public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewModel
 {
-    public Guid SubmissionId { get; set; }
-
     public Guid OrganisationId { get; set; }
 
     public string OrganisationReference { get; set; }
 
     public string OrganisationName { get; set; }
-
-    public string? ApplicationReferenceNumber { get; set; }
 
     public string? RegistrationReferenceNumber { get; set; }
 
@@ -31,15 +26,11 @@ public class RegistrationSubmissionDetailsViewModel
 
     public int NationId { get; set; }
 
-    public string NationCode { get; set; }
-
     public string PowerBiLogin { get; set; }
 
     public RegistrationSubmissionStatus Status { get; set; }
 
     public SubmissionDetailsViewModel SubmissionDetails { get; set; }
-
-    public DateTime RegistrationDateTime { get; set; }
 
     public int RegistrationYear { get; set; }
 
@@ -51,17 +42,14 @@ public class RegistrationSubmissionDetailsViewModel
 
     public string? CancellationReason { get; set; } = string.Empty;
 
-    public int NoOfSubsidiariesOnlineMarketPlace { get; set; }
-
-    public int NoOfSubsidiaries { get; set; }
-
-    public bool IsLateFeeApplicable { get; set; }
-
-    public bool IsProducerOnlineMarketplace { get; set; }
-
-    public string OrganisationSize { get; set; }
-
     public List<CsoMembershipDetailsDto> CSOMembershipDetails { get; set; }
+
+    public ProducerDetailsDto ProducerDetails { get; set; }
+
+    public bool IsResubmission { get; set; }
+
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
+    public string ResubmissionFileId { get; set; }
 
     // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
     public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null ? null : new RegistrationSubmissionDetailsViewModel
@@ -70,16 +58,16 @@ public class RegistrationSubmissionDetailsViewModel
         OrganisationId = details.OrganisationId,
         OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
         OrganisationName = details.OrganisationName,
-        ApplicationReferenceNumber = details.ApplicationReferenceNumber,
+        ReferenceNumber = details.ApplicationReferenceNumber,
         RegistrationReferenceNumber = details.RegistrationReferenceNumber,
-        OrganisationSize = details.OrganisationSize,
         OrganisationType = details.OrganisationType,
         CompaniesHouseNumber = details.CompaniesHouseNumber,
         RegisteredNation = details.Country, // Assuming RegisteredNation corresponds to the Country
         NationId = details.NationId,
         NationCode = details.NationCode,
         Status = details.SubmissionStatus,
-        RegistrationDateTime = details.SubmissionDate,
+        ResubmissionStatus = details.ResubmissionStatus,
+        RegistrationDateTime = details.RegistrationDate,
         RegistrationYear = details.RelevantYear,
         RegulatorComments = details.RegulatorComments,
         ProducerComments = details.ProducerComments,
@@ -97,28 +85,27 @@ public class RegistrationSubmissionDetailsViewModel
         SubmissionDetails = details.SubmissionDetails,
         RejectReason = details.RejectReason,
         CancellationReason = details.CancellationReason,
-        IsLateFeeApplicable = details.IsLateSubmission,
-        NoOfSubsidiaries = details.NumberOfSubsidiaries,
-        NoOfSubsidiariesOnlineMarketPlace = details.NumberOfOnlineSubsidiaries,
-        IsProducerOnlineMarketplace = details.IsOnlineMarketPlace,
-        CSOMembershipDetails = details.CsoMembershipDetails
+        ProducerDetails = details.ProducerDetails,
+        CSOMembershipDetails = details.CsoMembershipDetails,
+        IsResubmission = details.IsResubmission,
+        ResubmissionFileId  = details.ResubmissionFileId
     };
 
-    // Implicit operator from RegistrationSubmissionDetailsViewModel to RegistrationSubmissionOrganisationDetails  
+    //Implicit operator from RegistrationSubmissionDetailsViewModel to RegistrationSubmissionOrganisationDetails
     public static implicit operator RegistrationSubmissionOrganisationDetails(RegistrationSubmissionDetailsViewModel details) => details is null ? null : new RegistrationSubmissionOrganisationDetails
     {
         SubmissionId = details.SubmissionId,
         OrganisationId = details.OrganisationId,
         OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
         OrganisationName = details.OrganisationName,
-        ApplicationReferenceNumber = details.ApplicationReferenceNumber,
+        ApplicationReferenceNumber = details.ReferenceNumber,
         RegistrationReferenceNumber = details.RegistrationReferenceNumber,
-        OrganisationSize = details.OrganisationSize,
         OrganisationType = details.OrganisationType,
         CompaniesHouseNumber = details.CompaniesHouseNumber,
         Country = details.RegisteredNation,
         SubmissionStatus = details.Status,
-        SubmissionDate = details.RegistrationDateTime,
+        ResubmissionStatus = details.ResubmissionStatus,
+        RegistrationDate = details.RegistrationDateTime,
         RelevantYear = details.RegistrationYear,
         RegulatorComments = details.RegulatorComments,
         ProducerComments = details.ProducerComments,
@@ -134,10 +121,9 @@ public class RegistrationSubmissionDetailsViewModel
         NationId = details.NationId,
         RejectReason = details.RejectReason,
         CancellationReason = details.CancellationReason,
-        NumberOfOnlineSubsidiaries = details.NoOfSubsidiariesOnlineMarketPlace,
-        NumberOfSubsidiaries = details.NoOfSubsidiaries,
-        IsLateSubmission = details.IsLateFeeApplicable,
-        IsOnlineMarketPlace = details.IsProducerOnlineMarketplace,
-        CsoMembershipDetails = details.CSOMembershipDetails
+        CsoMembershipDetails = details.CSOMembershipDetails?.ToList(),
+        ProducerDetails = details.ProducerDetails,
+        IsResubmission = details.IsResubmission,
+        ResubmissionFileId = details.ResubmissionFileId
     };
 }
