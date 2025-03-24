@@ -106,7 +106,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
 
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
-        if (string.IsNullOrEmpty(Request.Headers.Referer))
+        if (string.IsNullOrEmpty(Request?.Headers?.Referer))
             SetHomeBackLink();
         else
             SetBackLink(session, currentPagePath);
