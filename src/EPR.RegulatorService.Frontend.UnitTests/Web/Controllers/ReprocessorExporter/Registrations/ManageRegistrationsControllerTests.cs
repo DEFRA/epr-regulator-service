@@ -91,7 +91,7 @@ public class ManageRegistrationsControllerTests
             .Setup(v => v.ValidateAsync(It.IsAny<ManageRegistrationsRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
-        _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Returns(registration);
+        _registrationServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).ReturnsAsync(registration);
         _mapperMock.Setup(m => m.Map<ManageRegistrationsViewModel>(registration)).Returns(expectedModel);
 
         // Act
@@ -136,7 +136,7 @@ public class ManageRegistrationsControllerTests
             .Setup(v => v.ValidateAsync(It.IsAny<ManageRegistrationsRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
-        _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Returns(registration);
+        _registrationServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).ReturnsAsync(registration);
         _mapperMock.Setup(m => m.Map<ManageRegistrationsViewModel>(registration)).Returns(expectedModel);
 
         // Act
@@ -204,7 +204,7 @@ public class ManageRegistrationsControllerTests
             .Setup(v => v.ValidateAsync(It.IsAny<ManageRegistrationsRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
-        _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Throws(new Exception("Test exception"));
+        _registrationServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).Throws(new Exception("Test exception"));
 
         // Act & Assert
         var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await _controller.Index(id));

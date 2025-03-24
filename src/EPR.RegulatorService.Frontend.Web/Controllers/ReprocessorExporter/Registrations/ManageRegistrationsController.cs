@@ -31,7 +31,7 @@ public class ManageRegistrationsController(IRegistrationService registrationServ
     {
         await _validator.ValidateAndThrowAsync(new ManageRegistrationsRequest { Id = id });
 
-        var registration = _registrationService.GetRegistrationById(id);
+        var registration = await _registrationService.GetRegistrationByIdAsync(id);
 
         ViewBag.BackLinkToDisplay = "";
 
