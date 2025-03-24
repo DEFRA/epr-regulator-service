@@ -372,18 +372,17 @@ public class RegistrationsControllerTests
             var model = viewResult.Model as ManageRegistrationsViewModel;
             model.Should().NotBeNull();
             model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
-
-            AssertBackLink(viewResult, PagePath.ManageRegistrations);
         }
     }
 
     [TestMethod]
-    public async Task OverseasReprocessorInterim_WhenSessionIsNull_ShouldUseNewJourneySession()
+    public async Task OverseasReprocessorInterim_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
         // Arrange
-        _mockSessionManager
-            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync((JourneySession)null!);
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
         var result = await _controller.OverseasReprocessorInterim();
@@ -391,16 +390,25 @@ public class RegistrationsControllerTests
         // Assert
         using (new AssertionScope())
         {
-            result.Should().BeOfType<ViewResult>();
+            var viewResult = (ViewResult)result;
 
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
+            AssertBackLink(viewResult, PagePath.ManageRegistrations);
         }
+    }
+
+    [TestMethod]
+    public async Task OverseasReprocessorInterim_WhenSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        {
+            await _controller.OverseasReprocessorInterim();
+        });
     }
 
     [TestMethod]
