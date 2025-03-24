@@ -1,8 +1,10 @@
+using System.Net;
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.Controllers.Errors;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
@@ -87,9 +89,25 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml", model);
     }
 
+    [HttpGet]
+    [Route(PagePath.BusinessAddress)]
+    public async Task<IActionResult> BusinessAddress()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.BusinessAddress);
+        SetBackLinkInfos(session, PagePath.BusinessAddress);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/BusinessAddress.cshtml", model);
+    }
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
-        if (string.IsNullOrEmpty(Request.Headers.Referer))
+        if (string.IsNullOrEmpty(Request?.Headers?.Referer))
             SetHomeBackLink();
         else
             SetBackLink(session, currentPagePath);
