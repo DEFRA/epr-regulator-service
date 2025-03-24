@@ -10,11 +10,9 @@
                       <partial name="Partials/_FileIsDownloadingStatus" />
                       <div class="govuk-grid-row">
                           <div class="govuk-grid-column-full">
-                              @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
-                                       "RegistrationDetails",
-                                       "Registrations",
-                                       null,
-                                       new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
+                            <a id="back-to-all-submissions" href="@ViewBag.BackLinkToDisplay" class="govuk-link govuk-link--no-visited-state">
+                                @SharedLocalizer["Link.BackToSubmissionDetails"]
+                            </a>
                           </div>
                       </div>
                       @if (!downloadCompleted)

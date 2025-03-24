@@ -64,6 +64,9 @@ public static class PagePath
     public const string MaterialDetails = "materials-contact";
 
     public const string SamplingInspection = "sampling-inspection";
+    public const string BusinessAddress = "business-address";
+    public const string WasteLicences = "waste-licences";
+
     // Non journey paths
     public const string Accessibility = "accessibility";
     public const string SignedOut = "signed-out";

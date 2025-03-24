@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
@@ -12,11 +13,11 @@ namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 /// </summary>
 public class MockedRegistrationService : IRegistrationService
 {
-    public Registration GetRegistrationById(int id)
+    public Task<Registration> GetRegistrationByIdAsync(int id)
     {
         if (id == 99999)
         {
-            throw new Exception("Mocked exception for testing purposes.");
+            throw new NotFoundException("Mocked exception for testing purposes.");
         }
 
         // Determine if the registration is for an Exporter or Reprocessor
@@ -25,7 +26,7 @@ public class MockedRegistrationService : IRegistrationService
             ? ApplicationOrganisationType.Reprocessor
             : ApplicationOrganisationType.Exporter;
 
-        return new Registration
+        return Task.FromResult(new Registration
         {
             Id = id,
             OrganisationName = organisationType == ApplicationOrganisationType.Reprocessor
@@ -36,6 +37,6 @@ public class MockedRegistrationService : IRegistrationService
                 : "N/A", // Exporters do not have a site address
             OrganisationType = organisationType,
             Regulator = "Environment Agency (EA)" // Static mock value
-        };
+        });
     }
 }

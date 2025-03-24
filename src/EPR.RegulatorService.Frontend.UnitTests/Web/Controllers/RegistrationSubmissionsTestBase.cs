@@ -119,7 +119,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             OrganisationReference = "215 148",
             OrganisationName = "Acme org Ltd.",
             RegistrationReferenceNumber = "REF001",
-            ApplicationReferenceNumber = "REF002",
+            ReferenceNumber = "REF002",
             OrganisationType = RegistrationSubmissionOrganisationType.large,
             BusinessAddress = new BusinessAddress
             {
@@ -137,7 +137,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SubmissionDetails = new SubmissionDetailsViewModel
             {
                 Status = RegistrationSubmissionStatus.Queried,
-                DecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
+                LatestDecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
                 TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
                 SubmittedOnTime = true,
                 SubmittedBy = "Sally Smith",

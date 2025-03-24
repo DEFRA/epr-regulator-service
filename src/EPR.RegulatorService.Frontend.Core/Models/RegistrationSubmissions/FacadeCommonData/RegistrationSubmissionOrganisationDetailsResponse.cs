@@ -3,9 +3,6 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.Faca
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 
@@ -22,6 +19,7 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public int RelevantYear { get; init; }
     public DateTime SubmissionDate { get; init; }
     public RegistrationSubmissionStatus SubmissionStatus { get; init; }
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; init; }
     public DateTime? StatusPendingDate { get; set; }
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
@@ -51,4 +49,7 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public bool IsComplianceScheme { get; set; }
     public string SubmissionPeriod { get; set; }
     public List<CsoMembershipDetailsDto> CsoMembershipDetails { get; set; }
+
+    public bool IsResubmission { get; set; }
+    public string ResubmissionFileId { get; set; }
 }
