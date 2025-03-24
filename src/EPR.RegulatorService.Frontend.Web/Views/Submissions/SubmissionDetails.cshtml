@@ -1,4 +1,6 @@
 @using EPR.RegulatorService.Frontend.Core.Enums
+@using EPR.RegulatorService.Frontend.Web.Constants
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
@@ -6,63 +8,90 @@
 @model SubmissionDetailsViewModel
 @{
     ViewData["Title"] = Localizer["ManagePackagingDataSubmissionsDetails.Title"];
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), SharedLocalizer);
 }
 
 <div class="govuk-width-container">
-  <main class="govuk-main-wrapper" id="main-content" role="main">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        @if (!ViewData.ModelState.IsValid)
-        {
-          @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-        }
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                }
 
                 <h1 class="govuk-caption-xl">@Localizer["ManagePackagingDataSubmissions.Title"]</h1>
-        <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">@Model.OrganisationName</h2>
-        <div class="govuk-!-margin-bottom-4">
-          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationType"]</h3>
-          <p class="govuk-body">
-              @(Model.OrganisationType == OrganisationType.DirectProducer
-              || Model.OrganisationType.Equals("DirectProducer")
-              ? SharedLocalizer["OrganisationType.DirectProducer"]
-              : SharedLocalizer["OrganisationType.ComplianceScheme"])
-          </p>
+                <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">@Model.OrganisationName</h2>
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationType"]</h3>
+                    <p class="govuk-body">
+                        @(Model.OrganisationType == OrganisationType.DirectProducer
+                            || Model.OrganisationType.Equals("DirectProducer")
+                            ? SharedLocalizer["OrganisationType.DirectProducer"]
+                            : SharedLocalizer["OrganisationType.ComplianceScheme"])
+                    </p>
+                </div>
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationId"]</h3>
+                    <p class="govuk-body">@Model.OrganisationReferenceNumber</p>
+                </div>
+                <div class="govuk-!-margin-bottom-4">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.PackagingData"]</h3>
+                    <p class="govuk-body">
+                        @Localizer["SubTitle.PackagingData.Text"]
+                        <a href="@Model.PowerBiLogin" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
+                    </p>
+                </div>
+            </div>
         </div>
-        <div class="govuk-!-margin-bottom-4">
-          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.OrganisationId"]</h3>
-          <p class="govuk-body">@Model.OrganisationReferenceNumber</p>
-        </div>
-        <div class="govuk-!-margin-bottom-4">
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["SubTitle.PowerBI"]</h3>
-          <p class="govuk-body">@Localizer["SubTitle.PackagingData.Text"]
-            <a href="@Model.PowerBiLogin" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
-          </p>
-        </div>
-      </div>
-    </div>
 
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        @if (!Model.IsResubmission)
-        {
-          <partial name="Partials/_SubmissionDetails"/>
-        }
-        else
-        {
-          <partial name="Partials/_ResubmissionDetails"/>
-        }
-      </div>
-    </div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <partial name="Partials/_SubmissionDetails" />
+            </div>
+        </div>
 
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-full">
-        @Html.ActionLink(Localizer["Link.BackToSubmissions"].Value,
-               "Submissions",
-               "Submissions",
-               null,
-               new {@class = "govuk-body govuk-link govuk-link--no-visited-state"})
-      </div>
-    </div>
-  </main>
+        @if (Model.IsResubmission)
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    @{
+                        var model = Model as BaseSubmissionDetailsViewModel;
+                    }
+                    @if (Model.OrganisationType == OrganisationType.ComplianceScheme)
+                    {
+                        @await Component.InvokeAsync("PackagingCompliancePaymentDetails", new { viewModel = @model })
+                    }
+                    else
+                    {
+                        @await Component.InvokeAsync("PackagingProducerPaymentDetails", new { viewModel = @model })
+                    }
+                </div>
+            </div>
+        }
+
+        @if (Model.Status == EPR.RegulatorService.Frontend.Web.Constants.EnrolmentStatus.Pending)
+        {
+            <div class="govuk-inset-text">@Localizer["SummaryList.Information.Text", Model.OrganisationName]</div>
+            <div class="govuk-button-group govuk-!-margin-top-2">
+                <button class="govuk-button" data-module="govuk-button" name="journeyType" value="@JourneyType.Accept">
+                    @SharedLocalizer["Button.Accept"]
+                </button>
+
+                <input type="hidden" name="submittedBy" value="@Model.SubmittedBy" />
+                <button class="govuk-button govuk-button--secondary govuk-button--warning" data-module="govuk-button" name="journeyType" value="@JourneyType.Reject">
+                    @SharedLocalizer["Button.Reject"]
+                </button>
+            </div>
+        }
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                @Html.ActionLink(Localizer["Link.BackToSubmissions"].Value,
+                         "Submissions",
+                         "Submissions",
+                         null,
+                         new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
+            </div>
+        </div>
+    </main>
 </div>

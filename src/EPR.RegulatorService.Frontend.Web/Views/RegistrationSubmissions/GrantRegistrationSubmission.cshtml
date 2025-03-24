@@ -4,7 +4,7 @@
 
 @model GrantRegistrationSubmissionViewModel
 @{
-    ViewData["Title"] = Localizer["PageTitle"];
+    ViewData["Title"] = Localizer[Model.IsResubmission ? "PageTitle.Resubmission" : "PageTitle"];
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
@@ -24,7 +24,7 @@
                                 <span class="govuk-caption-xl">@Localizer["Caption"]</span>
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                     <h1 class="govuk-fieldset__heading">
-                                        @Localizer["PageHeading"]
+                                        @Localizer[Model.IsResubmission ? "PageHeading.Resubmission" : "PageHeading"]
                                     </h1>
                                 </legend>
                                 <div class="govuk-radios" data-module="govuk-radios">

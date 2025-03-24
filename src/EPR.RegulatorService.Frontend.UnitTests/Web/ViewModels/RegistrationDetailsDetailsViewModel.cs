@@ -1,18 +1,11 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-
-using Microsoft.AspNetCore.Mvc;
 
 [TestClass]
 public class RegistrationSubmissionDetailsViewModelTests
@@ -31,7 +24,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             OrganisationType = RegistrationSubmissionOrganisationType.large,
             CompaniesHouseNumber = "CH123456",
             SubmissionStatus = RegistrationSubmissionStatus.Pending,
-            SubmissionDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
+            RegistrationDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
             BuildingName = "Building A",
             SubBuildingName = "Sub A",
             BuildingNumber = "123",
@@ -49,13 +42,13 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.AreEqual(details.OrganisationId, viewModel.OrganisationId);
         Assert.AreEqual(details.OrganisationReference[..10], viewModel.OrganisationReference);
         Assert.AreEqual(details.OrganisationName, viewModel.OrganisationName);
-        Assert.AreEqual(details.ApplicationReferenceNumber, viewModel.ApplicationReferenceNumber);
+        Assert.AreEqual(details.ApplicationReferenceNumber, viewModel.ReferenceNumber);
         Assert.AreEqual(details.RegistrationReferenceNumber, viewModel.RegistrationReferenceNumber);
         Assert.AreEqual(details.OrganisationType, viewModel.OrganisationType);
         Assert.AreEqual(details.CompaniesHouseNumber, viewModel.CompaniesHouseNumber);
         Assert.AreEqual(details.Country, viewModel.RegisteredNation);
         Assert.AreEqual(details.SubmissionStatus, viewModel.Status);
-        Assert.AreEqual(details.SubmissionDate, viewModel.RegistrationDateTime);
+        Assert.AreEqual(details.RegistrationDate, viewModel.RegistrationDateTime);
 
         // Check Business Address mapping
         Assert.AreEqual(details.BuildingName, viewModel.BusinessAddress.BuildingName);
@@ -77,7 +70,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             OrganisationId = Guid.NewGuid(),
             OrganisationReference = "ORGREF1234",
             OrganisationName = "Test Organisation",
-            ApplicationReferenceNumber = "APP123",
+            ReferenceNumber = "APP123",
             RegistrationReferenceNumber = "REG123",
             OrganisationType = RegistrationSubmissionOrganisationType.small,
             CompaniesHouseNumber = "CH987654",
@@ -102,7 +95,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.IsNotNull(viewModel.OrganisationId);
         Assert.AreEqual("ORGREF1234", viewModel.OrganisationReference);
         Assert.AreEqual("Test Organisation", viewModel.OrganisationName);
-        Assert.AreEqual("APP123", viewModel.ApplicationReferenceNumber);
+        Assert.AreEqual("APP123", viewModel.ReferenceNumber);
         Assert.AreEqual("REG123", viewModel.RegistrationReferenceNumber);
         Assert.AreEqual(RegistrationSubmissionOrganisationType.small, viewModel.OrganisationType);
         Assert.AreEqual("CH987654", viewModel.CompaniesHouseNumber);
@@ -151,7 +144,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         RegistrationSubmissionDetailsViewModel viewModel = details;
 
         // Assert
-        Assert.AreEqual(string.Empty, viewModel.ApplicationReferenceNumber);
+        Assert.AreEqual(string.Empty, viewModel.ReferenceNumber);
         Assert.AreEqual(string.Empty, viewModel.RegistrationReferenceNumber);
         Assert.IsNull(viewModel.BusinessAddress.BuildingName);
         Assert.IsNull(viewModel.BusinessAddress.SubBuildingName);
