@@ -215,7 +215,7 @@ public class RegistrationsControllerTests
         // Assert
         using (new AssertionScope())
         {
-        result.Should().BeOfType<ViewResult>();
+            result.Should().BeOfType<ViewResult>();
 
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
