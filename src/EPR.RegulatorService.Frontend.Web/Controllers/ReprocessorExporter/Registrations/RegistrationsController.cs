@@ -87,6 +87,23 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         return View("~/Views/ReprocessorExporter/Registrations/InputsAndOutputs.cshtml", model);
     }
 
+    [HttpGet]
+    [Route(PagePath.OverseasReprocessorInterim)]
+    public async Task<IActionResult> OverseasReprocessorInterim()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.OverseasReprocessorInterim);
+        SetBackLinkInfos(session, PagePath.OverseasReprocessorInterim);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View("~/Views/ReprocessorExporter/Registrations/OverseasReprocessorInterim.cshtml", model);
+    }
+
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
         if (string.IsNullOrEmpty(Request.Headers.Referer))
