@@ -267,9 +267,6 @@
   <data name="Link.BackToSubmissionDetails" xml:space="preserve">
     <value>Go back to submission details</value>
   </data>
-  <data name="FileDownload.RejectSubmission" xml:space="preserve">
-    <value>Reject Submission</value>
-  </data>
   <data name="RegistrationSubmissionOrganisationType.ComplianceScheme" xml:space="preserve">
     <value>Compliance Scheme</value>
   </data>
