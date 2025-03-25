@@ -466,7 +466,59 @@ public class RegistrationsControllerTests
         AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
 
+    [TestMethod]
+    public async Task MaterialDetails_WithCorrectModel_ShouldReturnView()
+    {
+        // Act
+        var result = await _controller.MaterialDetails();
 
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
+        }
+    }
+
+    [TestMethod]
+    public async Task MaterialDetails_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
+    {
+        // Arrange
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        // Act
+        var result = await _controller.MaterialDetails();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var viewResult = (ViewResult)result;
+
+            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+        }
+    }
+
+    [TestMethod]
+    public async Task MaterialDetails_WhenSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialDetails());
+    }
 
     protected static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
     {
