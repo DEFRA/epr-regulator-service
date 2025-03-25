@@ -61,6 +61,7 @@ public static class PagePath
     public const string Accreditation = "accreditation";
     public const string UkSiteDetails="uksite-details";
     public const string InputsAndOutputs = "reprocessing-throughputs";
+    public const string MaterialDetails = "materials-contact";
     public const string OverseasReprocessorInterim = "overseas-interim-sites";
 
     public const string SamplingInspection = "sampling-inspection";

@@ -1,4 +1,3 @@
-using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -11,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
+
+using Common.Authorization.Constants;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
@@ -117,6 +118,23 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         };
 
         return View(RegistrationsView(nameof(BusinessAddress)), model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.MaterialDetails)]
+    public async Task<IActionResult> MaterialDetails()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.MaterialDetails);
+        SetBackLinkInfos(session, PagePath.MaterialDetails);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View(RegistrationsView(nameof(MaterialDetails)), model);
     }
 
     [HttpGet]
