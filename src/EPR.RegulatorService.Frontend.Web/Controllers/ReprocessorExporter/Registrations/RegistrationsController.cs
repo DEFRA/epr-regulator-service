@@ -137,23 +137,6 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
 
         return View(RegistrationsView(nameof(BusinessAddress)), model);
     }
-    
-    [HttpGet]
-    [Route(PagePath.OverseasReprocessorInterim)]
-    public async Task<IActionResult> OverseasReprocessorInterim()
-    {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.OverseasReprocessorInterim);
-        SetBackLinkInfos(session, PagePath.OverseasReprocessorInterim);
-
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
-        };
-
-        return View(RegistrationsView(nameof(OverseasReprocessorInterim)), model);
-    }
 
     [HttpGet]
     [Route(PagePath.MaterialDetails)]
@@ -171,6 +154,24 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
 
         return View(RegistrationsView(nameof(MaterialDetails)), model);
     }
+
+    [HttpGet]
+    [Route(PagePath.OverseasReprocessorInterim)]
+    public async Task<IActionResult> OverseasReprocessorInterim()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.OverseasReprocessorInterim);
+        SetBackLinkInfos(session, PagePath.OverseasReprocessorInterim);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
+        };
+
+        return View(RegistrationsView(nameof(OverseasReprocessorInterim)), model);
+    }
+
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
         if (string.IsNullOrEmpty(Request?.Headers?.Referer))
