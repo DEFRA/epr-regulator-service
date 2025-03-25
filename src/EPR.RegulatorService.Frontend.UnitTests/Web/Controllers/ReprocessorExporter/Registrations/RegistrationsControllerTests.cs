@@ -318,7 +318,7 @@ public class RegistrationsControllerTests
         // Assert
         result.Should().BeOfType<ViewResult>();
 
-        AssertBackLink(result as ViewResult, "/regulators/"+PagePath.Home);
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
 
     [TestMethod]
@@ -347,6 +347,118 @@ public class RegistrationsControllerTests
 
         // Act
         var result = await _controller.SamplingInspection();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task OverseasReprocessorInterim_WithCorrectModel_ShouldReturnView()
+    {
+        // Act
+        var result = await _controller.OverseasReprocessorInterim();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
+        }
+    }
+
+    [TestMethod]
+    public async Task OverseasReprocessorInterim_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
+    {
+        // Arrange
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        // Act
+        var result = await _controller.OverseasReprocessorInterim();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var viewResult = (ViewResult)result;
+
+            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+        }
+    }
+
+    [TestMethod]
+    public async Task OverseasReprocessorInterim_WhenSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        {
+            await _controller.OverseasReprocessorInterim();
+        });
+    }
+
+    [TestMethod]
+    public async Task OverseasReprocessorInterim_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockHeaders = new Mock<IHeaderDictionary>();
+        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
+        mockHeaders.Setup(h => h.Referer).Returns((string?)null);
+
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.OverseasReprocessorInterim();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task OverseasReprocessorInterim_WhenHeadersIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.OverseasReprocessorInterim();
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task OverseasReprocessorInterim_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
+
+        // Act
+        var result = await _controller.OverseasReprocessorInterim();
 
         // Assert
         result.Should().BeOfType<ViewResult>();
