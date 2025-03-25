@@ -1,3 +1,4 @@
+using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -7,11 +8,10 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
-
-using Common.Authorization.Constants;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
@@ -49,7 +49,25 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         {
             ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
         };
+
         return View(RegistrationsView(nameof(UkSiteDetails)), model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.MaterialWasteLicences)]
+    public async Task<IActionResult> MaterialWasteLicences()
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.MaterialWasteLicences);
+        SetBackLinkInfos(session, PagePath.MaterialWasteLicences);
+
+        var model = new ManageRegistrationsViewModel
+        {
+            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
+        };
+
+        return View(RegistrationsView(nameof(MaterialWasteLicences)), model);
     }
 
     [HttpGet]

@@ -577,7 +577,7 @@ public class RegistrationsControllerTests
 
         AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
-
+    
     [TestMethod]
     public async Task MaterialDetails_WithCorrectModel_ShouldReturnView()
     {
@@ -632,7 +632,63 @@ public class RegistrationsControllerTests
         await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialDetails());
     }
 
-    protected static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
+    [TestMethod]
+    public async Task MaterialWasteLicences_WithCorrectModel_ShouldReturnView()
+    {
+        // Act
+        var result = await _controller.MaterialWasteLicences();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+
+            var model = viewResult.Model as ManageRegistrationsViewModel;
+            model.Should().NotBeNull();
+            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+        }
+    }
+
+    [TestMethod]
+    public async Task MaterialWasteLicences_WhenSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialWasteLicences());
+    }
+
+    [TestMethod]
+    public async Task MaterialWasteLicences_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
+    {
+        // Arrange
+        const string expectedPreviousPage = $"{PagePath.ManageRegistrations}?id=1345";
+
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(expectedPreviousPage);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        // Act
+        var result = await _controller.MaterialWasteLicences();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var viewResult = (ViewResult)result;
+
+            AssertBackLink(viewResult, expectedPreviousPage);
+        }
+    }
+
+    private static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
     {
         var hasBackLinkKey = viewResult.ViewData.TryGetValue(BackLinkViewDataKey, out var gotBackLinkObject);
         hasBackLinkKey.Should().BeTrue();
