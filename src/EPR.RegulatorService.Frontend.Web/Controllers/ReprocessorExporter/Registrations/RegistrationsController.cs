@@ -125,7 +125,7 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.ManageRegistrations, PagePath.OverseasReprocessorInterim);
+        await SaveSessionAndJourney(session, PagePath.OverseasReprocessorInterim);
         SetBackLinkInfos(session, PagePath.OverseasReprocessorInterim);
 
         var model = new ManageRegistrationsViewModel
