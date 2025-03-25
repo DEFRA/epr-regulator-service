@@ -20,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
+
 [TestClass]
 public class ManageRegistrationsControllerTests
 {
