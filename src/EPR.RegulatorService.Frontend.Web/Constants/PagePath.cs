@@ -56,15 +56,19 @@ public static class PagePath
     public const string PackagingDataFileDownloadFailed = "packaging-data-file-download-failed";
     public const string PackagingDataFileDownloadSecurityWarning = "packaging-data-file-download-security-warning";
     public const string AuthorisedMaterials = "authorised-materials";
-    public const string ReprocessorExporterRegistrations = "registrations";
+    public const string ReprocessorExporterRegistrations = "registrations"; 
     public const string ManageRegistrations = "manage-registrations";
     public const string Accreditation = "accreditation";
     public const string UkSiteDetails="uksite-details";
     public const string InputsAndOutputs = "reprocessing-throughputs";
     public const string MaterialDetails = "materials-contact";
     public const string MaterialWasteLicences = "permits-exemptions";
+    public const string OverseasReprocessorInterim = "overseas-interim-sites";
 
     public const string SamplingInspection = "sampling-inspection";
+    public const string BusinessAddress = "business-address";
+    public const string WasteLicences = "waste-licences";
+
     // Non journey paths
     public const string Accessibility = "accessibility";
     public const string SignedOut = "signed-out";

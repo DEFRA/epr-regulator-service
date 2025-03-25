@@ -123,8 +123,11 @@
   <data name="Table.Header.Status" xml:space="preserve">
     <value>Submission status</value>
   </data>
+  <data name="Table.Header.ResubmissionStatus" xml:space="preserve">
+    <value>Resubmission status</value>
+  </data>
   <data name="Table.Header.CompanyId" xml:space="preserve">
-    <value>Organisation ID</value>
+    <value>Organisation ID and reference number</value>
   </data>
   <data name="Table.Header.Company" xml:space="preserve">
     <value>Organisation</value>

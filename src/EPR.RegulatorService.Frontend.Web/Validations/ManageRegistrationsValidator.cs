@@ -1,3 +1,4 @@
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentValidation;

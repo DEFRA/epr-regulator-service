@@ -267,9 +267,6 @@
   <data name="Link.BackToSubmissionDetails" xml:space="preserve">
     <value>Go back to submission details</value>
   </data>
-  <data name="FileDownload.RejectSubmission" xml:space="preserve">
-    <value>Reject Submission</value>
-  </data>
   <data name="RegistrationSubmissionOrganisationType.ComplianceScheme" xml:space="preserve">
     <value>Compliance Scheme</value>
   </data>
@@ -357,4 +354,49 @@
   <data name="Export" xml:space="preserve">
     <value>Export</value>
   </data>
+  <data name="PaymentDetails.Amount" xml:space="preserve">
+  <value>Amount</value>
+</data>
+  <data name="PaymentDetails.Description" xml:space="preserve">
+  <value>Description</value>
+</data>
+  <data name="PaymentDetails.Items" xml:space="preserve">
+  <value>Items</value>
+</data>
+  <data name="PaymentDetails.Title" xml:space="preserve">
+  <value>Payment details</value>
+</data>
+  <data name="PaymentDetails.TotalOutstanding" xml:space="preserve">
+  <value>Total outstanding</value>
+</data>
+  <data name="PaymentDetails.CsoServiceIssueDescription" xml:space="preserve">
+  <value>Unable to retrieve compliance scheme payment details</value>
+</data>
+  <data name="PaymentDetails.ProducerServiceIssueDescription" xml:space="preserve">
+  <value>Unable to retrieve producer payment details</value>
+</data>
+  <data name="PaymentDetails.SubTotalDescription" xml:space="preserve">
+  <value>Sub-total</value>
+</data>
+  <data name="PaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
+  <value>Previous payments</value>
+</data>
+  <data name="PaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
+  <value>Total payments received</value>
+</data>
+<data name="ResubmissionStatus" xml:space="preserve">
+  <value>Resubmission</value>
+</data>
+<data name="Resubmission.Accepted" xml:space="preserve">
+  <value>Resubmission accepted</value>
+</data>
+<data name="Resubmission.Pending" xml:space="preserve">
+  <value>Resubmission pending</value>
+</data>
+<data name="Resubmission.Rejected" xml:space="preserve">
+  <value>Resubmission rejected</value>
+</data>
+<data name="PackagingProducerPaymentDetails.PaymentReferenceNumber" xml:space="preserve">
+  <value>Payment reference number</value>
+</data>  
 </root>

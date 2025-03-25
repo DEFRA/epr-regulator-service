@@ -123,9 +123,6 @@
   <data name="Error.RejectReasonTooLong" xml:space="preserve">
     <value>Reason for rejecting application must be 400 characters or less</value>
   </data>
-  <data name="RejectRegistrationSubmission.Caption" xml:space="preserve">
-    <value>Manage registration submissions</value>
-  </data>
   <data name="RejectRegistrationSubmission.Description" xml:space="preserve">
     <value>If you refuse this submission, the organisation will need to re-submit their application and pay any associated fee.</value>
   </data>
@@ -134,5 +131,11 @@
   </data>
   <data name="RejectRegistrationSubmission.Title" xml:space="preserve">
     <value>Why are you refusing this registration submission?</value>
+  </data>
+  <data name="RejectResubmission.Heading" xml:space="preserve">
+    <value>Why are you refusing this resubmitted data?</value>
+  </data>
+  <data name="RejectResubmission.Title" xml:space="preserve">
+    <value>Why are you refusing this resubmitted data?</value>
   </data>
 </root>

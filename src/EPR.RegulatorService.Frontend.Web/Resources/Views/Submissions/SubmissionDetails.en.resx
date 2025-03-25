@@ -141,4 +141,7 @@
   <data name="Link.BackToSubmissions" xml:space="preserve">
     <value>Go back to all submissions</value>
   </data>
+  <data name="SummaryList.Information.Text" xml:space="preserve">
+    <value>{0} cannot resubmit until this submission has been actioned.</value>
+  </data>
 </root>

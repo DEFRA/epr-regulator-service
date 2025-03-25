@@ -1,9 +1,12 @@
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentAssertions.Execution;
@@ -11,10 +14,11 @@ using FluentAssertions.Execution;
 using FluentValidation;
 using FluentValidation.Results;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
-
 
 [TestClass]
 public class ManageRegistrationsControllerTests
@@ -32,16 +36,36 @@ public class ManageRegistrationsControllerTests
         _registrationServiceMock = new Mock<IRegistrationService>();
         _mapperMock = new Mock<IMapper>();
         _validatorMock = new Mock<IValidator<ManageRegistrationsRequest>>();
+        var sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
+        var configurationSectionMock = new Mock<IConfigurationSection>();
+        var configurationMock = new Mock<IConfiguration>();
+        var httpContextMock = new Mock<HttpContext>();
+
+        configurationSectionMock
+            .Setup(section => section.Value)
+            .Returns("/regulators");
+
+        configurationMock
+            .Setup(config => config.GetSection(ConfigKeys.PathBase))
+            .Returns(configurationSectionMock.Object);
+
+        sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(new JourneySession());
 
         _controller = new ManageRegistrationsController(
             _registrationServiceMock.Object,
             _mapperMock.Object,
-            _validatorMock.Object
+            _validatorMock.Object,
+            sessionManagerMock.Object,
+            configurationMock.Object
         );
+
+        _controller.ControllerContext.HttpContext = httpContextMock.Object;
     }
 
     [TestMethod]
-    public void Index_ShouldDisplayBackLink()
+    public async Task Index_ShouldDisplayBackLink()
     {
         // Arrange
         var id = 1;
@@ -64,14 +88,14 @@ public class ManageRegistrationsControllerTests
         };
 
         _validatorMock
-            .Setup(v => v.Validate(It.IsAny<ManageRegistrationsRequest>()))
-            .Returns(new ValidationResult());
+            .Setup(v => v.ValidateAsync(It.IsAny<ManageRegistrationsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
 
-        _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Returns(registration);
+        _registrationServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).ReturnsAsync(registration);
         _mapperMock.Setup(m => m.Map<ManageRegistrationsViewModel>(registration)).Returns(expectedModel);
 
         // Act
-        var result = _controller.Index(id);
+        var result = await _controller.Index(id);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -86,7 +110,7 @@ public class ManageRegistrationsControllerTests
     }
 
     [TestMethod]
-    public void Index_ValidId_ShouldReturnViewResultWithCorrectModel()
+    public async Task Index_ValidId_ShouldReturnViewResultWithCorrectModel()
     {
         // Arrange
         var id = 1;
@@ -109,14 +133,14 @@ public class ManageRegistrationsControllerTests
         };
 
         _validatorMock
-            .Setup(v => v.Validate(It.IsAny<ManageRegistrationsRequest>()))
-            .Returns(new ValidationResult());
+            .Setup(v => v.ValidateAsync(It.IsAny<ManageRegistrationsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
 
-        _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Returns(registration);
+        _registrationServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).ReturnsAsync(registration);
         _mapperMock.Setup(m => m.Map<ManageRegistrationsViewModel>(registration)).Returns(expectedModel);
 
         // Act
-        var result = _controller.Index(id);
+        var result = await _controller.Index(id);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -140,7 +164,7 @@ public class ManageRegistrationsControllerTests
     }
 
     [TestMethod]
-    public void Index_InvalidId_ShouldThrowValidationException()
+    public async Task Index_InvalidId_ShouldThrowValidationException()
     {
         // Arrange
         var id = 0; // Invalid ID
@@ -156,14 +180,14 @@ public class ManageRegistrationsControllerTests
             .Returns(validationResult);
 
         // Act & Assert
-        var exception = Assert.ThrowsException<ValidationException>(() =>
+        var exception = await Assert.ThrowsExceptionAsync<ValidationException>(async () =>
         {
             if (!validationResult.IsValid)
             {
                 throw new ValidationException(validationResult.Errors);
             }
 
-            _controller.Index(id);
+            await _controller.Index(id);
         });
 
         exception.Errors.Should().NotBeNullOrEmpty();
@@ -171,19 +195,19 @@ public class ManageRegistrationsControllerTests
     }
 
     [TestMethod]
-    public void Index_Exception_ShouldThrowException()
+    public async Task Index_Exception_ShouldThrowException()
     {
         // Arrange
         var id = 5;
 
-        _validatorMock
-            .Setup(v => v.Validate(It.IsAny<ManageRegistrationsRequest>()))
-            .Returns(new ValidationResult());
+        _ = _validatorMock
+            .Setup(v => v.ValidateAsync(It.IsAny<ManageRegistrationsRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
 
-        _registrationServiceMock.Setup(s => s.GetRegistrationById(id)).Throws(new Exception("Test exception"));
+        _registrationServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).Throws(new Exception("Test exception"));
 
         // Act & Assert
-        var exception = Assert.ThrowsException<Exception>(() => _controller.Index(id));
+        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await _controller.Index(id));
 
         exception.Message.Should().Be("Test exception");
     }
