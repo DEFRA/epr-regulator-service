@@ -364,7 +364,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         public async Task<IActionResult> FileUpload(FileUploadRequest fileUploadRequest)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            var allowedFileTypes = new[] { ".pdf", ".docx", ".xlsx" };
+            var allowedFileTypes = new[] { ".txt", ".pdf", ".docx", ".xlsx" };
 
             var fileExtension = System.IO.Path.GetExtension(fileUploadRequest.MyFile.FileName).ToLower();
             if (!allowedFileTypes.Contains(fileExtension))
@@ -372,15 +372,23 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 ViewBag.Message = "Invalid file type! Only PDF, DOCX, and XLSX files are allowed.";
                 return View();
             }
+            fileUploadRequest.FileContent = await ConvertIFormFileToByteArray(fileUploadRequest.MyFile);
 
             _facadeService.SubmitFileUpload(fileUploadRequest);
 
             ViewBag.Message = "File Uploaded.";
             return View();
         }
+        public async Task<byte[]> ConvertIFormFileToByteArray(IFormFile file)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
 
-
-            [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> FileDownloadInProgress()
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);

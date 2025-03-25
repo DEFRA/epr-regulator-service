@@ -44,6 +44,7 @@ public class FacadeService : IFacadeService
     private const string GetOrganisationRegistrationSubmissionDetailsPath = "GetOrganisationRegistrationSubmissionDetailsPath";
     private const string GetOrganisationRegistationSubmissionsPath = "GetOrganisationRegistrationSubmissionsPath";
     private const string SubmitRegistrationFeePaymentPath = "SubmitRegistrationFeePaymentPath";
+    private const string FileUploadPath = "FileUpload";
 
     private readonly string[] _scopes;
     private readonly HttpClient _httpClient;
@@ -642,5 +643,14 @@ public class FacadeService : IFacadeService
         return stream;
     }
 
-    public Task<HttpResponseMessage> SubmitFileUpload(FileUploadRequest request) => throw new NotImplementedException();
+    public async Task<HttpResponseMessage> SubmitFileUpload(FileUploadRequest request) {
+        await PrepareAuthenticatedClient();
+
+        string path = _facadeApiConfig.Endpoints[FileUploadPath];
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+
+        return await Task.FromResult<HttpResponseMessage>(response);
+    }
+
+
 }

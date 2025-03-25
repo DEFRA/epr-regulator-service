@@ -27,7 +27,7 @@
                         <form method="POST" asp-controller="Registrations" asp-action="FileUpload" enctype="multipart/form-data" class="govuk-form-group">
                             <div class="govuk-form-group">
                                 <label class="govuk-label" for="file">Choose file to upload:</label>
-                                <input class="govuk-file-upload" asp-for="MyFile" accept=".pdf,.docx,.xlsx" required />
+                                <input class="govuk-file-upload" asp-for="MyFile" accept=".txt,.pdf,.docx,.xlsx" required />
                             </div>
                               <input type="hidden" name="FileName" value="testing" />
                             <button class ="govuk-button" type="submit">Upload</button>
