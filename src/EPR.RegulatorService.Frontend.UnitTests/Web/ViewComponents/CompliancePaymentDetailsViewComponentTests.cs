@@ -37,6 +37,11 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     public async Task InvokeAsync_Returns_CorrectView_With_DefaultModel_When_ServiceReturns_Null()
     {
         // Arrange
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails = [];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
 
         // Act
         var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
