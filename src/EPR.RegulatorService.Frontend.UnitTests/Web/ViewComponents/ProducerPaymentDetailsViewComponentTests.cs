@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents;
 
@@ -17,6 +19,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
 {
     private ProducerPaymentDetailsViewComponent _sut;
     private RegistrationSubmissionDetailsViewModel _registrationSumissionDetailsViewModel;
+    private readonly Mock<IOptions<PaymentDetailsOptions>> _paymentDetailsOptionsMock = new();
     private readonly Mock<IPaymentFacadeService> _paymentFacadeServiceMock = new();
     private readonly Mock<ILogger<ProducerPaymentDetailsViewComponent>> _loggerMock = new();
 
@@ -30,7 +33,8 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             ProducerDetails = new ProducerDetailsDto()
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
-        _sut = new ProducerPaymentDetailsViewComponent(_paymentFacadeServiceMock.Object, _loggerMock.Object);
+        _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
+        _sut = new ProducerPaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object);
     }
 
     [TestMethod]
