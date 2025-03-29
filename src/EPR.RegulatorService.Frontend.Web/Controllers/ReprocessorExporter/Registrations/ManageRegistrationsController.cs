@@ -2,6 +2,7 @@ using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
@@ -38,6 +39,8 @@ public class ManageRegistrationsController(IRegistrationService registrationServ
         var model = _mapper.Map<ManageRegistrationsViewModel>(registration);
 
         var session = await GetSession();
+        session.ReprocessorExporterSession = new ReprocessorExporterSession();
+
         await SaveSessionAndJourney(session, $"{PagePath.ManageRegistrations}?id={id}");
 
         return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations.cshtml", model);

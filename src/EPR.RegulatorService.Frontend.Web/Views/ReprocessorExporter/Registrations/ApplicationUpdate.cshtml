@@ -1,0 +1,43 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model ApplicationUpdateViewModel
+
+<div class="govuk-width-container ">
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">
+          <span class="govuk-caption-l">@Model.MaterialName</span>
+          Update application outcome
+        </h1>
+
+        <form class="form" action="@Url.Action("ApplicationUpdate", "Registrations")" method="POST">
+
+          <div class="govuk-form-group">
+
+            <div class="govuk-radios govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="application-status-granted" name="applicationStatus" type="radio" value="@nameof(ApplicationStatus.Granted)" @(Model.Status == ApplicationStatus.Granted ? "checked" : "")>
+				<label class="govuk-label govuk-radios__label" for="application-status-granted">
+                  Grant registration
+                </label>
+              </div>
+
+              <div class="govuk-radios__item">
+				<input class="govuk-radios__input" id="application-status-refused" name="applicationStatus" type="radio" value="@nameof(ApplicationStatus.Refused)" @(Model.Status == ApplicationStatus.Refused ? "checked" : "")>
+				<label class="govuk-label govuk-radios__label" for="application-status-refused">
+                  Refuse registration
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <input class="govuk-button" type="submit" value="Continue">
+        </form>
+      </div>
+    </div>
+  </main>
+</div>

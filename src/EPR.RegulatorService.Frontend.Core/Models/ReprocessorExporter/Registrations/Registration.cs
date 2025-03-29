@@ -12,5 +12,7 @@ public class Registration
 
     public ApplicationOrganisationType OrganisationType { get; init; }
 
-    public string Regulator { get; init; } = "Environment Agency (EA)";
+    public required string Regulator { get; init; }
+
+    public List<RegistrationMaterial> RegistrationMaterials { get; set; } = [];
 }

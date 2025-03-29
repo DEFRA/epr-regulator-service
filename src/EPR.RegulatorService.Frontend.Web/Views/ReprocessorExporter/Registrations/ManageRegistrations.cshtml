@@ -1,6 +1,7 @@
 @using EPR.RegulatorService.Frontend.Core.Enums
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
 
-@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ManageRegistrationsViewModel
+@model ManageRegistrationsViewModel
 
 @{
     const string title = "Manage registrations";
@@ -29,7 +30,7 @@
                     @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_ReviewAddressAndPermits.cshtml", Model)
                 }
 
-                @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_ReviewMaterialRegistrations.cshtml")
+                @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Registrations/_ReviewMaterialRegistrations.cshtml", Model)
 
             </div>
         </div>

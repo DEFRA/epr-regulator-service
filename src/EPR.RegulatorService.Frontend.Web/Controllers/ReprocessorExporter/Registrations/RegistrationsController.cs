@@ -1,6 +1,11 @@
+using AutoMapper;
+
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
@@ -8,7 +13,6 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
@@ -16,7 +20,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
-public class RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration)
+public class RegistrationsController(
+    IMapper mapper,
+    IRegistrationService registrationService,
+    ISessionManager<JourneySession> sessionManager,
+    IConfiguration configuration)
     : ReprocessorExporterBaseController(sessionManager, configuration)
 {
     [HttpGet]
@@ -172,9 +180,89 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
         return View(RegistrationsView(nameof(OverseasReprocessorInterim)), model);
     }
 
+    [HttpGet]
+    [Route(PagePath.ApplicationUpdate)]
+    public async Task<IActionResult> ApplicationUpdate(int registrationMaterialId)
+    {
+        // TODO: Validate that the id is set correctly
+
+        var session = await GetSession();
+
+        var applicationUpdateSession = await GetOrCreateApplicationUpdateSession(registrationMaterialId, session);
+        var viewModel = mapper.Map<ApplicationUpdateViewModel>(applicationUpdateSession);
+
+        await SaveSessionAndJourney(session, PagePath.ApplicationUpdate);
+        SetBackLinkInfos(session, PagePath.ApplicationUpdate);
+
+        return View(RegistrationsView(nameof(ApplicationUpdate)), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePath.ApplicationUpdate)]
+    public async Task<IActionResult> ApplicationUpdate(ApplicationStatus applicationStatus)
+    {
+        // TODO: Validate that the application status has been set
+
+        var session = await GetSession();
+
+        var applicationUpdateSession = GetApplicationUpdateSession(session);
+        applicationUpdateSession.Status = applicationStatus;
+
+        await SaveSessionAndJourney(session, PagePath.ApplicationUpdate);
+        SetBackLinkInfos(session, PagePath.ApplicationUpdate);
+
+        return applicationStatus == ApplicationStatus.Granted
+            ? RedirectToAction(PagePath.ApplicationGrantedDetails)
+            : RedirectToAction(PagePath.ApplicationRefusedDetails);
+    }
+
+    [HttpGet]
+    [Route(PagePath.ApplicationGrantedDetails)]
+    public async Task<IActionResult> ApplicationGrantedDetails()
+    {
+        var session = await GetSession();
+
+        var applicationUpdateSession = GetApplicationUpdateSession(session);
+        var viewModel = mapper.Map<ApplicationUpdateViewModel>(applicationUpdateSession);
+
+        await SaveSessionAndJourney(session, PagePath.ApplicationGrantedDetails);
+        SetBackLinkInfos(session, PagePath.ApplicationGrantedDetails);
+
+        return View(RegistrationsView(nameof(ApplicationGrantedDetails)), viewModel);
+    }
+
+    [HttpGet]
+    [Route(PagePath.ApplicationRefusedDetails)]
+    public async Task<IActionResult> ApplicationRefusedDetails()
+    {
+        var session = await GetSession();
+
+        var applicationUpdateSession = GetApplicationUpdateSession(session);
+        var viewModel = mapper.Map<ApplicationUpdateViewModel>(applicationUpdateSession);
+
+        await SaveSessionAndJourney(session, PagePath.ApplicationRefusedDetails);
+        SetBackLinkInfos(session, PagePath.ApplicationRefusedDetails);
+
+        return View(RegistrationsView(nameof(ApplicationRefusedDetails)), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePath.ApplicationSaveStatus)]
+    public async Task<IActionResult> ApplicationSaveStatus(string? comments)
+    {
+        // TODO: Check that text area character count decreases as text is typed
+        var session = await GetSession();
+
+        var applicationUpdateSession = GetApplicationUpdateSession(session);
+
+        await registrationService.SaveRegistrationMaterialStatus(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, comments);
+
+        return RedirectToAction(PagePath.ManageRegistrations, new { id = applicationUpdateSession.RegistrationId });
+    }
+
     private void SetBackLinkInfos(JourneySession session, string currentPagePath)
     {
-        if (string.IsNullOrEmpty(Request?.Headers?.Referer))
+        if (string.IsNullOrEmpty(Request.Headers?.Referer))
             SetHomeBackLink();
         else
             SetBackLink(session, currentPagePath);
@@ -183,4 +271,32 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
     }
     
     private static string RegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
+
+    private static ApplicationUpdateSession GetApplicationUpdateSession(JourneySession session)
+    {
+        if (session.ReprocessorExporterSession.ApplicationUpdateSession == null)
+        {
+            throw new SessionException("ApplicationUpdateSession does not exist");
+        }
+
+        return session.ReprocessorExporterSession.ApplicationUpdateSession;
+    }
+
+    private async Task<ApplicationUpdateSession> GetOrCreateApplicationUpdateSession(int registrationMaterialId, JourneySession session)
+    {
+        ApplicationUpdateSession applicationUpdateSession;
+
+        if (session.ReprocessorExporterSession.ApplicationUpdateSession == null)
+        {
+            var registrationMaterial = await registrationService.GetRegistrationMaterial(registrationMaterialId);
+            applicationUpdateSession = mapper.Map<ApplicationUpdateSession>(registrationMaterial);
+            session.ReprocessorExporterSession.ApplicationUpdateSession = applicationUpdateSession;
+        }
+        else
+        {
+            applicationUpdateSession = session.ReprocessorExporterSession.ApplicationUpdateSession;
+        }
+
+        return applicationUpdateSession;
+    }
 }
