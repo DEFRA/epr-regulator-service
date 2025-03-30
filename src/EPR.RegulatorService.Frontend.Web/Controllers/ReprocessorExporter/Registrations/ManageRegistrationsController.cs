@@ -19,18 +19,18 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 [Route($"{PagePath.ReprocessorExporterRegistrations}/{PagePath.ManageRegistrations}")]
 public class ManageRegistrationsController(IRegistrationService registrationService,
     IMapper mapper,
-    IValidator<ManageRegistrationsRequest> validator,
+    IValidator<IdRequest> validator,
     ISessionManager<JourneySession> sessionManager,
     IConfiguration configuration) : ReprocessorExporterBaseController(sessionManager, configuration)
 {
     private readonly IRegistrationService _registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
     private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    private readonly IValidator<ManageRegistrationsRequest> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+    private readonly IValidator<IdRequest> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
 
     [HttpGet]
     public async Task<IActionResult> Index([FromQuery] int id)
     {
-        await _validator.ValidateAndThrowAsync(new ManageRegistrationsRequest { Id = id });
+        await _validator.ValidateAndThrowAsync(new IdRequest { Id = id });
 
         var registration = await _registrationService.GetRegistrationByIdAsync(id);
 

@@ -29,14 +29,14 @@ public class ManageRegistrationsControllerTests
     private ManageRegistrationsController _controller;
     private Mock<IRegistrationService> _registrationServiceMock;
     private Mock<IMapper> _mapperMock;
-    private Mock<IValidator<ManageRegistrationsRequest>> _validatorMock;
+    private Mock<IValidator<IdRequest>> _validatorMock;
 
     [TestInitialize]
     public void TestInitialize()
     {
         _registrationServiceMock = new Mock<IRegistrationService>();
         _mapperMock = new Mock<IMapper>();
-        _validatorMock = new Mock<IValidator<ManageRegistrationsRequest>>();
+        _validatorMock = new Mock<IValidator<IdRequest>>();
         var sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
         var configurationMock = new Mock<IConfiguration>();
@@ -89,7 +89,7 @@ public class ManageRegistrationsControllerTests
         };
 
         _validatorMock
-            .Setup(v => v.ValidateAsync(It.IsAny<ManageRegistrationsRequest>(), It.IsAny<CancellationToken>()))
+            .Setup(v => v.ValidateAsync(It.IsAny<IdRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
         _registrationServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).ReturnsAsync(registration);
@@ -134,7 +134,7 @@ public class ManageRegistrationsControllerTests
         };
 
         _validatorMock
-            .Setup(v => v.ValidateAsync(It.IsAny<ManageRegistrationsRequest>(), It.IsAny<CancellationToken>()))
+            .Setup(v => v.ValidateAsync(It.IsAny<IdRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
         _registrationServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).ReturnsAsync(registration);
@@ -171,13 +171,13 @@ public class ManageRegistrationsControllerTests
         var id = 0; // Invalid ID
         var validationFailures = new List<ValidationFailure>
         {
-            new ValidationFailure(nameof(ManageRegistrationsRequest.Id), "ID must be greater than 0.")
+            new ValidationFailure(nameof(IdRequest.Id), "ID must be greater than 0.")
         };
 
         var validationResult = new ValidationResult(validationFailures);
 
         _validatorMock
-            .Setup(v => v.Validate(It.IsAny<ManageRegistrationsRequest>()))
+            .Setup(v => v.Validate(It.IsAny<IdRequest>()))
             .Returns(validationResult);
 
         // Act & Assert
@@ -202,7 +202,7 @@ public class ManageRegistrationsControllerTests
         var id = 5;
 
         _ = _validatorMock
-            .Setup(v => v.ValidateAsync(It.IsAny<ManageRegistrationsRequest>(), It.IsAny<CancellationToken>()))
+            .Setup(v => v.ValidateAsync(It.IsAny<IdRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
         _registrationServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).Throws(new Exception("Test exception"));

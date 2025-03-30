@@ -13,7 +13,7 @@ namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 /// </summary>
 public class MockedRegistrationService : IRegistrationService
 {
-    private readonly List<Registration> _registrations = CreateRegistrations();
+    private readonly List<Registration> _registrations = SeedRegistrations();
 
     public Task<Registration> GetRegistrationByIdAsync(int id)
     {
@@ -55,7 +55,7 @@ public class MockedRegistrationService : IRegistrationService
         return Task.FromResult(registrationMaterial);
     }
 
-    public async Task SaveRegistrationMaterialStatus(int registrationMaterialId, ApplicationStatus status, string? comments)
+    public async Task SaveRegistrationMaterialStatus(int registrationMaterialId, ApplicationStatus? status, string? comments)
     {
         var registrationMaterial = await GetRegistrationMaterial(registrationMaterialId);
         var registration = _registrations.First(r => r.Id == registrationMaterial.RegistrationId);
@@ -66,7 +66,7 @@ public class MockedRegistrationService : IRegistrationService
         registration.RegistrationMaterials.Add(updatedRegistrationMaterial);
     }
 
-    private static List<Registration> CreateRegistrations() =>
+    private static List<Registration> SeedRegistrations() =>
     [
         CreateExporterRegistration(1),
         CreateReprocessorRegistration(2)
@@ -101,7 +101,7 @@ public class MockedRegistrationService : IRegistrationService
     private static RegistrationMaterial CreateRegistrationMaterial(
         int registrationId,
         string materialName,
-        ApplicationStatus status = ApplicationStatus.Unknown,
+        ApplicationStatus? status = null,
         string? comments = null)
         => new()
         {

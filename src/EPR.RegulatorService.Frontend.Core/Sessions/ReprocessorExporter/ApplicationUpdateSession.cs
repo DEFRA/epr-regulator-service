@@ -10,5 +10,5 @@ public class ApplicationUpdateSession
 
     public required string MaterialName { get; init; }
 
-    public ApplicationStatus Status { get; set; }
+    public ApplicationStatus? Status { get; set; }
 }

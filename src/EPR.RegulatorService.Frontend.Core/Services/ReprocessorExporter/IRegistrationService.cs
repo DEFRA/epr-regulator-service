@@ -9,5 +9,5 @@ public interface IRegistrationService
 
     Task<RegistrationMaterial> GetRegistrationMaterial(int registrationMaterialId);
 
-    Task SaveRegistrationMaterialStatus(int registrationMaterialId, ApplicationStatus status, string comments);
+    Task SaveRegistrationMaterialStatus(int registrationMaterialId, ApplicationStatus? status, string comments);
 }

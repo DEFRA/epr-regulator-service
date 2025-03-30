@@ -11,6 +11,7 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -22,6 +23,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 [Route(PagePath.ReprocessorExporterRegistrations)]
 public class RegistrationsController(
     IMapper mapper,
+    IValidator<IdRequest> validator,
     IRegistrationService registrationService,
     ISessionManager<JourneySession> sessionManager,
     IConfiguration configuration)
@@ -182,36 +184,43 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.ApplicationUpdate)]
-    public async Task<IActionResult> ApplicationUpdate(int registrationMaterialId)
+    public async Task<IActionResult> ApplicationUpdate([FromQuery]int registrationMaterialId)
     {
-        // TODO: Validate that the id is set correctly
+        await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationMaterialId });
 
         var session = await GetSession();
 
         var applicationUpdateSession = await GetOrCreateApplicationUpdateSession(registrationMaterialId, session);
         var viewModel = mapper.Map<ApplicationUpdateViewModel>(applicationUpdateSession);
 
-        await SaveSessionAndJourney(session, PagePath.ApplicationUpdate);
-        SetBackLinkInfos(session, PagePath.ApplicationUpdate);
+        string pagePath = $"{PagePath.ApplicationUpdate}?registrationMaterialId={applicationUpdateSession.RegistrationMaterialId}";
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(RegistrationsView(nameof(ApplicationUpdate)), viewModel);
     }
 
     [HttpPost]
     [Route(PagePath.ApplicationUpdate)]
-    public async Task<IActionResult> ApplicationUpdate(ApplicationStatus applicationStatus)
+    public async Task<IActionResult> ApplicationUpdate(ApplicationUpdateViewModel viewModel)
     {
-        // TODO: Validate that the application status has been set
-
         var session = await GetSession();
-
         var applicationUpdateSession = GetApplicationUpdateSession(session);
-        applicationUpdateSession.Status = applicationStatus;
 
-        await SaveSessionAndJourney(session, PagePath.ApplicationUpdate);
-        SetBackLinkInfos(session, PagePath.ApplicationUpdate);
+        if (!ModelState.IsValid)
+        {
+            string pagePath = $"{PagePath.ApplicationUpdate}?registrationMaterialId={applicationUpdateSession.RegistrationMaterialId}";
+            SetBackLinkInfos(session, pagePath);
 
-        return applicationStatus == ApplicationStatus.Granted
+            mapper.Map(applicationUpdateSession, viewModel);
+            return View(RegistrationsView(nameof(ApplicationUpdate)), viewModel);
+        }
+        
+        applicationUpdateSession.Status = viewModel.Status;
+
+        await SaveSession(session);
+
+        return viewModel.Status == ApplicationStatus.Granted
             ? RedirectToAction(PagePath.ApplicationGrantedDetails)
             : RedirectToAction(PagePath.ApplicationRefusedDetails);
     }
@@ -234,7 +243,7 @@ public class RegistrationsController(
     [HttpGet]
     [Route(PagePath.ApplicationRefusedDetails)]
     public async Task<IActionResult> ApplicationRefusedDetails()
-    {
+        {
         var session = await GetSession();
 
         var applicationUpdateSession = GetApplicationUpdateSession(session);
