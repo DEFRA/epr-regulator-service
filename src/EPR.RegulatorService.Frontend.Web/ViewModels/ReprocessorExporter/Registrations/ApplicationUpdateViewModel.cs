@@ -6,8 +6,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
 
 public class ApplicationUpdateViewModel
 {
+    public string? MaterialName { get; init; }
+
     [Required(ErrorMessage = "Select an option")]
     public ApplicationStatus? Status { get; init; }
-
-    public string MaterialName { get; init; } = string.Empty;
 }

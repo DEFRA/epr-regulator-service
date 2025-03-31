@@ -39,7 +39,7 @@ public class ApplicationUpdateController(
         var applicationUpdateSession = await GetOrCreateApplicationUpdateSession(registrationMaterialId, session);
         var viewModel = mapper.Map<ApplicationUpdateViewModel>(applicationUpdateSession);
 
-        string pagePath = $"{PagePath.ApplicationUpdate}?registrationMaterialId={applicationUpdateSession.RegistrationMaterialId}";
+        string pagePath = GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
@@ -55,7 +55,7 @@ public class ApplicationUpdateController(
 
         if (!ModelState.IsValid)
         {
-            string pagePath = $"{PagePath.ApplicationUpdate}?registrationMaterialId={applicationUpdateSession.RegistrationMaterialId}";
+            string pagePath = GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId);
             SetBackLinkInfos(session, pagePath);
 
             mapper.Map(applicationUpdateSession, viewModel);
@@ -78,7 +78,7 @@ public class ApplicationUpdateController(
         var session = await GetSession();
 
         var applicationUpdateSession = GetApplicationUpdateSession(session);
-        var viewModel = mapper.Map<ApplicationUpdateViewModel>(applicationUpdateSession);
+        var viewModel = mapper.Map<ApplicationGrantedViewModel>(applicationUpdateSession);
 
         await SaveSessionAndJourney(session, PagePath.ApplicationGrantedDetails);
         SetBackLinkInfos(session, PagePath.ApplicationGrantedDetails);
@@ -93,7 +93,7 @@ public class ApplicationUpdateController(
         var session = await GetSession();
 
         var applicationUpdateSession = GetApplicationUpdateSession(session);
-        var viewModel = mapper.Map<ApplicationUpdateViewModel>(applicationUpdateSession);
+        var viewModel = mapper.Map<ApplicationRefusedViewModel>(applicationUpdateSession);
 
         await SaveSessionAndJourney(session, PagePath.ApplicationRefusedDetails);
         SetBackLinkInfos(session, PagePath.ApplicationRefusedDetails);
@@ -102,18 +102,49 @@ public class ApplicationUpdateController(
     }
 
     [HttpPost]
-    [Route(PagePath.ApplicationSaveStatus)]
-    public async Task<IActionResult> ApplicationSaveStatus(string? comments)
+    [Route(PagePath.SaveGrantedApplication)]
+    public async Task<IActionResult> SaveGrantedApplication(ApplicationGrantedViewModel viewModel)
     {
         // TODO: Check that text area character count decreases as text is typed
         var session = await GetSession();
-
         var applicationUpdateSession = GetApplicationUpdateSession(session);
 
-        await registrationService.SaveRegistrationMaterialStatus(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, comments);
+        if (!ModelState.IsValid)
+        {
+            SetBackLinkInfos(session, PagePath.ApplicationGrantedDetails);
+
+            mapper.Map(applicationUpdateSession, viewModel);
+            return View(GetRegistrationsView("ApplicationGrantedDetails"), viewModel);
+        }
+
+        await registrationService.SaveRegistrationMaterialStatus(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, viewModel.Comments);
 
         return RedirectToAction(PagePath.ManageRegistrations, "Registrations", new { id = applicationUpdateSession.RegistrationId });
     }
+
+    [HttpPost]
+    [Route(PagePath.SaveRefusedApplication)]
+    public async Task<IActionResult> SaveRefusedApplication(ApplicationRefusedViewModel viewModel)
+    {
+        // TODO: Check that text area character count decreases as text is typed
+        var session = await GetSession();
+        var applicationUpdateSession = GetApplicationUpdateSession(session);
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLinkInfos(session, PagePath.ApplicationRefusedDetails);
+
+            mapper.Map(applicationUpdateSession, viewModel);
+            return View(GetRegistrationsView("ApplicationRefusedDetails"), viewModel);
+        }
+
+        await registrationService.SaveRegistrationMaterialStatus(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, viewModel.Comments);
+
+        return RedirectToAction(PagePath.ManageRegistrations, "Registrations", new { id = applicationUpdateSession.RegistrationId });
+    }
+
+    private static string GetApplicationUpdatePath(int registrationMaterialId) =>
+        $"{PagePath.ApplicationUpdate}?registrationMaterialId={registrationMaterialId}";
 
     private static ApplicationUpdateSession GetApplicationUpdateSession(JourneySession session)
     {
@@ -127,19 +158,14 @@ public class ApplicationUpdateController(
 
     private async Task<ApplicationUpdateSession> GetOrCreateApplicationUpdateSession(int registrationMaterialId, JourneySession session)
     {
-        ApplicationUpdateSession applicationUpdateSession;
-
         if (session.ReprocessorExporterSession.ApplicationUpdateSession == null)
         {
             var registrationMaterial = await registrationService.GetRegistrationMaterial(registrationMaterialId);
-            applicationUpdateSession = mapper.Map<ApplicationUpdateSession>(registrationMaterial);
+            var applicationUpdateSession = mapper.Map<ApplicationUpdateSession>(registrationMaterial);
+
             session.ReprocessorExporterSession.ApplicationUpdateSession = applicationUpdateSession;
         }
-        else
-        {
-            applicationUpdateSession = session.ReprocessorExporterSession.ApplicationUpdateSession;
-        }
 
-        return applicationUpdateSession;
+        return session.ReprocessorExporterSession.ApplicationUpdateSession;
     }
 }

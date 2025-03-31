@@ -1,7 +1,15 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 
-@model ApplicationUpdateViewModel
+@model ApplicationGrantedViewModel
+
+@{
+	const string title = "Additional details";
+	ViewData["Title"] = title;
+	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
 
 <div class="govuk-width-container ">
   <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -9,15 +17,22 @@
       <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
         <h1 class="govuk-heading-l">
           <span class="govuk-caption-l">@Model.MaterialName</span>
-          Additional details (optional)
+          @title (optional)
         </h1>
         
-        <form class="form" action="@Url.Action("ApplicationSaveStatus", "ApplicationUpdate")" method="POST">
+        @if (!ViewData.ModelState.IsValid)
+        {
+          @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+        }
 
-          <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+        <form class="form" action="@Url.Action("SaveGrantedApplication", "ApplicationUpdate")" method="POST">
 
-						<textarea class="govuk-textarea govuk-js-character-count" id="comments" name="comments" rows="5" aria-describedby="label-comments">
-            </textarea>
+					<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+
+            @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+
+            <textarea class="govuk-textarea govuk-js-character-count" id="comments" name="comments" rows="5" aria-describedby="label-comments">@Model.Comments</textarea>
+
             <div id="label-comments" class="govuk-hint govuk-character-count__message govuk-visually-hidden">
               You can enter up to 200 characters
             </div>

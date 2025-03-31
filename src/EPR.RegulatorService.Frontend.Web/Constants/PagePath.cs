@@ -70,7 +70,8 @@ public static class PagePath
     public const string ApplicationUpdate = "application-update";
     public const string ApplicationGrantedDetails = "application-granted";
     public const string ApplicationRefusedDetails = "application-refused";
-    public const string ApplicationSaveStatus = "application-save-status";
+    public const string SaveGrantedApplication = "application-save-granted";
+    public const string SaveRefusedApplication = "application-save-refused";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

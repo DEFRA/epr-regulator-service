@@ -18,6 +18,8 @@ public class ManageRegistrationsMappingProfile : Profile
         CreateMap<RegistrationMaterial, ApplicationUpdateSession>()
             .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.Id));
 
+        CreateMap<ApplicationUpdateSession, ApplicationGrantedViewModel>();
+        CreateMap<ApplicationUpdateSession, ApplicationRefusedViewModel>();
         CreateMap<ApplicationUpdateSession, ApplicationUpdateViewModel>();
     }
 }
