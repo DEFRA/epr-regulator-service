@@ -1,4 +1,4 @@
-using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -62,8 +62,11 @@ public class RegistrationsControllerTests
     [TestMethod]
     public async Task UkSiteDetails_WithCorrectModel_ShouldReturnView()
     {
+        // Arrange
+        const int registrationTaskId = 1234;
+
         // Act
-        var result = await _controller.UkSiteDetails();
+        var result = await _controller.UkSiteDetails(registrationTaskId);
 
         // Assert
         using (new AssertionScope())
@@ -141,7 +144,7 @@ public class RegistrationsControllerTests
     public async Task AuthorisedMaterials_WithCorrectModel_ShouldReturnView()
     {
         // Act
-        var result = await _controller.AuthorisedMaterials();
+        var result = await _controller.AuthorisedMaterials(1);
 
         // Assert
         using (new AssertionScope())
@@ -162,6 +165,9 @@ public class RegistrationsControllerTests
     public async Task UkSiteDetails_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange
+        const int registrationTaskId = 1234;
+
+        // Arrange
         _mockSessionManager
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync((JourneySession)null!); // Simulating a null session
@@ -169,7 +175,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.UkSiteDetails();
+            await _controller.UkSiteDetails(registrationTaskId);
         });
     }
 
@@ -184,7 +190,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.AuthorisedMaterials();
+            await _controller.AuthorisedMaterials(1);
         });
     }
 
@@ -201,7 +207,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.AuthorisedMaterials();
+        var result = await _controller.AuthorisedMaterials(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();

@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 using System.ComponentModel.DataAnnotations;
 

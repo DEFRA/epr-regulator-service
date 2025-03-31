@@ -1,20 +1,27 @@
-using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
-
-using Core.Models.ReprocessorExporter.Registrations;
 
 public class ManageRegistrationsViewModel
 {
     public int Id { get; set; }
 
-    public string OrganisationName { get; init; } = string.Empty;
+    public required string OrganisationName { get; init; }
 
-    public string SiteAddress { get; init; } = string.Empty; // Only for reprocessors
+    public string? SiteAddress { get; init; } // Only for reprocessors
 
     public ApplicationOrganisationType ApplicationOrganisationType { get; init; }
 
-    public string Regulator { get; init; } = "Environment Agency (EA)"; // Default
+    public required string Regulator { get; init; }
 
-    public List<RegistrationMaterial> RegistrationMaterials { get; init; }
+    public List<RegistrationMaterial> RegistrationMaterials { get; init; } = [];
+
+    public RegistrationTaskViewModel? SiteAddressTask { get; set; }
+
+    public RegistrationTaskViewModel? MaterialsAuthorisedOnSiteTask { get; set; }
+
+    public RegistrationTaskViewModel? BusinessAddressTask { get; set; }
+
+    public RegistrationTaskViewModel? ExporterWasteLicensesTask { get; set; }
 }

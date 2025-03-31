@@ -1,17 +1,21 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
+
+@model ManageRegistrationsViewModel
+
 <h2 class="govuk-heading-m"> Review site details </h2>
 
 <ul class="app-task-list__items govuk-!-padding-left-0" style="margin-bottom: 30px;">
           
   <li class="app-task-list__item">
 		<span class="app-task-list__task-name">
-            <a href="@Url.ActionLink("UkSiteDetails", "Registrations")" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Site address </a>
+            <a href="@Url.ActionLink("UkSiteDetails", "Registrations", new { registrationTaskId = @Model.SiteAddressTask?.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Site address </a>
         </span>
-		<strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="contact-information-status">Not Started yet</strong><br>
+		<strong class="govuk-tag @Model.SiteAddressTask?.StatusCssClass app-task-list__tag">@Model.SiteAddressTask?.StatusText</strong><br>
   </li>
   <li class="app-task-list__item">
 		<span class="app-task-list__task-name">
-            <a href="@Url.ActionLink("AuthorisedMaterials", "Registrations")" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Materials authorised on site</a>
+			<a href="@Url.ActionLink("AuthorisedMaterials", "Registrations", new { registrationTaskId = @Model.MaterialsAuthorisedOnSiteTask?.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Materials authorised on site</a>
         </span>
-		<strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="contact-information-status">Not Started yet</strong><br>
+		<strong class="govuk-tag @Model.MaterialsAuthorisedOnSiteTask?.StatusCssClass app-task-list__tag">@Model.MaterialsAuthorisedOnSiteTask?.StatusText</strong><br>
   </li> 
 </ul>

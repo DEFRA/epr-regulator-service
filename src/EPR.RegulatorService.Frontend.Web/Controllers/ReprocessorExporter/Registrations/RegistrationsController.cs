@@ -1,10 +1,8 @@
 using EPR.Common.Authorization.Constants;
-using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,23 +20,19 @@ public class RegistrationsController(
 {
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
-    public async Task<IActionResult> AuthorisedMaterials()
+    public async Task<IActionResult> AuthorisedMaterials(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.AuthorisedMaterials);
         SetBackLinkInfos(session, PagePath.AuthorisedMaterials);
-
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-        return View(GetRegistrationsView(nameof(AuthorisedMaterials)), model);
+        
+        return View(GetRegistrationsView(nameof(AuthorisedMaterials)));
     }
 
     [HttpGet]
     [Route(PagePath.UkSiteDetails)]
-    public async Task<IActionResult> UkSiteDetails()
+    public async Task<IActionResult> UkSiteDetails(int registrationTaskId)
     {
         var session = await GetSession();
 
@@ -46,12 +40,7 @@ public class RegistrationsController(
 
         SetBackLinkInfos(session, PagePath.UkSiteDetails);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-
-        return View(GetRegistrationsView(nameof(UkSiteDetails)), model);
+        return View(GetRegistrationsView(nameof(UkSiteDetails)));
     }
 
     [HttpGet]
@@ -63,12 +52,7 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, PagePath.MaterialWasteLicences);
         SetBackLinkInfos(session, PagePath.MaterialWasteLicences);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-
-        return View(GetRegistrationsView(nameof(MaterialWasteLicences)), model);
+        return View(GetRegistrationsView(nameof(MaterialWasteLicences)));
     }
 
     [HttpGet]
@@ -80,12 +64,7 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, PagePath.SamplingInspection);
         SetBackLinkInfos(session, PagePath.SamplingInspection);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-
-        return View(GetRegistrationsView(nameof(SamplingInspection)), model);
+        return View(GetRegistrationsView(nameof(SamplingInspection)));
     }
     
     [HttpGet]
@@ -97,46 +76,31 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, PagePath.InputsAndOutputs);
         SetBackLinkInfos(session, PagePath.InputsAndOutputs);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-
-        return View(GetRegistrationsView(nameof(InputsAndOutputs)), model);
+        return View(GetRegistrationsView(nameof(InputsAndOutputs)));
     }
 
     [HttpGet]
     [Route(PagePath.WasteLicences)]
-    public async Task<IActionResult> WasteLicences()
+    public async Task<IActionResult> WasteLicences(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.WasteLicences);
         SetBackLinkInfos(session, PagePath.WasteLicences);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
-        };
-
-        return View(GetRegistrationsView(nameof(WasteLicences)), model);
+        return View(GetRegistrationsView(nameof(WasteLicences)));
     }
 
     [HttpGet]
     [Route(PagePath.BusinessAddress)]
-    public async Task<IActionResult> BusinessAddress()
+    public async Task<IActionResult> BusinessAddress(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.BusinessAddress);
         SetBackLinkInfos(session, PagePath.BusinessAddress);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
-        };
-
-        return View(GetRegistrationsView(nameof(BusinessAddress)), model);
+        return View(GetRegistrationsView(nameof(BusinessAddress)));
     }
 
     [HttpGet]
@@ -148,12 +112,7 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, PagePath.MaterialDetails);
         SetBackLinkInfos(session, PagePath.MaterialDetails);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
-        };
-
-        return View(GetRegistrationsView(nameof(MaterialDetails)), model);
+        return View(GetRegistrationsView(nameof(MaterialDetails)));
     }
 
     [HttpGet]
@@ -165,11 +124,6 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, PagePath.OverseasReprocessorInterim);
         SetBackLinkInfos(session, PagePath.OverseasReprocessorInterim);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
-        };
-
-        return View(GetRegistrationsView(nameof(OverseasReprocessorInterim)), model);
+        return View(GetRegistrationsView(nameof(OverseasReprocessorInterim)));
     }
 }

@@ -15,11 +15,12 @@ using Microsoft.AspNetCore.Mvc;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
-[Route($"{PagePath.ReprocessorExporterRegistrations}")]
+[Route(PagePath.ReprocessorExporterRegistrations)]
 public class ApplicationUpdateController(
     IMapper mapper,
     IValidator<IdRequest> validator,
@@ -67,8 +68,8 @@ public class ApplicationUpdateController(
         await SaveSession(session);
 
         return viewModel.Status == ApplicationStatus.Granted
-            ? RedirectToAction(PagePath.ApplicationGrantedDetails, "Registrations")
-            : RedirectToAction(PagePath.ApplicationRefusedDetails, "Registrations");
+            ? RedirectToAction(PagePath.ApplicationGrantedDetails, PagePath.ReprocessorExporterRegistrations)
+            : RedirectToAction(PagePath.ApplicationRefusedDetails, PagePath.ReprocessorExporterRegistrations);
     }
 
     [HttpGet]
@@ -119,7 +120,7 @@ public class ApplicationUpdateController(
 
         await registrationService.SaveRegistrationMaterialStatus(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, viewModel.Comments);
 
-        return RedirectToAction(PagePath.ManageRegistrations, "Registrations", new { id = applicationUpdateSession.RegistrationId });
+        return RedirectToAction(PagePath.ManageRegistrations, PagePath.ReprocessorExporterRegistrations, new { id = applicationUpdateSession.RegistrationId });
     }
 
     [HttpPost]
@@ -140,7 +141,7 @@ public class ApplicationUpdateController(
 
         await registrationService.SaveRegistrationMaterialStatus(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, viewModel.Comments);
 
-        return RedirectToAction(PagePath.ManageRegistrations, "Registrations", new { id = applicationUpdateSession.RegistrationId });
+        return RedirectToAction(PagePath.ManageRegistrations, PagePath.ReprocessorExporterRegistrations, new { id = applicationUpdateSession.RegistrationId });
     }
 
     private static string GetApplicationUpdatePath(int registrationMaterialId) =>

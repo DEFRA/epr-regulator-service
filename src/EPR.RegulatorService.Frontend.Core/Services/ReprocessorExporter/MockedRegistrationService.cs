@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
@@ -79,6 +80,7 @@ public class MockedRegistrationService : IRegistrationService
         SiteAddress = "23 Ruby St, London, E12 3SE",
         OrganisationType = ApplicationOrganisationType.Reprocessor,
         Regulator = "Environment Agency (EA)",
+        Tasks = CreateRegistrationTasks(registrationId, ApplicationOrganisationType.Reprocessor),
         RegistrationMaterials =
         [
             CreateRegistrationMaterial(registrationId, "Plastic")
@@ -92,11 +94,32 @@ public class MockedRegistrationService : IRegistrationService
         SiteAddress = "N/A",
         OrganisationType = ApplicationOrganisationType.Exporter,
         Regulator = "Environment Agency (EA)",
+        Tasks = CreateRegistrationTasks(registrationId, ApplicationOrganisationType.Exporter),
         RegistrationMaterials =
         [
             CreateRegistrationMaterial(registrationId, "Plastic")
         ]
     };
+
+    private static List<RegistrationTask> CreateRegistrationTasks(int registrationId, ApplicationOrganisationType organisationType)
+    {
+        int taskId = registrationId * 100;
+
+        if (organisationType == ApplicationOrganisationType.Reprocessor)
+        {
+            return
+            [
+                new() { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SiteAddressAndContactDetails },
+                new() { Id = taskId++, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite }
+            ];
+        }
+
+        return
+        [
+            new() { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress },
+            new() { Id = taskId, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions }
+        ];
+    }
 
     private static RegistrationMaterial CreateRegistrationMaterial(
         int registrationId,

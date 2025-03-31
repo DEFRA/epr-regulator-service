@@ -1,4 +1,4 @@
-using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
@@ -13,6 +13,8 @@ public class Registration
     public ApplicationOrganisationType OrganisationType { get; init; }
 
     public required string Regulator { get; init; }
+
+    public List<RegistrationTask> Tasks { get; set; } = [];
 
     public List<RegistrationMaterial> RegistrationMaterials { get; set; } = [];
 }
