@@ -28,7 +28,7 @@
           @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
         }
 
-        <form class="form" action="@Url.Action("ApplicationUpdate", "Registrations")" method="POST">
+				<form class="form" action="@Url.Action("Index", "ApplicationUpdate")" method="POST">
 
           <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
             
