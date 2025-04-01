@@ -12,6 +12,8 @@ public class RegistrationMaterial
 
     public ApplicationStatus? Status { get; set; }
 
+    public string? RegistrationNumber { get; init; }
+
     public string? Comments { get; set; }
 
     public List<RegistrationTask> Tasks { get; set; } = [];

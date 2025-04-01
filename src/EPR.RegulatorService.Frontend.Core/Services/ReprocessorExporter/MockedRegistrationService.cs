@@ -1,4 +1,3 @@
-using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -63,7 +62,16 @@ public class MockedRegistrationService : IRegistrationService
 
         registration.RegistrationMaterials.Remove(registrationMaterial);
 
-        var updatedRegistrationMaterial = CreateRegistrationMaterial(registrationMaterial.RegistrationId, registrationMaterial.MaterialName, registration.OrganisationType, status, comments);
+        string? registrationNumber = status == ApplicationStatus.Granted ? "ABC123 4563" : null;
+
+        var updatedRegistrationMaterial = CreateRegistrationMaterial(
+            registrationMaterial.RegistrationId,
+            registrationMaterial.MaterialName,
+            registration.OrganisationType,
+            status,
+            comments,
+            registrationNumber);
+
         registration.RegistrationMaterials.Add(updatedRegistrationMaterial);
     }
 
@@ -137,7 +145,8 @@ public class MockedRegistrationService : IRegistrationService
         string materialName,
         ApplicationOrganisationType organisationType,
         ApplicationStatus? status = null,
-        string? comments = null)
+        string? comments = null,
+        string? registrationNumber = null)
     {
         int registrationMaterialId = registrationId * 10;
 
@@ -147,6 +156,7 @@ public class MockedRegistrationService : IRegistrationService
             RegistrationId = registrationId,
             MaterialName = materialName,
             Status = status,
+            RegistrationNumber = registrationNumber,
             Comments = comments,
             Tasks = CreateMaterialTasks(registrationMaterialId, organisationType)
         };

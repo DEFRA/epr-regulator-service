@@ -1,6 +1,6 @@
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+
+using Core.Enums.ReprocessorExporter;
 
 public class ManageRegistrationMaterialViewModel
 {
@@ -9,6 +9,12 @@ public class ManageRegistrationMaterialViewModel
     public required string MaterialName { get; init; }
 
     public ApplicationStatus? Status { get; init; }
+
+    public required string StatusCssClass { get; init; }
+
+    public required string StatusText { get; init; }
+
+    public string? RegistrationNumber { get; init; }
 
     public RegistrationTaskViewModel? MaterialWasteLicensesTask { get; init; }
 
