@@ -158,7 +158,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 PreviousRejectionComments = submission.PreviousRejectionComments,
                 SubmittedDate = submission.SubmittedDate,
                 SubmissionFileName = submission.PomFileName,
-                SubmissionBlobName = submission.PomBlobName
+                SubmissionBlobName = submission.PomBlobName,
+                NationCode = submission.NationCode,
+                ReferenceNumber = submission.ReferenceNumber
             };
 
             return model;
