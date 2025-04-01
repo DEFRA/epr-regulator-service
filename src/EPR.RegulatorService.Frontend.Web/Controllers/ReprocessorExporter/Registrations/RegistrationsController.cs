@@ -45,7 +45,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.MaterialWasteLicences)]
-    public async Task<IActionResult> MaterialWasteLicences()
+    public async Task<IActionResult> MaterialWasteLicences(int registrationTaskId)
     {
         var session = await GetSession();
 
@@ -57,7 +57,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.SamplingInspection)]
-    public async Task<IActionResult> SamplingInspection()
+    public async Task<IActionResult> SamplingInspection(int registrationTaskId)
     {
         var session = await GetSession();
 
@@ -69,7 +69,7 @@ public class RegistrationsController(
     
     [HttpGet]
     [Route(PagePath.InputsAndOutputs)]
-    public async Task<IActionResult> InputsAndOutputs()
+    public async Task<IActionResult> InputsAndOutputs(int registrationTaskId)
     {
         var session = await GetSession();
 
@@ -105,7 +105,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.MaterialDetails)]
-    public async Task<IActionResult> MaterialDetails()
+    public async Task<IActionResult> MaterialDetails(int registrationTaskId)
     {
         var session = await GetSession();
 
@@ -117,7 +117,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.OverseasReprocessorInterim)]
-    public async Task<IActionResult> OverseasReprocessorInterim()
+    public async Task<IActionResult> OverseasReprocessorInterim(int registrationTaskId)
     {
         var session = await GetSession();
 

@@ -23,6 +23,18 @@ public class ManageRegistrationsMappingProfile : Profile
             .ForMember(dest => dest.ExporterWasteLicensesTask,
             opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions)));
 
+        CreateMap<RegistrationMaterial, ManageRegistrationMaterialViewModel>()
+            .ForMember(dest => dest.MaterialWasteLicensesTask,
+                opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions)))
+            .ForMember(dest => dest.InputsAndOutputsTask,
+                opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.ReprocessingInputsAndOutputs)))
+            .ForMember(dest => dest.SamplingAndInspectionPlanTask,
+                opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.SamplingAndInspectionPlan)))
+            .ForMember(dest => dest.MaterialDetailsTask,
+                opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.MaterialDetailsAndContact)))
+            .ForMember(dest => dest.OverseasReprocessorTask,
+                opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails)));
+
         CreateMap<RegistrationTask, RegistrationTaskViewModel>()
             .ForMember(dest => dest.StatusCssClass, opt => opt.MapFrom(src => MapRegistrationTaskStatusCssClass(src.Status)))
             .ForMember(dest => dest.StatusText, opt => opt.MapFrom(src => MapRegistrationTaskStatusText(src.Status)));
@@ -30,8 +42,10 @@ public class ManageRegistrationsMappingProfile : Profile
         CreateMap<RegistrationMaterial, ApplicationUpdateSession>()
             .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.Id));
 
-        CreateMap<ApplicationUpdateSession, ApplicationGrantedViewModel>();
-        CreateMap<ApplicationUpdateSession, ApplicationRefusedViewModel>();
+        CreateMap<ApplicationUpdateSession, ApplicationGrantedViewModel>()
+            .ForMember(dest => dest.Comments, opt => opt.Ignore());
+        CreateMap<ApplicationUpdateSession, ApplicationRefusedViewModel>()
+            .ForMember(dest => dest.Comments, opt => opt.Ignore()); ;
         CreateMap<ApplicationUpdateSession, ApplicationUpdateViewModel>();
     }
 

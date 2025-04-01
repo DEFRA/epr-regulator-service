@@ -1,4 +1,3 @@
-using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
@@ -15,7 +14,7 @@ public class ManageRegistrationsViewModel
 
     public required string Regulator { get; init; }
 
-    public List<RegistrationMaterial> RegistrationMaterials { get; init; } = [];
+    public List<ManageRegistrationMaterialViewModel> RegistrationMaterials { get; init; } = [];
 
     public RegistrationTaskViewModel? SiteAddressTask { get; set; }
 

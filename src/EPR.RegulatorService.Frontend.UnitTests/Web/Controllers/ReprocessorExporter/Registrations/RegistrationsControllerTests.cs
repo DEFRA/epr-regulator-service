@@ -1,10 +1,8 @@
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentAssertions.Execution;
 
@@ -60,51 +58,6 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
-    public async Task UkSiteDetails_WithCorrectModel_ShouldReturnView()
-    {
-        // Arrange
-        const int registrationTaskId = 1234;
-
-        // Act
-        var result = await _controller.UkSiteDetails(registrationTaskId);
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
-    }
-
-    [TestMethod]
-    public async Task BusinessAddress_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.BusinessAddress();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
-        }
-    }
-
-    [TestMethod]
     public async Task BusinessAddress_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
         // Arrange
@@ -114,7 +67,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.BusinessAddress();
+        var result = await _controller.BusinessAddress(1);
 
         // Assert
         using (new AssertionScope())
@@ -136,29 +89,8 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.BusinessAddress();
+            await _controller.BusinessAddress(1);
         });
-    }
-
-    [TestMethod]
-    public async Task AuthorisedMaterials_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.AuthorisedMaterials(1);
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
     }
 
     [TestMethod]
@@ -214,27 +146,6 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
-    public async Task InputsAndOutputs_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.InputsAndOutputs();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
-    }
-
-    [TestMethod]
     public async Task InputsAndOutputs_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange: Mock _sessionManager to return null
@@ -245,29 +156,8 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.InputsAndOutputs();
+            await _controller.InputsAndOutputs(1);
         });
-    }
-
-    [TestMethod]
-    public async Task SamplingInspection_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.SamplingInspection();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
     }
 
     [TestMethod]
@@ -280,7 +170,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.SamplingInspection();
+        var result = await _controller.SamplingInspection(1);
 
         // Assert
         using (new AssertionScope())
@@ -302,7 +192,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.SamplingInspection();
+            await _controller.SamplingInspection(1);
         });
     }
 
@@ -320,7 +210,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.SamplingInspection();
+        var result = await _controller.SamplingInspection(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -338,7 +228,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.SamplingInspection();
+        var result = await _controller.SamplingInspection(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -353,33 +243,12 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
 
         // Act
-        var result = await _controller.SamplingInspection();
+        var result = await _controller.SamplingInspection(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
-    }
-
-    [TestMethod]
-    public async Task OverseasReprocessorInterim_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.OverseasReprocessorInterim();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
-        }
     }
 
     [TestMethod]
@@ -392,7 +261,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim();
+        var result = await _controller.OverseasReprocessorInterim(1);
 
         // Assert
         using (new AssertionScope())
@@ -414,7 +283,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.OverseasReprocessorInterim();
+            await _controller.OverseasReprocessorInterim(1);
         });
     }
 
@@ -432,7 +301,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim();
+        var result = await _controller.OverseasReprocessorInterim(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -450,7 +319,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim();
+        var result = await _controller.OverseasReprocessorInterim(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -465,33 +334,12 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim();
+        var result = await _controller.OverseasReprocessorInterim(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
-    }
-
-    [TestMethod]
-    public async Task WasteLicences_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.WasteLicences();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
-        }
     }
 
     [TestMethod]
@@ -504,7 +352,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.WasteLicences(1);
 
         // Assert
         using (new AssertionScope())
@@ -526,7 +374,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.WasteLicences();
+            await _controller.WasteLicences(1);
         });
     }
 
@@ -544,7 +392,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.WasteLicences(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -562,7 +410,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.WasteLicences(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -577,35 +425,14 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
 
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.WasteLicences(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
-
-    [TestMethod]
-    public async Task MaterialDetails_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.MaterialDetails();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
-        }
-    }
-
+    
     [TestMethod]
     public async Task MaterialDetails_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
@@ -616,7 +443,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.MaterialDetails();
+        var result = await _controller.MaterialDetails(1);
 
         // Assert
         using (new AssertionScope())
@@ -636,28 +463,7 @@ public class RegistrationsControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialDetails());
-    }
-
-    [TestMethod]
-    public async Task MaterialWasteLicences_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.MaterialWasteLicences();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
+        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialDetails(1));
     }
 
     [TestMethod]
@@ -669,7 +475,7 @@ public class RegistrationsControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialWasteLicences());
+        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialWasteLicences(1));
     }
 
     [TestMethod]
@@ -684,7 +490,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.MaterialWasteLicences();
+        var result = await _controller.MaterialWasteLicences(1);
 
         // Assert
         using (new AssertionScope())

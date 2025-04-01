@@ -29,7 +29,7 @@ public class MockedRegistrationService : IRegistrationService
             ? ApplicationOrganisationType.Reprocessor
             : ApplicationOrganisationType.Exporter;
 
-        var registration = _registrations.FirstOrDefault(r => r.OrganisationType == organisationType);
+        var registration = _registrations.FirstOrDefault(r => r.Id == id);
 
         if (registration == null)
         {
@@ -63,7 +63,7 @@ public class MockedRegistrationService : IRegistrationService
 
         registration.RegistrationMaterials.Remove(registrationMaterial);
 
-        var updatedRegistrationMaterial = CreateRegistrationMaterial(registrationMaterial.RegistrationId, registrationMaterial.MaterialName, status, comments);
+        var updatedRegistrationMaterial = CreateRegistrationMaterial(registrationMaterial.RegistrationId, registrationMaterial.MaterialName, registration.OrganisationType, status, comments);
         registration.RegistrationMaterials.Add(updatedRegistrationMaterial);
     }
 
@@ -73,33 +73,44 @@ public class MockedRegistrationService : IRegistrationService
         CreateReprocessorRegistration(2)
     ];
 
-    private static Registration CreateReprocessorRegistration(int registrationId) => new()
+    private static Registration CreateReprocessorRegistration(int registrationId)
     {
-        Id = registrationId,
-        OrganisationName = "Green Ltd",
-        SiteAddress = "23 Ruby St, London, E12 3SE",
-        OrganisationType = ApplicationOrganisationType.Reprocessor,
-        Regulator = "Environment Agency (EA)",
-        Tasks = CreateRegistrationTasks(registrationId, ApplicationOrganisationType.Reprocessor),
-        RegistrationMaterials =
-        [
-            CreateRegistrationMaterial(registrationId, "Plastic")
-        ]
-    };
+        const ApplicationOrganisationType organisationType = ApplicationOrganisationType.Reprocessor;
 
-    private static Registration CreateExporterRegistration(int registrationId) => new()
+        return
+            new Registration
+            {
+                Id = registrationId,
+                OrganisationName = "Green Ltd",
+                SiteAddress = "23 Ruby St, London, E12 3SE",
+                OrganisationType = organisationType,
+                Regulator = "Environment Agency (EA)",
+                Tasks = CreateRegistrationTasks(registrationId, organisationType),
+                RegistrationMaterials =
+                [
+                    CreateRegistrationMaterial(registrationId, "Plastic", organisationType)
+                ]
+            };
+    }
+
+    private static Registration CreateExporterRegistration(int registrationId)
     {
-        Id = registrationId,
-        OrganisationName = "Blue Exports Ltd",
-        SiteAddress = "N/A",
-        OrganisationType = ApplicationOrganisationType.Exporter,
-        Regulator = "Environment Agency (EA)",
-        Tasks = CreateRegistrationTasks(registrationId, ApplicationOrganisationType.Exporter),
-        RegistrationMaterials =
-        [
-            CreateRegistrationMaterial(registrationId, "Plastic")
-        ]
-    };
+        const ApplicationOrganisationType organisationType = ApplicationOrganisationType.Exporter;
+
+        return new Registration
+        {
+            Id = registrationId,
+            OrganisationName = "Blue Exports Ltd",
+            SiteAddress = "N/A",
+            OrganisationType = organisationType,
+            Regulator = "Environment Agency (EA)",
+            Tasks = CreateRegistrationTasks(registrationId, organisationType),
+            RegistrationMaterials =
+            [
+                CreateRegistrationMaterial(registrationId, "Plastic", organisationType)
+            ]
+        };
+    }
 
     private static List<RegistrationTask> CreateRegistrationTasks(int registrationId, ApplicationOrganisationType organisationType)
     {
@@ -109,29 +120,57 @@ public class MockedRegistrationService : IRegistrationService
         {
             return
             [
-                new() { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SiteAddressAndContactDetails },
-                new() { Id = taskId++, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite }
+                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SiteAddressAndContactDetails },
+                new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite }
             ];
         }
 
         return
         [
-            new() { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress },
-            new() { Id = taskId, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions }
+            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress },
+            new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions }
         ];
     }
 
     private static RegistrationMaterial CreateRegistrationMaterial(
         int registrationId,
         string materialName,
+        ApplicationOrganisationType organisationType,
         ApplicationStatus? status = null,
         string? comments = null)
-        => new()
+    {
+        int registrationMaterialId = registrationId * 10;
+
+        return new RegistrationMaterial
         {
-            Id = registrationId * 10,
+            Id = registrationMaterialId,
             RegistrationId = registrationId,
             MaterialName = materialName,
             Status = status,
-            Comments = comments
+            Comments = comments,
+            Tasks = CreateMaterialTasks(registrationMaterialId, organisationType)
         };
+    }
+
+    private static List<RegistrationTask> CreateMaterialTasks(int registrationMaterialId, ApplicationOrganisationType organisationType)
+    {
+        int taskId = registrationMaterialId * 1000;
+
+        if (organisationType == ApplicationOrganisationType.Reprocessor)
+        {
+            return
+            [
+                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions },
+                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs },
+                new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
+            ];
+        }
+
+        return
+        [
+            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialDetailsAndContact },
+            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails},
+            new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
+        ];
+    }
 }
