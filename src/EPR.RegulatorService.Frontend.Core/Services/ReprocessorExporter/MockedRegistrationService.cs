@@ -63,12 +63,16 @@ public class MockedRegistrationService : IRegistrationService
         registration.RegistrationMaterials.Remove(registrationMaterial);
 
         string? registrationNumber = status == ApplicationStatus.Granted ? "ABC123 4563" : null;
+        string? statusUpdatedBy = status != null ? "Test User" : null;
+        DateTime? statusUpdatedAt = status != null ? DateTime.Now : null;
 
         var updatedRegistrationMaterial = CreateRegistrationMaterial(
             registrationMaterial.RegistrationId,
             registrationMaterial.MaterialName,
             registration.OrganisationType,
             status,
+            statusUpdatedBy,
+            statusUpdatedAt,
             comments,
             registrationNumber);
 
@@ -140,13 +144,17 @@ public class MockedRegistrationService : IRegistrationService
         ];
     }
 
+#pragma warning disable S107 - Ignoring the number of parameters in this method as it is required for testing purposes
     private static RegistrationMaterial CreateRegistrationMaterial(
         int registrationId,
         string materialName,
         ApplicationOrganisationType organisationType,
         ApplicationStatus? status = null,
+        string? statusUpdatedBy = null,
+        DateTime? statusUpdatedAt = null,
         string? comments = null,
         string? registrationNumber = null)
+#pragma warning restore S107
     {
         int registrationMaterialId = registrationId * 10;
 
@@ -155,7 +163,10 @@ public class MockedRegistrationService : IRegistrationService
             Id = registrationMaterialId,
             RegistrationId = registrationId,
             MaterialName = materialName,
+            DeterminationDate = organisationType == ApplicationOrganisationType.Reprocessor ? DateTime.Now.AddDays(-7) : null,
             Status = status,
+            StatusUpdatedByName = statusUpdatedBy,
+            StatusUpdatedAt = statusUpdatedAt,
             RegistrationNumber = registrationNumber,
             Comments = comments,
             Tasks = CreateMaterialTasks(registrationMaterialId, organisationType)

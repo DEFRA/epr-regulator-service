@@ -10,7 +10,14 @@ public class RegistrationMaterial
 
     public required string MaterialName { get; init; }
 
+    public DateTime? DeterminationDate { get; set; }
+
+
     public ApplicationStatus? Status { get; set; }
+
+    public string? StatusUpdatedByName { get; init; }
+
+    public DateTime? StatusUpdatedAt { get; init; }
 
     public string? RegistrationNumber { get; init; }
 

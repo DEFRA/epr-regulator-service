@@ -1,4 +1,5 @@
 @using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
+@using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
 
 @model ManageRegistrationsViewModel
@@ -9,11 +10,19 @@
     Review @registrationMaterial.MaterialName.ToLower() registration
 	@if (registrationMaterial.Status == null)
     {
-      <p class="govuk-body">Determination date is 4 June 2024 <a href="change-determination-date" class="govuk-link">Change</a></p>
+      if (registrationMaterial.DeterminationDate == null)
+      {
+        <p class="govuk-body">Determination date not set yet</p>
+      }
+      else
+      {
+        <p class="govuk-body">Determination date is @registrationMaterial.DeterminationDate.ToDisplayDate() <a href="change-determination-date" class="govuk-link">Change</a></p>
+      }
     }
     else
     {
-      <p class="govuk-body">@registrationMaterial.StatusText on 2 June 2024 at 11:34am by Jane Fonda
+		<p class="govuk-body">
+				@registrationMaterial.StatusText on @registrationMaterial.StatusUpdatedAt.ToDisplayDateAndTime() by @registrationMaterial.StatusUpdatedByName
 		@if (registrationMaterial.RegistrationNumber != null)
         {
           <br>
