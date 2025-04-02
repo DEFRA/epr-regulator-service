@@ -2,15 +2,18 @@ using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Web.Configs;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents.Submissions;
 
-public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFacadeService, ILogger<PackagingProducerPaymentDetailsViewComponent> logger) : ViewComponent
+public class PackagingProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions> options, IPaymentFacadeService paymentFacadeService, ILogger<PackagingProducerPaymentDetailsViewComponent> logger) : ViewComponent
 {
     private static readonly Action<ILogger, string, Exception?> _logViewComponentError =
         LoggerMessage.Define<string>(
@@ -50,7 +53,7 @@ public class PackagingProducerPaymentDetailsViewComponent(IPaymentFacadeService 
             {
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
-                TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
+                TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
                 ReferenceNumber = viewModel.ReferenceNumber,
                 NationCode = viewModel.NationCode
             };
