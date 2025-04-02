@@ -11,8 +11,7 @@ public class RegistrationMaterial
     public required string MaterialName { get; init; }
 
     public DateTime? DeterminationDate { get; set; }
-
-
+    
     public ApplicationStatus? Status { get; set; }
 
     public string? StatusUpdatedByName { get; init; }
@@ -20,8 +19,6 @@ public class RegistrationMaterial
     public DateTime? StatusUpdatedAt { get; init; }
 
     public string? RegistrationNumber { get; init; }
-
-    public string? Comments { get; set; }
 
     public List<RegistrationTask> Tasks { get; set; } = [];
 }

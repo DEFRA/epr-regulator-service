@@ -16,5 +16,5 @@ public class Registration
 
     public List<RegistrationTask> Tasks { get; set; } = [];
 
-    public List<RegistrationMaterial> RegistrationMaterials { get; set; } = [];
+    public List<RegistrationMaterial> Materials { get; set; } = [];
 }

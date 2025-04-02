@@ -7,8 +7,6 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 
 namespace EPR.RegulatorService.Frontend.Web.Mappings;
 
-using System.Net.Mime;
-
 public class ManageRegistrationsMappingProfile : Profile
 {
     public ManageRegistrationsMappingProfile()
@@ -58,7 +56,7 @@ public class ManageRegistrationsMappingProfile : Profile
     private static string MapRegistrationMaterialStatusCssClass(ApplicationStatus? status) =>
         status switch
         {
-            ApplicationStatus.Granted => "govuk-tag--default",
+            ApplicationStatus.Granted => "govuk-tag--green",
             ApplicationStatus.Refused => "govuk-tag--red",
             _ => "govuk-tag--grey"
         };

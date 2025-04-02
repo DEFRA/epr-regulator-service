@@ -4,7 +4,7 @@
 
 @model ManageRegistrationsViewModel
 
-@foreach (var registrationMaterial in Model.RegistrationMaterials)
+@foreach (var registrationMaterial in Model.Materials)
 {
   <h2 class="govuk-heading-m">
     Review @registrationMaterial.MaterialName.ToLower() registration
@@ -12,21 +12,21 @@
     {
       if (registrationMaterial.DeterminationDate == null)
       {
-        <p class="govuk-body">Determination date not set yet</p>
+		<p class="govuk-body"><strong>Determination date:</strong> Not set yet</p>
       }
       else
       {
-        <p class="govuk-body">Determination date is @registrationMaterial.DeterminationDate.ToDisplayDate() <a href="change-determination-date" class="govuk-link">Change</a></p>
+		<p class="govuk-body"><strong>Determination date:</strong> @registrationMaterial.DeterminationDate.ToDisplayDate() <a href="change-determination-date" class="govuk-link">Change</a></p>
       }
     }
     else
     {
 		<p class="govuk-body">
-				@registrationMaterial.StatusText on @registrationMaterial.StatusUpdatedAt.ToDisplayDateAndTime() by @registrationMaterial.StatusUpdatedByName
+        <strong>Outcome:</strong> @registrationMaterial.StatusText on @registrationMaterial.StatusUpdatedAt.ToDisplayDateAndTime() by @registrationMaterial.StatusUpdatedByName
 		@if (registrationMaterial.RegistrationNumber != null)
         {
           <br>
-		  <span>Registration number : @registrationMaterial.RegistrationNumber</span>
+          <span><strong>Registration number:</strong> @registrationMaterial.RegistrationNumber</span>
         }
       </p>
     }

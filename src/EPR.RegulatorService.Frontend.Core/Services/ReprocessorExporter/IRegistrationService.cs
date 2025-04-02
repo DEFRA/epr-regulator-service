@@ -7,7 +7,7 @@ public interface IRegistrationService
 {
     Task<Registration> GetRegistrationByIdAsync(int id);
 
-    Task<RegistrationMaterial> GetRegistrationMaterial(int registrationMaterialId);
+    Task<RegistrationMaterial> GetRegistrationMaterialAsync(int registrationMaterialId);
 
-    Task SaveRegistrationMaterialStatus(int registrationMaterialId, ApplicationStatus? status, string comments);
+    Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, ApplicationStatus? status, string comments);
 }

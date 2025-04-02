@@ -118,7 +118,7 @@ public class ApplicationUpdateController(
             return View(GetRegistrationsView("ApplicationGrantedDetails"), viewModel);
         }
 
-        await registrationService.SaveRegistrationMaterialStatus(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, viewModel.Comments);
+        await registrationService.UpdateRegistrationMaterialOutcomeAsync(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, viewModel.Comments);
 
         return RedirectToAction(PagePath.ManageRegistrations, PagePath.ReprocessorExporterRegistrations, new { id = applicationUpdateSession.RegistrationId });
     }
@@ -139,7 +139,7 @@ public class ApplicationUpdateController(
             return View(GetRegistrationsView("ApplicationRefusedDetails"), viewModel);
         }
 
-        await registrationService.SaveRegistrationMaterialStatus(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, viewModel.Comments);
+        await registrationService.UpdateRegistrationMaterialOutcomeAsync(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, viewModel.Comments);
 
         return RedirectToAction(PagePath.ManageRegistrations, PagePath.ReprocessorExporterRegistrations, new { id = applicationUpdateSession.RegistrationId });
     }
@@ -161,7 +161,7 @@ public class ApplicationUpdateController(
     {
         if (session.ReprocessorExporterSession.ApplicationUpdateSession == null)
         {
-            var registrationMaterial = await registrationService.GetRegistrationMaterial(registrationMaterialId);
+            var registrationMaterial = await registrationService.GetRegistrationMaterialAsync(registrationMaterialId);
             var applicationUpdateSession = mapper.Map<ApplicationUpdateSession>(registrationMaterial);
 
             session.ReprocessorExporterSession.ApplicationUpdateSession = applicationUpdateSession;

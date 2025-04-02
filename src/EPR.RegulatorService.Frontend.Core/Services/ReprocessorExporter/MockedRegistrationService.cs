@@ -42,9 +42,9 @@ public class MockedRegistrationService : IRegistrationService
         return Task.FromResult(registration);
     }
 
-    public Task<RegistrationMaterial> GetRegistrationMaterial(int registrationMaterialId)
+    public Task<RegistrationMaterial> GetRegistrationMaterialAsync(int registrationMaterialId)
     {
-        var registrationMaterial = _registrations.SelectMany(r => r.RegistrationMaterials)
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials)
             .FirstOrDefault(rm => rm.Id == registrationMaterialId);
 
         if (registrationMaterial == null)
@@ -55,12 +55,12 @@ public class MockedRegistrationService : IRegistrationService
         return Task.FromResult(registrationMaterial);
     }
 
-    public async Task SaveRegistrationMaterialStatus(int registrationMaterialId, ApplicationStatus? status, string? comments)
+    public async Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, ApplicationStatus? status, string? comments)
     {
-        var registrationMaterial = await GetRegistrationMaterial(registrationMaterialId);
+        var registrationMaterial = await GetRegistrationMaterialAsync(registrationMaterialId);
         var registration = _registrations.First(r => r.Id == registrationMaterial.RegistrationId);
 
-        registration.RegistrationMaterials.Remove(registrationMaterial);
+        registration.Materials.Remove(registrationMaterial);
 
         string? registrationNumber = status == ApplicationStatus.Granted ? "ABC123 4563" : null;
         string? statusUpdatedBy = status != null ? "Test User" : null;
@@ -73,10 +73,9 @@ public class MockedRegistrationService : IRegistrationService
             status,
             statusUpdatedBy,
             statusUpdatedAt,
-            comments,
             registrationNumber);
 
-        registration.RegistrationMaterials.Add(updatedRegistrationMaterial);
+        registration.Materials.Add(updatedRegistrationMaterial);
     }
 
     private static List<Registration> SeedRegistrations() =>
@@ -98,7 +97,7 @@ public class MockedRegistrationService : IRegistrationService
                 OrganisationType = organisationType,
                 Regulator = "Environment Agency (EA)",
                 Tasks = CreateRegistrationTasks(registrationId, organisationType),
-                RegistrationMaterials =
+                Materials =
                 [
                     CreateRegistrationMaterial(registrationId, "Plastic", organisationType)
                 ]
@@ -117,7 +116,7 @@ public class MockedRegistrationService : IRegistrationService
             OrganisationType = organisationType,
             Regulator = "Environment Agency (EA)",
             Tasks = CreateRegistrationTasks(registrationId, organisationType),
-            RegistrationMaterials =
+            Materials =
             [
                 CreateRegistrationMaterial(registrationId, "Plastic", organisationType)
             ]
@@ -152,7 +151,6 @@ public class MockedRegistrationService : IRegistrationService
         ApplicationStatus? status = null,
         string? statusUpdatedBy = null,
         DateTime? statusUpdatedAt = null,
-        string? comments = null,
         string? registrationNumber = null)
 #pragma warning restore S107
     {
@@ -168,7 +166,6 @@ public class MockedRegistrationService : IRegistrationService
             StatusUpdatedByName = statusUpdatedBy,
             StatusUpdatedAt = statusUpdatedAt,
             RegistrationNumber = registrationNumber,
-            Comments = comments,
             Tasks = CreateMaterialTasks(registrationMaterialId, organisationType)
         };
     }

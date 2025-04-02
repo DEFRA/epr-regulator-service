@@ -14,7 +14,7 @@ public class ManageRegistrationsViewModel
 
     public required string Regulator { get; init; }
 
-    public List<ManageRegistrationMaterialViewModel> RegistrationMaterials { get; init; } = [];
+    public List<ManageRegistrationMaterialViewModel> Materials { get; init; } = [];
 
     public RegistrationTaskViewModel? SiteAddressTask { get; set; }
 
