@@ -150,7 +150,6 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         model.PreviousPaymentsReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(0.00M);
         model.ReferenceNumber.Should().Be(_submissionDetailsViewModel.ReferenceNumber);
-
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(
             It.IsAny<PackagingProducerPaymentRequest>()), Times.AtMostOnce);
     }

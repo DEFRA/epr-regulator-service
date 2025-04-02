@@ -115,6 +115,7 @@ public class PackagingCompliancePaymentDetailsViewComponentTests : ViewComponent
         model.PreviousPaymentReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(95.00M);
         model.ReferenceNumber.Should().Be(_submissionDetailsViewModel.ReferenceNumber);
+        model.MemberCount.Should().Be(_submissionDetailsViewModel.MemberCount);
         _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsForResubmissionAsync(
             It.IsAny<PackagingCompliancePaymentRequest>()), Times.AtMostOnce);
     }
