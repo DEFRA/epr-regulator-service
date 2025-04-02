@@ -160,7 +160,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 SubmissionFileName = submission.PomFileName,
                 SubmissionBlobName = submission.PomBlobName,
                 NationCode = submission.NationCode,
-                ReferenceNumber = submission.ReferenceNumber
+                ReferenceNumber = submission.ReferenceNumber,
+                MemberCount = submission.MemberCount
             };
 
             return model;

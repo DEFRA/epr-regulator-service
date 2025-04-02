@@ -66,6 +66,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.SubmissionFileName.Should().Be(submissionFromSession.PomFileName);
             model.ReferenceNumber.Should().Be(submissionFromSession.ReferenceNumber);
             model.NationCode.Should().Be(submissionFromSession.NationCode);
+            model.MemberCount.Should().Be(submissionFromSession.MemberCount);
             AssertBackLink(result, PagePath.Submissions);
             _facadeServiceMock.Verify(r => r.GetPomPayCalParameters(It.IsAny<Guid>(), null), Times.Never);
         }
