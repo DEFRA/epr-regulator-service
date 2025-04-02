@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -11,6 +13,7 @@ namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 /// - If the ID is odd, the organisation is an Exporter.
 /// This logic is purely for testing and will be replaced with real database queries.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class MockedRegistrationService : IRegistrationService
 {
     private readonly List<Registration> _registrations = SeedRegistrations();

@@ -36,43 +36,61 @@
 
     @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Reprocessor)
     {
-      <li class="app-task-list__item">
-        <span class="app-task-list__task-name">
-          <a href="@Url.ActionLink("MaterialWasteLicences", "Registrations", new { registrationTaskId = @registrationMaterial.MaterialWasteLicensesTask?.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Waste licences, permits or exemptions</a>
-        </span>
-        <strong class="govuk-tag @registrationMaterial.MaterialWasteLicensesTask?.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.MaterialWasteLicensesTask?.StatusText</strong><br>
-      </li>
-      <li class="app-task-list__item">
-        <span class="app-task-list__task-name">
-          <a href="@Url.ActionLink("InputsAndOutputs", "Registrations", new { registrationTaskId = @registrationMaterial.InputsAndOutputsTask?.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Reprocessing inputs and outputs</a>
-        </span>
-        <strong class="govuk-tag @registrationMaterial.InputsAndOutputsTask?.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.InputsAndOutputsTask?.StatusText</strong><br>
-      </li>
+      if (registrationMaterial.MaterialWasteLicensesTask != null)
+      {
+        <li class="app-task-list__item">
+          <span class="app-task-list__task-name">
+            <a href="@Url.ActionLink("MaterialWasteLicences", "Registrations", new { registrationTaskId = @registrationMaterial.MaterialWasteLicensesTask.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Waste licences, permits or exemptions</a>
+          </span>
+          <strong class="govuk-tag @registrationMaterial.MaterialWasteLicensesTask.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.MaterialWasteLicensesTask.StatusText</strong><br>
+        </li>
+      }
+
+	  if (registrationMaterial.InputsAndOutputsTask != null)
+      {
+        <li class="app-task-list__item">
+          <span class="app-task-list__task-name">
+            <a href="@Url.ActionLink("InputsAndOutputs", "Registrations", new { registrationTaskId = @registrationMaterial.InputsAndOutputsTask.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Reprocessing inputs and outputs</a>
+          </span>
+          <strong class="govuk-tag @registrationMaterial.InputsAndOutputsTask.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.InputsAndOutputsTask.StatusText</strong><br>
+        </li>
+      }
     }
 
     @if (Model.ApplicationOrganisationType == ApplicationOrganisationType.Exporter)
     {
-      <li class="app-task-list__item">
-        <span class="app-task-list__task-name">
-			<a href="@Url.ActionLink("MaterialDetails", "Registrations", new { registrationTaskId = @registrationMaterial.MaterialDetailsTask?.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Material details and contact</a>
+	  @if (registrationMaterial.MaterialDetailsTask != null)
+      {
+        <li class="app-task-list__item">
+          <span class="app-task-list__task-name">
+            <a href="@Url.ActionLink("MaterialDetails", "Registrations", new { registrationTaskId = @registrationMaterial.MaterialDetailsTask.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Material details and contact</a>
 
-        </span>
-		<strong class="govuk-tag @registrationMaterial.MaterialDetailsTask?.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.MaterialDetailsTask?.StatusText</strong><br>
-      </li>
+          </span>
+          <strong class="govuk-tag @registrationMaterial.MaterialDetailsTask.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.MaterialDetailsTask.StatusText</strong><br>
+        </li>
+      }
+
+	  @if (registrationMaterial.OverseasReprocessorTask != null)
+      {
+        <li class="app-task-list__item">
+          <span class="app-task-list__task-name">
+            <a href="@Url.ActionLink("OverseasReprocessorInterim", "Registrations", new { registrationTaskId = @registrationMaterial.OverseasReprocessorTask.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Overseas reprocessor and interim site details</a>
+          </span>
+          <strong class="govuk-tag @registrationMaterial.OverseasReprocessorTask.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.OverseasReprocessorTask.StatusText</strong><br>
+        </li>
+      }
+    }
+
+	@if (registrationMaterial.SamplingAndInspectionPlanTask != null)
+    {
       <li class="app-task-list__item">
         <span class="app-task-list__task-name">
-			<a href="@Url.ActionLink("OverseasReprocessorInterim", "Registrations", new { registrationTaskId = @registrationMaterial.OverseasReprocessorTask?.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Overseas reprocessor and interim site details</a>
+          <a href="@Url.ActionLink("SamplingInspection", "Registrations", new { registrationTaskId = @registrationMaterial.SamplingAndInspectionPlanTask.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state">Sampling and inspection plan</a>
         </span>
-        <strong class="govuk-tag @registrationMaterial.OverseasReprocessorTask?.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.OverseasReprocessorTask?.StatusText</strong><br>
+        <strong class="govuk-tag @registrationMaterial.SamplingAndInspectionPlanTask.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.SamplingAndInspectionPlanTask.StatusText</strong><br>
       </li>
     }
 
-    <li class="app-task-list__item">
-      <span class="app-task-list__task-name">
-        <a href="@Url.ActionLink("SamplingInspection", "Registrations", new { registrationTaskId = @registrationMaterial.SamplingAndInspectionPlanTask?.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state">Sampling and inspection plan</a>
-      </span>
-      <strong class="govuk-tag @registrationMaterial.SamplingAndInspectionPlanTask?.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.SamplingAndInspectionPlanTask?.StatusText</strong><br>
-    </li>
     <li class="app-task-list__item">
       <span class="app-task-list__task-name">
         <a href="@Url.ActionLink("Index", "ApplicationUpdate", new { registrationMaterialId = registrationMaterial.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Update registration outcome</a>

@@ -1,11 +1,10 @@
-using EPR.RegulatorService.Frontend.Core.Enums;
+namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services;
+
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
 using FluentAssertions.Execution;
-
-namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
 
 [TestClass]
 public class MockedRegistrationServiceTests
@@ -13,10 +12,7 @@ public class MockedRegistrationServiceTests
     private MockedRegistrationService _service;
 
     [TestInitialize]
-    public void TestInitialize()
-    {
-        _service = new MockedRegistrationService();
-    }
+    public void TestInitialize() => _service = new MockedRegistrationService();
 
     [TestMethod]
     public async Task GetRegistrationById_EvenId_ShouldReturnReprocessor()

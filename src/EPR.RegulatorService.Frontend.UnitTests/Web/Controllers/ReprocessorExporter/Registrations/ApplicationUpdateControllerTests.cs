@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
+using FluentAssertions.Execution;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
@@ -109,18 +110,22 @@ public class ApplicationUpdateControllerTests
         // Arrange
         var expectedViewModel = new ApplicationUpdateViewModel();
 
-        _mapperMock.Setup(m => m.Map<ApplicationUpdateViewModel>(_journeySession.ReprocessorExporterSession.ApplicationUpdateSession))
+        _mapperMock.Setup(m =>
+                m.Map<ApplicationUpdateViewModel>(_journeySession.ReprocessorExporterSession.ApplicationUpdateSession))
             .Returns(expectedViewModel);
 
         // Act
         var response = await _applicationUpdateController.Index(1);
 
         // Assert
-        response.Should().BeOfType<ViewResult>();
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
 
-        var viewResult = (ViewResult)response;
-        viewResult.Model.Should().Be(expectedViewModel);
-        viewResult.ViewName.Should().EndWith("ApplicationUpdate.cshtml");
+            var viewResult = (ViewResult)response;
+            viewResult.Model.Should().Be(expectedViewModel);
+            viewResult.ViewName.Should().EndWith("ApplicationUpdate.cshtml");
+        }
     }
 
     [TestMethod]
@@ -147,10 +152,13 @@ public class ApplicationUpdateControllerTests
         var response = await _applicationUpdateController.Index(viewModel);
 
         // Assert
-        response.Should().BeOfType<ViewResult>();
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
 
-        var viewResult = (ViewResult)response;
-        viewResult.ViewName.Should().EndWith("ApplicationUpdate.cshtml");
+            var viewResult = (ViewResult)response;
+            viewResult.ViewName.Should().EndWith("ApplicationUpdate.cshtml");
+        }
     }
 
     [TestMethod]
@@ -165,10 +173,13 @@ public class ApplicationUpdateControllerTests
         var response = await _applicationUpdateController.Index(viewModel);
 
         // Assert
-        response.Should().BeOfType<RedirectToActionResult>();
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<RedirectToActionResult>();
 
-        var redirectToActionResult = (RedirectToActionResult)response;
-        redirectToActionResult.ActionName.Should().Be(expectedAction);
+            var redirectToActionResult = (RedirectToActionResult)response;
+            redirectToActionResult.ActionName.Should().Be(expectedAction);
+        }
     }
 
     [TestMethod]
@@ -193,10 +204,13 @@ public class ApplicationUpdateControllerTests
         var response = await _applicationUpdateController.ApplicationGrantedDetails();
 
         // Assert
-        response.Should().BeOfType<ViewResult>();
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
 
-        var viewResult = (ViewResult)response;
-        viewResult.ViewName.Should().EndWith("ApplicationGrantedDetails.cshtml");
+            var viewResult = (ViewResult)response;
+            viewResult.ViewName.Should().EndWith("ApplicationGrantedDetails.cshtml");
+        }
     }
 
     [TestMethod]
@@ -206,47 +220,134 @@ public class ApplicationUpdateControllerTests
         var response = await _applicationUpdateController.ApplicationRefusedDetails();
 
         // Assert
-        response.Should().BeOfType<ViewResult>();
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
 
-        var viewResult = (ViewResult)response;
-        viewResult.ViewName.Should().EndWith("ApplicationRefusedDetails.cshtml");
+            var viewResult = (ViewResult)response;
+            viewResult.ViewName.Should().EndWith("ApplicationRefusedDetails.cshtml");
+        }
     }
 
-    //[TestMethod]
-    //public void SaveGrantedApplication_WhenModelStateIsInvalid_ShouldRedisplayView()
-    //{
-    //    Assert.Fail();
-    //}
+    [TestMethod]
+    public async Task SaveGrantedApplication_WhenModelStateIsInvalid_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new ApplicationGrantedViewModel();
 
-    //[TestMethod]
-    //public void SaveGrantedApplication_WhenModelStateIsValid_ShouldCallService()
-    //{
-    //    Assert.Fail();
-    //}
+        _applicationUpdateController.ModelState.AddModelError("Test", "Error");
 
-    //[TestMethod]
-    //public void SaveGrantedApplication_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
-    //{
-    //    Assert.Fail();
-    //}
+        // Act
+        var response = await _applicationUpdateController.SaveGrantedApplication(viewModel);
 
-    //[TestMethod]
-    //public void SaveRefusedApplication_WhenModelStateIsInvalid_ShouldRedisplayView()
-    //{
-    //    Assert.Fail();
-    //}
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
 
-    //[TestMethod]
-    //public void SaveRefusedApplication_WhenModelStateIsValid_ShouldCallService()
-    //{
-    //    Assert.Fail();
-    //}
+            var viewResult = (ViewResult)response;
+            viewResult.ViewName.Should().EndWith("ApplicationGrantedDetails.cshtml");
+        }
+    }
 
-    //[TestMethod]
-    //public void SaveRefusedApplication_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
-    //{
-    //    Assert.Fail();
-    //}
+    [TestMethod]
+    public async Task SaveGrantedApplication_WhenModelStateIsValid_ShouldCallService()
+    {
+        // Arrange
+        var viewModel = new ApplicationGrantedViewModel { Comments = "Test Comments" };
+
+        var session = _journeySession.ReprocessorExporterSession.ApplicationUpdateSession;
+        session!.Status = ApplicationStatus.Granted;
+
+        // Act
+        await _applicationUpdateController.SaveGrantedApplication(viewModel);
+
+        // Assert
+        _registrationServiceMock.Verify(r => r.UpdateRegistrationMaterialOutcomeAsync(
+            session.RegistrationMaterialId,
+            session.Status,
+            viewModel.Comments), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task SaveGrantedApplication_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
+    {
+        // Arrange
+        var viewModel = new ApplicationGrantedViewModel();
+
+        // Act
+        var response = await _applicationUpdateController.SaveGrantedApplication(viewModel);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<RedirectToActionResult>();
+
+            var redirectToActionResult = (RedirectToActionResult)response;
+            redirectToActionResult.ActionName.Should().Be(PagePath.ManageRegistrations);
+            redirectToActionResult.ControllerName.Should().Be(PagePath.ReprocessorExporterRegistrations);
+        }
+    }
+
+    [TestMethod]
+    public async Task SaveRefusedApplication_WhenModelStateIsInvalid_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new ApplicationRefusedViewModel { Comments = "Test Comments" };
+
+        _applicationUpdateController.ModelState.AddModelError("Test", "Error");
+
+        // Act
+        var response = await _applicationUpdateController.SaveRefusedApplication(viewModel);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
+
+            var viewResult = (ViewResult)response;
+            viewResult.ViewName.Should().EndWith("ApplicationRefusedDetails.cshtml");
+        }
+    }
+
+    [TestMethod]
+    public async Task SaveRefusedApplication_WhenModelStateIsValid_ShouldCallService()
+    {
+        // Arrange
+        var viewModel = new ApplicationRefusedViewModel { Comments = "Test Comments" };
+
+        var session = _journeySession.ReprocessorExporterSession.ApplicationUpdateSession;
+        session!.Status = ApplicationStatus.Granted;
+
+        // Act
+        await _applicationUpdateController.SaveRefusedApplication(viewModel);
+
+        // Assert
+        _registrationServiceMock.Verify(r => r.UpdateRegistrationMaterialOutcomeAsync(
+            session.RegistrationMaterialId,
+            session.Status,
+            viewModel.Comments), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task SaveRefusedApplication_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
+    {
+        // Arrange
+        var viewModel = new ApplicationRefusedViewModel { Comments = "Test Comments" };
+
+        // Act
+        var response = await _applicationUpdateController.SaveRefusedApplication(viewModel);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<RedirectToActionResult>();
+
+            var redirectToActionResult = (RedirectToActionResult)response;
+            redirectToActionResult.ActionName.Should().Be(PagePath.ManageRegistrations);
+            redirectToActionResult.ControllerName.Should().Be(PagePath.ReprocessorExporterRegistrations);
+        }
+    }
 
     private static RegistrationMaterial CreateRegistrationMaterial(int registrationMaterialId) =>
         new()
@@ -254,11 +355,6 @@ public class ApplicationUpdateControllerTests
             Id = registrationMaterialId,
             RegistrationId = 1,
             MaterialName = "Plastic",
-            DeterminationDate = DateTime.UtcNow,
-            Status = ApplicationStatus.Granted,
-            StatusUpdatedByName = "Test User",
-            StatusUpdatedAt = DateTime.UtcNow,
-            RegistrationNumber = "REG123",
             Tasks = []
         };
 
@@ -267,7 +363,6 @@ public class ApplicationUpdateControllerTests
         {
             RegistrationMaterialId = registrationMaterialId,
             RegistrationId = 1,
-            MaterialName = "Plastic",
-            Status = ApplicationStatus.Granted
+            MaterialName = "Plastic"
         };
 }
