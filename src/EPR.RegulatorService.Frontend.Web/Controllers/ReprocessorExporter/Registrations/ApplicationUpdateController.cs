@@ -1,8 +1,10 @@
 using AutoMapper;
 
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
-
+using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
@@ -12,10 +14,6 @@ using FluentValidation;
 
 using Microsoft.FeatureManagement.Mvc;
 using Microsoft.AspNetCore.Mvc;
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Exceptions;
-using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
@@ -106,7 +104,6 @@ public class ApplicationUpdateController(
     [Route(PagePath.SaveGrantedApplication)]
     public async Task<IActionResult> SaveGrantedApplication(ApplicationGrantedViewModel viewModel)
     {
-        // TODO: Check that text area character count decreases as text is typed
         var session = await GetSession();
         var applicationUpdateSession = GetApplicationUpdateSession(session);
 
@@ -127,7 +124,6 @@ public class ApplicationUpdateController(
     [Route(PagePath.SaveRefusedApplication)]
     public async Task<IActionResult> SaveRefusedApplication(ApplicationRefusedViewModel viewModel)
     {
-        // TODO: Check that text area character count decreases as text is typed
         var session = await GetSession();
         var applicationUpdateSession = GetApplicationUpdateSession(session);
 
