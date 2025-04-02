@@ -38,6 +38,17 @@ public class ManageRegistrationsMappingProfileTests
             SiteAddress = "123 Test Street",
             OrganisationType = ApplicationOrganisationType.Exporter,
             Regulator = "Custom Regulator",
+            Materials =
+            [
+                new RegistrationMaterial { Id = 1, MaterialName = "Plastic", Status = ApplicationStatus.Granted, StatusUpdatedByName = "Test User", StatusUpdatedAt = DateTime.Now, RegistrationNumber = "ABC1234" }
+            ],
+            Tasks =
+            [
+                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress},
+                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite},
+                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SiteAddressAndContactDetails},
+                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions}
+            ]
         };
 
         // Act
@@ -52,6 +63,11 @@ public class ManageRegistrationsMappingProfileTests
             viewModel.SiteAddress.Should().Be(registrationDto.SiteAddress);
             viewModel.ApplicationOrganisationType.Should().Be(registrationDto.OrganisationType);
             viewModel.Regulator.Should().Be(registrationDto.Regulator);
+            viewModel.BusinessAddressTask.Should().NotBeNull();
+            viewModel.MaterialsAuthorisedOnSiteTask.Should().NotBeNull();
+            viewModel.ExporterWasteLicensesTask.Should().NotBeNull();
+            viewModel.SiteAddressTask.Should().NotBeNull();
+            viewModel.Materials.Should().NotBeEmpty();
         }
     }
 
@@ -94,7 +110,15 @@ public class ManageRegistrationsMappingProfileTests
             Status = applicationStatus,
             StatusUpdatedByName = "Test User",
             StatusUpdatedAt = DateTime.Now,
-            RegistrationNumber = "ABC1234"
+            RegistrationNumber = "ABC1234",
+            Tasks =
+            [
+                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions},
+                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs},
+                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan},
+                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialDetailsAndContact},
+                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails}
+            ]
         };
 
         // Act
@@ -106,12 +130,18 @@ public class ManageRegistrationsMappingProfileTests
             viewModel.Should().NotBeNull();
             viewModel.Id.Should().Be(registrationMaterial.Id);
             viewModel.MaterialName.Should().Be(registrationMaterial.MaterialName);
+            viewModel.DeterminationDate.Should().Be(registrationMaterial.DeterminationDate);
             viewModel.Status.Should().Be(registrationMaterial.Status);
             viewModel.StatusUpdatedByName.Should().Be(registrationMaterial.StatusUpdatedByName);
             viewModel.StatusUpdatedAt.Should().Be(registrationMaterial.StatusUpdatedAt);
             viewModel.RegistrationNumber.Should().Be(registrationMaterial.RegistrationNumber);
             viewModel.StatusText.Should().Be(expectedStatusText);
             viewModel.StatusCssClass.Should().Be(expectedCssClass);
+            viewModel.MaterialWasteLicensesTask.Should().NotBeNull();
+            viewModel.InputsAndOutputsTask.Should().NotBeNull();
+            viewModel.SamplingAndInspectionPlanTask.Should().NotBeNull();
+            viewModel.MaterialDetailsTask.Should().NotBeNull();
+            viewModel.OverseasReprocessorTask.Should().NotBeNull();
         }
     }
 }

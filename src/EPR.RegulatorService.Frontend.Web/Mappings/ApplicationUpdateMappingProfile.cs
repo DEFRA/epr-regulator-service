@@ -15,8 +15,10 @@ public class ApplicationUpdateMappingProfile : Profile
 
         CreateMap<ApplicationUpdateSession, ApplicationGrantedViewModel>()
             .ForMember(dest => dest.Comments, opt => opt.Ignore());
+
         CreateMap<ApplicationUpdateSession, ApplicationRefusedViewModel>()
-            .ForMember(dest => dest.Comments, opt => opt.Ignore()); ;
+            .ForMember(dest => dest.Comments, opt => opt.Ignore());
+
         CreateMap<ApplicationUpdateSession, ApplicationUpdateViewModel>();
     }
 }
