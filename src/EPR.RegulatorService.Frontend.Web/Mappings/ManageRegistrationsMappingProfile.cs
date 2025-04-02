@@ -1,7 +1,6 @@
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
@@ -42,15 +41,6 @@ public class ManageRegistrationsMappingProfile : Profile
         CreateMap<RegistrationTask, RegistrationTaskViewModel>()
             .ForMember(dest => dest.StatusCssClass, opt => opt.MapFrom(src => MapRegistrationTaskStatusCssClass(src.Status)))
             .ForMember(dest => dest.StatusText, opt => opt.MapFrom(src => MapRegistrationTaskStatusText(src.Status)));
-
-        CreateMap<RegistrationMaterial, ApplicationUpdateSession>()
-            .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.Id));
-
-        CreateMap<ApplicationUpdateSession, ApplicationGrantedViewModel>()
-            .ForMember(dest => dest.Comments, opt => opt.Ignore());
-        CreateMap<ApplicationUpdateSession, ApplicationRefusedViewModel>()
-            .ForMember(dest => dest.Comments, opt => opt.Ignore()); ;
-        CreateMap<ApplicationUpdateSession, ApplicationUpdateViewModel>();
     }
 
     private static string MapRegistrationMaterialStatusCssClass(ApplicationStatus? status) =>
