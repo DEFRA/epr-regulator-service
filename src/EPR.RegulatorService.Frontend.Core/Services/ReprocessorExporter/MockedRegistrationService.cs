@@ -132,14 +132,14 @@ public class MockedRegistrationService : IRegistrationService
             return
             [
                 new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SiteAddressAndContactDetails },
-                new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite }
+                new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite }
             ];
         }
 
         return
         [
             new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress },
-            new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions }
+            new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions }
         ];
     }
 
@@ -179,7 +179,7 @@ public class MockedRegistrationService : IRegistrationService
             return
             [
                 new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions },
-                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs },
+                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs },
                 new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
             ];
         }
@@ -187,7 +187,7 @@ public class MockedRegistrationService : IRegistrationService
         return
         [
             new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialDetailsAndContact },
-            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.Completed, TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails},
+            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails},
             new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
         ];
     }

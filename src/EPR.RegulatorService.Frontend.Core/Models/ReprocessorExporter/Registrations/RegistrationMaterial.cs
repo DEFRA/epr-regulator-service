@@ -10,9 +10,9 @@ public class RegistrationMaterial
 
     public required string MaterialName { get; init; }
 
-    public DateTime? DeterminationDate { get; set; }
+    public DateTime? DeterminationDate { get; init; }
     
-    public ApplicationStatus? Status { get; set; }
+    public ApplicationStatus? Status { get; init; }
 
     public string? StatusUpdatedByName { get; init; }
 
@@ -20,5 +20,5 @@ public class RegistrationMaterial
 
     public string? RegistrationNumber { get; init; }
 
-    public List<RegistrationTask> Tasks { get; set; } = [];
+    public List<RegistrationTask> Tasks { get; init; } = [];
 }

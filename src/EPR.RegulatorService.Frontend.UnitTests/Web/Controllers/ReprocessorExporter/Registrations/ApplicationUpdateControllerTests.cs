@@ -32,6 +32,8 @@ public class ApplicationUpdateControllerTests
     [TestInitialize]
     public void TestInitialize()
     {
+        const int registrationMaterialId = 123;
+
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         _mapperMock = new Mock<IMapper>();
         _registrationServiceMock = new Mock<IRegistrationService>();
@@ -48,7 +50,10 @@ public class ApplicationUpdateControllerTests
             .Setup(config => config.GetSection(ConfigKeys.PathBase))
             .Returns(configurationSectionMock.Object);
 
-        _journeySession = new JourneySession();
+        _journeySession = new JourneySession
+        {
+            ReprocessorExporterSession = { ApplicationUpdateSession = CreateApplicationUpdateSession(registrationMaterialId) }
+        };
 
         _sessionManagerMock
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
@@ -102,12 +107,9 @@ public class ApplicationUpdateControllerTests
     public async Task Index_WhenCalledWithIdAndValidSession_ShouldReturnViewResult()
     {
         // Arrange
-        var applicationUpdateSession = CreateApplicationUpdateSession(123);
         var expectedViewModel = new ApplicationUpdateViewModel();
 
-        _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = applicationUpdateSession;
-
-        _mapperMock.Setup(m => m.Map<ApplicationUpdateViewModel>(applicationUpdateSession))
+        _mapperMock.Setup(m => m.Map<ApplicationUpdateViewModel>(_journeySession.ReprocessorExporterSession.ApplicationUpdateSession))
             .Returns(expectedViewModel);
 
         // Act
@@ -116,86 +118,135 @@ public class ApplicationUpdateControllerTests
         // Assert
         response.Should().BeOfType<ViewResult>();
 
-        var viewResult = response as ViewResult;
-        viewResult?.Model.Should().Be(expectedViewModel);
-        viewResult?.ViewName.Should().EndWith("ApplicationUpdate.cshtml");
+        var viewResult = (ViewResult)response;
+        viewResult.Model.Should().Be(expectedViewModel);
+        viewResult.ViewName.Should().EndWith("ApplicationUpdate.cshtml");
     }
 
-    // TODO... complete the following tests...
+    [TestMethod]
+    public async Task Index_WhenCalledWithViewModelAndApplicationUpdateSessionIsNull__ShouldThrowException()
+    {
+        // Arrange
+        var viewModel = new ApplicationUpdateViewModel();
 
-    ////[TestMethod]
-    ////public void Index_WhenCalledWithViewModelAndApplicationUpdateSessionIsNull__ShouldThrowException()
-    ////{
-    ////    Assert.Fail();
-    ////}
+        _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = null;
 
-    ////[TestMethod]
-    ////public void Index_WhenCalledWithViewModelAndInvalidModelState_ShouldRedisplayView()
-    ////{
-    ////    Assert.Fail();
-    ////}
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.Index(viewModel));
+    }
 
-    ////[TestMethod]
-    ////[DataRow(ApplicationStatus.Granted, PagePath.ApplicationGrantedDetails)]
-    ////[DataRow(ApplicationStatus.Refused, PagePath.ApplicationRefusedDetails)]
-    ////public void Index_WhenCalledWithViewModelAndValidModel_ShouldRedirectToNextPage(ApplicationStatus status, string expectedPage)
-    ////{
-    ////    Assert.Fail();
-    ////}
+    [TestMethod]
+    public async Task Index_WhenCalledWithViewModelAndInvalidModelState_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new ApplicationUpdateViewModel();
 
-    ////[TestMethod]
-    ////public void Index_WhenCalledWithViewModelAndValidModel_ShouldUpdateSessionWithStatus()
-    ////{
-    ////    Assert.Fail();
-    ////}
+        _applicationUpdateController.ModelState.AddModelError("Test", "Error");
 
-    ////[TestMethod]
-    ////public void ApplicationGrantedDetails_ShouldDisplayView()
-    ////{
-    ////    Assert.Fail();
-    ////}
+        // Act
+        var response = await _applicationUpdateController.Index(viewModel);
 
-    ////[TestMethod]
-    ////public void ApplicationRefusedDetails_ShouldDisplayView()
-    ////{
-    ////    Assert.Fail();
-    ////}
+        // Assert
+        response.Should().BeOfType<ViewResult>();
 
-    ////[TestMethod]
-    ////public void SaveGrantedApplication_WhenModelStateIsInvalid_ShouldRedisplayView()
-    ////{
-    ////    Assert.Fail();
-    ////}
+        var viewResult = (ViewResult)response;
+        viewResult.ViewName.Should().EndWith("ApplicationUpdate.cshtml");
+    }
 
-    ////[TestMethod]
-    ////public void SaveGrantedApplication_WhenModelStateIsValid_ShouldCallService()
-    ////{
-    ////    Assert.Fail();
-    ////}
+    [TestMethod]
+    [DataRow(ApplicationStatus.Granted, PagePath.ApplicationGrantedDetails)]
+    [DataRow(ApplicationStatus.Refused, PagePath.ApplicationRefusedDetails)]
+    public async Task Index_WhenCalledWithViewModelAndValidModel_ShouldRedirectToNextPage(ApplicationStatus status, string expectedAction)
+    {
+        // Arrange
+        var viewModel = new ApplicationUpdateViewModel { Status = status };
 
-    ////[TestMethod]
-    ////public void SaveGrantedApplication_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
-    ////{
-    ////    Assert.Fail();
-    ////}
+        // Act
+        var response = await _applicationUpdateController.Index(viewModel);
 
-    ////[TestMethod]
-    ////public void SaveRefusedApplication_WhenModelStateIsInvalid_ShouldRedisplayView()
-    ////{
-    ////    Assert.Fail();
-    ////}
+        // Assert
+        response.Should().BeOfType<RedirectToActionResult>();
 
-    ////[TestMethod]
-    ////public void SaveRefusedApplication_WhenModelStateIsValid_ShouldCallService()
-    ////{
-    ////    Assert.Fail();
-    ////}
+        var redirectToActionResult = (RedirectToActionResult)response;
+        redirectToActionResult.ActionName.Should().Be(expectedAction);
+    }
 
-    ////[TestMethod]
-    ////public void SaveRefusedApplication_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
-    ////{
-    ////    Assert.Fail();
-    ////}
+    [TestMethod]
+    public async Task Index_WhenCalledWithViewModelAndValidModel_ShouldUpdateSessionWithStatus()
+    {
+        // Arrange
+        var viewModel = new ApplicationUpdateViewModel { Status = ApplicationStatus.Granted };
+
+        _journeySession.ReprocessorExporterSession.ApplicationUpdateSession!.Status = null;
+
+        // Act
+        await _applicationUpdateController.Index(viewModel);
+
+        // Assert
+        _journeySession.ReprocessorExporterSession.ApplicationUpdateSession!.Status.Should().Be(viewModel.Status);
+    }
+
+    [TestMethod]
+    public async Task ApplicationGrantedDetails_ShouldDisplayView()
+    {
+        // Act
+        var response = await _applicationUpdateController.ApplicationGrantedDetails();
+
+        // Assert
+        response.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)response;
+        viewResult.ViewName.Should().EndWith("ApplicationGrantedDetails.cshtml");
+    }
+
+    [TestMethod]
+    public async Task ApplicationRefusedDetails_ShouldDisplayView()
+    {
+        // Act
+        var response = await _applicationUpdateController.ApplicationRefusedDetails();
+
+        // Assert
+        response.Should().BeOfType<ViewResult>();
+
+        var viewResult = (ViewResult)response;
+        viewResult.ViewName.Should().EndWith("ApplicationRefusedDetails.cshtml");
+    }
+
+    //[TestMethod]
+    //public void SaveGrantedApplication_WhenModelStateIsInvalid_ShouldRedisplayView()
+    //{
+    //    Assert.Fail();
+    //}
+
+    //[TestMethod]
+    //public void SaveGrantedApplication_WhenModelStateIsValid_ShouldCallService()
+    //{
+    //    Assert.Fail();
+    //}
+
+    //[TestMethod]
+    //public void SaveGrantedApplication_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
+    //{
+    //    Assert.Fail();
+    //}
+
+    //[TestMethod]
+    //public void SaveRefusedApplication_WhenModelStateIsInvalid_ShouldRedisplayView()
+    //{
+    //    Assert.Fail();
+    //}
+
+    //[TestMethod]
+    //public void SaveRefusedApplication_WhenModelStateIsValid_ShouldCallService()
+    //{
+    //    Assert.Fail();
+    //}
+
+    //[TestMethod]
+    //public void SaveRefusedApplication_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
+    //{
+    //    Assert.Fail();
+    //}
 
     private static RegistrationMaterial CreateRegistrationMaterial(int registrationMaterialId) =>
         new()
