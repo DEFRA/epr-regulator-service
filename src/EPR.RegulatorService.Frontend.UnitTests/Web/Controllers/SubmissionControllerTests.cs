@@ -979,22 +979,24 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region SubmitOfflinePayment
 
         [TestMethod]
-        public async Task SubmitOfflinePayment_ReturnsViewResult_WithInvalidModelState()
+        [DataRow(null)]
+        [DataRow("0")]
+        public async Task SubmitOfflinePayment_ReturnsViewResult_WithInvalidModelState(string offilinePayment)
         {
             // Arrange
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = TestSubmission.GetTestSubmission();
 
-            var model = new PaymentDetailsViewModel
+            var paymentDetailsViewModel = new PaymentDetailsViewModel
             {
-                OfflinePayment = null // Invalid state
+                OfflinePayment = offilinePayment
             };
             _systemUnderTest.ModelState.AddModelError("Key", "Invalid state");
 
             // Act
-            var result = await _systemUnderTest.SubmitOfflinePayment(model);
+            var result = await _systemUnderTest.SubmitOfflinePayment(paymentDetailsViewModel);
 
             // Assert
-            var viewResult = result as ViewResult;
+            var viewResult = result as ViewResult;            
             viewResult.Should().NotBeNull();
             viewResult!.ViewName.Should().Be(nameof(_systemUnderTest.SubmissionDetails));
         }
@@ -1037,7 +1039,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var model = new PaymentDetailsViewModel
             {
-                OfflinePayment = DefaultOfflinePaymentAmount
+                OfflinePayment = "0.0"
             };
 
             // Act
