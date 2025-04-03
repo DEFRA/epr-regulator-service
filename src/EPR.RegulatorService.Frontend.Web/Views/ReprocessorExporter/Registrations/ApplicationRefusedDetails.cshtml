@@ -29,12 +29,8 @@
 
             @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
 
-						<textarea class="govuk-textarea govuk-js-character-count" id="comments" name="comments" rows="5" aria-describedby="label-comments">@Model.Comments</textarea>
-            <div id="label-comments" class="govuk-hint govuk-character-count__message govuk-visually-hidden">
-              You can enter up to 200 characters
-            </div>
-            <div class="govuk-hint govuk-character-count__message govuk-character-count__status" aria-hidden="true">You have 200 characters remaining</div>
-            <div class="govuk-character-count__sr-status govuk-visually-hidden" aria-live="polite">You have 200 characters remaining</div>
+              <textarea class="govuk-textarea govuk-js-character-count" id="comments" name="comments" rows="5" aria-describedby="comments-info">@Model.Comments</textarea>
+              <div id="comments-info" class="govuk-hint govuk-character-count__message"></div>
           </div>
           
           <button type="submit" class="govuk-button govuk-body govuk-!-margin-top-6" data-module="govuk-button">

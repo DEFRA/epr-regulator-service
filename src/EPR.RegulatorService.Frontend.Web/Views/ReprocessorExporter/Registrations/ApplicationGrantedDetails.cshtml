@@ -6,46 +6,41 @@
 @model ApplicationGrantedViewModel
 
 @{
-	const string title = "Additional details";
-	ViewData["Title"] = title;
-	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    const string title = "Additional details";
+    ViewData["Title"] = title;
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 <div class="govuk-width-container ">
-  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
-        <h1 class="govuk-heading-l">
-          <span class="govuk-caption-l">@Model.MaterialName</span>
-          @title (optional)
-        </h1>
-        
-        @if (!ViewData.ModelState.IsValid)
-        {
-          @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-        }
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-caption-l">@Model.MaterialName</span>
+                    @title (optional)
+                </h1>
 
-        <form class="form" action="@Url.Action("ApplicationGrantedDetails", "ApplicationUpdate")" method="POST">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                }
 
-          <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+                <form class="form" action="@Url.Action("ApplicationGrantedDetails", "ApplicationUpdate")" method="POST">
+                    
+                  <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
 
-            @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+                        @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
 
-            <textarea class="govuk-textarea govuk-js-character-count" id="comments" name="comments" rows="5" aria-describedby="label-comments">@Model.Comments</textarea>
+                        <textarea class="govuk-textarea govuk-js-character-count" id="comments" name="comments" rows="5" aria-describedby="comments-info">@Model.Comments</textarea>
 
-            <div id="label-comments" class="govuk-hint govuk-character-count__message govuk-visually-hidden">
-              You can enter up to 200 characters
+                        <div id="comments-info" class="govuk-hint govuk-character-count__message"></div>
+                    </div>
+
+                    <button type="submit" class="govuk-button govuk-body govuk-!-margin-top-6" data-module="govuk-button">
+                        Mark as granted
+                    </button>
+                </form>
             </div>
-            <div class="govuk-hint govuk-character-count__message govuk-character-count__status" aria-hidden="true">You have 200 characters remaining</div>
-            <div class="govuk-character-count__sr-status govuk-visually-hidden" aria-live="polite">You have 200 characters remaining</div>
-          </div>
-
-          <button type="submit" class="govuk-button govuk-body govuk-!-margin-top-6" data-module="govuk-button">
-            Mark as granted
-          </button>
-
-        </form>
-      </div>
-    </div>
-  </main>
+        </div>
+    </main>
 </div>
