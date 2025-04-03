@@ -1,3 +1,8 @@
-@model string
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
+@{
+    var backLinkModel = @Model as BackLinkModel;
+}
 
-<a href="@Model" class="govuk-back-link">@SharedLocalizer["Back"]</a>
+<a href="@backLinkModel.PagePath" class="govuk-back-link"
+   aria-label="@((!string.IsNullOrEmpty(backLinkModel.AriaLabel)) ? backLinkModel.AriaLabel : null)"
+>@SharedLocalizer["Back"]</a>

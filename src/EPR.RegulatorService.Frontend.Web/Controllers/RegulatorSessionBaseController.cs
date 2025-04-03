@@ -57,8 +57,7 @@ public abstract class RegulatorSessionBaseController : Controller
         await SaveSession(session);
     }
 
-
-    private static void ClearRestOfJourney(JourneySession session, string currentPagePath)
+    protected static void ClearRestOfJourney(JourneySession session, string currentPagePath)
     {
         int index = session.RegulatorSession.Journey.IndexOf(currentPagePath);
 
@@ -72,4 +71,14 @@ public abstract class RegulatorSessionBaseController : Controller
     protected void SetBackLink(JourneySession session, string currentPagePath) =>
         ViewBag.BackLinkToDisplay =
             session.RegulatorSession.Journey.PreviousOrDefault(currentPagePath) ?? string.Empty;
+
+    protected void SetBackLinkAriaLabel()
+    {
+        ViewBag.BackLinkAriaLabel = "Click here if you wish to go back to the previous page";//will be added to localizer
+    }
+    protected void SetHomeBackLink()
+    {
+        string pathBase = _pathBase.TrimStart('/').TrimEnd('/');
+        ViewBag.BackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
+    }
 }

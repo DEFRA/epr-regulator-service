@@ -1,17 +1,19 @@
-using System.Globalization;
 using System.Threading.Tasks;
 
-using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Web.Configs;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 
-public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFacadeService, ILogger<ProducerPaymentDetailsViewComponent> logger) : ViewComponent
+public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions> options,
+    IPaymentFacadeService paymentFacadeService, ILogger<ProducerPaymentDetailsViewComponent> logger) : ViewComponent
 {
     private static readonly Action<ILogger, string, Exception?> _logViewComponentError =
         LoggerMessage.Define<string>(
@@ -25,14 +27,16 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
         {
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
-                ApplicationReferenceNumber = viewModel.ApplicationReferenceNumber,
-                NoOfSubsidiariesOnlineMarketplace = viewModel.NoOfSubsidiariesOnlineMarketPlace,
-                NumberOfSubsidiaries = viewModel.NoOfSubsidiaries,
-                IsLateFeeApplicable = viewModel.IsLateFeeApplicable,
-                IsProducerOnlineMarketplace = viewModel.IsProducerOnlineMarketplace,
-                ProducerType = viewModel.OrganisationSize,
+                ApplicationReferenceNumber = viewModel.ReferenceNumber,
+                NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
+                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
+                IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
+                IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
+                ProducerType = viewModel.ProducerDetails.ProducerType,
                 Regulator = viewModel.NationCode,
-                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.RegistrationDateTime)
+                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
+                ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.Value
+                : viewModel.SubmissionDetails.TimeAndDateOfSubmission)
             });
 
             if (producerPaymentResponse is null)
@@ -49,9 +53,9 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
                 SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
-                TotalOutstanding = ConvertToPoundsFromPence(producerPaymentResponse.TotalOutstanding),
-                ProducerSize = $"{char.ToUpperInvariant(viewModel.OrganisationSize[0])}{viewModel.OrganisationSize[1..]}",
-                NumberOfSubsidiaries = viewModel.NoOfSubsidiaries,
+                TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
+                ProducerSize = $"{char.ToUpperInvariant(viewModel.ProducerDetails.ProducerType[0])}{viewModel.ProducerDetails.ProducerType[1..]}",
+                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
                 NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount
             };
 
@@ -65,6 +69,5 @@ public class ProducerPaymentDetailsViewComponent(IPaymentFacadeService paymentFa
             return View(default(ProducerPaymentDetailsViewModel));
         }
     }
-
     private static decimal ConvertToPoundsFromPence(decimal amount) => amount / 100;
 }

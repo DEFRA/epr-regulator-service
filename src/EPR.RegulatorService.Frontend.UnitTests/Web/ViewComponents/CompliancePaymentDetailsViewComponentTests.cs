@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents;
 
@@ -17,6 +19,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
 {
     private CompliancePaymentDetailsViewComponent _sut;
     private RegistrationSubmissionDetailsViewModel _registrationSumissionDetailsViewModel;
+    private readonly Mock<IOptions<PaymentDetailsOptions>> _paymentDetailsOptionsMock = new();
     private readonly Mock<IPaymentFacadeService> _paymentFacadeServiceMock = new();
     private readonly Mock<ILogger<CompliancePaymentDetailsViewComponent>> _loggerMock = new();
 
@@ -25,18 +28,24 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     {
         _registrationSumissionDetailsViewModel = new RegistrationSubmissionDetailsViewModel
         {
-            ApplicationReferenceNumber = "SomeGuid",
+            ReferenceNumber = "SomeGuid",
             RegistrationDateTime = DateTime.Now.AddDays(-1),
             NationId = 1
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
-        _sut = new CompliancePaymentDetailsViewComponent(_paymentFacadeServiceMock.Object, _loggerMock.Object);
+        _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
+        _sut = new CompliancePaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object);
     }
 
     [TestMethod]
     public async Task InvokeAsync_Returns_CorrectView_With_DefaultModel_When_ServiceReturns_Null()
     {
         // Arrange
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails = [];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
 
         // Act
         var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
@@ -50,7 +59,9 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
-    public async Task InvokeAsync_Returns_CorrectView_With_Model()
+    [DataRow(false)]
+    [DataRow(true)]
+    public async Task InvokeAsync_Returns_CorrectView_With_Model(bool isResubmission)
     {
         // Arrange
         var complianceSchemeMembers = new List<CsoMembershipDetailsDto> {
@@ -58,6 +69,12 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
             new() { MemberId = "memberid2", MemberType = "small" }
         };
         _registrationSumissionDetailsViewModel.CSOMembershipDetails = complianceSchemeMembers;
+        _registrationSumissionDetailsViewModel.IsResubmission = isResubmission;
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
+            TimeAndDateOfResubmission = DateTime.UtcNow
+        };
         _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
         .ReturnsAsync(new CompliancePaymentResponse // all values in pence
         {
@@ -98,6 +115,11 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         var complianceSchemeMembers = new List<CsoMembershipDetailsDto> {
             new() { MemberId = "memberid1", MemberType = "large" },
             new() { MemberId = "memberid2", MemberType = "small" }
+        };
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
+            TimeAndDateOfResubmission = DateTime.UtcNow
         };
         _registrationSumissionDetailsViewModel.CSOMembershipDetails = complianceSchemeMembers;
         var exception = new Exception("error");
