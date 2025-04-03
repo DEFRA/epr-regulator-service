@@ -34,10 +34,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
 
             var tokenAcquisitionMock = new Mock<ITokenAcquisition>();
 
-            _httpClient = new HttpClient(_httpMessageHandlerMock.Object)
-            {
-                BaseAddress = new Uri(BaseUrl)
-            };
+            _httpClient = new HttpClient(_httpMessageHandlerMock.Object);
 
             var config = new ReprocessorExporterFacadeApiConfig
             {
