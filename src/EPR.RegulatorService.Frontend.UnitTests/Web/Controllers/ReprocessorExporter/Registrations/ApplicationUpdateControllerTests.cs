@@ -26,7 +26,7 @@ public class ApplicationUpdateControllerTests
 
     private Mock<ISessionManager<JourneySession>> _sessionManagerMock;
     private Mock<IMapper> _mapperMock;
-    private Mock<IRegistrationService> _registrationServiceMock;
+    private Mock<IReprocessorExporterService> _reprocessorExporterServiceMock;
 
     private JourneySession _journeySession;
 
@@ -37,7 +37,7 @@ public class ApplicationUpdateControllerTests
 
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         _mapperMock = new Mock<IMapper>();
-        _registrationServiceMock = new Mock<IRegistrationService>();
+        _reprocessorExporterServiceMock = new Mock<IReprocessorExporterService>();
 
         var validatorMock = new Mock<IValidator<IdRequest>>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
@@ -63,7 +63,7 @@ public class ApplicationUpdateControllerTests
         _applicationUpdateController = new ApplicationUpdateController(
             _mapperMock.Object,
             validatorMock.Object,
-            _registrationServiceMock.Object,
+            _reprocessorExporterServiceMock.Object,
             _sessionManagerMock.Object,
         configurationMock.Object );
 
@@ -72,7 +72,7 @@ public class ApplicationUpdateControllerTests
     }
 
     [TestMethod]
-    public async Task Index_WhenCalledWithIdAndSessionIsNull_ShouldThrowException()
+    public async Task ApplicationUpdate_WhenCalledWithIdAndSessionIsNull_ShouldThrowException()
     {
         // Arrange
         _sessionManagerMock
@@ -80,32 +80,32 @@ public class ApplicationUpdateControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.Index(1));
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(1));
     }
 
     [TestMethod]
-    public async Task Index_WhenCalledWithIdAndApplicationUpdateSessionIsNull_ShouldCreateNewSessionFromRegistrationMaterial()
+    public async Task ApplicationUpdate_WhenCalledWithIdAndApplicationUpdateSessionIsNull_ShouldCreateNewSessionFromRegistrationMaterialDetail()
     {
         // Arrange
-        var registrationMaterial = CreateRegistrationMaterial(123);
+        var registrationMaterial = CreateRegistrationMaterialDetail(123);
 
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = null;
 
-        _registrationServiceMock.Setup(r => r.GetRegistrationMaterialAsync(registrationMaterial.Id))
+        _reprocessorExporterServiceMock.Setup(r => r.GetRegistrationMaterialByIdAsync(registrationMaterial.Id))
             .ReturnsAsync(registrationMaterial);
 
         _mapperMock.Setup(m => m.Map<ApplicationUpdateSession>(registrationMaterial))
             .Returns(CreateApplicationUpdateSession(registrationMaterial.Id));
 
         // Act
-        await _applicationUpdateController.Index(registrationMaterial.Id);
+        await _applicationUpdateController.ApplicationUpdate(registrationMaterial.Id);
 
         // Assert
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession.Should().NotBeNull();
     }
 
     [TestMethod]
-    public async Task Index_WhenCalledWithIdAndValidSession_ShouldReturnViewResult()
+    public async Task ApplicationUpdate_WhenCalledWithIdAndValidSession_ShouldReturnViewResult()
     {
         // Arrange
         var expectedViewModel = new ApplicationUpdateViewModel();
@@ -115,7 +115,7 @@ public class ApplicationUpdateControllerTests
             .Returns(expectedViewModel);
 
         // Act
-        var response = await _applicationUpdateController.Index(1);
+        var response = await _applicationUpdateController.ApplicationUpdate(1);
 
         // Assert
         using (new AssertionScope())
@@ -129,7 +129,7 @@ public class ApplicationUpdateControllerTests
     }
 
     [TestMethod]
-    public async Task Index_WhenCalledWithViewModelAndApplicationUpdateSessionIsNull__ShouldThrowException()
+    public async Task ApplicationUpdate_WhenCalledWithViewModelAndApplicationUpdateSessionIsNull__ShouldThrowException()
     {
         // Arrange
         var viewModel = new ApplicationUpdateViewModel();
@@ -137,11 +137,11 @@ public class ApplicationUpdateControllerTests
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = null;
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.Index(viewModel));
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(viewModel));
     }
 
     [TestMethod]
-    public async Task Index_WhenCalledWithViewModelAndInvalidModelState_ShouldRedisplayView()
+    public async Task ApplicationUpdate_WhenCalledWithViewModelAndInvalidModelState_ShouldRedisplayView()
     {
         // Arrange
         var viewModel = new ApplicationUpdateViewModel();
@@ -149,7 +149,7 @@ public class ApplicationUpdateControllerTests
         _applicationUpdateController.ModelState.AddModelError("Test", "Error");
 
         // Act
-        var response = await _applicationUpdateController.Index(viewModel);
+        var response = await _applicationUpdateController.ApplicationUpdate(viewModel);
 
         // Assert
         using (new AssertionScope())
@@ -164,13 +164,13 @@ public class ApplicationUpdateControllerTests
     [TestMethod]
     [DataRow(ApplicationStatus.Granted, PagePath.ApplicationGrantedDetails)]
     [DataRow(ApplicationStatus.Refused, PagePath.ApplicationRefusedDetails)]
-    public async Task Index_WhenCalledWithViewModelAndValidModel_ShouldRedirectToNextPage(ApplicationStatus status, string expectedAction)
+    public async Task ApplicationUpdate_WhenCalledWithViewModelAndValidModel_ShouldRedirectToNextPage(ApplicationStatus status, string expectedAction)
     {
         // Arrange
         var viewModel = new ApplicationUpdateViewModel { Status = status };
 
         // Act
-        var response = await _applicationUpdateController.Index(viewModel);
+        var response = await _applicationUpdateController.ApplicationUpdate(viewModel);
 
         // Assert
         using (new AssertionScope())
@@ -183,7 +183,7 @@ public class ApplicationUpdateControllerTests
     }
 
     [TestMethod]
-    public async Task Index_WhenCalledWithViewModelAndValidModel_ShouldUpdateSessionWithStatus()
+    public async Task ApplicationUpdate_WhenCalledWithViewModelAndValidModel_ShouldUpdateSessionWithStatus()
     {
         // Arrange
         var viewModel = new ApplicationUpdateViewModel { Status = ApplicationStatus.Granted };
@@ -191,7 +191,7 @@ public class ApplicationUpdateControllerTests
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession!.Status = null;
 
         // Act
-        await _applicationUpdateController.Index(viewModel);
+        await _applicationUpdateController.ApplicationUpdate(viewModel);
 
         // Assert
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession!.Status.Should().Be(viewModel.Status);
@@ -230,7 +230,7 @@ public class ApplicationUpdateControllerTests
     }
 
     [TestMethod]
-    public async Task SaveGrantedApplication_WhenModelStateIsInvalid_ShouldRedisplayView()
+    public async Task ApplicationGrantedDetails_WhenModelStateIsInvalid_ShouldRedisplayView()
     {
         // Arrange
         var viewModel = new ApplicationGrantedViewModel();
@@ -238,7 +238,7 @@ public class ApplicationUpdateControllerTests
         _applicationUpdateController.ModelState.AddModelError("Test", "Error");
 
         // Act
-        var response = await _applicationUpdateController.SaveGrantedApplication(viewModel);
+        var response = await _applicationUpdateController.ApplicationGrantedDetails(viewModel);
 
         // Assert
         using (new AssertionScope())
@@ -251,7 +251,7 @@ public class ApplicationUpdateControllerTests
     }
 
     [TestMethod]
-    public async Task SaveGrantedApplication_WhenModelStateIsValid_ShouldCallService()
+    public async Task ApplicationGrantedDetails_WhenModelStateIsValid_ShouldCallService()
     {
         // Arrange
         var viewModel = new ApplicationGrantedViewModel { Comments = "Test Comments" };
@@ -260,23 +260,22 @@ public class ApplicationUpdateControllerTests
         session!.Status = ApplicationStatus.Granted;
 
         // Act
-        await _applicationUpdateController.SaveGrantedApplication(viewModel);
+        await _applicationUpdateController.ApplicationGrantedDetails(viewModel);
 
         // Assert
-        _registrationServiceMock.Verify(r => r.UpdateRegistrationMaterialOutcomeAsync(
+        _reprocessorExporterServiceMock.Verify(r => r.UpdateRegistrationMaterialOutcomeAsync(
             session.RegistrationMaterialId,
-            session.Status,
-            viewModel.Comments), Times.Once);
+            It.Is<RegistrationMaterialOutcomeRequest>(req => req.Status == session.Status && req.Comments == viewModel.Comments)), Times.Once);
     }
 
     [TestMethod]
-    public async Task SaveGrantedApplication_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
+    public async Task ApplicationGrantedDetails_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
     {
         // Arrange
         var viewModel = new ApplicationGrantedViewModel();
 
         // Act
-        var response = await _applicationUpdateController.SaveGrantedApplication(viewModel);
+        var response = await _applicationUpdateController.ApplicationGrantedDetails(viewModel);
 
         // Assert
         using (new AssertionScope())
@@ -290,7 +289,7 @@ public class ApplicationUpdateControllerTests
     }
 
     [TestMethod]
-    public async Task SaveRefusedApplication_WhenModelStateIsInvalid_ShouldRedisplayView()
+    public async Task ApplicationRefusedDetails_WhenModelStateIsInvalid_ShouldRedisplayView()
     {
         // Arrange
         var viewModel = new ApplicationRefusedViewModel { Comments = "Test Comments" };
@@ -298,7 +297,7 @@ public class ApplicationUpdateControllerTests
         _applicationUpdateController.ModelState.AddModelError("Test", "Error");
 
         // Act
-        var response = await _applicationUpdateController.SaveRefusedApplication(viewModel);
+        var response = await _applicationUpdateController.ApplicationRefusedDetails(viewModel);
 
         // Assert
         using (new AssertionScope())
@@ -311,7 +310,7 @@ public class ApplicationUpdateControllerTests
     }
 
     [TestMethod]
-    public async Task SaveRefusedApplication_WhenModelStateIsValid_ShouldCallService()
+    public async Task ApplicationRefusedDetails_WhenModelStateIsValid_ShouldCallService()
     {
         // Arrange
         var viewModel = new ApplicationRefusedViewModel { Comments = "Test Comments" };
@@ -320,23 +319,22 @@ public class ApplicationUpdateControllerTests
         session!.Status = ApplicationStatus.Granted;
 
         // Act
-        await _applicationUpdateController.SaveRefusedApplication(viewModel);
+        await _applicationUpdateController.ApplicationRefusedDetails(viewModel);
 
         // Assert
-        _registrationServiceMock.Verify(r => r.UpdateRegistrationMaterialOutcomeAsync(
+        _reprocessorExporterServiceMock.Verify(r => r.UpdateRegistrationMaterialOutcomeAsync(
             session.RegistrationMaterialId,
-            session.Status,
-            viewModel.Comments), Times.Once);
+            It.Is<RegistrationMaterialOutcomeRequest>(req => req.Status == session.Status && req.Comments == viewModel.Comments)), Times.Once);
     }
 
     [TestMethod]
-    public async Task SaveRefusedApplication_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
+    public async Task ApplicationRefusedDetails_WhenModelStateIsValid_ShouldRedirectToManageRegistrations()
     {
         // Arrange
         var viewModel = new ApplicationRefusedViewModel { Comments = "Test Comments" };
 
         // Act
-        var response = await _applicationUpdateController.SaveRefusedApplication(viewModel);
+        var response = await _applicationUpdateController.ApplicationRefusedDetails(viewModel);
 
         // Assert
         using (new AssertionScope())
@@ -349,13 +347,12 @@ public class ApplicationUpdateControllerTests
         }
     }
 
-    private static RegistrationMaterial CreateRegistrationMaterial(int registrationMaterialId) =>
+    private static RegistrationMaterialDetail CreateRegistrationMaterialDetail(int registrationMaterialId) =>
         new()
         {
             Id = registrationMaterialId,
             RegistrationId = 1,
-            MaterialName = "Plastic",
-            Tasks = []
+            MaterialName = "Plastic"
         };
 
     private static ApplicationUpdateSession CreateApplicationUpdateSession(int registrationMaterialId) =>

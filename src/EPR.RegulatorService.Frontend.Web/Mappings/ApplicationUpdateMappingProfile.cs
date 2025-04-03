@@ -10,7 +10,7 @@ public class ApplicationUpdateMappingProfile : Profile
 {
     public ApplicationUpdateMappingProfile()
     {
-        CreateMap<RegistrationMaterial, ApplicationUpdateSession>()
+        CreateMap<RegistrationMaterialDetail, ApplicationUpdateSession>()
             .ForMember(dest => dest.RegistrationMaterialId, opt => opt.MapFrom(src => src.Id));
 
         CreateMap<ApplicationUpdateSession, ApplicationGrantedViewModel>()

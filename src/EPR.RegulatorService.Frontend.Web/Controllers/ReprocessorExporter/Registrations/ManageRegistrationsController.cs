@@ -17,13 +17,13 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route($"{PagePath.ReprocessorExporterRegistrations}/{PagePath.ManageRegistrations}")]
-public class ManageRegistrationsController(IRegistrationService registrationService,
+public class ManageRegistrationsController(IReprocessorExporterService reprocessorExporterService,
     IMapper mapper,
     IValidator<IdRequest> validator,
     ISessionManager<JourneySession> sessionManager,
     IConfiguration configuration) : ReprocessorExporterBaseController(sessionManager, configuration)
 {
-    private readonly IRegistrationService _registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
+    private readonly IReprocessorExporterService _reprocessorExporterService = reprocessorExporterService ?? throw new ArgumentNullException(nameof(reprocessorExporterService));
     private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     private readonly IValidator<IdRequest> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
 
@@ -32,7 +32,7 @@ public class ManageRegistrationsController(IRegistrationService registrationServ
     {
         await _validator.ValidateAndThrowAsync(new IdRequest { Id = id });
 
-        var registration = await _registrationService.GetRegistrationByIdAsync(id);
+        var registration = await _reprocessorExporterService.GetRegistrationByIdAsync(id);
 
         ViewBag.BackLinkToDisplay = "";
 

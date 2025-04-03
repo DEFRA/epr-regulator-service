@@ -7,12 +7,12 @@ using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using FluentAssertions.Execution;
 
 [TestClass]
-public class MockedRegistrationServiceTests
+public class MockedReprocessorExporterServiceTests
 {
-    private MockedRegistrationService _service;
+    private MockedReprocessorExporterService _service;
 
     [TestInitialize]
-    public void TestInitialize() => _service = new MockedRegistrationService();
+    public void TestInitialize() => _service = new MockedReprocessorExporterService();
 
     [TestMethod]
     public async Task GetRegistrationById_EvenId_ShouldReturnReprocessor()

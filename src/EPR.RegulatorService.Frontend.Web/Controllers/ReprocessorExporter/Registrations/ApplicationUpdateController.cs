@@ -17,19 +17,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
+using Core.Models.ReprocessorExporter.Registrations;
+
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
 public class ApplicationUpdateController(
     IMapper mapper,
     IValidator<IdRequest> validator,
-    IRegistrationService registrationService,
+    IReprocessorExporterService reprocessorExporterService,
     ISessionManager<JourneySession> sessionManager,
     IConfiguration configuration)
     : ReprocessorExporterBaseController(sessionManager, configuration)
 {
     [HttpGet]
     [Route(PagePath.ApplicationUpdate)]
-    public async Task<IActionResult> Index([FromQuery] int registrationMaterialId)
+    public async Task<IActionResult> ApplicationUpdate(int registrationMaterialId)
     {
         await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationMaterialId });
 
@@ -42,12 +44,12 @@ public class ApplicationUpdateController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView("ApplicationUpdate"), viewModel);
+        return View(GetRegistrationsView(nameof(ApplicationUpdate)), viewModel);
     }
 
     [HttpPost]
     [Route(PagePath.ApplicationUpdate)]
-    public async Task<IActionResult> Index(ApplicationUpdateViewModel viewModel)
+    public async Task<IActionResult> ApplicationUpdate(ApplicationUpdateViewModel viewModel)
     {
         var session = await GetSession();
         var applicationUpdateSession = GetApplicationUpdateSession(session);
@@ -58,7 +60,7 @@ public class ApplicationUpdateController(
             SetBackLinkInfos(session, pagePath);
 
             mapper.Map(applicationUpdateSession, viewModel);
-            return View(GetRegistrationsView("ApplicationUpdate"), viewModel);
+            return View(GetRegistrationsView(nameof(ApplicationUpdate)), viewModel);
         }
 
         applicationUpdateSession.Status = viewModel.Status;
@@ -101,8 +103,8 @@ public class ApplicationUpdateController(
     }
 
     [HttpPost]
-    [Route(PagePath.SaveGrantedApplication)]
-    public async Task<IActionResult> SaveGrantedApplication(ApplicationGrantedViewModel viewModel)
+    [Route(PagePath.ApplicationGrantedDetails)]
+    public async Task<IActionResult> ApplicationGrantedDetails(ApplicationGrantedViewModel viewModel)
     {
         var session = await GetSession();
         var applicationUpdateSession = GetApplicationUpdateSession(session);
@@ -115,14 +117,16 @@ public class ApplicationUpdateController(
             return View(GetRegistrationsView("ApplicationGrantedDetails"), viewModel);
         }
 
-        await registrationService.UpdateRegistrationMaterialOutcomeAsync(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, viewModel.Comments);
+        await reprocessorExporterService.UpdateRegistrationMaterialOutcomeAsync(
+            applicationUpdateSession.RegistrationMaterialId,
+            new RegistrationMaterialOutcomeRequest { Status = applicationUpdateSession.Status, Comments = viewModel.Comments });
 
         return RedirectToAction(PagePath.ManageRegistrations, PagePath.ReprocessorExporterRegistrations, new { id = applicationUpdateSession.RegistrationId });
     }
 
     [HttpPost]
-    [Route(PagePath.SaveRefusedApplication)]
-    public async Task<IActionResult> SaveRefusedApplication(ApplicationRefusedViewModel viewModel)
+    [Route(PagePath.ApplicationRefusedDetails)]
+    public async Task<IActionResult> ApplicationRefusedDetails(ApplicationRefusedViewModel viewModel)
     {
         var session = await GetSession();
         var applicationUpdateSession = GetApplicationUpdateSession(session);
@@ -135,7 +139,9 @@ public class ApplicationUpdateController(
             return View(GetRegistrationsView("ApplicationRefusedDetails"), viewModel);
         }
 
-        await registrationService.UpdateRegistrationMaterialOutcomeAsync(applicationUpdateSession.RegistrationMaterialId, applicationUpdateSession.Status, viewModel.Comments);
+        await reprocessorExporterService.UpdateRegistrationMaterialOutcomeAsync(
+            applicationUpdateSession.RegistrationMaterialId,
+            new RegistrationMaterialOutcomeRequest { Status = applicationUpdateSession.Status, Comments = viewModel.Comments });
 
         return RedirectToAction(PagePath.ManageRegistrations, PagePath.ReprocessorExporterRegistrations, new { id = applicationUpdateSession.RegistrationId });
     }
@@ -157,7 +163,7 @@ public class ApplicationUpdateController(
     {
         if (session.ReprocessorExporterSession.ApplicationUpdateSession == null)
         {
-            var registrationMaterial = await registrationService.GetRegistrationMaterialAsync(registrationMaterialId);
+            var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
             var applicationUpdateSession = mapper.Map<ApplicationUpdateSession>(registrationMaterial);
 
             session.ReprocessorExporterSession.ApplicationUpdateSession = applicationUpdateSession;

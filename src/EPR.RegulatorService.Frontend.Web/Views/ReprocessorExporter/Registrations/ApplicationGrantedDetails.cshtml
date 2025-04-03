@@ -25,9 +25,9 @@
           @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
         }
 
-        <form class="form" action="@Url.Action("SaveGrantedApplication", "ApplicationUpdate")" method="POST">
+        <form class="form" action="@Url.Action("ApplicationGrantedDetails", "ApplicationUpdate")" method="POST">
 
-					<div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+          <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
 
             @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
 
@@ -39,11 +39,11 @@
             <div class="govuk-hint govuk-character-count__message govuk-character-count__status" aria-hidden="true">You have 200 characters remaining</div>
             <div class="govuk-character-count__sr-status govuk-visually-hidden" aria-live="polite">You have 200 characters remaining</div>
           </div>
-          
+
           <button type="submit" class="govuk-button govuk-body govuk-!-margin-top-6" data-module="govuk-button">
             Mark as granted
           </button>
-          
+
         </form>
       </div>
     </div>

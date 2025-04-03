@@ -14,7 +14,7 @@ namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 /// This logic is purely for testing and will be replaced with real database queries.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class MockedRegistrationService : IRegistrationService
+public class MockedReprocessorExporterService : IReprocessorExporterService
 {
     private readonly List<Registration> _registrations = SeedRegistrations();
 
@@ -45,7 +45,7 @@ public class MockedRegistrationService : IRegistrationService
         return Task.FromResult(registration);
     }
 
-    public Task<RegistrationMaterial> GetRegistrationMaterialAsync(int registrationMaterialId)
+    public Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int registrationMaterialId)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials)
             .FirstOrDefault(rm => rm.Id == registrationMaterialId);
@@ -55,30 +55,38 @@ public class MockedRegistrationService : IRegistrationService
             throw new NotFoundException("Registration material not found.");
         }
 
-        return Task.FromResult(registrationMaterial);
+        return Task.FromResult(new RegistrationMaterialDetail
+        {
+            Id = registrationMaterial.Id,
+            RegistrationId = registrationMaterial.RegistrationId,
+            MaterialName = registrationMaterial.MaterialName,
+            Status = registrationMaterial.Status,
+        });
     }
 
-    public async Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, ApplicationStatus? status, string? comments)
+    public Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
-        var registrationMaterial = await GetRegistrationMaterialAsync(registrationMaterialId);
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
         var registration = _registrations.First(r => r.Id == registrationMaterial.RegistrationId);
 
         registration.Materials.Remove(registrationMaterial);
 
-        string? registrationNumber = status == ApplicationStatus.Granted ? "ABC123 4563" : null;
-        string? statusUpdatedBy = status != null ? "Test User" : null;
-        DateTime? statusUpdatedAt = status != null ? DateTime.Now : null;
+        string? registrationNumber = registrationMaterialOutcomeRequest.Status == ApplicationStatus.Granted ? "ABC123 4563" : null;
+        string? statusUpdatedBy = registrationMaterialOutcomeRequest.Status != null ? "Test User" : null;
+        DateTime? statusUpdatedAt = registrationMaterialOutcomeRequest.Status != null ? DateTime.Now : null;
 
         var updatedRegistrationMaterial = CreateRegistrationMaterial(
             registrationMaterial.RegistrationId,
             registrationMaterial.MaterialName,
             registration.OrganisationType,
-            status,
+            registrationMaterialOutcomeRequest.Status,
             statusUpdatedBy,
             statusUpdatedAt,
             registrationNumber);
 
         registration.Materials.Add(updatedRegistrationMaterial);
+
+        return Task.CompletedTask;
     }
 
     private static List<Registration> SeedRegistrations() =>

@@ -25,17 +25,14 @@ public class ApplicationUpdateMappingProfileTests
     public void Mapping_Configuration_IsValid() => _mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
     [TestMethod]
-    public void Map_WhenCalledWithRegistrationMaterial_ShouldReturnApplicationUpdateSession()
+    public void Map_WhenCalledWithRegistrationMaterialDetail_ShouldReturnApplicationUpdateSession()
     {
         // Arrange
-        var registrationMaterial = new RegistrationMaterial
+        var registrationMaterial = new RegistrationMaterialDetail
         {
             Id = 1,
             MaterialName = "Plastic",
-            Status = ApplicationStatus.Granted,
-            StatusUpdatedByName = "Test User",
-            StatusUpdatedAt = DateTime.Now,
-            RegistrationNumber = "ABC1234"
+            Status = ApplicationStatus.Granted
         };
 
         // Act
