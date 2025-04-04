@@ -15,10 +15,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
     [TestClass]
     public class ReprocessorExporterServiceTests
     {
-        private const string BaseUrl = "https://example.com";
-        private const string GetRegistrationByIdPath = "/registrations/{id}";
-        private const string GetRegistrationMaterialByIdPath = "/registrationMaterials/{id}";
-        private const string UpdateRegistrationMaterialOutcome = "/registrationMaterials/{id}/outcome";
+        private const string BaseUrl = "https://example.com/";
+        private const int ApiVersion = 1;
+        private const string GetRegistrationByIdPath = "v{apiVersion}/registrations/{id}";
+        private const string GetRegistrationMaterialByIdPath = "v{apiVersion}/registrationMaterials/{id}";
+        private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
 
         private ReprocessorExporterService _service; // System under test
 
@@ -39,6 +40,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             var config = new ReprocessorExporterFacadeApiConfig
             {
                 BaseUrl = BaseUrl,
+                ApiVersion = 1,
                 DownstreamScope = "api://default",
                 Endpoints = new Dictionary<string, string>
                 {
@@ -57,7 +59,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         {
             // Arrange
             var expectedRegistration = CreateRegistration();
-            string expectedPath = GetRegistrationByIdPath.Replace("{id}", expectedRegistration.Id.ToString());
+            string expectedPath = GetRegistrationByIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", expectedRegistration.Id.ToString());
 
             var response = new HttpResponseMessage
             {
@@ -81,7 +85,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         {
             // Arrange
             const int registrationId = 123;
-            string expectedPath = GetRegistrationByIdPath.Replace("{id}", registrationId.ToString());
+            string expectedPath = GetRegistrationByIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationId.ToString());
 
             var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
 
@@ -96,7 +102,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         {
             // Arrange
             var expectedRegistrationMaterial = CreateRegistrationMaterial();
-            string expectedPath = GetRegistrationMaterialByIdPath.Replace("{id}", expectedRegistrationMaterial.Id.ToString());
+            string expectedPath = GetRegistrationMaterialByIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", expectedRegistrationMaterial.Id.ToString());
 
             var response = new HttpResponseMessage
             {
@@ -119,7 +127,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         {
             // Arrange
             const int registrationMaterialId = 123;
-            string expectedPath = GetRegistrationMaterialByIdPath.Replace("{id}", registrationMaterialId.ToString());
+            string expectedPath = GetRegistrationMaterialByIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationMaterialId.ToString());
 
             var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
 
@@ -134,7 +144,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         {
             // Arrange
             const int registrationMaterialId = 123;
-            string expectedPath = UpdateRegistrationMaterialOutcome.Replace("{id}", registrationMaterialId.ToString());
+            string expectedPath = UpdateRegistrationMaterialOutcome
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationMaterialId.ToString());
             var request = new RegistrationMaterialOutcomeRequest
             {
                 Status = ApplicationStatus.Granted,

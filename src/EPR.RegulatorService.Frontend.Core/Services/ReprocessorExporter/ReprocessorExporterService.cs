@@ -30,7 +30,7 @@ public class ReprocessorExporterService(
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = reprocessorExporterFacadeConfig.Value.Endpoints[Endpoints.GetRegistrationById.ToString()];
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationById);
         string path = pathTemplate.Replace("{id}", registrationId.ToString(CultureInfo.InvariantCulture));
         
         var response = await httpClient.GetAsync(path);
@@ -44,7 +44,7 @@ public class ReprocessorExporterService(
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = reprocessorExporterFacadeConfig.Value.Endpoints[Endpoints.GetRegistrationMaterialById.ToString()];
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationMaterialById);
         string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
 
         var response = await httpClient.GetAsync(path);
@@ -58,7 +58,7 @@ public class ReprocessorExporterService(
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = reprocessorExporterFacadeConfig.Value.Endpoints[Endpoints.UpdateRegistrationMaterialOutcome.ToString()];
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationMaterialOutcome);
         string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
 
         var response = await httpClient.PatchAsJsonAsync(path, registrationMaterialOutcomeRequest);
@@ -90,5 +90,13 @@ public class ReprocessorExporterService(
         }
 
         return entity;
+    }
+
+    private string GetVersionedEndpoint(Endpoints endpointName)
+    {
+        var version = reprocessorExporterFacadeConfig.Value.ApiVersion.ToString();
+        string pathTemplate = reprocessorExporterFacadeConfig.Value.Endpoints[endpointName.ToString()].Replace("{apiVersion}", version);
+
+        return pathTemplate;
     }
 }

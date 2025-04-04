@@ -4,11 +4,13 @@ public class ReprocessorExporterFacadeApiConfig
 {
     public const string ConfigSection = "ReprocessorExporterFacadeApi";
     
-    public string DownstreamScope { get; set; } = string.Empty;
+    public string DownstreamScope { get; init; } = string.Empty;
 
-    public bool UseMockData { get; set; }
+    public int ApiVersion { get; init; }
+
+    public bool UseMockData { get; init; }
     
-    public string BaseUrl { get; set; } = string.Empty;
+    public string BaseUrl { get; init; } = string.Empty;
     
-    public Dictionary<string, string> Endpoints { get; set; } = new();
+    public Dictionary<string, string> Endpoints { get; init; } = new();
 }
