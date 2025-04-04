@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 public class ApplicationRefusedViewModel
 {
-    public string? MaterialName { get; init; }
+    public string? MaterialName { get; set; }
 
     [Required(ErrorMessage = "Enter refusal details")]
     [MaxLength(500, ErrorMessage = "Entry exceeds character maximum")]
-    public required string Comments { get; init; }
+    public required string Comments { get; set; }
 }

@@ -52,24 +52,15 @@ public class ApplicationUpdateController(
     [Route(PagePath.ApplicationUpdate)]
     public async Task<IActionResult> ApplicationUpdate(ApplicationUpdateViewModel viewModel)
     {
-        var session = await GetSession();
-        var applicationUpdateSession = GetApplicationUpdateSession(session);
-
         if (!ModelState.IsValid)
         {
-            try
-            {
-                mapper.Map(applicationUpdateSession, viewModel);
+            viewModel.MaterialName = "INVALID MODEL TEST";
 
-                return View(GetRegistrationsView(nameof(ApplicationUpdate)), viewModel);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "ApplicationUpdate: Error while processing the request");
-                throw;
-            }
+            return View(GetRegistrationsView(nameof(ApplicationUpdate)), viewModel);
         }
 
+        var session = await GetSession();
+        var applicationUpdateSession = GetApplicationUpdateSession(session);
         applicationUpdateSession.Status = viewModel.Status;
 
         await SaveSession(session);

@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 public class ApplicationGrantedViewModel
 {
-    public string? MaterialName { get; init; }
+    public string? MaterialName { get; set; }
 
     [MaxLength(500, ErrorMessage = "Entry exceeds character maximum")]
-    public string? Comments { get; init; }
+    public string? Comments { get; set; }
 }
