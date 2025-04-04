@@ -64,10 +64,12 @@ public static class PagePath
     public const string MaterialDetails = "materials-contact";
     public const string MaterialWasteLicences = "permits-exemptions";
     public const string OverseasReprocessorInterim = "overseas-interim-sites";
-
     public const string SamplingInspection = "sampling-inspection";
     public const string BusinessAddress = "business-address";
     public const string WasteLicences = "waste-licences";
+    public const string ApplicationUpdate = "application-update";
+    public const string ApplicationGrantedDetails = "application-granted";
+    public const string ApplicationRefusedDetails = "application-refused";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

@@ -4,9 +4,9 @@ using FluentValidation;
 
 namespace EPR.RegulatorService.Frontend.Web.Validations;
 
-public class ManageRegistrationsValidator : AbstractValidator<ManageRegistrationsRequest>
+public class IdRequestValidator : AbstractValidator<IdRequest>
 {
-    public ManageRegistrationsValidator()
+    public IdRequestValidator()
     {
         RuleFor(x => x.Id)
             .GreaterThan(0)

@@ -1,14 +1,11 @@
 using EPR.Common.Authorization.Constants;
-using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
@@ -16,28 +13,26 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
-public class RegistrationsController(ISessionManager<JourneySession> sessionManager, IConfiguration configuration)
+public class RegistrationsController(
+    ISessionManager<JourneySession> sessionManager,
+    IConfiguration configuration)
     : ReprocessorExporterBaseController(sessionManager, configuration)
 {
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
-    public async Task<IActionResult> AuthorisedMaterials()
+    public async Task<IActionResult> AuthorisedMaterials(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.AuthorisedMaterials);
         SetBackLinkInfos(session, PagePath.AuthorisedMaterials);
-
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-        return View(RegistrationsView(nameof(AuthorisedMaterials)), model);
+        
+        return View(GetRegistrationsView(nameof(AuthorisedMaterials)));
     }
 
     [HttpGet]
     [Route(PagePath.UkSiteDetails)]
-    public async Task<IActionResult> UkSiteDetails()
+    public async Task<IActionResult> UkSiteDetails(int registrationTaskId)
     {
         var session = await GetSession();
 
@@ -45,142 +40,90 @@ public class RegistrationsController(ISessionManager<JourneySession> sessionMana
 
         SetBackLinkInfos(session, PagePath.UkSiteDetails);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-
-        return View(RegistrationsView(nameof(UkSiteDetails)), model);
+        return View(GetRegistrationsView(nameof(UkSiteDetails)));
     }
 
     [HttpGet]
     [Route(PagePath.MaterialWasteLicences)]
-    public async Task<IActionResult> MaterialWasteLicences()
+    public async Task<IActionResult> MaterialWasteLicences(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.MaterialWasteLicences);
         SetBackLinkInfos(session, PagePath.MaterialWasteLicences);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-
-        return View(RegistrationsView(nameof(MaterialWasteLicences)), model);
+        return View(GetRegistrationsView(nameof(MaterialWasteLicences)));
     }
 
     [HttpGet]
     [Route(PagePath.SamplingInspection)]
-    public async Task<IActionResult> SamplingInspection()
+    public async Task<IActionResult> SamplingInspection(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.SamplingInspection);
         SetBackLinkInfos(session, PagePath.SamplingInspection);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-
-        return View(RegistrationsView(nameof(SamplingInspection)), model);
+        return View(GetRegistrationsView(nameof(SamplingInspection)));
     }
     
     [HttpGet]
     [Route(PagePath.InputsAndOutputs)]
-    public async Task<IActionResult> InputsAndOutputs()
+    public async Task<IActionResult> InputsAndOutputs(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.InputsAndOutputs);
         SetBackLinkInfos(session, PagePath.InputsAndOutputs);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Reprocessor
-        };
-
-        return View(RegistrationsView(nameof(InputsAndOutputs)), model);
+        return View(GetRegistrationsView(nameof(InputsAndOutputs)));
     }
 
     [HttpGet]
     [Route(PagePath.WasteLicences)]
-    public async Task<IActionResult> WasteLicences()
+    public async Task<IActionResult> WasteLicences(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.WasteLicences);
         SetBackLinkInfos(session, PagePath.WasteLicences);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
-        };
-
-        return View(RegistrationsView(nameof(WasteLicences)), model);
+        return View(GetRegistrationsView(nameof(WasteLicences)));
     }
 
     [HttpGet]
     [Route(PagePath.BusinessAddress)]
-    public async Task<IActionResult> BusinessAddress()
+    public async Task<IActionResult> BusinessAddress(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.BusinessAddress);
         SetBackLinkInfos(session, PagePath.BusinessAddress);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
-        };
-
-        return View(RegistrationsView(nameof(BusinessAddress)), model);
+        return View(GetRegistrationsView(nameof(BusinessAddress)));
     }
 
     [HttpGet]
     [Route(PagePath.MaterialDetails)]
-    public async Task<IActionResult> MaterialDetails()
+    public async Task<IActionResult> MaterialDetails(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.MaterialDetails);
         SetBackLinkInfos(session, PagePath.MaterialDetails);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
-        };
-
-        return View(RegistrationsView(nameof(MaterialDetails)), model);
+        return View(GetRegistrationsView(nameof(MaterialDetails)));
     }
 
     [HttpGet]
     [Route(PagePath.OverseasReprocessorInterim)]
-    public async Task<IActionResult> OverseasReprocessorInterim()
+    public async Task<IActionResult> OverseasReprocessorInterim(int registrationTaskId)
     {
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.OverseasReprocessorInterim);
         SetBackLinkInfos(session, PagePath.OverseasReprocessorInterim);
 
-        var model = new ManageRegistrationsViewModel
-        {
-            ApplicationOrganisationType = ApplicationOrganisationType.Exporter
-        };
-
-        return View(RegistrationsView(nameof(OverseasReprocessorInterim)), model);
+        return View(GetRegistrationsView(nameof(OverseasReprocessorInterim)));
     }
-
-    private void SetBackLinkInfos(JourneySession session, string currentPagePath)
-    {
-        if (string.IsNullOrEmpty(Request?.Headers?.Referer))
-            SetHomeBackLink();
-        else
-            SetBackLink(session, currentPagePath);
-
-        SetBackLinkAriaLabel();
-    }
-    
-    private static string RegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
 }
