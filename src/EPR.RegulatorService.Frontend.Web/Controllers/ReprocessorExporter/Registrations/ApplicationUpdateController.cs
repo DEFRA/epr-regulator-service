@@ -22,6 +22,7 @@ using Core.Models.ReprocessorExporter.Registrations;
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
 public class ApplicationUpdateController(
+    ILogger<ApplicationUpdateController> logger,
     IMapper mapper,
     IValidator<IdRequest> validator,
     IReprocessorExporterService reprocessorExporterService,
@@ -56,11 +57,35 @@ public class ApplicationUpdateController(
 
         if (!ModelState.IsValid)
         {
-            string pagePath = GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId);
-            SetBackLinkInfos(session, pagePath);
+            try
+            {
+                logger.LogWarning("ApplicationUpdate: Model is in invalid state");
 
-            mapper.Map(applicationUpdateSession, viewModel);
-            return View(GetRegistrationsView(nameof(ApplicationUpdate)), viewModel);
+                logger.LogWarning(
+                    $"ApplicationUpdate: ApplicationUpdateSession != null: {applicationUpdateSession != null}");
+                logger.LogWarning(
+                    $"ApplicationUpdate: ApplicationUpdateSession.RegistrationMaterialId ==: {applicationUpdateSession.RegistrationMaterialId}");
+
+                string pagePath = GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId);
+
+                logger.LogWarning($"ApplicationUpdate: pagePath: {pagePath}");
+
+                SetBackLinkInfos(session, pagePath);
+
+                logger.LogWarning("ApplicationUpdate: Back link set");
+
+                mapper.Map(applicationUpdateSession, viewModel);
+
+                logger.LogWarning("ApplicationUpdate: Mapped viewmodel");
+                logger.LogWarning($"ApplicationUpdate: ViewModel != null: {viewModel != null}");
+
+                return View(GetRegistrationsView(nameof(ApplicationUpdate)), viewModel);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "ApplicationUpdate: Error while processing the request");
+                throw;
+            }
         }
 
         applicationUpdateSession.Status = viewModel.Status;
