@@ -25,4 +25,6 @@ public class AbstractSubmission
     public string? NationCode { get; set; }
 
     public string? ReferenceNumber { get; set; }
+
+    public int MemberCount { get; set; }
 }

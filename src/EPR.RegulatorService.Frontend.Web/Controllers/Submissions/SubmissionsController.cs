@@ -201,9 +201,10 @@ public partial class SubmissionsController : Controller
                     = model.NationCode = payCalParameters.NationCode;
                 session.RegulatorSubmissionSession.OrganisationSubmission.ReferenceNumber
                     = model.ReferenceNumber = payCalParameters.Reference;
+                session.RegulatorSubmissionSession.OrganisationSubmission.MemberCount
+                    = model.MemberCount = payCalParameters.MemberCount ?? 0;
                 model.ReferenceFieldNotAvailable = payCalParameters.ReferenceFieldNotAvailable;
                 model.ReferenceNotAvailable = payCalParameters.ReferenceNotAvailable;
-                model.MemberCount = payCalParameters.MemberCount ?? 0;
                 model.SubmittedDate = payCalParameters.ResubmissionDate ?? model.SubmittedDate;
             }
         }
