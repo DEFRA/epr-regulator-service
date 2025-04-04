@@ -59,25 +59,7 @@ public class ApplicationUpdateController(
         {
             try
             {
-                logger.LogWarning("ApplicationUpdate: Model is in invalid state");
-
-                logger.LogWarning(
-                    $"ApplicationUpdate: ApplicationUpdateSession != null: {applicationUpdateSession != null}");
-                logger.LogWarning(
-                    $"ApplicationUpdate: ApplicationUpdateSession.RegistrationMaterialId ==: {applicationUpdateSession.RegistrationMaterialId}");
-
-                string pagePath = GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId);
-
-                logger.LogWarning($"ApplicationUpdate: pagePath: {pagePath}");
-
-                SetBackLinkInfos(session, pagePath);
-
-                logger.LogWarning("ApplicationUpdate: Back link set");
-
                 mapper.Map(applicationUpdateSession, viewModel);
-
-                logger.LogWarning("ApplicationUpdate: Mapped viewmodel");
-                logger.LogWarning($"ApplicationUpdate: ViewModel != null: {viewModel != null}");
 
                 return View(GetRegistrationsView(nameof(ApplicationUpdate)), viewModel);
             }
