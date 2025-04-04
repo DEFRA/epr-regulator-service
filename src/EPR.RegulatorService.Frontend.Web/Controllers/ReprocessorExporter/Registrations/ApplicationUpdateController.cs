@@ -56,11 +56,13 @@ public class ApplicationUpdateController(
 
         if (!ModelState.IsValid)
         {
-            string pagePath = GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId);
-            SetBackLinkInfos(session, pagePath);
-
-            mapper.Map(applicationUpdateSession, viewModel);
-            return View(GetRegistrationsView(nameof(ApplicationUpdate)), viewModel);
+            return HandleInvalidModelState(
+                session,
+                GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId),
+                applicationUpdateSession,
+                viewModel,
+                GetRegistrationsView(nameof(ApplicationUpdate))
+                );
         }
 
         applicationUpdateSession.Status = viewModel.Status;
@@ -87,6 +89,31 @@ public class ApplicationUpdateController(
         return View(GetRegistrationsView(nameof(ApplicationGrantedDetails)), viewModel);
     }
 
+    [HttpPost]
+    [Route(PagePath.ApplicationGrantedDetails)]
+    public async Task<IActionResult> ApplicationGrantedDetails(ApplicationGrantedViewModel viewModel)
+    {
+        var session = await GetSession();
+        var applicationUpdateSession = GetApplicationUpdateSession(session);
+
+        if (!ModelState.IsValid)
+        {
+            return HandleInvalidModelState(
+                session,
+                PagePath.ApplicationGrantedDetails,
+                applicationUpdateSession,
+                viewModel,
+                GetRegistrationsView(nameof(ApplicationGrantedDetails))
+            );
+        }
+
+        await reprocessorExporterService.UpdateRegistrationMaterialOutcomeAsync(
+            applicationUpdateSession.RegistrationMaterialId,
+            new RegistrationMaterialOutcomeRequest { Status = applicationUpdateSession.Status, Comments = viewModel.Comments });
+
+        return RedirectToAction(PagePath.ManageRegistrations, PagePath.ReprocessorExporterRegistrations, new { id = applicationUpdateSession.RegistrationId });
+    }
+
     [HttpGet]
     [Route(PagePath.ApplicationRefusedDetails)]
     public async Task<IActionResult> ApplicationRefusedDetails()
@@ -103,28 +130,6 @@ public class ApplicationUpdateController(
     }
 
     [HttpPost]
-    [Route(PagePath.ApplicationGrantedDetails)]
-    public async Task<IActionResult> ApplicationGrantedDetails(ApplicationGrantedViewModel viewModel)
-    {
-        var session = await GetSession();
-        var applicationUpdateSession = GetApplicationUpdateSession(session);
-
-        if (!ModelState.IsValid)
-        {
-            SetBackLinkInfos(session, PagePath.ApplicationGrantedDetails);
-
-            mapper.Map(applicationUpdateSession, viewModel);
-            return View(GetRegistrationsView("ApplicationGrantedDetails"), viewModel);
-        }
-
-        await reprocessorExporterService.UpdateRegistrationMaterialOutcomeAsync(
-            applicationUpdateSession.RegistrationMaterialId,
-            new RegistrationMaterialOutcomeRequest { Status = applicationUpdateSession.Status, Comments = viewModel.Comments });
-
-        return RedirectToAction(PagePath.ManageRegistrations, PagePath.ReprocessorExporterRegistrations, new { id = applicationUpdateSession.RegistrationId });
-    }
-
-    [HttpPost]
     [Route(PagePath.ApplicationRefusedDetails)]
     public async Task<IActionResult> ApplicationRefusedDetails(ApplicationRefusedViewModel viewModel)
     {
@@ -133,10 +138,13 @@ public class ApplicationUpdateController(
 
         if (!ModelState.IsValid)
         {
-            SetBackLinkInfos(session, PagePath.ApplicationRefusedDetails);
-
-            mapper.Map(applicationUpdateSession, viewModel);
-            return View(GetRegistrationsView("ApplicationRefusedDetails"), viewModel);
+            return HandleInvalidModelState(
+                session,
+                PagePath.ApplicationRefusedDetails,
+                applicationUpdateSession,
+                viewModel,
+                GetRegistrationsView(nameof(ApplicationRefusedDetails))
+            );
         }
 
         await reprocessorExporterService.UpdateRegistrationMaterialOutcomeAsync(
@@ -170,5 +178,14 @@ public class ApplicationUpdateController(
         }
 
         return session.ReprocessorExporterSession.ApplicationUpdateSession;
+    }
+
+    private IActionResult HandleInvalidModelState<T>(JourneySession session, string pagePath, ApplicationUpdateSession applicationUpdateSession, T viewModel, string viewName)
+    {
+        SetBackLinkInfos(session, pagePath);
+
+        mapper.Map(applicationUpdateSession, viewModel);
+
+        return View(viewName, viewModel);
     }
 }
