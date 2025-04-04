@@ -6,6 +6,6 @@ public class ApplicationGrantedViewModel
 {
     public string? MaterialName { get; init; }
 
-    [MaxLength(200, ErrorMessage = "Entry exceeds character maximum")]
+    [MaxLength(500, ErrorMessage = "Entry exceeds character maximum")]
     public string? Comments { get; init; }
 }

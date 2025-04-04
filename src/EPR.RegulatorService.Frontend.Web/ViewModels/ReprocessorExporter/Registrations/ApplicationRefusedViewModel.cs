@@ -7,6 +7,6 @@ public class ApplicationRefusedViewModel
     public string? MaterialName { get; init; }
 
     [Required(ErrorMessage = "Enter refusal details")]
-    [MaxLength(200, ErrorMessage = "Entry exceeds character maximum")]
+    [MaxLength(500, ErrorMessage = "Entry exceeds character maximum")]
     public required string Comments { get; init; }
 }

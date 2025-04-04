@@ -27,7 +27,7 @@
 
                 <form class="form" action="@Url.Action("ApplicationGrantedDetails", "ApplicationUpdate")" method="POST">
                     
-                  <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
+                  <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
 
                         @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
 
