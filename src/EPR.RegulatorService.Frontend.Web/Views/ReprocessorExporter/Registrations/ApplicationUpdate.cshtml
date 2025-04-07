@@ -32,22 +32,24 @@
           <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
             
             @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+            
+            <fieldset class="govuk-fieldset">
+              <div class="govuk-radios govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="Status" name="Status" type="radio" value="@nameof(ApplicationStatus.Granted)" @(Model.Status == ApplicationStatus.Granted ? "checked" : "")>
+                  <label class="govuk-label govuk-radios__label" for="Status">
+                    Grant registration
+                  </label>
+                </div>
 
-            <div class="govuk-radios govuk-radios" data-module="govuk-radios">
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="application-status-granted" name="status" type="radio" value="@nameof(ApplicationStatus.Granted)" @(Model.Status == ApplicationStatus.Granted ? "checked" : "")>
-                <label class="govuk-label govuk-radios__label" for="application-status-granted">
-                  Grant registration
-                </label>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="Status-refused" name="Status" type="radio" value="@nameof(ApplicationStatus.Refused)" @(Model.Status == ApplicationStatus.Refused ? "checked" : "")>
+                  <label class="govuk-label govuk-radios__label" for="Status-refused">
+                    Refuse registration
+                  </label>
+                </div>
               </div>
-
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="application-status-refused" name="status" type="radio" value="@nameof(ApplicationStatus.Refused)" @(Model.Status == ApplicationStatus.Refused ? "checked" : "")>
-                <label class="govuk-label govuk-radios__label" for="application-status-refused">
-                  Refuse registration
-                </label>
-              </div>
-            </div>
+            </fieldset>
           </div>
 
           <input class="govuk-button" type="submit" value="Continue">

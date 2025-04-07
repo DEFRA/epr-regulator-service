@@ -68,8 +68,8 @@ public static class PagePath
     public const string BusinessAddress = "business-address";
     public const string WasteLicences = "waste-licences";
     public const string ApplicationUpdate = "application-update";
-    public const string ApplicationGrantedDetails = "application-granted";
-    public const string ApplicationRefusedDetails = "application-refused";
+    public const string ApplicationGrantedDetails = "add-note";
+    public const string ApplicationRefusedDetails = "refused-details";
 
     // Non journey paths
     public const string Accessibility = "accessibility";
