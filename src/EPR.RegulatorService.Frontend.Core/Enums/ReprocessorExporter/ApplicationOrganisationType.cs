@@ -2,6 +2,6 @@ namespace EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 public enum ApplicationOrganisationType
 {
-    Reprocessor,
-    Exporter
+    Reprocessor = 1,
+    Exporter = 2
 }
