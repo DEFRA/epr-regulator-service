@@ -54,30 +54,19 @@ public class ApplicationUpdateController(
     [Route(PagePath.ApplicationUpdate)]
     public async Task<IActionResult> ApplicationUpdate(ApplicationUpdateViewModel viewModel)
     {
-        if (viewModel == null)
-        {
-            viewModel = new ApplicationUpdateViewModel { MaterialName = "VIEW MODEL NULL", Status = ApplicationStatus.Granted };
-            return View(GetRegistrationsView("ApplicationUpdate"), viewModel);
-        }
-        else if (ModelState?.IsValid == false)
-        {
-            viewModel = new ApplicationUpdateViewModel { MaterialName = "INVALID MODEL STATE", Status = ApplicationStatus.Granted };
-            return View(GetRegistrationsView("ApplicationUpdate"), viewModel);
-        }
-
         var session = await GetSession();
         var applicationUpdateSession = GetApplicationUpdateSession(session);
-        
-        //if (!ModelState.IsValid)
-        //{
-        //    return HandleInvalidModelState(
-        //        session,
-        //        GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId),
-        //        applicationUpdateSession,
-        //        viewModel,
-        //        GetRegistrationsView(nameof(ApplicationUpdate))
-        //        );
-        //}
+
+        if (!ModelState.IsValid)
+        {
+            return HandleInvalidModelState(
+                session,
+                GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId),
+                applicationUpdateSession,
+                viewModel,
+                GetRegistrationsView(nameof(ApplicationUpdate))
+                );
+        }
 
         applicationUpdateSession.Status = viewModel.Status;
 
