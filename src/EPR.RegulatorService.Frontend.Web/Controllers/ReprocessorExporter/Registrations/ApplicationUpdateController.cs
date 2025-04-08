@@ -17,8 +17,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
+using System.Diagnostics.CodeAnalysis;
+
 using Core.Models.ReprocessorExporter.Registrations;
 
+[ExcludeFromCodeCoverage]
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
 public class ApplicationUpdateController(
