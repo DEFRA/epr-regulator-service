@@ -103,7 +103,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             new Registration
             {
                 Id = registrationId,
-                OrganisationName = "MOCK Green Ltd",
+                OrganisationName = "MOCK (A) Green Ltd",
                 SiteAddress = "23 Ruby St, London, E12 3SE",
                 OrganisationType = organisationType,
                 Regulator = "Environment Agency (EA)",
@@ -122,7 +122,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return new Registration
         {
             Id = registrationId,
-            OrganisationName = "MOCK Blue Exports Ltd",
+            OrganisationName = "MOCK (A) Blue Exports Ltd",
             SiteAddress = "N/A",
             OrganisationType = organisationType,
             Regulator = "Environment Agency (EA)",

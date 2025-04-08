@@ -137,7 +137,7 @@ public class ApplicationUpdateControllerTests
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = null;
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(viewModel));
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdateTemp(null));
     }
 
     [TestMethod]
@@ -149,7 +149,7 @@ public class ApplicationUpdateControllerTests
         _applicationUpdateController.ModelState.AddModelError("Test", "Error");
 
         // Act
-        var response = await _applicationUpdateController.ApplicationUpdate(viewModel);
+        var response = await _applicationUpdateController.ApplicationUpdateTemp(null);
 
         // Assert
         using (new AssertionScope())
@@ -170,7 +170,7 @@ public class ApplicationUpdateControllerTests
         var viewModel = new ApplicationUpdateViewModel { Status = status };
 
         // Act
-        var response = await _applicationUpdateController.ApplicationUpdate(viewModel);
+        var response = await _applicationUpdateController.ApplicationUpdateTemp(status);
 
         // Assert
         using (new AssertionScope())
@@ -191,7 +191,7 @@ public class ApplicationUpdateControllerTests
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession!.Status = null;
 
         // Act
-        await _applicationUpdateController.ApplicationUpdate(viewModel);
+        await _applicationUpdateController.ApplicationUpdateTemp(ApplicationStatus.Granted);
 
         // Assert
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession!.Status.Should().Be(viewModel.Status);

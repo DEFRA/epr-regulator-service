@@ -68,6 +68,7 @@ public static class PagePath
     public const string BusinessAddress = "business-address";
     public const string WasteLicences = "waste-licences";
     public const string ApplicationUpdate = "application-update";
+    public const string ApplicationUpdateTemp = "application-update-temp";
     public const string ApplicationGrantedDetails = "add-note";
     public const string ApplicationRefusedDetails = "refused-details";
 
