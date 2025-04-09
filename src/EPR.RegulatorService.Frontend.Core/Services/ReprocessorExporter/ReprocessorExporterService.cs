@@ -1,5 +1,8 @@
+using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
@@ -9,8 +12,6 @@ using Microsoft.Identity.Web;
 using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
-
-using System.Globalization;
 
 public class ReprocessorExporterService(
     HttpClient httpClient,
@@ -82,7 +83,11 @@ public class ReprocessorExporterService(
     {
         response.EnsureSuccessStatusCode();
 
-        var entity = await response.Content.ReadFromJsonAsync<T>();
+        var entity = await response.Content.ReadFromJsonAsync<T>(new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+        });
 
         if (entity == null)
         {
@@ -94,7 +99,7 @@ public class ReprocessorExporterService(
 
     private string GetVersionedEndpoint(Endpoints endpointName)
     {
-        var version = reprocessorExporterFacadeConfig.Value.ApiVersion.ToString();
+        string version = reprocessorExporterFacadeConfig.Value.ApiVersion.ToString();
         string pathTemplate = reprocessorExporterFacadeConfig.Value.Endpoints[endpointName.ToString()].Replace("{apiVersion}", version);
 
         return pathTemplate;
