@@ -52,13 +52,12 @@ public class ApplicationUpdateController(
 
     [HttpPost]
     [Route(PagePath.ApplicationUpdateTemp)]
-    public async Task<IActionResult> ApplicationUpdateTemp([FromBody] ApplicationStatus? status = null)
+    public async Task<IActionResult> ApplicationUpdateTemp(ApplicationUpdateViewModel viewModel)
     {
         var session = await GetSession();
         var applicationUpdateSession = GetApplicationUpdateSession(session);
-        var viewModel = mapper.Map<ApplicationUpdateViewModel>(applicationUpdateSession);
-
-        if (status == null)
+        
+        if (!ModelState.IsValid)
         {
             return HandleInvalidModelState(
                 session,
@@ -69,11 +68,11 @@ public class ApplicationUpdateController(
                 );
         }
 
-        applicationUpdateSession.Status = status;
+        applicationUpdateSession.Status = viewModel.Status;
 
         await SaveSession(session);
 
-        return status == ApplicationStatus.Granted
+        return viewModel.Status == ApplicationStatus.Granted
             ? RedirectToAction(PagePath.ApplicationGrantedDetails, PagePath.ReprocessorExporterRegistrations)
             : RedirectToAction(PagePath.ApplicationRefusedDetails, PagePath.ReprocessorExporterRegistrations);
     }
