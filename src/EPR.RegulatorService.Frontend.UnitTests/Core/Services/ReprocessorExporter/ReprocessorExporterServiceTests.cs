@@ -12,6 +12,9 @@ using Moq.Protected;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter
 {
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
+
     [TestClass]
     public class ReprocessorExporterServiceTests
     {
@@ -26,10 +29,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         private Mock<HttpMessageHandler> _httpMessageHandlerMock;
         private Mock<IOptions<ReprocessorExporterFacadeApiConfig>> _optionsMock;
         private HttpClient _httpClient;
-        
+        private JsonSerializerOptions _jsonSerializerOptions;
+
         [TestInitialize]
         public void TestInitialize()
         {
+            _jsonSerializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+            };
+
             _httpMessageHandlerMock = new Mock<HttpMessageHandler>();
             _optionsMock = new Mock<IOptions<ReprocessorExporterFacadeApiConfig>>();
 
@@ -66,7 +76,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             var response = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(expectedRegistration))
+                Content = new StringContent(JsonSerializer.Serialize(expectedRegistration, _jsonSerializerOptions))
             };
 
             SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
@@ -109,7 +119,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             var response = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(expectedRegistrationMaterial))
+                Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(expectedRegistrationMaterial, _jsonSerializerOptions))
             };
 
             SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
