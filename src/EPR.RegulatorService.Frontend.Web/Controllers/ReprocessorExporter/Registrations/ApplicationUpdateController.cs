@@ -52,7 +52,7 @@ public class ApplicationUpdateController(
 
     [HttpPost]
     [Route(PagePath.ApplicationUpdateTemp)]
-    public async Task<IActionResult> ApplicationUpdateTemp(ApplicationStatus? status)
+    public async Task<IActionResult> ApplicationUpdateTemp([FromBody] ApplicationStatus? status = null)
     {
         var session = await GetSession();
         var applicationUpdateSession = GetApplicationUpdateSession(session);

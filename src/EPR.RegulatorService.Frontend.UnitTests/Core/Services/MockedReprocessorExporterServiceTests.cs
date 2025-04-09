@@ -30,7 +30,7 @@ public class MockedReprocessorExporterServiceTests
         {
             result!.Id.Should().Be(id);
             result.OrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-            result.OrganisationName.Should().Be("MOCK (A) Green Ltd");
+            result.OrganisationName.Should().Be("MOCK (B) Green Ltd");
             result.SiteAddress.Should().Be("23 Ruby St, London, E12 3SE");
             result.Regulator.Should().Be("Environment Agency (EA)");
         }
@@ -52,7 +52,7 @@ public class MockedReprocessorExporterServiceTests
         {
             result!.Id.Should().Be(id);
             result.OrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
-            result.OrganisationName.Should().Be("MOCK (A) Blue Exports Ltd");
+            result.OrganisationName.Should().Be("MOCK (B) Blue Exports Ltd");
             result.SiteAddress.Should().Be("N/A"); // Exporters have no site address
             result.Regulator.Should().Be("Environment Agency (EA)");
         }
