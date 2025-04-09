@@ -170,7 +170,7 @@ public class ApplicationUpdateControllerTests
         var viewModel = new ApplicationUpdateViewModel { Status = status };
 
         // Act
-        var response = await _applicationUpdateController.ApplicationUpdateTemp(status);
+        var response = await _applicationUpdateController.ApplicationUpdateTemp(viewModel);
 
         // Assert
         using (new AssertionScope())
@@ -191,7 +191,7 @@ public class ApplicationUpdateControllerTests
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession!.Status = null;
 
         // Act
-        await _applicationUpdateController.ApplicationUpdateTemp(ApplicationStatus.Granted);
+        await _applicationUpdateController.ApplicationUpdateTemp(viewModel);
 
         // Assert
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession!.Status.Should().Be(viewModel.Status);
