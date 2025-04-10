@@ -97,7 +97,7 @@ public class RegistrationsControllerTests
     public async Task UkSiteDetails_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange
-        const int registrationTaskId = 1234;
+        const int registrationId = 1234;
 
         // Arrange
         _mockSessionManager
@@ -107,7 +107,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.UkSiteDetails(registrationTaskId);
+            await _controller.UkSiteDetails(registrationId);
         });
     }
 

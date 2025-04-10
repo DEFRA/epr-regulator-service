@@ -89,7 +89,7 @@ public class ManageRegistrationsMappingProfileTests
         // Assert
         using (new AssertionScope())
         {
-            viewModel.Id.Should().Be(registrationTask.Id);
+            viewModel.TaskName.Should().Be(registrationTask.TaskName);
             viewModel.StatusText.Should().Be(expectedStatusText);
             viewModel.StatusCssClass.Should().Be(expectedCssClass);
         }

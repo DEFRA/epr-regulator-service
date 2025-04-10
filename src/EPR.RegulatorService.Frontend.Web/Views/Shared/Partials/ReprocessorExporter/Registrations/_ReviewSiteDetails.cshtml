@@ -10,7 +10,7 @@
   {
     <li class="app-task-list__item">
       <span class="app-task-list__task-name">
-        <a href="@Url.ActionLink("UkSiteDetails", "Registrations", new { registrationTaskId = @Model.SiteAddressTask.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Site address </a>
+        <a href="@Url.ActionLink("UkSiteDetails", "Registrations", new { registrationId = @Model.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Site address </a>
       </span>
       <strong class="govuk-tag @Model.SiteAddressTask.StatusCssClass app-task-list__tag">@Model.SiteAddressTask.StatusText</strong><br>
     </li>
@@ -20,7 +20,7 @@
   {
     <li class="app-task-list__item">
       <span class="app-task-list__task-name">
-        <a href="@Url.ActionLink("AuthorisedMaterials", "Registrations", new { registrationTaskId = @Model.MaterialsAuthorisedOnSiteTask.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Materials authorised on site</a>
+				<a href="@Url.ActionLink("AuthorisedMaterials", "Registrations", new { registrationId = @Model.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Materials authorised on site</a>
       </span>
       <strong class="govuk-tag @Model.MaterialsAuthorisedOnSiteTask.StatusCssClass app-task-list__tag">@Model.MaterialsAuthorisedOnSiteTask.StatusText</strong><br>
     </li>

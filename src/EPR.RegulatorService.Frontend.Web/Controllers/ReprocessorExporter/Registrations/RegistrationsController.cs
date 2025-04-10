@@ -10,6 +10,8 @@ using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
+using Core.Enums.ReprocessorExporter;
+
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
@@ -20,8 +22,9 @@ public class RegistrationsController(
 {
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
-    public async Task<IActionResult> AuthorisedMaterials(int registrationTaskId)
+    public async Task<IActionResult> AuthorisedMaterials(int registrationId)
     {
+        // TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.AuthorisedMaterials);
@@ -32,8 +35,9 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.UkSiteDetails)]
-    public async Task<IActionResult> UkSiteDetails(int registrationTaskId)
+    public async Task<IActionResult> UkSiteDetails(int registrationId)
     {
+        // TaskName = RegulatorTaskType.SiteAddressAndContactDetails
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.UkSiteDetails);
@@ -45,8 +49,9 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.MaterialWasteLicences)]
-    public async Task<IActionResult> MaterialWasteLicences(int registrationTaskId)
+    public async Task<IActionResult> MaterialWasteLicences(int registrationMaterialId)
     {
+        //TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.MaterialWasteLicences);
@@ -57,8 +62,9 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.SamplingInspection)]
-    public async Task<IActionResult> SamplingInspection(int registrationTaskId)
+    public async Task<IActionResult> SamplingInspection(int registrationMaterialId)
     {
+        //TaskName = RegulatorTaskType.SamplingAndInspectionPlan
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.SamplingInspection);
@@ -69,8 +75,9 @@ public class RegistrationsController(
     
     [HttpGet]
     [Route(PagePath.InputsAndOutputs)]
-    public async Task<IActionResult> InputsAndOutputs(int registrationTaskId)
+    public async Task<IActionResult> InputsAndOutputs(int registrationMaterialId)
     {
+        //TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.InputsAndOutputs);
@@ -81,8 +88,9 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.WasteLicences)]
-    public async Task<IActionResult> WasteLicences(int registrationTaskId)
+    public async Task<IActionResult> WasteLicences(int registrationId)
     {
+        //TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.WasteLicences);
@@ -93,8 +101,9 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.BusinessAddress)]
-    public async Task<IActionResult> BusinessAddress(int registrationTaskId)
+    public async Task<IActionResult> BusinessAddress(int registrationId)
     {
+        //TaskName = RegulatorTaskType.BusinessAddress
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.BusinessAddress);
@@ -105,8 +114,9 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.MaterialDetails)]
-    public async Task<IActionResult> MaterialDetails(int registrationTaskId)
+    public async Task<IActionResult> MaterialDetails(int registrationMaterialId)
     {
+        //TaskName = RegulatorTaskType.MaterialDetailsAndContact
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.MaterialDetails);
@@ -117,8 +127,9 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.OverseasReprocessorInterim)]
-    public async Task<IActionResult> OverseasReprocessorInterim(int registrationTaskId)
+    public async Task<IActionResult> OverseasReprocessorInterim(int registrationMaterialId)
     {
+        //TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.OverseasReprocessorInterim);
