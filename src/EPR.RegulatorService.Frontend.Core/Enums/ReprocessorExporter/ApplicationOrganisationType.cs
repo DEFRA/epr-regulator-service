@@ -1,4 +1,4 @@
-namespace EPR.RegulatorService.Frontend.Core.Enums;
+namespace EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 public enum ApplicationOrganisationType
 {
