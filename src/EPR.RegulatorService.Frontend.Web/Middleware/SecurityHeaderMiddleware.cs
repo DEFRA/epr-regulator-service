@@ -47,6 +47,7 @@ public class SecurityHeaderMiddleware
         const string defaultSrc = "default-src 'self'";
         const string objectSrc = "object-src 'none'";
         const string baseUrl = "base-uri 'none'";
+        const string requiredTrustedTypes = "require-trusted-types-for 'script'";
         const string frameAncestors = "frame-ancestors 'none'";
         const string upgradeInsecureRequests = "upgrade-insecure-requests";
         const string blockAllMixedContent = "block-all-mixed-content";
@@ -59,7 +60,7 @@ public class SecurityHeaderMiddleware
         const string connectSrc = "connect-src 'self' https://*.google-analytics.com " +
             "https://*.analytics.google.com https://*.googletagmanager.com";
 
-        return string.Join(";", defaultSrc, objectSrc, baseUrl, frameAncestors, upgradeInsecureRequests,
+        return string.Join(";", defaultSrc, objectSrc, baseUrl, requiredTrustedTypes, frameAncestors, upgradeInsecureRequests,
             blockAllMixedContent, scriptSrc, imgSrc, formAction, styleSrc, fontSrc, connectSrc);
     }
 
