@@ -46,7 +46,7 @@ resources:
   repositories:
     - repository: CommonTemplates
       name: defra/epr-webapps-code-deploy-templates
-      type: github
+      type: git
       endpoint: defra
       ref: feature/529865-sq-task-tidy
 
