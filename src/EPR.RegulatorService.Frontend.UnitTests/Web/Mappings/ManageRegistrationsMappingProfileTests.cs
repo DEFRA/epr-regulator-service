@@ -40,7 +40,7 @@ public class ManageRegistrationsMappingProfileTests
             Regulator = "Custom Regulator",
             Materials =
             [
-                new RegistrationMaterial { Id = 1, MaterialName = "Plastic", Status = ApplicationStatus.Granted, StatusUpdatedByName = "Test User", StatusUpdatedAt = DateTime.Now, RegistrationNumber = "ABC1234" }
+                new RegistrationMaterial { Id = 1, MaterialName = "Plastic", Status = ApplicationStatus.Granted, StatusUpdatedByName = "Test User", StatusUpdatedAt = DateTime.Now, RegistrationReferenceNumber = "ABC1234" }
             ],
             Tasks =
             [
@@ -110,7 +110,7 @@ public class ManageRegistrationsMappingProfileTests
             Status = applicationStatus,
             StatusUpdatedByName = "Test User",
             StatusUpdatedAt = DateTime.Now,
-            RegistrationNumber = "ABC1234",
+            RegistrationReferenceNumber = "ABC1234",
             Tasks =
             [
                 new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions},
@@ -134,7 +134,7 @@ public class ManageRegistrationsMappingProfileTests
             viewModel.Status.Should().Be(registrationMaterial.Status);
             viewModel.StatusUpdatedByName.Should().Be(registrationMaterial.StatusUpdatedByName);
             viewModel.StatusUpdatedAt.Should().Be(registrationMaterial.StatusUpdatedAt);
-            viewModel.RegistrationNumber.Should().Be(registrationMaterial.RegistrationNumber);
+            viewModel.RegistrationReferenceNumber.Should().Be(registrationMaterial.RegistrationReferenceNumber);
             viewModel.StatusText.Should().Be(expectedStatusText);
             viewModel.StatusCssClass.Should().Be(expectedCssClass);
             viewModel.MaterialWasteLicensesTask.Should().NotBeNull();

@@ -23,10 +23,10 @@
     {
 		<p class="govuk-body">
         <strong>Outcome:</strong> @registrationMaterial.StatusText on @registrationMaterial.StatusUpdatedAt.ToDisplayDateAndTime() by @registrationMaterial.StatusUpdatedByName
-		@if (registrationMaterial.RegistrationNumber != null)
+		@if (registrationMaterial.RegistrationReferenceNumber != null)
         {
           <br>
-          <span><strong>Registration number:</strong> @registrationMaterial.RegistrationNumber</span>
+          <span><strong>Registration number:</strong> @registrationMaterial.RegistrationReferenceNumber</span>
         }
       </p>
     }

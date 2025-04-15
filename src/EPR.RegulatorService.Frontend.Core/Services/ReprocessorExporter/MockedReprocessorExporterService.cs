@@ -176,7 +176,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             Status = status,
             StatusUpdatedByName = statusUpdatedBy,
             StatusUpdatedAt = statusUpdatedAt,
-            RegistrationNumber = registrationNumber,
+            RegistrationReferenceNumber = registrationNumber,
             Tasks = CreateMaterialTasks(registrationMaterialId, organisationType)
         };
     }

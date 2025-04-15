@@ -20,7 +20,7 @@ public class ManageRegistrationMaterialViewModel
 
     public DateTime? StatusUpdatedAt { get; init; }
 
-    public string? RegistrationNumber { get; init; }
+    public string? RegistrationReferenceNumber { get; init; }
 
     public RegistrationTaskViewModel? MaterialWasteLicensesTask { get; init; }
 
