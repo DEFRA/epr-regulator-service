@@ -69,7 +69,7 @@ public class RegistrationsController(
 
         await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        return View(GetRegistrationsView(nameof(UkSiteDetails)));
+        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
     }
 
     [HttpGet]
