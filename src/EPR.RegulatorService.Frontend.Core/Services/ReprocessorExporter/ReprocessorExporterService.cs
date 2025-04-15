@@ -67,6 +67,27 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);        
+
+        var response = await httpClient.PostAsJsonAsync(pathTemplate, updateRegistrationTaskStatusRequest);
+
+        response.EnsureSuccessStatusCode();
+    }
+    public async Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);
+
+        var response = await httpClient.PostAsJsonAsync(pathTemplate, updateMaterialTaskStatusRequest);
+
+        response.EnsureSuccessStatusCode();
+    }
+
     private async Task PrepareAuthenticatedClient()
     {
         if (httpClient.BaseAddress == null)

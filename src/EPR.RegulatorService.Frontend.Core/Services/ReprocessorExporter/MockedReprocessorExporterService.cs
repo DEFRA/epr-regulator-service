@@ -202,4 +202,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
         ];
     }
+
+    public Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest) => throw new NotImplementedException();
+    public Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest) => throw new NotImplementedException();
 }

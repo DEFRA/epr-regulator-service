@@ -71,6 +71,9 @@ public static class PagePath
     public const string ApplicationGrantedDetails = "add-note";
     public const string ApplicationRefusedDetails = "refused-details";
 
+    // Complete tasks paths
+    public const string CompleteUkSiteDetails = "site-complete";
+
     // Non journey paths
     public const string Accessibility = "accessibility";
     public const string SignedOut = "signed-out";

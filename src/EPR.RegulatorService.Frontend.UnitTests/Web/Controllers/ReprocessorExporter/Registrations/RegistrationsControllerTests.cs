@@ -1,14 +1,19 @@
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentAssertions.Execution;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+
+//using static Microsoft.CodeAnalysis.CSharp.SyntaxTokenParser;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
@@ -21,6 +26,7 @@ public class RegistrationsControllerTests
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
     private Mock<IConfiguration> _mockConfiguration;
     private Mock<HttpContext> _httpContextMock = null!;
+    private Mock<IReprocessorExporterService> _mockReprocessorExporterService;
 
     [TestInitialize]
     public void TestInitialize()
@@ -52,7 +58,9 @@ public class RegistrationsControllerTests
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(new JourneySession());
 
-        _controller = new RegistrationsController(_mockSessionManager.Object, _mockConfiguration.Object);
+        _mockReprocessorExporterService = new Mock<IReprocessorExporterService>();
+
+        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object);
 
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
@@ -109,6 +117,33 @@ public class RegistrationsControllerTests
         {
             await _controller.UkSiteDetails(registrationId);
         });
+    }
+
+    [TestMethod]
+    public async Task UkSiteDetails_ReturnView()
+    {
+        // Arrange
+        const int registrationId = 1234;
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        // Act
+        var result = await _controller.UkSiteDetails(registrationId);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = result as ViewResult;
+        viewResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            viewResult!.ViewData.Keys.Should().Contain(BackLinkViewDataKey);
+            viewResult.Model.Should().BeOfType<int>();
+
+            viewResult.Model.Should().Be(registrationId);
+        }
     }
 
     [TestMethod]

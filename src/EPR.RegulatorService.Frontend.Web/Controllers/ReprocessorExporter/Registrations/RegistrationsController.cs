@@ -12,11 +12,15 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 
 using Core.Enums.ReprocessorExporter;
 
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
+
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
 public class RegistrationsController(
     ISessionManager<JourneySession> sessionManager,
+    IReprocessorExporterService reprocessorExporterService,
     IConfiguration configuration)
     : ReprocessorExporterBaseController(sessionManager, configuration)
 {
@@ -37,12 +41,33 @@ public class RegistrationsController(
     [Route(PagePath.UkSiteDetails)]
     public async Task<IActionResult> UkSiteDetails(int registrationId)
     {
-        // TaskName = RegulatorTaskType.SiteAddressAndContactDetails
         var session = await GetSession();
 
         await SaveSessionAndJourney(session, PagePath.UkSiteDetails);
 
         SetBackLinkInfos(session, PagePath.UkSiteDetails);
+
+        return View(GetRegistrationsView(nameof(UkSiteDetails)), registrationId);
+    }
+
+    [HttpGet]
+    [Route(PagePath.CompleteUkSiteDetails)]
+    public async Task<IActionResult> CompleteUkSiteDetails(int registrationId)
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.UkSiteDetails);
+
+        SetBackLinkInfos(session, PagePath.UkSiteDetails);
+
+        var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
+        {
+            TaskName = (int)RegulatorTaskType.SiteAddressAndContactDetails,
+            RegistrationId = registrationId,
+            Status = "Complete",
+        };
+
+        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
         return View(GetRegistrationsView(nameof(UkSiteDetails)));
     }
