@@ -40,7 +40,7 @@ public class ManageRegistrationsMappingProfileTests
             Regulator = "Custom Regulator",
             Materials =
             [
-                new RegistrationMaterial { Id = 1, MaterialName = "Plastic", Status = ApplicationStatus.Granted, StatusUpdatedByName = "Test User", StatusUpdatedAt = DateTime.Now, RegistrationReferenceNumber = "ABC1234" }
+                new RegistrationMaterial { Id = 1, MaterialName = "Plastic", Status = ApplicationStatus.Granted, StatusUpdatedBy = "Test User", StatusUpdatedDate = DateTime.Now, RegistrationReferenceNumber = "ABC1234" }
             ],
             Tasks =
             [
@@ -108,8 +108,8 @@ public class ManageRegistrationsMappingProfileTests
             MaterialName = "Plastic",
             DeterminationDate = DateTime.Now.AddDays(-1),
             Status = applicationStatus,
-            StatusUpdatedByName = "Test User",
-            StatusUpdatedAt = DateTime.Now,
+            StatusUpdatedBy = "Test User",
+            StatusUpdatedDate = DateTime.Now,
             RegistrationReferenceNumber = "ABC1234",
             Tasks =
             [
@@ -132,8 +132,8 @@ public class ManageRegistrationsMappingProfileTests
             viewModel.MaterialName.Should().Be(registrationMaterial.MaterialName);
             viewModel.DeterminationDate.Should().Be(registrationMaterial.DeterminationDate);
             viewModel.Status.Should().Be(registrationMaterial.Status);
-            viewModel.StatusUpdatedByName.Should().Be(registrationMaterial.StatusUpdatedByName);
-            viewModel.StatusUpdatedAt.Should().Be(registrationMaterial.StatusUpdatedAt);
+            viewModel.StatusUpdatedBy.Should().Be(registrationMaterial.StatusUpdatedBy);
+            viewModel.StatusUpdatedDate.Should().Be(registrationMaterial.StatusUpdatedDate);
             viewModel.RegistrationReferenceNumber.Should().Be(registrationMaterial.RegistrationReferenceNumber);
             viewModel.StatusText.Should().Be(expectedStatusText);
             viewModel.StatusCssClass.Should().Be(expectedCssClass);

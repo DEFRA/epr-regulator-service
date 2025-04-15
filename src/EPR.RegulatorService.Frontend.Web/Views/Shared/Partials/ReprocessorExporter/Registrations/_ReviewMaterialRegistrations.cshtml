@@ -22,7 +22,7 @@
     else
     {
 		<p class="govuk-body">
-        <strong>Outcome:</strong> @registrationMaterial.StatusText on @registrationMaterial.StatusUpdatedAt.ToDisplayDateAndTime() by @registrationMaterial.StatusUpdatedByName
+        <strong>Outcome:</strong> @registrationMaterial.StatusText on @registrationMaterial.StatusUpdatedDate.ToDisplayDateAndTime() by @registrationMaterial.StatusUpdatedBy
 		@if (registrationMaterial.RegistrationReferenceNumber != null)
         {
           <br>
