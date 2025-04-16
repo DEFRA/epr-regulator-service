@@ -33,12 +33,12 @@ public class ReprocessorExporterService(
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
     };
 
-    public async Task<Registration> GetRegistrationByIdAsync(int registrationId)
+    public async Task<Registration> GetRegistrationByIdAsync(int id)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationById);
-        string path = pathTemplate.Replace("{id}", registrationId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
         
         var response = await httpClient.GetAsync(path);
         
@@ -47,12 +47,12 @@ public class ReprocessorExporterService(
         return registration;
     }
 
-    public async Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int registrationMaterialId)
+    public async Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int id)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationMaterialById);
-        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
 
         var response = await httpClient.GetAsync(path);
 
