@@ -1,6 +1,7 @@
 @{
     ViewData["Title"] = "Materials authorised on site";
 }
+@model int;
 
 <div class="govuk-width-container ">
 
@@ -65,7 +66,7 @@
                             Mark as complete
                         </button>
                     </a>
-                    <a href="#" class="govuk-link">
+                    <a href="@Url.Action("CompleteAuthorisedMaterials", "Registrations", new { registrationTaskId = Model }) class="govuk-link">
                         <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                             Query the materials authorised on site
                         </button>

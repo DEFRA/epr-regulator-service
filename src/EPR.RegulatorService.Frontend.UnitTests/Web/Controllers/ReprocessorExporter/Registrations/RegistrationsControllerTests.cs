@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -87,6 +88,36 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
+    public async Task BusinessAddress_WhenTaskComplete_ShouldRedirectToManageRegistrations()
+    {
+        // Arrange
+        var registrationId = 1234;
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.CompleteBusinessAddress(registrationId);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
+    }
+
+    [TestMethod]
     public async Task BusinessAddress_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange
@@ -147,6 +178,35 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
+    public async Task CompleteUkSiteDetails_WhenTaskComplete_RedirectToManageRegistrations()
+    {
+        // Arrange
+        const int registrationId = 1234;
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.CompleteUkSiteDetails(registrationId);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
+    }
+
+    [TestMethod]
     public async Task AuthorisedMaterials_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange
@@ -178,6 +238,36 @@ public class RegistrationsControllerTests
 
         // Assert
         result.Should().BeOfType<ViewResult>();
+    }
+
+    [TestMethod]
+    public async Task CompleteAuthorisedMaterials_WhenTaskComplete_ShouldRedirectToManageRegistrations()
+    {
+        // Arrange
+        var registrationId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.CompleteAuthorisedMaterials);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.CompleteAuthorisedMaterials(registrationId);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
     }
 
     [TestMethod]

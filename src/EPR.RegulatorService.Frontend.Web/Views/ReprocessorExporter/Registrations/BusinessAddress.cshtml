@@ -1,6 +1,7 @@
 @{
     ViewData["Title"] = "Business address";
 }
+@model int
 
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -36,7 +37,7 @@
                             Mark as reviewed
                         </button>
                     </a>
-                    <a href="#" class="govuk-link">
+                    <a href="@Url.Action("CompleteBusinessAddress", "Registrations", new { registrationTaskId = Model }) class="govuk-link">
                         <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                             Query the business address
                         </button>
