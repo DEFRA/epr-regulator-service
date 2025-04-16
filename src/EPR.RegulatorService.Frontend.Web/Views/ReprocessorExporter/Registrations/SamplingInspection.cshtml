@@ -1,6 +1,7 @@
 @{
     ViewData["Title"] = "Sampling and inspection plan";
 }
+@model int;
 
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -40,7 +41,7 @@
                 </dl>
                 <br>
                 <div class="govuk-button-group !-margin-top-6">
-                    <a href="sampling-plan-complete" class="govuk-link">
+                    <a href="@Url.Action("CompleteSamplingInspection", "Registrations", new { registrationTaskId = Model })" class="govuk-link">
                         <button type="submit" class="govuk-button" data-module="govuk-button">
                             Mark as reviewed
                         </button>

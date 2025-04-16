@@ -76,6 +76,11 @@ public static class PagePath
     public const string CompleteBusinessAddress = "business-address-complete";
     public const string CompleteAuthorisedMaterials = "authorised-materials-complete";
     public const string CompleteMaterialWasteLicences = "permits-exemptions-complete";
+    public const string CompleteInputsAndOutputs = "reprocessing-throughputs-complete";
+    public const string CompleteSamplingInspection = "sampling-inspection-complete";
+    public const string CompleteOverseasReprocessorInterim = "overseas-interim-sites-complete";
+    public const string CompleteWasteLicences = "waste-licences-complete";
+    public const string CompleteMaterialDetails = "materials-contact-complete";
 
     // Non journey paths
     public const string Accessibility = "accessibility";
