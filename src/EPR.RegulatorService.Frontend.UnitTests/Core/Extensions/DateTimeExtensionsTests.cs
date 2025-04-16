@@ -17,7 +17,7 @@ public class DateTimeExtensionsTests
 
     [TestMethod]
     [DataRow("2025-01-01", "1 January 2025")] // Single digit day
-    [DataRow("2025-01-31", "31 January 2025")] // Double digit da
+    [DataRow("2025-01-31", "31 January 2025")] // Double digit day
     public void ToDisplayDate_WhenDateIsSet_ShouldReturnDateStringInExpectedFormat(string dateString, string expectedValue)
     {
         // Arrange
