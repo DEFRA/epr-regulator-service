@@ -4,6 +4,8 @@ using EPR.Common.Authorization.Models;
 
 namespace EPR.RegulatorService.Frontend.Core.Sessions;
 
+using ReprocessorExporter;
+
 [ExcludeFromCodeCoverage]
 public class JourneySession : IHasUserData
 {
@@ -17,4 +19,5 @@ public class JourneySession : IHasUserData
     public AddRemoveApprovedUserSession AddRemoveApprovedUserSession { get; set; } = new();
     public RegulatorRegistrationSession RegulatorRegistrationSession { get; set; } = new();
     public InviteNewApprovedPersonSession InviteNewApprovedPersonSession { get; set; } = new();
+    public ReprocessorExporterSession ReprocessorExporterSession  { get; set; } = new ();
 }

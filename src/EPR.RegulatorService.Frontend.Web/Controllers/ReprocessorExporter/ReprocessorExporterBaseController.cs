@@ -30,4 +30,16 @@ public abstract class ReprocessorExporterBaseController(
 
         await SaveSession(session);
     }
+
+    protected void SetBackLinkInfos(JourneySession session, string currentPagePath)
+    {
+        if (string.IsNullOrEmpty(Request?.Headers?.Referer))
+            SetHomeBackLink();
+        else
+            SetBackLink(session, currentPagePath);
+
+        SetBackLinkAriaLabel();
+    }
+
+    protected static string GetRegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
 }

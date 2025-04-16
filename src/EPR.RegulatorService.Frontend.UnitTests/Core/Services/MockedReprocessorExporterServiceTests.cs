@@ -1,21 +1,18 @@
-using EPR.RegulatorService.Frontend.Core.Enums;
+namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services;
+
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
 using FluentAssertions.Execution;
 
-namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
-
 [TestClass]
-public class MockedRegistrationServiceTests
+public class MockedReprocessorExporterServiceTests
 {
-    private MockedRegistrationService _service;
+    private MockedReprocessorExporterService _service;
 
     [TestInitialize]
-    public void TestInitialize()
-    {
-        _service = new MockedRegistrationService();
-    }
+    public void TestInitialize() => _service = new MockedReprocessorExporterService();
 
     [TestMethod]
     public async Task GetRegistrationById_EvenId_ShouldReturnReprocessor()
@@ -33,7 +30,7 @@ public class MockedRegistrationServiceTests
         {
             result!.Id.Should().Be(id);
             result.OrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-            result.OrganisationName.Should().Be("Green Ltd");
+            result.OrganisationName.Should().Be("MOCK Green Ltd");
             result.SiteAddress.Should().Be("23 Ruby St, London, E12 3SE");
             result.Regulator.Should().Be("Environment Agency (EA)");
         }
@@ -55,7 +52,7 @@ public class MockedRegistrationServiceTests
         {
             result!.Id.Should().Be(id);
             result.OrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
-            result.OrganisationName.Should().Be("Blue Exports Ltd");
+            result.OrganisationName.Should().Be("MOCK Blue Exports Ltd");
             result.SiteAddress.Should().Be("N/A"); // Exporters have no site address
             result.Regulator.Should().Be("Environment Agency (EA)");
         }
