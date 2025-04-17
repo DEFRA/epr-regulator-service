@@ -5,46 +5,46 @@
 @model int
 
 <div class="govuk-width-container ">
-    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
-                <h1 class="govuk-heading-l">
-                    Business address
-                </h1>
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Address for legal documents and official correspondence
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            23 Ruby St, London, E12 3SE
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Registered address
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            23 Ruby St, London, E12 3SE
-                        </dd>
-                    </div>
-                </dl>
-
-                <br>
-
-                <div class="govuk-button-group !-margin-top-6">
-                    <a href="@Url.Action("CompleteBusinessAddress", "Registrations", new { registrationId = Model })" class="govuk-link">
-                        <button type="submit" class="govuk-button" data-module="govuk-button">
-                            Mark as reviewed
-                        </button>
-                    </a>
-                    <a href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model, taskName = RegulatorTaskType.BusinessAddress.ToString() })" class="govuk-link">
-                        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-                            Query the business address
-                        </button>
-                    </a>
-                </div>
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+        <h1 class="govuk-heading-l">
+          Business address
+        </h1>
+              
+        <form asp-controller="Registrations" method="post">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Address for legal documents and official correspondence
+              </dt>
+              <dd class="govuk-summary-list__value">
+                23 Ruby St, London, E12 3SE
+              </dd>
             </div>
-        </div>
-    </main>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Registered address
+              </dt>
+              <dd class="govuk-summary-list__value">
+                23 Ruby St, London, E12 3SE
+              </dd>
+            </div>
+          </dl>
+
+          <br>
+
+          <div class="govuk-button-group !-margin-top-6">
+            <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteBusinessAddress" asp-route-registrationId="@Model">
+              Mark as reviewed
+            </button>
+
+            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-controller="Registrations" asp-action="QueryRegistrationTask" asp-route-registrationId="@Model" asp-route-taskName="@RegulatorTaskType.BusinessAddress.ToString()">
+							Query the business address
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
 </div>

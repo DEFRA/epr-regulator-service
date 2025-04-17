@@ -5,55 +5,56 @@
 @model int;
 
 <div class="govuk-width-container ">
-    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
-                <h1 class="govuk-heading-l">
-                    <span class="govuk-caption-l">Plastic</span>
-                    Sampling and inspection plan
-                </h1>
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Uploaded file
-                        </dt>
-                        <dd class="govuk-summary-list__value">
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+        <h1 class="govuk-heading-l">
+          <span class="govuk-caption-l">Plastic</span>
+          Sampling and inspection plan
+        </h1>
+              
+        <form asp-controller="Registrations" method="post">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Uploaded file
+              </dt>
+              <dd class="govuk-summary-list__value">
 
-                            <a href="#" class="govuk-link">sampling-file.doc</a>
+                <a href="#" class="govuk-link">sampling-file.doc</a>
 
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Date uploaded
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            22 March 2024
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Uploaded by
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            Jack Black
-                        </dd>
-                    </div>
-                </dl>
-                <br>
-                <div class="govuk-button-group !-margin-top-6">
-                    <a href="@Url.Action("CompleteSamplingInspection", "Registrations", new { registrationMaterialId = Model })" class="govuk-link">
-                        <button type="submit" class="govuk-button" data-module="govuk-button">
-                            Mark as reviewed
-                        </button>
-                    </a>
-                    <a href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model, taskName = RegulatorTaskType.SamplingAndInspectionPlan.ToString() })" class="govuk-link">
-                        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-                            Query the sampling and inspection plan
-                        </button>
-                    </a>
-                </div>
+              </dd>
             </div>
-        </div>
-    </main>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Date uploaded
+              </dt>
+              <dd class="govuk-summary-list__value">
+                22 March 2024
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Uploaded by
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Jack Black
+              </dd>
+            </div>
+          </dl>
+          <br>
+          <div class="govuk-button-group !-margin-top-6">
+
+            <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteSamplingInspection" asp-route-registrationMaterialId="@Model">
+              Mark as reviewed
+            </button>
+
+            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-controller="Registrations" asp-action="QueryMaterialTask" asp-route-registrationMaterialId="@Model" asp-route-taskName="@RegulatorTaskType.SamplingAndInspectionPlan.ToString()">
+              Query the sampling and inspection plan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
 </div>
