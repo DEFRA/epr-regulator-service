@@ -1,6 +1,8 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 @{
     ViewData["Title"] = "Sampling and inspection plan";
 }
+@model int;
 
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -10,47 +12,48 @@
                     <span class="govuk-caption-l">Plastic</span>
                     Sampling and inspection plan
                 </h1>
-                <dl class="govuk-summary-list">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Uploaded file
-                        </dt>
-                        <dd class="govuk-summary-list__value">
 
-                            <a href="#" class="govuk-link">sampling-file.doc</a>
+                <form asp-controller="Registrations">
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Uploaded file
+                            </dt>
+                            <dd class="govuk-summary-list__value">
 
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Date uploaded
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            22 March 2024
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Uploaded by
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            Jack Black
-                        </dd>
-                    </div>
-                </dl>
-                <br>
-                <div class="govuk-button-group !-margin-top-6">
-                    <a href="sampling-plan-complete" class="govuk-link">
-                        <button type="submit" class="govuk-button" data-module="govuk-button">
-                            Mark as approved
+                                <a href="#" class="govuk-link">sampling-file.doc</a>
+
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Date uploaded
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                22 March 2024
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Uploaded by
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Jack Black
+                            </dd>
+                        </div>
+                    </dl>
+                    <br>
+                    <div class="govuk-button-group !-margin-top-6">
+
+                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteSamplingInspection" asp-route-registrationMaterialId="@Model">
+                            Mark as reviewed
                         </button>
-                    </a>
-                    <a href="#" class="govuk-link">
-                        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+
+                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model, taskName = RegulatorTaskType.SamplingAndInspectionPlan })">
                             Query the sampling and inspection plan
-                        </button>
-                    </a>
-                </div>
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
     </main>

@@ -1,5 +1,7 @@
-using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
@@ -7,6 +9,7 @@ using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentAssertions.Execution;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,11 +20,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
 public class RegistrationsControllerTests
 {
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
+    private const int RegistrationIdUrlValue = 1234;
+
+    private readonly string _manageRegistrationUrl = $"manage-registrations?id={RegistrationIdUrlValue}";
 
     private RegistrationsController _controller;
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
     private Mock<IConfiguration> _mockConfiguration;
     private Mock<HttpContext> _httpContextMock = null!;
+    private Mock<IReprocessorExporterService> _mockReprocessorExporterService;
 
     [TestInitialize]
     public void TestInitialize()
@@ -36,7 +43,7 @@ public class RegistrationsControllerTests
         // Set up the Referer header to return a sample URL (or null for different tests)
         mockHeaders.Setup(h => h["Referer"]).Returns("http://previous-page.com");
         mockHeaders.Setup(h => h.Referer).Returns("http://previous-page.com");
-        
+
         // Set the mock Request to the HttpContext
         mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
@@ -53,51 +60,11 @@ public class RegistrationsControllerTests
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(new JourneySession());
 
-        _controller = new RegistrationsController(_mockSessionManager.Object, _mockConfiguration.Object);
+        _mockReprocessorExporterService = new Mock<IReprocessorExporterService>();
+
+        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object);
 
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
-    }
-
-    [TestMethod]
-    public async Task UkSiteDetails_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.UkSiteDetails();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
-    }
-
-    [TestMethod]
-    public async Task BusinessAddress_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.BusinessAddress();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
-        }
     }
 
     [TestMethod]
@@ -110,14 +77,44 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.BusinessAddress();
+        var result = await _controller.BusinessAddress(1);
 
         // Assert
         using (new AssertionScope())
         {
             var viewResult = (ViewResult)result;
-            
+
             AssertBackLink(viewResult, PagePath.ManageRegistrations);
+        }
+    }
+
+    [TestMethod]
+    public async Task BusinessAddress_WhenTaskComplete_ShouldRedirectToManageRegistrations()
+    {
+        // Arrange
+        var registrationId = 1234;
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.CompleteBusinessAddress(registrationId);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
         }
     }
 
@@ -132,34 +129,16 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.BusinessAddress();
+            await _controller.BusinessAddress(1);
         });
-    }
-
-    [TestMethod]
-    public async Task AuthorisedMaterials_WithCorrectModel_ShouldReturnView()
-    {
-        // Act
-        var result = await _controller.AuthorisedMaterials();
-
-        // Assert
-        using (new AssertionScope())
-        {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-        }
     }
 
     [TestMethod]
     public async Task UkSiteDetails_WhenSessionIsNull_ShouldThrowException()
     {
+        // Arrange
+        const int registrationId = 1234;
+
         // Arrange
         _mockSessionManager
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
@@ -168,8 +147,64 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.UkSiteDetails();
+            await _controller.UkSiteDetails(registrationId);
         });
+    }
+
+    [TestMethod]
+    public async Task UkSiteDetails_ReturnView()
+    {
+        // Arrange
+        const int registrationId = 1234;
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        // Act
+        var result = await _controller.UkSiteDetails(registrationId);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = result as ViewResult;
+        viewResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            viewResult!.ViewData.Keys.Should().Contain(BackLinkViewDataKey);
+            viewResult.Model.Should().BeOfType<int>();
+
+            viewResult.Model.Should().Be(registrationId);
+        }
+    }
+
+    [TestMethod]
+    public async Task CompleteUkSiteDetails_WhenTaskComplete_RedirectToManageRegistrations()
+    {
+        // Arrange
+        const int registrationId = 1234;
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.CompleteUkSiteDetails(registrationId);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
     }
 
     [TestMethod]
@@ -183,7 +218,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.AuthorisedMaterials();
+            await _controller.AuthorisedMaterials(1);
         });
     }
 
@@ -200,30 +235,103 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.AuthorisedMaterials();
+        var result = await _controller.AuthorisedMaterials(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
     }
 
     [TestMethod]
-    public async Task InputsAndOutputs_WithCorrectModel_ShouldReturnView()
+    public async Task CompleteQueryMaterialTask_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
+        // Arrange
+        var registrationId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.CompleteQueryMaterialTask);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorApplicationTaskStatusAsync(It.IsAny<UpdateMaterialTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(1))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = 1, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
+
         // Act
-        var result = await _controller.InputsAndOutputs();
+        var result = await _controller.QueryMaterialTask(new QueryMaterialTaskViewModel { Comments = "", TaskName = RegulatorTaskType.MaterialDetailsAndContact, RegistrationMaterialId = 1});
 
         // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
         using (new AssertionScope())
         {
-            result.Should().BeOfType<ViewResult>();
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
+    }
 
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
+    [TestMethod]
+    public async Task CompleteRegistrationMaterialTask_WhenTaskComplete_ShouldRedirectToManageRegistrations()
+    {
+        // Arrange
+        var registrationId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.CompleteQueryMaterialTask);
 
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorApplicationTaskStatusAsync(It.IsAny<UpdateMaterialTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(1))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = 1, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
+
+        // Act
+        var result = await _controller.QueryRegistrationTask(new QueryRegistrationTaskViewModel { Comments = "", TaskName = RegulatorTaskType.MaterialDetailsAndContact, RegistrationId = registrationId });
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
+    }
+
+    [TestMethod]
+    public async Task CompleteAuthorisedMaterials_WhenTaskComplete_ShouldRedirectToManageRegistrations()
+    {
+        // Arrange
+        var registrationId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.AuthorisedMaterials);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.CompleteAuthorisedMaterials(registrationId);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
         }
     }
 
@@ -238,28 +346,36 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.InputsAndOutputs();
+            await _controller.InputsAndOutputs(1);
         });
     }
 
     [TestMethod]
-    public async Task SamplingInspection_WithCorrectModel_ShouldReturnView()
+    public async Task CompleteInputsAndOutputs_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
+        // Arrange
+        var registrationMaterialId = 1234;
+
+        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
         // Act
-        var result = await _controller.SamplingInspection();
+        var result = await _controller.CompleteInputsAndOutputs(registrationMaterialId);
 
         // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
         using (new AssertionScope())
         {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(RegistrationIdUrlValue);
         }
     }
 
@@ -273,7 +389,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.SamplingInspection();
+        var result = await _controller.SamplingInspection(1);
 
         // Assert
         using (new AssertionScope())
@@ -295,7 +411,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.SamplingInspection();
+            await _controller.SamplingInspection(1);
         });
     }
 
@@ -313,7 +429,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.SamplingInspection();
+        var result = await _controller.SamplingInspection(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -331,7 +447,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.SamplingInspection();
+        var result = await _controller.SamplingInspection(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -346,7 +462,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
 
         // Act
-        var result = await _controller.SamplingInspection();
+        var result = await _controller.SamplingInspection(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -355,24 +471,126 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
-    public async Task OverseasReprocessorInterim_WithCorrectModel_ShouldReturnView()
+    public async Task CompleteSamplingInspection_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
+        // Arrange
+        var registrationMaterialId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
+
+
+        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
         // Act
-        var result = await _controller.OverseasReprocessorInterim();
+        var result = await _controller.CompleteSamplingInspection(registrationMaterialId);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(RegistrationIdUrlValue);
+        }
+    }
+
+    [TestMethod]
+    public async Task QueryRegistrationTask_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockHeaders = new Mock<IHeaderDictionary>();
+        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
+        mockHeaders.Setup(h => h.Referer).Returns((string?)null);
+
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.QueryRegistrationTask(1, RegulatorTaskType.SiteAddressAndContactDetails);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryRegistrationTask_WhenHeadersIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.QueryRegistrationTask(1, RegulatorTaskType.SiteAddressAndContactDetails);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryRegistrationTask_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
+
+        // Act
+        var result = await _controller.QueryRegistrationTask(1, RegulatorTaskType.SiteAddressAndContactDetails);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryRegistrationTask_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
+    {
+        // Arrange
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        // Act
+        var result = await _controller.QueryRegistrationTask(1, RegulatorTaskType.SiteAddressAndContactDetails);
 
         // Assert
         using (new AssertionScope())
         {
-            result.Should().BeOfType<ViewResult>();
+            var viewResult = (ViewResult)result;
 
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
+            AssertBackLink(viewResult, PagePath.ManageRegistrations);
         }
+    }
+
+    [TestMethod]
+    public async Task QueryRegistrationTask_WhenSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        {
+            await _controller.QueryRegistrationTask(1, RegulatorTaskType.SiteAddressAndContactDetails);
+        });
     }
 
     [TestMethod]
@@ -385,7 +603,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim();
+        var result = await _controller.OverseasReprocessorInterim(1);
 
         // Assert
         using (new AssertionScope())
@@ -407,7 +625,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.OverseasReprocessorInterim();
+            await _controller.OverseasReprocessorInterim(1);
         });
     }
 
@@ -425,7 +643,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim();
+        var result = await _controller.OverseasReprocessorInterim(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -443,7 +661,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim();
+        var result = await _controller.OverseasReprocessorInterim(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -458,7 +676,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim();
+        var result = await _controller.OverseasReprocessorInterim(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -467,24 +685,125 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
-    public async Task WasteLicences_WithCorrectModel_ShouldReturnView()
+    public async Task CompleteOverseasReprocessorInterim_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
+        // Arrange
+        var registrationMaterialId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
+
+        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.CompleteOverseasReprocessorInterim(registrationMaterialId);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(RegistrationIdUrlValue);
+        }
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockHeaders = new Mock<IHeaderDictionary>();
+        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
+        mockHeaders.Setup(h => h.Referer).Returns((string?)null);
+
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.WasteLicensesPermitsAndExemptions);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenHeadersIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
+
+        // Act
+        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
+    {
+        // Arrange
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        // Act
+        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
 
         // Assert
         using (new AssertionScope())
         {
-            result.Should().BeOfType<ViewResult>();
+            var viewResult = (ViewResult)result;
 
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
+            AssertBackLink(viewResult, PagePath.ManageRegistrations);
         }
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        {
+            await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
+        });
     }
 
     [TestMethod]
@@ -497,7 +816,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.WasteLicences(1);
 
         // Assert
         using (new AssertionScope())
@@ -519,7 +838,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.WasteLicences();
+            await _controller.WasteLicences(1);
         });
     }
 
@@ -537,7 +856,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.WasteLicences(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -555,7 +874,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.WasteLicences(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -570,32 +889,40 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
 
         // Act
-        var result = await _controller.WasteLicences();
+        var result = await _controller.WasteLicences(1);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
 
         AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
-    
+
     [TestMethod]
-    public async Task MaterialDetails_WithCorrectModel_ShouldReturnView()
+    public async Task CompleteWasteLicences_WhenTaskComplete_RedirectToManageRegistrations()
     {
+        // Arrange
+        const int registrationId = 1234;
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.WasteLicences);
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
         // Act
-        var result = await _controller.MaterialDetails();
+        var result = await _controller.CompleteWasteLicences(registrationId);
 
         // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
         using (new AssertionScope())
         {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
         }
     }
 
@@ -609,7 +936,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.MaterialDetails();
+        var result = await _controller.MaterialDetails(1);
 
         // Assert
         using (new AssertionScope())
@@ -629,27 +956,37 @@ public class RegistrationsControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialDetails());
+        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialDetails(1));
     }
 
     [TestMethod]
-    public async Task MaterialWasteLicences_WithCorrectModel_ShouldReturnView()
+    public async Task CompleteMaterialDetails_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
+        // Arrange
+        var registrationMaterialId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
+        
+        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
         // Act
-        var result = await _controller.MaterialWasteLicences();
+        var result = await _controller.CompleteMaterialDetails(registrationMaterialId);
 
         // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
         using (new AssertionScope())
         {
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            viewResult!.Model.Should().BeOfType<ManageRegistrationsViewModel>();
-
-            var model = viewResult.Model as ManageRegistrationsViewModel;
-            model.Should().NotBeNull();
-            model!.ApplicationOrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(RegistrationIdUrlValue);
         }
     }
 
@@ -662,7 +999,7 @@ public class RegistrationsControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialWasteLicences());
+        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialWasteLicences(1));
     }
 
     [TestMethod]
@@ -677,7 +1014,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.MaterialWasteLicences();
+        var result = await _controller.MaterialWasteLicences(1);
 
         // Assert
         using (new AssertionScope())
@@ -688,6 +1025,36 @@ public class RegistrationsControllerTests
         }
     }
 
+    [TestMethod]
+    public async Task CompleteMaterialWasteLicences_WhenTaskComplete_ShouldRedirectToManageRegistrations()
+    {
+        // Arrange
+        var registrationMaterialId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
+
+        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.CompleteMaterialWasteLicences(registrationMaterialId);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(RegistrationIdUrlValue);
+        }
+    }
     private static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
     {
         var hasBackLinkKey = viewResult.ViewData.TryGetValue(BackLinkViewDataKey, out var gotBackLinkObject);
