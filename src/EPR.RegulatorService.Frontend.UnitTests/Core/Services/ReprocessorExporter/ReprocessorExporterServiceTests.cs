@@ -23,6 +23,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         private const string GetRegistrationByIdPath = "v{apiVersion}/registrations/{id}";
         private const string GetRegistrationMaterialByIdPath = "v{apiVersion}/registrationMaterials/{id}";
         private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
+        private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
+        private const string UpdateApplicationTaskStatus = "v{apiVersion}/regulatorApplicationTaskStatus";
 
         private ReprocessorExporterService _service; // System under test
 
@@ -56,7 +58,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                 {
                     { "GetRegistrationById", GetRegistrationByIdPath },
                     { "GetRegistrationMaterialById", GetRegistrationMaterialByIdPath },
-                    { "UpdateRegistrationMaterialOutcome", UpdateRegistrationMaterialOutcome }
+                    { "UpdateRegistrationMaterialOutcome", UpdateRegistrationMaterialOutcome },
+                    { "UpdateRegistrationTaskStatus", UpdateRegistrationTaskStatus },
+                    { "UpdateApplicationTaskStatus", UpdateApplicationTaskStatus }
                 }
             };
 
@@ -169,6 +173,50 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
 
             // Act/Assert
             await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegistrationMaterialOutcomeAsync(registrationMaterialId, request));
+        }
+
+        [TestMethod]
+        public async Task UpdateRegistrationTaskStatus_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+        {
+            // Arrange
+            const int registrationId = 123;
+            string expectedPath = UpdateRegistrationTaskStatus
+                .Replace("{apiVersion}", ApiVersion.ToString());
+            var request = new UpdateRegistrationTaskStatusRequest
+            {
+                TaskName = RegulatorTaskType.SiteAddressAndContactDetails.ToString(),
+                RegistrationId = registrationId,
+                Status = RegulatorTaskStatus.Completed.ToString()
+            };
+
+            var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+
+            SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+
+            // Act/Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorRegistrationTaskStatusAsync(request));
+        }
+
+        [TestMethod]
+        public async Task UpdateApplicationTaskStatus_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+        {
+            // Arrange
+            const int registrationMaterialId = 123;
+            string expectedPath = UpdateApplicationTaskStatus
+                .Replace("{apiVersion}", ApiVersion.ToString());
+            var request = new UpdateMaterialTaskStatusRequest()
+            {
+                TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions.ToString(),
+                RegistrationMaterialId = registrationMaterialId,
+                Status = RegulatorTaskStatus.Completed.ToString()
+            };
+
+            var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+
+            SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+
+            // Act/Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorApplicationTaskStatusAsync(request));
         }
 
         private void SetupHttpMessageExpectations(HttpMethod method, string path,
