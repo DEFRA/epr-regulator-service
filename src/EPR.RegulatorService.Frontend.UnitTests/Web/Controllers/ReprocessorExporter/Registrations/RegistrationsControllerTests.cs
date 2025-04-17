@@ -6,6 +6,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentAssertions.Execution;
 
@@ -238,6 +239,70 @@ public class RegistrationsControllerTests
 
         // Assert
         result.Should().BeOfType<ViewResult>();
+    }
+
+    [TestMethod]
+    public async Task CompleteQueryMaterialTask_WhenTaskComplete_ShouldRedirectToManageRegistrations()
+    {
+        // Arrange
+        var registrationId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.CompleteQueryMaterialTask);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorApplicationTaskStatusAsync(It.IsAny<UpdateMaterialTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(1))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = 1, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
+
+        // Act
+        var result = await _controller.QueryMaterialTask(new QueryMaterialTaskViewModel { Comments = "", TaskName = RegulatorTaskType.MaterialDetailsAndContact, RegistrationMaterialId = 1});
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
+    }
+
+    [TestMethod]
+    public async Task CompleteRegistrationMaterialTask_WhenTaskComplete_ShouldRedirectToManageRegistrations()
+    {
+        // Arrange
+        var registrationId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.CompleteQueryMaterialTask);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorApplicationTaskStatusAsync(It.IsAny<UpdateMaterialTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(1))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = 1, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
+
+        // Act
+        var result = await _controller.QueryRegistrationTask(new QueryRegistrationTaskViewModel { Comments = "", TaskName = RegulatorTaskType.MaterialDetailsAndContact, RegistrationId = registrationId });
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
     }
 
     [TestMethod]
