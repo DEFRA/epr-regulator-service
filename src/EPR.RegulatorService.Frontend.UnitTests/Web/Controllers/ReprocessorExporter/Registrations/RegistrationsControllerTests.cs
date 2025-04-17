@@ -443,6 +443,97 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
+    public async Task QueryRegistrationTask_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockHeaders = new Mock<IHeaderDictionary>();
+        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
+        mockHeaders.Setup(h => h.Referer).Returns((string?)null);
+
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.QueryRegistrationTask(1, "task1");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryRegistrationTask_WhenHeadersIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.QueryRegistrationTask(1, "Task");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryRegistrationTask_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
+
+        // Act
+        var result = await _controller.QueryRegistrationTask(1, "task");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryRegistrationTask_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
+    {
+        // Arrange
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        // Act
+        var result = await _controller.QueryRegistrationTask(1, "task");
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var viewResult = (ViewResult)result;
+
+            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+        }
+    }
+
+    [TestMethod]
+    public async Task QueryRegistrationTask_WhenSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        {
+            await _controller.QueryRegistrationTask(1, "task");
+        });
+    }
+
+    [TestMethod]
     public async Task OverseasReprocessorInterim_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
         // Arrange
@@ -563,6 +654,97 @@ public class RegistrationsControllerTests
             redirectToActionResult.RouteValues.Should().ContainKey("id");
             redirectToActionResult.RouteValues["id"].Should().Be(registrationIdUrlValue);
         }
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockHeaders = new Mock<IHeaderDictionary>();
+        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
+        mockHeaders.Setup(h => h.Referer).Returns((string?)null);
+
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.QueryMaterialTask(1, "task1");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenHeadersIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        var mockRequest = new Mock<HttpRequest>();
+        mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
+
+        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        // Act
+        var result = await _controller.QueryMaterialTask(1, "Task");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
+    {
+        // Arrange
+        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
+
+        // Act
+        var result = await _controller.QueryMaterialTask(1, "task");
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
+    {
+        // Arrange
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        // Act
+        var result = await _controller.QueryMaterialTask(1, "task");
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var viewResult = (ViewResult)result;
+
+            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+        }
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        _mockSessionManager
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        {
+            await _controller.QueryMaterialTask(1, "task");
+        });
     }
 
     [TestMethod]

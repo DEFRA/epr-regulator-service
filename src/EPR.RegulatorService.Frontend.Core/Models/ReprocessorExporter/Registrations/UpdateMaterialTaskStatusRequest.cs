@@ -12,7 +12,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
     {
         public string TaskName { get; set; }                 
         public int RegistrationMaterialId { get; set; }
-        public string TaskStatus { get; set; }              
+        public string Status { get; set; }              
         public string? Comments { get; set; }
 
     }

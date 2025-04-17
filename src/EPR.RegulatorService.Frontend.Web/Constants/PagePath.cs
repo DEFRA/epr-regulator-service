@@ -70,6 +70,8 @@ public static class PagePath
     public const string ApplicationUpdate = "application-update";
     public const string ApplicationGrantedDetails = "add-note";
     public const string ApplicationRefusedDetails = "refused-details";
+    public const string QueryRegistrationTask = "query-registration-task";
+    public const string QueryMaterialTask = "query-material-task";
 
     // Complete tasks paths
     public const string CompleteUkSiteDetails = "site-complete";
@@ -81,6 +83,8 @@ public static class PagePath
     public const string CompleteOverseasReprocessorInterim = "overseas-interim-sites-complete";
     public const string CompleteWasteLicences = "waste-licences-complete";
     public const string CompleteMaterialDetails = "materials-contact-complete";
+    public const string CompleteQueryRegistrationTask = "query-registration-task-complete";
+    public const string CompleteQueryMaterialTask = "query-material-task-complete";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

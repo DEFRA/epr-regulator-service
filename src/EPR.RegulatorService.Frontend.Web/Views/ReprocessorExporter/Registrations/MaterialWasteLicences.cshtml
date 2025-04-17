@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 @{
     const string title = "Waste licences, permits or exemptions";
     ViewData["Title"] = title;
@@ -61,12 +62,12 @@
                 <br>
 
                 <div class="govuk-button-group !-margin-top-6">
-                    <a href="@Url.Action("CompleteMaterialWasteLicences", "Registrations", new { registrationTaskId = Model })" class="govuk-link">
+                    <a href="@Url.Action("CompleteMaterialWasteLicences", "Registrations", new { registrationMaterialId = Model })" class="govuk-link">
                         <button type="submit" class="govuk-button" data-module="govuk-button">
                             Mark as reviewed
                         </button>
                     </a>
-                    <a href="#" class="govuk-link">
+                    <a href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model, taskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions.ToString() })" class="govuk-link">
                         <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                             Query waste licences, permits or exemptions
                         </button>

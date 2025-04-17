@@ -81,7 +81,7 @@ public class ReprocessorExporterService(
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateApplicationTaskStatus);
 
         var response = await httpClient.PostAsJsonAsync(pathTemplate, updateMaterialTaskStatusRequest);
 

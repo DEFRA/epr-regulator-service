@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 @{
 	const string title = "Material details and contact";
 	ViewData["Title"] = title;
@@ -43,12 +44,12 @@
 
 				<br>
 				<div class="govuk-button-group !-margin-top-6">
-                    <a href="@Url.Action("CompleteMaterialDetails", "Registrations", new { registrationTaskId = Model })" class="govuk-link">
+                    <a href="@Url.Action("CompleteMaterialDetails", "Registrations", new { registrationMaterialId = Model })" class="govuk-link">
 						<button type="submit" class="govuk-button" data-module="govuk-button">
                             Mark as reviewed
 						</button>
 					</a>
-					<a href="#" class="govuk-link">
+                    <a href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model, taskName = RegulatorTaskType.MaterialDetailsAndContact.ToString() })" class="govuk-link">
 						<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
 							Query the material details and contact
 						</button>

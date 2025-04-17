@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 @{
     ViewData["Title"] = "Site address";
 }
@@ -46,12 +47,12 @@
                 </dl>
                 <br>
                 <div class="govuk-button-group !-margin-top-6">
-                    <a href="@Url.Action("CompleteUkSiteDetails", "Registrations", new { registrationTaskId = Model })" class="govuk-link">
+                    <a href="@Url.Action("CompleteUkSiteDetails", "Registrations", new { registrationId = Model })" class="govuk-link">
                         <button type="submit" class="govuk-button" data-module="govuk-button">
                             Mark as reviewed
                         </button>
                     </a>
-                    <a href="#" class="govuk-link">
+                    <a href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model, taskName = RegulatorTaskType.SiteAddressAndContactDetails.ToString() })" class="govuk-link">
                         <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                             Query the site address
                         </button>
