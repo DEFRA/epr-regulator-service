@@ -3,9 +3,9 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-  
 }
-@model QueryRegistrationTaskViewModel
+
+@model QueryMaterialTaskViewModel
 
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -16,7 +16,8 @@
                     <span class="govuk-caption-l">Green Ltd: 2 Ruby St, London, E12 3SE</span>
                     Provide query details
                 </h1>
-                <form asp-controller="Registrations" asp-action="QueryRegistrationTask" method="post">
+
+                <form asp-controller="Registrations" asp-action="QueryMaterialTask" method="post">
 
                     <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
 
@@ -28,15 +29,14 @@
                     </div>
 
                     <input type="hidden" name="taskName" value="@Model.TaskName" />
-                    <input type="hidden" name="registrationId" value="@Model.RegistrationId" />
+                    <input type="hidden" name="RegistrationMaterialId" value="@Model.RegistrationMaterialId" />
+
 
                     <button type="submit" class="govuk-button govuk-body govuk-!-margin-top-6" data-module="govuk-button">
                         Mark as queried
                     </button>
-
                 </form>
             </div>
         </div>
-
     </main>
 </div>

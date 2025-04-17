@@ -17,6 +17,7 @@ using Core.Enums.ReprocessorExporter;
 
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
@@ -344,7 +345,13 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, PagePath.QueryRegistrationTask);
         SetBackLinkInfos(session, PagePath.QueryRegistrationTask);
 
-        return View(GetRegistrationsView(nameof(QueryRegistrationTask)), new { registrationId, taskName } );
+        var queryRegistrationTaskViewModel = new QueryRegistrationTaskViewModel
+        {
+            RegistrationId = registrationId,
+            TaskName = taskName
+        };
+
+        return View(GetRegistrationsView(nameof(QueryRegistrationTask)), queryRegistrationTaskViewModel );
     }
 
     [HttpGet]
@@ -356,17 +363,18 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, PagePath.QueryMaterialTask);
         SetBackLinkInfos(session, PagePath.QueryMaterialTask);
 
-        return View(GetRegistrationsView(nameof(QueryMaterialTask)), new { registrationMaterialId, taskName });
+        var queryMaterialTaskViewModel = new QueryMaterialTaskViewModel
+        {
+            RegistrationMaterialId = registrationMaterialId,
+            TaskName = taskName
+        };
+
+        return View(GetRegistrationsView(nameof(QueryMaterialTask)), queryMaterialTaskViewModel);
     }
 
     [HttpPost]
-    [Route(PagePath.CompleteQueryRegistrationTask)]
-    public async Task<IActionResult> CompleteQueryRegistrationTask(
-        int registrationId,
-        string taskName,
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Comments must be provided")]
-        [MaxLength(500, ErrorMessage = "Comments must be 500 characters or less")]
-        string comments)
+    [Route(PagePath.QueryRegistrationTask)]
+    public async Task<IActionResult> QueryRegistrationTask(QueryRegistrationTaskViewModel queryRegistrationTaskViewModel)
     {
         var session = await GetSession();
 
@@ -375,25 +383,20 @@ public class RegistrationsController(
 
         var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
         {
-            TaskName = taskName,
-            RegistrationId = registrationId,
+            TaskName = queryRegistrationTaskViewModel.TaskName,
+            RegistrationId = queryRegistrationTaskViewModel.RegistrationId,
             Status = RegulatorTaskStatus.Queried.ToString(),
-            Comments = comments
+            Comments = queryRegistrationTaskViewModel.Comments
         };
 
         await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
+        return RedirectToAction("Index", "ManageRegistrations", new { id = queryRegistrationTaskViewModel.RegistrationId });
     }
 
     [HttpPost]
-    [Route(PagePath.CompleteQueryMaterialTask)]
-    public async Task<IActionResult> CompleteQueryMaterialTask(
-        int registrationMaterialId,
-        string taskName,
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Comments must be provided")]
-        [MaxLength(500, ErrorMessage = "Comments must be 500 characters or less")]
-        string comments)
+    [Route(PagePath.QueryMaterialTask)]
+    public async Task<IActionResult> QueryMaterialTask(QueryMaterialTaskViewModel queryMaterialTaskViewModel)
     {
         var session = await GetSession();
 
@@ -402,10 +405,10 @@ public class RegistrationsController(
 
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
-            TaskName = taskName,
-            RegistrationMaterialId = registrationMaterialId,
+            TaskName = queryMaterialTaskViewModel.TaskName,
+            RegistrationMaterialId = queryMaterialTaskViewModel.RegistrationMaterialId,
             Status = RegulatorTaskStatus.Queried.ToString(),
-            Comments = comments
+            Comments = queryMaterialTaskViewModel.Comments
         };
 
         await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
