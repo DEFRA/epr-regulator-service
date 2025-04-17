@@ -1,8 +1,11 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 @model QueryMaterialTaskViewModel
@@ -17,14 +20,20 @@
                     Provide query details
                 </h1>
 
-                <form asp-controller="Registrations" asp-action="QueryMaterialTask" method="post">
+                <form asp-controller="Registrations" asp-action="QueryMaterialTask">
 
-                    <div class="govuk-form-group govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+                    }
+
+                    <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
 
                         <textarea class="govuk-textarea govuk-js-character-count" id="Comments" name="Comments" aria-describedby="Comments-info" rows="5">@Model.Comments</textarea>
-                        <div id="label-as-page-heading-info" class="govuk-hint govuk-character-count__message govuk-visually-hidden">
+                        <div id="Comments-info" class="govuk-hint govuk-character-count__message govuk-character-count__status">
                             You can enter up to 500 characters
-                        </div><div class="govuk-hint govuk-character-count__message govuk-character-count__status" aria-hidden="true">You have 500 characters remaining</div><div class="govuk-character-count__sr-status govuk-visually-hidden" aria-live="polite">You have 500 characters remaining</div>
+                        </div>
+                        <div class="govuk-hint govuk-character-count__message"></div>
 
                     </div>
 
