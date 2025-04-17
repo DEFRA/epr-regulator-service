@@ -1,174 +1,174 @@
 @using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 @{
-  const string title = "Reprocessing inputs and outputs";
-	ViewData["Title"] = title;
+    const string title = "Reprocessing inputs and outputs";
+    ViewData["Title"] = title;
 }
 @model int;
 
 <div class="govuk-width-container ">
-  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
-        <h1 class="govuk-heading-l">
-          <span class="govuk-caption-l">Plastic</span>
-          @title
-        </h1>
-        
-        <form asp-controller="Registrations" method="post">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-caption-l">Plastic</span>
+                    @title
+                </h1>
 
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Sources of packaging waste
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Warehouse<br>
-                Barn<br>
-                Warehouse
-              </dd>
-            </div>
+                <form asp-controller="Registrations">
 
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                List of plant and equipment
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Mighty reprocessor, glass transformer, bottler plant
-              </dd>
-            </div>
-          </dl>
-          <br>
-          <h3 class="govuk-heading-m"> Reprocessing inputs for last calendar year</h3>
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Sources of packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Warehouse<br>
+                                Barn<br>
+                                Warehouse
+                            </dd>
+                        </div>
 
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                UK Packaging waste
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Non UK packaging waste
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Non packaging waste
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Total
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-          </dl>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                List of plant and equipment
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Mighty reprocessor, glass transformer, bottler plant
+                            </dd>
+                        </div>
+                    </dl>
+                    <br>
+                    <h3 class="govuk-heading-m"> Reprocessing inputs for last calendar year</h3>
 
-          <br>
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                UK Packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Non UK packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Non packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Total
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+                    </dl>
 
-          <h3 class="govuk-heading-m"> Reprocessing outputs for last calendar year</h3>
+                    <br>
 
-
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                UK Packaging waste
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Non UK packaging waste
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Non packaging waste
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Total
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-
-          </dl>
+                    <h3 class="govuk-heading-m"> Reprocessing outputs for last calendar year</h3>
 
 
-          <br>
-          <h3 class="govuk-heading-m"> Material outputs for last calendar year</h3>
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                UK Packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Non UK packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Non packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Total
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
 
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Plastic not reprocessed on site
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Contaminants from plastic reprocessing
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Process loss from plastic reprocessing
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Total
-              </dt>
-              <dd class="govuk-summary-list__value">
-                Value
-              </dd>
-            </div>
+                    </dl>
 
-          </dl>
 
-          <br>
-				
-          <div class="govuk-button-group !-margin-top-6">
-            <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteInputsAndOutputs" asp-route-registrationMaterialId="@Model">
-              Mark as reviewed
-            </button>
+                    <br>
+                    <h3 class="govuk-heading-m"> Material outputs for last calendar year</h3>
 
-            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button" asp-controller="Registrations" asp-action="QueryMaterialTask" asp-route-registrationMaterialId="@Model" asp-route-taskName="@RegulatorTaskType.ReprocessingInputsAndOutputs.ToString()">
-							Query the reprocessing inputs and outputs
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </main>
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Plastic not reprocessed on site
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Contaminants from plastic reprocessing
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Process loss from plastic reprocessing
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Total
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Value
+                            </dd>
+                        </div>
+
+                    </dl>
+
+                    <br>
+
+                    <div class="govuk-button-group !-margin-top-6">
+                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteInputsAndOutputs" asp-route-registrationMaterialId="@Model">
+                            Mark as reviewed
+                        </button>
+
+                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model, taskName = RegulatorTaskType.ReprocessingInputsAndOutputs })">
+                            Query the reprocessing inputs and outputs
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
 </div>

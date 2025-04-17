@@ -664,7 +664,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.QueryMaterialTask(1, "task1");
+        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.WasteLicensesPermitsAndExemptions);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -682,7 +682,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.QueryMaterialTask(1, "Task");
+        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -697,7 +697,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
 
         // Act
-        var result = await _controller.QueryMaterialTask(1, "task");
+        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -715,7 +715,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.QueryMaterialTask(1, "task");
+        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
 
         // Assert
         using (new AssertionScope())
@@ -737,7 +737,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.QueryMaterialTask(1, "task");
+            await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
         });
     }
 
