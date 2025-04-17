@@ -64,6 +64,7 @@ public class ManageRegistrationsMappingProfile : Profile
     private static string MapRegistrationTaskStatusCssClass(RegulatorTaskStatus taskStatus) =>
         taskStatus switch
         {
+            RegulatorTaskStatus.Queried => "govuk-tag--orange",
             RegulatorTaskStatus.Completed => "govuk-tag--default",
             _ => "govuk-tag--grey"
         };
