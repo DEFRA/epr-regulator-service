@@ -1,14 +1,12 @@
-using System.ComponentModel.DataAnnotations;
-
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +26,7 @@ public class RegistrationsController(
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials(int registrationId)
-    {       
+    {
         var session = await GetSession();
 
         string pagePath = GetRegistrationMethodPath(PagePath.AuthorisedMaterials, registrationId);
@@ -208,7 +206,7 @@ public class RegistrationsController(
     [HttpGet]
     [Route(PagePath.BusinessAddress)]
     public async Task<IActionResult> BusinessAddress(int registrationId)
-    {        
+    {
         var session = await GetSession();
 
         string pagePath = GetRegistrationMethodPath(PagePath.BusinessAddress, registrationId);
@@ -308,7 +306,7 @@ public class RegistrationsController(
         var queryRegistrationTaskViewModel = new QueryRegistrationTaskViewModel
         {
             RegistrationId = registrationId,
-            TaskName = taskName
+            TaskName = taskName.ToString()
         };
 
         return View(GetRegistrationsView(nameof(QueryRegistrationTask)), queryRegistrationTaskViewModel );
@@ -373,7 +371,7 @@ public class RegistrationsController(
 
         await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(queryMaterialTaskViewModel.RegistrationMaterialId);
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
     }

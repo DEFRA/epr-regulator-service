@@ -40,7 +40,7 @@ public class ManageRegistrationsMappingProfileTests
             Regulator = "Custom Regulator",
             Materials =
             [
-                new RegistrationMaterial { Id = 1, MaterialName = "Plastic", Status = ApplicationStatus.Granted, StatusUpdatedByName = "Test User", StatusUpdatedAt = DateTime.Now, RegistrationNumber = "ABC1234" }
+                new RegistrationMaterial { Id = 1, MaterialName = "Plastic", Status = ApplicationStatus.Granted, StatusUpdatedBy = "Test User", StatusUpdatedDate = DateTime.Now, RegistrationReferenceNumber = "ABC1234" }
             ],
             Tasks =
             [
@@ -74,7 +74,7 @@ public class ManageRegistrationsMappingProfileTests
     [TestMethod]
     [DataRow(RegulatorTaskStatus.NotStarted, "Not started yet", "govuk-tag--grey")]
     [DataRow(RegulatorTaskStatus.Completed, "Reviewed", "govuk-tag--default")]
-    [DataRow(RegulatorTaskStatus.Queried, "Queried", "govuk-tag--grey")]
+    [DataRow(RegulatorTaskStatus.Queried, "Queried", "govuk-tag--orange")]
     public void Map_WhenCalledWithRegistrationTask_ShouldReturnRegistrationTaskViewModel(RegulatorTaskStatus status, string expectedStatusText, string expectedCssClass)
     {
         // Arrange
@@ -108,9 +108,9 @@ public class ManageRegistrationsMappingProfileTests
             MaterialName = "Plastic",
             DeterminationDate = DateTime.Now.AddDays(-1),
             Status = applicationStatus,
-            StatusUpdatedByName = "Test User",
-            StatusUpdatedAt = DateTime.Now,
-            RegistrationNumber = "ABC1234",
+            StatusUpdatedBy = "Test User",
+            StatusUpdatedDate = DateTime.Now,
+            RegistrationReferenceNumber = "ABC1234",
             Tasks =
             [
                 new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions},
@@ -132,9 +132,9 @@ public class ManageRegistrationsMappingProfileTests
             viewModel.MaterialName.Should().Be(registrationMaterial.MaterialName);
             viewModel.DeterminationDate.Should().Be(registrationMaterial.DeterminationDate);
             viewModel.Status.Should().Be(registrationMaterial.Status);
-            viewModel.StatusUpdatedByName.Should().Be(registrationMaterial.StatusUpdatedByName);
-            viewModel.StatusUpdatedAt.Should().Be(registrationMaterial.StatusUpdatedAt);
-            viewModel.RegistrationNumber.Should().Be(registrationMaterial.RegistrationNumber);
+            viewModel.StatusUpdatedBy.Should().Be(registrationMaterial.StatusUpdatedBy);
+            viewModel.StatusUpdatedDate.Should().Be(registrationMaterial.StatusUpdatedDate);
+            viewModel.RegistrationReferenceNumber.Should().Be(registrationMaterial.RegistrationReferenceNumber);
             viewModel.StatusText.Should().Be(expectedStatusText);
             viewModel.StatusCssClass.Should().Be(expectedCssClass);
             viewModel.MaterialWasteLicensesTask.Should().NotBeNull();

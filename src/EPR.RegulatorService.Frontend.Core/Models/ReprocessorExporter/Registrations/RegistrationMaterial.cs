@@ -14,11 +14,11 @@ public class RegistrationMaterial
     
     public ApplicationStatus? Status { get; init; }
 
-    public string? StatusUpdatedByName { get; init; }
+    public string? StatusUpdatedBy { get; init; }
 
-    public DateTime? StatusUpdatedAt { get; init; }
+    public DateTime? StatusUpdatedDate { get; init; }
 
-    public string? RegistrationNumber { get; init; }
+    public string? RegistrationReferenceNumber { get; init; }
 
     public List<RegistrationTask> Tasks { get; init; } = [];
 }

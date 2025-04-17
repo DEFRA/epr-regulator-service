@@ -165,7 +165,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
 
             var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
 
-            SetupHttpMessageExpectations(HttpMethod.Patch, expectedPath, response);
+            SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
 
             // Act/Assert
             await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegistrationMaterialOutcomeAsync(registrationMaterialId, request));

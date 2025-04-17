@@ -174,9 +174,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             MaterialName = materialName,
             DeterminationDate = organisationType == ApplicationOrganisationType.Reprocessor ? DateTime.Now.AddDays(-7) : null,
             Status = status,
-            StatusUpdatedByName = statusUpdatedBy,
-            StatusUpdatedAt = statusUpdatedAt,
-            RegistrationNumber = registrationNumber,
+            StatusUpdatedBy = statusUpdatedBy,
+            StatusUpdatedDate = statusUpdatedAt,
+            RegistrationReferenceNumber = registrationNumber,
             Tasks = CreateMaterialTasks(registrationMaterialId, organisationType)
         };
     }

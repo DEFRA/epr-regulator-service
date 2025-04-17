@@ -27,12 +27,18 @@ public class ReprocessorExporterService(
         UpdateApplicationTaskStatus
     }
 
-    public async Task<Registration> GetRegistrationByIdAsync(int registrationId)
+    private readonly JsonSerializerOptions _jsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+    };
+
+    public async Task<Registration> GetRegistrationByIdAsync(int id)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationById);
-        string path = pathTemplate.Replace("{id}", registrationId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
         
         var response = await httpClient.GetAsync(path);
         
@@ -41,12 +47,12 @@ public class ReprocessorExporterService(
         return registration;
     }
 
-    public async Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int registrationMaterialId)
+    public async Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int id)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationMaterialById);
-        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
 
         var response = await httpClient.GetAsync(path);
 
@@ -62,7 +68,10 @@ public class ReprocessorExporterService(
         string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationMaterialOutcome);
         string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
 
-        var response = await httpClient.PatchAsJsonAsync(path, registrationMaterialOutcomeRequest);
+        string jsonContent = JsonSerializer.Serialize(registrationMaterialOutcomeRequest, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
 
         response.EnsureSuccessStatusCode();
     }
@@ -100,15 +109,11 @@ public class ReprocessorExporterService(
         }
     }
 
-    private static async Task<T> GetEntityFromResponse<T>(HttpResponseMessage response)
+    private async Task<T> GetEntityFromResponse<T>(HttpResponseMessage response)
     {
         response.EnsureSuccessStatusCode();
 
-        var entity = await response.Content.ReadFromJsonAsync<T>(new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-        });
+        var entity = await response.Content.ReadFromJsonAsync<T>(_jsonSerializerOptions);
 
         if (entity == null)
         {
