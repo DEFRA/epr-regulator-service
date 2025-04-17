@@ -306,7 +306,7 @@ public class RegistrationsController(
         var queryRegistrationTaskViewModel = new QueryRegistrationTaskViewModel
         {
             RegistrationId = registrationId,
-            TaskName = taskName.ToString()
+            TaskName = taskName
         };
 
         return View(GetRegistrationsView(nameof(QueryRegistrationTask)), queryRegistrationTaskViewModel );
