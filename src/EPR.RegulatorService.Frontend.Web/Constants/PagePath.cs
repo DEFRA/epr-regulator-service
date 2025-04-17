@@ -74,15 +74,6 @@ public static class PagePath
     public const string QueryMaterialTask = "query-material-task";
 
     // Complete tasks paths
-    public const string CompleteUkSiteDetails = "site-complete";
-    public const string CompleteBusinessAddress = "business-address-complete";
-    public const string CompleteAuthorisedMaterials = "authorised-materials-complete";
-    public const string CompleteMaterialWasteLicences = "permits-exemptions-complete";
-    public const string CompleteInputsAndOutputs = "reprocessing-throughputs-complete";
-    public const string CompleteSamplingInspection = "sampling-inspection-complete";
-    public const string CompleteOverseasReprocessorInterim = "overseas-interim-sites-complete";
-    public const string CompleteWasteLicences = "waste-licences-complete";
-    public const string CompleteMaterialDetails = "materials-contact-complete";
     public const string CompleteQueryRegistrationTask = "query-registration-task-complete";
     public const string CompleteQueryMaterialTask = "query-material-task-complete";
 

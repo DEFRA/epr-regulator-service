@@ -1,4 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -9,14 +15,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
-
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-
-using Core.Enums.ReprocessorExporter;
-
-using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
-using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
@@ -33,21 +31,17 @@ public class RegistrationsController(
     {       
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.AuthorisedMaterials);
-        SetBackLinkInfos(session, PagePath.AuthorisedMaterials);
+        string pagePath = GetRegistrationMethodPath(PagePath.AuthorisedMaterials, registrationId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
         
         return View(GetRegistrationsView(nameof(AuthorisedMaterials)), registrationId);
     }
 
-    [HttpGet]
-    [Route(PagePath.CompleteAuthorisedMaterials)]
+    [HttpPost]
+    [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> CompleteAuthorisedMaterials(int registrationId)
     {        
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.CompleteAuthorisedMaterials);
-        SetBackLinkInfos(session, PagePath.CompleteAuthorisedMaterials);
-
         var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
         {
             TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite.ToString(),
@@ -66,23 +60,17 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.UkSiteDetails);
-
-        SetBackLinkInfos(session, PagePath.UkSiteDetails);
+        string pagePath = GetRegistrationMethodPath(PagePath.UkSiteDetails, registrationId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(UkSiteDetails)), registrationId);
     }
 
-    [HttpGet]
-    [Route(PagePath.CompleteUkSiteDetails)]
+    [HttpPost]
+    [Route(PagePath.UkSiteDetails)]
     public async Task<IActionResult> CompleteUkSiteDetails(int registrationId)
     {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.UkSiteDetails);
-
-        SetBackLinkInfos(session, PagePath.UkSiteDetails);
-
         var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
         {
             TaskName = RegulatorTaskType.SiteAddressAndContactDetails.ToString(),
@@ -98,24 +86,20 @@ public class RegistrationsController(
     [HttpGet]
     [Route(PagePath.MaterialWasteLicences)]
     public async Task<IActionResult> MaterialWasteLicences(int registrationMaterialId)
-    {       
+    {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.MaterialWasteLicences);
-        SetBackLinkInfos(session, PagePath.MaterialWasteLicences);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.MaterialWasteLicences, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(MaterialWasteLicences)), registrationMaterialId);
     }
 
-    [HttpGet]
-    [Route(PagePath.CompleteMaterialWasteLicences)]
+    [HttpPost]
+    [Route(PagePath.MaterialWasteLicences)]
     public async Task<IActionResult> CompleteMaterialWasteLicences(int registrationMaterialId)
     {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.CompleteMaterialWasteLicences);
-        SetBackLinkInfos(session, PagePath.CompleteMaterialWasteLicences);
-
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
             TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions.ToString(),
@@ -125,9 +109,9 @@ public class RegistrationsController(
 
         await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        int registrationId = GetRegistrationIdFromSession(session);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
 
-        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
+        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
     }
 
     [HttpGet]
@@ -136,21 +120,17 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.SamplingInspection);
-        SetBackLinkInfos(session, PagePath.SamplingInspection);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.SamplingInspection, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(SamplingInspection)), registrationMaterialId);
     }
 
-    [HttpGet]
-    [Route(PagePath.CompleteSamplingInspection)]
+    [HttpPost]
+    [Route(PagePath.SamplingInspection)]
     public async Task<IActionResult> CompleteSamplingInspection(int registrationMaterialId)
     {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.SamplingInspection);
-        SetBackLinkInfos(session, PagePath.SamplingInspection);
-
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
             TaskName = RegulatorTaskType.SamplingAndInspectionPlan.ToString(),
@@ -160,9 +140,9 @@ public class RegistrationsController(
 
         await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        int registrationId = GetRegistrationIdFromSession(session);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
 
-        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
+        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
     }
 
     [HttpGet]
@@ -171,21 +151,17 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.InputsAndOutputs);
-        SetBackLinkInfos(session, PagePath.InputsAndOutputs);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.InputsAndOutputs, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(InputsAndOutputs)), registrationMaterialId);     
     }
 
-    [HttpGet]
-    [Route(PagePath.CompleteInputsAndOutputs)]
+    [HttpPost]
+    [Route(PagePath.InputsAndOutputs)]
     public async Task<IActionResult> CompleteInputsAndOutputs(int registrationMaterialId)
     {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.CompleteInputsAndOutputs);
-        SetBackLinkInfos(session, PagePath.CompleteInputsAndOutputs);
-
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
             TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs.ToString(),
@@ -195,9 +171,9 @@ public class RegistrationsController(
 
         await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        int registrationId = GetRegistrationIdFromSession(session);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
 
-        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
+        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
     }
 
     [HttpGet]
@@ -206,21 +182,17 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.WasteLicences);
-        SetBackLinkInfos(session, PagePath.WasteLicences);
+        string pagePath = GetRegistrationMethodPath(PagePath.WasteLicences, registrationId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(WasteLicences)), registrationId);
     }
 
-    [HttpGet]
-    [Route(PagePath.CompleteWasteLicences)]
+    [HttpPost]
+    [Route(PagePath.WasteLicences)]
     public async Task<IActionResult> CompleteWasteLicences(int registrationId)
     {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.WasteLicences);
-        SetBackLinkInfos(session, PagePath.WasteLicences);
-
         var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
         {
             TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions.ToString(),
@@ -239,20 +211,17 @@ public class RegistrationsController(
     {        
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.BusinessAddress);
-        SetBackLinkInfos(session, PagePath.BusinessAddress);
+        string pagePath = GetRegistrationMethodPath(PagePath.BusinessAddress, registrationId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(BusinessAddress)), registrationId);
     }
 
-    [HttpGet]
-    [Route(PagePath.CompleteBusinessAddress)]
+    [HttpPost]
+    [Route(PagePath.BusinessAddress)]
     public async Task<IActionResult> CompleteBusinessAddress(int registrationId)
     {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.CompleteBusinessAddress);
-        SetBackLinkInfos(session, PagePath.CompleteBusinessAddress);
         var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
         {
             TaskName = RegulatorTaskType.BusinessAddress.ToString(),
@@ -271,21 +240,17 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.MaterialDetails);
-        SetBackLinkInfos(session, PagePath.MaterialDetails);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.MaterialDetails, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(MaterialDetails)), registrationMaterialId);
     }
 
     [HttpGet]
-    [Route(PagePath.CompleteMaterialDetails)]
+    [Route(PagePath.MaterialDetails)]
     public async Task<IActionResult> CompleteMaterialDetails(int registrationMaterialId)
     {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.MaterialDetails);
-        SetBackLinkInfos(session, PagePath.MaterialDetails);
-
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
             TaskName = RegulatorTaskType.MaterialDetailsAndContact.ToString(),
@@ -295,9 +260,9 @@ public class RegistrationsController(
 
         await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        int registrationId = GetRegistrationIdFromSession(session);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
 
-        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
+        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
     }
 
     [HttpGet]
@@ -306,21 +271,17 @@ public class RegistrationsController(
     {        
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.OverseasReprocessorInterim);
-        SetBackLinkInfos(session, PagePath.OverseasReprocessorInterim);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.OverseasReprocessorInterim, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(OverseasReprocessorInterim)), registrationMaterialId);
     }
 
     [HttpGet]
-    [Route(PagePath.CompleteOverseasReprocessorInterim)]
+    [Route(PagePath.OverseasReprocessorInterim)]
     public async Task<IActionResult> CompleteOverseasReprocessorInterim(int registrationMaterialId)
     {        
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.OverseasReprocessorInterim);
-        SetBackLinkInfos(session, PagePath.OverseasReprocessorInterim);
-
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
             TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails.ToString(),
@@ -330,14 +291,14 @@ public class RegistrationsController(
 
         await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        int registrationId = GetRegistrationIdFromSession(session);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
 
-        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
+        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route(PagePath.QueryRegistrationTask)]
-    public async Task<IActionResult> QueryRegistrationTask(int registrationId, string taskName)
+    public async Task<IActionResult> QueryRegistrationTask(int registrationId, RegulatorTaskType taskName)
     {
         var session = await GetSession();
 
@@ -410,21 +371,14 @@ public class RegistrationsController(
 
         await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        int registrationId = GetRegistrationIdFromSession(session);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
 
-        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
+        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
     }
 
-    private static int GetRegistrationIdFromSession(JourneySession session)
-    {
-        string lastJourney = session.RegulatorSession.Journey.LastOrDefault(x => x.StartsWith("manage-registrations?id=", StringComparison.Ordinal));
-        if (lastJourney == null)
-        {
-            // Handle the case where lastJourney is null
-            throw new InvalidOperationException("Cannot find registrationId from ");
-        }
+    private static string GetRegistrationMethodPath(string pagePath, int registrationId) =>
+        $"{pagePath}?registrationId={registrationId}";
 
-        int registrationId = Convert.ToInt32(lastJourney.Split('=')[1], CultureInfo.InvariantCulture);
-        return registrationId;
-    }
+    private static string GetRegistrationMaterialMethodPath(string pagePath, int registrationMaterialId) =>
+        $"{pagePath}?registrationMaterialId={registrationMaterialId}";
 }
