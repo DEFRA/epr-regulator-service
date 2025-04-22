@@ -148,6 +148,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 DeclaredBy = "Sally Smith",
                 Files =
                     [
+                        new SubmissionDetailsViewModel.FileDetails {
+                            Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company,
+                            FileId = Guid.NewGuid()
+                        }
                     ],
             },
             ProducerComments = "producer comment",
