@@ -1,0 +1,48 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model ApplicationRefusedViewModel
+
+@{
+  ViewData["Title"] = "Refusal details";
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container ">
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <form asp-controller="ApplicationUpdate" asp-action="ApplicationRefusedDetails" method="post">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+          <h1 class="govuk-heading-l">
+            <span class="govuk-caption-l">@Model.MaterialName</span>
+            <label for="Comments">Provide refusal details</label>
+          </h1>
+
+          @if (!ViewData.ModelState.IsValid)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+          }
+
+
+          <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+
+            @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+
+            <textarea class="govuk-textarea govuk-js-character-count" id="Comments" name="Comments" rows="5" aria-describedby="Comments-info">@Model.Comments</textarea>
+            <div id="Comments-info" class="govuk-hint govuk-character-count__message govuk-character-count__status">
+              You can enter up to 500 characters
+            </div>
+            <div class="govuk-hint govuk-character-count__message"></div>
+          </div>
+
+          <button type="submit" class="govuk-button govuk-body govuk-!-margin-top-6" data-module="govuk-button">
+            Mark as refused
+          </button>
+
+        </div>
+      </div>
+    </form>
+  </main>
+</div>

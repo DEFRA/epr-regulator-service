@@ -84,6 +84,7 @@ public static class ServiceProviderExtension
         services.Configure<LandingPageConfig>(configuration.GetSection(LandingPageConfig.ConfigSection));
         services.Configure<PaymentFacadeApiConfig>(configuration.GetSection(PaymentFacadeApiConfig.ConfigSection));
         services.Configure<PaymentDetailsOptions>(configuration.GetSection(PaymentDetailsOptions.ConfigSection));
+        services.Configure<ReprocessorExporterFacadeApiConfig>(configuration.GetSection(ReprocessorExporterFacadeApiConfig.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)
@@ -182,7 +183,7 @@ public static class ServiceProviderExtension
     private static void RegisterFluentValidation(IServiceCollection services)
     {
         services.AddFluentValidationAutoValidation()
-                .AddValidatorsFromAssemblyContaining<ManageRegistrationsValidator>();
+                .AddValidatorsFromAssemblyContaining<IdRequestValidator>();
     }
 
     private static void RegisterAutoMapper(IServiceCollection services)

@@ -1,60 +1,62 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 @{
-	const string title = "Material details and contact";
-	ViewData["Title"] = title;
+    const string title = "Material details and contact";
+    ViewData["Title"] = title;
 }
 
 <div class="govuk-width-container ">
-	<main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-		<div class="govuk-grid-row">
-			<div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
-				<h1 class="govuk-heading-l">
-					<span class="govuk-caption-l">Plastic</span>
-					@title
-				</h1>
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-caption-l">Plastic</span>
+                    @title
+                </h1>
 
-				<dl class="govuk-summary-list">
-					<div class="govuk-summary-list__row">
-						<dt class="govuk-summary-list__key">
-							Contact for this application&nbsp;
-						</dt>
-						<dd class="govuk-summary-list__value">
-							John Snow <br> <a href="#" class="govuk-link govuk-link--no-visited-state"> john.snow@greenltd.com</a>
-						</dd>
-					</div>
-					<div class="govuk-summary-list__row">
-						<dt class="govuk-summary-list__key">
-							Suppliers
-						</dt>
-						<dd class="govuk-summary-list__value">
-							Warehouses
-						</dd>
-					</div>
-					<div class="govuk-summary-list__row">
-						<dt class="govuk-summary-list__key">
-							UK export ports
-						</dt>
-						<dd class="govuk-summary-list__value">
-							Port of Dover<br>
-							Port of cornwall
-						</dd>
-					</div>
+                <form asp-controller="Registrations">
 
-				</dl>
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Contact for this application&nbsp;
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                John Snow <br> <a href="#" class="govuk-link govuk-link--no-visited-state"> john.snow@greenltd.com</a>
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Suppliers
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Warehouses
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                UK export ports
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Port of Dover<br>
+                                Port of cornwall
+                            </dd>
+                        </div>
 
-				<br>
-				<div class="govuk-button-group !-margin-top-6">
-					<a href="material-details-complete.html" class="govuk-link">
-						<button type="submit" class="govuk-button" data-module="govuk-button">
-							Mark as complete
-						</button>
-					</a>
-					<a href="#" class="govuk-link">
-						<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
-							Query the material details and contact
-						</button>
-					</a>
-				</div>
-			</div>
-		</div>
-	</main>
+                    </dl>
+
+                    <br>
+                    <div class="govuk-button-group !-margin-top-6">
+                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteMaterialDetails" asp-route-registrationMaterialId="@Model">
+                            Mark as reviewed
+                        </button>
+
+                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model, taskName = RegulatorTaskType.MaterialDetailsAndContact })">
+                            Query the material details and contact
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
 </div>
