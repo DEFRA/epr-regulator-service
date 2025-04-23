@@ -23,6 +23,7 @@ public class RegistrationSubmissionsFilterViewModel
     public bool IsResubmissionRejectedRegistrationChecked { get; set; }
 
     public bool Is2025Checked { get; set; }
+    public bool Is2026Checked { get; set; }
 
     public int PageNumber { get; set; } = 1;
     public int? PageSize { get; set; }
