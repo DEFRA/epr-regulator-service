@@ -41,6 +41,7 @@ public class RegistrationSubmissionsFilterViewModel
                 IsStatusCancelledChecked = IsStatusGrantedChecked = IsStatusPendingChecked = IsStatusQueriedChecked = IsStatusRefusedChecked = IsStatusUpdatedChecked = false;
                 IsResubmissionPendingRegistrationChecked = IsResubmissionAcceptedRegistrationChecked = IsResubmissionRejectedRegistrationChecked = false;
                 Is2025Checked = false;
+                Is2026Checked = false;
             }
         }
     }
@@ -53,7 +54,11 @@ public class RegistrationSubmissionsFilterViewModel
         PageNumber = viewModel.PageNumber,
         PageSize = viewModel.PageSize,
         NationId = viewModel.NationId,
-        RelevantYears = viewModel.Is2025Checked ? "2025" : null,
+        RelevantYears = string.Join(", ", new[]
+        {
+            viewModel.Is2025Checked ? "2025" : null,
+            viewModel.Is2026Checked ? "2026" : null
+        }.Where(year => !string.IsNullOrWhiteSpace(year))),
         OrganisationReference = !string.IsNullOrEmpty(viewModel.OrganisationRef) ? viewModel.OrganisationRef : null,
         OrganisationName = !string.IsNullOrEmpty(viewModel.OrganisationName) ? viewModel.OrganisationName : null,
         OrganisationType = string.Join(" ", new[]
@@ -96,6 +101,7 @@ public class RegistrationSubmissionsFilterViewModel
         IsResubmissionAcceptedRegistrationChecked = model.ResubmissionStatuses != null && model.ResubmissionStatuses.Contains("accepted", StringComparison.OrdinalIgnoreCase),
         IsResubmissionRejectedRegistrationChecked = model.ResubmissionStatuses != null && model.ResubmissionStatuses.Contains("rejected", StringComparison.OrdinalIgnoreCase),
         Is2025Checked = model.RelevantYears != null && model.RelevantYears.Contains("2025", StringComparison.OrdinalIgnoreCase),
+        Is2026Checked = model.RelevantYears != null && model.RelevantYears.Contains("2026", StringComparison.OrdinalIgnoreCase),
         PageNumber = model.PageNumber ?? 1,
         PageSize = model.PageSize ?? 20,
         NationId = model.NationId

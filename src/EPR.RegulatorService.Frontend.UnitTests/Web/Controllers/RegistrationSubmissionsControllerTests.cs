@@ -271,7 +271,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYears = "2025",
+                RelevantYears = "2025, 2026",
                 PageNumber = 1,
                 PageSize = 500,
                 Statuses = "Pending"
@@ -291,7 +291,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.CurrentPageNumber.Should().Be(1);
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025, 2026");
             session.LatestFilterChoices.PageNumber.Should().Be(1);
             session.LatestFilterChoices.PageSize.Should().Be(500);
             session.LatestFilterChoices.Statuses.Should().Be("Pending");
@@ -303,6 +303,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(1);
             model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
         }
@@ -376,6 +377,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(new_page_number);
             model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeFalse();
             model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
         }
@@ -392,7 +394,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYears = "2025",
+                RelevantYears = "2025, 2026",
                 PageNumber = expectedPageNumber,
                 PageSize = 500,
                 Statuses = "Pending"
@@ -442,7 +444,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert: Final state
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025, 2026");
             session.LatestFilterChoices.PageNumber.Should().Be(4);
             session.LatestFilterChoices.PageSize.Should().Be(500);
             session.LatestFilterChoices.Statuses.Should().Be("Pending");
@@ -454,6 +456,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(4);
             model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
         }
@@ -462,11 +465,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task RegistrationSubmissions_Clears_Filters_On_ClearFilters_Action()
         {
             // Arrange
-            SetupSessionWithFilters("braun", "small", "2025", 2, 200, "Pending");
+            SetupSessionWithFilters("braun", "small", "2025, 2026", 2, 200, "Pending");
             // Act: Perform initial GET request
             var getResult = await _controller.RegistrationSubmissions(null);
             // Assert: Verify initial state
-            AssertInitialFilters(getResult, "braun", "small", "2025", 2, 200, "Pending");
+            AssertInitialFilters(getResult, "braun", "small", "2025, 2026", 2, 200, "Pending");
             // Act: Perform POST request to clear filters
             var postResult = await _controller.RegistrationSubmissions(null, FilterActions.ClearFilters);
             // Assert: Verify POST redirects to GET action
@@ -521,6 +524,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(pageNumber);
             model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be(organisationName);
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
             session.LatestFilterChoices.OrganisationName.Should().Be(organisationName);
