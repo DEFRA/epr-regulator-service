@@ -1,15 +1,18 @@
 using System.Globalization;
+using System.Linq;
 using System.Text.Json;
 
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Configs;
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -21,13 +24,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using CsvHelper.Configuration.Attributes;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 
@@ -37,22 +33,22 @@ public partial class SubmissionsController : Controller
 {
     private readonly ISessionManager<JourneySession> _sessionManager;
     private readonly string _pathBase;
-    private readonly SubmissionFiltersOptions _submissionFiltersOptions;
+    private readonly SubmissionFiltersConfig _submissionFiltersOptions;
     private readonly ExternalUrlsOptions _externalUrlsOptions;
     private readonly IFacadeService _facadeService;
+    private readonly ISubmissionPeriodService _submissionPeriodService;
     private readonly IPaymentFacadeService _paymentFacadeService;
     private const string SubmissionResultAccept = "SubmissionResultAccept";
     private const string SubmissionResultReject = "SubmissionResultReject";
     private const string SubmissionResultOrganisationName = "SubmissionResultOrganisationName";
-    private readonly PackagingDataSubmissionsOptions _packagingDataSubmissionsOptions;
 
     public SubmissionsController(
         ISessionManager<JourneySession> sessionManager,
         IConfiguration configuration,
-        IOptions<SubmissionFiltersOptions> submissionFiltersOptions,
+        IOptions<SubmissionFiltersConfig> submissionFiltersOptions,
         IOptions<ExternalUrlsOptions> externalUrlsOptions,
-        IOptions<PackagingDataSubmissionsOptions> packagingDataSubmissionsOptions,
         IFacadeService facadeService,
+        ISubmissionPeriodService submissionPeriodService,
         IPaymentFacadeService paymentFacadeService)
     {
         _sessionManager = sessionManager;
@@ -60,8 +56,8 @@ public partial class SubmissionsController : Controller
         _submissionFiltersOptions = submissionFiltersOptions.Value;
         _externalUrlsOptions = externalUrlsOptions.Value;
         _facadeService = facadeService;
+        _submissionPeriodService = submissionPeriodService;
         _paymentFacadeService = paymentFacadeService;
-        _packagingDataSubmissionsOptions = packagingDataSubmissionsOptions.Value;
     }
 
     [HttpGet]
@@ -88,18 +84,7 @@ public partial class SubmissionsController : Controller
         EndpointResponseStatus? submissionResultReject = TempData.TryGetValue(SubmissionResultReject, out object? rejectSubmissionResult) ? (EndpointResponseStatus)rejectSubmissionResult : EndpointResponseStatus.NotSet;
         string? submissionResultOrganisationName = TempData.TryGetValue(SubmissionResultOrganisationName, out object? organisationName) ? organisationName.ToString() : string.Empty;
 
-        int[] submissionYears = _submissionFiltersOptions.Years;
-        string[] submissonPeriods = _submissionFiltersOptions.PomPeriods;
-        int activeYear = _packagingDataSubmissionsOptions.ActiveYear;
-        int yearsBefore = _packagingDataSubmissionsOptions.YearsBefore;
-        int yearsAhead = _packagingDataSubmissionsOptions.YearsAhead;
-
-        int earliestYear = activeYear + yearsBefore;
-        int latestYear = activeYear + yearsAhead;
-        static bool IsBetween(int year, int min, int max) => year >= min && year <= max;
-
-        submissionYears = submissionYears.Where(year => IsBetween(year, earliestYear, latestYear)).ToArray();
-        submissonPeriods = submissonPeriods.Where(sp => IsBetween(int.Parse(sp[^4..], CultureInfo.InvariantCulture), earliestYear, latestYear)).ToArray();
+        var (submissionYears, submissonPeriods) = _submissionPeriodService.GetFilteredSubmissionYearsAndPeriods();
 
         var model = new SubmissionsViewModel
         {

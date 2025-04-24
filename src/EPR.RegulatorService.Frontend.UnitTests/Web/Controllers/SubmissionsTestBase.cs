@@ -14,6 +14,8 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
+using EPR.RegulatorService.Frontend.Core.Configs;
+
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 public abstract class SubmissionsTestBase
@@ -26,11 +28,11 @@ public abstract class SubmissionsTestBase
     protected Mock<ClaimsPrincipal> _userMock = null!;
     protected Mock<ISessionManager<JourneySession>> _sessionManagerMock = null!;
     protected Mock<IFacadeService> _facadeServiceMock = null!;
+    protected Mock<ISubmissionPeriodService> _submissionPeriodServiceMock = null!;
     protected Mock<IPaymentFacadeService> _paymentFacadeServiceMock = null!;
     protected JourneySession JourneySessionMock { get; set; }
-    protected Mock<IOptions<SubmissionFiltersOptions>> _submissionFiltersMock = null!;
+    protected Mock<IOptions<SubmissionFiltersConfig>> _submissionFiltersMock = null!;
     protected Mock<IOptions<ExternalUrlsOptions>> _urlsOptionMock = null!;
-    protected Mock<IOptions<PackagingDataSubmissionsOptions>> _packagingDataSubmissionsOptionsMock = null!;
     protected Mock<IConfiguration> _configurationMock = null!;
     protected ITempDataDictionary _tempDataDictionary = null!;
     private const string PowerBiLogin = "https://app.powerbi.com/";
@@ -40,11 +42,11 @@ public abstract class SubmissionsTestBase
         _httpContextMock = new Mock<HttpContext>();
         _userMock = new Mock<ClaimsPrincipal>();
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
-        _submissionFiltersMock = new Mock<IOptions<SubmissionFiltersOptions>>();
+        _submissionFiltersMock = new Mock<IOptions<SubmissionFiltersConfig>>();
         _urlsOptionMock = new Mock<IOptions<ExternalUrlsOptions>>();
-        _packagingDataSubmissionsOptionsMock = new Mock<IOptions<PackagingDataSubmissionsOptions>>();
         _tempDataDictionary = new TempDataDictionary(_httpContextMock.Object, Mock.Of<ITempDataProvider>());
         _facadeServiceMock = new Mock<IFacadeService>();
+        _submissionPeriodServiceMock = new Mock<ISubmissionPeriodService>();
         _paymentFacadeServiceMock = new Mock<IPaymentFacadeService>();
         _configurationMock = new Mock<IConfiguration>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
@@ -57,7 +59,7 @@ public abstract class SubmissionsTestBase
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
             .Returns(Task.FromResult(new JourneySession()));
 
-        _submissionFiltersMock.Setup(mock => mock.Value).Returns(new SubmissionFiltersOptions
+        _submissionFiltersMock.Setup(mock => mock.Value).Returns(new SubmissionFiltersConfig
         {
             Years = new int[] { 2023, 2024 },
             PomPeriods = new string[] { "January to June 2023", "July to December 2023", "January to June 2024", "July to December 2024" }
@@ -73,8 +75,8 @@ public abstract class SubmissionsTestBase
             _configurationMock.Object,
             _submissionFiltersMock.Object,
             _urlsOptionMock.Object,
-            _packagingDataSubmissionsOptionsMock.Object,
             _facadeServiceMock.Object,
+            _submissionPeriodServiceMock.Object,
             _paymentFacadeServiceMock.Object);
 
         _systemUnderTest.ControllerContext.HttpContext = _httpContextMock.Object;

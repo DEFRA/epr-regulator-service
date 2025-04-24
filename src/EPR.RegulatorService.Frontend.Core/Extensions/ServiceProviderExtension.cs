@@ -36,7 +36,9 @@ public static class ServiceProviderExtension
         }
 
         services.AddHttpClient<IPaymentFacadeService, PaymentFacadeService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("PaymentFacadeApi:TimeoutSeconds")));
-        
+
+        services.AddSingleton<ISubmissionPeriodService, SubmissionPeriodService>();
+
         return services;
     }
 }

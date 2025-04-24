@@ -1,16 +1,16 @@
-namespace EPR.RegulatorService.Frontend.Web.Configs
+namespace EPR.RegulatorService.Frontend.Core.Configs
 {
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
-    public class PackagingDataSubmissionsOptions
+    public class PackagingDataSubmissionsConfig
     {
         public const string ConfigSection = "BehaviourManagement:PomSubmissionFilters";
 
-        //public bool Show2025SubmissionYearAndPeriods { get; set; }
-
         public int ActiveYear { get; set; }
-        public int YearsBefore { get; set; }
+
+        public int StartingYear { get; set; }
+
         public int YearsAhead { get; set; }
     }
 }
