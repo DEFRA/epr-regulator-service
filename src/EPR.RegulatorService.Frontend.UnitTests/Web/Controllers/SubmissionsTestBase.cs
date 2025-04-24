@@ -30,6 +30,7 @@ public abstract class SubmissionsTestBase
     protected JourneySession JourneySessionMock { get; set; }
     protected Mock<IOptions<SubmissionFiltersOptions>> _submissionFiltersMock = null!;
     protected Mock<IOptions<ExternalUrlsOptions>> _urlsOptionMock = null!;
+    protected Mock<IOptions<PackagingDataSubmissionsOptions>> _packagingDataSubmissionsOptionsMock = null!;
     protected Mock<IConfiguration> _configurationMock = null!;
     protected ITempDataDictionary _tempDataDictionary = null!;
     private const string PowerBiLogin = "https://app.powerbi.com/";
@@ -41,6 +42,7 @@ public abstract class SubmissionsTestBase
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         _submissionFiltersMock = new Mock<IOptions<SubmissionFiltersOptions>>();
         _urlsOptionMock = new Mock<IOptions<ExternalUrlsOptions>>();
+        _packagingDataSubmissionsOptionsMock = new Mock<IOptions<PackagingDataSubmissionsOptions>>();
         _tempDataDictionary = new TempDataDictionary(_httpContextMock.Object, Mock.Of<ITempDataProvider>());
         _facadeServiceMock = new Mock<IFacadeService>();
         _paymentFacadeServiceMock = new Mock<IPaymentFacadeService>();
@@ -71,6 +73,7 @@ public abstract class SubmissionsTestBase
             _configurationMock.Object,
             _submissionFiltersMock.Object,
             _urlsOptionMock.Object,
+            _packagingDataSubmissionsOptionsMock.Object,
             _facadeServiceMock.Object,
             _paymentFacadeServiceMock.Object);
 
