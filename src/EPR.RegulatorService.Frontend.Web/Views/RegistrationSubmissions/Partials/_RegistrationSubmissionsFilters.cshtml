@@ -168,17 +168,16 @@
                                     <span class="govuk-label govuk-label--m">@Localizer["SubTitle.RelevantYear"].Value</span>
                                 </legend>
                                 <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                    <div class="epr-filter-panel-checkbox-layout">
+                                        <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                                            @Html.CheckBoxFor(x => x.Is2025Checked,
+                                                     new { id = "is-year-2025-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-year-2025-checked-label" })
+                                            @Html.LabelFor(x => x.Is2025Checked, Localizer["Checkbox.Year-2025"].Value,
+                                                     new { id = "is-year-2025-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-year-2025-checked-check" })
+                                        </div>
+                                    </div>
                                     @if (registrationSubmissionsOptions.Value.Show2026RelevantYearFilter)
                                     {
-                                      <div class="epr-filter-panel-checkbox-layout">
-                                          <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
-                                              @Html.CheckBoxFor(x => x.Is2025Checked,
-                                                       new { id = "is-year-2025-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-year-2025-checked-label" })
-                                              @Html.LabelFor(x => x.Is2025Checked, Localizer["Checkbox.Year-2025"].Value,
-                                                       new { id = "is-year-2025-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-year-2025-checked-check" })
-                                          </div>
-                                      </div>
-
                                       <div class="epr-filter-panel-checkbox-layout">
                                           <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                               @Html.CheckBoxFor(x => x.Is2026Checked,
@@ -186,16 +185,6 @@
                                               @Html.LabelFor(x => x.Is2026Checked, Localizer["Checkbox.Year-2026"].Value,
                                                         new { id = "is-year-2026-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-year-2026-checked-check" })
                                           </div>
-                                        </div>
-                                    } else
-                                    {
-                                        <div class="epr-filter-panel-checkbox-layout">
-                                            <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
-                                                @Html.CheckBoxFor(x => x.Is2025Checked,
-                                                         new { id = "is-year-2025-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-year-2025-checked-label" })
-                                                @Html.LabelFor(x => x.Is2025Checked, Localizer["Checkbox.Year-2025"].Value,
-                                                         new { id = "is-year-2025-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-year-2025-checked-check" })
-                                            </div>
                                         </div>
                                     }
                                 </div>
