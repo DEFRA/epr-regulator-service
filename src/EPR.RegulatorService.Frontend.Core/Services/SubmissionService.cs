@@ -11,17 +11,14 @@ namespace EPR.RegulatorService.Frontend.Core.Services
         IOptions<SubmissionFiltersConfig> submissionFiltersConfig,
         IOptions<PackagingDataSubmissionsConfig> packagingDataSubmissionsConfig) : ISubmissionService
     {
-        private readonly SubmissionFiltersConfig _submissionFiltersConfig = submissionFiltersConfig.Value;
-        private readonly PackagingDataSubmissionsConfig _packagingDataSubmissionsConfig = packagingDataSubmissionsConfig.Value;
-
         public (int[] Years, string[] Periods) GetFilteredSubmissionYearsAndPeriods()
         {
-            int[] submissionYears = _submissionFiltersConfig.Years;
-            string[] submissionPeriods = _submissionFiltersConfig.PomPeriods;
+            int[] submissionYears = submissionFiltersConfig.Value.Years;
+            string[] submissionPeriods = submissionFiltersConfig.Value.PomPeriods;
 
-            int activeYear = _packagingDataSubmissionsConfig.ActiveYear;
-            int startingYear = _packagingDataSubmissionsConfig.StartingYear;
-            int yearsAhead = _packagingDataSubmissionsConfig.YearsAhead;
+            int activeYear = packagingDataSubmissionsConfig.Value.ActiveYear;
+            int startingYear = packagingDataSubmissionsConfig.Value.StartingYear;
+            int yearsAhead = packagingDataSubmissionsConfig.Value.YearsAhead;
 
             int latestYear = activeYear + yearsAhead;
 
