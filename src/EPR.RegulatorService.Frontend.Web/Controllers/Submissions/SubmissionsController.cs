@@ -169,6 +169,7 @@ public partial class SubmissionsController : Controller
         if (filterType == FilterActions.ClearFilters)
         {
             viewModel.ClearFilters = true;
+            submissionFiltersModel.ClearFilters = true;
         }
 
         SetOrResetFilterValuesInSession(session, submissionFiltersModel);
