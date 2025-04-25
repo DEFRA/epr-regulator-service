@@ -16,8 +16,6 @@ namespace EPR.RegulatorService.Frontend.Core.Services
 
         public (int[] Years, string[] Periods) GetFilteredSubmissionYearsAndPeriods()
         {
-            // Compare current active year with DateTime.UtcNow.Year
-            // If they are the same, can take from anywhere, otherwise take from code.
             int[] submissionYears = _submissionFiltersConfig.Years;
             string[] submissionPeriods = _submissionFiltersConfig.PomPeriods;
 
