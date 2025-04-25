@@ -8,7 +8,7 @@ using System.Linq;
 /// Used to filter results from the Facade API for RegistrationSubmissions
 /// </summary>
 [ExcludeFromCodeCoverage]
-public  class RegistrationSubmissionsFilterModel
+public class RegistrationSubmissionsFilterModel
 {
     private string? _organisationName = string.Empty;
 
@@ -51,4 +51,6 @@ public  class RegistrationSubmissionsFilterModel
     public int? PageSize { get; set; } = 20;
 
     public int NationId { get; set; }
+
+    public bool Show2026RelevantYearFilter { get; set; }
 }

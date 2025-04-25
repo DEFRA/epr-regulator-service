@@ -22,6 +22,8 @@ public class RegistrationSubmissionsFilterViewModel
     public bool IsResubmissionAcceptedRegistrationChecked { get; set; }
     public bool IsResubmissionRejectedRegistrationChecked { get; set; }
 
+    public bool Show2026RelevantYearFilter { get; set; }
+
     public bool Is2025Checked { get; set; }
     public bool Is2026Checked { get; set; }
 
@@ -54,6 +56,7 @@ public class RegistrationSubmissionsFilterViewModel
         PageNumber = viewModel.PageNumber,
         PageSize = viewModel.PageSize,
         NationId = viewModel.NationId,
+        Show2026RelevantYearFilter = viewModel.Show2026RelevantYearFilter,
         RelevantYears = string.Join(", ", new[]
         {
             viewModel.Is2025Checked ? "2025" : null,
@@ -104,6 +107,7 @@ public class RegistrationSubmissionsFilterViewModel
         Is2026Checked = model.RelevantYears != null && model.RelevantYears.Contains("2026", StringComparison.OrdinalIgnoreCase),
         PageNumber = model.PageNumber ?? 1,
         PageSize = model.PageSize ?? 20,
-        NationId = model.NationId
+        NationId = model.NationId,
+        Show2026RelevantYearFilter = model.Show2026RelevantYearFilter
     };
 }

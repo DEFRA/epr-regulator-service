@@ -5,8 +5,6 @@
 
 @model RegistrationSubmissionsFilterViewModel
 
-@inject IOptions<RegistrationSubmissionsOptions> registrationSubmissionsOptions
-
 @using (Html.BeginForm("RegistrationSubmissions", "RegistrationSubmissions", FormMethod.Post))
 {
     @Html.HiddenFor(r => r.NationId)
@@ -176,7 +174,7 @@
                                                      new { id = "is-year-2025-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-year-2025-checked-check" })
                                         </div>
                                     </div>
-                                    @if (registrationSubmissionsOptions.Value.Show2026RelevantYearFilter)
+                                    @if (Model.Show2026RelevantYearFilter)
                                     {
                                       <div class="epr-filter-panel-checkbox-layout">
                                           <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
