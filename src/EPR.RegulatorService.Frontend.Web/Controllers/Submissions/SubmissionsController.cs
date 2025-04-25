@@ -33,7 +33,7 @@ public partial class SubmissionsController : Controller
 {
     private readonly ISessionManager<JourneySession> _sessionManager;
     private readonly string _pathBase;
-    private readonly SubmissionFiltersConfig _submissionFiltersConfig;
+    private readonly SubmissionFiltersConfig _submissionFiltersOptions;
     private readonly ExternalUrlsOptions _externalUrlsOptions;
     private readonly IFacadeService _facadeService;
     private readonly ISubmissionFilterConfigService _submissionFilterConfigService;
@@ -53,7 +53,7 @@ public partial class SubmissionsController : Controller
     {
         _sessionManager = sessionManager;
         _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
-        _submissionFiltersConfig = submissionFiltersConfig.Value;
+        _submissionFiltersOptions = submissionFiltersConfig.Value;
         _externalUrlsOptions = externalUrlsOptions.Value;
         _facadeService = facadeService;
         _submissionFilterConfigService = submissionFilterConfigService;
@@ -124,8 +124,8 @@ public partial class SubmissionsController : Controller
             IsPendingSubmissionChecked = viewModel.IsPendingSubmissionChecked,
             IsAcceptedSubmissionChecked = viewModel.IsAcceptedSubmissionChecked,
             IsRejectedSubmissionChecked = viewModel.IsRejectedSubmissionChecked,
-            SearchSubmissionYears = viewModel.SearchSubmissionYears?.Where(x => _submissionFiltersConfig.Years.Contains(x)).ToArray(),
-            SearchSubmissionPeriods = viewModel.SearchSubmissionPeriods?.Where(x => _submissionFiltersConfig.PomPeriods.Contains(x)).ToArray(),
+            SearchSubmissionYears = viewModel.SearchSubmissionYears?.Where(x => _submissionFiltersOptions.Years.Contains(x)).ToArray(),
+            SearchSubmissionPeriods = viewModel.SearchSubmissionPeriods?.Where(x => _submissionFiltersOptions.PomPeriods.Contains(x)).ToArray(),
             IsFilteredSearch = viewModel.IsFilteredSearch,
             ClearFilters = viewModel.ClearFilters
         };
