@@ -122,6 +122,8 @@
             </dl>
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
+			@Html.ActionLink("Wave fees", "WhichFeesToWaive", new { ViewBag.SubmissionId }, new { @class = "govuk-button" })
+
             @await Html.PartialAsync("Partials/_OfflinePayment", Model as PaymentDetailsViewModel)
         }
         else

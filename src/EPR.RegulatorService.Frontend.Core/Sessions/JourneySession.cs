@@ -20,4 +20,5 @@ public class JourneySession : IHasUserData
     public RegulatorRegistrationSession RegulatorRegistrationSession { get; set; } = new();
     public InviteNewApprovedPersonSession InviteNewApprovedPersonSession { get; set; } = new();
     public ReprocessorExporterSession ReprocessorExporterSession  { get; set; } = new ();
+    public PaymentDetailsSession PaymentDetailsSession { get; set; } = new();
 }

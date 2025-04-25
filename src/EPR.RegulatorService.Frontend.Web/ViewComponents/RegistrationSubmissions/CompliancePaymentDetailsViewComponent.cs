@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
 
+using EPR.Common.Authorization.Sessions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.Helpers;
@@ -14,13 +16,15 @@ using Microsoft.Extensions.Options;
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 
 public class CompliancePaymentDetailsViewComponent(IOptions<PaymentDetailsOptions> options,
-    IPaymentFacadeService paymentFacadeService, ILogger<CompliancePaymentDetailsViewComponent> logger) : ViewComponent
+    IPaymentFacadeService paymentFacadeService, ILogger<CompliancePaymentDetailsViewComponent> logger, ISessionManager<JourneySession> sessionManager) : ViewComponent
 {
     private static readonly Action<ILogger, string, Exception?> _logViewComponentError =
         LoggerMessage.Define<string>(
             LogLevel.Error,
             new EventId(1001, nameof(CompliancePaymentDetailsViewComponent)),
             "An error occurred while retrieving the payment details: {ErrorMessage}");
+
+    private JourneySession _currentSession;
 
     public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionDetailsViewModel viewModel)
     {
@@ -47,6 +51,8 @@ public class CompliancePaymentDetailsViewComponent(IOptions<PaymentDetailsOption
             var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.GetOnlineMarketPlaces();
             var subsidiariesCompanies = compliancePaymentResponse.ComplianceSchemeMembers.GetSubsidiariesCompanies();
 
+            _currentSession = await sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+
             var compliancePaymentDetailsViewModel = new CompliancePaymentDetailsViewModel
             {
                 ApplicationFee = ConvertToPoundsFromPence(compliancePaymentResponse.ApplicationProcessingFee),
@@ -65,6 +71,28 @@ public class CompliancePaymentDetailsViewComponent(IOptions<PaymentDetailsOption
                 SubsidiariesCompanyCount = viewModel.CSOMembershipDetails.Sum(r => r.NumberOfSubsidiaries),
                 SubsidiariesCompanyFee = ConvertToPoundsFromPence(subsidiariesCompanies.Sum())
             };
+
+            _currentSession.PaymentDetailsSession = new PaymentDetailsSession
+            {
+                ApplicationFee = compliancePaymentDetailsViewModel.ApplicationFee,
+                SubTotal = compliancePaymentDetailsViewModel.SubTotal,
+                PreviousPaymentReceived = compliancePaymentDetailsViewModel.PreviousPaymentReceived,
+                TotalOutstanding = compliancePaymentDetailsViewModel.TotalOutstanding,
+                SchemeMemberCount = compliancePaymentDetailsViewModel.SchemeMemberCount,
+                LargeProducerCount = compliancePaymentDetailsViewModel.LargeProducerCount,
+                LargeProducerFee = compliancePaymentDetailsViewModel.LargeProducerFee,
+                SmallProducerCount = compliancePaymentDetailsViewModel.SmallProducerCount,
+                SmallProducerFee = compliancePaymentDetailsViewModel.SmallProducerFee,
+                LateProducerCount = compliancePaymentDetailsViewModel.LateProducerCount,
+                LateProducerFee = compliancePaymentDetailsViewModel.LateProducerFee,
+                OnlineMarketPlaceCount = compliancePaymentDetailsViewModel.OnlineMarketPlaceCount,
+                OnlineMarketPlaceFee = compliancePaymentDetailsViewModel.OnlineMarketPlaceFee,
+                SubsidiariesCompanyCount = compliancePaymentDetailsViewModel.SubsidiariesCompanyCount,
+                SubsidiariesCompanyFee = compliancePaymentDetailsViewModel.SubsidiariesCompanyFee,
+                IsComplianceSchemeSelected = true
+            };
+
+            await sessionManager.SaveSessionAsync(HttpContext.Session, _currentSession);
 
             return View(compliancePaymentDetailsViewModel);
         }

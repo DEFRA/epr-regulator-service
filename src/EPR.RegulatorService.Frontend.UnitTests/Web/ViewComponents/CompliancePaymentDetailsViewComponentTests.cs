@@ -34,7 +34,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
-        _sut = new CompliancePaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object);
+        _sut = new CompliancePaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object, null);
     }
 
     [TestMethod]
