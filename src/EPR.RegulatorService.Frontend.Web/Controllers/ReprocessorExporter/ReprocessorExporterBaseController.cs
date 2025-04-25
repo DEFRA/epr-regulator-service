@@ -21,9 +21,10 @@ public abstract class ReprocessorExporterBaseController(
 
         return session;
     }
-
-    protected async Task SaveSessionAndJourney(JourneySession session, string currentPagePath)
+    
+    protected async Task SaveCurrentPageToSession(JourneySession session)
     {
+        string currentPagePath = GetRelativeUrlWithQueryString();
         session.RegulatorSession.Journey.AddIfNotExists(currentPagePath);
 
         ClearRestOfJourney(session, currentPagePath);
@@ -31,15 +32,28 @@ public abstract class ReprocessorExporterBaseController(
         await SaveSession(session);
     }
 
-    protected void SetBackLinkInfos(JourneySession session, string currentPagePath)
+    protected void SetBackLinkInfos(JourneySession session)
     {
         if (string.IsNullOrEmpty(Request?.Headers?.Referer))
+        {
             SetHomeBackLink();
+        }
         else
+        {
+            string currentPagePath = GetRelativeUrlWithQueryString();
             SetBackLink(session, currentPagePath);
+        }
 
         SetBackLinkAriaLabel();
     }
-
+    
     protected static string GetRegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
+
+    protected string GetRelativeUrlWithQueryString()
+    {
+        string relativeUrl = HttpContext.Request.Path.Value ?? string.Empty;
+        string queryString = HttpContext.Request.QueryString.HasValue ? HttpContext.Request.QueryString.Value : string.Empty;
+
+        return $"{relativeUrl}{queryString}";
+    }
 }

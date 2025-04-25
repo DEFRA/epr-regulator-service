@@ -24,6 +24,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
 public class ManageRegistrationsControllerTests
 {
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
+    private const int RegistrationId = 1;
 
     private ManageRegistrationsController _controller;
     private Mock<IReprocessorExporterService> _reprocessorExporterServiceMock;
@@ -61,6 +62,7 @@ public class ManageRegistrationsControllerTests
             configurationMock.Object
         );
 
+        httpContextMock.Setup(h => h.Request.Path).Returns($"/manage-registrations?id={RegistrationId}");
         _controller.ControllerContext.HttpContext = httpContextMock.Object;
     }
 
@@ -68,10 +70,9 @@ public class ManageRegistrationsControllerTests
     public async Task Index_ShouldDisplayBackLink()
     {
         // Arrange
-        var id = 1;
         var registration = new Registration
         {
-            Id = id,
+            Id = RegistrationId,
             OrganisationName = "Test Exporter Ltd",
             SiteAddress = "N/A",
             OrganisationType = ApplicationOrganisationType.Exporter,
@@ -91,11 +92,11 @@ public class ManageRegistrationsControllerTests
             .Setup(v => v.ValidateAsync(It.IsAny<IdRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
-        _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).ReturnsAsync(registration);
+        _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationByIdAsync(RegistrationId)).ReturnsAsync(registration);
         _mapperMock.Setup(m => m.Map<ManageRegistrationsViewModel>(registration)).Returns(expectedModel);
 
         // Act
-        var result = await _controller.Index(id);
+        var result = await _controller.Index(RegistrationId);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -113,10 +114,9 @@ public class ManageRegistrationsControllerTests
     public async Task Index_ValidId_ShouldReturnViewResultWithCorrectModel()
     {
         // Arrange
-        var id = 1;
         var registration = new Registration
         {
-            Id = id,
+            Id = RegistrationId,
             OrganisationName = "Test Exporter Ltd",
             SiteAddress = "N/A",
             OrganisationType = ApplicationOrganisationType.Exporter,
@@ -136,11 +136,11 @@ public class ManageRegistrationsControllerTests
             .Setup(v => v.ValidateAsync(It.IsAny<IdRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
-        _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).ReturnsAsync(registration);
+        _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationByIdAsync(RegistrationId)).ReturnsAsync(registration);
         _mapperMock.Setup(m => m.Map<ManageRegistrationsViewModel>(registration)).Returns(expectedModel);
 
         // Act
-        var result = await _controller.Index(id);
+        var result = await _controller.Index(RegistrationId);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -155,7 +155,7 @@ public class ManageRegistrationsControllerTests
 
             var model = viewResult.Model as ManageRegistrationsViewModel;
             model.Should().NotBeNull();
-            model!.Id.Should().Be(id);
+            model!.Id.Should().Be(RegistrationId);
             model.OrganisationName.Should().Be(expectedModel.OrganisationName);
             model.SiteAddress.Should().Be(expectedModel.SiteAddress);
             model.ApplicationOrganisationType.Should().Be(expectedModel.ApplicationOrganisationType);
@@ -198,16 +198,14 @@ public class ManageRegistrationsControllerTests
     public async Task Index_Exception_ShouldThrowException()
     {
         // Arrange
-        var id = 5;
-
         _ = _validatorMock
             .Setup(v => v.ValidateAsync(It.IsAny<IdRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
-        _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationByIdAsync(id)).Throws(new Exception("Test exception"));
+        _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationByIdAsync(RegistrationId)).Throws(new Exception("Test exception"));
 
         // Act & Assert
-        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await _controller.Index(id));
+        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await _controller.Index(RegistrationId));
 
         exception.Message.Should().Be("Test exception");
     }

@@ -110,7 +110,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 Tasks = CreateRegistrationTasks(registrationId, organisationType),
                 Materials =
                 [
-                    CreateRegistrationMaterial(registrationId, "Plastic", organisationType)
+                    CreateRegistrationMaterial(registrationId, "Plastic", organisationType),
+                    CreateRegistrationMaterial(registrationId, "Steel", organisationType, isMaterialRegistered: false, reasonForNotReg: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem"),
+                    CreateRegistrationMaterial(registrationId, "Aluminium", organisationType, isMaterialRegistered: false, reasonForNotReg: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem"),
                 ]
             };
     }
@@ -155,19 +157,21 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     }
 
 #pragma warning disable S107 - Ignoring the number of parameters in this method as it is required for testing purposes
-    private static RegistrationMaterial CreateRegistrationMaterial(
+    private static RegistrationMaterialSummary CreateRegistrationMaterial(
         int registrationId,
         string materialName,
         ApplicationOrganisationType organisationType,
         ApplicationStatus? status = null,
         string? statusUpdatedBy = null,
         DateTime? statusUpdatedAt = null,
-        string? registrationNumber = null)
+        string? registrationNumber = null,
+        bool isMaterialRegistered = true,
+        string? reasonForNotReg = null)
 #pragma warning restore S107
     {
         int registrationMaterialId = registrationId * 10;
 
-        return new RegistrationMaterial
+        return new RegistrationMaterialSummary
         {
             Id = registrationMaterialId,
             RegistrationId = registrationId,
@@ -177,7 +181,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             StatusUpdatedBy = statusUpdatedBy,
             StatusUpdatedDate = statusUpdatedAt,
             RegistrationReferenceNumber = registrationNumber,
-            Tasks = CreateMaterialTasks(registrationMaterialId, organisationType)
+            Tasks = CreateMaterialTasks(registrationMaterialId, organisationType),
+            IsMaterialRegistered = isMaterialRegistered,
+            ReasonForNotReg = reasonForNotReg
         };
     }
 
@@ -203,6 +209,59 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         ];
     }
 
-    public Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest) => throw new NotImplementedException();
-    public Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest) => throw new NotImplementedException();
+    public Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest)
+    {
+        var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
+        var task = registration.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateRegistrationTaskStatusRequest.TaskName);
+        int? taskId;
+        
+        if (task == null)
+        {
+            taskId = (updateRegistrationTaskStatusRequest.RegistrationId * 10) + registration.Tasks.Count;
+        }
+        else
+        {
+            taskId = task.Id;
+            registration.Tasks.Remove(task);
+        }
+
+        var newTask = new RegistrationTask
+        {
+            Id = taskId,
+            TaskName = Enum.Parse<RegulatorTaskType>(updateRegistrationTaskStatusRequest.TaskName),
+            Status = Enum.Parse<RegulatorTaskStatus>(updateRegistrationTaskStatusRequest.Status)
+        };
+
+        registration.Tasks.Add(newTask);
+
+        return Task.CompletedTask;
+    }
+
+    public Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest)
+    {
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == updateMaterialTaskStatusRequest.RegistrationMaterialId);
+        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateMaterialTaskStatusRequest.TaskName);
+        int? taskId;
+
+        if (task == null)
+        {
+            taskId = (updateMaterialTaskStatusRequest.RegistrationMaterialId * 1000) + registrationMaterial.Tasks.Count;
+        }
+        else
+        {
+            taskId = task.Id;
+            registrationMaterial.Tasks.Remove(task);
+        }
+
+        var newTask = new RegistrationTask
+        {
+            Id = taskId,
+            TaskName = Enum.Parse<RegulatorTaskType>(updateMaterialTaskStatusRequest.TaskName),
+            Status = Enum.Parse<RegulatorTaskStatus>(updateMaterialTaskStatusRequest.Status)
+        };
+
+        registrationMaterial.Tasks.Add(newTask);
+
+        return Task.CompletedTask;
+    }
 }

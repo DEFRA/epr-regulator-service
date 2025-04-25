@@ -2,7 +2,7 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
-public class RegistrationMaterial
+public class RegistrationMaterialSummary
 {
     public int Id { get; init; }
 
@@ -19,6 +19,10 @@ public class RegistrationMaterial
     public DateTime? StatusUpdatedDate { get; init; }
 
     public string? RegistrationReferenceNumber { get; init; }
+
+    public bool IsMaterialRegistered { get; init; }
+
+    public string? ReasonForNotReg { get; init; }
 
     public List<RegistrationTask> Tasks { get; init; } = [];
 }

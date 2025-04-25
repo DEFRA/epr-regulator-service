@@ -41,7 +41,7 @@ public class ManageRegistrationsController(IReprocessorExporterService reprocess
         var session = await GetSession();
         session.ReprocessorExporterSession = new ReprocessorExporterSession();
 
-        await SaveSessionAndJourney(session, $"{PagePath.ManageRegistrations}?id={id}");
+        await SaveCurrentPageToSession(session);
 
         return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations.cshtml", model);
     }

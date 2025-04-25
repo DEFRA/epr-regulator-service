@@ -40,9 +40,8 @@ public class ApplicationUpdateController(
         var applicationUpdateSession = await GetOrCreateApplicationUpdateSession(registrationMaterialId, session);
         var viewModel = mapper.Map<ApplicationUpdateViewModel>(applicationUpdateSession);
 
-        string pagePath = GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId);
-        await SaveSessionAndJourney(session, pagePath);
-        SetBackLinkInfos(session, pagePath);
+        await SaveCurrentPageToSession(session);
+        SetBackLinkInfos(session);
 
         return View(GetRegistrationsView(nameof(ApplicationUpdate)), viewModel);
     }
@@ -58,7 +57,6 @@ public class ApplicationUpdateController(
         {
             return HandleInvalidModelState(
                 session,
-                GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId),
                 applicationUpdateSession,
                 viewModel,
                 GetRegistrationsView(nameof(ApplicationUpdate))
@@ -83,8 +81,8 @@ public class ApplicationUpdateController(
         var applicationUpdateSession = GetApplicationUpdateSession(session);
         var viewModel = mapper.Map<ApplicationGrantedViewModel>(applicationUpdateSession);
 
-        await SaveSessionAndJourney(session, PagePath.ApplicationGrantedDetails);
-        SetBackLinkInfos(session, PagePath.ApplicationGrantedDetails);
+        await SaveCurrentPageToSession(session);
+        SetBackLinkInfos(session);
 
         return View(GetRegistrationsView(nameof(ApplicationGrantedDetails)), viewModel);
     }
@@ -100,7 +98,6 @@ public class ApplicationUpdateController(
         {
             return HandleInvalidModelState(
                 session,
-                PagePath.ApplicationGrantedDetails,
                 applicationUpdateSession,
                 viewModel,
                 GetRegistrationsView(nameof(ApplicationGrantedDetails))
@@ -123,8 +120,8 @@ public class ApplicationUpdateController(
         var applicationUpdateSession = GetApplicationUpdateSession(session);
         var viewModel = mapper.Map<ApplicationRefusedViewModel>(applicationUpdateSession);
 
-        await SaveSessionAndJourney(session, PagePath.ApplicationRefusedDetails);
-        SetBackLinkInfos(session, PagePath.ApplicationRefusedDetails);
+        await SaveCurrentPageToSession(session);
+        SetBackLinkInfos(session);
 
         return View(GetRegistrationsView(nameof(ApplicationRefusedDetails)), viewModel);
     }
@@ -140,7 +137,6 @@ public class ApplicationUpdateController(
         {
             return HandleInvalidModelState(
                 session,
-                PagePath.ApplicationRefusedDetails,
                 applicationUpdateSession,
                 viewModel,
                 GetRegistrationsView(nameof(ApplicationRefusedDetails))
@@ -153,9 +149,6 @@ public class ApplicationUpdateController(
 
         return RedirectToAction(PagePath.ManageRegistrations, PagePath.ReprocessorExporterRegistrations, new { id = applicationUpdateSession.RegistrationId });
     }
-
-    private static string GetApplicationUpdatePath(int registrationMaterialId) =>
-        $"{PagePath.ApplicationUpdate}?registrationMaterialId={registrationMaterialId}";
 
     private static ApplicationUpdateSession GetApplicationUpdateSession(JourneySession session)
     {
@@ -180,9 +173,9 @@ public class ApplicationUpdateController(
         return session.ReprocessorExporterSession.ApplicationUpdateSession;
     }
 
-    private IActionResult HandleInvalidModelState<T>(JourneySession session, string pagePath, ApplicationUpdateSession applicationUpdateSession, T viewModel, string viewName)
+    private IActionResult HandleInvalidModelState<T>(JourneySession session, ApplicationUpdateSession applicationUpdateSession, T viewModel, string viewName)
     {
-        SetBackLinkInfos(session, pagePath);
+        SetBackLinkInfos(session);
 
         mapper.Map(applicationUpdateSession, viewModel);
 
