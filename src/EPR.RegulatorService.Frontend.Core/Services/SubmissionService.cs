@@ -7,9 +7,9 @@ namespace EPR.RegulatorService.Frontend.Core.Services
 
     using Microsoft.Extensions.Options;
 
-    public class SubmissionPeriodService(
+    public class SubmissionService(
         IOptions<SubmissionFiltersConfig> submissionFiltersConfig,
-        IOptions<PackagingDataSubmissionsConfig> packagingDataSubmissionsConfig) : ISubmissionPeriodService
+        IOptions<PackagingDataSubmissionsConfig> packagingDataSubmissionsConfig) : ISubmissionService
     {
         private readonly SubmissionFiltersConfig _submissionFiltersConfig = submissionFiltersConfig.Value;
         private readonly PackagingDataSubmissionsConfig _packagingDataSubmissionsConfig = packagingDataSubmissionsConfig.Value;

@@ -28,7 +28,7 @@ public abstract class SubmissionsTestBase
     protected Mock<ClaimsPrincipal> _userMock = null!;
     protected Mock<ISessionManager<JourneySession>> _sessionManagerMock = null!;
     protected Mock<IFacadeService> _facadeServiceMock = null!;
-    protected Mock<ISubmissionPeriodService> _submissionPeriodServiceMock = null!;
+    protected Mock<ISubmissionService> _submissionPeriodServiceMock = null!;
     protected Mock<IPaymentFacadeService> _paymentFacadeServiceMock = null!;
     protected JourneySession JourneySessionMock { get; set; }
     protected Mock<IOptions<SubmissionFiltersConfig>> _submissionFiltersMock = null!;
@@ -46,7 +46,7 @@ public abstract class SubmissionsTestBase
         _urlsOptionMock = new Mock<IOptions<ExternalUrlsOptions>>();
         _tempDataDictionary = new TempDataDictionary(_httpContextMock.Object, Mock.Of<ITempDataProvider>());
         _facadeServiceMock = new Mock<IFacadeService>();
-        _submissionPeriodServiceMock = new Mock<ISubmissionPeriodService>();
+        _submissionPeriodServiceMock = new Mock<ISubmissionService>();
         _paymentFacadeServiceMock = new Mock<IPaymentFacadeService>();
         _configurationMock = new Mock<IConfiguration>();
         var configurationSectionMock = new Mock<IConfigurationSection>();

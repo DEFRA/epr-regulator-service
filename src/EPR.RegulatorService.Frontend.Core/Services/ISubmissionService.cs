@@ -1,6 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Core.Services
 {
-    public interface ISubmissionPeriodService
+    public interface ISubmissionService
     {
         (int[] Years, string[] Periods) GetFilteredSubmissionYearsAndPeriods();
     }

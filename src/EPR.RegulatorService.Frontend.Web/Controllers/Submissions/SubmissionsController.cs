@@ -36,7 +36,7 @@ public partial class SubmissionsController : Controller
     private readonly SubmissionFiltersConfig _submissionFiltersOptions;
     private readonly ExternalUrlsOptions _externalUrlsOptions;
     private readonly IFacadeService _facadeService;
-    private readonly ISubmissionPeriodService _submissionPeriodService;
+    private readonly ISubmissionService _submissionService;
     private readonly IPaymentFacadeService _paymentFacadeService;
     private const string SubmissionResultAccept = "SubmissionResultAccept";
     private const string SubmissionResultReject = "SubmissionResultReject";
@@ -48,7 +48,7 @@ public partial class SubmissionsController : Controller
         IOptions<SubmissionFiltersConfig> submissionFiltersOptions,
         IOptions<ExternalUrlsOptions> externalUrlsOptions,
         IFacadeService facadeService,
-        ISubmissionPeriodService submissionPeriodService,
+        ISubmissionService submissionPeriodService,
         IPaymentFacadeService paymentFacadeService)
     {
         _sessionManager = sessionManager;
@@ -56,7 +56,7 @@ public partial class SubmissionsController : Controller
         _submissionFiltersOptions = submissionFiltersOptions.Value;
         _externalUrlsOptions = externalUrlsOptions.Value;
         _facadeService = facadeService;
-        _submissionPeriodService = submissionPeriodService;
+        _submissionService = submissionPeriodService;
         _paymentFacadeService = paymentFacadeService;
     }
 
@@ -84,7 +84,7 @@ public partial class SubmissionsController : Controller
         EndpointResponseStatus? submissionResultReject = TempData.TryGetValue(SubmissionResultReject, out object? rejectSubmissionResult) ? (EndpointResponseStatus)rejectSubmissionResult : EndpointResponseStatus.NotSet;
         string? submissionResultOrganisationName = TempData.TryGetValue(SubmissionResultOrganisationName, out object? organisationName) ? organisationName.ToString() : string.Empty;
 
-        var (submissionYears, submissonPeriods) = _submissionPeriodService.GetFilteredSubmissionYearsAndPeriods();
+        var (submissionYears, submissonPeriods) = _submissionService.GetFilteredSubmissionYearsAndPeriods();
 
         var model = new SubmissionsViewModel
         {
