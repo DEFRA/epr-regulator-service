@@ -83,6 +83,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _systemUnderTest.TempData["SubmissionResultAccept"] = EndpointResponseStatus.Success;
             _systemUnderTest.TempData["SubmissionResultOrganisationName"] = SearchOrganisationName;
 
+            _submissionServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+                .Returns(([2023, 2024],
+                    ["January to June 2023",
+                    "July to December 2023",
+                    "January to June 2024",
+                    "July to December 2024"]));
+
             // Act
             var result = await _systemUnderTest.Submissions();
 
@@ -116,6 +123,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _systemUnderTest.TempData["SubmissionResultReject"] = EndpointResponseStatus.Success;
             _systemUnderTest.TempData["SubmissionResultOrganisationName"] = SearchOrganisationName;
 
+            _submissionServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+                .Returns(([2023, 2024],
+                    ["January to June 2023",
+                    "July to December 2023",
+                    "January to June 2024",
+                    "July to December 2024"]));
+
             // Act
             var result = await _systemUnderTest.Submissions();
 
@@ -145,6 +159,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task GivenOnSubmissionsGet_WithValidSession_WhenPageTwoSelected_ThenUpdatesSessionAndReturnsView()
         {
+            // Arrange
+            _submissionServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+                .Returns(([2023, 2024],
+                    ["January to June 2023",
+                    "July to December 2023",
+                    "January to June 2024",
+                    "July to December 2024"]));
+
             // Act
             var result = await _systemUnderTest.Submissions(PageNumberTwo);
 
@@ -179,8 +201,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
-            int[] searchedSubmissionYears = new[] { 2023 };
-            string[] searchedSubmissionPeriods = new[] { "Jan to June 2023" };
+            _submissionServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+                .Returns(([2023, 2024],
+                    ["January to June 2023",
+                    "July to December 2023",
+                    "January to June 2024",
+                    "July to December 2024"]));
+
+            int[] searchedSubmissionYears = [2023];
+            string[] searchedSubmissionPeriods = ["Jan to June 2023"];
 
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationName = SearchOrganisationName;
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationId = string.Empty;
@@ -474,14 +503,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submission = _fixture.Create<Submission>();
             submission.FirstName = "fstName";
-            submission.LastName = "lstName";    
+            submission.LastName = "lstName";
             var session = new JourneySession
             {
                 RegulatorSubmissionSession = new RegulatorSubmissionSession
                 {
                     OrganisationSubmission = submission,
-                    
-                    
+
+
                 }
             };
 
@@ -519,7 +548,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 RegulatorSubmissionSession = new RegulatorSubmissionSession
                 {
-                     OrganisationSubmission = submission
+                    OrganisationSubmission = submission
                 }
             };
 
@@ -647,7 +676,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_MorningTime()
         {
             // Arrange
-            
+
             var inputDate = new DateTime(2025, 1, 8, 9, 30, 0); // 9:30 AM, 8th January 2025
             var expectedOutput = "9:30am on 08 January 2025";
 
@@ -996,7 +1025,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var result = await _systemUnderTest.SubmitOfflinePayment(paymentDetailsViewModel);
 
             // Assert
-            var viewResult = result as ViewResult;            
+            var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
             viewResult!.ViewName.Should().Be(nameof(_systemUnderTest.SubmissionDetails));
         }
