@@ -33,10 +33,10 @@ public partial class SubmissionsController : Controller
 {
     private readonly ISessionManager<JourneySession> _sessionManager;
     private readonly string _pathBase;
-    private readonly SubmissionFiltersConfig _submissionFiltersOptions;
+    private readonly SubmissionFiltersConfig _submissionFiltersConfig;
     private readonly ExternalUrlsOptions _externalUrlsOptions;
     private readonly IFacadeService _facadeService;
-    private readonly ISubmissionService _submissionService;
+    private readonly ISubmissionFilterConfigService _submissionFilterConfigService;
     private readonly IPaymentFacadeService _paymentFacadeService;
     private const string SubmissionResultAccept = "SubmissionResultAccept";
     private const string SubmissionResultReject = "SubmissionResultReject";
@@ -45,18 +45,18 @@ public partial class SubmissionsController : Controller
     public SubmissionsController(
         ISessionManager<JourneySession> sessionManager,
         IConfiguration configuration,
-        IOptions<SubmissionFiltersConfig> submissionFiltersOptions,
+        IOptions<SubmissionFiltersConfig> submissionFiltersConfig,
         IOptions<ExternalUrlsOptions> externalUrlsOptions,
         IFacadeService facadeService,
-        ISubmissionService submissionPeriodService,
+        ISubmissionFilterConfigService submissionFilterConfigService,
         IPaymentFacadeService paymentFacadeService)
     {
         _sessionManager = sessionManager;
         _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
-        _submissionFiltersOptions = submissionFiltersOptions.Value;
+        _submissionFiltersConfig = submissionFiltersConfig.Value;
         _externalUrlsOptions = externalUrlsOptions.Value;
         _facadeService = facadeService;
-        _submissionService = submissionPeriodService;
+        _submissionFilterConfigService = submissionFilterConfigService;
         _paymentFacadeService = paymentFacadeService;
     }
 
@@ -84,7 +84,7 @@ public partial class SubmissionsController : Controller
         EndpointResponseStatus? submissionResultReject = TempData.TryGetValue(SubmissionResultReject, out object? rejectSubmissionResult) ? (EndpointResponseStatus)rejectSubmissionResult : EndpointResponseStatus.NotSet;
         string? submissionResultOrganisationName = TempData.TryGetValue(SubmissionResultOrganisationName, out object? organisationName) ? organisationName.ToString() : string.Empty;
 
-        var (submissionYears, submissonPeriods) = _submissionService.GetFilteredSubmissionYearsAndPeriods();
+        var (submissionYears, submissonPeriods) = _submissionFilterConfigService.GetFilteredSubmissionYearsAndPeriods();
 
         var model = new SubmissionsViewModel
         {
@@ -124,8 +124,8 @@ public partial class SubmissionsController : Controller
             IsPendingSubmissionChecked = viewModel.IsPendingSubmissionChecked,
             IsAcceptedSubmissionChecked = viewModel.IsAcceptedSubmissionChecked,
             IsRejectedSubmissionChecked = viewModel.IsRejectedSubmissionChecked,
-            SearchSubmissionYears = viewModel.SearchSubmissionYears?.Where(x => _submissionFiltersOptions.Years.Contains(x)).ToArray(),
-            SearchSubmissionPeriods = viewModel.SearchSubmissionPeriods?.Where(x => _submissionFiltersOptions.PomPeriods.Contains(x)).ToArray(),
+            SearchSubmissionYears = viewModel.SearchSubmissionYears?.Where(x => _submissionFiltersConfig.Years.Contains(x)).ToArray(),
+            SearchSubmissionPeriods = viewModel.SearchSubmissionPeriods?.Where(x => _submissionFiltersConfig.PomPeriods.Contains(x)).ToArray(),
             IsFilteredSearch = viewModel.IsFilteredSearch,
             ClearFilters = viewModel.ClearFilters
         };

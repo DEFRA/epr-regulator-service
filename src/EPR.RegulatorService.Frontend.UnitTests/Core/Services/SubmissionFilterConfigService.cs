@@ -9,9 +9,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class SubmissionServiceTests
+    public class SubmissionFilterConfigService
     {
-        private SubmissionService _submissionService;
+        private Frontend.Core.Services.SubmissionFilterConfigService _submissionFilterConfigService;
 
         private void CreateService(
             int[] years,
@@ -34,7 +34,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 YearsAhead = yearsAhead
             });
 
-            _submissionService = new SubmissionService(submissionFiltersConfig, packagingDataSubmissionsConfig);
+            _submissionFilterConfigService = new Frontend.Core.Services.SubmissionFilterConfigService(
+                submissionFiltersConfig,
+                packagingDataSubmissionsConfig);
         }
 
         [TestMethod]
@@ -55,7 +57,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             );
 
             // Act
-            var (filteredYears, filteredPeriods) = _submissionService.GetFilteredSubmissionYearsAndPeriods();
+            var (filteredYears, filteredPeriods) = _submissionFilterConfigService.GetFilteredSubmissionYearsAndPeriods();
 
             // Assert
             filteredYears.Should().BeEquivalentTo([2023, 2024, 2025]);
@@ -83,7 +85,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             );
 
             // Act
-            var (filteredYears, filteredPeriods) = _submissionService.GetFilteredSubmissionYearsAndPeriods();
+            var (filteredYears, filteredPeriods) = _submissionFilterConfigService.GetFilteredSubmissionYearsAndPeriods();
 
             // Assert
             filteredYears.Should().BeEquivalentTo([2023]);
@@ -108,7 +110,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             );
 
             // Act
-            var (filteredYears, filteredPeriods) = _submissionService.GetFilteredSubmissionYearsAndPeriods();
+            var (filteredYears, filteredPeriods) = _submissionFilterConfigService.GetFilteredSubmissionYearsAndPeriods();
 
             // Assert
             filteredYears.Should().BeEmpty();
@@ -132,7 +134,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             );
 
             // Act
-            var (filteredYears, filteredPeriods) = _submissionService.GetFilteredSubmissionYearsAndPeriods();
+            var (filteredYears, filteredPeriods) = _submissionFilterConfigService.GetFilteredSubmissionYearsAndPeriods();
 
             // Assert
             filteredYears.Should().BeEquivalentTo([2023, 2024, 2025, 2026, 2027]);

@@ -83,7 +83,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _systemUnderTest.TempData["SubmissionResultAccept"] = EndpointResponseStatus.Success;
             _systemUnderTest.TempData["SubmissionResultOrganisationName"] = SearchOrganisationName;
 
-            _submissionServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
                 .Returns(([2023, 2024],
                     ["January to June 2023",
                     "July to December 2023",
@@ -123,7 +123,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _systemUnderTest.TempData["SubmissionResultReject"] = EndpointResponseStatus.Success;
             _systemUnderTest.TempData["SubmissionResultOrganisationName"] = SearchOrganisationName;
 
-            _submissionServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
                 .Returns(([2023, 2024],
                     ["January to June 2023",
                     "July to December 2023",
@@ -160,7 +160,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GivenOnSubmissionsGet_WithValidSession_WhenPageTwoSelected_ThenUpdatesSessionAndReturnsView()
         {
             // Arrange
-            _submissionServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
                 .Returns(([2023, 2024],
                     ["January to June 2023",
                     "July to December 2023",
@@ -201,7 +201,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
-            _submissionServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
                 .Returns(([2023, 2024],
                     ["January to June 2023",
                     "July to December 2023",
