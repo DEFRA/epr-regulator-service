@@ -7,6 +7,7 @@ using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -784,15 +785,37 @@ public partial class RegistrationSubmissionsController(
 
     [HttpPost]
     [Route(PagePath.SelectFee + "/{submissionId:guid}", Name = "SelectFee")]
-    public async Task<IActionResult> SelectFee(SelectFeesViewModel selectFeesViewModel)
+    public async Task<IActionResult> SelectFee(SelectFeesViewModel viewModel)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
         SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId }), false);
-        selectFeesViewModel.IsComplianceSchemeSelected = _currentSession.PaymentDetailsSession.IsComplianceSchemeSelected;
+        viewModel.IsComplianceSchemeSelected = _currentSession.PaymentDetailsSession.IsComplianceSchemeSelected;
+
+        viewModel.IsComplianceSchemeSelected = _currentSession.PaymentDetailsSession.IsComplianceSchemeSelected;
+        viewModel.IsProducerSelected = _currentSession.PaymentDetailsSession.IsProducerSelected;
+
+        viewModel.ApplicationFee = _currentSession.PaymentDetailsSession.ApplicationFee;
+
+        viewModel.SmallProducerCount = _currentSession.PaymentDetailsSession.SmallProducerCount;
+        viewModel.SmallProducerFee = _currentSession.PaymentDetailsSession.SmallProducerFee;
+
+        viewModel.LargeProducerCount = _currentSession.PaymentDetailsSession.LargeProducerCount;
+        viewModel.LargeProducerFee = _currentSession.PaymentDetailsSession.LargeProducerFee;
+
+        viewModel.OnlineMarketPlaceCount = _currentSession.PaymentDetailsSession.OnlineMarketPlaceCount;
+        viewModel.OnlineMarketPlaceFee = _currentSession.PaymentDetailsSession.OnlineMarketPlaceFee;
+
+        viewModel.SubsidiariesCompanyCount = _currentSession.PaymentDetailsSession.SubsidiariesCompanyCount;
+        viewModel.SubsidiariesCompanyFee = _currentSession.PaymentDetailsSession.SubsidiariesCompanyFee;
+
+        viewModel.LateProducerCount = _currentSession.PaymentDetailsSession.LateProducerCount;
+        viewModel.LateProducerFee = _currentSession.PaymentDetailsSession.LateProducerFee;
+
+        viewModel.SubmissionId = viewModel.SubmissionId;
 
         if (!ModelState.IsValid)
         {
-            return View(nameof(SelectFee), selectFeesViewModel);
+            return View(nameof(SelectFee), viewModel);
         }
 
         return null;
