@@ -748,8 +748,8 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpGet]
-    [Route("which-fee-waive")]
-    public async Task<IActionResult> WhichFeesToWaive(Guid submissionId)
+    [Route(PagePath.SelectFee + "/{submissionId:guid}", Name = "SelectFee")]    
+    public async Task<IActionResult> SelectFee(Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
         SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId }), false);
@@ -759,17 +759,12 @@ public partial class RegistrationSubmissionsController(
         viewModel.IsProducerSelected = _currentSession.PaymentDetailsSession.IsProducerSelected;
 
         viewModel.ApplicationFee = _currentSession.PaymentDetailsSession.ApplicationFee;
-
-        if (viewModel.IsComplianceSchemeSelected)
-        {
-            viewModel.SchemeMembersSectionEnable = true;
-        }
-
+        
         viewModel.SmallProducerCount = _currentSession.PaymentDetailsSession.SmallProducerCount;
         viewModel.SmallProducerFee = _currentSession.PaymentDetailsSession.SmallProducerFee;
 
         viewModel.LargeProducerCount = _currentSession.PaymentDetailsSession.LargeProducerCount;
-        viewModel.LargeProducerFee = _currentSession.PaymentDetailsSession.LateProducerFee;
+        viewModel.LargeProducerFee = _currentSession.PaymentDetailsSession.LargeProducerFee;
 
         viewModel.OnlineMarketPlaceCount = _currentSession.PaymentDetailsSession.OnlineMarketPlaceCount;
         viewModel.OnlineMarketPlaceFee = _currentSession.PaymentDetailsSession.OnlineMarketPlaceFee;
@@ -779,7 +774,9 @@ public partial class RegistrationSubmissionsController(
 
         viewModel.LateProducerCount = _currentSession.PaymentDetailsSession.LateProducerCount;
         viewModel.LateProducerFee = _currentSession.PaymentDetailsSession.LateProducerFee;
+       
+        ViewBag.SubmissionId = submissionId;
 
         return View("WhichFeesToWaive", viewModel);
-    }
+    }    
 }

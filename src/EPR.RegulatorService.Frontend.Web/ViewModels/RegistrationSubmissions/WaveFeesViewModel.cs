@@ -6,9 +6,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public bool ApplicationFeeSectionEnable => ApplicationFee > 0;
 
-        public decimal WavedApplicationFee { get; set; }
-
-        public bool SchemeMembersSectionEnable { get; set; }
+        public decimal WavedComplianceSchemeAmount { get; set; }     
 
         public int SmallProducerCount { get; set; }
 
