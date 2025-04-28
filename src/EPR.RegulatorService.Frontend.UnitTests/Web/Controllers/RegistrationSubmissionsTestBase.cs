@@ -36,7 +36,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         private const string PowerBiLogin = "https://app.powerbi.com/";
         protected Mock<IUrlHelper> _mockUrlHelper = null!;
 
-        protected void SetupBase()
+        protected void SetupBase(bool? show2026RelevantYearFilter = false)
         {
             _mockHttpContext = new Mock<HttpContext>();
             _mockUrlsOptions = new Mock<IOptions<ExternalUrlsOptions>>();
@@ -59,6 +59,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .Returns(new ExternalUrlsOptions
                 {
                     PowerBiLogin = PowerBiLogin
+                });
+
+            _mockRegistrationSubmissionOptions.Setup(mockRegistrationSubmissionOptions =>
+                mockRegistrationSubmissionOptions.Value)
+                .Returns(new RegistrationSubmissionsOptions
+                {
+                    Show2026RelevantYearFilter = show2026RelevantYearFilter.Value
                 });
 
             SetupJourneySession(null, null);

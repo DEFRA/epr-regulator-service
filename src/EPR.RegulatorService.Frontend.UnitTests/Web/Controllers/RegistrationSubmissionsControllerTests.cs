@@ -38,7 +38,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [DataRow(2, "Northern Ireland Environment Agency (NIEA)")]
         [DataRow(3, "Scottish Environment Protection Agency (SEPA)")]
         [DataRow(4, "Natural Resources Wales (NRW)")]
-        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel(
+        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel_WhenShow2026RelevantYearFilter_IsDisabled(
             int nationId,
             string agencyName)
         {
@@ -71,6 +71,55 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var resultModel = viewResult.Model as RegistrationSubmissionsViewModel;
             Assert.AreEqual(expectedViewModel.AgencyName, resultModel.AgencyName);
+            Assert.IsFalse(resultModel.ListViewModel.RegistrationsFilterModel.Show2026RelevantYearFilter);
+
+            var actualBackLink = _controller.ViewBag.CustomBackLinkToDisplay;
+            Assert.IsNotNull(actualBackLink);
+            Assert.AreEqual(expectedBackLink, actualBackLink);
+        }
+
+        [TestMethod]
+        [DataRow(0, "")]
+        [DataRow(1, "Environment Agency (EA)")]
+        [DataRow(2, "Northern Ireland Environment Agency (NIEA)")]
+        [DataRow(3, "Scottish Environment Protection Agency (SEPA)")]
+        [DataRow(4, "Natural Resources Wales (NRW)")]
+        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel_WhenShow2026RelevantYearFilter_IsEnabled(
+            int nationId,
+            string agencyName)
+        {
+            SetupBase(show2026RelevantYearFilter: true);
+
+            // Arrange
+            var expectedViewModel = new RegistrationSubmissionsViewModel
+            {
+                AgencyName = agencyName
+            };
+            string expectedBackLink = "/regulators/home";
+
+            // Ensure the Organisation has a valid NationId
+            _journeySession.UserData.Organisations.Add(new Organisation
+            {
+                NationId = nationId
+            });
+
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(_journeySession);
+
+            // Act
+            var result = await _controller.RegistrationSubmissions(1);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            Assert.IsInstanceOfType(expectedViewModel, viewResult!.Model.GetType());
+
+            var resultModel = viewResult.Model as RegistrationSubmissionsViewModel;
+            Assert.AreEqual(expectedViewModel.AgencyName, resultModel.AgencyName);
+            Assert.IsTrue(resultModel.ListViewModel.RegistrationsFilterModel.Show2026RelevantYearFilter);
 
             var actualBackLink = _controller.ViewBag.CustomBackLinkToDisplay;
             Assert.IsNotNull(actualBackLink);
