@@ -1,6 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 {
-    public class WaveFeesViewModel
+    public class SelectFeesViewModel
     {
         public decimal ApplicationFee { get; set; }
 

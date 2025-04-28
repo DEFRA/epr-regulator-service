@@ -754,7 +754,7 @@ public partial class RegistrationSubmissionsController(
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
         SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId }), false);
 
-        WaveFeesViewModel viewModel = new WaveFeesViewModel();
+        SelectFeesViewModel viewModel = new SelectFeesViewModel();
         viewModel.IsComplianceSchemeSelected = _currentSession.PaymentDetailsSession.IsComplianceSchemeSelected;
         viewModel.IsProducerSelected = _currentSession.PaymentDetailsSession.IsProducerSelected;
 
@@ -777,6 +777,6 @@ public partial class RegistrationSubmissionsController(
        
         ViewBag.SubmissionId = submissionId;
 
-        return View("WhichFeesToWaive", viewModel);
+        return View("SelectFee", viewModel);
     }    
 }
