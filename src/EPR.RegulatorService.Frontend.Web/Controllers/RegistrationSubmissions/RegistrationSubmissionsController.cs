@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Net;
+using System.Reflection;
 
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -748,18 +749,19 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpGet]
-    [Route(PagePath.SelectFee + "/{submissionId:guid}", Name = "SelectFee")]    
+    [Route(PagePath.SelectFee + "/{submissionId:guid}", Name = "SelectFee")]
     public async Task<IActionResult> SelectFee(Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
         SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId }), false);
 
         SelectFeesViewModel viewModel = new SelectFeesViewModel();
+
         viewModel.IsComplianceSchemeSelected = _currentSession.PaymentDetailsSession.IsComplianceSchemeSelected;
         viewModel.IsProducerSelected = _currentSession.PaymentDetailsSession.IsProducerSelected;
 
         viewModel.ApplicationFee = _currentSession.PaymentDetailsSession.ApplicationFee;
-        
+
         viewModel.SmallProducerCount = _currentSession.PaymentDetailsSession.SmallProducerCount;
         viewModel.SmallProducerFee = _currentSession.PaymentDetailsSession.SmallProducerFee;
 
@@ -774,9 +776,25 @@ public partial class RegistrationSubmissionsController(
 
         viewModel.LateProducerCount = _currentSession.PaymentDetailsSession.LateProducerCount;
         viewModel.LateProducerFee = _currentSession.PaymentDetailsSession.LateProducerFee;
-       
-        ViewBag.SubmissionId = submissionId;
+
+        viewModel.SubmissionId = submissionId;
 
         return View("SelectFee", viewModel);
-    }    
+    }
+
+    [HttpPost]
+    [Route(PagePath.SelectFee + "/{submissionId:guid}", Name = "SelectFee")]
+    public async Task<IActionResult> SelectFee(SelectFeesViewModel selectFeesViewModel)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId }), false);
+        selectFeesViewModel.IsComplianceSchemeSelected = _currentSession.PaymentDetailsSession.IsComplianceSchemeSelected;
+
+        if (!ModelState.IsValid)
+        {
+            return View(nameof(SelectFee), selectFeesViewModel);
+        }
+
+        return null;
+    }
 }
