@@ -22,4 +22,6 @@ public static class FeatureFlags
     public const string ReprocessorExporter = "ReprocessorExporter";
 
     public const string EnableCsvDownload = "EnableCsvDownload";
+
+    public const string ShowYourFeedbackFooter = "ShowYourFeedbackFooter";
 }
