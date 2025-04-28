@@ -813,6 +813,11 @@ public partial class RegistrationSubmissionsController(
 
         viewModel.SubmissionId = viewModel.SubmissionId;
 
+        if(!viewModel.IsComplianceSchemeChecked || !viewModel.IsSmallProducerChecked)
+        {
+            ModelState.AddModelError("NoneSelected", "Select a fee to waive");
+        }
+        
         if (!ModelState.IsValid)
         {
             return View(nameof(SelectFee), viewModel);

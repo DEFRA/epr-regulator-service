@@ -14,8 +14,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public bool IsComplianceSchemeChecked { get; set; }
 
-        [ConditionalRequired("IsComplianceSchemeChecked", ErrorMessage = "Please enter a waiver amount.")]        
-        //[Range(0.01, 100.00, ErrorMessage ="Price must be in range")]
+        [ConditionalRequired("IsComplianceSchemeChecked", ErrorMessage = "Please enter a waiver amount.")]                
         public decimal WavedComplianceSchemeAmount { get; set; }
 
         public bool IsSmallProducerChecked { get; set; }
@@ -26,6 +25,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public decimal SmallProducerFee { get; set; }
 
+        [ConditionalRequired("IsSmallProducerChecked", ErrorMessage = "Please enter a waiver amount.")]
         public decimal WavedSmallProducerFee { get; set; }
 
         public int LargeProducerCount { get; set; }
