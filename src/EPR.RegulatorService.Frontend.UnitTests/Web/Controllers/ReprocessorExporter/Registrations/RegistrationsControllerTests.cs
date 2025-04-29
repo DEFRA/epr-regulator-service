@@ -165,9 +165,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         var ukSiteDetail = new UkSiteDetails { Id = registrationId };
-
         _mockReprocessorExporterService.Setup(s => s.GetUKSiteDetailsAsync(registrationId)).ReturnsAsync(ukSiteDetail);
-
         _mockMapper.Setup(m => m.Map<UkSiteDetailsViewModel>(ukSiteDetail)).Returns(new UkSiteDetailsViewModel { RegistrationId = registrationId,
             LegalAddress = "LegalAddress1", Location = "Location1", SiteAddress = "SiteAddress1", SiteGridReference = "SiteGridReference1"
         });
@@ -192,9 +190,6 @@ public class RegistrationsControllerTests
             viewModel.LegalAddress.Should().Be("LegalAddress1");
             viewModel.SiteAddress.Should().Be("SiteAddress1");
             viewModel.SiteGridReference.Should().Be("SiteGridReference1");
-
-
-
         }
     }
 
