@@ -7,8 +7,10 @@ public class DecimalExtensionsTests
 {
     [TestMethod]
     [DataRow(null, "")]
+    [DataRow(100.00, "100")]
     [DataRow(50000.00, "50,000")]
-    [DataRow(1234.56, "1,235")]
+    [DataRow(1234.50, "1,234.5")]
+    [DataRow(1234.56, "1,234.56")]
     public void ToDisplayNumber_WhenNullableDecimal_ShouldReturnFormattedString(double? number, string expectedText)
     {
         // Arrange  
@@ -22,8 +24,10 @@ public class DecimalExtensionsTests
     }
 
     [TestMethod]
+    [DataRow(100.00, "100")]
     [DataRow(50000.00, "50,000")]
-    [DataRow(1234.56, "1,235")]
+    [DataRow(1234.50, "1,234.5")]
+    [DataRow(1234.56, "1,234.56")]
     public void ToDisplayNumber_WhenNonNullableDecimal_ShouldReturnFormattedString(double number, string expectedText)
     {
         // Arrange  
