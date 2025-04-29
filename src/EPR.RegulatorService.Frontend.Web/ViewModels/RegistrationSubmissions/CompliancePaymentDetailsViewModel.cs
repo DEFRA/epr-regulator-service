@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 
+using EPR.RegulatorService.Frontend.Core.Enums;
+
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 [ExcludeFromCodeCoverage]
@@ -34,4 +36,8 @@ public class CompliancePaymentDetailsViewModel : PaymentDetailsViewModel
     public decimal PreviousPaymentReceived { get; set; }
 
     public decimal TotalOutstanding { get; set; }
+
+    public bool IsResubmission { get; set; }
+
+    public RegistrationSubmissionStatus Status { get; set; }
 }

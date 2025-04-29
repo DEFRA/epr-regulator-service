@@ -1,4 +1,6 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
 @using EPR.RegulatorService.Frontend.Core.Extensions
+@using EPR.RegulatorService.Frontend.Web.Configs
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 @using System.Globalization
@@ -7,6 +9,7 @@
 @model CompliancePaymentDetailsViewModel
 @{
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	bool showWaiveFeeButton = Model is not null && Model.Status == RegistrationSubmissionStatus.Granted && Model.IsResubmission;
 }
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
@@ -144,7 +147,16 @@
                 </div>
             </dl>
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
-
+			<feature name="@FeatureFlags.ShowFeesWaiveButton">
+				<form method="post" asp-controller="Fees" asp-action="SelectFee">
+					<button type="submit"
+							class="govuk-button epr-horizontal-control epr-horizontal-control-button govuk-!-margin-right-6"
+							data-module="govuk-button"
+					@(showWaiveFeeButton ? "" : "disabled")>
+						@Localizer["CompliancePaymentDetails.WaiveFees"]
+					</button>
+				</form>
+			</feature>
             @await Html.PartialAsync("Partials/_OfflinePayment", Model as PaymentDetailsViewModel)
         }
         else

@@ -2,6 +2,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using System.Diagnostics.CodeAnalysis;
 
+using EPR.RegulatorService.Frontend.Core.Enums;
+
 [ExcludeFromCodeCoverage]
 public class ProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 {
@@ -26,4 +28,8 @@ public class ProducerPaymentDetailsViewModel : PaymentDetailsViewModel
     public int NumberOfSubsidiaries { get; set; }
 
     public int NumberOfSubsidiariesBeingOnlineMarketplace { get; set; }
+
+    public bool IsResubmission { get; set; }
+
+    public RegistrationSubmissionStatus Status { get; set; }
 }
