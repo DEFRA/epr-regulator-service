@@ -1,3 +1,5 @@
+using AutoMapper;
+
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -27,6 +29,7 @@ public class RegistrationsControllerTests
     private RegistrationsController _controller;
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
     private Mock<IConfiguration> _mockConfiguration;
+    private Mock<IMapper> _mockMapper;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IReprocessorExporterService> _mockReprocessorExporterService;
 
@@ -36,6 +39,7 @@ public class RegistrationsControllerTests
         _httpContextMock = new Mock<HttpContext>();
         _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
         _mockConfiguration = new Mock<IConfiguration>();
+        _mockMapper = new Mock<IMapper>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
         var mockRequest = new Mock<HttpRequest>();
         var mockHeaders = new Mock<IHeaderDictionary>();
@@ -62,7 +66,7 @@ public class RegistrationsControllerTests
 
         _mockReprocessorExporterService = new Mock<IReprocessorExporterService>();
 
-        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object);
+        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object, _mockMapper.Object);
 
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
@@ -1022,6 +1026,46 @@ public class RegistrationsControllerTests
             var viewResult = (ViewResult)result;
 
             AssertBackLink(viewResult, expectedPreviousPage);
+        }
+    }
+
+    [TestMethod]
+    public async Task MaterialWasteLicences_ShouldReturnCorrectViewModel()
+    {
+        // Arrange
+        const string expectedPreviousPage = $"{PagePath.ManageRegistrations}?id=1345";
+
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(expectedPreviousPage);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        var expectedViewModel = new MaterialWasteLicencesViewModel
+        {
+            ReferenceNumberLabel = "Test",
+            CapacityPeriod = "Annually",
+            CapacityTonne = 50000,
+            LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],
+            MaterialName = "Plastic",
+            MaximumReprocessingCapacityTonne = 10000,
+            MaximumReprocessingPeriod = "Per Month",
+            PermitType = "Waste Exemption",
+        };
+
+        _mockMapper.Setup(m => m.Map<MaterialWasteLicencesViewModel>(null))
+            .Returns(expectedViewModel);
+
+        // Act
+        var result = await _controller.MaterialWasteLicences(1);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var viewResult = (ViewResult)result;
+            viewResult.Model.Should().BeOfType<MaterialWasteLicencesViewModel>();
+
+            var model = viewResult.Model as MaterialWasteLicencesViewModel;
+            model.Should().BeSameAs(expectedViewModel);
         }
     }
 

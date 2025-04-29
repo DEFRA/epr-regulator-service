@@ -22,6 +22,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         private const int ApiVersion = 1;
         private const string GetRegistrationByIdPath = "v{apiVersion}/registrations/{id}";
         private const string GetRegistrationMaterialByIdPath = "v{apiVersion}/registrationMaterials/{id}";
+        private const string GetWasteLicenceByRegistrationMaterialId = "v{apiVersion}/registrationMaterials/{id}/wasteLicences";
         private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
         private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
         private const string UpdateApplicationTaskStatus = "v{apiVersion}/regulatorApplicationTaskStatus";
@@ -58,6 +59,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                 {
                     { "GetRegistrationById", GetRegistrationByIdPath },
                     { "GetRegistrationMaterialById", GetRegistrationMaterialByIdPath },
+                    { "GetWasteLicenceByRegistrationMaterialId", GetWasteLicenceByRegistrationMaterialId },
                     { "UpdateRegistrationMaterialOutcome", UpdateRegistrationMaterialOutcome },
                     { "UpdateRegistrationTaskStatus", UpdateRegistrationTaskStatus },
                     { "UpdateApplicationTaskStatus", UpdateApplicationTaskStatus }
@@ -89,9 +91,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             var result = await _service.GetRegistrationByIdAsync(expectedRegistration.Id);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(expectedRegistration.Id, result.Id);
-            Assert.AreEqual(expectedRegistration.OrganisationName, result.OrganisationName);
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedRegistration);
         }
 
         [TestMethod]
@@ -123,7 +124,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             var response = new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(expectedRegistrationMaterial, _jsonSerializerOptions))
+                Content = new StringContent(JsonSerializer.Serialize(expectedRegistrationMaterial, _jsonSerializerOptions))
             };
 
             SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
@@ -132,8 +133,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             var result = await _service.GetRegistrationMaterialByIdAsync(expectedRegistrationMaterial.Id);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(expectedRegistrationMaterial.Id, result.Id);
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedRegistrationMaterial);
         }
 
         [TestMethod]
@@ -152,7 +153,50 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             // Act/Assert
             await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetRegistrationMaterialByIdAsync(registrationMaterialId));
         }
+        
+        [TestMethod]
+        public async Task GetWasteLicenceByRegistrationMaterialIdAsync_WhenSuccess_ReturnsRegistrationWasteLicences()
+        {
+            // Arrange
+            const int registrationMaterialId = 1234;
+            var expectedWasteLicence = CreateRegistrationWasteLicence();
+            string expectedPath = GetWasteLicenceByRegistrationMaterialId
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationMaterialId.ToString());
 
+            var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(expectedWasteLicence, _jsonSerializerOptions))
+            };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+            // Act
+            var result = await _service.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedWasteLicence);
+        }
+
+        [TestMethod]
+        public async Task GetWasteLicenceByRegistrationMaterialId_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+        {
+            // Arrange
+            const int registrationMaterialId = 123;
+            string expectedPath = GetWasteLicenceByRegistrationMaterialId
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationMaterialId.ToString());
+
+            var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+            // Act/Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId));
+        }
+        
         [TestMethod]
         public async Task UpdateRegistrationMaterialOutcome_WhenResponseCodeIsNotSuccess_ShouldThrowException()
         {
@@ -244,14 +288,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
 
         private static RegistrationMaterialDetail CreateRegistrationMaterial()
         {
-            var expectedRegistration = new RegistrationMaterialDetail
+            var registrationMaterialDetail = new RegistrationMaterialDetail
             {
                 Id = 123456,
                 RegistrationId = 123,
                 MaterialName = "Plastic",
                 Status = ApplicationStatus.Granted,
             };
-            return expectedRegistration;
+            return registrationMaterialDetail;
+        }
+
+        private static RegistrationMaterialWasteLicence CreateRegistrationWasteLicence()
+        {
+            var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
+            {
+                CapacityPeriod = "Per Year",
+                CapacityTonne = 50000,
+                LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],
+                MaterialName = "Plastic",
+                MaximumReprocessingCapacityTonne = 10000,
+                MaximumReprocessingPeriod = "Per Month",
+                PermitType = "Waste Exemption",
+            };
+
+            return registrationMaterialWasteLicence;
         }
     }
 }
