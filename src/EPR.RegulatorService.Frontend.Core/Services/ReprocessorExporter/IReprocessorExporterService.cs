@@ -5,7 +5,7 @@ namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 public interface IReprocessorExporterService
 {
     Task<Registration> GetRegistrationByIdAsync(int id);
-
+    Task<UkSiteDetails> GetUKSiteDetailsAsync(int id);
     Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int registrationMaterialId);
 
     Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest);

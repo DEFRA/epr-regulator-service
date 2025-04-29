@@ -1,3 +1,5 @@
+using AutoMapper;
+
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -20,7 +22,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 public class RegistrationsController(
     ISessionManager<JourneySession> sessionManager,
     IReprocessorExporterService reprocessorExporterService,
-    IConfiguration configuration)
+    IConfiguration configuration,
+    IMapper mapper)
     : ReprocessorExporterBaseController(sessionManager, configuration)
 {
     [HttpGet]
@@ -62,7 +65,11 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(UkSiteDetails)), registrationId);
+        var ukSiteDetails = await reprocessorExporterService.GetUKSiteDetailsAsync(registrationId);
+
+        var viewModel = mapper.Map<UkSiteDetailsViewModel>(ukSiteDetails);
+
+        return View(GetRegistrationsView(nameof(UkSiteDetails)), viewModel);
     }
 
     [HttpPost]

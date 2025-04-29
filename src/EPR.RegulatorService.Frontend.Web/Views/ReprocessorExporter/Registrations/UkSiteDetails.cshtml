@@ -1,9 +1,10 @@
 @using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 @{
     ViewData["Title"] = "Site address";
 }
-@model int;
+@model UkSiteDetailsViewModel;
 
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -19,7 +20,7 @@
                                 Location
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                England
+                                @Model.Location
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -27,7 +28,7 @@
                                 Site address
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                23 Ruby St, London, E12 3SE
+                               @Model.SiteAddress
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -35,7 +36,7 @@
                                 Site grid reference
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                SJ 854 662
+                                @Model.SiteGridReference
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -43,17 +44,17 @@
                                 Address for legal documents and official correspondence
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                23 Ruby St, London, E12 3SE
+                                @Model.LegalAddress
                             </dd>
                         </div>
                     </dl>
                     <br>
                     <div class="govuk-button-group !-margin-top-6">
-                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteUkSiteDetails" asp-route-registrationId="@Model">
+                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteUkSiteDetails" asp-route-registrationId="@Model.RegistrationId">
                             Mark as reviewed
                         </button>
 
-                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model, taskName = RegulatorTaskType.SiteAddressAndContactDetails })">
+                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model.RegistrationId, taskName = RegulatorTaskType.SiteAddressAndContactDetails })">
                             Query the site address
                         </a>
                     </div>
