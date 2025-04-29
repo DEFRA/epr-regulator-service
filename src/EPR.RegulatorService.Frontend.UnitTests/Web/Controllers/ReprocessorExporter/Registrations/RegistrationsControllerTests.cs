@@ -1,3 +1,5 @@
+using AutoMapper;
+
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -29,6 +31,7 @@ public class RegistrationsControllerTests
     private Mock<IConfiguration> _mockConfiguration;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IReprocessorExporterService> _mockReprocessorExporterService;
+    private Mock<IMapper> _mapperMock;
 
     [TestInitialize]
     public void TestInitialize()
@@ -39,6 +42,7 @@ public class RegistrationsControllerTests
         var configurationSectionMock = new Mock<IConfigurationSection>();
         var mockRequest = new Mock<HttpRequest>();
         var mockHeaders = new Mock<IHeaderDictionary>();
+        _mapperMock = new Mock<IMapper>();
 
         // Set up the Referer header to return a sample URL (or null for different tests)
         mockHeaders.Setup(h => h["Referer"]).Returns("http://previous-page.com");
@@ -62,7 +66,7 @@ public class RegistrationsControllerTests
 
         _mockReprocessorExporterService = new Mock<IReprocessorExporterService>();
 
-        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object);
+        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object, _mapperMock.Object);
 
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
