@@ -7,6 +7,4 @@ public class UkSiteDetails
     public string? Location { get; init; }
     public string? SiteGridReference { get; init; }
     public string? LegalAddress { get; init; }
-
 }
-
