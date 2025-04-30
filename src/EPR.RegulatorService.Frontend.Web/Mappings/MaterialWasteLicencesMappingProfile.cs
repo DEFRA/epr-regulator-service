@@ -24,7 +24,7 @@ public class MaterialWasteLicencesMappingProfile : Profile
             PermitTypes.WasteManagementLicence => "Waste management number",
             PermitTypes.InstallationPermit => "Installation permit number",
             PermitTypes.EnvironmentalPermitOrWasteManagementLicence => "Environment permit or waste management number",
-            _ => throw new ArgumentOutOfRangeException($"Unexpected permit type: {permitType}")
+            _ => throw new InvalidOperationException($"Unexpected permit type: {permitType}")
         };
 
     private static string GetPeriodText(string? period)
@@ -39,7 +39,7 @@ public class MaterialWasteLicencesMappingProfile : Profile
             PeriodTypes.PerYear => "Annually",
             PeriodTypes.PerMonth => "Monthly",
             PeriodTypes.PerWeek => "Weekly",
-            _ => throw new ArgumentOutOfRangeException($"Unexpected period type: {period}")
+            _ => throw new InvalidOperationException($"Unexpected period type: {period}")
         };
     }
 }
