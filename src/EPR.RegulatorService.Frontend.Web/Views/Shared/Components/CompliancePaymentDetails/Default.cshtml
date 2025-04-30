@@ -150,7 +150,14 @@
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
 			<feature name="@FeatureFlags.ShowFeesWaiveButton">
-				@Html.ActionLink(waiveButtonText.Value, "SelectFee", new { submissionId = ViewBag.SubmissionId }, new { @class = "govuk-button", disabled = enableWaiveFeeButton ? null : "disabled" })
+				@if (enableWaiveFeeButton)
+				{
+					@Html.ActionLink(waiveButtonText.Value, "SelectFee", new { submissionId = ViewBag.SubmissionId }, new { @class = "govuk-button" })
+				}
+				else
+				{
+					@Html.ActionLink(waiveButtonText.Value, "SelectFee", new { submissionId = ViewBag.SubmissionId }, new { @class = "govuk-button", disabled = "disabled" })
+				}
 			</feature>
             @await Html.PartialAsync("Partials/_OfflinePayment", Model as PaymentDetailsViewModel)
         }
