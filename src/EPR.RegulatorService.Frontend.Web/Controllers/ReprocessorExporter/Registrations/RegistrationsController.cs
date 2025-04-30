@@ -24,7 +24,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 public class RegistrationsController(
     ISessionManager<JourneySession> sessionManager,
     IReprocessorExporterService reprocessorExporterService,
-    IConfiguration configuration, IMapper mapper)
+    IConfiguration configuration)
     : ReprocessorExporterBaseController(sessionManager, configuration)
   
 {
@@ -161,8 +161,11 @@ public class RegistrationsController(
         SetBackLinkInfos(session, pagePath);
 
         var reprocessingIO = await reprocessorExporterService.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId);
-        var model = mapper.Map<RegistrationMaterialReprocessingIOViewModel>(reprocessingIO);
-        model.RegistrationMaterialId = registrationMaterialId;
+        var model = new RegistrationMaterialReprocessingIOViewModel()
+        {
+            RegistrationMaterialId = registrationMaterialId,
+            RegistrationMaterialReprocessingIO = reprocessingIO
+        };        
 
         return View(GetRegistrationsView(nameof(InputsAndOutputs)), model);     
     }

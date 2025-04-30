@@ -3,8 +3,6 @@
 @{
     const string title = "Reprocessing inputs and outputs";
     ViewData["Title"] = title;
-    decimal reprocessingOutputsTotal = Model.UKPackagingWasteTonne + Model.NonUKPackagingWasteTonne + Model.NotPackingWasteTonne;
-    decimal materialOutputsTotal = Model.ContaminantsTonne + Model.SenttoOtherSiteTonne + Model.ProcessLossTonne;
 }
 @model RegistrationMaterialReprocessingIOViewModel;
 
@@ -25,7 +23,7 @@
                                 Sources of packaging waste
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.SourcesOfPackagingWaste
+                                @Model.RegistrationMaterialReprocessingIO.SourcesOfPackagingWaste
                             </dd>
                         </div>
 
@@ -34,7 +32,7 @@
                                 List of plant and equipment
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.PlantEquipmentUsed
+                                @Model.RegistrationMaterialReprocessingIO.PlantEquipmentUsed
                             </dd>
                         </div>
                     </dl>
@@ -47,7 +45,7 @@
                                 UK Packaging waste
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.UKPackagingWasteTonne
+                                @Model.RegistrationMaterialReprocessingIO.UKPackagingWasteTonne
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -55,7 +53,7 @@
                                 Non UK packaging waste
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.NonUKPackagingWasteTonne
+                                @Model.RegistrationMaterialReprocessingIO.NonUKPackagingWasteTonne
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -63,7 +61,7 @@
                                 Non packaging waste
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.NotPackingWasteTonne
+                                @Model.RegistrationMaterialReprocessingIO.NotPackingWasteTonne
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -71,7 +69,7 @@
                                 Total
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.TotalInput
+                                @Model.RegistrationMaterialReprocessingIO.TotalInputs
                             </dd>
                         </div>
                     </dl>
@@ -86,7 +84,7 @@
                                 Plastic not reprocessed on site
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.SenttoOtherSiteTonne
+                                @Model.RegistrationMaterialReprocessingIO.SenttoOtherSiteTonne
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -94,7 +92,7 @@
                                 Contaminants from plastic reprocessing
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.ContaminantsTonne
+                                @Model.RegistrationMaterialReprocessingIO.ContaminantsTonne
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -102,7 +100,7 @@
                                 Process loss from plastic reprocessing
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.ProcessLossTonne
+                                @Model.RegistrationMaterialReprocessingIO.ProcessLossTonne
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -110,7 +108,7 @@
                                 Total
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.TotalOutput
+                                @Model.RegistrationMaterialReprocessingIO.TotalOutputs
                             </dd>
                         </div>
 

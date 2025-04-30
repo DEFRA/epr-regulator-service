@@ -340,6 +340,49 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
+    public async Task InputsAndOutputs_WhenRequestValid_ShouldReturnView()
+    {
+        // Arrange
+        int registrationMaterialId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.InputsAndOutputs);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        _mockReprocessorExporterService.Setup(x => x.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialReprocessingIO
+            {
+                MaterialName = "Plastic",
+                SourcesOfPackagingWaste = "N/A",
+                PlantEquipmentUsed = "N/A",
+                ReprocessingPackagingWasteLastYearFlag = true,
+                UKPackagingWasteTonne = 100,
+                NonUKPackagingWasteTonne = 50,
+                NotPackingWasteTonne = 10,
+                SenttoOtherSiteTonne = 5,
+                ContaminantsTonne = 2,
+                ProcessLossTonne = 1,
+                TotalOutputs = 95,
+                TotalInputs = 100
+            });
+
+        // Act
+        var result = await _controller.InputsAndOutputs(registrationMaterialId);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = result as ViewResult;
+       
+
+        using (new AssertionScope())
+        {
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().BeOfType<RegistrationMaterialReprocessingIOViewModel>();
+        }
+    }
+
+    [TestMethod]
     public async Task InputsAndOutputs_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange: Mock _sessionManager to return null
