@@ -1,4 +1,6 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
 @using EPR.RegulatorService.Frontend.Core.Extensions
+@using EPR.RegulatorService.Frontend.Web.Configs
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 @using System.Globalization
@@ -7,6 +9,7 @@
 @model CompliancePaymentDetailsViewModel
 @{
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	bool showWaiveFeeButton = Model is not null && Model.Status == RegistrationSubmissionStatus.Granted && Model.IsResubmission;
 }
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
