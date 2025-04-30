@@ -8,14 +8,14 @@ using FluentAssertions.Execution;
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 
 [TestClass]
-public class UKSiteDetailsMappingProfileTests
+public class SiteDetailsMappingProfileTests
 {
     private IMapper _mapper;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<UKSiteDetailsMappingProfile>());
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<SiteDetailsMappingProfile>());
         _mapper = config.CreateMapper();
     }
 
@@ -26,30 +26,30 @@ public class UKSiteDetailsMappingProfileTests
     }
 
     [TestMethod]
-    public void Map_WhenCalledWithRegistration_ShouldReturnUkSiteDetailsViewModel()
+    public void Map_WhenCalledWithRegistration_ShouldReturnSiteDetailsViewModel()
     {
         // Arrange
-        var ukSiteDetail = new UkSiteDetails
+        var siteDetails = new SiteDetails
         {
             Id = 1,
             SiteAddress = "123 Test Street",
             Location = "England",
-            LegalAddress = "321 Test Street",
+            LegalDocumentAddress = "321 Test Street",
             SiteGridReference = "SJ 854 662",
         };
 
         // Act
-        var viewModel = _mapper.Map<UkSiteDetailsViewModel>(ukSiteDetail);
+        var viewModel = _mapper.Map<SiteDetailsViewModel>(siteDetails);
 
         // Assert
         using (new AssertionScope())
         {
             viewModel.Should().NotBeNull();
-            viewModel.RegistrationId.Should().Be(ukSiteDetail.Id);
-            viewModel.Location.Should().Be(ukSiteDetail.Location);
-            viewModel.SiteAddress.Should().Be(ukSiteDetail.SiteAddress);
-            viewModel.LegalAddress.Should().Be(ukSiteDetail.LegalAddress);
-            viewModel.SiteGridReference.Should().Be(ukSiteDetail.SiteGridReference);
+            viewModel.RegistrationId.Should().Be(siteDetails.Id);
+            viewModel.Location.Should().Be(siteDetails.Location);
+            viewModel.SiteAddress.Should().Be(siteDetails.SiteAddress);
+            viewModel.LegalDocumentAddress.Should().Be(siteDetails.LegalDocumentAddress);
+            viewModel.SiteGridReference.Should().Be(siteDetails.SiteGridReference);
         }
     }
 }

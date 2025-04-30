@@ -4,11 +4,11 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 
 namespace EPR.RegulatorService.Frontend.Web.Mappings;
 
-public class UKSiteDetailsMappingProfile : Profile
+public class SiteDetailsMappingProfile : Profile
 {
-    public UKSiteDetailsMappingProfile()
+    public SiteDetailsMappingProfile()
     {
-        CreateMap<UkSiteDetails, UkSiteDetailsViewModel>()
+        CreateMap<SiteDetails, SiteDetailsViewModel>()
             .ForMember(dest => dest.RegistrationId, opt => opt.MapFrom(src => src.Id));
     }
 }

@@ -64,8 +64,8 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        var ukSiteDetails = await reprocessorExporterService.GetUKSiteDetailsAsync(registrationId);
-        var viewModel = mapper.Map<UkSiteDetailsViewModel>(ukSiteDetails);
+        var siteDetails = await reprocessorExporterService.GetSiteDetailsByRegistrationIdAsync(registrationId);
+        var viewModel = mapper.Map<SiteDetailsViewModel>(siteDetails);
 
         return View(GetRegistrationsView(nameof(UkSiteDetails)), viewModel);
     }

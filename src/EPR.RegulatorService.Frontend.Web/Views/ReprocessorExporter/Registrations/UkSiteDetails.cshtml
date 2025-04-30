@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Site address";
 }
-@model UkSiteDetailsViewModel;
+@model SiteDetailsViewModel;
 
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
@@ -44,7 +44,7 @@
                                 Address for legal documents and official correspondence
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.LegalAddress
+                                @Model.LegalDocumentAddress
                             </dd>
                         </div>
                     </dl>

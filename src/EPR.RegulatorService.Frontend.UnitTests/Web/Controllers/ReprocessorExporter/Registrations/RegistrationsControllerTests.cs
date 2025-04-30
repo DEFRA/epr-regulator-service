@@ -164,10 +164,10 @@ public class RegistrationsControllerTests
         journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
-        var ukSiteDetail = new UkSiteDetails { Id = registrationId };
-        _mockReprocessorExporterService.Setup(s => s.GetUKSiteDetailsAsync(registrationId)).ReturnsAsync(ukSiteDetail);
-        _mockMapper.Setup(m => m.Map<UkSiteDetailsViewModel>(ukSiteDetail)).Returns(new UkSiteDetailsViewModel { RegistrationId = registrationId,
-            LegalAddress = "LegalAddress1", Location = "Location1", SiteAddress = "SiteAddress1", SiteGridReference = "SiteGridReference1"
+        var siteDetails = new SiteDetails { Id = registrationId };
+        _mockReprocessorExporterService.Setup(s => s.GetSiteDetailsByRegistrationIdAsync(registrationId)).ReturnsAsync(siteDetails);
+        _mockMapper.Setup(m => m.Map<SiteDetailsViewModel>(siteDetails)).Returns(new SiteDetailsViewModel { RegistrationId = registrationId,
+            LegalDocumentAddress = "LegalDocumentAddress1", Location = "Location1", SiteAddress = "SiteAddress1", SiteGridReference = "SiteGridReference1"
         });
 
         // Act
@@ -182,12 +182,12 @@ public class RegistrationsControllerTests
         using (new AssertionScope())
         {
             viewResult!.ViewData.Keys.Should().Contain(BackLinkViewDataKey);
-            viewResult.Model.Should().BeOfType<UkSiteDetailsViewModel>();
-            var viewModel = (UkSiteDetailsViewModel)viewResult.Model;
+            viewResult.Model.Should().BeOfType<SiteDetailsViewModel>();
+            var viewModel = (SiteDetailsViewModel)viewResult.Model;
 
             viewModel.RegistrationId.Should().Be(registrationId);
             viewModel.Location.Should().Be("Location1");
-            viewModel.LegalAddress.Should().Be("LegalAddress1");
+            viewModel.LegalDocumentAddress.Should().Be("LegalDocumentAddress1");
             viewModel.SiteAddress.Should().Be("SiteAddress1");
             viewModel.SiteGridReference.Should().Be("SiteGridReference1");
         }
