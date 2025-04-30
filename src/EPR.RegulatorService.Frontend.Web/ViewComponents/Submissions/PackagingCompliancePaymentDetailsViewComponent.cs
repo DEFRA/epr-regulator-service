@@ -25,6 +25,13 @@ public class PackagingCompliancePaymentDetailsViewComponent(IOptions<PaymentDeta
     {
         try
         {
+            if (viewModel.MemberCount == 0)
+            {
+                ViewBag.ReferenceNumber = viewModel.ReferenceNumber;
+                this.ViewBag.NoMemberCount = true;
+                return View(default(PackagingCompliancePaymentDetailsViewModel));
+
+            }
             if (viewModel.ReferenceFieldNotAvailable)
             {
                 this.ViewBag.NoReferenceField = this.ViewBag.NoReferenceNumber = true;

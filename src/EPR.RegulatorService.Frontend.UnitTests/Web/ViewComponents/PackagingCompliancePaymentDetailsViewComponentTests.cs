@@ -29,11 +29,32 @@ public class PackagingCompliancePaymentDetailsViewComponentTests : ViewComponent
         _submissionDetailsViewModel = new SubmissionDetailsViewModel
         {
             ReferenceNumber = "SomeGuid",
-            NationCode = "GB-ENG"
+            NationCode = "GB-ENG",
+            MemberCount = 1
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
         _sut = new PackagingCompliancePaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object);
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_Returns_CorrectView_With_NoMemberCount_InViewBag()
+    {
+        // Arrange
+        _submissionDetailsViewModel.MemberCount = 0;
+        _submissionDetailsViewModel.ReferenceNumber = "ABCDEF";
+
+        // Act
+        var result = await _sut.InvokeAsync(_submissionDetailsViewModel);
+
+        // Assert
+        Assert.IsNotNull(result);
+        result.Should().BeOfType<ViewViewComponentResult>();
+        var model = result.ViewData.Model as PackagingCompliancePaymentResponse;
+        model.Should().BeNull();
+        Assert.IsTrue(_sut.ViewBag.NoMemberCount);
+        Assert.IsNotNull(_sut.ViewBag.ReferenceNumber);
+        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsForResubmissionAsync(It.IsAny<PackagingCompliancePaymentRequest>()), Times.Never);
     }
 
     [TestMethod]
@@ -100,7 +121,8 @@ public class PackagingCompliancePaymentDetailsViewComponentTests : ViewComponent
         {
             ResubmissionFee = 10000,
             PreviousPaymentsReceived = 500,
-            TotalOutstanding = 9500
+            TotalOutstanding = 9500,
+            MemberCount = 1,
         });
 
         // Act
