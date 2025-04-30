@@ -14,6 +14,7 @@ using FluentAssertions.Execution;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
@@ -31,7 +32,6 @@ public class RegistrationsControllerTests
     private Mock<IConfiguration> _mockConfiguration;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IReprocessorExporterService> _mockReprocessorExporterService;
-    private Mock<IMapper> _mapperMock;
 
     [TestInitialize]
     public void TestInitialize()
@@ -42,7 +42,6 @@ public class RegistrationsControllerTests
         var configurationSectionMock = new Mock<IConfigurationSection>();
         var mockRequest = new Mock<HttpRequest>();
         var mockHeaders = new Mock<IHeaderDictionary>();
-        _mapperMock = new Mock<IMapper>();
 
         // Set up the Referer header to return a sample URL (or null for different tests)
         mockHeaders.Setup(h => h["Referer"]).Returns("http://previous-page.com");
@@ -66,7 +65,7 @@ public class RegistrationsControllerTests
 
         _mockReprocessorExporterService = new Mock<IReprocessorExporterService>();
 
-        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object, _mapperMock.Object);
+        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object);
 
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
@@ -373,12 +372,14 @@ public class RegistrationsControllerTests
         result.Should().BeOfType<ViewResult>();
 
         var viewResult = result as ViewResult;
-       
+        var modelResult = viewResult.Model as RegistrationMaterialReprocessingIOViewModel;
 
         using (new AssertionScope())
         {
             viewResult.Should().NotBeNull();
-            viewResult.Model.Should().BeOfType<RegistrationMaterialReprocessingIOViewModel>();
+            viewResult.Model.Should().BeOfType<RegistrationMaterialReprocessingIOViewModel>();            
+            modelResult.Should().NotBeNull();
+            modelResult.RegistrationMaterialId.Should().Be(registrationMaterialId);
         }
     }
 
