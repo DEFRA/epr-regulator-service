@@ -9,7 +9,8 @@
 @model ProducerPaymentDetailsViewModel
 @{
 	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
-	bool showWaiveFeeButton = Model is not null && Model.Status == RegistrationSubmissionStatus.Granted && Model.IsResubmission;
+	bool enableWaiveFeeButton = Model is not null && Model.Status == RegistrationSubmissionStatus.Granted && Model.IsResubmission;
+	var waiveButtonText = Localizer["ProducerPaymentDetails.WaiveFees"];
 }
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
@@ -125,8 +126,9 @@
             </dl>
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-			@Html.ActionLink("Wave fees", "SelectFee", new { submissionId = ViewBag.SubmissionId }, new { @class = "govuk-button" })
-
+            <feature name="@FeatureFlags.ShowFeesWaiveButton">
+				@Html.ActionLink(waiveButtonText.Value, "SelectFee", new { submissionId = ViewBag.SubmissionId }, new { @class = "govuk-button", disabled = enableWaiveFeeButton ? null : "disabled" })
+			</feature>
             @await Html.PartialAsync("Partials/_OfflinePayment", Model as PaymentDetailsViewModel)
         }
         else
