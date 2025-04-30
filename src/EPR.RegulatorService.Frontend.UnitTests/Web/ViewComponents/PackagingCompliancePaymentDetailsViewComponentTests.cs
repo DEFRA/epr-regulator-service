@@ -42,7 +42,6 @@ public class PackagingCompliancePaymentDetailsViewComponentTests : ViewComponent
     {
         // Arrange
         _submissionDetailsViewModel.MemberCount = 0;
-        _submissionDetailsViewModel.ReferenceNumber = "ABCDEF";
 
         // Act
         var result = await _sut.InvokeAsync(_submissionDetailsViewModel);
@@ -53,7 +52,6 @@ public class PackagingCompliancePaymentDetailsViewComponentTests : ViewComponent
         var model = result.ViewData.Model as PackagingCompliancePaymentResponse;
         model.Should().BeNull();
         Assert.IsTrue(_sut.ViewBag.NoMemberCount);
-        Assert.IsNotNull(_sut.ViewBag.ReferenceNumber);
         _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsForResubmissionAsync(It.IsAny<PackagingCompliancePaymentRequest>()), Times.Never);
     }
 
