@@ -298,7 +298,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                 NotPackingWasteTonne = 10,
                 SenttoOtherSiteTonne = 5,
                 ContaminantsTonne = 2,
-                ProcessLossTonne = 1
+                ProcessLossTonne = 1,
+                TotalOutput = 95,
+                TotalInput = 100
             };
 
         private static RegistrationMaterialDetail CreateRegistrationMaterial()

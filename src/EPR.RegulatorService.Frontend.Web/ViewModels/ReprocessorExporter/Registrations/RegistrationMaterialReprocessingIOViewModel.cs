@@ -13,5 +13,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
         public decimal SenttoOtherSiteTonne { get; set; }
         public decimal ContaminantsTonne { get; set; }
         public decimal ProcessLossTonne { get; set; }
+        public decimal TotalInput { get; set; }
+        public decimal TotalOutput { get; set; }
     }
 }

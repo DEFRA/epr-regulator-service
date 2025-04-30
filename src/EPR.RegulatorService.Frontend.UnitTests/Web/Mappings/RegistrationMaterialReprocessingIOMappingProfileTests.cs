@@ -39,7 +39,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings
                 NotPackingWasteTonne = 10,
                 SenttoOtherSiteTonne = 5,
                 ContaminantsTonne = 2,
-                ProcessLossTonne = 1
+                ProcessLossTonne = 1,
+                TotalInput = 100,
+                TotalOutput = 95
             };
 
             var result = _mapper.Map<RegistrationMaterialReprocessingIOViewModel>(registrationMaterialReprocessingIO);
@@ -55,6 +57,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings
             result.SenttoOtherSiteTonne.Should().Be(registrationMaterialReprocessingIO.SenttoOtherSiteTonne);
             result.ContaminantsTonne.Should().Be(registrationMaterialReprocessingIO.ContaminantsTonne);
             result.ProcessLossTonne.Should().Be(registrationMaterialReprocessingIO.ProcessLossTonne);
+            result.TotalInput.Should().Be(registrationMaterialReprocessingIO.TotalInput);
+            result.TotalOutput.Should().Be(registrationMaterialReprocessingIO.TotalOutput);
         }
     }
 }
