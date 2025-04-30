@@ -64,6 +64,25 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         });
     }
 
+    public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(int registrationId) =>
+        Task.FromResult(new RegistrationAuthorisedMaterials
+        {
+            RegistrationId = registrationId,
+            OrganisationName = "MOCK Test Org",
+            SiteAddress = "MOCK Test Address",
+            MaterialsAuthorisation =
+            [
+                new MaterialsAuthorisedOnSite { IsMaterialRegistered = true, MaterialName = "Plastic" },
+                new MaterialsAuthorisedOnSite
+                {
+                    IsMaterialRegistered = false,
+                    MaterialName = "Steel",
+                    Reason =
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem"
+                }
+            ]
+        });
+
     public Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
@@ -111,8 +130,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 Materials =
                 [
                     CreateRegistrationMaterial(registrationId, "Plastic", organisationType),
-                    CreateRegistrationMaterial(registrationId, "Steel", organisationType, isMaterialRegistered: false, reasonForNotReg: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem"),
-                    CreateRegistrationMaterial(registrationId, "Aluminium", organisationType, isMaterialRegistered: false, reasonForNotReg: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem"),
+                    CreateRegistrationMaterial(registrationId, "Steel", organisationType),
+                    CreateRegistrationMaterial(registrationId, "Aluminium", organisationType),
                 ]
             };
     }
@@ -164,9 +183,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         ApplicationStatus? status = null,
         string? statusUpdatedBy = null,
         DateTime? statusUpdatedAt = null,
-        string? registrationNumber = null,
-        bool isMaterialRegistered = true,
-        string? reasonForNotReg = null)
+        string? registrationNumber = null)
 #pragma warning restore S107
     {
         int registrationMaterialId = registrationId * 10;
@@ -181,9 +198,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             StatusUpdatedBy = statusUpdatedBy,
             StatusUpdatedDate = statusUpdatedAt,
             RegistrationReferenceNumber = registrationNumber,
-            Tasks = CreateMaterialTasks(registrationMaterialId, organisationType),
-            IsMaterialRegistered = isMaterialRegistered,
-            ReasonForNotReg = reasonForNotReg
+            Tasks = CreateMaterialTasks(registrationMaterialId, organisationType)
         };
     }
 

@@ -1,6 +1,5 @@
 using AutoMapper;
 
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
@@ -22,17 +21,21 @@ public class AuthorisedMaterialsProfileTests
     }
 
     [TestMethod]
-    public void Map_WhenCalledWithRegistration_ShouldReturnViewModel()
+    public void Mapping_Configuration_IsValid()
+    {
+        _mapper.ConfigurationProvider.AssertConfigurationIsValid();
+    }
+
+    [TestMethod]
+    public void Map_WhenCalledWithRegistrationAuthorisedMaterials_ShouldReturnViewModel()
     {
         // Arrange
-        var registration = new Registration
+        var registration = new RegistrationAuthorisedMaterials
         {
-            Id = 1,
+            RegistrationId = 1,
             OrganisationName = "Test Organisation",
             SiteAddress = "123 Test Street",
-            OrganisationType = ApplicationOrganisationType.Reprocessor,
-            Regulator = "EA",
-            Materials = []
+            MaterialsAuthorisation = []
         };
 
         // Act
@@ -41,7 +44,7 @@ public class AuthorisedMaterialsProfileTests
         // Assert
         using (new AssertionScope())
         {
-            viewModel.RegistrationId.Should().Be(registration.Id);
+            viewModel.RegistrationId.Should().Be(registration.RegistrationId);
             viewModel.OrganisationName.Should().Be(registration.OrganisationName);
             viewModel.SiteAddress.Should().Be(registration.SiteAddress);
         }
@@ -51,14 +54,12 @@ public class AuthorisedMaterialsProfileTests
     public void Map_WhenCalledWithRegistration_ShouldOrderMaterialsByIsRegisteredThenAlphabetically()
     {
         // Arrange
-        var registration = new Registration
+        var registration = new RegistrationAuthorisedMaterials
         {
-            Id = 1,
+            RegistrationId = 1,
             OrganisationName = "Test Organisation",
             SiteAddress = "123 Test Street",
-            OrganisationType = ApplicationOrganisationType.Exporter,
-            Regulator = "Custom Regulator",
-            Materials = [
+            MaterialsAuthorisation = [
                 CreateRegistrationMaterial(true, "ZZZ"),
                 CreateRegistrationMaterial(false, "ZZZ"),
                 CreateRegistrationMaterial(true, "AAA"),
@@ -90,12 +91,11 @@ public class AuthorisedMaterialsProfileTests
     public void Map_WhenCalledWithRegistrationMaterial_ShouldReturnViewModel()
     {
         // Arrange
-        var registrationMaterial = new RegistrationMaterialSummary
+        var registrationMaterial = new MaterialsAuthorisedOnSite
         {
-            Id = 1,
             MaterialName = "Plastic",
             IsMaterialRegistered = true,
-            ReasonForNotReg = "Some reason",
+            Reason = "Some reason",
         };
 
         // Act
@@ -106,13 +106,13 @@ public class AuthorisedMaterialsProfileTests
         {
             viewModel.IsMaterialRegistered.Should().Be(registrationMaterial.IsMaterialRegistered);
             viewModel.MaterialName.Should().Be(registrationMaterial.MaterialName);
-            viewModel.ReasonForNotReg.Should().Be(registrationMaterial.ReasonForNotReg);
+            viewModel.Reason.Should().Be(registrationMaterial.Reason);
         }
     }
 
-    private static RegistrationMaterialSummary CreateRegistrationMaterial(bool isMaterialRegistered, string materialName) =>
+    private static MaterialsAuthorisedOnSite CreateRegistrationMaterial(bool isMaterialRegistered, string materialName) =>
         new()
         {
-            Id = 1, MaterialName = materialName, IsMaterialRegistered = isMaterialRegistered
+            MaterialName = materialName, IsMaterialRegistered = isMaterialRegistered
         };
 }

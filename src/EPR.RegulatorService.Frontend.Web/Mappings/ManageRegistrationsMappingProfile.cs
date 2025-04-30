@@ -11,7 +11,6 @@ public class ManageRegistrationsMappingProfile : Profile
     public ManageRegistrationsMappingProfile()
     {
         CreateMap<Registration, ManageRegistrationsViewModel>()
-            .ForMember(dest => dest.Materials, opt => opt.MapFrom(src => src.Materials.Where(m => m.IsMaterialRegistered)))
             .ForMember(dest => dest.ApplicationOrganisationType,
                        opt => opt.MapFrom(src => src.OrganisationType))
             .ForMember(dest => dest.SiteAddressTask,

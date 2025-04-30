@@ -47,8 +47,7 @@ public class ManageRegistrationsMappingProfileTests
                     Status = ApplicationStatus.Granted,
                     StatusUpdatedBy = "Test User",
                     StatusUpdatedDate = DateTime.Now,
-                    RegistrationReferenceNumber = "ABC1234",
-                    IsMaterialRegistered = true
+                    RegistrationReferenceNumber = "ABC1234"
                 }
             ],
             Tasks =
@@ -193,53 +192,6 @@ public class ManageRegistrationsMappingProfileTests
             viewModel.SamplingAndInspectionPlanTask.Should().NotBeNull();
             viewModel.MaterialDetailsTask.Should().NotBeNull();
             viewModel.OverseasReprocessorTask.Should().NotBeNull();
-        }
-    }
-
-    [TestMethod]
-    public void Map_WhenCalledWithRegistration_ShouldOnlyIncludeRegisteredMaterials()
-    {
-        // Arrange
-        var registrationDto = new Registration
-        {
-            Id = 1,
-            OrganisationName = "Test Organisation",
-            SiteAddress = "123 Test Street",
-            OrganisationType = ApplicationOrganisationType.Exporter,
-            Regulator = "Custom Regulator",
-            Materials =
-            [
-                new RegistrationMaterialSummary
-                {
-                    Id = 1,
-                    MaterialName = "Plastic",
-                    Status = ApplicationStatus.Granted,
-                    StatusUpdatedBy = "Test User",
-                    StatusUpdatedDate = DateTime.Now,
-                    RegistrationReferenceNumber = "ABC1234",
-                    IsMaterialRegistered = true
-                },
-                new RegistrationMaterialSummary
-                {
-                    Id = 2,
-                    MaterialName = "Steel",
-                    Status = ApplicationStatus.Granted,
-                    StatusUpdatedBy = "Test User",
-                    StatusUpdatedDate = DateTime.Now,
-                    RegistrationReferenceNumber = "ABC1234",
-                    IsMaterialRegistered = false
-                }
-            ]
-        };
-
-        // Act
-        var viewModel = _mapper.Map<ManageRegistrationsViewModel>(registrationDto);
-
-        // Assert
-        using (new AssertionScope())
-        {
-            viewModel.Materials.Count.Should().Be(1);
-            viewModel.Materials[0].MaterialName.Should().Be("Plastic");
         }
     }
 }

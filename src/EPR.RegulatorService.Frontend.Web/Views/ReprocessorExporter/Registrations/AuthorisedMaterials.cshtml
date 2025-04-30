@@ -30,11 +30,11 @@
                   {
                     <span>Not applying for registration</span>
 
-                    @if (!string.IsNullOrWhiteSpace(material.ReasonForNotReg))
+                    @if (!string.IsNullOrWhiteSpace(material.Reason))
                     {
                       <br />
                       <br />
-                      <strong>Reason</strong> @material.ReasonForNotReg
+                      <strong>Reason</strong> @material.Reason
                     }
                   }
                   else

@@ -35,8 +35,8 @@ public class RegistrationsController(
         await SaveCurrentPageToSession(session);
         SetBackLinkInfos(session);
 
-        var registration = await reprocessorExporterService.GetRegistrationByIdAsync(registrationId);
-        var viewModel = mapper.Map<AuthorisedMaterialsViewModel>(registration);
+        var registrationAuthorisedMaterials = await reprocessorExporterService.GetAuthorisedMaterialsByRegistrationIdAsync(registrationId);
+        var viewModel = mapper.Map<AuthorisedMaterialsViewModel>(registrationAuthorisedMaterials);
         
         return View(GetRegistrationsView(nameof(AuthorisedMaterials)), viewModel);
     }

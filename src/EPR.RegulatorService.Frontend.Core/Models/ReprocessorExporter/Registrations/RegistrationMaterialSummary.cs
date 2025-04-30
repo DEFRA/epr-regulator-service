@@ -20,9 +20,5 @@ public class RegistrationMaterialSummary
 
     public string? RegistrationReferenceNumber { get; init; }
 
-    public bool IsMaterialRegistered { get; init; }
-
-    public string? ReasonForNotReg { get; init; }
-
     public List<RegistrationTask> Tasks { get; init; } = [];
 }

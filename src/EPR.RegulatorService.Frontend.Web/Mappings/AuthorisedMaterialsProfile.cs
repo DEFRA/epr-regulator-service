@@ -9,12 +9,11 @@ public class AuthorisedMaterialsProfile : Profile
 {
     public AuthorisedMaterialsProfile()
     {
-        CreateMap<Registration, AuthorisedMaterialsViewModel>()
-            .ForMember(dest => dest.RegistrationId, opt => opt.MapFrom(src => src.Id))
+        CreateMap<RegistrationAuthorisedMaterials, AuthorisedMaterialsViewModel>()
             .ForMember(dest => dest.Materials,
                 opt => opt.MapFrom(
-                    src => src.Materials.OrderByDescending(m => m.IsMaterialRegistered).ThenBy(m => m.MaterialName)));
+                    src => src.MaterialsAuthorisation.OrderByDescending(m => m.IsMaterialRegistered).ThenBy(m => m.MaterialName)));
 
-        CreateMap<RegistrationMaterialSummary, AuthorisedMaterialViewModel>();
+        CreateMap<MaterialsAuthorisedOnSite, AuthorisedMaterialViewModel>();
     }
 }
