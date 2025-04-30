@@ -25,13 +25,12 @@
 					<div class="govuk-form-group">
 						<fieldset class="govuk-fieldset">
 							<div class="@(ViewData.ModelState.IsValid ? string.Empty : "govuk-form-group--error")">
-								<h1 class="govuk-heading-xl" style="margin-bottom: 3%;">Which fees are you waiving?</h1>
-
+								<h1 class="govuk-heading-xl" style="margin-bottom: 3%;">@SharedLocalizer["WaveFees.WhichFees"]</h1>
 								@if (Model.IsComplianceSchemeSelected)
 								{
 									<h3 class="govuk-heading-s">
 										<p class="@(ViewData.ModelState.IsValid ? "govuk-body" : "govuk-body govuk-error-message")"
-										   style="padding: 7px 0px; margin: 0px;">Select all that apply</p>
+										   style="padding: 7px 0px; margin: 0px;">@SharedLocalizer["WaveFees.SelectAll"]</p>
 									</h3>
 
 									@if (Model.ApplicationFeeSectionEnable)
@@ -40,7 +39,7 @@
 											<fieldset class="govuk-fieldset" aria-describedby="contact-hint">
 												<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 													<h2 class="govuk-heading-m">
-														Application fee
+														@SharedLocalizer["WaveFees.ApplicationFee"]
 													</h2>
 												</legend>
 												<div class="govuk-checkboxes" data-module="govuk-checkboxes">
@@ -49,7 +48,7 @@
 															   name="IsComplianceSchemeChecked"
 															   type="checkbox" aria-controls="conditional-compliance-waiver" aria-expanded="true">
 														<label class="govuk-label govuk-checkboxes__label" asp-for="IsComplianceSchemeChecked">
-															Compliance scheme
+															@SharedLocalizer["WaveFees.ComplianceScheme"]
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
 															£@Model.ApplicationFee
@@ -57,9 +56,9 @@
 														</div>
 														<div class="govuk-checkboxes__conditional" id="conditional-compliance-waiver">
 															<div class="govuk-form-group">
-																@await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedComplianceSchemeAmount)])
+																@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedComplianceSchemeAmount)]) *@
 																<label class="govuk-label" for="WavedComplianceSchemeAmount">
-																	Enter the waiver amount
+																	@SharedLocalizer["WaveFees.EnterWaiver"]
 																</label>
 																<div class="govuk-input__wrapper">
 																	<div class="govuk-input__prefix" aria-hidden="true">£</div>
@@ -77,7 +76,7 @@
 										<fieldset class="govuk-fieldset" aria-describedby="contact-hint">
 											<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
 												<h2 class="govuk-heading-m">
-													Scheme members
+													@SharedLocalizer["WaveFees.SchemeMembers"]
 												</h2>
 											</legend>
 											@if (Model.SmalProducerSectionEnable)
@@ -87,18 +86,19 @@
 														<input class="govuk-checkboxes__input" id="IsSmallProducerChecked" asp-for="IsSmallProducerChecked"
 															   name="IsSmallProducerChecked" type="checkbox" aria-controls="conditional-small-producer" aria-expanded="false">
 														<label class="govuk-label govuk-checkboxes__label" for="IsSmallProducerChecked">
-															@Model.SmallProducerCount Small producers
+															@Model.SmallProducerCount  @SharedLocalizer["WaveFees.SmallProducers"]
+															<input type="hidden" name="SmallProducerCount" value="@Model.SmallProducerCount" />
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
 															£@Model.SmallProducerFee
-															<input type="hidden" name="ApplicationFee" value="@Model.SmallProducerFee" />
+															<input type="hidden" name="SmallProducerFee" value="@Model.SmallProducerFee" />
 														</div>
 													</div>
 													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-small-producer">
 														<div class="govuk-form-group">
-															@await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedSmallProducerFee)])
+															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedSmallProducerFee)]) *@
 															<label class="govuk-label" for="WavedSmallProducerFee">
-																Enter the waiver amount
+																@SharedLocalizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">
 																<div class="govuk-input__prefix" aria-hidden="true">£</div>
@@ -116,22 +116,28 @@
 											{
 												<div class="govuk-checkboxes" data-module="govuk-checkboxes">
 													<div class="govuk-checkboxes__item">
-														<input class="govuk-checkboxes__input" id="small_org_reg-2" name="ch-2" type="checkbox" value="" aria-controls="conditional-contact-2" aria-expanded="false">
-														<label class="govuk-label govuk-checkboxes__label" for="small_org_reg-2">
-															@Model.LargeProducerCount Large producers
+														<input class="govuk-checkboxes__input" id="IsLargeProducerChecked" name="IsLargeProducerChecked" asp-for="IsLargeProducerChecked"
+															   type="checkbox" value="" aria-controls="conditional-large-prodcuer" aria-expanded="false">
+														<label class="govuk-label govuk-checkboxes__label" for="IsLargeProducerChecked">
+															@Model.LargeProducerCount  @SharedLocalizer["WaveFees.LargeProducers"]
+															<input type="hidden" name="LargeProducerCount" value="@Model.LargeProducerCount" />
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
 															£@Model.LargeProducerFee
+															<input type="hidden" name="LargeProducerFee" value="@Model.LargeProducerFee" />
 														</div>
 													</div>
-													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-2">
+													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-large-prodcuer">
 														<div class="govuk-form-group">
-															<label class="govuk-label" for="contact-by-email">
-																Enter the waiver amount
+															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedLargeProducerFee)]) *@
+															<label class="govuk-label" for="WavedLargeProducerFee">
+																@SharedLocalizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">
 																<div class="govuk-input__prefix" aria-hidden="true">£</div>
-																<input class="govuk-input govuk-input--width-5" id="cost-1" name="cost-1" type="text" spellcheck="false">
+																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )"
+																	   id="WavedLargeProducerFee" name="WavedLargeProducerFee" aria-describedby="WavedLargeProducerFee"
+																	   value="@Model.WavedLargeProducerFee" aria-describedby="WavedLargeProducerFee" type="text" spellcheck="false">
 															</div>
 														</div>
 													</div>
@@ -142,22 +148,30 @@
 											{
 												<div class="govuk-checkboxes" data-module="govuk-checkboxes">
 													<div class="govuk-checkboxes__item">
-														<input class="govuk-checkboxes__input" id="small_org_reg-3" name="ch-3" type="checkbox" value="" aria-controls="conditional-contact-3" aria-expanded="false">
-														<label class="govuk-label govuk-checkboxes__label" for="small_org_reg-3">
-															@Model.OnlineMarketPlaceCount Online marketplaces
+														<input class="govuk-checkboxes__input" id="IsOnineMarketPlaceChecked" name="IsOnineMarketPlaceChecked" type="checkbox"
+															   asp-for="IsOnineMarketPlaceChecked" aria-controls="conditional-online-market-place" aria-expanded="false">
+														<label class="govuk-label govuk-checkboxes__label" for="IsOnineMarketPlaceChecked">
+															@Model.OnlineMarketPlaceCount @SharedLocalizer["WaveFees.OnlineMarketPlaces"]
+															<input type="hidden" name="OnlineMarketPlaceCount" value="@Model.OnlineMarketPlaceCount" />
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
 															£@Model.OnlineMarketPlaceFee
+															<input type="hidden" name="OnlineMarketPlaceFee" value="@Model.OnlineMarketPlaceFee" />
 														</div>
 													</div>
-													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-3">
+													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-online-market-place">
 														<div class="govuk-form-group">
-															<label class="govuk-label" for="contact-by-email">
-																Enter the waiver amount
+															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedOnlineMarketPlaceFee)]) *@
+															<label class="govuk-label" for="WavedOnlineMarketPlaceFee">
+																@SharedLocalizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">
-																<div class="govuk-input__prefix" aria-hidden="true">£</div>
-																<input class="govuk-input govuk-input--width-5" id="cost-2" name="cost-2" type="text" spellcheck="false">
+																<div class="govuk-input__prefix" aria-hidden="true">
+																	£
+																</div>
+																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )" id="WavedOnlineMarketPlaceFee" name="WavedOnlineMarketPlaceFee"
+																	   value="@Model.WavedOnlineMarketPlaceFee" aria-describedby="WavedOnlineMarketPlaceFee"
+																	   type="text" spellcheck="false">
 															</div>
 														</div>
 													</div>
@@ -168,22 +182,29 @@
 											{
 												<div class="govuk-checkboxes" data-module="govuk-checkboxes">
 													<div class="govuk-checkboxes__item">
-														<input class="govuk-checkboxes__input" id="small_org_reg-4" name="ch-4" type="checkbox" value="" aria-controls="conditional-contact-4" aria-expanded="false">
-														<label class="govuk-label govuk-checkboxes__label" for="small_org_reg-4">
-															@Model.SubsidiariesCompanyCount Subsidiary Companies
+														<input class="govuk-checkboxes__input" id="IsSubsidiariesCompanyChecked"
+															   name="IsSubsidiariesCompanyChecked" asp-for="IsSubsidiariesCompanyChecked"
+															   type="checkbox" aria-controls="conditional-subsidiaries-company" aria-expanded="false">
+														<label class="govuk-label govuk-checkboxes__label" for="IsSubsidiariesCompanyChecked">
+															@Model.SubsidiariesCompanyCount @SharedLocalizer["WaveFees.SubsidiaryCompanies"]
+															<input type="hidden" name="SubsidiariesCompanyCount" value="@Model.SubsidiariesCompanyCount" />
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
 															£@Model.SubsidiariesCompanyFee
+															<input type="hidden" name="SubsidiariesCompanyFee" value="@Model.SubsidiariesCompanyFee" />
 														</div>
 													</div>
-													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-4">
+													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-subsidiaries-company">
 														<div class="govuk-form-group">
-															<label class="govuk-label" for="contact-by-email">
-																Enter the waiver amount
+															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedSubsidiariesCompanyFee)]) *@
+															<label class="govuk-label" for="WavedSubsidiariesCompanyFee">
+																@SharedLocalizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">
 																<div class="govuk-input__prefix" aria-hidden="true">£</div>
-																<input class="govuk-input govuk-input--width-5" id="cost-3" name="cost-3" type="text" spellcheck="false">
+																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )"
+																	   id="WavedSubsidiariesCompanyFee" name="WavedSubsidiariesCompanyFee" value="@Model.WavedSubsidiariesCompanyFee" aria-describedby="WavedSubsidiariesCompanyFee"
+																	   type="text" spellcheck="false">
 															</div>
 														</div>
 													</div>
@@ -194,22 +215,30 @@
 											{
 												<div class="govuk-checkboxes" data-module="govuk-checkboxes">
 													<div class="govuk-checkboxes__item">
-														<input class="govuk-checkboxes__input" id="small_org_reg-5" name="ch-5" type="checkbox" value="" aria-controls="conditional-contact-5" aria-expanded="false">
-														<label class="govuk-label govuk-checkboxes__label" for="small_org_reg-5">
-															@Model.LateProducerCount Late producer fees
+														<input class="govuk-checkboxes__input" id="IsLateProducerChecked" name="IsLateProducerChecked" asp-for="IsLateProducerChecked"
+															   type="checkbox" aria-controls="conditional-late-prodcuer" aria-expanded="false">
+														<label class="govuk-label govuk-checkboxes__label" for="IsLateProducerChecked">
+															@Model.LateProducerCount @SharedLocalizer["WaveFees.LateProducers"]
+															<input type="hidden" name="LateProducerCount" value="@Model.LateProducerCount" />
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
 															£@Model.LateProducerFee
+															<input type="hidden" name="LateProducerFee" value="@Model.LateProducerFee" />
 														</div>
 													</div>
-													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-contact-5">
+													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-late-prodcuer">
 														<div class="govuk-form-group">
-															<label class="govuk-label" for="contact-by-email">
-																Enter the waiver amount
+															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedLateProducerFee)]) *@
+															<label class="govuk-label" for="WavedLateProducerFee">
+																@SharedLocalizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">
 																<div class="govuk-input__prefix" aria-hidden="true">£</div>
-																<input class="govuk-input govuk-input--width-5" id="cost-4" name="cost-4" type="text" spellcheck="false">
+																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )"
+																	   id="WavedLateProducerFee" name="WavedLateProducerFee"
+																	   value="@Model.WavedLateProducerFee"
+																	   aria-describedby="WavedLateProducerFee"
+																	   type="text" spellcheck="false">
 															</div>
 														</div>
 													</div>
@@ -219,11 +248,51 @@
 										</fieldset>
 									</div>
 								}
-								
+
+
+								@if (Model.IsProducerSelected)
+								{
+									<div class="govuk-form-group">
+										<fieldset class="govuk-fieldset" aria-describedby="contact-hint">
+											<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+												<h2 class="govuk-heading-m">
+													Application fee
+												</h2>
+											</legend>
+											<div class="govuk-checkboxes" data-module="govuk-checkboxes">
+												<div class="govuk-checkboxes__item">
+													<input class="govuk-checkboxes__input" id="IsComplianceSchemeChecked" asp-for="IsComplianceSchemeChecked"
+														   name="IsComplianceSchemeChecked"
+														   type="checkbox" aria-controls="conditional-compliance-waiver" aria-expanded="true">
+													<label class="govuk-label govuk-checkboxes__label" asp-for="IsComplianceSchemeChecked">
+														Compliance scheme
+													</label>
+													<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
+														£@Model.ApplicationFee
+														<input type="hidden" name="ApplicationFee" value="@Model.ApplicationFee" />
+													</div>
+													<div class="govuk-checkboxes__conditional" id="conditional-compliance-waiver">
+														<div class="govuk-form-group">
+															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedComplianceSchemeAmount)]) *@
+															<label class="govuk-label" for="WavedComplianceSchemeAmount">
+																@Localizer["WaveFees.EnterWaiver"]
+															</label>
+															<div class="govuk-input__wrapper">
+																<div class="govuk-input__prefix" aria-hidden="true">£</div>
+																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )"
+																	   id="WavedComplianceSchemeAmount" value="@Model.WavedComplianceSchemeAmount" aria-describedby="WavedComplianceSchemeAmount"
+																	   name="WavedComplianceSchemeAmount" type="text" spellcheck="false">
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								}
 							</div>
 						</fieldset>
 					</div>
-
 				</div>
 			</div>
 

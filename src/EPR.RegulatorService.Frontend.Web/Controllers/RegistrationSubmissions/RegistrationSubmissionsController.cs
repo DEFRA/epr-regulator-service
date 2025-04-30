@@ -789,34 +789,9 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
         SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId }), false);
-        viewModel.IsComplianceSchemeSelected = _currentSession.PaymentDetailsSession.IsComplianceSchemeSelected;
 
         viewModel.IsComplianceSchemeSelected = _currentSession.PaymentDetailsSession.IsComplianceSchemeSelected;
         viewModel.IsProducerSelected = _currentSession.PaymentDetailsSession.IsProducerSelected;
-
-        viewModel.ApplicationFee = _currentSession.PaymentDetailsSession.ApplicationFee;
-
-        viewModel.SmallProducerCount = _currentSession.PaymentDetailsSession.SmallProducerCount;
-        viewModel.SmallProducerFee = _currentSession.PaymentDetailsSession.SmallProducerFee;
-
-        viewModel.LargeProducerCount = _currentSession.PaymentDetailsSession.LargeProducerCount;
-        viewModel.LargeProducerFee = _currentSession.PaymentDetailsSession.LargeProducerFee;
-
-        viewModel.OnlineMarketPlaceCount = _currentSession.PaymentDetailsSession.OnlineMarketPlaceCount;
-        viewModel.OnlineMarketPlaceFee = _currentSession.PaymentDetailsSession.OnlineMarketPlaceFee;
-
-        viewModel.SubsidiariesCompanyCount = _currentSession.PaymentDetailsSession.SubsidiariesCompanyCount;
-        viewModel.SubsidiariesCompanyFee = _currentSession.PaymentDetailsSession.SubsidiariesCompanyFee;
-
-        viewModel.LateProducerCount = _currentSession.PaymentDetailsSession.LateProducerCount;
-        viewModel.LateProducerFee = _currentSession.PaymentDetailsSession.LateProducerFee;
-
-        viewModel.SubmissionId = viewModel.SubmissionId;
-
-        if(!viewModel.IsComplianceSchemeChecked || !viewModel.IsSmallProducerChecked)
-        {
-            ModelState.AddModelError("NoneSelected", "Select a fee to waive");
-        }
         
         if (!ModelState.IsValid)
         {
