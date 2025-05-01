@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
+using static StackExchange.Redis.Role;
+
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
@@ -25,7 +27,10 @@ public class RegistrationsController(
     IConfiguration configuration,
     IMapper mapper)
     : ReprocessorExporterBaseController(sessionManager, configuration)
+  
 {
+
+
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials(int registrationId)
@@ -158,7 +163,14 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(InputsAndOutputs)), registrationMaterialId);     
+        var reprocessingIO = await reprocessorExporterService.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId);
+        var model = new RegistrationMaterialReprocessingIOViewModel()
+        {
+            RegistrationMaterialId = registrationMaterialId,
+            RegistrationMaterialReprocessingIO = reprocessingIO
+        };        
+
+        return View(GetRegistrationsView(nameof(InputsAndOutputs)), model);     
     }
 
     [HttpPost]
