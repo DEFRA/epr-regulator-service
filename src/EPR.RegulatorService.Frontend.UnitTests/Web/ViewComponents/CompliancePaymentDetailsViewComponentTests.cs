@@ -1,13 +1,18 @@
 using System;
 using System.Threading.Tasks;
 
+using EPR.Common.Authorization.Sessions;
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,6 +27,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     private readonly Mock<IOptions<PaymentDetailsOptions>> _paymentDetailsOptionsMock = new();
     private readonly Mock<IPaymentFacadeService> _paymentFacadeServiceMock = new();
     private readonly Mock<ILogger<CompliancePaymentDetailsViewComponent>> _loggerMock = new();
+    private readonly Mock<ISessionManager<JourneySession>>  _mockSessionManager = new();
 
     [TestInitialize]
     public void TestInitialize()
@@ -34,7 +40,18 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
-        _sut = new CompliancePaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object, null);
+        var mockHttpContext = new Mock<HttpContext>();
+
+        _sut = new CompliancePaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object, _mockSessionManager.Object)
+        {
+            ViewComponentContext = new ViewComponentContext
+            {
+                ViewContext = new ViewContext
+                {
+                    HttpContext = mockHttpContext.Object
+                }
+            }
+        };
     }
 
     [TestMethod]
@@ -70,6 +87,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         };
         _registrationSumissionDetailsViewModel.CSOMembershipDetails = complianceSchemeMembers;
         _registrationSumissionDetailsViewModel.IsResubmission = isResubmission;
+        _registrationSumissionDetailsViewModel.Status = RegistrationSubmissionStatus.Granted;
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
@@ -88,6 +106,13 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
                 new() { MemberId = "memberid2", MemberType = "small", MemberFee = 3.00M }
             ]
         });
+        JourneySessionMock = new JourneySession()
+        {
+            PaymentDetailsSession = new PaymentDetailsSession()
+        };
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(JourneySessionMock);
 
         // Act
         var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
@@ -104,6 +129,59 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.SmallProducerCount.Should().Be(1);
         model.LateProducerCount.Should().Be(0);
         model.OnlineMarketPlaceCount.Should().Be(0);
+        model.IsResubmission.Should().Be(isResubmission);
+        model.Status.Should().Be(RegistrationSubmissionStatus.Granted);
+        model.SubsidiariesCompanyCount.Should().Be(0);
+        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.AtMostOnce);
+        JourneySessionMock.PaymentDetailsSession.ApplicationFee.Should().Be(1.00M);
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_WithNullSession_ReturnsNewJourneySession()
+    {
+        // Arrange
+        JourneySessionMock = null;
+
+        var complianceSchemeMembers = new List<CsoMembershipDetailsDto> {
+            new() { MemberId = "memberid1", MemberType = "large" },
+            new() { MemberId = "memberid2", MemberType = "small" }
+        };
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails = complianceSchemeMembers;
+        _registrationSumissionDetailsViewModel.IsResubmission = true;
+        _registrationSumissionDetailsViewModel.Status = RegistrationSubmissionStatus.Granted;
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
+            TimeAndDateOfResubmission = DateTime.UtcNow
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+        .ReturnsAsync(new CompliancePaymentResponse // all values in pence
+        {
+            ApplicationProcessingFee = 100.00M,
+            TotalChargeableItems = 1000.00M,
+            PreviousPaymentsReceived = 500.00M,
+            TotalOutstanding = 500.00M,
+            ComplianceSchemeMembers =
+            [
+                new() { MemberId = "memberid1", MemberType = "large", MemberFee = 2.00M },
+                new() { MemberId = "memberid2", MemberType = "small", MemberFee = 3.00M }
+            ]
+        });
+
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(JourneySessionMock);
+
+        // Act
+        var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        Assert.IsNotNull(result);
+        result.Should().BeOfType<ViewViewComponentResult>();
+        var model = result.ViewData.Model as CompliancePaymentDetailsViewModel;
+        model.Should().NotBeNull();
+        model.IsResubmission.Should().Be(true);
+        model.Status.Should().Be(RegistrationSubmissionStatus.Granted);
         model.SubsidiariesCompanyCount.Should().Be(0);
         _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.AtMostOnce);
     }

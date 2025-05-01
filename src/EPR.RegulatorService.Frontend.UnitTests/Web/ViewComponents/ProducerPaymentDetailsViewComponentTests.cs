@@ -1,13 +1,18 @@
 using System;
 using System.Threading.Tasks;
 
+using EPR.Common.Authorization.Sessions;
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,6 +27,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     private readonly Mock<IOptions<PaymentDetailsOptions>> _paymentDetailsOptionsMock = new();
     private readonly Mock<IPaymentFacadeService> _paymentFacadeServiceMock = new();
     private readonly Mock<ILogger<ProducerPaymentDetailsViewComponent>> _loggerMock = new();
+    private readonly Mock<ISessionManager<JourneySession>> _mockSessionManager = new();
 
     [TestInitialize]
     public void TestInitialize()
@@ -34,7 +40,17 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
-        _sut = new ProducerPaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object, null);
+        var mockHttpContext = new Mock<HttpContext>();
+        _sut = new ProducerPaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object, _mockSessionManager.Object)
+        {
+            ViewComponentContext = new ViewComponentContext
+            {
+                ViewContext = new ViewContext
+                {
+                    HttpContext = mockHttpContext.Object
+                }
+            }
+        };
     }
 
     [TestMethod]
@@ -82,11 +98,20 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         });
         _registrationSumissionDetailsViewModel.ProducerDetails.ProducerType = organisationSize;
         _registrationSumissionDetailsViewModel.IsResubmission = isResubmission;
+        _registrationSumissionDetailsViewModel.Status = RegistrationSubmissionStatus.Granted;
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
             TimeAndDateOfResubmission = DateTime.UtcNow
         };
+
+        JourneySessionMock = new JourneySession()
+        {
+            PaymentDetailsSession = new PaymentDetailsSession()
+        };
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(JourneySessionMock);
 
         // Act
         var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
@@ -106,8 +131,59 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.SubTotal.Should().Be(10.00M);
         model.PreviousPaymentsReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(5.00M);
+        model.IsResubmission.Should().Be(isResubmission);
+        model.Status.Should().Be(RegistrationSubmissionStatus.Granted);
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync(
             It.IsAny<ProducerPaymentRequest>()), Times.AtMostOnce);
+        JourneySessionMock.PaymentDetailsSession.ApplicationFee.Should().Be(1.00M);
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_WithNullSession_ReturnsNewJourneySession()
+    {
+        // Arrange
+        JourneySessionMock = null;
+
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(
+            It.IsAny<ProducerPaymentRequest>()))
+        .ReturnsAsync(new ProducerPaymentResponse // all values in pence
+        {
+            ApplicationProcessingFee = 100.00M,
+            LateRegistrationFee = 200.00M,
+            OnlineMarketplaceFee = 300.00M,
+            SubsidiaryFee = 400.00M,
+            TotalChargeableItems = 1000.00M,
+            PreviousPaymentsReceived = 500.00M,
+            TotalOutstanding = 500.00M,
+            SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+            { OnlineMarketPlaceSubsidiariesCount = 1, SubsidiaryOnlineMarketPlaceFee = 200.00M }
+        });
+        _registrationSumissionDetailsViewModel.ProducerDetails.ProducerType = "small";
+        _registrationSumissionDetailsViewModel.IsResubmission = true;
+        _registrationSumissionDetailsViewModel.Status = RegistrationSubmissionStatus.Granted;
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
+            TimeAndDateOfResubmission = DateTime.UtcNow
+        };
+
+        _mockSessionManager
+            .Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(JourneySessionMock);
+
+        // Act
+        var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        Assert.IsNotNull(result);
+        result.Should().BeOfType<ViewViewComponentResult>();
+        var model = result.ViewData.Model as ProducerPaymentDetailsViewModel;
+        model.Should().NotBeNull();
+        // all values converted to pounds
+        model.ApplicationProcessingFee.Should().Be(1.00M);
+        model.LateRegistrationFee.Should().Be(2.00M);
+        model.OnlineMarketplaceFee.Should().Be(3.00M);
+        model.ProducerSize.Should().Be("Small");
     }
 
     [TestMethod]
