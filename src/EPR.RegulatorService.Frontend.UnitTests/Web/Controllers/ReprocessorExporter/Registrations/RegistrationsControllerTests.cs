@@ -373,7 +373,7 @@ public class RegistrationsControllerTests
             PlantEquipmentUsed = "Test"
         };
 
-        _mockMapper.Setup(m => m.Map<RegistrationMaterialReprocessingIOViewModel>(null))
+        _mockMapper.Setup(m => m.Map<RegistrationMaterialReprocessingIOViewModel>(It.IsAny<RegistrationMaterialReprocessingIO>()))
             .Returns(expectedViewModel);
 
         // Act
@@ -1088,7 +1088,7 @@ public class RegistrationsControllerTests
             PermitType = "Waste Exemption",
         };
 
-        _mockMapper.Setup(m => m.Map<MaterialWasteLicencesViewModel>(null))
+        _mockMapper.Setup(m => m.Map<MaterialWasteLicencesViewModel>(It.IsAny<RegistrationMaterialWasteLicence>()))
             .Returns(expectedViewModel);
 
         // Act
