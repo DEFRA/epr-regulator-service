@@ -56,9 +56,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         {
             Id = id,
             SiteAddress = "16 Ruby St, London, E12 3SE",
-            Location = "England",
-            SiteGridReference = "SJ 854 662",
-            LegalDocumentAddress = "25 Ruby St, London, E12 3SE",
+            NationName = "England",
+            GridReference = "SJ 854 662",
+            LegalCorrespondenceAddress = "25 Ruby St, London, E12 3SE",
         };
 
         return Task.FromResult(siteDetails);

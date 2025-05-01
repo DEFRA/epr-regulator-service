@@ -33,9 +33,9 @@ public class SiteDetailsMappingProfileTests
         {
             Id = 1,
             SiteAddress = "123 Test Street",
-            Location = "England",
-            LegalDocumentAddress = "321 Test Street",
-            SiteGridReference = "SJ 854 662",
+            NationName = "England",
+            GridReference = "321 Test Street",
+            LegalCorrespondenceAddress = "SJ 854 662",
         };
 
         // Act
@@ -46,10 +46,10 @@ public class SiteDetailsMappingProfileTests
         {
             viewModel.Should().NotBeNull();
             viewModel.RegistrationId.Should().Be(siteDetails.Id);
-            viewModel.Location.Should().Be(siteDetails.Location);
+            viewModel.Location.Should().Be(siteDetails.NationName);
             viewModel.SiteAddress.Should().Be(siteDetails.SiteAddress);
-            viewModel.LegalDocumentAddress.Should().Be(siteDetails.LegalDocumentAddress);
-            viewModel.SiteGridReference.Should().Be(siteDetails.SiteGridReference);
+            viewModel.LegalDocumentAddress.Should().Be(siteDetails.LegalCorrespondenceAddress);
+            viewModel.SiteGridReference.Should().Be(siteDetails.GridReference);
         }
     }
 }
