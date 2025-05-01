@@ -174,18 +174,6 @@
   <data name="Link.LogIntoPowerBI" xml:space="preserve">
     <value>log in to Power BI</value>
   </data>
-  <data name="Nation.England" xml:space="preserve">
-    <value>England</value>
-  </data>
-  <data name="Nation.NorthernIreland" xml:space="preserve">
-    <value>Northern Ireland</value>
-  </data>
-  <data name="Nation.Scotland" xml:space="preserve">
-    <value>Scotland</value>
-  </data>
-  <data name="Nation.Wales" xml:space="preserve">
-    <value>Wales</value>
-  </data>
   <data name="Button.Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -197,6 +185,18 @@
   </data>
   <data name="Success" xml:space="preserve">
     <value>Success</value>
+  </data>
+  <data name="Nation.England" xml:space="preserve">
+    <value>England</value>
+  </data>
+  <data name="Nation.Scotland" xml:space="preserve">
+    <value>Scotland</value>
+  </data>
+  <data name="Nation.Wales" xml:space="preserve">
+    <value>Wales</value>
+  </data>
+  <data name="Nation.NorthernIreland" xml:space="preserve">
+    <value>Northern Ireland</value>
   </data>
   <data name="Application.Govuk" xml:space="preserve">
     <value>GOV.UK </value>
@@ -234,12 +234,6 @@
   <data name="Regulator.CompanyDetail.JobTitle" xml:space="preserve">
     <value>Job title</value>
   </data>
-  <data name="Link.Download" xml:space="preserve">
-    <value>Download</value>
-  </data>
-  <data name="NotListed" xml:space="preserve">
-    <value>Not listed</value>
-  </data>
   <data name="OrganisationType.DirectProducer" xml:space="preserve">
     <value>Direct Producer</value>
   </data>
@@ -252,20 +246,14 @@
   <data name="Tag.DelegatedPerson" xml:space="preserve">
     <value>Delegated Person</value>
   </data>
+  <data name="Link.Download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="NotListed" xml:space="preserve">
+    <value>Not listed</value>
+  </data>
   <data name="CharacterLimit.NoJavaScript" xml:space="preserve">
     <value>You can enter up to 500 characters</value>
-  </data>
-  <data name="FileDownload.TryAgainButton" xml:space="preserve">
-    <value>Try Again</value>
-  </data>
-  <data name="FileDownload.TryAgainButton.AgainStartingWithSmallLetter" xml:space="preserve">
-    <value>Try again</value>
-  </data>
-  <data name="FileDownload.RejectSubmission" xml:space="preserve">
-    <value>Reject submission</value>
-  </data>
-  <data name="Link.BackToSubmissionDetails" xml:space="preserve">
-    <value>Go back to submission details</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.ComplianceScheme" xml:space="preserve">
     <value>Compliance Scheme</value>
@@ -324,6 +312,9 @@
   <data name="SaveAndContinue" xml:space="preserve">
     <value>Save and continue</value>
   </data>
+  <data name="Link.BackToSubmissionDetails" xml:space="preserve">
+    <value>Go back to submission details</value>
+  </data>
   <data name="PaymentValidation.FormatIsInvalid" xml:space="preserve">
     <value>Amount can only include pounds and pence.</value>
   </data>
@@ -354,49 +345,91 @@
   <data name="Export" xml:space="preserve">
     <value>Export</value>
   </data>
+  <data name="FileDownload.RejectSubmission" xml:space="preserve">
+    <value>Reject submission</value>
+  </data>
+  <data name="FileDownload.TryAgainButton" xml:space="preserve">
+    <value>Try Again</value>
+  </data>
+  <data name="FileDownload.TryAgainButton.AgainStartingWithSmallLetter" xml:space="preserve">
+    <value>Try again</value>
+  </data>
   <data name="PaymentDetails.Amount" xml:space="preserve">
-  <value>Amount</value>
-</data>
+    <value>Amount</value>
+  </data>
   <data name="PaymentDetails.Description" xml:space="preserve">
-  <value>Description</value>
-</data>
+    <value>Description</value>
+  </data>
   <data name="PaymentDetails.Items" xml:space="preserve">
-  <value>Items</value>
-</data>
+    <value>Items</value>
+  </data>
   <data name="PaymentDetails.Title" xml:space="preserve">
-  <value>Payment details</value>
-</data>
+    <value>Payment details</value>
+  </data>
   <data name="PaymentDetails.TotalOutstanding" xml:space="preserve">
-  <value>Total outstanding</value>
-</data>
-  <data name="PaymentDetails.CsoServiceIssueDescription" xml:space="preserve">
-  <value>Unable to retrieve compliance scheme payment details</value>
-</data>
-  <data name="PaymentDetails.ProducerServiceIssueDescription" xml:space="preserve">
-  <value>Unable to retrieve producer payment details</value>
-</data>
+    <value>Total outstanding</value>
+  </data>
   <data name="PaymentDetails.SubTotalDescription" xml:space="preserve">
-  <value>Sub-total</value>
-</data>
+    <value>Sub-total</value>
+  </data>
+  <data name="PaymentDetails.CsoServiceIssueDescription" xml:space="preserve">
+    <value>Unable to retrieve compliance scheme payment details</value>
+  </data>
+  <data name="PaymentDetails.ProducerServiceIssueDescription" xml:space="preserve">
+    <value>Unable to retrieve producer payment details</value>
+  </data>
   <data name="PaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
-  <value>Previous payments</value>
-</data>
+    <value>Previous payments</value>
+  </data>
   <data name="PaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
-  <value>Total payments received</value>
-</data>
-<data name="ResubmissionStatus" xml:space="preserve">
-  <value>Resubmission</value>
-</data>
-<data name="Resubmission.Accepted" xml:space="preserve">
-  <value>Resubmission accepted</value>
-</data>
-<data name="Resubmission.Pending" xml:space="preserve">
-  <value>Resubmission pending</value>
-</data>
-<data name="Resubmission.Rejected" xml:space="preserve">
-  <value>Resubmission rejected</value>
-</data>
-<data name="PackagingProducerPaymentDetails.PaymentReferenceNumber" xml:space="preserve">
-  <value>Payment reference number</value>
-</data>  
+    <value>Total payments received</value>
+  </data>
+  <data name="ResubmissionStatus" xml:space="preserve">
+    <value>Resubmission</value>
+  </data>
+  <data name="Resubmission.Accepted" xml:space="preserve">
+    <value>Resubmission accepted</value>
+  </data>
+  <data name="Resubmission.Pending" xml:space="preserve">
+    <value>Resubmission pending</value>
+  </data>
+  <data name="Resubmission.Rejected" xml:space="preserve">
+    <value>Resubmission rejected</value>
+  </data>
+  <data name="PackagingProducerPaymentDetails.PaymentReferenceNumber" xml:space="preserve">
+    <value>Payment reference number</value>
+  </data>
+  <data name="WaveFees.ApplicationFee" xml:space="preserve">
+    <value>Application fee</value>
+  </data>
+  <data name="WaveFees.WhichFees" xml:space="preserve">
+    <value>Which fees are you waiving?</value>
+  </data>
+  <data name="WaveFees.SubsidiaryCompanies" xml:space="preserve">
+    <value>Subsidiary Companies</value>
+  </data>
+  <data name="WaveFees.SmallProducers" xml:space="preserve">
+    <value>Small producers</value>
+  </data>
+  <data name="WaveFees.SelectAll" xml:space="preserve">
+    <value>Select all that apply</value>
+  </data>
+  <data name="WaveFees.SchemeMembers " xml:space="preserve">
+    <value>Scheme members</value>
+  </data>
+  <data name="WaveFees.OnlineMarketPlaces" xml:space="preserve">
+    <value>Online marketplaces</value>
+  </data>
+  <data name="WaveFees.LateProducers" xml:space="preserve">
+    <value>Late producers</value>
+  </data>
+  <data name="WaveFees.LargeProducers" xml:space="preserve">
+    <value>Large producers</value>
+  </data>
+  <data name="WaveFees.EnterWaiver" xml:space="preserve">
+    <value>Enter the waiver amount</value>
+  </data>
+  <data name="WaveFees.ComplianceScheme" xml:space="preserve">
+    <value>Compliance scheme</value>
+  </data>
 </root>

@@ -355,48 +355,81 @@
     <value>Rhowch gynnig arall arni</value>
   </data>
   <data name="PaymentDetails.Amount" xml:space="preserve">
-  <value>Swm</value>
-</data>
+    <value>Swm</value>
+  </data>
   <data name="PaymentDetails.Description" xml:space="preserve">
-  <value>Disgrifiad</value>
-</data>
+    <value>Disgrifiad</value>
+  </data>
   <data name="PaymentDetails.Items" xml:space="preserve">
-  <value>Eitemau</value>
-</data>
+    <value>Eitemau</value>
+  </data>
   <data name="PaymentDetails.Title" xml:space="preserve">
-  <value>Manylion y taliad</value>
-</data>
+    <value>Manylion y taliad</value>
+  </data>
   <data name="PaymentDetails.TotalOutstanding" xml:space="preserve">
-  <value>Y cyfanswm sydd heb ei dalu</value>
-</data>
+    <value>Y cyfanswm sydd heb ei dalu</value>
+  </data>
   <data name="PaymentDetails.SubTotalDescription" xml:space="preserve">
-  <value>Is-gyfanswm</value>
-</data>
+    <value>Is-gyfanswm</value>
+  </data>
   <data name="PaymentDetails.CsoServiceIssueDescription" xml:space="preserve">
-  <value>Methu nôl manylion taliad cynllun cydymffurfio</value>
-</data>
+    <value>Methu nôl manylion taliad cynllun cydymffurfio</value>
+  </data>
   <data name="PaymentDetails.ProducerServiceIssueDescription" xml:space="preserve">
-  <value>Methu nôl manylion taliad cynhyrchydd</value>
-</data>
-<data name="PaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
-  <value>Taliadau blaenorol</value>
-</data>
-<data name="PaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
-  <value>Cyfanswm y taliadau sydd wedi dod i law</value>
-</data>
+    <value>Methu nôl manylion taliad cynhyrchydd</value>
+  </data>
+  <data name="PaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
+    <value>Taliadau blaenorol</value>
+  </data>
+  <data name="PaymentDetails.PreviousPaymentReceivedDescription" xml:space="preserve">
+    <value>Cyfanswm y taliadau sydd wedi dod i law</value>
+  </data>
   <data name="ResubmissionStatus" xml:space="preserve">
-  <value>Ailgyflwyniad</value>
-</data>
+    <value>Ailgyflwyniad</value>
+  </data>
   <data name="Resubmission.Accepted" xml:space="preserve">
-  <value>Ailgyflwyniad wedi'i dderbyn</value>
-</data>
+    <value>Ailgyflwyniad wedi'i dderbyn</value>
+  </data>
   <data name="Resubmission.Pending" xml:space="preserve">
-  <value>Ailgyflwyniad yn yr arfaeth</value>
-</data>
+    <value>Ailgyflwyniad yn yr arfaeth</value>
+  </data>
   <data name="Resubmission.Rejected" xml:space="preserve">
-  <value>Ailgyflwyniad wedi'i wrthod</value>
-</data>
-<data name="PackagingProducerPaymentDetails.PaymentReferenceNumber" xml:space="preserve">
-  <value>Rhif cyfeirnod y taliad</value>
-</data>
+    <value>Ailgyflwyniad wedi'i wrthod</value>
+  </data>
+  <data name="PackagingProducerPaymentDetails.PaymentReferenceNumber" xml:space="preserve">
+    <value>Rhif cyfeirnod y taliad</value>
+  </data>
+  <data name="WaveFees.ApplicationFee" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaveFees.WhichFees" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaveFees.SubsidiaryCompanies" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaveFees.SmallProducers" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaveFees.SelectAll" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaveFees.SchemeMembers " xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaveFees.OnlineMarketPlaces" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaveFees.LateProducers" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaveFees.LargeProducers" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaveFees.EnterWaiver" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaveFees.ComplianceScheme" xml:space="preserve">
+    <value />
+  </data>
 </root>
