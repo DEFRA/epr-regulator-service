@@ -355,6 +355,42 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
+    public async Task InputsAndOutputs_ShouldReturnCorrectViewModel()
+    {
+        // Arrange
+        const string expectedPreviousPage = $"{PagePath.ManageRegistrations}?id=1345";
+
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(expectedPreviousPage);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        var expectedViewModel = new RegistrationMaterialReprocessingIOViewModel
+        {
+            MaterialName = "Plastic",
+            RegistrationMaterialId = 0,
+            SourcesOfPackagingWaste = "Test",
+            PlantEquipmentUsed = "Test"
+        };
+
+        _mockMapper.Setup(m => m.Map<RegistrationMaterialReprocessingIOViewModel>(null))
+            .Returns(expectedViewModel);
+
+        // Act
+        var result = await _controller.InputsAndOutputs(1);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var viewResult = (ViewResult)result;
+            viewResult.Model.Should().BeOfType<RegistrationMaterialReprocessingIOViewModel>();
+
+            var model = viewResult.Model as RegistrationMaterialReprocessingIOViewModel;
+            model.Should().BeSameAs(expectedViewModel);
+        }
+    }
+
+    [TestMethod]
     public async Task CompleteInputsAndOutputs_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
