@@ -1,6 +1,7 @@
 @using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 @using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
 @{
+    string estimated = Model.RegistrationMaterialReprocessingIO.ReprocessingPackagingWasteLastYearFlag ? string.Empty : "(estimated)";
     const string title = "Reprocessing inputs and outputs";
     ViewData["Title"] = title;
 }
@@ -37,7 +38,7 @@
                         </div>
                     </dl>
                     <br>
-                    <h3 class="govuk-heading-m"> Reprocessing inputs for last calendar year</h3>
+                    <h3 class="govuk-heading-m"> Reprocessing inputs for last calendar year @estimated</h3>
 
                     <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">
@@ -76,7 +77,7 @@
 
                     <br>
 
-                    <h3 class="govuk-heading-m"> Material outputs for last calendar year</h3>
+                    <h3 class="govuk-heading-m"> Material outputs for last calendar year @estimated</h3>
 
                     <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">
