@@ -798,6 +798,6 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(SelectFee), viewModel);
         }
 
-        return null;
+        return View(nameof(SelectFee), viewModel);
     }
 }

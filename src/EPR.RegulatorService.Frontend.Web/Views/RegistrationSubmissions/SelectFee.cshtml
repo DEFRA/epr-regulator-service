@@ -1,6 +1,7 @@
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using System.Globalization
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -51,7 +52,7 @@
 															@SharedLocalizer["WaveFees.ComplianceScheme"]
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
-															£@Model.ApplicationFee
+															@Model.ApplicationFeeInPounds
 															<input type="hidden" name="ApplicationFee" value="@Model.ApplicationFee" />
 														</div>
 														<div class="govuk-checkboxes__conditional" id="conditional-compliance-waiver">
@@ -62,7 +63,14 @@
 																</label>
 																<div class="govuk-input__wrapper">
 																	<div class="govuk-input__prefix" aria-hidden="true">£</div>
-																	<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )" id="WavedComplianceSchemeAmount" value="@Model.WavedComplianceSchemeAmount" aria-describedby="WavedComplianceSchemeAmount" name="WavedComplianceSchemeAmount" type="text" spellcheck="false">
+																	<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )"
+																		   id="WavedComplianceSchemeAmount"
+																		   name="WavedComplianceSchemeAmount"
+																		   type="number"
+																		   min="0"
+																		   value="@Model.WavedComplianceSchemeAmount"
+																		   aria-describedby="WavedComplianceSchemeAmount"
+																		   spellcheck="false">
 																</div>
 															</div>
 														</div>
@@ -90,7 +98,7 @@
 															<input type="hidden" name="SmallProducerCount" value="@Model.SmallProducerCount" />
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
-															£@Model.SmallProducerFee
+															@Model.SmallProducerFeeInPounds
 															<input type="hidden" name="SmallProducerFee" value="@Model.SmallProducerFee" />
 														</div>
 													</div>
@@ -103,9 +111,12 @@
 															<div class="govuk-input__wrapper">
 																<div class="govuk-input__prefix" aria-hidden="true">£</div>
 																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )"
-																	   id="WavedSmallProducerFee" name="WavedSmallProducerFee"
+																	   id="WavedSmallProducerFee"
+																	   name="WavedSmallProducerFee"
+																	   type="number"
+																	   min="0"
 																	   value="@Model.WavedSmallProducerFee"
-																	   aria-describedby="WavedSmallProducerFee" type="text" spellcheck="false">
+																	   aria-describedby="WavedSmallProducerFee" spellcheck="false">
 															</div>
 														</div>
 													</div>
@@ -123,7 +134,7 @@
 															<input type="hidden" name="LargeProducerCount" value="@Model.LargeProducerCount" />
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
-															£@Model.LargeProducerFee
+															@Model.LargeProducerFeeInPounds
 															<input type="hidden" name="LargeProducerFee" value="@Model.LargeProducerFee" />
 														</div>
 													</div>
@@ -136,8 +147,14 @@
 															<div class="govuk-input__wrapper">
 																<div class="govuk-input__prefix" aria-hidden="true">£</div>
 																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )"
-																	   id="WavedLargeProducerFee" name="WavedLargeProducerFee" aria-describedby="WavedLargeProducerFee"
-																	   value="@Model.WavedLargeProducerFee" aria-describedby="WavedLargeProducerFee" type="text" spellcheck="false">
+																	   id="WavedLargeProducerFee"
+																	   name="WavedLargeProducerFee"
+																	   type="number"
+																	   min="0"
+																	   aria-describedby="WavedLargeProducerFee"
+																	   value="@Model.WavedLargeProducerFee"
+																	   aria-describedby="WavedLargeProducerFee"
+																	   spellcheck="false">
 															</div>
 														</div>
 													</div>
@@ -155,7 +172,7 @@
 															<input type="hidden" name="OnlineMarketPlaceCount" value="@Model.OnlineMarketPlaceCount" />
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
-															£@Model.OnlineMarketPlaceFee
+															@Model.OnlineMarketPlaceFeeInPounds
 															<input type="hidden" name="OnlineMarketPlaceFee" value="@Model.OnlineMarketPlaceFee" />
 														</div>
 													</div>
@@ -169,9 +186,14 @@
 																<div class="govuk-input__prefix" aria-hidden="true">
 																	£
 																</div>
-																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )" id="WavedOnlineMarketPlaceFee" name="WavedOnlineMarketPlaceFee"
-																	   value="@Model.WavedOnlineMarketPlaceFee" aria-describedby="WavedOnlineMarketPlaceFee"
-																	   type="text" spellcheck="false">
+																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )"
+																	   id="WavedOnlineMarketPlaceFee"
+																	   name="WavedOnlineMarketPlaceFee"
+																	   type="number"
+																	   min="0"
+																	   value="@Model.WavedOnlineMarketPlaceFee"
+																	   aria-describedby="WavedOnlineMarketPlaceFee"
+																	   spellcheck="false">
 															</div>
 														</div>
 													</div>
@@ -190,7 +212,7 @@
 															<input type="hidden" name="SubsidiariesCompanyCount" value="@Model.SubsidiariesCompanyCount" />
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
-															£@Model.SubsidiariesCompanyFee
+															@Model.SubsidiariesCompanyFeeInPounds
 															<input type="hidden" name="SubsidiariesCompanyFee" value="@Model.SubsidiariesCompanyFee" />
 														</div>
 													</div>
@@ -203,8 +225,13 @@
 															<div class="govuk-input__wrapper">
 																<div class="govuk-input__prefix" aria-hidden="true">£</div>
 																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )"
-																	   id="WavedSubsidiariesCompanyFee" name="WavedSubsidiariesCompanyFee" value="@Model.WavedSubsidiariesCompanyFee" aria-describedby="WavedSubsidiariesCompanyFee"
-																	   type="text" spellcheck="false">
+																	   id="WavedSubsidiariesCompanyFee"
+																	   name="WavedSubsidiariesCompanyFee"
+																	   type="number"
+																	   min="0"
+																	   value="@Model.WavedSubsidiariesCompanyFee"
+																	   aria-describedby="WavedSubsidiariesCompanyFee"
+																	   spellcheck="false">
 															</div>
 														</div>
 													</div>
@@ -222,7 +249,7 @@
 															<input type="hidden" name="LateProducerCount" value="@Model.LateProducerCount" />
 														</label>
 														<div id="nationality-item-hint" class="govuk-hint govuk-checkboxes__hint">
-															£@Model.LateProducerFee
+															@Model.LateProducerFeeInPounds
 															<input type="hidden" name="LateProducerFee" value="@Model.LateProducerFee" />
 														</div>
 													</div>
@@ -235,10 +262,13 @@
 															<div class="govuk-input__wrapper">
 																<div class="govuk-input__prefix" aria-hidden="true">£</div>
 																<input class="@(ViewData.ModelState.IsValid ? "govuk-input govuk-input--width-5" : "govuk-input govuk-input--width-5 govuk-input--error" )"
-																	   id="WavedLateProducerFee" name="WavedLateProducerFee"
+																	   id="WavedLateProducerFee"
+																	   name="WavedLateProducerFee"
 																	   value="@Model.WavedLateProducerFee"
+																	   type="number"
+																	   min="0"
 																	   aria-describedby="WavedLateProducerFee"
-																	   type="text" spellcheck="false">
+																	   spellcheck="false">
 															</div>
 														</div>
 													</div>

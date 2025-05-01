@@ -2,6 +2,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Reflection;
 
 using EPR.RegulatorService.Frontend.Web.Attributes;
 
@@ -13,11 +15,14 @@ public class SelectFeesViewModel : IValidatableObject
 
     public decimal ApplicationFee { get; set; }
 
+    public string ApplicationFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", ApplicationFee);
+
     public bool ApplicationFeeSectionEnable => ApplicationFee > 0;
 
     public bool IsComplianceSchemeChecked { get; set; }
 
     [ConditionalRequired("IsComplianceSchemeChecked", ErrorMessage = "Select a fee to waive")]
+    [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedComplianceSchemeAmount { get; set; }
 
     public bool IsSmallProducerChecked { get; set; }
@@ -28,7 +33,10 @@ public class SelectFeesViewModel : IValidatableObject
 
     public decimal SmallProducerFee { get; set; }
 
+    public string SmallProducerFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", SmallProducerFee);
+
     [ConditionalRequired("IsSmallProducerChecked", ErrorMessage = "Select a fee to waive")]
+    [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedSmallProducerFee { get; set; }
 
     public bool IsLargeProducerChecked { get; set; }
@@ -39,7 +47,10 @@ public class SelectFeesViewModel : IValidatableObject
 
     public decimal LargeProducerFee { get; set; }
 
+    public string LargeProducerFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", LargeProducerFee);
+
     [ConditionalRequired("IsLargeProducerChecked", ErrorMessage = "Select a fee to waive")]
+    [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedLargeProducerFee { get; set; }
 
     public bool IsOnineMarketPlaceChecked { get; set; }
@@ -50,7 +61,10 @@ public class SelectFeesViewModel : IValidatableObject
 
     public decimal OnlineMarketPlaceFee { get; set; }
 
+    public string OnlineMarketPlaceFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", OnlineMarketPlaceFee);
+
     [ConditionalRequired("IsOnineMarketPlaceChecked", ErrorMessage = "Select a fee to waive")]
+    [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedOnlineMarketPlaceFee { get; set; }
 
     public bool IsSubsidiariesCompanyChecked { get; set; }
@@ -61,7 +75,10 @@ public class SelectFeesViewModel : IValidatableObject
 
     public decimal SubsidiariesCompanyFee { get; set; }
 
+    public string SubsidiariesCompanyFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", SubsidiariesCompanyFee);
+
     [ConditionalRequired("IsSubsidiariesCompanyChecked", ErrorMessage = "Select a fee to waive")]
+    [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedSubsidiariesCompanyFee { get; set; }
 
     public bool IsLateProducerChecked { get; set; }
@@ -72,7 +89,10 @@ public class SelectFeesViewModel : IValidatableObject
 
     public decimal LateProducerFee { get; set; }
 
+    public string LateProducerFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", LateProducerFee);
+
     [ConditionalRequired("IsLateProducerChecked", ErrorMessage = "Select a fee to waive")]
+    [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedLateProducerFee { get; set; }
 
     public bool IsComplianceSchemeSelected { get; set; }
@@ -84,7 +104,37 @@ public class SelectFeesViewModel : IValidatableObject
         if (!IsComplianceSchemeChecked && !IsSmallProducerChecked && !IsLargeProducerChecked &&
             !IsOnineMarketPlaceChecked && !IsSubsidiariesCompanyChecked && !IsLateProducerChecked)
         {
-            yield return new ValidationResult("Select a fee to waive.", new[] { nameof(IsComplianceSchemeChecked) });
+            yield return new ValidationResult("Select a fee to waive", new[] { nameof(IsComplianceSchemeChecked) });
+        }
+
+        if (WavedComplianceSchemeAmount > ApplicationFee)
+        {
+            yield return new ValidationResult("Waved amount cannot be more than actual amount", new[] { nameof(WavedComplianceSchemeAmount) });
+        }
+
+        if (WavedSmallProducerFee > SmallProducerFee)
+        {
+            yield return new ValidationResult("Waved amount cannot be more than actual amount", new[] { nameof(WavedComplianceSchemeAmount) });
+        }
+
+        if (WavedLargeProducerFee > LargeProducerFee)
+        {
+            yield return new ValidationResult("Waved amount cannot be more than actual amount", new[] { nameof(WavedComplianceSchemeAmount) });
+        }
+
+        if (WavedOnlineMarketPlaceFee > OnlineMarketPlaceFee)
+        {
+            yield return new ValidationResult("Waved amount cannot be more than actual amount", new[] { nameof(WavedComplianceSchemeAmount) });
+        }
+
+        if (WavedSubsidiariesCompanyFee > SubsidiariesCompanyFee)
+        {
+            yield return new ValidationResult("Waved amount cannot be more than actual amount", new[] { nameof(WavedComplianceSchemeAmount) });
+        }
+
+        if (WavedLateProducerFee > LateProducerFee)
+        {
+            yield return new ValidationResult("Waved amount cannot be more than actual amount", new[] { nameof(WavedComplianceSchemeAmount) });
         }
     }
 }
