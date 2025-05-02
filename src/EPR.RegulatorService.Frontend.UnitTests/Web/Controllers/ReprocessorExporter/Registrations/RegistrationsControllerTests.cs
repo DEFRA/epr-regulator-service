@@ -14,6 +14,7 @@ using FluentAssertions.Execution;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
@@ -340,6 +341,51 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
+    public async Task InputsAndOutputs_WhenRequestValid_ShouldReturnView()
+    {
+        // Arrange
+        int registrationMaterialId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.InputsAndOutputs);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        _mockReprocessorExporterService.Setup(x => x.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialReprocessingIO
+            {
+                MaterialName = "Plastic",
+                SourcesOfPackagingWaste = "N/A",
+                PlantEquipmentUsed = "N/A",
+                ReprocessingPackagingWasteLastYearFlag = true,
+                UKPackagingWasteTonne = 100,
+                NonUKPackagingWasteTonne = 50,
+                NotPackingWasteTonne = 10,
+                SenttoOtherSiteTonne = 5,
+                ContaminantsTonne = 2,
+                ProcessLossTonne = 1,
+                TotalOutputs = 95,
+                TotalInputs = 100
+            });
+
+        // Act
+        var result = await _controller.InputsAndOutputs(registrationMaterialId);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = result as ViewResult;
+        var modelResult = viewResult.Model as RegistrationMaterialReprocessingIOViewModel;
+
+        using (new AssertionScope())
+        {
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().BeOfType<RegistrationMaterialReprocessingIOViewModel>();            
+            modelResult.Should().NotBeNull();
+            modelResult.RegistrationMaterialId.Should().Be(registrationMaterialId);
+        }
+    }
+
+    [TestMethod]
     public async Task InputsAndOutputs_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange: Mock _sessionManager to return null
@@ -358,6 +404,7 @@ public class RegistrationsControllerTests
     public async Task InputsAndOutputs_ShouldReturnCorrectViewModel()
     {
         // Arrange
+        const int registrationMaterialId = 1;
         const string expectedPreviousPage = $"{PagePath.ManageRegistrations}?id=1345";
 
         JourneySession journeySession = new JourneySession();
@@ -365,19 +412,22 @@ public class RegistrationsControllerTests
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
-        var expectedViewModel = new RegistrationMaterialReprocessingIOViewModel
+        var registrationMaterialReprocessing = new RegistrationMaterialReprocessingIO
         {
-            MaterialName = "Plastic",
-            RegistrationMaterialId = 0,
-            SourcesOfPackagingWaste = "Test",
-            PlantEquipmentUsed = "Test"
+            MaterialName = "Plastic", SourcesOfPackagingWaste = "Test", PlantEquipmentUsed = "Test"
         };
 
-        _mockMapper.Setup(m => m.Map<RegistrationMaterialReprocessingIOViewModel>(It.IsAny<RegistrationMaterialReprocessingIO>()))
-            .Returns(expectedViewModel);
+        var expectedViewModel = new RegistrationMaterialReprocessingIOViewModel
+        {
+            RegistrationMaterialId = 1,
+            RegistrationMaterialReprocessingIO = registrationMaterialReprocessing
+        };
+
+        _mockReprocessorExporterService.Setup(m => m.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(registrationMaterialReprocessing);
 
         // Act
-        var result = await _controller.InputsAndOutputs(1);
+        var result = await _controller.InputsAndOutputs(registrationMaterialId);
 
         // Assert
         using (new AssertionScope())
@@ -386,7 +436,7 @@ public class RegistrationsControllerTests
             viewResult.Model.Should().BeOfType<RegistrationMaterialReprocessingIOViewModel>();
 
             var model = viewResult.Model as RegistrationMaterialReprocessingIOViewModel;
-            model.Should().BeSameAs(expectedViewModel);
+            model.Should().BeEquivalentTo(expectedViewModel);
         }
     }
 
