@@ -4139,6 +4139,140 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         #endregion RegistrationSubmissionFileDownloadSecurityWarning
 
+        #region WaiveFees
+        [TestMethod]
+        public async Task SelectFee_WithValidModel_ShouldReturnViewWithCorrectViewModel()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            _journeySession.PaymentDetailsSession = new PaymentDetailsSession()
+            {
+                SmallProducerCount = 5,
+                SmallProducerFee = 100.50m,
+                LargeProducerCount = 3,
+                LargeProducerFee = 200.75m,
+                OnlineMarketPlaceCount = 2,
+                OnlineMarketPlaceFee = 150.25m,
+                SubsidiariesCompanyCount = 1,
+                SubsidiariesCompanyFee = 50.00m,
+                LateProducerCount = 4,
+                LateProducerFee = 300.00m,
+                IsComplianceSchemeSelected = true,
+                IsProducerSelected = false
+            };
+
+            // Act
+            var result = await _controller.SelectFee(submissionId) as ViewResult;
+
+            // Assert
+            result!.ViewName.Should().Be("SelectFee");
+            var viewModel = result.Model as SelectFeesViewModel;
+            viewModel.Should().NotBeNull();
+            viewModel!.SubmissionId.Should().Be(submissionId);
+            viewModel.SmallProducerCount.Should().Be(5);
+            viewModel.SmallProducerFee.Should().Be(100.50m);
+            viewModel.LargeProducerCount.Should().Be(3);
+            viewModel.LargeProducerFee.Should().Be(200.75m);
+            viewModel.OnlineMarketPlaceCount.Should().Be(2);
+            viewModel.OnlineMarketPlaceFee.Should().Be(150.25m);
+            viewModel.SubsidiariesCompanyCount.Should().Be(1);
+            viewModel.SubsidiariesCompanyFee.Should().Be(50.00m);
+            viewModel.LateProducerCount.Should().Be(4);
+            viewModel.LateProducerFee.Should().Be(300.00m);
+            viewModel.IsComplianceSchemeSelected.Should().BeTrue();
+            viewModel.IsProducerSelected.Should().BeFalse();
+        }
+
+        [TestMethod]
+        public async Task SelectFee_WhenModelStateIsInvalid_ShouldReturnView()
+        {
+            // Arrange
+            var viewModel = new SelectFeesViewModel();
+
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            _journeySession.PaymentDetailsSession = new PaymentDetailsSession()
+            {
+                SmallProducerCount = 5,
+                SmallProducerFee = 100.50m,
+                LargeProducerCount = 3,
+                LargeProducerFee = 200.75m,
+                OnlineMarketPlaceCount = 2,
+                OnlineMarketPlaceFee = 150.25m,
+                SubsidiariesCompanyCount = 1,
+                SubsidiariesCompanyFee = 50.00m,
+                LateProducerCount = 4,
+                LateProducerFee = 300.00m,
+                IsComplianceSchemeSelected = true,
+                IsProducerSelected = false
+            };
+
+            _controller.ModelState.AddModelError("Error", "Invalid model");
+
+            // Act
+            var result = await _controller.SelectFee(viewModel);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+            var viewResult = result as ViewResult;
+            viewResult!.ViewName.Should().Be(nameof(RegistrationSubmissionsController.SelectFee));
+            viewResult.Model.Should().Be(viewModel);
+
+        }
+
+        [TestMethod]
+        public async Task SelectFee_WhenModelStateIsValid_ShouldReturnView()
+        {
+            // Arrange
+            var viewModel = new SelectFeesViewModel();
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession()
+            {
+                SelectedRegistration = detailsModel
+            };
+
+            _journeySession.PaymentDetailsSession = new PaymentDetailsSession()
+            {
+                SmallProducerCount = 5,
+                SmallProducerFee = 100.50m,
+                LargeProducerCount = 3,
+                LargeProducerFee = 200.75m,
+                OnlineMarketPlaceCount = 2,
+                OnlineMarketPlaceFee = 150.25m,
+                SubsidiariesCompanyCount = 1,
+                SubsidiariesCompanyFee = 50.00m,
+                LateProducerCount = 4,
+                LateProducerFee = 300.00m,
+                IsComplianceSchemeSelected = true,
+                IsProducerSelected = false
+            };
+
+            // Act
+            var result = await _controller.SelectFee(viewModel) as ViewResult;
+
+            // Assert
+            result!.ViewName.Should().Be(nameof(RegistrationSubmissionsController.SelectFee));
+            result.Model.Should().Be(viewModel);
+
+        }
+
+        #endregion
+
         private static Mock<IUrlHelper> CreateUrlHelper(Guid id, string locationUrl)
         {
             var mockUrlHelper = new Mock<IUrlHelper>();

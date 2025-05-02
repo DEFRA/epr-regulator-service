@@ -9,7 +9,7 @@
 @model ProducerPaymentDetailsViewModel
 @{
 	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
-	bool enableWaiveFeeButton = Model is not null && Model.Status == RegistrationSubmissionStatus.Granted && Model.IsResubmission;
+	bool enableWaiveFeeButton = Model is not null && Model.Status == RegistrationSubmissionStatus.Granted && Model.IsResubmission && Model.TotalOutstanding > 0;
 	var waiveButtonText = Localizer["ProducerPaymentDetails.WaiveFees"];
 }
 <div class="govuk-summary-card">
