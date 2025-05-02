@@ -25,6 +25,7 @@ public class ReprocessorExporterService(
         UpdateRegistrationMaterialOutcome,
         UpdateRegistrationTaskStatus,
         UpdateApplicationTaskStatus,
+        GetReprocessingIOByRegistrationMaterialId,
         GetSamplingPlanByRegistrationMaterialId,
     }
 
@@ -98,6 +99,20 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetReprocessingIOByRegistrationMaterialId);
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+
+        var response = await httpClient.GetAsync(path);
+
+        var registrationMaterialReprocessingIO = await GetEntityFromResponse<RegistrationMaterialReprocessingIO>(response);
+
+        return registrationMaterialReprocessingIO;
+    }
+
     public async Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId)
     {
         await PrepareAuthenticatedClient();
@@ -145,4 +160,6 @@ public class ReprocessorExporterService(
 
         return pathTemplate;
     }
+
+    
 }

@@ -25,6 +25,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
         private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
         private const string UpdateApplicationTaskStatus = "v{apiVersion}/regulatorApplicationTaskStatus";
+        private const string GetReprocessingIOByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/reprocessingIO";
         private const string GetSamplingPlanByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/samplingPlan";
 
         private ReprocessorExporterService _service; // System under test
@@ -62,6 +63,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                     { "UpdateRegistrationMaterialOutcome", UpdateRegistrationMaterialOutcome },
                     { "UpdateRegistrationTaskStatus", UpdateRegistrationTaskStatus },
                     { "UpdateApplicationTaskStatus", UpdateApplicationTaskStatus },
+                    { "GetReprocessingIOByRegistrationMaterialId", GetReprocessingIOByRegistrationMaterialIdPath },
                     { "GetSamplingPlanByRegistrationMaterialId", GetSamplingPlanByRegistrationMaterialIdPath }
                 }
             };
@@ -222,6 +224,48 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         }
 
         [TestMethod]
+        public async Task GetReprocessingIOByRegistrationMaterialIdAsync_WhenSuccessResponse_ReturnsReprocessingIO()
+        {
+            // Arrange
+            int registrationMaterialId = 1;
+            var expectedReprocessingIO = CreateReprocessingIO();
+            string expectedPath = GetReprocessingIOByRegistrationMaterialIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationMaterialId.ToString());
+
+            var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(expectedReprocessingIO, _jsonSerializerOptions))
+            };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+            
+            // Act
+            var result = await _service.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId);
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task GetReprocessingIOByRegistrationMaterialIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+        {
+            // Arrange
+            const int registrationId = 123;
+            string expectedPath = GetRegistrationByIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationId.ToString());
+
+            var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+            // Act/Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetRegistrationByIdAsync(registrationId));
+        }
+
+        [TestMethod]
         public async Task GetSamplingPlanByRegistrationMaterialIdAsync_WhenSuccessResponse_ReturnsSamplingPlan()
         {
             // Arrange
@@ -285,6 +329,23 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             };
             return expectedRegistration;
         }
+
+        private static RegistrationMaterialReprocessingIO CreateReprocessingIO() =>
+            new()
+            {
+                MaterialName = "Plastic",
+                SourcesOfPackagingWaste = "N/A",
+                PlantEquipmentUsed = "N/A",
+                ReprocessingPackagingWasteLastYearFlag = true,
+                UKPackagingWasteTonne = 100,
+                NonUKPackagingWasteTonne = 50,
+                NotPackingWasteTonne = 10,
+                SenttoOtherSiteTonne = 5,
+                ContaminantsTonne = 2,
+                ProcessLossTonne = 1,
+                TotalOutputs = 95,
+                TotalInputs = 100
+            };
 
         private static RegistrationMaterialDetail CreateRegistrationMaterial()
         {
