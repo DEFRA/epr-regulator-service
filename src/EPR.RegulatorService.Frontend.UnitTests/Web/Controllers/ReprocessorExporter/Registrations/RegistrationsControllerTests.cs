@@ -491,6 +491,53 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
+    public async Task SamplingInspection_WhenRequestValid_ShouldReturnView()
+    {
+        // Arrange
+        int registrationMaterialId = 1234;
+        var journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.SamplingInspection);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        _mockReprocessorExporterService.Setup(x => x.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialSamplingPlan
+            {
+                MaterialName = "Plastic",
+                Files = new List<RegistrationMaterialSamplingPlanFile>
+                {
+                    new RegistrationMaterialSamplingPlanFile
+                    {
+                        Filename = $"FileName.pdf",
+                        FileUploadType = "",
+                        FileUploadStatus = "",
+                        DateUploaded = DateTime.UtcNow,
+                        UpdatedBy = "Test User",
+                        Comments = "Test comment",
+                        FileId = Guid.NewGuid().ToString()
+                    }
+                }
+            });
+
+        // Act
+        var result = await _controller.SamplingInspection(registrationMaterialId);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = result as ViewResult;
+        var modelResult = viewResult.Model as RegistrationMaterialSamplingInspectionViewModel;
+
+        using (new AssertionScope())
+        {
+            viewResult.Should().NotBeNull();
+            viewResult.Model.Should().BeOfType<RegistrationMaterialSamplingInspectionViewModel>();
+            modelResult.Should().NotBeNull();
+            modelResult.RegistrationMaterialId.Should().Be(registrationMaterialId);
+        }
+    }
+
+    [TestMethod]
     public async Task SamplingInspection_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange

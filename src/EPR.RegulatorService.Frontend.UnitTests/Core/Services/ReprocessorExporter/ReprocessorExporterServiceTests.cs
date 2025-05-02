@@ -27,6 +27,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
         private const string UpdateApplicationTaskStatus = "v{apiVersion}/regulatorApplicationTaskStatus";
         private const string GetReprocessingIOByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/reprocessingIO";
+        private const string GetSamplingPlanByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/samplingPlan";
 
         private ReprocessorExporterService _service; // System under test
 
@@ -64,7 +65,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                     { "UpdateRegistrationMaterialOutcome", UpdateRegistrationMaterialOutcome },
                     { "UpdateRegistrationTaskStatus", UpdateRegistrationTaskStatus },
                     { "UpdateApplicationTaskStatus", UpdateApplicationTaskStatus },
-                    { "GetReprocessingIOByRegistrationMaterialId", GetReprocessingIOByRegistrationMaterialIdPath }
+                    { "GetReprocessingIOByRegistrationMaterialId", GetReprocessingIOByRegistrationMaterialIdPath },
+                    { "GetSamplingPlanByRegistrationMaterialId", GetSamplingPlanByRegistrationMaterialIdPath }
                 }
             };
 
@@ -307,6 +309,48 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetRegistrationByIdAsync(registrationId));
         }
 
+        [TestMethod]
+        public async Task GetSamplingPlanByRegistrationMaterialIdAsync_WhenSuccessResponse_ReturnsSamplingPlan()
+        {
+            // Arrange
+            int registrationMaterialId = 1;
+            var expectedSamplingPlan = CreateSamplingPlan();
+            string expectedPath = GetSamplingPlanByRegistrationMaterialIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationMaterialId.ToString());
+
+            var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(expectedSamplingPlan, _jsonSerializerOptions))
+            };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+            // Act
+            var result = await _service.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId);
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task GetSamplingPlanByRegistrationMaterialIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+        {
+            // Arrange
+            const int registrationId = 123;
+            string expectedPath = GetSamplingPlanByRegistrationMaterialIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationId.ToString());
+
+            var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+            // Act/Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetSamplingPlanByRegistrationMaterialIdAsync(registrationId));
+        }
+
         private void SetupHttpMessageExpectations(HttpMethod method, string path,
             HttpResponseMessage responseMessage) =>
             _httpMessageHandlerMock.Protected()
@@ -374,5 +418,24 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
 
             return registrationMaterialWasteLicence;
         }
+
+        private static RegistrationMaterialSamplingPlan CreateSamplingPlan() =>
+            new()
+            {
+                MaterialName = "Plastic",
+                Files = new List<RegistrationMaterialSamplingPlanFile>
+                {
+                    new RegistrationMaterialSamplingPlanFile
+                    {
+                        Filename = $"FileName.pdf",
+                        FileUploadType = "",
+                        FileUploadStatus = "",
+                        DateUploaded = DateTime.UtcNow,
+                        UpdatedBy = "Test User",
+                        Comments = "Test comment",
+                        FileId = Guid.NewGuid().ToString()
+                    }
+                }
+            };
     }
 }

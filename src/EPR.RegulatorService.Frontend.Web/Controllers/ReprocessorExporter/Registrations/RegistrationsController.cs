@@ -133,7 +133,14 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(SamplingInspection)), registrationMaterialId);
+        var samplingPlan = await reprocessorExporterService.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId);
+        var model = new RegistrationMaterialSamplingInspectionViewModel()
+        {
+            RegistrationMaterialId = registrationMaterialId,
+            RegistrationMaterialSamplingPlan = samplingPlan
+        };
+
+        return View(GetRegistrationsView(nameof(SamplingInspection)), model);
     }
 
     [HttpPost]
