@@ -9,14 +9,13 @@
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
-                <h1 class="govuk-heading-l">
+                <h1 aria-describedby="tableDesc" class="govuk-heading-l">
                     <span class="govuk-caption-l">@Model.RegistrationMaterialSamplingPlan.MaterialName</span>
                     Sampling and inspection plan
                 </h1>
 
                   <form asp-controller="Registrations">
-                      <table class="govuk-table">
-                        <caption>Sampling Inspection Files</caption>
+                    <table aria-describedby="tableDesc" class="govuk-table">
                           <thead class="govuk-table__head">
                               <tr class="govuk-table__row">
                                   <th class="govuk-table__header">Uploaded file</th>
