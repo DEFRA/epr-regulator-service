@@ -57,8 +57,9 @@
 														</div>
 														<div class="govuk-checkboxes__conditional" id="conditional-compliance-waiver">
 															<div class="govuk-form-group">
-																@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedComplianceSchemeAmount)]) *@
-																<label class="govuk-label" for="WavedComplianceSchemeAmount">
+																@await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedComplianceSchemeAmount)])
+																<label class="@(ViewData.ModelState.IsValid ? "govuk-body" : "govuk-body govuk-error-message")"
+																	   for="WavedComplianceSchemeAmount">
 																	@SharedLocalizer["WaveFees.EnterWaiver"]
 																</label>
 																<div class="govuk-input__wrapper">
@@ -105,7 +106,8 @@
 													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-small-producer">
 														<div class="govuk-form-group">
 															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedSmallProducerFee)]) *@
-															<label class="govuk-label" for="WavedSmallProducerFee">
+															<label class="@(ViewData.ModelState.IsValid ? "govuk-body" : "govuk-body govuk-error-message")"
+																   for="WavedSmallProducerFee">
 																@SharedLocalizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">
@@ -141,7 +143,8 @@
 													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-large-prodcuer">
 														<div class="govuk-form-group">
 															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedLargeProducerFee)]) *@
-															<label class="govuk-label" for="WavedLargeProducerFee">
+															<label class="@(ViewData.ModelState.IsValid ? "govuk-body" : "govuk-body govuk-error-message")"
+																   for="WavedLargeProducerFee">
 																@SharedLocalizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">
@@ -179,7 +182,8 @@
 													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-online-market-place">
 														<div class="govuk-form-group">
 															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedOnlineMarketPlaceFee)]) *@
-															<label class="govuk-label" for="WavedOnlineMarketPlaceFee">
+															<label class="@(ViewData.ModelState.IsValid ? "govuk-body" : "govuk-body govuk-error-message")"
+																   for="WavedOnlineMarketPlaceFee">
 																@SharedLocalizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">
@@ -219,7 +223,8 @@
 													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-subsidiaries-company">
 														<div class="govuk-form-group">
 															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedSubsidiariesCompanyFee)]) *@
-															<label class="govuk-label" for="WavedSubsidiariesCompanyFee">
+															<label class="@(ViewData.ModelState.IsValid ? "govuk-body" : "govuk-body govuk-error-message")"
+																   for="WavedSubsidiariesCompanyFee">
 																@SharedLocalizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">
@@ -256,7 +261,8 @@
 													<div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-late-prodcuer">
 														<div class="govuk-form-group">
 															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedLateProducerFee)]) *@
-															<label class="govuk-label" for="WavedLateProducerFee">
+															<label class="@(ViewData.ModelState.IsValid ? "govuk-body" : "govuk-body govuk-error-message")"
+																   for="WavedLateProducerFee">
 																@SharedLocalizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">
@@ -304,7 +310,8 @@
 													<div class="govuk-checkboxes__conditional" id="conditional-compliance-waiver">
 														<div class="govuk-form-group">
 															@* @await Html.PartialAsync("Partials/Govuk/_FormItemError", errorsViewModel[nameof(SelectFeesViewModel.WavedComplianceSchemeAmount)]) *@
-															<label class="govuk-label" for="WavedComplianceSchemeAmount">
+															<label class="@(ViewData.ModelState.IsValid ? "govuk-body" : "govuk-body govuk-error-message")"
+																   for="WavedComplianceSchemeAmount">
 																@Localizer["WaveFees.EnterWaiver"]
 															</label>
 															<div class="govuk-input__wrapper">

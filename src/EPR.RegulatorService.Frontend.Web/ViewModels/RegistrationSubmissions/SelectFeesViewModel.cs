@@ -21,7 +21,7 @@ public class SelectFeesViewModel : IValidatableObject
 
     public bool IsComplianceSchemeChecked { get; set; }
 
-    [ConditionalRequired("IsComplianceSchemeChecked", ErrorMessage = "Select a fee to waive")]
+    [ConditionalRequired("IsComplianceSchemeChecked", ErrorMessage = "Enter a waiver amount")]
     [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedComplianceSchemeAmount { get; set; }
 
@@ -35,7 +35,7 @@ public class SelectFeesViewModel : IValidatableObject
 
     public string SmallProducerFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", SmallProducerFee);
 
-    [ConditionalRequired("IsSmallProducerChecked", ErrorMessage = "Select a fee to waive")]
+    [ConditionalRequired("IsSmallProducerChecked", ErrorMessage = "Enter a waiver amount")]
     [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedSmallProducerFee { get; set; }
 
@@ -49,7 +49,7 @@ public class SelectFeesViewModel : IValidatableObject
 
     public string LargeProducerFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", LargeProducerFee);
 
-    [ConditionalRequired("IsLargeProducerChecked", ErrorMessage = "Select a fee to waive")]
+    [ConditionalRequired("IsLargeProducerChecked", ErrorMessage = "Enter a waiver amount")]
     [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedLargeProducerFee { get; set; }
 
@@ -63,7 +63,7 @@ public class SelectFeesViewModel : IValidatableObject
 
     public string OnlineMarketPlaceFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", OnlineMarketPlaceFee);
 
-    [ConditionalRequired("IsOnineMarketPlaceChecked", ErrorMessage = "Select a fee to waive")]
+    [ConditionalRequired("IsOnineMarketPlaceChecked", ErrorMessage = "Enter a waiver amount")]
     [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedOnlineMarketPlaceFee { get; set; }
 
@@ -77,7 +77,7 @@ public class SelectFeesViewModel : IValidatableObject
 
     public string SubsidiariesCompanyFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", SubsidiariesCompanyFee);
 
-    [ConditionalRequired("IsSubsidiariesCompanyChecked", ErrorMessage = "Select a fee to waive")]
+    [ConditionalRequired("IsSubsidiariesCompanyChecked", ErrorMessage = "Enter a waiver amount")]
     [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedSubsidiariesCompanyFee { get; set; }
 
@@ -91,7 +91,7 @@ public class SelectFeesViewModel : IValidatableObject
 
     public string LateProducerFeeInPounds => string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:C}", LateProducerFee);
 
-    [ConditionalRequired("IsLateProducerChecked", ErrorMessage = "Select a fee to waive")]
+    [ConditionalRequired("IsLateProducerChecked", ErrorMessage = "Enter a waiver amount")]
     [Range(0, double.MaxValue, ErrorMessage = "The value cannot be negative")]
     public decimal WavedLateProducerFee { get; set; }
 
