@@ -29,7 +29,7 @@ public class RegistrationsController(
     : ReprocessorExporterBaseController(sessionManager, configuration)
   
 {
-    private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+
 
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
@@ -160,8 +160,11 @@ public class RegistrationsController(
         SetBackLinkInfos(session);
 
         var reprocessingIO = await reprocessorExporterService.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId);
-        var model = _mapper.Map<RegistrationMaterialReprocessingIOViewModel>(reprocessingIO);
-        model.RegistrationMaterialId = registrationMaterialId;
+        var model = new RegistrationMaterialReprocessingIOViewModel()
+        {
+            RegistrationMaterialId = registrationMaterialId,
+            RegistrationMaterialReprocessingIO = reprocessingIO
+        };        
 
         return View(GetRegistrationsView(nameof(InputsAndOutputs)), model);     
     }
