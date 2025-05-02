@@ -1,47 +1,40 @@
 @using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
 @{
     ViewData["Title"] = "Sampling and inspection plan";
 }
-@model int;
+@model RegistrationMaterialSamplingInspectionViewModel;
 
 <div class="govuk-width-container ">
     <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
-                <h1 class="govuk-heading-l">
-                    <span class="govuk-caption-l">Plastic</span>
+                <h1 aria-describedby="tableDesc" class="govuk-heading-l">
+                    <span class="govuk-caption-l">@Model.RegistrationMaterialSamplingPlan.MaterialName</span>
                     Sampling and inspection plan
                 </h1>
 
-                <form asp-controller="Registrations">
-                    <dl class="govuk-summary-list">
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Uploaded file
-                            </dt>
-                            <dd class="govuk-summary-list__value">
+                  <form asp-controller="Registrations">
+                    <table aria-describedby="tableDesc" class="govuk-table">
+                          <thead class="govuk-table__head">
+                              <tr class="govuk-table__row">
+                                  <th class="govuk-table__header">Uploaded file</th>
+                                  <th class="govuk-table__header">Date uploaded</th>
+                                  <th class="govuk-table__header">Uploaded by</th>
+                              </tr>
 
-                                <a href="#" class="govuk-link">sampling-file.doc</a>
-
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Date uploaded
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                22 March 2024
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Uploaded by
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                Jack Black
-                            </dd>
-                        </div>
-                    </dl>
+                          </thead>
+                          <tbody class="govuk-table__body">
+                            @foreach (var file in Model.RegistrationMaterialSamplingPlan.Files.OrderByDescending(f => f.Filename).ThenByDescending(f => f.DateUploaded))
+                              {
+                                  <tr class="govuk-table__row">
+                                      <td class="govuk-table__cell"><a href="#" class="govuk-link">@file.Filename</a></td>
+                                      <td class="govuk-table__cell">@file.DateUploaded?.ToString("d MMMM yyyy")</td>
+                                      <td class="govuk-table__cell">@file.UpdatedBy</td>
+                                  </tr>
+                              }
+                          </tbody>
+                    </table>
                     <br>
                     <div class="govuk-button-group !-margin-top-6">
 
