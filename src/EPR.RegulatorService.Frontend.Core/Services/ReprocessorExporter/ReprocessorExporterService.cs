@@ -24,7 +24,8 @@ public class ReprocessorExporterService(
         GetRegistrationMaterialById,
         UpdateRegistrationMaterialOutcome,
         UpdateRegistrationTaskStatus,
-        UpdateApplicationTaskStatus
+        UpdateApplicationTaskStatus,
+        GetReprocessingIOByRegistrationMaterialId,
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -97,6 +98,20 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetReprocessingIOByRegistrationMaterialId);
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+
+        var response = await httpClient.GetAsync(path);
+
+        var registrationMaterialReprocessingIO = await GetEntityFromResponse<RegistrationMaterialReprocessingIO>(response);
+
+        return registrationMaterialReprocessingIO;
+    }
+
     private async Task PrepareAuthenticatedClient()
     {
         if (httpClient.BaseAddress == null)
@@ -130,4 +145,6 @@ public class ReprocessorExporterService(
 
         return pathTemplate;
     }
+
+    
 }
