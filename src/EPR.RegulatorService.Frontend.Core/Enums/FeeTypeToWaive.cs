@@ -1,4 +1,4 @@
-﻿namespace EPR.RegulatorService.Frontend.Core.Enums;
+namespace EPR.RegulatorService.Frontend.Core.Enums;
 
 public enum FeeTypeToWaive
 {
@@ -6,5 +6,6 @@ public enum FeeTypeToWaive
     SubsidiariesFee = 2,
     OnlineMarketplacesFee = 3,
     LateRegistrationFee = 4,
-    ComplianceSchemeMembersFee = 5,
+    ResubmissionFee = 5,
+    ComplianceSchemeMembersFee = 6,
 }

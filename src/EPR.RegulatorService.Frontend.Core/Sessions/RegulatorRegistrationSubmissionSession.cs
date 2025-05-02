@@ -10,6 +10,10 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
 
         public RegistrationSubmissionOrganisationDetails SelectedRegistration { get; set; }
 
+        public List<ProducerFeeWaiveDetails> ProducerFeeWaiveList { get; set; } = [];
+
+        public List<CsoFeeWaiveDetails> CsoFeeWaiveList { get; set; } = [];
+
         public int? CurrentPageNumber { get; set; }
 
         public RegistrationSubmissionsFilterModel LatestFilterChoices { get; set; }
