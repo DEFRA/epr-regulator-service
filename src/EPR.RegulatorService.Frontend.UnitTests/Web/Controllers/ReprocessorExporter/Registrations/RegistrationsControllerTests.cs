@@ -30,9 +30,9 @@ public class RegistrationsControllerTests
     private RegistrationsController _controller;
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
     private Mock<IConfiguration> _mockConfiguration;
+    private Mock<IMapper> _mockMapper;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IReprocessorExporterService> _mockReprocessorExporterService;
-    private Mock<IMapper> _mockMapper;
 
     [TestInitialize]
     public void TestInitialize()
@@ -40,10 +40,11 @@ public class RegistrationsControllerTests
         _httpContextMock = new Mock<HttpContext>();
         _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
         _mockConfiguration = new Mock<IConfiguration>();
+        _mockMapper = new Mock<IMapper>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
         var mockRequest = new Mock<HttpRequest>();
         var mockHeaders = new Mock<IHeaderDictionary>();
-        
+
         // Set up the Referer header to return a sample URL (or null for different tests)
         mockHeaders.Setup(h => h["Referer"]).Returns("http://previous-page.com");
         mockHeaders.Setup(h => h.Referer).Returns("http://previous-page.com");
@@ -63,8 +64,6 @@ public class RegistrationsControllerTests
         _mockSessionManager
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(new JourneySession());
-
-        _mockMapper = new Mock<IMapper>();
 
         _mockReprocessorExporterService = new Mock<IReprocessorExporterService>();
 
@@ -168,6 +167,12 @@ public class RegistrationsControllerTests
         journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
+        var siteDetails = new SiteDetails { Id = registrationId };
+        _mockReprocessorExporterService.Setup(s => s.GetSiteDetailsByRegistrationIdAsync(registrationId)).ReturnsAsync(siteDetails);
+        _mockMapper.Setup(m => m.Map<SiteDetailsViewModel>(siteDetails)).Returns(new SiteDetailsViewModel { RegistrationId = registrationId,
+            LegalDocumentAddress = "LegalDocumentAddress1", Location = "Location1", SiteAddress = "SiteAddress1", SiteGridReference = "SiteGridReference1"
+        });
+
         // Act
         var result = await _controller.UkSiteDetails(registrationId);
 
@@ -180,9 +185,14 @@ public class RegistrationsControllerTests
         using (new AssertionScope())
         {
             viewResult!.ViewData.Keys.Should().Contain(BackLinkViewDataKey);
-            viewResult.Model.Should().BeOfType<int>();
+            viewResult.Model.Should().BeOfType<SiteDetailsViewModel>();
+            var viewModel = (SiteDetailsViewModel)viewResult.Model;
 
-            viewResult.Model.Should().Be(registrationId);
+            viewModel.RegistrationId.Should().Be(registrationId);
+            viewModel.Location.Should().Be("Location1");
+            viewModel.LegalDocumentAddress.Should().Be("LegalDocumentAddress1");
+            viewModel.SiteAddress.Should().Be("SiteAddress1");
+            viewModel.SiteGridReference.Should().Be("SiteGridReference1");
         }
     }
 

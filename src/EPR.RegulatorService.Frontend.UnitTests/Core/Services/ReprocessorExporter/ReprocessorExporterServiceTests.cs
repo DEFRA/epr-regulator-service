@@ -15,6 +15,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
     using System.Text.Json;
     using System.Text.Json.Serialization;
 
+    using FluentAssertions.Execution;
+
     [TestClass]
     public class ReprocessorExporterServiceTests
     {
@@ -22,6 +24,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         private const int ApiVersion = 1;
         private const string GetRegistrationByIdPath = "v{apiVersion}/registrations/{id}";
         private const string GetRegistrationMaterialByIdPath = "v{apiVersion}/registrationMaterials/{id}";
+        private const string GetSiteAddressByRegistrationIdPath = "v{apiVersion}/registrations/{id}/siteAddress";
         private const string GetAuthorisedMaterialsByRegistrationId = "v{apiVersion}/registrations/{id}/authorisedMaterial";
         private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
         private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
@@ -61,6 +64,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                 {
                     { "GetRegistrationById", GetRegistrationByIdPath },
                     { "GetRegistrationMaterialById", GetRegistrationMaterialByIdPath },
+                    { "GetSiteAddressByRegistrationId", GetSiteAddressByRegistrationIdPath },
                     { "GetAuthorisedMaterialsByRegistrationId", GetAuthorisedMaterialsByRegistrationId },
                     { "UpdateRegistrationMaterialOutcome", UpdateRegistrationMaterialOutcome },
                     { "UpdateRegistrationTaskStatus", UpdateRegistrationTaskStatus },
@@ -116,6 +120,52 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             // Act/Assert
             await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetRegistrationByIdAsync(registrationId));
         }
+
+        [TestMethod]
+        public async Task GetSiteDetailsByRegistrationIdAsync_WhenSuccessResponse_ReturnsSiteDetails()
+        {
+            // Arrange
+            var expectedSiteDetails = CreateSiteDetails();
+            string expectedPath = GetSiteAddressByRegistrationIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", expectedSiteDetails.Id.ToString());
+
+            var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(expectedSiteDetails, _jsonSerializerOptions))
+            };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+            // Act
+             var result = await _service.GetSiteDetailsByRegistrationIdAsync(expectedSiteDetails.Id);
+
+            // Assert
+            using(new AssertionScope())
+            {
+                result.Should().NotBeNull();
+                result.Should().BeEquivalentTo(expectedSiteDetails);
+            }
+        }
+
+        [TestMethod]
+        public async Task GetSiteDetailsByRegistrationIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowExceptions()
+        {
+            // Arrange
+            const int registrationId = 123;
+            string expectedPath = GetSiteAddressByRegistrationIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationId.ToString());
+
+            var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+            // Act/Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetSiteDetailsByRegistrationIdAsync(registrationId));
+        }
+
 
         [TestMethod]
         public async Task GetRegistrationMaterialByIdAsync_WhenSuccess_ReturnsRegistrationMaterial()
@@ -437,5 +487,19 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                     }
                 }
             };
+
+        private static SiteDetails CreateSiteDetails()
+        {
+            var expectedSiteDetails = new SiteDetails
+            {
+                Id = 2,
+                SiteAddress = "23, Ruby St, London, E12 3SE",
+                NationName = "England",
+                GridReference = "SJ 854 662",
+                LegalCorrespondenceAddress = "23, Ruby St, London, E12 3SE",
+
+            };
+            return expectedSiteDetails;
+        }
     }
 }

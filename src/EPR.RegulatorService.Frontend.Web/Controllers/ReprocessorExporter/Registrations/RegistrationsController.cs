@@ -71,7 +71,10 @@ public class RegistrationsController(
         await SaveCurrentPageToSession(session);
         SetBackLinkInfos(session);
 
-        return View(GetRegistrationsView(nameof(UkSiteDetails)), registrationId);
+        var siteDetails = await reprocessorExporterService.GetSiteDetailsByRegistrationIdAsync(registrationId);
+        var viewModel = mapper.Map<SiteDetailsViewModel>(siteDetails);
+
+        return View(GetRegistrationsView(nameof(UkSiteDetails)), viewModel);
     }
 
     [HttpPost]
