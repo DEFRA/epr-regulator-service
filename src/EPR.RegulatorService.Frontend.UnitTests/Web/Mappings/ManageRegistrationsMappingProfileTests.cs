@@ -40,14 +40,40 @@ public class ManageRegistrationsMappingProfileTests
             Regulator = "Custom Regulator",
             Materials =
             [
-                new RegistrationMaterial { Id = 1, MaterialName = "Plastic", Status = ApplicationStatus.Granted, StatusUpdatedBy = "Test User", StatusUpdatedDate = DateTime.Now, RegistrationReferenceNumber = "ABC1234" }
+                new RegistrationMaterialSummary
+                {
+                    Id = 1,
+                    MaterialName = "Plastic",
+                    Status = ApplicationStatus.Granted,
+                    StatusUpdatedBy = "Test User",
+                    StatusUpdatedDate = DateTime.Now,
+                    RegistrationReferenceNumber = "ABC1234"
+                }
             ],
             Tasks =
             [
-                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress},
-                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite},
-                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SiteAddressAndContactDetails},
-                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions}
+                new RegistrationTask
+                {
+                    Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress
+                },
+                new RegistrationTask
+                {
+                    Id = 1,
+                    Status = RegulatorTaskStatus.NotStarted,
+                    TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite
+                },
+                new RegistrationTask
+                {
+                    Id = 1,
+                    Status = RegulatorTaskStatus.NotStarted,
+                    TaskName = RegulatorTaskType.SiteAddressAndContactDetails
+                },
+                new RegistrationTask
+                {
+                    Id = 1,
+                    Status = RegulatorTaskStatus.NotStarted,
+                    TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions
+                }
             ]
         };
 
@@ -73,15 +99,13 @@ public class ManageRegistrationsMappingProfileTests
 
     [TestMethod]
     [DataRow(RegulatorTaskStatus.NotStarted, "Not started yet", "govuk-tag--grey")]
-    [DataRow(RegulatorTaskStatus.Completed, "Reviewed", "govuk-tag--default")]
+    [DataRow(RegulatorTaskStatus.Completed, "Reviewed", "govuk-tag--blue")]
     [DataRow(RegulatorTaskStatus.Queried, "Queried", "govuk-tag--orange")]
-    public void Map_WhenCalledWithRegistrationTask_ShouldReturnRegistrationTaskViewModel(RegulatorTaskStatus status, string expectedStatusText, string expectedCssClass)
+    public void Map_WhenCalledWithRegistrationTask_ShouldReturnRegistrationTaskViewModel(RegulatorTaskStatus status,
+        string expectedStatusText, string expectedCssClass)
     {
         // Arrange
-        var registrationTask = new RegistrationTask
-        {
-            Id = 1, Status = status
-        };
+        var registrationTask = new RegistrationTask { Id = 1, Status = status };
 
         // Act
         var viewModel = _mapper.Map<RegistrationTaskViewModel>(registrationTask);
@@ -99,10 +123,11 @@ public class ManageRegistrationsMappingProfileTests
     [DataRow(null, "Not started yet", "govuk-tag--grey")]
     [DataRow(ApplicationStatus.Granted, "Granted", "govuk-tag--green")]
     [DataRow(ApplicationStatus.Refused, "Refused", "govuk-tag--red")]
-    public void Map_WhenCalledWithRegistrationMaterial_ShouldReturnManageRegistrationMaterialViewModel(ApplicationStatus? applicationStatus, string expectedStatusText, string expectedCssClass)
+    public void Map_WhenCalledWithRegistrationMaterial_ShouldReturnManageRegistrationMaterialViewModel(
+        ApplicationStatus? applicationStatus, string expectedStatusText, string expectedCssClass)
     {
         // Arrange
-        var registrationMaterial = new RegistrationMaterial
+        var registrationMaterial = new RegistrationMaterialSummary
         {
             Id = 1,
             MaterialName = "Plastic",
@@ -113,11 +138,36 @@ public class ManageRegistrationsMappingProfileTests
             RegistrationReferenceNumber = "ABC1234",
             Tasks =
             [
-                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions},
-                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs},
-                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan},
-                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialDetailsAndContact},
-                new RegistrationTask { Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails}
+                new RegistrationTask
+                {
+                    Id = 1,
+                    Status = RegulatorTaskStatus.NotStarted,
+                    TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions
+                },
+                new RegistrationTask
+                {
+                    Id = 1,
+                    Status = RegulatorTaskStatus.NotStarted,
+                    TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs
+                },
+                new RegistrationTask
+                {
+                    Id = 1,
+                    Status = RegulatorTaskStatus.NotStarted,
+                    TaskName = RegulatorTaskType.SamplingAndInspectionPlan
+                },
+                new RegistrationTask
+                {
+                    Id = 1,
+                    Status = RegulatorTaskStatus.NotStarted,
+                    TaskName = RegulatorTaskType.MaterialDetailsAndContact
+                },
+                new RegistrationTask
+                {
+                    Id = 1,
+                    Status = RegulatorTaskStatus.NotStarted,
+                    TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails
+                }
             ]
         };
 
