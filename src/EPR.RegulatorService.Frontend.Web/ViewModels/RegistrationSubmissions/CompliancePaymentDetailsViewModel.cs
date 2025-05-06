@@ -37,7 +37,7 @@ public class CompliancePaymentDetailsViewModel : PaymentDetailsViewModel
 
     public decimal TotalOutstanding { get; set; }
 
-    public bool IsResubmission { get; set; }
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
 
     public RegistrationSubmissionStatus Status { get; set; }
 }

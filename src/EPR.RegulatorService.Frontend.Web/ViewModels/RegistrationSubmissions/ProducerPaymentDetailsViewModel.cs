@@ -29,7 +29,7 @@ public class ProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 
     public int NumberOfSubsidiariesBeingOnlineMarketplace { get; set; }
 
-    public bool IsResubmission { get; set; }
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
 
     public RegistrationSubmissionStatus Status { get; set; }
 }

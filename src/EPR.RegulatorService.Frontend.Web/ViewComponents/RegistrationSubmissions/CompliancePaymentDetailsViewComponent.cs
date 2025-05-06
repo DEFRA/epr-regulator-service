@@ -64,7 +64,7 @@ public class CompliancePaymentDetailsViewComponent(IOptions<PaymentDetailsOption
                 OnlineMarketPlaceFee = ConvertToPoundsFromPence(onlineMarketPlaces.Sum()),
                 SubsidiariesCompanyCount = viewModel.CSOMembershipDetails.Sum(r => r.NumberOfSubsidiaries),
                 SubsidiariesCompanyFee = ConvertToPoundsFromPence(subsidiariesCompanies.Sum()),
-                IsResubmission = viewModel.IsResubmission,
+                ResubmissionStatus = viewModel.ResubmissionStatus,
                 Status = viewModel.Status,
             };
 

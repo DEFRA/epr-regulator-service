@@ -57,7 +57,7 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 ProducerSize = $"{char.ToUpperInvariant(viewModel.ProducerDetails.ProducerType[0])}{viewModel.ProducerDetails.ProducerType[1..]}",
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
                 NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount,
-                IsResubmission = viewModel.IsResubmission,
+                ResubmissionStatus = viewModel.ResubmissionStatus,
                 Status = viewModel.Status,
             };
 
