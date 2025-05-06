@@ -301,4 +301,20 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
     public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
+
+    public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
+        {
+            CapacityPeriod = "Per Year",
+            CapacityTonne = 50000,
+            LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],
+            MaterialName = "Plastic",
+            MaximumReprocessingCapacityTonne = 10000,
+            MaximumReprocessingPeriod = "Per Month",
+            PermitType = "Waste Exemption",
+        };
+
+        return Task.FromResult(registrationMaterialWasteLicence);
+    }
 }

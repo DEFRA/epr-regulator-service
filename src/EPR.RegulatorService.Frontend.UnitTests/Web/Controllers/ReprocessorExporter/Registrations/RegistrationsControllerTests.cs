@@ -409,6 +409,46 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
+    public async Task InputsAndOutputs_ShouldReturnCorrectViewModel()
+    {
+        // Arrange
+        const int registrationMaterialId = 1;
+        const string expectedPreviousPage = $"{PagePath.ManageRegistrations}?id=1345";
+
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(expectedPreviousPage);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        var registrationMaterialReprocessing = new RegistrationMaterialReprocessingIO
+        {
+            MaterialName = "Plastic", SourcesOfPackagingWaste = "Test", PlantEquipmentUsed = "Test"
+        };
+
+        var expectedViewModel = new RegistrationMaterialReprocessingIOViewModel
+        {
+            RegistrationMaterialId = 1,
+            RegistrationMaterialReprocessingIO = registrationMaterialReprocessing
+        };
+
+        _mockReprocessorExporterService.Setup(m => m.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(registrationMaterialReprocessing);
+
+        // Act
+        var result = await _controller.InputsAndOutputs(registrationMaterialId);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var viewResult = (ViewResult)result;
+            viewResult.Model.Should().BeOfType<RegistrationMaterialReprocessingIOViewModel>();
+
+            var model = viewResult.Model as RegistrationMaterialReprocessingIOViewModel;
+            model.Should().BeEquivalentTo(expectedViewModel);
+        }
+    }
+
+    [TestMethod]
     public async Task CompleteInputsAndOutputs_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
@@ -1049,6 +1089,46 @@ public class RegistrationsControllerTests
             var viewResult = (ViewResult)result;
 
             AssertBackLink(viewResult, _manageRegistrationUrl);
+        }
+    }
+
+    [TestMethod]
+    public async Task MaterialWasteLicences_ShouldReturnCorrectViewModel()
+    {
+        // Arrange
+        const string expectedPreviousPage = $"{PagePath.ManageRegistrations}?id=1345";
+
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(expectedPreviousPage);
+
+        _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        var expectedViewModel = new MaterialWasteLicencesViewModel
+        {
+            ReferenceNumberLabel = "Test",
+            CapacityPeriod = "Annually",
+            CapacityTonne = 50000,
+            LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],
+            MaterialName = "Plastic",
+            MaximumReprocessingCapacityTonne = 10000,
+            MaximumReprocessingPeriod = "Per Month",
+            PermitType = "Waste Exemption",
+        };
+
+        _mockMapper.Setup(m => m.Map<MaterialWasteLicencesViewModel>(It.IsAny<RegistrationMaterialWasteLicence>()))
+            .Returns(expectedViewModel);
+
+        // Act
+        var result = await _controller.MaterialWasteLicences(1);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var viewResult = (ViewResult)result;
+            viewResult.Model.Should().BeOfType<MaterialWasteLicencesViewModel>();
+
+            var model = viewResult.Model as MaterialWasteLicencesViewModel;
+            model.Should().BeSameAs(expectedViewModel);
         }
     }
 
