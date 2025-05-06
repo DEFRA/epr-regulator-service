@@ -3,11 +3,13 @@ using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.ViewComponents.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents;
 
@@ -18,6 +20,7 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
     private SubmissionDetailsViewModel _submissionDetailsViewModel;
     private readonly Mock<IPaymentFacadeService> _paymentFacadeServiceMock = new();
     private readonly Mock<ILogger<PackagingProducerPaymentDetailsViewComponent>> _loggerMock = new();
+    private readonly Mock<IOptions<PaymentDetailsOptions>> _paymentDetailsOptionsMock = new();
 
     [TestInitialize]
     public void TestInitialize()
@@ -28,7 +31,8 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
             NationCode = "gb-eng"
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
-        _sut = new PackagingProducerPaymentDetailsViewComponent(_paymentFacadeServiceMock.Object, _loggerMock.Object);
+        _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
+        _sut = new PackagingProducerPaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object);
     }
 
     [TestMethod]
@@ -112,7 +116,40 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         model.PreviousPaymentsReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(95.00M);
         model.ReferenceNumber.Should().Be(_submissionDetailsViewModel.ReferenceNumber);
-       
+
+        _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(
+            It.IsAny<PackagingProducerPaymentRequest>()), Times.AtMostOnce);
+    }
+
+    [TestMethod]
+    public async Task WhenpPoducerPaidInExcessOfTheAmountRequiredThenOutstandingPaymentShouldShowZero()
+    {
+        // Arrange
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsForResubmissionAsync(
+            It.IsAny<PackagingProducerPaymentRequest>()))
+        .ReturnsAsync(new PackagingProducerPaymentResponse // all values in pence
+        {
+            ResubmissionFee = 10000,
+            PreviousPaymentsReceived = 500,
+            TotalOutstanding = -9500,
+        });
+        _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
+        _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions { ShowZeroFeeForTotalOutstanding = true });
+        _sut = new PackagingProducerPaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object);
+
+        // Act
+        var result = await _sut.InvokeAsync(_submissionDetailsViewModel);
+
+        // Assert
+        Assert.IsNotNull(result);
+        result.Should().BeOfType<ViewViewComponentResult>();
+        var model = result.ViewData.Model as PackagingProducerPaymentDetailsViewModel;
+        model.Should().NotBeNull();
+        // all values converted to pounds
+        model.ResubmissionFee.Should().Be(100.00M);
+        model.PreviousPaymentsReceived.Should().Be(5.00M);
+        model.TotalOutstanding.Should().Be(0.00M);
+        model.ReferenceNumber.Should().Be(_submissionDetailsViewModel.ReferenceNumber);
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(
             It.IsAny<PackagingProducerPaymentRequest>()), Times.AtMostOnce);
     }
