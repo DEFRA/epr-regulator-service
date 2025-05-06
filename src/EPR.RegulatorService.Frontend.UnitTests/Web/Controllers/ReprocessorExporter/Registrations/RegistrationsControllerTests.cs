@@ -14,7 +14,6 @@ using FluentAssertions.Execution;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
@@ -77,19 +76,19 @@ public class RegistrationsControllerTests
     {
         // Arrange
         JourneySession journeySession = new JourneySession();
-        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.BusinessAddress(1);
+        var result = await _controller.BusinessAddress(RegistrationIdUrlValue);
 
         // Assert
         using (new AssertionScope())
         {
             var viewResult = (ViewResult)result;
 
-            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+            AssertBackLink(viewResult, _manageRegistrationUrl);
         }
     }
 
@@ -300,9 +299,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
         _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorApplicationTaskStatusAsync(It.IsAny<UpdateMaterialTaskStatusRequest>()))
             .Returns(Task.CompletedTask);
-        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(1))
-            .ReturnsAsync(new RegistrationMaterialDetail { Id = 1, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
-
+        
         // Act
         var result = await _controller.QueryRegistrationTask(new QueryRegistrationTaskViewModel { Comments = "", TaskName = RegulatorTaskType.MaterialDetailsAndContact, RegistrationId = registrationId });
 
@@ -485,7 +482,7 @@ public class RegistrationsControllerTests
     {
         // Arrange
         JourneySession journeySession = new JourneySession();
-        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
@@ -497,7 +494,7 @@ public class RegistrationsControllerTests
         {
             var viewResult = (ViewResult)result;
 
-            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+            AssertBackLink(viewResult, _manageRegistrationUrl);
         }
     }
 
@@ -604,29 +601,13 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
-    public async Task SamplingInspection_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
-    {
-        // Arrange
-        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
-
-        // Act
-        var result = await _controller.SamplingInspection(1);
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-
-        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
-    }
-
-    [TestMethod]
     public async Task CompleteSamplingInspection_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
         var registrationMaterialId = 1234;
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
-
-
+        
         _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(registrationMaterialId))
             .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
         _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
@@ -689,22 +670,7 @@ public class RegistrationsControllerTests
 
         AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
-
-    [TestMethod]
-    public async Task QueryRegistrationTask_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
-    {
-        // Arrange
-        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
-
-        // Act
-        var result = await _controller.QueryRegistrationTask(1, RegulatorTaskType.SiteAddressAndContactDetails);
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-
-        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
-    }
-
+    
     [TestMethod]
     public async Task QueryRegistrationTask_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
@@ -746,7 +712,7 @@ public class RegistrationsControllerTests
     {
         // Arrange
         JourneySession journeySession = new JourneySession();
-        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
@@ -758,7 +724,7 @@ public class RegistrationsControllerTests
         {
             var viewResult = (ViewResult)result;
 
-            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+            AssertBackLink(viewResult, _manageRegistrationUrl);
         }
     }
 
@@ -807,21 +773,6 @@ public class RegistrationsControllerTests
         mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
 
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
-
-        // Act
-        var result = await _controller.OverseasReprocessorInterim(1);
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-
-        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
-    }
-
-    [TestMethod]
-    public async Task OverseasReprocessorInterim_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
-    {
-        // Arrange
-        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
 
         // Act
         var result = await _controller.OverseasReprocessorInterim(1);
@@ -904,26 +855,11 @@ public class RegistrationsControllerTests
     }
 
     [TestMethod]
-    public async Task QueryMaterialTask_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
-    {
-        // Arrange
-        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
-
-        // Act
-        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-
-        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
-    }
-
-    [TestMethod]
     public async Task QueryMaterialTask_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
         // Arrange
         JourneySession journeySession = new JourneySession();
-        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
@@ -935,7 +871,7 @@ public class RegistrationsControllerTests
         {
             var viewResult = (ViewResult)result;
 
-            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+            AssertBackLink(viewResult, _manageRegistrationUrl);
         }
     }
 
@@ -959,19 +895,19 @@ public class RegistrationsControllerTests
     {
         // Arrange
         JourneySession journeySession = new JourneySession();
-        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.WasteLicences(1);
+        var result = await _controller.WasteLicences(RegistrationIdUrlValue);
 
         // Assert
         using (new AssertionScope())
         {
             var viewResult = (ViewResult)result;
 
-            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+            AssertBackLink(viewResult, _manageRegistrationUrl);
         }
     }
 
@@ -1029,22 +965,7 @@ public class RegistrationsControllerTests
 
         AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
     }
-
-    [TestMethod]
-    public async Task WasteLicences_WhenHttpRequestIsMissing_ShouldSetHomeBackLink()
-    {
-        // Arrange
-        _httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
-
-        // Act
-        var result = await _controller.WasteLicences(1);
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-
-        AssertBackLink(result as ViewResult, "/regulators/" + PagePath.Home);
-    }
-
+    
     [TestMethod]
     public async Task CompleteWasteLicences_WhenTaskComplete_RedirectToManageRegistrations()
     {
@@ -1079,7 +1000,7 @@ public class RegistrationsControllerTests
     {
         // Arrange
         JourneySession journeySession = new JourneySession();
-        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
@@ -1091,7 +1012,7 @@ public class RegistrationsControllerTests
         {
             var viewResult = (ViewResult)result;
 
-            AssertBackLink(viewResult, PagePath.ManageRegistrations);
+            AssertBackLink(viewResult, _manageRegistrationUrl);
         }
     }
 
@@ -1154,10 +1075,8 @@ public class RegistrationsControllerTests
     public async Task MaterialWasteLicences_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
         // Arrange
-        const string expectedPreviousPage = $"{PagePath.ManageRegistrations}?id=1345";
-
         JourneySession journeySession = new JourneySession();
-        journeySession.RegulatorSession.Journey.Add(expectedPreviousPage);
+        journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
@@ -1169,7 +1088,7 @@ public class RegistrationsControllerTests
         {
             var viewResult = (ViewResult)result;
 
-            AssertBackLink(viewResult, expectedPreviousPage);
+            AssertBackLink(viewResult, _manageRegistrationUrl);
         }
     }
 

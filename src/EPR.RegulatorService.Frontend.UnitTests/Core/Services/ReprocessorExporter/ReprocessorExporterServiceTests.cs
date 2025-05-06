@@ -25,6 +25,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         private const string GetRegistrationByIdPath = "v{apiVersion}/registrations/{id}";
         private const string GetRegistrationMaterialByIdPath = "v{apiVersion}/registrationMaterials/{id}";
         private const string GetSiteAddressByRegistrationIdPath = "v{apiVersion}/registrations/{id}/siteAddress";
+        private const string GetAuthorisedMaterialsByRegistrationId = "v{apiVersion}/registrations/{id}/authorisedMaterial";
         private const string GetWasteLicenceByRegistrationMaterialId = "v{apiVersion}/registrationMaterials/{id}/wasteLicences";
         private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
         private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
@@ -65,6 +66,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                     { "GetRegistrationById", GetRegistrationByIdPath },
                     { "GetRegistrationMaterialById", GetRegistrationMaterialByIdPath },
                     { "GetSiteAddressByRegistrationId", GetSiteAddressByRegistrationIdPath },
+                    { "GetAuthorisedMaterialsByRegistrationId", GetAuthorisedMaterialsByRegistrationId },
                     { "GetWasteLicenceByRegistrationMaterialId", GetWasteLicenceByRegistrationMaterialId },
                     { "UpdateRegistrationMaterialOutcome", UpdateRegistrationMaterialOutcome },
                     { "UpdateRegistrationTaskStatus", UpdateRegistrationTaskStatus },
@@ -274,6 +276,32 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         }
 
         [TestMethod]
+        public async Task GetAuthorisedMaterialsByRegistrationIdAsync_WhenSuccess_ReturnsRegistrationAuthorisedMaterial()
+        {
+            // Arrange
+            const int registrationId = 1234;
+            var expectedAuthorisedMaterials = CreateRegistrationAuthorisedMaterials(registrationId);
+            string expectedPath = GetAuthorisedMaterialsByRegistrationId
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationId.ToString());
+
+            var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(expectedAuthorisedMaterials, _jsonSerializerOptions))
+            };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+            // Act
+            var result = await _service.GetAuthorisedMaterialsByRegistrationIdAsync(registrationId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedAuthorisedMaterials);
+        }
+        
+        [TestMethod]
         public async Task UpdateRegistrationTaskStatus_WhenResponseCodeIsNotSuccess_ShouldThrowException()
         {
             // Arrange
@@ -411,9 +439,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(responseMessage);
 
-        private static Registration CreateRegistration()
-        {
-            var expectedRegistration = new Registration
+        private static Registration CreateRegistration() =>
+            new()
             {
                 Id = 123,
                 OrganisationName = "Blue Exports Ltd",
@@ -421,8 +448,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                 OrganisationType = ApplicationOrganisationType.Reprocessor,
                 Regulator = "Environment Agency (EA)"
             };
-            return expectedRegistration;
-        }
 
         private static RegistrationMaterialReprocessingIO CreateReprocessingIO() =>
             new()
@@ -441,17 +466,33 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                 TotalInputs = 100
             };
 
-        private static RegistrationMaterialDetail CreateRegistrationMaterial()
-        {
-            var registrationMaterialDetail = new RegistrationMaterialDetail
+        private static RegistrationMaterialDetail CreateRegistrationMaterial() =>
+            new()
             {
                 Id = 123456,
                 RegistrationId = 123,
                 MaterialName = "Plastic",
                 Status = ApplicationStatus.Granted,
             };
-            return registrationMaterialDetail;
-        }
+
+        private static RegistrationAuthorisedMaterials CreateRegistrationAuthorisedMaterials(int registrationId) =>
+            new()
+            {
+                RegistrationId = registrationId,
+                OrganisationName = "MOCK Test Org",
+                SiteAddress = "MOCK Test Address",
+                MaterialsAuthorisation =
+                [
+                    new MaterialsAuthorisedOnSite { IsMaterialRegistered = true, MaterialName = "Plastic" },
+                    new MaterialsAuthorisedOnSite
+                    {
+                        IsMaterialRegistered = false,
+                        MaterialName = "Steel",
+                        Reason =
+                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem"
+                    }
+                ]
+            };
 
         private static RegistrationMaterialWasteLicence CreateRegistrationWasteLicence()
         {

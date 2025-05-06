@@ -29,8 +29,6 @@ public class RegistrationsController(
     : ReprocessorExporterBaseController(sessionManager, configuration)
   
 {
-
-
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials(int registrationId)
@@ -40,8 +38,11 @@ public class RegistrationsController(
         string pagePath = GetRegistrationMethodPath(PagePath.AuthorisedMaterials, registrationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
+
+        var registrationAuthorisedMaterials = await reprocessorExporterService.GetAuthorisedMaterialsByRegistrationIdAsync(registrationId);
+        var viewModel = mapper.Map<AuthorisedMaterialsViewModel>(registrationAuthorisedMaterials);
         
-        return View(GetRegistrationsView(nameof(AuthorisedMaterials)), registrationId);
+        return View(GetRegistrationsView(nameof(AuthorisedMaterials)), viewModel);
     }
 
     [HttpPost]

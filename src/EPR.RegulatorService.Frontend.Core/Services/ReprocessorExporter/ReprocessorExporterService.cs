@@ -22,6 +22,7 @@ public class ReprocessorExporterService(
     {
         GetRegistrationById,
         GetRegistrationMaterialById,
+        GetAuthorisedMaterialsByRegistrationId,
         GetWasteLicenceByRegistrationMaterialId,
         UpdateRegistrationMaterialOutcome,
         UpdateRegistrationTaskStatus,
@@ -77,6 +78,20 @@ public class ReprocessorExporterService(
         var registrationMaterialDetail = await GetEntityFromResponse<RegistrationMaterialDetail>(response);
         
         return registrationMaterialDetail;
+    }
+
+    public async Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(int registrationId)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetAuthorisedMaterialsByRegistrationId);
+        string path = pathTemplate.Replace("{id}", registrationId.ToString(CultureInfo.InvariantCulture));
+
+        var response = await httpClient.GetAsync(path);
+
+        var registrationAuthorisedMaterials = await GetEntityFromResponse<RegistrationAuthorisedMaterials>(response);
+
+        return registrationAuthorisedMaterials;
     }
 
     public async Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
