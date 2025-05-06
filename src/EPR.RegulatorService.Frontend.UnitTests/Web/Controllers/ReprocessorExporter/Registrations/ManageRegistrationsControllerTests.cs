@@ -62,7 +62,6 @@ public class ManageRegistrationsControllerTests
             configurationMock.Object
         );
 
-        httpContextMock.Setup(h => h.Request.Path).Returns($"/manage-registrations?id={RegistrationId}");
         _controller.ControllerContext.HttpContext = httpContextMock.Object;
     }
 

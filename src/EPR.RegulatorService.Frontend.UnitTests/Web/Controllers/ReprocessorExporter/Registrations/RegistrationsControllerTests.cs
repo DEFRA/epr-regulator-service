@@ -14,7 +14,6 @@ using FluentAssertions.Execution;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
@@ -25,7 +24,7 @@ public class RegistrationsControllerTests
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
     private const int RegistrationIdUrlValue = 1234;
 
-    private readonly string _manageRegistrationUrl = $"/registrations/manage-registrations?id={RegistrationIdUrlValue}";
+    private readonly string _manageRegistrationUrl = $"manage-registrations?id={RegistrationIdUrlValue}";
 
     private RegistrationsController _controller;
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
@@ -80,8 +79,6 @@ public class RegistrationsControllerTests
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
-
-        _httpContextMock.Setup(h => h.Request.Path).Returns($"/registrations/{PagePath.BusinessAddress}?registrationId={RegistrationIdUrlValue}");
 
         // Act
         var result = await _controller.BusinessAddress(RegistrationIdUrlValue);
@@ -447,8 +444,6 @@ public class RegistrationsControllerTests
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
-        _httpContextMock.Setup(h => h.Request.Path).Returns($"/registrations/{PagePath.SamplingInspection}?registrationId={RegistrationIdUrlValue}");
-
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
@@ -679,8 +674,6 @@ public class RegistrationsControllerTests
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
-        _httpContextMock.Setup(h => h.Request.Path).Returns($"/registrations/{PagePath.OverseasReprocessorInterim}?registrationId={RegistrationIdUrlValue}");
-
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
@@ -864,8 +857,6 @@ public class RegistrationsControllerTests
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
-        _httpContextMock.Setup(h => h.Request.Path).Returns($"/registrations/{PagePath.WasteLicences}?registrationId={RegistrationIdUrlValue}");
-
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
@@ -971,8 +962,6 @@ public class RegistrationsControllerTests
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
-        _httpContextMock.Setup(h => h.Request.Path).Returns($"/registrations/{PagePath.MaterialDetails}?registrationId={RegistrationIdUrlValue}");
-
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
@@ -1048,8 +1037,6 @@ public class RegistrationsControllerTests
         // Arrange
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
-
-        _httpContextMock.Setup(h => h.Request.Path).Returns($"/registrations/{PagePath.MaterialWasteLicences}?registrationId={RegistrationIdUrlValue}");
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 

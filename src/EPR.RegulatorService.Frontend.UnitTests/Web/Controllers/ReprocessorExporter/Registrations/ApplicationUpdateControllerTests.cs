@@ -68,7 +68,6 @@ public class ApplicationUpdateControllerTests
         configurationMock.Object );
 
         var httpContextMock = new Mock<HttpContext>();
-        httpContextMock.Setup(h => h.Request.Path).Returns("/test");
         _applicationUpdateController.ControllerContext.HttpContext = httpContextMock.Object;
     }
 

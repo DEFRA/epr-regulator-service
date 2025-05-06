@@ -37,8 +37,9 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        string pagePath = GetRegistrationMethodPath(PagePath.AuthorisedMaterials, registrationId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         var registrationAuthorisedMaterials = await reprocessorExporterService.GetAuthorisedMaterialsByRegistrationIdAsync(registrationId);
         var viewModel = mapper.Map<AuthorisedMaterialsViewModel>(registrationAuthorisedMaterials);
@@ -68,8 +69,9 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        string pagePath = GetRegistrationMethodPath(PagePath.UkSiteDetails, registrationId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         var siteDetails = await reprocessorExporterService.GetSiteDetailsByRegistrationIdAsync(registrationId);
         var viewModel = mapper.Map<SiteDetailsViewModel>(siteDetails);
@@ -99,8 +101,9 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.MaterialWasteLicences, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(MaterialWasteLicences)), registrationMaterialId);
     }
@@ -129,8 +132,9 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.SamplingInspection, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         var samplingPlan = await reprocessorExporterService.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId);
         var model = new RegistrationMaterialSamplingInspectionViewModel()
@@ -166,8 +170,9 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.InputsAndOutputs, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         var reprocessingIO = await reprocessorExporterService.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId);
         var model = new RegistrationMaterialReprocessingIOViewModel()
@@ -203,8 +208,9 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        string pagePath = GetRegistrationMethodPath(PagePath.WasteLicences, registrationId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(WasteLicences)), registrationId);
     }
@@ -231,8 +237,9 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        string pagePath = GetRegistrationMethodPath(PagePath.BusinessAddress, registrationId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(BusinessAddress)), registrationId);
     }
@@ -259,8 +266,9 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.MaterialDetails, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(MaterialDetails)), registrationMaterialId);
     }
@@ -289,8 +297,9 @@ public class RegistrationsController(
     {        
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.OverseasReprocessorInterim, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationsView(nameof(OverseasReprocessorInterim)), registrationMaterialId);
     }
@@ -319,8 +328,8 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        await SaveSessionAndJourney(session, PagePath.QueryRegistrationTask);
+        SetBackLinkInfos(session, PagePath.QueryRegistrationTask);
 
         var queryRegistrationTaskViewModel = new QueryRegistrationTaskViewModel
         {
@@ -337,8 +346,8 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        await SaveSessionAndJourney(session, PagePath.CompleteQueryRegistrationTask);
+        SetBackLinkInfos(session, PagePath.CompleteQueryRegistrationTask);
 
         var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
         {
@@ -359,8 +368,8 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        await SaveSessionAndJourney(session, PagePath.QueryMaterialTask);
+        SetBackLinkInfos(session, PagePath.QueryMaterialTask);
 
         var queryMaterialTaskViewModel = new QueryMaterialTaskViewModel
         {
@@ -377,8 +386,8 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveCurrentPageToSession(session);
-        SetBackLinkInfos(session);
+        await SaveSessionAndJourney(session, PagePath.CompleteQueryMaterialTask);
+        SetBackLinkInfos(session, PagePath.CompleteQueryMaterialTask);
 
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
@@ -394,4 +403,10 @@ public class RegistrationsController(
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
     }
+
+    private static string GetRegistrationMethodPath(string pagePath, int registrationId) =>
+        $"{pagePath}?registrationId={registrationId}";
+
+    private static string GetRegistrationMaterialMethodPath(string pagePath, int registrationMaterialId) =>
+        $"{pagePath}?registrationMaterialId={registrationMaterialId}";
 }
