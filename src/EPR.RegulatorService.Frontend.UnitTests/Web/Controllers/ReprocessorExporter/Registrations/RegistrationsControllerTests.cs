@@ -30,6 +30,7 @@ public class RegistrationsControllerTests
     private RegistrationsController _controller;
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
     private Mock<IConfiguration> _mockConfiguration;
+    private Mock<IMapper> _mockMapper;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IReprocessorExporterService> _mockReprocessorExporterService;
 
@@ -39,6 +40,7 @@ public class RegistrationsControllerTests
         _httpContextMock = new Mock<HttpContext>();
         _mockSessionManager = new Mock<ISessionManager<JourneySession>>();
         _mockConfiguration = new Mock<IConfiguration>();
+        _mockMapper = new Mock<IMapper>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
         var mockRequest = new Mock<HttpRequest>();
         var mockHeaders = new Mock<IHeaderDictionary>();
@@ -65,7 +67,7 @@ public class RegistrationsControllerTests
 
         _mockReprocessorExporterService = new Mock<IReprocessorExporterService>();
 
-        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object);
+        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object, _mockMapper.Object);
 
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
@@ -163,6 +165,12 @@ public class RegistrationsControllerTests
         journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
+        var siteDetails = new SiteDetails { Id = registrationId };
+        _mockReprocessorExporterService.Setup(s => s.GetSiteDetailsByRegistrationIdAsync(registrationId)).ReturnsAsync(siteDetails);
+        _mockMapper.Setup(m => m.Map<SiteDetailsViewModel>(siteDetails)).Returns(new SiteDetailsViewModel { RegistrationId = registrationId,
+            LegalDocumentAddress = "LegalDocumentAddress1", Location = "Location1", SiteAddress = "SiteAddress1", SiteGridReference = "SiteGridReference1"
+        });
+
         // Act
         var result = await _controller.UkSiteDetails(registrationId);
 
@@ -175,9 +183,14 @@ public class RegistrationsControllerTests
         using (new AssertionScope())
         {
             viewResult!.ViewData.Keys.Should().Contain(BackLinkViewDataKey);
-            viewResult.Model.Should().BeOfType<int>();
+            viewResult.Model.Should().BeOfType<SiteDetailsViewModel>();
+            var viewModel = (SiteDetailsViewModel)viewResult.Model;
 
-            viewResult.Model.Should().Be(registrationId);
+            viewModel.RegistrationId.Should().Be(registrationId);
+            viewModel.Location.Should().Be("Location1");
+            viewModel.LegalDocumentAddress.Should().Be("LegalDocumentAddress1");
+            viewModel.SiteAddress.Should().Be("SiteAddress1");
+            viewModel.SiteGridReference.Should().Be("SiteGridReference1");
         }
     }
 

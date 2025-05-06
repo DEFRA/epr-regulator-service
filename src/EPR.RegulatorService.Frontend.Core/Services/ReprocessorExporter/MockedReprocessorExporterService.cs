@@ -45,6 +45,25 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return Task.FromResult(registration);
     }
 
+    public Task<SiteDetails> GetSiteDetailsByRegistrationIdAsync(int id)
+    {
+        if (id == 99999)
+        {
+            throw new NotFoundException("Mocked exception for testing purposes.");
+        }
+
+        var siteDetails = new SiteDetails
+        {
+            Id = id,
+            SiteAddress = "16 Ruby St, London, E12 3SE",
+            NationName = "England",
+            GridReference = "SJ 854 662",
+            LegalCorrespondenceAddress = "25 Ruby St, London, E12 3SE",
+        };
+
+        return Task.FromResult(siteDetails);
+    }
+
     public Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int registrationMaterialId)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials)

@@ -24,7 +24,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 public class RegistrationsController(
     ISessionManager<JourneySession> sessionManager,
     IReprocessorExporterService reprocessorExporterService,
-    IConfiguration configuration)
+    IConfiguration configuration,
+    IMapper mapper)
     : ReprocessorExporterBaseController(sessionManager, configuration)
   
 {
@@ -64,12 +65,14 @@ public class RegistrationsController(
     public async Task<IActionResult> UkSiteDetails(int registrationId)
     {
         var session = await GetSession();
-
         string pagePath = GetRegistrationMethodPath(PagePath.UkSiteDetails, registrationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(UkSiteDetails)), registrationId);
+        var siteDetails = await reprocessorExporterService.GetSiteDetailsByRegistrationIdAsync(registrationId);
+        var viewModel = mapper.Map<SiteDetailsViewModel>(siteDetails);
+
+        return View(GetRegistrationsView(nameof(UkSiteDetails)), viewModel);
     }
 
     [HttpPost]
