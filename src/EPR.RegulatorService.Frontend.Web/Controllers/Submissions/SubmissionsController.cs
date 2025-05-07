@@ -308,6 +308,7 @@ public partial class SubmissionsController : Controller
 
         var model = new AcceptSubmissionViewModel
         {
+            SubmissionId = submissionId,
             OrganisationName = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionId].OrganisationName
         };
 
@@ -319,10 +320,10 @@ public partial class SubmissionsController : Controller
 
     [HttpPost]
     [Route(PagePath.AcceptSubmission)]
-    public async Task<IActionResult> AcceptSubmission(AcceptSubmissionViewModel model, [FromQuery] Guid submissionId)
+    public async Task<IActionResult> AcceptSubmission(AcceptSubmissionViewModel model)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionId];
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[model.SubmissionId.Value];
         var organisationName = submission.OrganisationName;
 
         if (!ModelState.IsValid)
@@ -335,7 +336,7 @@ public partial class SubmissionsController : Controller
         {
             var request = new RegulatorPoMDecisionCreateRequest
             {
-                SubmissionId = submissionId,
+                SubmissionId = model.SubmissionId.Value,
                 Decision = RegulatorDecision.Accepted,
                 FileId = submission.FileId,
                 OrganisationId = submission.OrganisationId,
@@ -358,7 +359,7 @@ public partial class SubmissionsController : Controller
                 null);
         }
 
-        return RedirectToAction("SubmissionDetails", "Submissions");
+        return RedirectToAction("SubmissionDetails", "Submissions", new { model.SubmissionId });
     }
 
 

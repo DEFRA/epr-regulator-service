@@ -4,8 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 public class AcceptSubmissionViewModel
 {
+    public Guid? SubmissionId { get; set; }
+
     public string OrganisationName { get; set; }
-    
+
     [Required(ErrorMessage = "Error.AcceptSubmission")]
-    public bool? Accepted { get; set; } 
+    public bool? Accepted { get; set; }
 }
