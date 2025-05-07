@@ -258,7 +258,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 IsWelsh = existingModel.NationId == 4,
                 Status = status.ToString(),
                 IsResubmission = existingModel.IsResubmission,
-                FileId = existingModel.IsResubmission ? existingModel.ResubmissionFileId : null
+                FileId = status switch
+                {
+                    RegistrationSubmissionStatus.Cancelled => null,
+                    _ => existingModel.IsResubmission ? existingModel.ResubmissionFileId : null
+                }
             };
 
             if (request.IsResubmission)
