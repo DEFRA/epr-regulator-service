@@ -171,4 +171,7 @@
   <data name="ProducerPaymentDetails.TotalPaymentsReceived" xml:space="preserve">
     <value>Total payments received</value>
   </data>
+  <data name="ProducerPaymentDetails.WaiveFees" xml:space="preserve">
+    <value>Waive fees</value>
+  </data>
 </root>

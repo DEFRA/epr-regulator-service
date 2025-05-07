@@ -183,4 +183,7 @@
   <data name="CompliancePaymentDetails.TotalOutstanding" xml:space="preserve">
     <value>Total outstanding</value>
   </data>
+  <data name="CompliancePaymentDetails.WaiveFees" xml:space="preserve">
+    <value>Waive fees</value>
+  </data>
 </root>
