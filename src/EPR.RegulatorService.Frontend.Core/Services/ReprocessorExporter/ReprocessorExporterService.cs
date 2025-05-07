@@ -22,11 +22,14 @@ public class ReprocessorExporterService(
     {
         GetRegistrationById,
         GetRegistrationMaterialById,
+        GetAuthorisedMaterialsByRegistrationId,
+        GetWasteLicenceByRegistrationMaterialId,
         UpdateRegistrationMaterialOutcome,
         UpdateRegistrationTaskStatus,
-        UpdateApplicationTaskStatus,
         GetReprocessingIOByRegistrationMaterialId,
         GetSamplingPlanByRegistrationMaterialId,
+        UpdateApplicationTaskStatus,
+        GetSiteAddressByRegistrationId
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -49,6 +52,20 @@ public class ReprocessorExporterService(
         return registration;
     }
 
+    public async Task<SiteDetails> GetSiteDetailsByRegistrationIdAsync(int id)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetSiteAddressByRegistrationId);
+        string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
+
+        var response = await httpClient.GetAsync(path);
+
+        var siteDetails = await GetEntityFromResponse<SiteDetails>(response);
+
+        return siteDetails;
+    }
+
     public async Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int id)
     {
         await PrepareAuthenticatedClient();
@@ -61,6 +78,34 @@ public class ReprocessorExporterService(
         var registrationMaterialDetail = await GetEntityFromResponse<RegistrationMaterialDetail>(response);
         
         return registrationMaterialDetail;
+    }
+
+    public async Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(int registrationId)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetAuthorisedMaterialsByRegistrationId);
+        string path = pathTemplate.Replace("{id}", registrationId.ToString(CultureInfo.InvariantCulture));
+
+        var response = await httpClient.GetAsync(path);
+
+        var registrationAuthorisedMaterials = await GetEntityFromResponse<RegistrationAuthorisedMaterials>(response);
+
+        return registrationAuthorisedMaterials;
+    }
+
+    public async Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetWasteLicenceByRegistrationMaterialId);
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+
+        var response = await httpClient.GetAsync(path);
+
+        var registrationMaterialWasteLicence = await GetEntityFromResponse<RegistrationMaterialWasteLicence>(response);
+
+        return registrationMaterialWasteLicence;
     }
 
     public async Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)

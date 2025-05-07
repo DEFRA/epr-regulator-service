@@ -45,6 +45,25 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return Task.FromResult(registration);
     }
 
+    public Task<SiteDetails> GetSiteDetailsByRegistrationIdAsync(int id)
+    {
+        if (id == 99999)
+        {
+            throw new NotFoundException("Mocked exception for testing purposes.");
+        }
+
+        var siteDetails = new SiteDetails
+        {
+            Id = id,
+            SiteAddress = "16 Ruby St, London, E12 3SE",
+            NationName = "England",
+            GridReference = "SJ 854 662",
+            LegalCorrespondenceAddress = "25 Ruby St, London, E12 3SE",
+        };
+
+        return Task.FromResult(siteDetails);
+    }
+
     public Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int registrationMaterialId)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials)
@@ -63,6 +82,25 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             Status = registrationMaterial.Status,
         });
     }
+
+    public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(int registrationId) =>
+        Task.FromResult(new RegistrationAuthorisedMaterials
+        {
+            RegistrationId = registrationId,
+            OrganisationName = "MOCK Test Org",
+            SiteAddress = "MOCK Test Address",
+            MaterialsAuthorisation =
+            [
+                new MaterialsAuthorisedOnSite { IsMaterialRegistered = true, MaterialName = "Plastic" },
+                new MaterialsAuthorisedOnSite
+                {
+                    IsMaterialRegistered = false,
+                    MaterialName = "Steel",
+                    Reason =
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem"
+                }
+            ]
+        });
 
     public Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
@@ -110,7 +148,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 Tasks = CreateRegistrationTasks(registrationId, organisationType),
                 Materials =
                 [
-                    CreateRegistrationMaterial(registrationId, "Plastic", organisationType)
+                    CreateRegistrationMaterial(registrationId, "Plastic", organisationType),
+                    CreateRegistrationMaterial(registrationId, "Steel", organisationType),
+                    CreateRegistrationMaterial(registrationId, "Aluminium", organisationType),
                 ]
             };
     }
@@ -155,7 +195,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     }
 
 #pragma warning disable S107 - Ignoring the number of parameters in this method as it is required for testing purposes
-    private static RegistrationMaterial CreateRegistrationMaterial(
+    private static RegistrationMaterialSummary CreateRegistrationMaterial(
         int registrationId,
         string materialName,
         ApplicationOrganisationType organisationType,
@@ -167,7 +207,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         int registrationMaterialId = registrationId * 10;
 
-        return new RegistrationMaterial
+        return new RegistrationMaterialSummary
         {
             Id = registrationMaterialId,
             RegistrationId = registrationId,
@@ -203,8 +243,78 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         ];
     }
 
-    public Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest) => throw new NotImplementedException();
-    public Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest) => throw new NotImplementedException();
+    public Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest)
+    {
+        var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
+        var task = registration.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateRegistrationTaskStatusRequest.TaskName);
+        int? taskId;
+        
+        if (task == null)
+        {
+            taskId = (updateRegistrationTaskStatusRequest.RegistrationId * 10) + registration.Tasks.Count;
+        }
+        else
+        {
+            taskId = task.Id;
+            registration.Tasks.Remove(task);
+        }
+
+        var newTask = new RegistrationTask
+        {
+            Id = taskId,
+            TaskName = Enum.Parse<RegulatorTaskType>(updateRegistrationTaskStatusRequest.TaskName),
+            Status = Enum.Parse<RegulatorTaskStatus>(updateRegistrationTaskStatusRequest.Status)
+        };
+
+        registration.Tasks.Add(newTask);
+
+        return Task.CompletedTask;
+    }
+
+    public Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest)
+    {
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == updateMaterialTaskStatusRequest.RegistrationMaterialId);
+        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateMaterialTaskStatusRequest.TaskName);
+        int? taskId;
+
+        if (task == null)
+        {
+            taskId = (updateMaterialTaskStatusRequest.RegistrationMaterialId * 1000) + registrationMaterial.Tasks.Count;
+        }
+        else
+        {
+            taskId = task.Id;
+            registrationMaterial.Tasks.Remove(task);
+        }
+
+        var newTask = new RegistrationTask
+        {
+            Id = taskId,
+            TaskName = Enum.Parse<RegulatorTaskType>(updateMaterialTaskStatusRequest.TaskName),
+            Status = Enum.Parse<RegulatorTaskStatus>(updateMaterialTaskStatusRequest.Status)
+        };
+
+        registrationMaterial.Tasks.Add(newTask);
+
+        return Task.CompletedTask;
+    }
+
     public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
     public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
+
+    public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
+        {
+            CapacityPeriod = "Per Year",
+            CapacityTonne = 50000,
+            LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],
+            MaterialName = "Plastic",
+            MaximumReprocessingCapacityTonne = 10000,
+            MaximumReprocessingPeriod = "Per Month",
+            PermitType = "Waste Exemption",
+        };
+
+        return Task.FromResult(registrationMaterialWasteLicence);
+    }
 }

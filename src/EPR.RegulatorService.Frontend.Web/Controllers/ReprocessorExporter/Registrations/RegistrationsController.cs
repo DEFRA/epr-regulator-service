@@ -24,12 +24,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 public class RegistrationsController(
     ISessionManager<JourneySession> sessionManager,
     IReprocessorExporterService reprocessorExporterService,
-    IConfiguration configuration)
+    IConfiguration configuration,
+    IMapper mapper)
     : ReprocessorExporterBaseController(sessionManager, configuration)
   
 {
-
-
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials(int registrationId)
@@ -39,8 +38,11 @@ public class RegistrationsController(
         string pagePath = GetRegistrationMethodPath(PagePath.AuthorisedMaterials, registrationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
+
+        var registrationAuthorisedMaterials = await reprocessorExporterService.GetAuthorisedMaterialsByRegistrationIdAsync(registrationId);
+        var viewModel = mapper.Map<AuthorisedMaterialsViewModel>(registrationAuthorisedMaterials);
         
-        return View(GetRegistrationsView(nameof(AuthorisedMaterials)), registrationId);
+        return View(GetRegistrationsView(nameof(AuthorisedMaterials)), viewModel);
     }
 
     [HttpPost]
@@ -64,12 +66,14 @@ public class RegistrationsController(
     public async Task<IActionResult> UkSiteDetails(int registrationId)
     {
         var session = await GetSession();
-
         string pagePath = GetRegistrationMethodPath(PagePath.UkSiteDetails, registrationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(UkSiteDetails)), registrationId);
+        var siteDetails = await reprocessorExporterService.GetSiteDetailsByRegistrationIdAsync(registrationId);
+        var viewModel = mapper.Map<SiteDetailsViewModel>(siteDetails);
+
+        return View(GetRegistrationsView(nameof(UkSiteDetails)), viewModel);
     }
 
     [HttpPost]
@@ -98,7 +102,10 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(MaterialWasteLicences)), registrationMaterialId);
+        var materialWasteLicences = await reprocessorExporterService.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId);
+        var viewModel = mapper.Map<MaterialWasteLicencesViewModel>(materialWasteLicences);
+
+        return View(GetRegistrationsView(nameof(MaterialWasteLicences)), viewModel);
     }
 
     [HttpPost]
