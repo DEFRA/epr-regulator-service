@@ -15,6 +15,7 @@
 
 @using (Html.BeginForm("RejectSubmission", "Submissions", FormMethod.Post))
 {
+    @Html.HiddenFor(x => x.SubmissionId)
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper" id="main-content" role="main">
             <div class="govuk-grid-row">
@@ -108,7 +109,7 @@
                     @Html.ActionLink(SharedLocalizer["Cancel"],
                              "SubmissionDetails",
                              "Submissions",
-                             null,
+                             new { Model.SubmissionId },
                              new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-horizontal-control epr-horizontal-control-link" })
                 </div>
             </div>

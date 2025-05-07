@@ -378,6 +378,7 @@ public partial class SubmissionsController : Controller
 
         var model = new RejectSubmissionViewModel
         {
+            SubmissionId = submissionId,
             SubmittedBy = session.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmittedBy // This needs to be keyed properly
         };
 
@@ -390,10 +391,10 @@ public partial class SubmissionsController : Controller
 
     [HttpPost]
     [Route(PagePath.RejectSubmission)]
-    public async Task<IActionResult> RejectSubmission(RejectSubmissionViewModel model, [FromQuery] Guid submissionId)
+    public async Task<IActionResult> RejectSubmission(RejectSubmissionViewModel model)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionId];
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[model.SubmissionId.Value];
         var organisationName = submission.OrganisationName;
 
         if (!ModelState.IsValid)

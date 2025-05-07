@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Web.Attributes;
+
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -7,6 +8,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
     [ExcludeFromCodeCoverage]
     public class RejectSubmissionViewModel
     {
+        public Guid? SubmissionId { get; set; }
+
         public string? SubmittedBy { get; set; }
 
         [CharacterCount("Error.RejectionReason", "Error.RejectionReasonTooLong", 500)]
