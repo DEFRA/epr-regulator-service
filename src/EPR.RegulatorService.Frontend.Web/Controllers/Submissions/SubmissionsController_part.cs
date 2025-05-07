@@ -135,9 +135,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
         }
 
-        private ViewModels.Submissions.SubmissionDetailsViewModel GetSubmissionDetailsViewModel(JourneySession session)
+        private ViewModels.Submissions.SubmissionDetailsViewModel GetSubmissionDetailsViewModel(JourneySession session, Guid submissionId)
         {
-            var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
+            var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionId];
             var model = new ViewModels.Submissions.SubmissionDetailsViewModel
             {
                 OrganisationName = submission.OrganisationName,
@@ -161,7 +161,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 SubmissionBlobName = submission.PomBlobName,
                 NationCode = submission.NationCode,
                 ReferenceNumber = submission.ReferenceNumber,
-                MemberCount = submission.MemberCount
+                MemberCount = submission.MemberCount,
+                ComplianceSchemeId = submission.ComplianceSchemeId
             };
 
             return model;
