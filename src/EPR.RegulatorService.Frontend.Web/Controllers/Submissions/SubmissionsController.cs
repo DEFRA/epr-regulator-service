@@ -234,7 +234,7 @@ public partial class SubmissionsController : Controller
         if (!ModelState.IsValid)
         {
             SetBackLink(session, PagePath.SubmissionDetails);
-            var model = GetSubmissionDetailsViewModel(session, paymentDetailsViewModel.SubmissionId);
+            var model = GetSubmissionDetailsViewModel(session, paymentDetailsViewModel.SubmissionHash);
             return View(nameof(SubmissionDetails), model);
         }
 
@@ -250,15 +250,15 @@ public partial class SubmissionsController : Controller
             PagePath.SubmissionDetails,
             PagePath.ConfirmOfflinePaymentSubmission);
 
-        return RedirectToAction("ConfirmOfflinePaymentSubmission", "Submissions", new { paymentDetailsViewModel.SubmissionId });
+        return RedirectToAction("ConfirmOfflinePaymentSubmission", "Submissions", new { SubmissionHash = paymentDetailsViewModel.SubmissionHash });
     }
 
     [HttpGet]
     [Route(PagePath.ConfirmOfflinePaymentSubmission)]
-    public async Task<IActionResult> ConfirmOfflinePaymentSubmission([FromQuery] int submissionId)
+    public async Task<IActionResult> ConfirmOfflinePaymentSubmission([FromQuery] int submissionHash)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionId];
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionHash];
 
         string offlinePayment = TempData.Peek("OfflinePaymentAmount").ToString();
 
@@ -287,7 +287,7 @@ public partial class SubmissionsController : Controller
         }
         else if (!(bool)model.IsOfflinePaymentConfirmed)
         {
-            return RedirectToAction("SubmissionDetails", "Submissions", new { model.SubmissionHash.Value });
+            return RedirectToAction("SubmissionDetails", "Submissions", new { SubmissionHash = model.SubmissionHash.Value });
         }
 
         TempData.Remove("OfflinePaymentAmount");
@@ -298,7 +298,7 @@ public partial class SubmissionsController : Controller
                 new
                 {
                     statusCode = 404,
-                    backLink = $"{PagePath.SubmissionDetails}?SubmissionId={model.SubmissionHash.Value}"
+                    backLink = $"{PagePath.SubmissionDetails}?SubmissionHash={model.SubmissionHash.Value}"
                 })
             : await ProcessOfflinePaymentAsync(
                 submission.NationCode,
@@ -459,7 +459,7 @@ public partial class SubmissionsController : Controller
     public async Task<IActionResult> SubmissionsFileDownload([FromQuery] int submissionHash)
     {
         TempData["DownloadCompleted"] = false;
-        
+
         return RedirectToAction(nameof(PackagingDataFileDownload), "Submissions", new { submissionHash });
     }
 
@@ -491,7 +491,7 @@ public partial class SubmissionsController : Controller
         if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
             //TempData["SubmissionHash"] = submissionHash;
-            return RedirectToAction(nameof(PackagingDataFileDownloadSecurityWarning), new {submissionHash});
+            return RedirectToAction(nameof(PackagingDataFileDownloadSecurityWarning), new { submissionHash });
         }
         else if (response.IsSuccessStatusCode)
         {
