@@ -12,6 +12,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
     using EPR.RegulatorService.Frontend.Web.Helpers;
 
     using Microsoft.AspNetCore.Mvc;
+    using System.Reflection;
 
     public partial class SubmissionsController
     {
@@ -135,7 +136,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
         }
 
-        private ViewModels.Submissions.SubmissionDetailsViewModel GetSubmissionDetailsViewModel(JourneySession session, Guid submissionId)
+        private ViewModels.Submissions.SubmissionDetailsViewModel GetSubmissionDetailsViewModel(JourneySession session, int submissionId)
         {
             var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionId];
             var model = new ViewModels.Submissions.SubmissionDetailsViewModel
@@ -145,6 +146,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 OrganisationReferenceNumber = submission.OrganisationReference,
                 FormattedTimeAndDateOfSubmission = DateTimeHelpers.FormatTimeAndDateForSubmission(submission.SubmittedDate),
                 SubmissionId = submission.SubmissionId,
+                SubmissionHash = submissionId,
                 SubmittedBy = $"{submission.FirstName} {submission.LastName}",
                 SubmissionPeriod = submission.ActualSubmissionPeriod,
                 AccountRole = submission.ServiceRole,
@@ -173,7 +175,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             string referenceNumber,
             string offlinePaymentAmount,
             Guid userId,
-            Guid submissionId)
+            Guid submissionId,
+            int submissionHash)
         {
             var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
             {
@@ -186,7 +189,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 
             if (response == EndpointResponseStatus.Fail)
             {
-                return RedirectToRoute("ServiceNotAvailable", new { backLink = PagePath.SubmissionDetails });
+                return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.SubmissionDetails}?SubmissionId={submissionHash}" });
             }
 
             await _facadeService.SubmitPackagingDataResubmissionFeePaymentEventAsync(new FeePaymentRequest
@@ -198,7 +201,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 UserId = userId
             });
 
-            return RedirectToAction("SubmissionDetails", "Submissions", new { SubmissionId = submissionId });
+            return RedirectToAction("SubmissionDetails", "Submissions", new { SubmissionId = submissionHash });
         }
     }
 }

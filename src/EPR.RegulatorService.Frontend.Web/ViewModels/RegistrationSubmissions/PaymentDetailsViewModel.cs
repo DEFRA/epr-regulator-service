@@ -19,7 +19,7 @@ public class PaymentDetailsViewModel
                         )]
     public string? OfflinePayment { get; set; }
 
-    public Guid SubmissionId { get; set; }
+    public int SubmissionId { get; set; }
 
     public void EnsureTwoDecimalPlaces()
     {

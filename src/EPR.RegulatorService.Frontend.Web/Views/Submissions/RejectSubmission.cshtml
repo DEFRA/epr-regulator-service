@@ -109,7 +109,7 @@
                     @Html.ActionLink(SharedLocalizer["Cancel"],
                              "SubmissionDetails",
                              "Submissions",
-                             new { Model.SubmissionId },
+                             new { SubmissionHash = Model.SubmissionId },
                              new { @class = "govuk-body govuk-link govuk-link--no-visited-state epr-horizontal-control epr-horizontal-control-link" })
                 </div>
             </div>
