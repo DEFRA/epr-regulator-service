@@ -201,7 +201,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 UserId = userId
             });
 
-            return RedirectToAction("SubmissionDetails", "Submissions", new { SubmissionId = submissionHash });
+            return RedirectToAction("SubmissionDetails", "Submissions", new { SubmissionHash = submissionHash });
         }
     }
 }
