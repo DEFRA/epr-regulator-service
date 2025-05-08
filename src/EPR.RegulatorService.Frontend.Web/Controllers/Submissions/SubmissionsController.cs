@@ -322,7 +322,7 @@ public partial class SubmissionsController : Controller
         };
 
         await SaveSessionAndJourney(session, PagePath.SubmissionDetails, PagePath.AcceptSubmission);
-        SetBackLink(session, PagePath.AcceptSubmission);
+        SetBackLink($"{PagePath.SubmissionDetails}?SubmissionHash={submissionId}");
 
         return View(nameof(AcceptSubmission), model);
     }
@@ -337,7 +337,7 @@ public partial class SubmissionsController : Controller
 
         if (!ModelState.IsValid)
         {
-            SetBackLink(session, PagePath.AcceptSubmission);
+            SetBackLink($"{PagePath.SubmissionDetails}?SubmissionHash={model.SubmissionId}");
             return View(nameof(AcceptSubmission), model);
         }
 
@@ -392,7 +392,7 @@ public partial class SubmissionsController : Controller
         };
 
         await SaveSessionAndJourney(session, PagePath.SubmissionDetails, PagePath.RejectSubmission);
-        SetBackLink($"{PagePath.SubmissionDetails}?SubmissionHash={submissionId}"); //This needs to change
+        SetBackLink($"{PagePath.SubmissionDetails}?SubmissionHash={submissionId}");
 
         return View(nameof(RejectSubmission), model);
     }
