@@ -10,6 +10,8 @@ public class SubmissionDetailsFileDownloadViewModel
     public Guid? SubmissionId { get; set; }
     public string SubmittedBy { get; set; }
 
+    public  int SubmissionHash { get; set; }
+
     public SubmissionDetailsFileDownloadViewModel() { }
 
     public SubmissionDetailsFileDownloadViewModel(bool downloadFailed, bool hasIssue, Guid? submissionId = null, string? submittedBy="")

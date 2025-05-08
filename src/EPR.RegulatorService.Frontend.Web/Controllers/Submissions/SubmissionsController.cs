@@ -456,39 +456,42 @@ public partial class SubmissionsController : Controller
 
     [HttpGet]
     [Route(PagePath.SubmissionsFileDownload)]
-    public async Task<IActionResult> SubmissionsFileDownload()
+    public async Task<IActionResult> SubmissionsFileDownload([FromQuery] int submissionHash)
     {
         TempData["DownloadCompleted"] = false;
-
-        return RedirectToAction(nameof(PackagingDataFileDownload), "Submissions");
+        
+        return RedirectToAction(nameof(PackagingDataFileDownload), "Submissions", new { submissionHash });
     }
 
 
     [HttpGet]
     [Route(PagePath.PackagingDataFileDownload)]
-    public IActionResult PackagingDataFileDownload()
+    public IActionResult PackagingDataFileDownload([FromQuery] int submissionHash)
     {
+        TempData["SubmissionHash"] = submissionHash;
         return View("PackagingDataFileDownload");
     }
 
 
     [HttpGet]
-    public async Task<IActionResult> FileDownloadInProgress([FromQuery] int submissionId)
+    public async Task<IActionResult> FileDownloadInProgress([FromQuery] int submissionHash)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionId];
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionHash];
         var fileDownloadModel = CreateFileDownloadRequest(submission);
 
         if (fileDownloadModel == null)
         {
-            return RedirectToAction(nameof(PackagingDataFileDownloadFailed));
+            //TempData["SubmissionHash"] = submissionHash;
+            return RedirectToAction(nameof(PackagingDataFileDownloadFailed), new { submissionHash });
         }
 
         var response = await _facadeService.GetFileDownload(fileDownloadModel);
 
         if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            return RedirectToAction(nameof(PackagingDataFileDownloadSecurityWarning));
+            //TempData["SubmissionHash"] = submissionHash;
+            return RedirectToAction(nameof(PackagingDataFileDownloadSecurityWarning), new {submissionHash});
         }
         else if (response.IsSuccessStatusCode)
         {
@@ -501,27 +504,28 @@ public partial class SubmissionsController : Controller
         }
         else
         {
-            return RedirectToAction(nameof(PackagingDataFileDownloadFailed));
+            //TempData["SubmissionHash"] = submissionHash;
+            return RedirectToAction(nameof(PackagingDataFileDownloadFailed), new { submissionHash });
         }
     }
 
 
     [HttpGet]
     [Route(PagePath.PackagingDataFileDownloadFailed)]
-    public IActionResult PackagingDataFileDownloadFailed()
+    public IActionResult PackagingDataFileDownloadFailed([FromQuery] int submissionHash)
     {
-        var model = new SubmissionDetailsFileDownloadViewModel(true, false);
+        var model = new SubmissionDetailsFileDownloadViewModel(true, false) { SubmissionHash = submissionHash };
         return View("PackagingDataFileDownloadFailed", model);
     }
 
     [HttpGet]
     [Route(PagePath.PackagingDataFileDownloadSecurityWarning)]
-    public async Task<IActionResult> PackagingDataFileDownloadSecurityWarning([FromQuery] int submissionId)
+    public async Task<IActionResult> PackagingDataFileDownloadSecurityWarning([FromQuery] int submissionHash)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionId];
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionHash];
         string submittedBy = $"{submission.FirstName} {submission.LastName}";
-        var model = new SubmissionDetailsFileDownloadViewModel(true, true, null, submittedBy);
+        var model = new SubmissionDetailsFileDownloadViewModel(true, true, null, submittedBy) { SubmissionHash = submissionHash };
         return View("PackagingDataFileDownloadFailed", model);
     }
 
