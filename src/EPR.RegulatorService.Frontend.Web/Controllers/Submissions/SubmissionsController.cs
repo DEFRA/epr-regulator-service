@@ -219,14 +219,14 @@ public partial class SubmissionsController : Controller
     }
 
     [Route(PagePath.SubmissionDetails, Name = "ResubmissionPaymentInfo")]
-    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel, [FromQuery] Guid submissionId)
+    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
         if (!ModelState.IsValid)
         {
             SetBackLink(session, PagePath.SubmissionDetails);
-            var model = GetSubmissionDetailsViewModel(session, submissionId);
+            var model = GetSubmissionDetailsViewModel(session, paymentDetailsViewModel.SubmissionId);
             return View(nameof(SubmissionDetails), model);
         }
 
@@ -242,7 +242,7 @@ public partial class SubmissionsController : Controller
             PagePath.SubmissionDetails,
             PagePath.ConfirmOfflinePaymentSubmission);
 
-        return RedirectToAction("ConfirmOfflinePaymentSubmission", new { submissionId });
+        return RedirectToAction("ConfirmOfflinePaymentSubmission", "Submissions", new { paymentDetailsViewModel.SubmissionId });
     }
 
     [HttpGet]
@@ -267,10 +267,10 @@ public partial class SubmissionsController : Controller
 
     [HttpPost]
     [Route(PagePath.ConfirmOfflinePaymentSubmission)]
-    public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model, [FromQuery] Guid submissionId)
+    public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionId];
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[model.SubmissionId.Value];
 
         if (!ModelState.IsValid)
         {
@@ -279,7 +279,7 @@ public partial class SubmissionsController : Controller
         }
         else if (!(bool)model.IsOfflinePaymentConfirmed)
         {
-            return RedirectToAction("SubmissionDetails");
+            return RedirectToAction("SubmissionDetails", "Submissions", new { model.SubmissionId });
         }
 
         TempData.Remove("OfflinePaymentAmount");

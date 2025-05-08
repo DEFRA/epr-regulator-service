@@ -11,6 +11,7 @@
 @using (Html.BeginForm("ConfirmOfflinePaymentSubmission", "Submissions", FormMethod.Post))
 {
     @Html.HiddenFor(r => r.OfflinePaymentAmount)
+    @Html.HiddenFor(r => r.SubmissionId)
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper" id="main-content" role="main">
             <div class="govuk-grid-row">
