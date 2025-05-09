@@ -157,7 +157,7 @@ public partial class SubmissionsController : Controller
 
             var submission = JsonSerializer.Deserialize<Submission>(jsonSubmission);
 
-            int hash = GetSubmissionHashCode(submission);
+            int hash = RegulatorSubmissionSession.GetSubmissionHashCode(submission);
 
             session.RegulatorSubmissionSession.OrganisationSubmissions[hash] = submission;
 
@@ -184,10 +184,6 @@ public partial class SubmissionsController : Controller
             PagePath.Submissions,
             null);
     }
-
-    public static int GetSubmissionHashCode(Submission submission) => submission == null
-            ? throw new ArgumentNullException(nameof(submission))
-            : HashCode.Combine(submission.SubmissionId, submission.SubmittedDate) & int.MaxValue;
 
     [HttpGet]
     [Route(PagePath.SubmissionDetails)]

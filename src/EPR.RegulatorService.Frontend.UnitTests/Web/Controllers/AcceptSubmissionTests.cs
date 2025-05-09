@@ -15,11 +15,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     public class AcceptSubmissionTests : SubmissionsTestBase
     {
         private const string ViewName = "AcceptSubmission";
+        private int _hashCode;
 
         [TestInitialize]
         public void Setup()
         {
             SetupBase();
+            var testSubmission = TestSubmission.GetTestSubmission();
+            _hashCode = RegulatorSubmissionSession.GetSubmissionHashCode(testSubmission);
+
             JourneySessionMock = new JourneySession
             {
                 RegulatorSubmissionSession = new RegulatorSubmissionSession
@@ -29,11 +33,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                         PagePath.Submissions,
                         PagePath.SubmissionDetails,
                         PagePath.AcceptSubmission
-                    },
-                    OrganisationSubmission = TestSubmission.GetTestSubmission()
+                    }
                 }
             };
 
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = testSubmission;
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
         }
@@ -42,10 +46,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GivenOnAcceptSubmissionPage_WhenAcceptSubmissionHttpGetCalled_ThenAssertBackLinkSet_And_Set_Session()
         {
             // Arrange
-            var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission;
+            var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode];
 
             // Act
-            var result = await _systemUnderTest.AcceptSubmission() as ViewResult;
+            var result = await _systemUnderTest.AcceptSubmission(_hashCode) as ViewResult;
 
             // Assert
             result.Should().NotBeNull();
@@ -61,7 +65,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GivenOnAcceptSubmissionPage_WhenAcceptSubmissionHttpPostCalled_NoVerificationOptionSelected_ThenThrowValidationError()
         {
             // Arrange
-            var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission;
+            var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] ;
             var viewModel = new AcceptSubmissionViewModel()
             {
                 OrganisationName = organisationSubmission.OrganisationName,
@@ -87,7 +91,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GivenOnAcceptSubmissionPage_WhenAcceptSubmissionHttpPostCalled_HappyPath_NoSelected_ThenRedirectToSubmissionDetailsPage()
         {
             // Arrange
-            var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission;
+            var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode];
 
             var viewModel = new AcceptSubmissionViewModel()
             {
@@ -113,7 +117,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GivenOnAcceptSubmissionPage_WhenAcceptSubmissionHttpPostCalled_HappyPath_YesSelected_ThenRedirectToSubmissionsPage_AndUpdateSession()
         {
             // Arrange
-            var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission;
+            var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] ;
             var viewModel = new AcceptSubmissionViewModel()
             {
                 OrganisationName = organisationSubmission.OrganisationName,

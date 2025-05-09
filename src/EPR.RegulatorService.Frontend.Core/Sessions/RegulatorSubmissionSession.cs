@@ -18,5 +18,10 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
         public int[] SearchSubmissionYears { get; set; }
         public string[] SearchSubmissionPeriods { get; set; }
         public int? CurrentPageNumber { get; set; }
+
+        public static int GetSubmissionHashCode(Submission submission) => submission == null
+        ? throw new ArgumentNullException(nameof(submission))
+        : HashCode.Combine(submission.SubmissionId, submission.SubmittedDate) & int.MaxValue;
+
     }
 }
