@@ -246,7 +246,7 @@ public partial class SubmissionsController : Controller
             PagePath.SubmissionDetails,
             PagePath.ConfirmOfflinePaymentSubmission);
 
-        return RedirectToAction("ConfirmOfflinePaymentSubmission", "Submissions", new { SubmissionHash = paymentDetailsViewModel.SubmissionHash });
+        return RedirectToAction("ConfirmOfflinePaymentSubmission", "Submissions", new { paymentDetailsViewModel.SubmissionHash });
     }
 
     [HttpGet]
@@ -258,7 +258,7 @@ public partial class SubmissionsController : Controller
 
         string offlinePayment = TempData.Peek("OfflinePaymentAmount").ToString();
 
-        SetBackLink(PagePath.SubmissionDetails);
+        SetBackLink($"{PagePath.SubmissionDetails}?SubmissionHash={submissionHash}");
 
         var model = new ConfirmOfflinePaymentSubmissionViewModel
         {
@@ -278,7 +278,7 @@ public partial class SubmissionsController : Controller
 
         if (!ModelState.IsValid)
         {
-            SetBackLink(PagePath.SubmissionDetails);
+            SetBackLink($"{PagePath.SubmissionDetails}?SubmissionHash={model.SubmissionHash}");
             return View(nameof(ConfirmOfflinePaymentSubmission), model);
         }
         else if (!(bool)model.IsOfflinePaymentConfirmed)
