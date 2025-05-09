@@ -784,6 +784,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
+                SubmissionHash = _hashCode,
                 IsOfflinePaymentConfirmed = null, // Invalid state
                 OfflinePaymentAmount = null
             };
@@ -819,6 +820,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
+                SubmissionHash = _hashCode,
                 IsOfflinePaymentConfirmed = false
             };
 
@@ -829,6 +831,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectResult = result as RedirectToActionResult;
             redirectResult.Should().NotBeNull();
             redirectResult!.ActionName.Should().Be("SubmissionDetails");
+            redirectResult.RouteValues.Should().Contain("SubmissionHash", _hashCode);
         }
 
         [TestMethod]
@@ -892,6 +895,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
+                SubmissionHash = _hashCode,
                 IsOfflinePaymentConfirmed = true,
                 OfflinePaymentAmount = DefaultOfflinePaymentAmount,
             };
@@ -938,6 +942,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
+                SubmissionHash = _hashCode,
                 IsOfflinePaymentConfirmed = true,
                 OfflinePaymentAmount = DefaultOfflinePaymentAmount,
             };
@@ -969,6 +974,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var paymentDetailsViewModel = new PaymentDetailsViewModel
             {
+                SubmissionHash = _hashCode,
                 OfflinePayment = offilinePayment
             };
             _systemUnderTest.ModelState.AddModelError("Key", "Invalid state");
