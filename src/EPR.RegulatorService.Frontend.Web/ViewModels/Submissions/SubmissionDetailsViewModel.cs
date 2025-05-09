@@ -4,7 +4,7 @@ using Core.Enums;
 
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 
-public class SubmissionDetailsViewModel: BaseSubmissionDetailsViewModel
+public class SubmissionDetailsViewModel : BaseSubmissionDetailsViewModel
 {
     public string OrganisationName { get; set; }
     public OrganisationType OrganisationType { get; set; }
@@ -24,4 +24,5 @@ public class SubmissionDetailsViewModel: BaseSubmissionDetailsViewModel
     public string SubmissionFileName { get; set; }
     public DateTime SubmittedDate { get; set; }
     public string SubmissionBlobName { get; set; }
+    public Guid? ComplianceSchemeId { get; set; }
 }

@@ -1,10 +1,22 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
 <h2 class="govuk-heading-m">@Localizer["OrganisationFileDownload.TryAgainPageTitle"]</h2>
 <p class="govuk-body">@Localizer["OrganisationFileDownload.TryAgainPageInfo1"]</p>
 <h3 class="govuk-heading-m">@Localizer["OrganisationFileDownload.TryAgainPageInfo2"]</h3>
 <p class="govuk-body">@Localizer["OrganisationFileDownload.TryAgainPageInfo3"]</p>
 
-<form class="govuk-!-display-inline-block" method="get" asp-controller="Submissions" asp-action="SubmissionsFileDownload">
-    <button class="govuk-button" data-module="govuk-button">
-        @SharedLocalizer["FileDownload.TryAgainButton.AgainStartingWithSmallLetter"]
-    </button>
-</form>
+@model SubmissionDetailsFileDownloadViewModel
+@{
+  var submissionHash = Model.SubmissionHash;
+}
+
+@using (Html.BeginForm("SubmissionsFileDownload", "Submissions", new {submissionHash = @submissionHash}, FormMethod.Get ))
+{
+    @Html.HiddenFor(x => x.SubmissionHash)
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <button class="govuk-button" data-module="govuk-button">
+                @SharedLocalizer["FileDownload.TryAgainButton.AgainStartingWithSmallLetter"]
+            </button>
+        </div>
+    </div>
+}

@@ -9,6 +9,7 @@
 
 @using (Html.BeginRouteForm("ResubmissionPaymentInfo", new { submissionId = ViewBag.OrganisationId }, FormMethod.Post))
 {
+    @Html.HiddenFor(x => x.SubmissionHash)
     <div class="govuk-!-width-one-half govuk-form-group @(errorsViewModel.HasErrorKey(nameof(Model.OfflinePayment)) ? " govuk-form-group--error" : "")">
         <label class="govuk-label" for="@nameof(Model.OfflinePayment)">
             @SharedLocalizer["PaymentDetail.OfflinePaymentDetailsTitle"]

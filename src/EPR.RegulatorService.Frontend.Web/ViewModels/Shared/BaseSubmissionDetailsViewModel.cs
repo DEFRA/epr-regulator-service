@@ -14,5 +14,7 @@ public abstract class BaseSubmissionDetailsViewModel
 
     public Guid SubmissionId { get; set; }
 
+    public int SubmissionHash { get; set; }
+
     public int MemberCount { get; set; }
 }

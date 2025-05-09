@@ -5,7 +5,7 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
     public class RegulatorSubmissionSession
     {
         public List<string> Journey { get; set; } = new();
-        public Submission OrganisationSubmission { get; set; }
+        public Dictionary<int, Submission> OrganisationSubmissions { get; set; } = [];
         public RejectSubmissionJourneyData? RejectSubmissionJourneyData { get; set; }
         public string? SearchOrganisationName { get; set; } = string.Empty;
         public string? SearchOrganisationId { get; set; } = string.Empty;
@@ -16,6 +16,11 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
         public bool IsRejectedSubmissionChecked { get; set; }
         public int[] SearchSubmissionYears { get; set; }
         public string[] SearchSubmissionPeriods { get; set; }
-        public int? CurrentPageNumber { get; set; }   
+        public int? CurrentPageNumber { get; set; }
+
+        public static int GetSubmissionHashCode(Submission submission) => submission == null
+        ? throw new ArgumentNullException(nameof(submission))
+        : HashCode.Combine(submission.SubmissionId, submission.SubmittedDate) & int.MaxValue;
+
     }
 }

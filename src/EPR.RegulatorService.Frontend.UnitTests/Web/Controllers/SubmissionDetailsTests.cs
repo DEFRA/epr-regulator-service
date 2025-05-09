@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+using System;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
@@ -13,11 +14,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     public class SubmissionDetailsTests : SubmissionsTestBase
     {
         private const string ViewName = "SubmissionDetails";
+        private int _hashCode;
 
         [TestInitialize]
         public void Setup()
         {
             SetupBase();
+
+            var testSubmission = TestSubmission.GetTestSubmission();
+            _hashCode = RegulatorSubmissionSession.GetSubmissionHashCode(testSubmission);
+
             JourneySessionMock = new JourneySession
             {
                 RegulatorSubmissionSession = new RegulatorSubmissionSession
@@ -27,10 +33,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                         PagePath.Submissions,
                         PagePath.SubmissionDetails
                     },
-                    OrganisationSubmission = TestSubmission.GetTestSubmission()
                 }
             };
-
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = testSubmission;
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
         }
@@ -39,7 +44,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GivenOnSubmissionDetailsPage_WhenSubmissionDetailsHttpGetCalled_ThenAssertBackLinkSet_And_Set_Session()
         {
             // Arrange
-            var submissionFromSession = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission;
+            var submissionFromSession = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode];
             _facadeServiceMock.Setup(r => r.GetPomPayCalParameters(It.IsAny<Guid>(), null))
                 .ReturnsAsync(new PomPayCalParametersResponse {
                     Reference = "12345",
@@ -49,7 +54,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 });
 
             // Act
-            var result = await _systemUnderTest.SubmissionDetails() as ViewResult;
+            var result = await _systemUnderTest.SubmissionDetails(_hashCode) as ViewResult;
 
             // Assert
             result.Should().NotBeNull();
@@ -77,7 +82,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GivenOnSubmissionDetailsPage_WhenSubmissionDetailsHttpGetCalled_ThenAssertBackLinkSet_And_Set_Session_Resubmission(bool withResubmissionDate)
         {
             // Arrange
-            var submissionFromSession = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission;
+            var submissionFromSession = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode];
             submissionFromSession.IsResubmission = true;
             submissionFromSession.SubmittedDate = DateTime.UtcNow;
             _facadeServiceMock.Setup(r => r.GetPomPayCalParameters(It.IsAny<Guid>(), null))
@@ -90,7 +95,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 });
 
             // Act
-            var result = await _systemUnderTest.SubmissionDetails() as ViewResult;
+            var result = await _systemUnderTest.SubmissionDetails(_hashCode) as ViewResult;
 
             // Assert
             result.Should().NotBeNull();
