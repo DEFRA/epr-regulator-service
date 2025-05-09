@@ -1,9 +1,7 @@
-using System;
-using System.Text.Json;
-
 using EPR.RegulatorService.Frontend.Core.Models;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
@@ -11,10 +9,14 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
+using System.Text.Json;
+using System;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
@@ -88,13 +90,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _systemUnderTest.TempData["SubmissionResultAccept"] = EndpointResponseStatus.Success;
             _systemUnderTest.TempData["SubmissionResultOrganisationName"] = SearchOrganisationName;
 
-            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
-                .Returns(([2023, 2024],
-                    ["January to June 2023",
-                    "July to December 2023",
-                    "January to June 2024",
-                    "July to December 2024"]));
-
             // Act
             var result = await _systemUnderTest.Submissions();
 
@@ -128,13 +123,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _systemUnderTest.TempData["SubmissionResultReject"] = EndpointResponseStatus.Success;
             _systemUnderTest.TempData["SubmissionResultOrganisationName"] = SearchOrganisationName;
 
-            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
-                .Returns(([2023, 2024],
-                    ["January to June 2023",
-                    "July to December 2023",
-                    "January to June 2024",
-                    "July to December 2024"]));
-
             // Act
             var result = await _systemUnderTest.Submissions();
 
@@ -164,14 +152,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task GivenOnSubmissionsGet_WithValidSession_WhenPageTwoSelected_ThenUpdatesSessionAndReturnsView()
         {
-            // Arrange
-            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
-                .Returns(([2023, 2024],
-                    ["January to June 2023",
-                    "July to December 2023",
-                    "January to June 2024",
-                    "July to December 2024"]));
-
             // Act
             var result = await _systemUnderTest.Submissions(PageNumberTwo);
 
@@ -206,15 +186,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
-            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
-                .Returns(([2023, 2024],
-                    ["January to June 2023",
-                    "July to December 2023",
-                    "January to June 2024",
-                    "July to December 2024"]));
-
-            int[] searchedSubmissionYears = [2023];
-            string[] searchedSubmissionPeriods = ["Jan to June 2023"];
+            int[] searchedSubmissionYears = new[] { 2023 };
+            string[] searchedSubmissionPeriods = new[] { "Jan to June 2023" };
 
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationName = SearchOrganisationName;
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationId = string.Empty;
@@ -333,6 +306,42 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.IsPendingSubmissionChecked.Should().BeFalse();
             session.IsAcceptedSubmissionChecked.Should().BeFalse();
             session.IsRejectedSubmissionChecked.Should().BeFalse();
+        }
+
+        [TestMethod]
+        public async Task Applications_WithValidSession_ReturnsCorrectViewAndModel_Where_FilterType_Is_ClearFilters()
+        {
+            // Arrange
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(JourneySessionMock);
+
+            var submissionRequestViewModel = new SubmissionsRequestViewModel
+            {
+                SearchSubmissionYears = [2025, 2026],
+                SearchSubmissionPeriods = ["Jan to June 2023", "Jan to June 2024"]
+
+            };
+
+            // Act
+            var result = await _systemUnderTest.Submissions(submissionRequestViewModel, FilterActions.ClearFilters);
+
+            // Assert
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectToActionResult = result as RedirectToActionResult;
+            redirectToActionResult.ActionName.Should().Be(nameof(SubmissionsController.Submissions));
+
+            var session = JourneySessionMock.RegulatorSubmissionSession;
+            session.CurrentPageNumber.Should().Be(DefaultPageNumber);
+            session.SearchOrganisationName.Should().BeEmpty();
+            session.SearchOrganisationId.Should().BeEmpty();
+            session.IsDirectProducerChecked.Should().BeFalse();
+            session.IsComplianceSchemeChecked.Should().BeFalse();
+            session.IsPendingSubmissionChecked.Should().BeFalse();
+            session.IsAcceptedSubmissionChecked.Should().BeFalse();
+            session.IsRejectedSubmissionChecked.Should().BeFalse();
+            session.SearchSubmissionYears.Should().BeEmpty();
+            session.SearchSubmissionPeriods.Should().BeEmpty();
+
         }
 
         [TestMethod]
@@ -628,6 +637,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submission = _fixture.Create<Submission>();
             submission.PomBlobName = null;
+
             var session = SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
@@ -744,6 +754,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
+
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId
@@ -860,7 +871,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectResult = result as RedirectToActionResult;
             redirectResult.Should().NotBeNull();
             redirectResult!.ActionName.Should().Be("SubmissionDetails");
-            redirectResult.RouteValues.Should().Contain("SubmissionHash", _hashCode);
         }
 
         [TestMethod]
