@@ -717,7 +717,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId
             };
@@ -725,7 +725,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _tempDataDictionary["OfflinePaymentAmount"] = DefaultOfflinePaymentAmount;
 
             // Act
-            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission(_hashCode);
 
             // Assert
             var viewResult = result as ViewResult;
@@ -743,7 +743,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId
             };
@@ -752,7 +752,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _tempDataDictionary["NationCode"] = DefaultNationCode;
 
             // Act
-            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission(_hashCode);
 
             // Assert
             var viewResult = result as ViewResult;
@@ -769,7 +769,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid()
@@ -804,7 +804,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid()
@@ -836,7 +836,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid()
@@ -872,7 +872,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid(),
@@ -917,7 +917,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid()
@@ -962,7 +962,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task SubmitOfflinePayment_ReturnsViewResult_WithInvalidModelState(string offilinePayment)
         {
             // Arrange
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = TestSubmission.GetTestSubmission();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = TestSubmission.GetTestSubmission();
 
             var paymentDetailsViewModel = new PaymentDetailsViewModel
             {
