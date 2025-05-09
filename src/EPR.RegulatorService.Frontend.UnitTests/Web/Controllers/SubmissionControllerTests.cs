@@ -29,13 +29,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         private Fixture _fixture;
         private int _hashCode;
 
+        private readonly Submission _testSubmission = TestSubmission.GetTestSubmission();
+
         [TestInitialize]
         public void Setup()
         {
             SetupBase();
 
-            var testSubmission = TestSubmission.GetTestSubmission();
-            _hashCode = RegulatorSubmissionSession.GetSubmissionHashCode(testSubmission);
+            _hashCode = RegulatorSubmissionSession.GetSubmissionHashCode(_testSubmission);
 
             JourneySessionMock = new JourneySession()
             {
@@ -52,7 +53,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 }
             };
 
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = testSubmission;
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = _testSubmission;
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
@@ -240,8 +241,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
-            var submission = _fixture.Create<Submission>();
-            string submissionString = JsonSerializer.Serialize(submission);
+            string submissionString = JsonSerializer.Serialize(_testSubmission);
 
             // Act
             var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel(), null, submissionString);
@@ -251,7 +251,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectToActionResult = result as RedirectToActionResult;
             redirectToActionResult.ActionName.Should().Be("SubmissionDetails");
 
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationId.Should().Be(submission.OrganisationId);
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationId.Should().Be(_testSubmission.OrganisationId);
         }
 
         [TestMethod]
