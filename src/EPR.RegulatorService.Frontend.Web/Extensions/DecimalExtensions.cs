@@ -9,4 +9,7 @@ public static class DecimalExtensions
         input == null
             ? string.Empty
             : ToDisplayNumber(input.Value);
+
+    public static string ToDisplayCurrency(this decimal input) =>
+        $"£{input:N2}";
 }

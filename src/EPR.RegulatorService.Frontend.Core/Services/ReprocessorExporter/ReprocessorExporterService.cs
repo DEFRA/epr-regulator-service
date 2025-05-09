@@ -108,6 +108,12 @@ public class ReprocessorExporterService(
         return registrationMaterialWasteLicence;
     }
 
+    public Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        // TODO: Implement this method
+        throw new NotImplementedException("GetPaymentFeesByRegistrationMaterialIdAsync is not implemented.");
+    }
+
     public async Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         await PrepareAuthenticatedClient();

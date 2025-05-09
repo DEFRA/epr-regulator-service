@@ -1,6 +1,6 @@
-namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
-
 using System.ComponentModel.DataAnnotations;
+
+namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ApplicationUpdate;
 
 public class ApplicationGrantedViewModel
 {

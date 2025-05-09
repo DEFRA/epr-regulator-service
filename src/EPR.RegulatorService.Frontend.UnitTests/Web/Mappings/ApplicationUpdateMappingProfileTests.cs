@@ -7,6 +7,8 @@ using EPR.RegulatorService.Frontend.Web.Mappings;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ApplicationUpdate;
+
 using Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 [TestClass]

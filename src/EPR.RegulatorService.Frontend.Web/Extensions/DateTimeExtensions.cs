@@ -11,6 +11,9 @@ namespace EPR.RegulatorService.Frontend.Web.Extensions
         public static string ToDisplayDateAndTime(this DateTime? dateTime) =>
             !dateTime.HasValue
                 ? string.Empty
-                : $"{dateTime.Value:d MMMM yyyy} at {dateTime.Value.ToString("h:mmtt").ToLower()}";
+                : dateTime.Value.ToDisplayDateAndTime();
+
+        public static string ToDisplayDateAndTime(this DateTime dateTime) =>
+            $"{dateTime:d MMMM yyyy} at {dateTime.ToString("h:mmtt").ToLower()}";
     }
 }

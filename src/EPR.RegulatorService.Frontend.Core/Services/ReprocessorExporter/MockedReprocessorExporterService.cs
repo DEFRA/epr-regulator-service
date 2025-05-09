@@ -102,6 +102,25 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             ]
         });
 
+    public Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials)
+            .First(rm => rm.Id == registrationMaterialId);
+         
+        var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
+
+        return Task.FromResult(new RegistrationMaterialPaymentFees
+        {
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
+            RegistrationMaterialId = registrationMaterial.Id,
+            MaterialName = registrationMaterial.MaterialName,
+            FeeAmount = 2921,
+            ApplicationReferenceNumber = "ABC123456",
+            SubmittedDate = DateTime.Now.AddDays(-7)
+        });
+    }
+
     public Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
