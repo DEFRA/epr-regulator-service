@@ -1,3 +1,5 @@
+using AutoMapper;
+
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -12,6 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
+using static StackExchange.Redis.Role;
+
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
@@ -20,8 +24,10 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Regi
 public class RegistrationsController(
     ISessionManager<JourneySession> sessionManager,
     IReprocessorExporterService reprocessorExporterService,
-    IConfiguration configuration)
+    IConfiguration configuration,
+    IMapper mapper)
     : ReprocessorExporterBaseController(sessionManager, configuration)
+  
 {
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
@@ -32,8 +38,11 @@ public class RegistrationsController(
         string pagePath = GetRegistrationMethodPath(PagePath.AuthorisedMaterials, registrationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
+
+        var registrationAuthorisedMaterials = await reprocessorExporterService.GetAuthorisedMaterialsByRegistrationIdAsync(registrationId);
+        var viewModel = mapper.Map<AuthorisedMaterialsViewModel>(registrationAuthorisedMaterials);
         
-        return View(GetRegistrationsView(nameof(AuthorisedMaterials)), registrationId);
+        return View(GetRegistrationsView(nameof(AuthorisedMaterials)), viewModel);
     }
 
     [HttpPost]
@@ -57,12 +66,14 @@ public class RegistrationsController(
     public async Task<IActionResult> UkSiteDetails(int registrationId)
     {
         var session = await GetSession();
-
         string pagePath = GetRegistrationMethodPath(PagePath.UkSiteDetails, registrationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(UkSiteDetails)), registrationId);
+        var siteDetails = await reprocessorExporterService.GetSiteDetailsByRegistrationIdAsync(registrationId);
+        var viewModel = mapper.Map<SiteDetailsViewModel>(siteDetails);
+
+        return View(GetRegistrationsView(nameof(UkSiteDetails)), viewModel);
     }
 
     [HttpPost]
@@ -91,7 +102,10 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(MaterialWasteLicences)), registrationMaterialId);
+        var materialWasteLicences = await reprocessorExporterService.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId);
+        var viewModel = mapper.Map<MaterialWasteLicencesViewModel>(materialWasteLicences);
+
+        return View(GetRegistrationsView(nameof(MaterialWasteLicences)), viewModel);
     }
 
     [HttpPost]
@@ -122,7 +136,14 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(SamplingInspection)), registrationMaterialId);
+        var samplingPlan = await reprocessorExporterService.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId);
+        var model = new RegistrationMaterialSamplingInspectionViewModel()
+        {
+            RegistrationMaterialId = registrationMaterialId,
+            RegistrationMaterialSamplingPlan = samplingPlan
+        };
+
+        return View(GetRegistrationsView(nameof(SamplingInspection)), model);
     }
 
     [HttpPost]
@@ -153,7 +174,14 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(InputsAndOutputs)), registrationMaterialId);     
+        var reprocessingIO = await reprocessorExporterService.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId);
+        var model = new RegistrationMaterialReprocessingIOViewModel()
+        {
+            RegistrationMaterialId = registrationMaterialId,
+            RegistrationMaterialReprocessingIO = reprocessingIO
+        };        
+
+        return View(GetRegistrationsView(nameof(InputsAndOutputs)), model);     
     }
 
     [HttpPost]
