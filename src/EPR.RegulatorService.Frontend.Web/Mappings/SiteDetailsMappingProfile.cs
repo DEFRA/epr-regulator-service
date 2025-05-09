@@ -9,7 +9,6 @@ public class SiteDetailsMappingProfile : Profile
     public SiteDetailsMappingProfile()
     {
         CreateMap<SiteDetails, SiteDetailsViewModel>()
-            .ForMember(dest => dest.RegistrationId, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Location, opt => opt.MapFrom(src => (src.NationName)))
             .ForMember(dest => dest.SiteGridReference, opt => opt.MapFrom(src => (src.GridReference)))
             .ForMember(dest => dest.LegalDocumentAddress, opt => opt.MapFrom(src => (src.LegalCorrespondenceAddress)));
