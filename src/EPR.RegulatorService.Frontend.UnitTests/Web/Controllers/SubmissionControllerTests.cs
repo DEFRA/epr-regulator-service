@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Text.Json;
+using System;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
@@ -28,11 +29,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         private const string DefaultOfflinePaymentAmount = "10.00";
         private const string DefaultNationCode = "GB-ENG";
         private Fixture _fixture;
+        private int _hashCode;
 
         [TestInitialize]
         public void Setup()
         {
             SetupBase();
+
+            var testSubmission = TestSubmission.GetTestSubmission();
+            _hashCode = RegulatorSubmissionSession.GetSubmissionHashCode(testSubmission);
 
             JourneySessionMock = new JourneySession()
             {
@@ -49,6 +54,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 }
             };
 
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = testSubmission;
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
@@ -247,7 +253,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectToActionResult = result as RedirectToActionResult;
             redirectToActionResult.ActionName.Should().Be("SubmissionDetails");
 
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission.OrganisationId.Should().Be(submission.OrganisationId);
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationId.Should().Be(submission.OrganisationId);
         }
 
         [TestMethod]
@@ -427,7 +433,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task SubmissionsFileDownload_RedirectsToPackagingDataFileDownload()
         {
             // Act
-            var result = await _systemUnderTest.SubmissionsFileDownload();
+            var result = await _systemUnderTest.SubmissionsFileDownload(_hashCode);
 
             // Assert
             result.Should().NotBeNull();
@@ -441,7 +447,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void PackagingDataFileDownload_ReturnsViewWithViewModel()
         {
             // Act
-            var result = _systemUnderTest.PackagingDataFileDownload();
+            var result = _systemUnderTest.PackagingDataFileDownload(_hashCode);
 
             // Assert
             result.Should().NotBeNull();
@@ -453,7 +459,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void PackagingDataFileDownloadFailed_ReturnsViewWithViewModel()
         {
             // Act
-            var result = _systemUnderTest.PackagingDataFileDownloadFailed();
+            var result = _systemUnderTest.PackagingDataFileDownloadFailed(_hashCode);
 
             // Assert
             result.Should().NotBeNull();
@@ -474,23 +480,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submission = _fixture.Create<Submission>();
             submission.FirstName = "fstName";
-            submission.LastName = "lstName";    
-            var session = new JourneySession
-            {
-                RegulatorSubmissionSession = new RegulatorSubmissionSession
-                {
-                    OrganisationSubmission = submission,
-                    
-                    
-                }
-            };
+            submission.LastName = "lstName";
+
+            var session = SetSession(submission);
 
             _sessionManagerMock
                 .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
 
             // Act
-            var result = await _systemUnderTest.PackagingDataFileDownloadSecurityWarning();
+            var result = await _systemUnderTest.PackagingDataFileDownloadSecurityWarning(_hashCode);
 
             // Assert
             result.Should().NotBeNull();
@@ -515,13 +514,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submission = _fixture.Create<Submission>();
-            var session = new JourneySession
-            {
-                RegulatorSubmissionSession = new RegulatorSubmissionSession
-                {
-                     OrganisationSubmission = submission
-                }
-            };
+
+            var session = SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
@@ -538,7 +532,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
                 // Act
-                var result = await _systemUnderTest.FileDownloadInProgress();
+                var result = await _systemUnderTest.FileDownloadInProgress(_hashCode);
 
                 // Assert
                 result.Should().NotBeNull();
@@ -554,13 +548,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submission = _fixture.Create<Submission>();
-            var session = new JourneySession
-            {
-                RegulatorSubmissionSession = new RegulatorSubmissionSession
-                {
-                    OrganisationSubmission = submission
-                }
-            };
+
+            var session = SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
@@ -569,7 +558,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
             // Act
-            var result = await _systemUnderTest.FileDownloadInProgress();
+            var result = await _systemUnderTest.FileDownloadInProgress(_hashCode);
 
             // Assert
             result.Should().NotBeNull();
@@ -585,13 +574,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submission = _fixture.Create<Submission>();
-            var session = new JourneySession
-            {
-                RegulatorSubmissionSession = new RegulatorSubmissionSession
-                {
-                    OrganisationSubmission = submission
-                }
-            };
+
+            var session = SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
@@ -600,7 +584,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
                 // Act
-                var result = await _systemUnderTest.FileDownloadInProgress();
+                var result = await _systemUnderTest.FileDownloadInProgress(_hashCode);
 
                 // Assert
                 result.Should().NotBeNull();
@@ -617,13 +601,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submission = _fixture.Create<Submission>();
             submission.PomBlobName = null;
-            var session = new JourneySession
-            {
-                RegulatorSubmissionSession = new RegulatorSubmissionSession
-                {
-                    OrganisationSubmission = submission
-                }
-            };
+            var session =  SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
@@ -632,7 +610,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
                 // Act
-                var result = await _systemUnderTest.FileDownloadInProgress();
+                var result = await _systemUnderTest.FileDownloadInProgress(_hashCode);
 
                 // Assert
                 result.Should().NotBeNull();
@@ -1052,5 +1030,22 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         #endregion SubmitOfflinePayment
+
+        private JourneySession SetSession(Submission submission)
+        {
+            var submissions = new Dictionary<int, Submission>
+            {
+                {_hashCode, submission}
+            };
+
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                    OrganisationSubmissions = submissions
+                }
+            };
+            return session;
+        }
     }
 }
