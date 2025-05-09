@@ -1,7 +1,9 @@
+using System;
+using System.Text.Json;
+
 using EPR.RegulatorService.Frontend.Core.Models;
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
@@ -9,14 +11,10 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using System.Text.Json;
-using System;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
@@ -601,7 +599,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submission = _fixture.Create<Submission>();
             submission.PomBlobName = null;
-            var session =  SetSession(submission);
+            var session = SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
@@ -625,7 +623,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_MorningTime()
         {
             // Arrange
-            
+
             var inputDate = new DateTime(2025, 1, 8, 9, 30, 0); // 9:30 AM, 8th January 2025
             var expectedOutput = "9:30am on 08 January 2025";
 
@@ -743,6 +741,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
+            string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?SubmissionHash={_hashCode}";
+
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId
@@ -757,7 +757,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
-            AssertBackLink(viewResult!, $"/regulators/{PagePath.SubmissionDetails}");
+            AssertBackLink(viewResult!, expectedBackLink);
         }
 
         #endregion GET
@@ -851,6 +851,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
+                SubmissionHash = _hashCode,
                 IsOfflinePaymentConfirmed = true,
                 OfflinePaymentAmount = null
             };
@@ -864,7 +865,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             redirectResult!.ActionName.Should().Be(PagePath.Error);
             redirectResult.ControllerName.Should().Be("Error");
             redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>("statusCode", 404));
-            redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>("backLink", PagePath.SubmissionDetails));
+            redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>(
+                "backLink",
+                $"{PagePath.SubmissionDetails}?SubmissionHash={_hashCode}"));
         }
 
         [TestMethod]
@@ -974,7 +977,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var result = await _systemUnderTest.SubmitOfflinePayment(paymentDetailsViewModel);
 
             // Assert
-            var viewResult = result as ViewResult;            
+            var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
             viewResult!.ViewName.Should().Be(nameof(_systemUnderTest.SubmissionDetails));
         }
