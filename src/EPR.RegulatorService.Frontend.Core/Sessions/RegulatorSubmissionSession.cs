@@ -5,7 +5,6 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
     public class RegulatorSubmissionSession
     {
         public List<string> Journey { get; set; } = new();
-        //public Submission OrganisationSubmission { get; set; }
         public Dictionary<int, Submission> OrganisationSubmissions { get; set; } = [];
         public RejectSubmissionJourneyData? RejectSubmissionJourneyData { get; set; }
         public string? SearchOrganisationName { get; set; } = string.Empty;
