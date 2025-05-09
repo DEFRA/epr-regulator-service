@@ -26,6 +26,7 @@ public class RegistrationSubmissionsFilterTests
             IsResubmissionPendingRegistrationChecked = true,
             PageNumber = 2,
             Is2025Checked = true,
+            Is2026Checked = true,
             // Act
             ClearFilters = true
         };
@@ -45,6 +46,7 @@ public class RegistrationSubmissionsFilterTests
         Assert.IsFalse(viewModel.IsResubmissionPendingRegistrationChecked, "IsResubmissionPendingRegistrationChecked should be false");
 
         Assert.IsFalse(viewModel.Is2025Checked, "Is2025Checked should be false");
+        Assert.IsFalse(viewModel.Is2026Checked, "Is2026Checked should be false");
     }
 
     [TestMethod]
@@ -57,7 +59,8 @@ public class RegistrationSubmissionsFilterTests
             IsOrganisationSmallChecked = true,
             IsOrganisationLargeChecked = false, // Only two flags set
             PageNumber = 2,
-            Is2025Checked = true
+            Is2025Checked = true,
+            Is2026Checked = true
         };
 
         // Act
@@ -66,7 +69,7 @@ public class RegistrationSubmissionsFilterTests
         // Assert
         Assert.AreEqual("compliance small", model.OrganisationType);
         Assert.AreEqual(2, model.PageNumber);
-        Assert.AreEqual("2025", model.RelevantYears);
+        Assert.AreEqual("2025, 2026", model.RelevantYears);
     }
 
     [TestMethod]
@@ -131,6 +134,7 @@ public class RegistrationSubmissionsFilterTests
         Assert.IsTrue(viewModel.IsOrganisationSmallChecked);
         Assert.IsFalse(viewModel.IsOrganisationLargeChecked);
         Assert.IsTrue(viewModel.Is2025Checked);
+        Assert.IsFalse(viewModel.Is2026Checked);
     }
 
     [TestMethod]

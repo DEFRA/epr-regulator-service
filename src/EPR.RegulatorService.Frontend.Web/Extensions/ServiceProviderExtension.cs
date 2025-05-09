@@ -86,6 +86,7 @@ public static class ServiceProviderExtension
         services.Configure<PaymentDetailsOptions>(configuration.GetSection(PaymentDetailsOptions.ConfigSection));
         services.Configure<ReprocessorExporterFacadeApiConfig>(configuration.GetSection(ReprocessorExporterFacadeApiConfig.ConfigSection));
         services.Configure<PackagingDataSubmissionsConfig>(configuration.GetSection(PackagingDataSubmissionsConfig.ConfigSection));
+        services.Configure<RegistrationSubmissionsOptions>(configuration.GetSection(RegistrationSubmissionsOptions.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)

@@ -162,4 +162,7 @@
   <data name="Checkbox.Year-2025" xml:space="preserve">
     <value>2025</value>
   </data>
+  <data name="Checkbox.Year-2026" xml:space="preserve">
+    <value>2026</value>
+  </data>
 </root>

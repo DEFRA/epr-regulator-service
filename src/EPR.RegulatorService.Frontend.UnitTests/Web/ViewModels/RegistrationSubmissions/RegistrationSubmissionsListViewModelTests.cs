@@ -14,6 +14,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             var emptyFilterViewModel = new RegistrationSubmissionsFilterViewModel
             {
                 Is2025Checked = false,
+                Is2026Checked = false,
                 IsOrganisationComplianceChecked = false,
                 IsOrganisationLargeChecked = false,
                 IsOrganisationSmallChecked = false,
@@ -34,7 +35,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             result.OrganisationReference.Should().BeNull();
             result.OrganisationType.Should().BeEmpty();
             result.Statuses.Should().BeEmpty();
-            result.RelevantYears.Should().BeNull();
+            result.RelevantYears.Should().BeEmpty();
         }
 
         [TestMethod]
@@ -43,6 +44,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             var emptyFilterViewModel = new RegistrationSubmissionsFilterViewModel
             {
                 Is2025Checked = false,
+                Is2026Checked = false,
                 IsOrganisationComplianceChecked = false,
                 IsOrganisationLargeChecked = false,
                 IsOrganisationSmallChecked = false,
@@ -67,6 +69,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             var emptyFilterViewModel = new RegistrationSubmissionsFilterViewModel
             {
                 Is2025Checked = false,
+                Is2026Checked = false,
                 IsOrganisationComplianceChecked = false,
                 IsOrganisationLargeChecked = false,
                 IsOrganisationSmallChecked = false,
@@ -92,6 +95,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             var emptyFilterViewModel = new RegistrationSubmissionsFilterViewModel
             {
                 Is2025Checked = true,
+                Is2026Checked = false,
                 IsOrganisationComplianceChecked = true,
                 IsOrganisationLargeChecked = true,
                 IsOrganisationSmallChecked = false,
@@ -118,6 +122,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             result.Statuses.Should().Contain("Cancelled");
             result.Statuses.Should().Contain("Updated");
             result.RelevantYears.Should().Contain("2025");
+            result.RelevantYears.Should().NotContain("2026");
 
             result.PageNumber.Should().Be(2);
         }

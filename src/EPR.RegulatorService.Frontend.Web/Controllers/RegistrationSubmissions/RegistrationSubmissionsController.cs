@@ -32,11 +32,13 @@ public partial class RegistrationSubmissionsController(
                 ISessionManager<JourneySession> sessionManager,
                 ILogger<RegistrationSubmissionsController> logger,
                 IConfiguration configuration,
-                IOptions<ExternalUrlsOptions> externalUrlsOptions
+                IOptions<ExternalUrlsOptions> externalUrlsOptions,
+                IOptions<RegistrationSubmissionsOptions> registrationSubmissionOptions
              ) : Controller
 {
     private readonly string _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
     private readonly ExternalUrlsOptions _externalUrlsOptions = externalUrlsOptions.Value;
+    private readonly RegistrationSubmissionsOptions _registrationSubmissionOptions = registrationSubmissionOptions.Value;
     private readonly ISessionManager<JourneySession> _sessionManager = sessionManager;
     private readonly IFacadeService _facadeService = facade;
     private readonly IPaymentFacadeService _paymentFacadeService = paymentFacade;
