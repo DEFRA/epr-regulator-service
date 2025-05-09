@@ -1,7 +1,9 @@
+using System;
+using System.Text.Json;
+
 using EPR.RegulatorService.Frontend.Core.Models;
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
@@ -9,13 +11,10 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using System.Text.Json;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
@@ -28,11 +27,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         private const string DefaultOfflinePaymentAmount = "10.00";
         private const string DefaultNationCode = "GB-ENG";
         private Fixture _fixture;
+        private int _hashCode;
+
+        private readonly Submission _testSubmission = TestSubmission.GetTestSubmission();
 
         [TestInitialize]
         public void Setup()
         {
             SetupBase();
+
+            _hashCode = RegulatorSubmissionSession.GetSubmissionHashCode(_testSubmission);
 
             JourneySessionMock = new JourneySession()
             {
@@ -49,6 +53,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 }
             };
 
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = _testSubmission;
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
@@ -83,6 +88,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _systemUnderTest.TempData["SubmissionResultAccept"] = EndpointResponseStatus.Success;
             _systemUnderTest.TempData["SubmissionResultOrganisationName"] = SearchOrganisationName;
 
+            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+                .Returns(([2023, 2024],
+                    ["January to June 2023",
+                    "July to December 2023",
+                    "January to June 2024",
+                    "July to December 2024"]));
+
             // Act
             var result = await _systemUnderTest.Submissions();
 
@@ -116,6 +128,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _systemUnderTest.TempData["SubmissionResultReject"] = EndpointResponseStatus.Success;
             _systemUnderTest.TempData["SubmissionResultOrganisationName"] = SearchOrganisationName;
 
+            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+                .Returns(([2023, 2024],
+                    ["January to June 2023",
+                    "July to December 2023",
+                    "January to June 2024",
+                    "July to December 2024"]));
+
             // Act
             var result = await _systemUnderTest.Submissions();
 
@@ -145,6 +164,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task GivenOnSubmissionsGet_WithValidSession_WhenPageTwoSelected_ThenUpdatesSessionAndReturnsView()
         {
+            // Arrange
+            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+                .Returns(([2023, 2024],
+                    ["January to June 2023",
+                    "July to December 2023",
+                    "January to June 2024",
+                    "July to December 2024"]));
+
             // Act
             var result = await _systemUnderTest.Submissions(PageNumberTwo);
 
@@ -179,8 +206,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
-            int[] searchedSubmissionYears = new[] { 2023 };
-            string[] searchedSubmissionPeriods = new[] { "Jan to June 2023" };
+            _submissionFilterConfigServiceMock.Setup(x => x.GetFilteredSubmissionYearsAndPeriods())
+                .Returns(([2023, 2024],
+                    ["January to June 2023",
+                    "July to December 2023",
+                    "January to June 2024",
+                    "July to December 2024"]));
+
+            int[] searchedSubmissionYears = [2023];
+            string[] searchedSubmissionPeriods = ["Jan to June 2023"];
 
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationName = SearchOrganisationName;
             JourneySessionMock.RegulatorSubmissionSession.SearchOrganisationId = string.Empty;
@@ -236,8 +270,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
 
-            var submission = _fixture.Create<Submission>();
-            string submissionString = JsonSerializer.Serialize(submission);
+            string submissionString = JsonSerializer.Serialize(_testSubmission);
 
             // Act
             var result = await _systemUnderTest.Submissions(new SubmissionsRequestViewModel(), null, submissionString);
@@ -247,7 +280,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectToActionResult = result as RedirectToActionResult;
             redirectToActionResult.ActionName.Should().Be("SubmissionDetails");
 
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission.OrganisationId.Should().Be(submission.OrganisationId);
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationId.Should().Be(_testSubmission.OrganisationId);
         }
 
         [TestMethod]
@@ -300,42 +333,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.IsPendingSubmissionChecked.Should().BeFalse();
             session.IsAcceptedSubmissionChecked.Should().BeFalse();
             session.IsRejectedSubmissionChecked.Should().BeFalse();
-        }
-
-        [TestMethod]
-        public async Task Applications_WithValidSession_ReturnsCorrectViewAndModel_Where_FilterType_Is_ClearFilters()
-        {
-            // Arrange
-            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-                .ReturnsAsync(JourneySessionMock);
-
-            var submissionRequestViewModel = new SubmissionsRequestViewModel
-            {
-                SearchSubmissionYears = [2025, 2026],
-                SearchSubmissionPeriods = ["Jan to June 2023", "Jan to June 2024"]
-
-            };
-
-            // Act
-            var result = await _systemUnderTest.Submissions(submissionRequestViewModel, FilterActions.ClearFilters);
-
-            // Assert
-            result.Should().BeOfType<RedirectToActionResult>();
-            var redirectToActionResult = result as RedirectToActionResult;
-            redirectToActionResult.ActionName.Should().Be(nameof(SubmissionsController.Submissions));
-
-            var session = JourneySessionMock.RegulatorSubmissionSession;
-            session.CurrentPageNumber.Should().Be(DefaultPageNumber);
-            session.SearchOrganisationName.Should().BeEmpty();
-            session.SearchOrganisationId.Should().BeEmpty();
-            session.IsDirectProducerChecked.Should().BeFalse();
-            session.IsComplianceSchemeChecked.Should().BeFalse();
-            session.IsPendingSubmissionChecked.Should().BeFalse();
-            session.IsAcceptedSubmissionChecked.Should().BeFalse();
-            session.IsRejectedSubmissionChecked.Should().BeFalse();
-            session.SearchSubmissionYears.Should().BeEmpty();
-            session.SearchSubmissionPeriods.Should().BeEmpty();
-
         }
 
         [TestMethod]
@@ -463,7 +460,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task SubmissionsFileDownload_RedirectsToPackagingDataFileDownload()
         {
             // Act
-            var result = await _systemUnderTest.SubmissionsFileDownload();
+            var result = await _systemUnderTest.SubmissionsFileDownload(_hashCode);
 
             // Assert
             result.Should().NotBeNull();
@@ -477,7 +474,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void PackagingDataFileDownload_ReturnsViewWithViewModel()
         {
             // Act
-            var result = _systemUnderTest.PackagingDataFileDownload();
+            var result = _systemUnderTest.PackagingDataFileDownload(_hashCode);
 
             // Assert
             result.Should().NotBeNull();
@@ -489,7 +486,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void PackagingDataFileDownloadFailed_ReturnsViewWithViewModel()
         {
             // Act
-            var result = _systemUnderTest.PackagingDataFileDownloadFailed();
+            var result = _systemUnderTest.PackagingDataFileDownloadFailed(_hashCode);
 
             // Assert
             result.Should().NotBeNull();
@@ -510,23 +507,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submission = _fixture.Create<Submission>();
             submission.FirstName = "fstName";
-            submission.LastName = "lstName";    
-            var session = new JourneySession
-            {
-                RegulatorSubmissionSession = new RegulatorSubmissionSession
-                {
-                    OrganisationSubmission = submission,
-                    
-                    
-                }
-            };
+            submission.LastName = "lstName";
+
+            var session = SetSession(submission);
 
             _sessionManagerMock
                 .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
 
             // Act
-            var result = await _systemUnderTest.PackagingDataFileDownloadSecurityWarning();
+            var result = await _systemUnderTest.PackagingDataFileDownloadSecurityWarning(_hashCode);
 
             // Assert
             result.Should().NotBeNull();
@@ -551,13 +541,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submission = _fixture.Create<Submission>();
-            var session = new JourneySession
-            {
-                RegulatorSubmissionSession = new RegulatorSubmissionSession
-                {
-                     OrganisationSubmission = submission
-                }
-            };
+
+            var session = SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
@@ -574,7 +559,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
                 // Act
-                var result = await _systemUnderTest.FileDownloadInProgress();
+                var result = await _systemUnderTest.FileDownloadInProgress(_hashCode);
 
                 // Assert
                 result.Should().NotBeNull();
@@ -590,13 +575,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submission = _fixture.Create<Submission>();
-            var session = new JourneySession
-            {
-                RegulatorSubmissionSession = new RegulatorSubmissionSession
-                {
-                    OrganisationSubmission = submission
-                }
-            };
+
+            var session = SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
@@ -605,7 +585,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
             // Act
-            var result = await _systemUnderTest.FileDownloadInProgress();
+            var result = await _systemUnderTest.FileDownloadInProgress(_hashCode);
 
             // Assert
             result.Should().NotBeNull();
@@ -621,13 +601,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submission = _fixture.Create<Submission>();
-            var session = new JourneySession
-            {
-                RegulatorSubmissionSession = new RegulatorSubmissionSession
-                {
-                    OrganisationSubmission = submission
-                }
-            };
+
+            var session = SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
@@ -636,7 +611,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
                 // Act
-                var result = await _systemUnderTest.FileDownloadInProgress();
+                var result = await _systemUnderTest.FileDownloadInProgress(_hashCode);
 
                 // Assert
                 result.Should().NotBeNull();
@@ -653,13 +628,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submission = _fixture.Create<Submission>();
             submission.PomBlobName = null;
-            var session = new JourneySession
-            {
-                RegulatorSubmissionSession = new RegulatorSubmissionSession
-                {
-                    OrganisationSubmission = submission
-                }
-            };
+            var session = SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
 
@@ -668,7 +637,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _facadeServiceMock.Setup(x => x.GetFileDownload(It.IsAny<FileDownloadRequest>())).ReturnsAsync(response);
 
                 // Act
-                var result = await _systemUnderTest.FileDownloadInProgress();
+                var result = await _systemUnderTest.FileDownloadInProgress(_hashCode);
 
                 // Assert
                 result.Should().NotBeNull();
@@ -683,7 +652,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_MorningTime()
         {
             // Arrange
-            
+
             var inputDate = new DateTime(2025, 1, 8, 9, 30, 0); // 9:30 AM, 8th January 2025
             var expectedOutput = "9:30am on 08 January 2025";
 
@@ -775,7 +744,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId
             };
@@ -783,7 +752,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _tempDataDictionary["OfflinePaymentAmount"] = DefaultOfflinePaymentAmount;
 
             // Act
-            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission(_hashCode);
 
             // Assert
             var viewResult = result as ViewResult;
@@ -801,7 +770,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?SubmissionHash={_hashCode}";
+
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId
             };
@@ -810,12 +781,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _tempDataDictionary["NationCode"] = DefaultNationCode;
 
             // Act
-            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission();
+            var result = await _systemUnderTest.ConfirmOfflinePaymentSubmission(_hashCode);
 
             // Assert
             var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
-            AssertBackLink(viewResult!, $"/regulators/{PagePath.SubmissionDetails}");
+            AssertBackLink(viewResult!, expectedBackLink);
         }
 
         #endregion GET
@@ -827,7 +798,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid()
@@ -842,6 +813,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
+                SubmissionHash = _hashCode,
                 IsOfflinePaymentConfirmed = null, // Invalid state
                 OfflinePaymentAmount = null
             };
@@ -862,7 +834,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid()
@@ -877,6 +849,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
+                SubmissionHash = _hashCode,
                 IsOfflinePaymentConfirmed = false
             };
 
@@ -887,6 +860,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectResult = result as RedirectToActionResult;
             redirectResult.Should().NotBeNull();
             redirectResult!.ActionName.Should().Be("SubmissionDetails");
+            redirectResult.RouteValues.Should().Contain("SubmissionHash", _hashCode);
         }
 
         [TestMethod]
@@ -894,7 +868,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid()
@@ -909,6 +883,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
+                SubmissionHash = _hashCode,
                 IsOfflinePaymentConfirmed = true,
                 OfflinePaymentAmount = null
             };
@@ -922,7 +897,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             redirectResult!.ActionName.Should().Be(PagePath.Error);
             redirectResult.ControllerName.Should().Be("Error");
             redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>("statusCode", 404));
-            redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>("backLink", PagePath.SubmissionDetails));
+            redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>(
+                "backLink",
+                $"{PagePath.SubmissionDetails}?SubmissionHash={_hashCode}"));
         }
 
         [TestMethod]
@@ -930,7 +907,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid(),
@@ -947,6 +924,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
+                SubmissionHash = _hashCode,
                 IsOfflinePaymentConfirmed = true,
                 OfflinePaymentAmount = DefaultOfflinePaymentAmount,
             };
@@ -975,7 +953,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = new Submission
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid()
@@ -993,6 +971,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
             {
+                SubmissionHash = _hashCode,
                 IsOfflinePaymentConfirmed = true,
                 OfflinePaymentAmount = DefaultOfflinePaymentAmount,
             };
@@ -1020,10 +999,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task SubmitOfflinePayment_ReturnsViewResult_WithInvalidModelState(string offilinePayment)
         {
             // Arrange
-            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmission = TestSubmission.GetTestSubmission();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = TestSubmission.GetTestSubmission();
 
             var paymentDetailsViewModel = new PaymentDetailsViewModel
             {
+                SubmissionHash = _hashCode,
                 OfflinePayment = offilinePayment
             };
             _systemUnderTest.ModelState.AddModelError("Key", "Invalid state");
@@ -1032,7 +1012,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var result = await _systemUnderTest.SubmitOfflinePayment(paymentDetailsViewModel);
 
             // Assert
-            var viewResult = result as ViewResult;            
+            var viewResult = result as ViewResult;
             viewResult.Should().NotBeNull();
             viewResult!.ViewName.Should().Be(nameof(_systemUnderTest.SubmissionDetails));
         }
@@ -1088,5 +1068,22 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         #endregion SubmitOfflinePayment
+
+        private JourneySession SetSession(Submission submission)
+        {
+            var submissions = new Dictionary<int, Submission>
+            {
+                {_hashCode, submission}
+            };
+
+            var session = new JourneySession
+            {
+                RegulatorSubmissionSession = new RegulatorSubmissionSession
+                {
+                    OrganisationSubmissions = submissions
+                }
+            };
+            return session;
+        }
     }
 }

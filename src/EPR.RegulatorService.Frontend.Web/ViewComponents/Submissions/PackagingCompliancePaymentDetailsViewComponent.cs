@@ -45,10 +45,10 @@ public class PackagingCompliancePaymentDetailsViewComponent(IOptions<PaymentDeta
 
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsForResubmissionAsync(
                 new PackagingCompliancePaymentRequest
-            {
+                {
                     ReferenceNumber = viewModel.ReferenceNumber,
                     MemberCount = viewModel.MemberCount,
-                    Regulator = viewModel.NationCode,                    
+                    Regulator = viewModel.NationCode,
                     ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format                    
                 });
 
@@ -59,6 +59,7 @@ public class PackagingCompliancePaymentDetailsViewComponent(IOptions<PaymentDeta
 
             var compliancePaymentDetailsViewModel = new PackagingCompliancePaymentDetailsViewModel
             {
+                SubmissionHash = viewModel.SubmissionHash,
                 MemberCount = compliancePaymentResponse.MemberCount,
                 PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(compliancePaymentResponse.ResubmissionFee),
