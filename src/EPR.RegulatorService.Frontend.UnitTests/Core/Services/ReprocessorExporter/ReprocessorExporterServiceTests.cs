@@ -129,7 +129,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             var expectedSiteDetails = CreateSiteDetails();
             string expectedPath = GetSiteAddressByRegistrationIdPath
                 .Replace("{apiVersion}", ApiVersion.ToString())
-                .Replace("{id}", expectedSiteDetails.Id.ToString());
+                .Replace("{id}", expectedSiteDetails.RegistrationId.ToString());
 
             var response = new HttpResponseMessage
             {
@@ -140,7 +140,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
             // Act
-             var result = await _service.GetSiteDetailsByRegistrationIdAsync(expectedSiteDetails.Id);
+             var result = await _service.GetSiteDetailsByRegistrationIdAsync(expectedSiteDetails.RegistrationId);
 
             // Assert
             using(new AssertionScope())
@@ -533,7 +533,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         {
             var expectedSiteDetails = new SiteDetails
             {
-                Id = 2,
+                RegistrationId = 2,
                 SiteAddress = "23, Ruby St, London, E12 3SE",
                 NationName = "England",
                 GridReference = "SJ 854 662",

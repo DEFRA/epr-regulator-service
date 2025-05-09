@@ -2,6 +2,8 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
 
 public class RegistrationMaterialWasteLicence
 {
+    public int RegistrationMaterialId { get; set; }
+
     public required string PermitType { get; set; }
 
     public required string[] LicenceNumbers { get; set; }

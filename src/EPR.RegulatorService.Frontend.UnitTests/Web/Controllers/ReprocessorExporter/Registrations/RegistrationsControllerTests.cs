@@ -164,7 +164,7 @@ public class RegistrationsControllerTests
         journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
-        var siteDetails = new SiteDetails { Id = registrationId };
+        var siteDetails = new SiteDetails { RegistrationId = registrationId };
         _mockReprocessorExporterService.Setup(s => s.GetSiteDetailsByRegistrationIdAsync(registrationId)).ReturnsAsync(siteDetails);
         _mockMapper.Setup(m => m.Map<SiteDetailsViewModel>(siteDetails)).Returns(new SiteDetailsViewModel { RegistrationId = registrationId,
             LegalDocumentAddress = "LegalDocumentAddress1", Location = "Location1", SiteAddress = "SiteAddress1", SiteGridReference = "SiteGridReference1"
