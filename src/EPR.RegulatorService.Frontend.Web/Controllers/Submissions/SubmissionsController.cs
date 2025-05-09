@@ -1,15 +1,18 @@
 using System.Globalization;
+using System.Linq;
 using System.Text.Json;
 
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Configs;
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -35,9 +38,10 @@ public partial class SubmissionsController : Controller
 {
     private readonly ISessionManager<JourneySession> _sessionManager;
     private readonly string _pathBase;
-    private readonly SubmissionFiltersOptions _submissionFiltersOptions;
+    private readonly SubmissionFiltersConfig _submissionFiltersOptions;
     private readonly ExternalUrlsOptions _externalUrlsOptions;
     private readonly IFacadeService _facadeService;
+    private readonly ISubmissionFilterConfigService _submissionFilterConfigService;
     private readonly IPaymentFacadeService _paymentFacadeService;
     private const string SubmissionResultAccept = "SubmissionResultAccept";
     private const string SubmissionResultReject = "SubmissionResultReject";
@@ -46,16 +50,18 @@ public partial class SubmissionsController : Controller
     public SubmissionsController(
         ISessionManager<JourneySession> sessionManager,
         IConfiguration configuration,
-        IOptions<SubmissionFiltersOptions> submissionFiltersOptions,
+        IOptions<SubmissionFiltersConfig> submissionFiltersConfig,
         IOptions<ExternalUrlsOptions> externalUrlsOptions,
         IFacadeService facadeService,
+        ISubmissionFilterConfigService submissionFilterConfigService,
         IPaymentFacadeService paymentFacadeService)
     {
         _sessionManager = sessionManager;
         _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
-        _submissionFiltersOptions = submissionFiltersOptions.Value;
+        _submissionFiltersOptions = submissionFiltersConfig.Value;
         _externalUrlsOptions = externalUrlsOptions.Value;
         _facadeService = facadeService;
+        _submissionFilterConfigService = submissionFilterConfigService;
         _paymentFacadeService = paymentFacadeService;
     }
 
@@ -83,6 +89,8 @@ public partial class SubmissionsController : Controller
         EndpointResponseStatus? submissionResultReject = TempData.TryGetValue(SubmissionResultReject, out object? rejectSubmissionResult) ? (EndpointResponseStatus)rejectSubmissionResult : EndpointResponseStatus.NotSet;
         string? submissionResultOrganisationName = TempData.TryGetValue(SubmissionResultOrganisationName, out object? organisationName) ? organisationName.ToString() : string.Empty;
 
+        var (submissionYears, submissonPeriods) = _submissionFilterConfigService.GetFilteredSubmissionYearsAndPeriods();
+
         var model = new SubmissionsViewModel
         {
             SearchSubmissionYears = session.RegulatorSubmissionSession.SearchSubmissionYears,
@@ -96,8 +104,8 @@ public partial class SubmissionsController : Controller
             IsRejectedSubmissionChecked = session.RegulatorSubmissionSession.IsRejectedSubmissionChecked,
             PageNumber = session.RegulatorSubmissionSession.CurrentPageNumber,
             PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
-            SubmissionYears = _submissionFiltersOptions.Years,
-            SubmissionPeriods = _submissionFiltersOptions.PomPeriods,
+            SubmissionYears = submissionYears,
+            SubmissionPeriods = submissonPeriods,
             AcceptSubmissionResult = submissionResultAccept,
             RejectSubmissionResult = submissionResultReject,
             OrganisationName = submissionResultOrganisationName
@@ -478,7 +486,6 @@ public partial class SubmissionsController : Controller
 
         if (fileDownloadModel == null)
         {
-            //TempData["SubmissionHash"] = submissionHash;
             return RedirectToAction(nameof(PackagingDataFileDownloadFailed), new { submissionHash });
         }
 
@@ -486,7 +493,6 @@ public partial class SubmissionsController : Controller
 
         if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            //TempData["SubmissionHash"] = submissionHash;
             return RedirectToAction(nameof(PackagingDataFileDownloadSecurityWarning), new { submissionHash });
         }
         else if (response.IsSuccessStatusCode)
@@ -500,7 +506,6 @@ public partial class SubmissionsController : Controller
         }
         else
         {
-            //TempData["SubmissionHash"] = submissionHash;
             return RedirectToAction(nameof(PackagingDataFileDownloadFailed), new { submissionHash });
         }
     }
