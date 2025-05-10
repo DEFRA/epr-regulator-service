@@ -303,6 +303,42 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task Applications_WithValidSession_ReturnsCorrectViewAndModel_Where_FilterType_Is_ClearFilters()
+        {
+            // Arrange
+            _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(JourneySessionMock);
+
+            var submissionRequestViewModel = new SubmissionsRequestViewModel
+            {
+                SearchSubmissionYears = [2025, 2026],
+                SearchSubmissionPeriods = ["Jan to June 2023", "Jan to June 2024"]
+
+            };
+
+            // Act
+            var result = await _systemUnderTest.Submissions(submissionRequestViewModel, FilterActions.ClearFilters);
+
+            // Assert
+            result.Should().BeOfType<RedirectToActionResult>();
+            var redirectToActionResult = result as RedirectToActionResult;
+            redirectToActionResult.ActionName.Should().Be(nameof(SubmissionsController.Submissions));
+
+            var session = JourneySessionMock.RegulatorSubmissionSession;
+            session.CurrentPageNumber.Should().Be(DefaultPageNumber);
+            session.SearchOrganisationName.Should().BeEmpty();
+            session.SearchOrganisationId.Should().BeEmpty();
+            session.IsDirectProducerChecked.Should().BeFalse();
+            session.IsComplianceSchemeChecked.Should().BeFalse();
+            session.IsPendingSubmissionChecked.Should().BeFalse();
+            session.IsAcceptedSubmissionChecked.Should().BeFalse();
+            session.IsRejectedSubmissionChecked.Should().BeFalse();
+            session.SearchSubmissionYears.Should().BeEmpty();
+            session.SearchSubmissionPeriods.Should().BeEmpty();
+
+        }
+
+        [TestMethod]
         public async Task Applications_WithValidSession_ReturnsCorrectViewAndModel_Where_RedirectedFromSecondPage()
         {
             // Arrange
