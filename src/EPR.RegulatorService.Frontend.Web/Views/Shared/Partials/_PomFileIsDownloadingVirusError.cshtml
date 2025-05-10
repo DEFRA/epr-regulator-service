@@ -2,10 +2,9 @@
 <p class="govuk-body">@Localizer["PomFileDownload.VirusPageInfo1"]</p>
 <h3 class="govuk-heading-m">@Localizer["PomFileDownload.VirusPageInfo2"]</h3>
 <p class="govuk-body">@Localizer["PomFileDownload.VirusPageInfo3"]</p>
-<form class="govuk-!-display-inline-block" method="POST" asp-controller="Submissions" asp-action="SubmissionDetails">
+<form class="govuk-!-display-inline-block" method="GET" asp-controller="Submissions" asp-action="SubmissionDetails">
 
-    <input type="hidden" name="submittedBy" value="@Model.SubmittedBy" />
-    <input type="hidden" name="SubmissionRejected" value="true" />
+    <input type="hidden" name="submissionHash" value="@Model.SubmissionHash"/>
     <button class="govuk-button" data-module="govuk-button">
         @SharedLocalizer["FileDownload.RejectSubmission"]
     </button>

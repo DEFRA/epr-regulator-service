@@ -6,6 +6,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
     {
         public Guid? SubmissionId { get; set; }
 
+        public int? SubmissionHash { get; set; }
+
         [Required(ErrorMessage = "ConfirmOfflinePaymentSubmission.ErrorMessage")]
         public bool? IsOfflinePaymentConfirmed { get; set; }
 
