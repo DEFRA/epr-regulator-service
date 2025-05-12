@@ -72,6 +72,10 @@
 
             @await Html.PartialAsync("Partials/_OfflinePayment", Model as PaymentDetailsViewModel)
         }
+        else if (ViewBag.NoMemberCount)
+        {
+            <p class="govuk-body">@SharedLocalizer["PaymentDetails.CsoNoMemberCountMessage"]</p>
+        }
         else
         {
             <p class="govuk-body">@SharedLocalizer["PaymentDetails.CsoServiceIssueDescription"]</p>
