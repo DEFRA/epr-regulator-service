@@ -54,7 +54,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         var siteDetails = new SiteDetails
         {
-            Id = id,
+            RegistrationId = id,
             SiteAddress = "16 Ruby St, London, E12 3SE",
             NationName = "England",
             GridReference = "SJ 854 662",
@@ -306,6 +306,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
         {
+            RegistrationMaterialId = registrationMaterialId,
             CapacityPeriod = "Per Year",
             CapacityTonne = 50000,
             LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],

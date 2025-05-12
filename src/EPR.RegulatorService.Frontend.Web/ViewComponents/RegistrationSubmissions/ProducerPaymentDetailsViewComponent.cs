@@ -56,7 +56,9 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
                 ProducerSize = $"{char.ToUpperInvariant(viewModel.ProducerDetails.ProducerType[0])}{viewModel.ProducerDetails.ProducerType[1..]}",
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
-                NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount
+                NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount,
+                ResubmissionStatus = viewModel.ResubmissionStatus,
+                Status = viewModel.Status,
             };
 
             return View(producerPaymentDetailsViewModel);
