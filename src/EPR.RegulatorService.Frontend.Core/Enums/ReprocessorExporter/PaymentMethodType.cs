@@ -8,4 +8,12 @@ public sealed class PaymentMethodType : StringEnumBase
     public static readonly PaymentMethodType CreditOrDebitCard = new("Credit or debit card");
     public static readonly PaymentMethodType Cheque = new("Cheque");
     public static readonly PaymentMethodType Cash = new("Cash");
+
+    public static PaymentMethodType[] AllTypes =>
+    [
+        BankTransfer,
+        CreditOrDebitCard,
+        Cheque,
+        Cash
+    ];
 }

@@ -103,6 +103,103 @@ public class RegistrationStatusController(
         return View(GetRegistrationStatusView(nameof(PaymentMethod)), viewModel);
     }
 
+    [HttpPost]
+    [Route(PagePath.PaymentMethod)]
+    public async Task<IActionResult> PaymentMethod(PaymentMethodViewModel viewModel)
+    {
+        var session = await GetSession();
+
+        var registrationStatusSession = GetRegistrationStatusSession(session);
+
+        if (!ModelState.IsValid)
+        {
+            return HandleInvalidModelState(
+                session,
+                GetPagePath(PagePath.PaymentMethod, registrationStatusSession.RegistrationMaterialId),
+                registrationStatusSession,
+                viewModel,
+                GetRegistrationStatusView(nameof(PaymentMethod))
+            );
+        }
+
+        registrationStatusSession.PaymentMethod = viewModel.PaymentMethod;
+
+        await SaveSession(session);
+
+        return RedirectToAction(PagePath.PaymentDate, PagePath.ReprocessorExporterRegistrations);
+    }
+
+    [HttpGet]
+    [Route(PagePath.PaymentDate)]
+    public async Task<IActionResult> PaymentDate()
+    {
+        var session = await GetSession();
+
+        var registrationStatusSession = GetRegistrationStatusSession(session);
+        var viewModel = mapper.Map<PaymentDateViewModel>(registrationStatusSession);
+
+        string pagePath = GetPagePath(PagePath.PaymentDate, registrationStatusSession.RegistrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
+
+        return View(GetRegistrationStatusView(nameof(PaymentDate)), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePath.PaymentDate)]
+    public async Task<IActionResult> PaymentDate(PaymentDateViewModel viewModel)
+    {
+        var session = await GetSession();
+
+        var registrationStatusSession = GetRegistrationStatusSession(session);
+
+        if (!ModelState.IsValid)
+        {
+            return HandleInvalidModelState(
+                session,
+                GetPagePath(PagePath.PaymentDate, registrationStatusSession.RegistrationMaterialId),
+                registrationStatusSession,
+                viewModel,
+                GetRegistrationStatusView(nameof(PaymentDate))
+            );
+        }
+
+        registrationStatusSession.PaymentDate =
+            new DateTime(viewModel.Year!.Value, viewModel.Month!.Value, viewModel.Day!.Value);
+
+        await SaveSession(session);
+
+        return RedirectToAction(PagePath.PaymentReview, PagePath.ReprocessorExporterRegistrations);
+    }
+
+    [HttpGet]
+    [Route(PagePath.PaymentReview)]
+    public async Task<IActionResult> PaymentReview()
+    {
+        var session = await GetSession();
+
+        var registrationStatusSession = GetRegistrationStatusSession(session);
+        var viewModel = mapper.Map<PaymentReviewViewModel>(registrationStatusSession);
+
+        string pagePath = GetPagePath(PagePath.PaymentReview, registrationStatusSession.RegistrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
+
+        return View(GetRegistrationStatusView(nameof(PaymentReview)), viewModel);
+    }
+
+    [HttpGet]
+    [Route(PagePath.MarkAsDulyMade)]
+    public async Task<IActionResult> MarkAsDulyMade()
+    {
+        var session = await GetSession();
+
+        var registrationStatusSession = GetRegistrationStatusSession(session);
+
+        // TODO: RegistrationId
+        int registrationId = 2;
+        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
+    }
 
     private static string GetPagePath(string pagePath, int registrationMaterialId) =>
         $"{pagePath}?registrationMaterialId={registrationMaterialId}";

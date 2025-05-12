@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
@@ -19,7 +20,7 @@
           <legend class="govuk-fieldset__legend">
 
             <h1 class="govuk-heading-l">
-              <span class="govuk-caption-l">Green Ltd: 2 Ruby St, London, E12 3SE</span>
+							<span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
               What payment method was used?
             </h1>
           </legend>
@@ -38,7 +39,7 @@
                 @for (var i = 0; i < Model.PaymentMethods.Count; i++)
                 {
                   <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="paymentMethod@(i)" name="PaymentMethod" type="radio" value="Model.PaymentMethods[i].ToString()">
+                    <input class="govuk-radios__input" id="paymentMethod@(i)" name="PaymentMethod" type="radio" value="@Model.PaymentMethods[i].ToString()" @(Model.PaymentMethod == Model.PaymentMethods[i] ? "checked" : "")>
                     <label class="govuk-label govuk-radios__label" for="paymentMethod@(i)">
                       @Model.PaymentMethods[i].ToString()
                     </label>

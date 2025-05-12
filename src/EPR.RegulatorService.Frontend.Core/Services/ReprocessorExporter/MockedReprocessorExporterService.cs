@@ -112,12 +112,14 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return Task.FromResult(new RegistrationMaterialPaymentFees
         {
             OrganisationName = registration.OrganisationName,
+            ApplicationType = registration.OrganisationType,
             SiteAddress = registration.SiteAddress,
             RegistrationMaterialId = registrationMaterial.Id,
             MaterialName = registrationMaterial.MaterialName,
             FeeAmount = 2921,
             ApplicationReferenceNumber = "ABC123456",
-            SubmittedDate = DateTime.Now.AddDays(-7)
+            SubmittedDate = DateTime.Now.AddDays(-7),
+            Regulator = "GB-ENG"
         });
     }
 

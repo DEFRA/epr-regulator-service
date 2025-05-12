@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 
+using Enums.ReprocessorExporter;
+
 public class RegistrationStatusSession
 {
     public required string OrganisationName { get; init; }
@@ -10,4 +12,6 @@ public class RegistrationStatusSession
     public string ApplicationReferenceNumber { get; init; }
     public DateTime SubmittedDate { get; init; }
     public bool? FullPaymentMade { get; set; }
+    public PaymentMethodType? PaymentMethod { get; set; }
+    public DateTime? PaymentDate { get; set; }
 }
