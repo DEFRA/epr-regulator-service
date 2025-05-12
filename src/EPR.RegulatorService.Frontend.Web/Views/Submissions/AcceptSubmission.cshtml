@@ -11,7 +11,7 @@
 @using (Html.BeginForm("AcceptSubmission", "Submissions", FormMethod.Post))
 {
   @Html.HiddenFor(x => x.OrganisationName)
-  @Html.HiddenFor(y => y.SubmissionId)
+  @Html.HiddenFor(y => y.SubmissionHash)
   <div class="govuk-width-container">
     <main class="govuk-main-wrapper" id="main-content" role="main">
       <div class="govuk-grid-row">

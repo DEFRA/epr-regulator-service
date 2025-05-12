@@ -8,7 +8,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
     [ExcludeFromCodeCoverage]
     public class RejectSubmissionViewModel
     {
-        public int SubmissionId { get; set; }
+        public int SubmissionHash { get; set; }
 
         public string? SubmittedBy { get; set; }
 

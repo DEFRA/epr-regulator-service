@@ -770,7 +770,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?SubmissionHash={_hashCode}";
+            string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?submissionHash={_hashCode}";
 
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
@@ -899,7 +899,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>("statusCode", 404));
             redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>(
                 "backLink",
-                $"{PagePath.SubmissionDetails}?SubmissionHash={_hashCode}"));
+                $"{PagePath.SubmissionDetails}?submissionHash={_hashCode}"));
         }
 
         [TestMethod]

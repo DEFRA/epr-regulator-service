@@ -136,9 +136,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             ViewBag.CustomBackLinkToDisplay = $"/{pathBase}/{PagePath.Home}";
         }
 
-        private ViewModels.Submissions.SubmissionDetailsViewModel GetSubmissionDetailsViewModel(JourneySession session, int submissionId)
+        private ViewModels.Submissions.SubmissionDetailsViewModel GetSubmissionDetailsViewModel(JourneySession session, int submissionHash)
         {
-            var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionId];
+            var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionHash];
             var model = new ViewModels.Submissions.SubmissionDetailsViewModel
             {
                 OrganisationName = submission.OrganisationName,
@@ -146,7 +146,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 OrganisationReferenceNumber = submission.OrganisationReference,
                 FormattedTimeAndDateOfSubmission = DateTimeHelpers.FormatTimeAndDateForSubmission(submission.SubmittedDate),
                 SubmissionId = submission.SubmissionId,
-                SubmissionHash = submissionId,
+                SubmissionHash = submissionHash,
                 SubmittedBy = $"{submission.FirstName} {submission.LastName}",
                 SubmissionPeriod = submission.ActualSubmissionPeriod,
                 AccountRole = submission.ServiceRole,

@@ -48,7 +48,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode];
-            string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?SubmissionHash={_hashCode}";
+            string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?submissionHash={_hashCode}";
 
             // Act
             var result = await _systemUnderTest.AcceptSubmission(_hashCode) as ViewResult;
@@ -70,7 +70,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode];
             var viewModel = new AcceptSubmissionViewModel()
             {
-                SubmissionId = _hashCode,
+                SubmissionHash = _hashCode,
                 OrganisationName = organisationSubmission.OrganisationName,
             };
 
@@ -98,7 +98,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var viewModel = new AcceptSubmissionViewModel()
             {
-                SubmissionId = _hashCode,
+                SubmissionHash = _hashCode,
                 OrganisationName = organisationSubmission.OrganisationName,
                 Accepted = false
             };
@@ -124,7 +124,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode];
             var viewModel = new AcceptSubmissionViewModel()
             {
-                SubmissionId = _hashCode,
+                SubmissionHash = _hashCode,
                 OrganisationName = organisationSubmission.OrganisationName,
                 Accepted = true
             };

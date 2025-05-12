@@ -57,7 +57,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Act
             var result = await _systemUnderTest.RejectSubmission(_hashCode) as ViewResult;
             var rejectSubmissionJourneyData = JourneySessionMock.RegulatorSubmissionSession.RejectSubmissionJourneyData;
-            string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?SubmissionHash={_hashCode}";
+            string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?submissionHash={_hashCode}";
 
             // Assert
             Assert.IsNotNull(result);
@@ -77,7 +77,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Act
             var viewModel = new RejectSubmissionViewModel()
             {
-                SubmissionId = _hashCode,
+                SubmissionHash = _hashCode,
                 SubmittedBy = rejectSubmissionJourneyData.SubmittedBy!,
                 ReasonForRejection = null,
                 IsResubmissionRequired = false
@@ -106,7 +106,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Act
             var viewModel = new RejectSubmissionViewModel()
             {
-                SubmissionId = _hashCode,
+                SubmissionHash = _hashCode,
                 SubmittedBy = rejectSubmissionJourneyData.SubmittedBy!,
                 ReasonForRejection = RejectSubmissionDetails.LongRejectionReasonString,
                 IsResubmissionRequired = false
@@ -134,7 +134,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Act
             var viewModel = new RejectSubmissionViewModel()
             {
-                SubmissionId = _hashCode,
+                SubmissionHash = _hashCode,
                 SubmittedBy = rejectSubmissionJourneyData.SubmittedBy!,
                 ReasonForRejection = RejectSubmissionDetails.RejectionReasonString,
                 IsResubmissionRequired = false
@@ -160,7 +160,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var rejectSubmissionJourneyData = JourneySessionMock.RegulatorSubmissionSession.RejectSubmissionJourneyData;
             var viewModel = new RejectSubmissionViewModel()
             {
-                SubmissionId = _hashCode,
+                SubmissionHash = _hashCode,
                 SubmittedBy = rejectSubmissionJourneyData.SubmittedBy!,
                 ReasonForRejection = RejectSubmissionDetails.RejectionReasonString,
                 IsResubmissionRequired = false

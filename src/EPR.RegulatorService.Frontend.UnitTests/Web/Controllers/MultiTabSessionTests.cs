@@ -31,7 +31,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             int hashCode3 = RegulatorSubmissionSession.GetSubmissionHashCode(testSubmission3);
             int hashCode4 = RegulatorSubmissionSession.GetSubmissionHashCode(testSubmission4);
 
-           _organisationSubmissions = new Dictionary<int, Submission>
+            _organisationSubmissions = new Dictionary<int, Submission>
             {
 
                 {hashCode1,testSubmission1 },
@@ -63,12 +63,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             foreach (var kvp in _organisationSubmissions)
             {
-                int  hashCode = kvp.Key;
+                int hashCode = kvp.Key;
 
                 // Arrange
 
                 var organisationSubmission = JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[hashCode];
-                string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?SubmissionHash={hashCode}";
+                string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?submissionHash={hashCode}";
 
                 // Act
                 var result = await _systemUnderTest.AcceptSubmission(hashCode) as ViewResult;

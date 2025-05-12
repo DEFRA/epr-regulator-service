@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 public class AcceptSubmissionViewModel
 {
-    public int SubmissionId { get; set; }
+    public int SubmissionHash { get; set; }
 
     public string OrganisationName { get; set; }
 
