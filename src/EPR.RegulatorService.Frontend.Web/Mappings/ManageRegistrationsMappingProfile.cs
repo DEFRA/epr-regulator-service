@@ -22,7 +22,7 @@ public class ManageRegistrationsMappingProfile : Profile
             .ForMember(dest => dest.ExporterWasteLicensesTask,
             opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions)));
 
-        CreateMap<RegistrationMaterial, ManageRegistrationMaterialViewModel>()
+        CreateMap<RegistrationMaterialSummary, ManageRegistrationMaterialViewModel>()
             .ForMember(dest => dest.StatusCssClass,
                 opt => opt.MapFrom(src => MapRegistrationMaterialStatusCssClass(src.Status)))
             .ForMember(dest => dest.StatusText,
@@ -65,7 +65,7 @@ public class ManageRegistrationsMappingProfile : Profile
         taskStatus switch
         {
             RegulatorTaskStatus.Queried => "govuk-tag--orange",
-            RegulatorTaskStatus.Completed => "govuk-tag--default",
+            RegulatorTaskStatus.Completed => "govuk-tag--blue",
             _ => "govuk-tag--grey"
         };
 
