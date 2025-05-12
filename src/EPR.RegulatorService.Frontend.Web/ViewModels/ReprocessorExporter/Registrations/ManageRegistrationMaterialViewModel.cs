@@ -31,4 +31,6 @@ public class ManageRegistrationMaterialViewModel
     public RegistrationTaskViewModel? MaterialDetailsTask { get; init; }
 
     public RegistrationTaskViewModel? OverseasReprocessorTask { get; init; }
+
+    public RegistrationTaskViewModel? RegistrationStatusTask { get; init; }
 }

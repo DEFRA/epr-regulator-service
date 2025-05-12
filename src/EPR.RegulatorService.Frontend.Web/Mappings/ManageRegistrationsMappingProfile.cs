@@ -27,6 +27,8 @@ public class ManageRegistrationsMappingProfile : Profile
                 opt => opt.MapFrom(src => MapRegistrationMaterialStatusCssClass(src.Status)))
             .ForMember(dest => dest.StatusText,
                 opt => opt.MapFrom(src => MapRegistrationMaterialStatusText(src.Status)))
+            .ForMember(dest => dest.RegistrationStatusTask,
+                opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.RegistrationDulyMade)))
             .ForMember(dest => dest.MaterialWasteLicensesTask,
                 opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions)))
             .ForMember(dest => dest.InputsAndOutputsTask,
