@@ -2,7 +2,9 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 @using EPR.RegulatorService.Frontend.Core.Enums
 @model RegistrationSubmissionDetailsViewModel
-
+@{
+    var encodedSubmissionId = Convert.ToBase64String(Model.SubmissionId.ToByteArray());
+}
 <div class="govuk-button-group">
     @if (Model.ResubmissionStatus == RegistrationSubmissionStatus.Pending
     && Model.Status == RegistrationSubmissionStatus.Granted)
@@ -14,7 +16,7 @@
                 "RegistrationSubmissions",
                 new
                 {
-                  submissionId = Model.SubmissionId
+                  submissionId = encodedSubmissionId
                 })">
                     @Localizer["RegistrationResubmissionDetails.Approve"]
                 </a>
@@ -25,7 +27,7 @@
                 "RegistrationSubmissions",
                 new
                 {
-                  submissionId = Model.SubmissionId
+                  submissionId = encodedSubmissionId
                 })">
                     @Localizer["RegistrationResubmissionDetails.Reject"]
                 </a>
@@ -36,7 +38,7 @@
                 "RegistrationSubmissions",
                 new
                 {
-                  submissionId = Model.SubmissionId
+                  submissionId = encodedSubmissionId
                 })">
                     @Localizer["RegistrationResubmissionDetails.Cancel"]
                 </a>
@@ -50,7 +52,7 @@
                 "RegistrationSubmissions",
                 new
                 {
-                  submissionId = Model.SubmissionId
+                  submissionId = encodedSubmissionId
                 })">
             @Localizer["RegistrationResubmissionDetails.Cancel"]
         </a>

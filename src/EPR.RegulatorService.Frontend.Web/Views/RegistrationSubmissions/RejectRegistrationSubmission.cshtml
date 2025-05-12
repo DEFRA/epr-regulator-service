@@ -13,7 +13,7 @@
     var rejectReasonErrorExists = !string.IsNullOrEmpty(rejectReasonError.Key);
 }
 
-@using (Html.BeginForm("RejectRegistrationSubmission", "RegistrationSubmissions", FormMethod.Post))
+@using (Html.BeginRouteForm("RejectRegistrationSubmission", new { submissionId = Model.SubmissionId }, FormMethod.Post))
 {
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper" id="main-content" role="main">

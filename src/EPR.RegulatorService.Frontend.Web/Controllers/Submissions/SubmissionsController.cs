@@ -25,6 +25,7 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
+using System.Reflection;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 
@@ -169,7 +170,6 @@ public partial class SubmissionsController : Controller
         if (filterType == FilterActions.ClearFilters)
         {
             viewModel.ClearFilters = true;
-            submissionFiltersModel.ClearFilters = true;
         }
 
         SetOrResetFilterValuesInSession(session, submissionFiltersModel);
@@ -256,7 +256,6 @@ public partial class SubmissionsController : Controller
 
         var model = new ConfirmOfflinePaymentSubmissionViewModel
         {
-            SubmissionId = submission.SubmissionId,
             OfflinePaymentAmount = offlinePayment
         };
 

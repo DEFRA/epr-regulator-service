@@ -4,7 +4,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
     public class RejectRegistrationSubmissionViewModel
     {
-        public Guid SubmissionId { get; set; }
+        public string SubmissionId { get; set; }
 
         [StringLength(400, ErrorMessage = "Error.RejectReasonTooLong")]
         public string? RejectReason { get; set; }

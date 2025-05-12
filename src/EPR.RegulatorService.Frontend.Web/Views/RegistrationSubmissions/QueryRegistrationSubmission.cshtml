@@ -11,7 +11,7 @@
     var queryErrorExists = !string.IsNullOrEmpty(queryError.Key);
 }
 
-@using (Html.BeginForm("QueryRegistrationSubmission", "RegistrationSubmissions", FormMethod.Post))
+@using (Html.BeginRouteForm("QueryRegistrationSubmission", new { submissionId = Model.SubmissionId }, FormMethod.Post))
 {
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper" id="main-content" role="main">

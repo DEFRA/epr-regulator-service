@@ -2,6 +2,7 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
 @using EPR.RegulatorService.Frontend.Core.Enums
+@using System.Text.Encodings.Web
 
 @model RegistrationSubmissionsListViewModel
 
@@ -29,7 +30,7 @@
                         </span>
                         @(Html.RouteLink(@organisation.OrganisationName,
                             "SubmissionDetails",
-                            new { submissionId = @organisation.SubmissionId },
+                            new { submissionId = Convert.ToBase64String(@organisation.SubmissionId.ToByteArray()) },
                             new { @class = "govuk-link govuk-link--no-visited-state" }))
                         <br />
                         <span class="orgNameFilter">@SharedLocalizer[organisation.OrganisationType.GetDescription()]</span>

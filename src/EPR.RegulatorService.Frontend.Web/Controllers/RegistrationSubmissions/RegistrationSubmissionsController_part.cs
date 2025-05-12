@@ -57,12 +57,13 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             }
 
             var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId.Value, out var value)
-                                                    ? value : _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+                                                    ? value : _currentSession.RegulatorRegistrationSubmissionSession
+                                                    .SelectedRegistrations[submissionId.Value];//// TODO
 
             if (sessionModelWhichMustMatchSession?.SubmissionId != submissionId.Value)
             {
                 sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId.Value];
-                _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = sessionModelWhichMustMatchSession;
+                //// TODO _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = sessionModelWhichMustMatchSession;
             }
 
             if (sessionModelWhichMustMatchSession is null)
@@ -76,18 +77,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
         private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
         {
-            var submission = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration?.SubmissionId == submissionId
-                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration :
-                  _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations?[submissionId];
-
-            if ( submission is null)
+            if (_currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.ContainsKey(submissionId))
             {
-                submission: await facadeMethod(submissionId);
+                return _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations?[submissionId];
             }
 
-            if ( submission is not null)
+            var submission = await facadeMethod(submissionId);
+            if (submission is not null)
             {
-                _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = submission;
                 _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submission.SubmissionId] = submission;
             }
 
@@ -347,7 +344,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return fileDownloadModel;
         }
 
-        private async Task<IActionResult> SubmitRegulatorRejectDecisionAsync(RegistrationSubmissionDetailsViewModel registrationSubmissionDetailsViewModel)
+        private async Task<IActionResult> SubmitRegulatorRejectDecisionAsync(RegistrationSubmissionDetailsViewModel registrationSubmissionDetailsViewModel, string encodedSubmissionId)
         {
             try
             {
@@ -359,12 +356,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
                 await UpdateOrganisationDetailsChangeHistoryAsync(registrationSubmissionDetailsViewModel, status, regulatorDecisionRequest);
 
-                return status == Core.Models.EndpointResponseStatus.Success
+                return status == EndpointResponseStatus.Success
                     ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
                     : RedirectToRoute("ServiceNotAvailable",
                     new
                     {
-                        backLink = $"{PagePath.RegistrationSubmissionDetails}/{registrationSubmissionDetailsViewModel.SubmissionId}"
+                        backLink = $"{PagePath.RegistrationSubmissionDetails}/{encodedSubmissionId}"
                     });
             }
             catch (Exception ex)
@@ -378,7 +375,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                     "ServiceNotAvailable",
                     new
                     {
-                        backLink = $"{PagePath.RegistrationSubmissionDetails}/{registrationSubmissionDetailsViewModel.SubmissionId}"
+                        backLink = $"{PagePath.RegistrationSubmissionDetails}/{encodedSubmissionId}"
                     });
             }
         }

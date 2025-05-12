@@ -1,3 +1,4 @@
+@model string
 @{
     ViewData["Title"] = Localizer["OrganisationDetailsFileDownload.Title"];
     var downloadCompleted = TempData["DownloadCompleted"] != null && (bool)TempData["DownloadCompleted"];
@@ -17,7 +18,8 @@
                       </div>
                       @if (!downloadCompleted)
                       {
-                          <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "RegistrationSubmissions")" />
+                        //// TODO -- Check for this link - submission id
+                          <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "RegistrationSubmissions", new { submissionId = Model })" />
                       }                    
               </div>
           </div>      
