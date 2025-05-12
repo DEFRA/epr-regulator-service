@@ -136,6 +136,10 @@ public partial class RegistrationSubmissionsController(
             {
                 return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
             }
+            if (model.SubmissionId != submissionId.Value)
+            {
+                model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+            }
 
             _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
 
@@ -185,6 +189,7 @@ public partial class RegistrationSubmissionsController(
         {
             paymentDetailsViewModel.OfflinePayment = parsedValue.ToString("F2", CultureInfo.InvariantCulture);
         }
+
         TempData["OfflinePaymentAmount"] = paymentDetailsViewModel.OfflinePayment;
 
         await SaveSessionAndJourney(
@@ -248,6 +253,7 @@ public partial class RegistrationSubmissionsController(
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
             _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;  // this will force a reload of the item in SubmissionDetails
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[existingModel.SubmissionId] = null;  // this will force a reload of the item in SubmissionDetails
             //await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
 
             SaveSession(_currentSession);
@@ -378,7 +384,7 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(RejectRegistrationSubmission), model);
         }
 
-        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason = model.RejectReason;
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[model.SubmissionId].RejectReason = model.RejectReason;
         existingModel.RegulatorComments = model.RejectReason;
         existingModel.RejectReason = model.RejectReason;
 
@@ -441,7 +447,7 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(CancelRegistrationSubmission), model);
         }
 
-        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.CancellationReason = model.CancellationReason;
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[model.SubmissionId].CancellationReason = model.CancellationReason;
 
         SaveSessionAndJourney(
             _currentSession.RegulatorRegistrationSubmissionSession,
@@ -462,10 +468,10 @@ public partial class RegistrationSubmissionsController(
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        string offlinePayment = TempData.Peek("OfflinePaymentAmount").ToString();
+        string offlinePayment = TempData.Peek("OfflinePaymentAmount")?.ToString();
         if (string.IsNullOrWhiteSpace(offlinePayment))
         {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+            return RedirectToAction(PagePath.RegistrationSubmissionDetails, "RegistrationSubmissions", new {submissionId = submissionId});
         }
 
         SetBackLink(Url.RouteUrl("SubmissionDetails", new { submissionId }), false);

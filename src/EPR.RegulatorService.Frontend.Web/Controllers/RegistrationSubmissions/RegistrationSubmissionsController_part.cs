@@ -61,6 +61,12 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
             if (sessionModelWhichMustMatchSession?.SubmissionId != submissionId.Value)
             {
+                sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId.Value];
+                _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = sessionModelWhichMustMatchSession;
+            }
+
+            if (sessionModelWhichMustMatchSession is null)
+            {
                 return false;
             }
 
@@ -68,10 +74,25 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return true;
         }
 
-        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod) =>
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration?.SubmissionId == submissionId
-                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-                : await facadeMethod(submissionId);
+        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
+        {
+            var submission = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration?.SubmissionId == submissionId
+                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration :
+                  _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations?[submissionId];
+
+            if ( submission is null)
+            {
+                submission: await facadeMethod(submissionId);
+            }
+
+            if ( submission is not null)
+            {
+                _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = submission;
+                _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submission.SubmissionId] = submission;
+            }
+
+            return submission;
+        }
 
         private static void ClearFilters(RegulatorRegistrationSubmissionSession session,
                                   RegistrationSubmissionsFilterViewModel filters,
