@@ -4,7 +4,8 @@
 @model RegistrationSubmissionDetailsViewModel
 
 <div class="govuk-button-group">
-    @if (Model.ResubmissionStatus == RegistrationSubmissionStatus.Pending)
+    @if (Model.ResubmissionStatus == RegistrationSubmissionStatus.Pending
+    && Model.Status == RegistrationSubmissionStatus.Granted)
     {
         <ul class="govuk-list govuk-list__horizontal govuk-list__last-spaced">
             <li>
