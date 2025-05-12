@@ -1,11 +1,13 @@
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-using EPR.RegulatorService.Frontend.Core.Sessions;
-using EPR.RegulatorService.Frontend.Web.Sessions;
-using Microsoft.AspNetCore.Http;
-
+using System;
 using System.Text;
 using System.Text.Json;
-using EPR.RegulatorService.Frontend.Core.Enums;
+
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.UnitTests.TestData;
+using EPR.RegulatorService.Frontend.Web.Sessions;
+
+using Microsoft.AspNetCore.Http;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Sessions;
 
@@ -19,28 +21,26 @@ public class SessionManagerTests
     private byte[] _sessionBytes;
     private Mock<ISession> _sessionMock;
     private JourneySessionManager _sessionManager;
+    private int _hashCode;
 
     [TestInitialize]
     public void Setup()
     {
+        var testSubmission = TestSubmission.GetTestSubmission();
+        _hashCode = RegulatorSubmissionSession.GetSubmissionHashCode(testSubmission);
+
+        var regulatorSubmissionSession = new RegulatorSubmissionSession();
+        regulatorSubmissionSession.OrganisationSubmissions[_hashCode] = testSubmission;
+
         _testSession = new()
         {
-            RegulatorSubmissionSession = new RegulatorSubmissionSession
-            {
-                OrganisationSubmission = new Submission
-                {
-                    SubmissionId = Guid.NewGuid(),
-                    OrganisationId = Guid.NewGuid(),
-                    OrganisationName = "Test Organisation",
-                    OrganisationType = OrganisationType.ComplianceScheme
-                }
-            },
+            RegulatorSubmissionSession = regulatorSubmissionSession,
             PermissionManagementSession = new PermissionManagementSession
             {
-                Items = new List<PermissionManagementSessionItem>
-                {
-                    new PermissionManagementSessionItem {Id = Guid.NewGuid(), Fullname = "Testing User"}
-                }
+                Items =
+            [
+                new PermissionManagementSessionItem { Id = Guid.NewGuid(), Fullname = "Testing User" }
+            ]
             }
         };
 
@@ -64,8 +64,8 @@ public class SessionManagerTests
         Assert.IsNotNull(session);
         session.Should().BeOfType<JourneySession>();
         Assert.AreEqual(
-            expected: session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName,
-            actual: _testSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
+            expected: session.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName,
+            actual: _testSession.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName
         );
         _sessionMock.Verify(x => x.LoadAsync(It.IsAny<CancellationToken>()), Times.Once());
     }
@@ -84,8 +84,8 @@ public class SessionManagerTests
         Assert.IsNotNull(session);
         session.Should().BeOfType<JourneySession>();
         Assert.AreEqual(
-            expected: session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName,
-            actual: _testSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
+            expected: session.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName,
+            actual: _testSession.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName
         );
         _sessionMock.Verify(x => x.LoadAsync(It.IsAny<CancellationToken>()), Times.Once);
         _sessionMock.Verify(x => x.TryGetValue(_sessionKey, out It.Ref<byte[]>.IsAny!), Times.Never);
@@ -105,8 +105,8 @@ public class SessionManagerTests
         Assert.IsNotNull(savedSession);
         savedSession.Should().BeOfType<JourneySession>();
         Assert.AreEqual(
-            expected: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName,
-            actual: _testSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
+            expected: savedSession.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName,
+            actual: _testSession.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName
         );
         _sessionMock.Verify(x => x.LoadAsync(It.IsAny<CancellationToken>()), Times.Once);
         _sessionMock.Verify(x => x.Set(_sessionKey, It.IsAny<byte[]>()), Times.Once);
@@ -138,7 +138,7 @@ public class SessionManagerTests
 
         // Act
         await _sessionManager.UpdateSessionAsync(
-            _sessionMock.Object, (x) => x.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName = OrganisationName
+            _sessionMock.Object, (x) => x.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName = OrganisationName
         );
         var savedSession = await _sessionManager.GetSessionAsync(_sessionMock.Object);
 
@@ -147,7 +147,7 @@ public class SessionManagerTests
         savedSession.Should().BeOfType<JourneySession>();
         Assert.AreEqual(
             expected: OrganisationName,
-            actual: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
+            actual: savedSession.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName
         );
         _sessionMock.Verify(x => x.LoadAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
         _sessionMock.Verify(x => x.Set(_sessionKey, It.IsAny<byte[]>()), Times.Exactly(2));
@@ -162,7 +162,7 @@ public class SessionManagerTests
 
         // Act
         await _sessionManager.UpdateSessionAsync(
-             _sessionMock.Object, (x) => x.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName = OrganisationName
+             _sessionMock.Object, (x) => x.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName = OrganisationName
         );
         var savedSession = await _sessionManager.GetSessionAsync(_sessionMock.Object);
 
@@ -171,7 +171,7 @@ public class SessionManagerTests
         savedSession.Should().BeOfType<JourneySession>();
         Assert.AreEqual(
             expected: OrganisationName,
-            actual: savedSession.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
+            actual: savedSession.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName
         );
         _sessionMock.Verify(x => x.LoadAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
         _sessionMock.Verify(x => x.Set(_sessionKey, It.IsAny<byte[]>()), Times.Exactly(2));
