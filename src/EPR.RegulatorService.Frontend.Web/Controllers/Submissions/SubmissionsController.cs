@@ -253,7 +253,13 @@ public partial class SubmissionsController : Controller
             PagePath.SubmissionDetails,
             PagePath.ConfirmOfflinePaymentSubmission);
 
-        return RedirectToAction("ConfirmOfflinePaymentSubmission", "Submissions", new { paymentDetailsViewModel.SubmissionHash });
+        return RedirectToAction(
+            "ConfirmOfflinePaymentSubmission",
+            "Submissions",
+            new
+            {
+                submissionHash = paymentDetailsViewModel.SubmissionHash
+            });
     }
 
     [HttpGet]

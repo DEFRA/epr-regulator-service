@@ -860,7 +860,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirectResult = result as RedirectToActionResult;
             redirectResult.Should().NotBeNull();
             redirectResult!.ActionName.Should().Be("SubmissionDetails");
-            redirectResult.RouteValues.Should().Contain("SubmissionHash", _hashCode);
+            redirectResult.RouteValues.Should().Equal(new Dictionary<string, object>
+            {
+                { "submissionHash", _hashCode }
+            });
         }
 
         [TestMethod]
