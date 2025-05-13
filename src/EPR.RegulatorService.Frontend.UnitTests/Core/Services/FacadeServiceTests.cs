@@ -1827,6 +1827,51 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        public async Task GetRegistrationSubmissionDetails_CancelledSubmission_SetsResubmissionStatusToNull()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var expectedPath = $"registrations-submission-details/submissionId/{submissionId}";
+
+            var cancelledResponse = new RegistrationSubmissionOrganisationDetailsResponse
+            {
+                SubmissionStatus = RegistrationSubmissionStatus.Cancelled,
+                ResubmissionStatus = RegistrationSubmissionStatus.Pending, // This needs to be nulled
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+                {
+                    ResubmissionStatus = RegistrationSubmissionStatus.Pending // This needs to be nulled
+                }
+            };
+
+            string responseContent = JsonSerializer.Serialize(cancelledResponse);
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync",
+                    ItExpr.Is<HttpRequestMessage>(req =>
+                        req.Method == HttpMethod.Get &&
+                        req.RequestUri.ToString().EndsWith(expectedPath)),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(() =>
+                {
+                    var response = new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(responseContent, Encoding.UTF8, "application/json")
+                    };
+                    return response;
+                });
+
+            // Act
+            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(RegistrationSubmissionStatus.Cancelled, result.SubmissionStatus);
+            Assert.IsNull(result.ResubmissionStatus);
+            Assert.IsNull(result.SubmissionDetails.ResubmissionStatus);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(InvalidDataException))]
         public async Task GetRegistrationSubmissionDetails_NonSuccess_ThrowsHttpRequestException()
         {
