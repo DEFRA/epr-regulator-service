@@ -14,6 +14,8 @@ using FluentValidation;
 using Microsoft.FeatureManagement.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
+using EPR.RegulatorService.Frontend.Core.Configs;
+using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
@@ -24,7 +26,8 @@ public class RegistrationStatusController(
     IValidator<IdRequest> validator,
     IReprocessorExporterService reprocessorExporterService,
     ISessionManager<JourneySession> sessionManager,
-    IConfiguration configuration)
+    IConfiguration configuration,
+    IOptions<ReprocessorExporterConfig> reprocessorExporterConfig)
     : ReprocessorExporterBaseController(sessionManager, configuration)
 {
     [HttpGet]
@@ -181,13 +184,17 @@ public class RegistrationStatusController(
         var registrationStatusSession = GetRegistrationStatusSession(session);
         var viewModel = mapper.Map<PaymentReviewViewModel>(registrationStatusSession);
 
+        int determinationWeeks = reprocessorExporterConfig.Value.DeterminationWeeks;
+        viewModel.DeterminationWeeks = reprocessorExporterConfig.Value.DeterminationWeeks;
+        viewModel.DeterminationDate = CalculateDeterminationDate(determinationWeeks, registrationStatusSession.SubmittedDate, registrationStatusSession.PaymentDate);
+
         string pagePath = GetPagePath(PagePath.PaymentReview, registrationStatusSession.RegistrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
         return View(GetRegistrationStatusView(nameof(PaymentReview)), viewModel);
     }
-
+    
     [HttpGet]
     [Route(PagePath.MarkAsDulyMade)]
     public async Task<IActionResult> MarkAsDulyMade()
@@ -196,9 +203,18 @@ public class RegistrationStatusController(
 
         var registrationStatusSession = GetRegistrationStatusSession(session);
 
-        // TODO: RegistrationId
-        int registrationId = 2;
-        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
+        await reprocessorExporterService.MarkAsDulyMadeAsync(registrationStatusSession.RegistrationMaterialId);
+
+        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationStatusSession.RegistrationId });
+    }
+    
+    private static DateTime CalculateDeterminationDate(int determinationWeeks, DateTime submittedDate, DateTime? paymentDate)
+    {
+        var startDate = paymentDate.HasValue && paymentDate.Value > submittedDate
+            ? paymentDate.Value
+            : submittedDate;
+
+        return startDate.AddDays(determinationWeeks * 7);
     }
 
     private static string GetPagePath(string pagePath, int registrationMaterialId) =>

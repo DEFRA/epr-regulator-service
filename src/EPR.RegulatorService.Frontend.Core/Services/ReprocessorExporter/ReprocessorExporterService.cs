@@ -150,6 +150,8 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
+    public Task MarkAsDulyMadeAsync(int registrationMaterialId) => throw new NotImplementedException();
+
     public async Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId)
     {
         await PrepareAuthenticatedClient();

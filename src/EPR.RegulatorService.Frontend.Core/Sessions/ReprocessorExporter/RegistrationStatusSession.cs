@@ -4,6 +4,7 @@ using Enums.ReprocessorExporter;
 
 public class RegistrationStatusSession
 {
+    public int RegistrationId { get; set; }
     public required string OrganisationName { get; init; }
     public required string SiteAddress { get; init; }
     public required int RegistrationMaterialId { get; init; }

@@ -111,6 +111,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         return Task.FromResult(new RegistrationMaterialPaymentFees
         {
+            RegistrationId = registration.Id,
             OrganisationName = registration.OrganisationName,
             ApplicationType = registration.OrganisationType,
             SiteAddress = registration.SiteAddress,
@@ -315,6 +316,34 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             Id = taskId,
             TaskName = Enum.Parse<RegulatorTaskType>(updateMaterialTaskStatusRequest.TaskName),
             Status = Enum.Parse<RegulatorTaskStatus>(updateMaterialTaskStatusRequest.Status)
+        };
+
+        registrationMaterial.Tasks.Add(newTask);
+
+        return Task.CompletedTask;
+    }
+
+    public Task MarkAsDulyMadeAsync(int registrationMaterialId)
+    {
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
+        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.RegistrationDulyMade);
+        int? taskId;
+
+        if (task == null)
+        {
+            taskId = (registrationMaterialId * 1000) + registrationMaterial.Tasks.Count;
+        }
+        else
+        {
+            taskId = task.Id;
+            registrationMaterial.Tasks.Remove(task);
+        }
+
+        var newTask = new RegistrationTask
+        {
+            Id = taskId,
+            TaskName = RegulatorTaskType.RegistrationDulyMade,
+            Status = RegulatorTaskStatus.Completed
         };
 
         registrationMaterial.Tasks.Add(newTask);

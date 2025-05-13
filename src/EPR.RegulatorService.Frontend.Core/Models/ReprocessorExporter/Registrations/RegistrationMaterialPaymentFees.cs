@@ -4,6 +4,7 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 public class RegistrationMaterialPaymentFees
 {
+    public int RegistrationId { get; init; }
     public required string OrganisationName { get; init; }
     public required ApplicationOrganisationType ApplicationType { get; init; }
     public string? SiteAddress { get; init; }

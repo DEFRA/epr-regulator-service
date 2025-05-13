@@ -85,6 +85,7 @@ public static class ServiceProviderExtension
         services.Configure<PaymentFacadeApiConfig>(configuration.GetSection(PaymentFacadeApiConfig.ConfigSection));
         services.Configure<PaymentDetailsOptions>(configuration.GetSection(PaymentDetailsOptions.ConfigSection));
         services.Configure<ReprocessorExporterFacadeApiConfig>(configuration.GetSection(ReprocessorExporterFacadeApiConfig.ConfigSection));
+        services.Configure<ReprocessorExporterConfig>(configuration.GetSection(ReprocessorExporterConfig.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)
