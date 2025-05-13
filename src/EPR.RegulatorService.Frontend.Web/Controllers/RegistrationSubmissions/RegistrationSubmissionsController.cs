@@ -264,7 +264,6 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.QueryRegistrationSubmission + "/{submissionId}", Name = "QueryRegistrationSubmission")]
     public async Task<IActionResult> QueryRegistrationSubmission(string? submissionId)
     {
-        ////var subId = GetDecodedSubmissionId(submissionId);
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
         ////if (!GetOrRejectProvidedSubmissionId(subId, out RegistrationSubmissionDetailsViewModel existingModel))
@@ -675,6 +674,14 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpGet]
+    [Route(PagePath.RegistrationSubmissionDetailsFileDownload)]
+    public async Task<IActionResult> SubmissionDetailsFileDownload([FromQuery] string submissionId)
+    {
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { submissionId }), false);
+        return View("RegistrationSubmissionFileDownload", model: submissionId);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> FileDownloadInProgress([FromQuery]string submissionId)
     {
         var subId = GetDecodedSubmissionId(submissionId);
@@ -692,7 +699,7 @@ public partial class RegistrationSubmissionsController(
 
         if (response.StatusCode == HttpStatusCode.Forbidden)
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning));
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning), new { submissionId });
         }
         else if (response.IsSuccessStatusCode)
         {
@@ -705,17 +712,9 @@ public partial class RegistrationSubmissionsController(
         }
         else
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed));
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId } );
         }
-    }
-
-    [HttpGet]
-    [Route(PagePath.RegistrationSubmissionDetailsFileDownload)]
-    public async Task<IActionResult> SubmissionDetailsFileDownload([FromQuery] string submissionId)
-    {
-        SetBackLink(Url.RouteUrl("SubmissionDetails", new { submissionId }), false);
-        return View("RegistrationSubmissionFileDownload", new { submissionId });
-    }
+    }    
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionFileDownloadFailed)]
@@ -747,5 +746,4 @@ public partial class RegistrationSubmissionsController(
     }
 
     private static Guid GetDecodedSubmissionId(string submissionId) => new(Convert.FromBase64String(Uri.UnescapeDataString(submissionId)));
-
 }

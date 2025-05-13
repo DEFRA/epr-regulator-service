@@ -9,9 +9,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissio
 
     public class SubmissionDetailsViewComponent : ViewComponent
     {
-        public async Task<ViewViewComponentResult> InvokeAsync(SubmissionDetailsViewModel model)
-        {
-            return View(model);
-        }
+        public async Task<ViewViewComponentResult> InvokeAsync(SubmissionDetailsViewModel model, Guid submissionId)
+            => View((SubmissionDetails: model, SubmissionId: submissionId));
     }
 }

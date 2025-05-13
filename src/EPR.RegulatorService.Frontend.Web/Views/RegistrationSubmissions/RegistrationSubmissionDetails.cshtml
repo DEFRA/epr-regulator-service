@@ -87,7 +87,7 @@
                     </p>
                 </div>
 
-                @await Component.InvokeAsync("SubmissionDetails", new { model = Model.SubmissionDetails })
+                @await Component.InvokeAsync("SubmissionDetails", new { model = Model.SubmissionDetails, SubmissionId = Model.SubmissionId })
                 @{
                     var model = Model as BaseSubmissionDetailsViewModel;
                 }
