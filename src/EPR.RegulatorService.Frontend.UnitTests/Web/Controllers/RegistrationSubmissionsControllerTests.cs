@@ -38,7 +38,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [DataRow(2, "Northern Ireland Environment Agency (NIEA)")]
         [DataRow(3, "Scottish Environment Protection Agency (SEPA)")]
         [DataRow(4, "Natural Resources Wales (NRW)")]
-        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel(
+        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel_WhenShow2026RelevantYearFilter_IsDisabled(
             int nationId,
             string agencyName)
         {
@@ -71,6 +71,55 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var resultModel = viewResult.Model as RegistrationSubmissionsViewModel;
             Assert.AreEqual(expectedViewModel.AgencyName, resultModel.AgencyName);
+            Assert.IsFalse(resultModel.ListViewModel.RegistrationsFilterModel.Show2026RelevantYearFilter);
+
+            var actualBackLink = _controller.ViewBag.CustomBackLinkToDisplay;
+            Assert.IsNotNull(actualBackLink);
+            Assert.AreEqual(expectedBackLink, actualBackLink);
+        }
+
+        [TestMethod]
+        [DataRow(0, "")]
+        [DataRow(1, "Environment Agency (EA)")]
+        [DataRow(2, "Northern Ireland Environment Agency (NIEA)")]
+        [DataRow(3, "Scottish Environment Protection Agency (SEPA)")]
+        [DataRow(4, "Natural Resources Wales (NRW)")]
+        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel_WhenShow2026RelevantYearFilter_IsEnabled(
+            int nationId,
+            string agencyName)
+        {
+            SetupBase(show2026RelevantYearFilter: true);
+
+            // Arrange
+            var expectedViewModel = new RegistrationSubmissionsViewModel
+            {
+                AgencyName = agencyName
+            };
+            string expectedBackLink = "/regulators/home";
+
+            // Ensure the Organisation has a valid NationId
+            _journeySession.UserData.Organisations.Add(new Organisation
+            {
+                NationId = nationId
+            });
+
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(_journeySession);
+
+            // Act
+            var result = await _controller.RegistrationSubmissions(1);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            Assert.IsInstanceOfType(expectedViewModel, viewResult!.Model.GetType());
+
+            var resultModel = viewResult.Model as RegistrationSubmissionsViewModel;
+            Assert.AreEqual(expectedViewModel.AgencyName, resultModel.AgencyName);
+            Assert.IsTrue(resultModel.ListViewModel.RegistrationsFilterModel.Show2026RelevantYearFilter);
 
             var actualBackLink = _controller.ViewBag.CustomBackLinkToDisplay;
             Assert.IsNotNull(actualBackLink);
@@ -271,7 +320,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYears = "2025",
+                RelevantYears = "2025, 2026",
                 PageNumber = 1,
                 PageSize = 500,
                 Statuses = "Pending"
@@ -291,7 +340,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             session.CurrentPageNumber.Should().Be(1);
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025, 2026");
             session.LatestFilterChoices.PageNumber.Should().Be(1);
             session.LatestFilterChoices.PageSize.Should().Be(500);
             session.LatestFilterChoices.Statuses.Should().Be("Pending");
@@ -303,6 +352,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(1);
             model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
         }
@@ -376,6 +426,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(new_page_number);
             model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeFalse();
             model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
         }
@@ -392,7 +443,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 OrganisationName = "braun",
                 OrganisationType = "small",
-                RelevantYears = "2025",
+                RelevantYears = "2025, 2026",
                 PageNumber = expectedPageNumber,
                 PageSize = 500,
                 Statuses = "Pending"
@@ -442,7 +493,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert: Final state
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
             session.LatestFilterChoices.OrganisationType.Should().Be("small");
-            session.LatestFilterChoices.RelevantYears.Should().Be("2025");
+            session.LatestFilterChoices.RelevantYears.Should().Be("2025, 2026");
             session.LatestFilterChoices.PageNumber.Should().Be(4);
             session.LatestFilterChoices.PageSize.Should().Be(500);
             session.LatestFilterChoices.Statuses.Should().Be("Pending");
@@ -454,6 +505,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(4);
             model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
         }
@@ -462,11 +514,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task RegistrationSubmissions_Clears_Filters_On_ClearFilters_Action()
         {
             // Arrange
-            SetupSessionWithFilters("braun", "small", "2025", 2, 200, "Pending");
+            SetupSessionWithFilters("braun", "small", "2025, 2026", 2, 200, "Pending");
             // Act: Perform initial GET request
             var getResult = await _controller.RegistrationSubmissions(null);
             // Assert: Verify initial state
-            AssertInitialFilters(getResult, "braun", "small", "2025", 2, 200, "Pending");
+            AssertInitialFilters(getResult, "braun", "small", "2025, 2026", 2, 200, "Pending");
             // Act: Perform POST request to clear filters
             var postResult = await _controller.RegistrationSubmissions(null, FilterActions.ClearFilters);
             // Assert: Verify POST redirects to GET action
@@ -521,6 +573,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(pageNumber);
             model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be(organisationName);
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
             session.LatestFilterChoices.OrganisationName.Should().Be(organisationName);
