@@ -33,6 +33,7 @@ public static class PagePath
     public const string EmailNominatedApprovedPerson = "email-nominated-approved-person";
     public const string AccountPermissionsChanged = "account-permissions-changed";
     public const string FileDownload = "file-download";
+    public const string SubmissionsFileDownload = "submissions-file-download";
     public const string OrganisationDetailsFileDownload = "organisation-details-file-download";
     public const string OrganisationDetailsFileDownloadFailed = "organisation-details-file-download-failed";
     public const string OrganisationDetailsFileDownloadSecurityWarning = "organisation-details-file-download-security-warning";
@@ -51,6 +52,30 @@ public static class PagePath
     public const string RegistrationSubmissionFileDownloadFailed = "registration-submission-download-failed";
     public const string RegistrationSubmissionFileDownloadSecurityWarning = "registration-submission-download-security-warning";
     public const string RegistrationSubmissionsFileDownload = "submission-file-download";
+    public const string PackagingDataFileDownload = "packaging-data-file-download";
+    public const string PackagingDataFileDownloadFailed = "packaging-data-file-download-failed";
+    public const string PackagingDataFileDownloadSecurityWarning = "packaging-data-file-download-security-warning";
+    public const string AuthorisedMaterials = "authorised-materials";
+    public const string ReprocessorExporterRegistrations = "registrations"; 
+    public const string ManageRegistrations = "manage-registrations";
+    public const string Accreditation = "accreditation";
+    public const string UkSiteDetails="uksite-details";
+    public const string InputsAndOutputs = "reprocessing-throughputs";
+    public const string MaterialDetails = "materials-contact";
+    public const string MaterialWasteLicences = "permits-exemptions";
+    public const string OverseasReprocessorInterim = "overseas-interim-sites";
+    public const string SamplingInspection = "sampling-inspection";
+    public const string BusinessAddress = "business-address";
+    public const string WasteLicences = "waste-licences";
+    public const string ApplicationUpdate = "application-update";
+    public const string ApplicationGrantedDetails = "add-note";
+    public const string ApplicationRefusedDetails = "refused-details";
+    public const string QueryRegistrationTask = "query-registration-task";
+    public const string QueryMaterialTask = "query-material-task";
+
+    // Complete tasks paths
+    public const string CompleteQueryRegistrationTask = "query-registration-task-complete";
+    public const string CompleteQueryMaterialTask = "query-material-task-complete";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

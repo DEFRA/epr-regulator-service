@@ -1,0 +1,65 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+
+@model AuthorisedMaterialsViewModel;
+
+@{
+	const string title = "Materials authorised on site";
+	ViewData["Title"] = @title;
+}
+
+<div class="govuk-width-container ">
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+        <h1 class="govuk-heading-l">
+          <span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
+          @title
+        </h1>
+
+        <form asp-controller="Registrations">
+          <dl class="govuk-summary-list">
+            @foreach (var material in Model.Materials)
+            {
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+				  @material.MaterialName
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  @if (!material.IsMaterialRegistered)
+                  {
+                    <span>Not applying for registration</span>
+
+                    @if (!string.IsNullOrWhiteSpace(material.Reason))
+                    {
+                      <br />
+                      <br />
+                      <strong>Reason</strong> @material.Reason
+                    }
+                  }
+                  else
+                  {
+                    <span>Applying for registration</span>
+                  }
+                </dd>
+              </div>
+            }
+          </dl>
+
+          <br/>
+
+          <div class="govuk-button-group !-margin-top-6">
+            <button type="submit" class="govuk-button" data-module="govuk-button" formmethod="post" asp-controller="Registrations" asp-action="CompleteAuthorisedMaterials" asp-route-registrationId="@Model.RegistrationId">
+              Mark as reviewed
+            </button>
+                        
+            <a href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model.RegistrationId, taskName = RegulatorTaskType.MaterialsAuthorisedOnSite })" class="govuk-button govuk-button--secondary">
+              Query the materials authorised on site
+            </a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </main>
+</div>

@@ -132,10 +132,16 @@
   <data name="SubTitle.PackagingData" xml:space="preserve">
     <value>Packaging data</value>
   </data>
+  <data name="SubTitle.PowerBI" xml:space="preserve">
+    <value>Power BI</value>
+  </data>
   <data name="SubTitle.PackagingData.Text" xml:space="preserve">
     <value>To view a summary of the packaging data and any previous submissions, </value>
   </data>
   <data name="Link.BackToSubmissions" xml:space="preserve">
     <value>Go back to all submissions</value>
+  </data>
+  <data name="SummaryList.Information.Text" xml:space="preserve">
+    <value>{0} cannot resubmit until this submission has been actioned.</value>
   </data>
 </root>

@@ -1,4 +1,6 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
 @using EPR.RegulatorService.Frontend.Core.Extensions
+@using EPR.RegulatorService.Frontend.Web.Configs
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 @using System.Globalization
@@ -6,7 +8,8 @@
 
 @model CompliancePaymentDetailsViewModel
 @{
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+	bool enableWaiveFeeButton = Model is not null && Model.Status == RegistrationSubmissionStatus.Granted && Model.ResubmissionStatus == RegistrationSubmissionStatus.Accepted && Model.TotalOutstanding > 0;
 }
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
@@ -144,12 +147,16 @@
                 </div>
             </dl>
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
-
+			<feature name="@FeatureFlags.ShowFeesWaiveButton">
+                <button type="submit" class="govuk-button" data-module="govuk-button" @(enableWaiveFeeButton ? "" : "disabled")>
+                    @Localizer["CompliancePaymentDetails.WaiveFees"]
+                </button>
+			</feature>
             @await Html.PartialAsync("Partials/_OfflinePayment", Model as PaymentDetailsViewModel)
         }
         else
         {
-            <p class="govuk-body">Unable to retrieve compliance payment details</p>
+            <p class="govuk-body">@SharedLocalizer["PaymentDetails.CsoServiceIssueDescription"]</p>
         }
     </div>
 </div>

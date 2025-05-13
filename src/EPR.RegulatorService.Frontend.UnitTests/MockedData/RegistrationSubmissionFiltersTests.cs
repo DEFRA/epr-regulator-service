@@ -110,6 +110,18 @@ public class RegistrationSubmissionFiltersTests
     }
 
     [TestMethod]
+    [DataRow(RegistrationSubmissionStatus.Accepted)]
+    [DataRow(RegistrationSubmissionStatus.Pending)]
+    [DataRow(RegistrationSubmissionStatus.Rejected)]
+    public void FilterByOrganisationName_ReturnsOnlyByReSubmissionStatus(RegistrationSubmissionStatus byStatus)
+    {
+        var expectedResult = _abstractRegistrations.Where(x => x.ResubmissionStatus == byStatus);
+
+        var result = _abstractRegistrations.FilterByReSubmissionStatus(byStatus.ToString());
+        result.Should().BeEquivalentTo(expectedResult);
+    }
+
+    [TestMethod]
     public void FilterBySubmissionStatus_WithNoValue_ReturnsAll()
     {
         var result = _abstractRegistrations.FilterBySubmissionStatus(null);

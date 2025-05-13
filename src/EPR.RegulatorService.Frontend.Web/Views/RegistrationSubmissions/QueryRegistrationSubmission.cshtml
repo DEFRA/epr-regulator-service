@@ -22,13 +22,13 @@
                         @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
                     }
                     <span class="govuk-caption-xl">
-                      @Localizer["QueryRegistrationSubmission.Caption"]
+                        @Localizer["QueryRegistrationSubmission.Caption"]
                     </span>
                     <h1 class="govuk-heading-xl govuk-!-margin-bottom-4" for="@nameof(Model.Query)">
                         @Localizer["QueryRegistrationSubmission.Heading"]
                     </h1>
                     <p class="govuk-body govuk-!-margin-bottom-4">
-                      @Localizer["QueryRegistrationSubmission.Description"]
+                        @Localizer["QueryRegistrationSubmission.Description"]
                     </p>
                 </div>
             </div>
@@ -55,10 +55,9 @@
                     </div>
                 </div>
                 <div class="govuk-grid-column-full">
-                    <button
-                      type="submit"
-                      class="govuk-button govuk-button--secondary epr-horizontal-control epr-horizontal-control-button govuk-!-margin-right-6"
-                      data-module="govuk-button">
+                    <button type="submit"
+                            class="govuk-button govuk-button--secondary epr-horizontal-control epr-horizontal-control-button govuk-!-margin-right-6"
+                            data-module="govuk-button">
                         @SharedLocalizer["Continue"]
                     </button>
                 </div>

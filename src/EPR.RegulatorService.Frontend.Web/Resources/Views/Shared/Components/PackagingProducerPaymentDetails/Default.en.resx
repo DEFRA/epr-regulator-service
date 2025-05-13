@@ -117,34 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="SummaryList.Title" xml:space="preserve">
-    <value>Resubmission details</value>
+  <data name="PackagingProducerPaymentDetails.ResubmissionFee" xml:space="preserve">
+    <value>Packaging data resubmission fee</value>
   </data>
-  <data name="SummaryList.SubTitle.TimeAndDateOfSubmission" xml:space="preserve">
-    <value>Time and date of resubmission</value>
-  </data>
-  <data name="SummaryList.SubTitle.SubmittedBy" xml:space="preserve">
-    <value>Resubmitted by</value>
-  </data>
-  <data name="SummaryList.SubTitle.AccountRole" xml:space="preserve">
-    <value>Account role</value>
-  </data>
-  <data name="SummaryList.SubTitle.Telephone" xml:space="preserve">
-    <value>Telephone</value>
-  </data>
-  <data name="SummaryList.SubTitle.Email" xml:space="preserve">
-    <value>Email</value>
-  </data>
-  <data name="SummaryList.SubTitle.ReasonForRejection" xml:space="preserve">
-    <value>Reason for rejection of previous submission</value>
-  </data>
-  <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
-    <value>Resubmission required</value>
-  </data>
-  <data name="SummaryList.Information.Text" xml:space="preserve">
-    <value>{0} cannot resubmit until this submission has been actioned.</value>
-  </data>
-  <data name="SummaryList.ReSubmissionPeriodSuffix" xml:space="preserve">
-    <value>submission period</value>
+  <data name="PackagingProducerPaymentDetails.ResubmissionFeeDescription" xml:space="preserve">
+    <value>Packaging data resubmission</value>
   </data>
 </root>

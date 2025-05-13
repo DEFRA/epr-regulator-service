@@ -1,0 +1,62 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ApplicationUpdateViewModel
+
+@{
+  const string title = "Update application outcome";
+  ViewData["Title"] = title;
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container ">
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+
+      <div class="govuk-grid-column-two-thirds">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend">
+            <h1 class="govuk-heading-l">
+              <span class="govuk-caption-l">@Model.MaterialName</span>
+              @title
+            </h1>
+          </legend>
+        
+          @if (!ViewData.ModelState.IsValid)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+          }
+          
+          <form asp-controller="ApplicationUpdate" asp-action="ApplicationUpdate" method="post">
+          
+            <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+            
+              @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+              <div class="govuk-radios govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="Status" name="Status" type="radio" value="@nameof(ApplicationStatus.Granted)" @(Model.Status == ApplicationStatus.Granted ? "checked" : "")>
+                  <label class="govuk-label govuk-radios__label" for="Status">
+                    Grant registration
+                  </label>
+                </div>
+
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="Status-refused" name="Status" type="radio" value="@nameof(ApplicationStatus.Refused)" @(Model.Status == ApplicationStatus.Refused ? "checked" : "")>
+                  <label class="govuk-label govuk-radios__label" for="Status-refused">
+                    Refuse registration
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="govuk-button" data-module="govuk-button">
+              Continue
+            </button>
+          </form>
+        </fieldset>
+      </div>
+    </div>
+  </main>
+</div>

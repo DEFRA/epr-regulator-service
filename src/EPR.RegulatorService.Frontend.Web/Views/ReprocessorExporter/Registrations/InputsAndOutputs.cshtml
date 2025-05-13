@@ -1,0 +1,133 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
+@{
+    string estimated = Model.RegistrationMaterialReprocessingIO.ReprocessingPackagingWasteLastYearFlag ? string.Empty : "(estimated)";
+    const string title = "Reprocessing inputs and outputs";
+    ViewData["Title"] = title;
+}
+@model RegistrationMaterialReprocessingIOViewModel;
+
+<div class="govuk-width-container ">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-caption-l">Plastic</span>
+                    @title
+                </h1>
+
+                <form asp-controller="Registrations">
+
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Sources of packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.RegistrationMaterialReprocessingIO.SourcesOfPackagingWaste
+                            </dd>
+                        </div>
+
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                List of plant and equipment
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.RegistrationMaterialReprocessingIO.PlantEquipmentUsed
+                            </dd>
+                        </div>
+                    </dl>
+                    <br>
+                    <h3 class="govuk-heading-m"> Reprocessing inputs for last calendar year @estimated</h3>
+
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                UK Packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.RegistrationMaterialReprocessingIO.UKPackagingWasteTonne
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Non UK packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.RegistrationMaterialReprocessingIO.NonUKPackagingWasteTonne
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Non packaging waste
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.RegistrationMaterialReprocessingIO.NotPackingWasteTonne
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Total
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.RegistrationMaterialReprocessingIO.TotalInputs
+                            </dd>
+                        </div>
+                    </dl>
+
+                    <br>
+
+                    <h3 class="govuk-heading-m"> Material outputs for last calendar year @estimated</h3>
+
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Plastic not reprocessed on site
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.RegistrationMaterialReprocessingIO.SenttoOtherSiteTonne
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Contaminants from plastic reprocessing
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.RegistrationMaterialReprocessingIO.ContaminantsTonne
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Process loss from plastic reprocessing
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.RegistrationMaterialReprocessingIO.ProcessLossTonne
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Total
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.RegistrationMaterialReprocessingIO.TotalOutputs
+                            </dd>
+                        </div>
+
+                    </dl>
+
+                    <br>
+
+                    <div class="govuk-button-group !-margin-top-6">
+                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteInputsAndOutputs" asp-route-registrationMaterialId="@Model.RegistrationMaterialId">
+                            Mark as reviewed
+                        </button>
+
+                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = @Model.RegistrationMaterialId, taskName = RegulatorTaskType.ReprocessingInputsAndOutputs })">
+                            Query the reprocessing inputs and outputs
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
