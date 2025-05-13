@@ -134,11 +134,13 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         string? registrationNumber = registrationMaterialOutcomeRequest.Status == ApplicationStatus.Granted ? "ABC123 4563" : null;
         string? statusUpdatedBy = registrationMaterialOutcomeRequest.Status != null ? "Test User" : null;
         DateTime? statusUpdatedAt = registrationMaterialOutcomeRequest.Status != null ? DateTime.Now : null;
+        string? applicationNumber = null;
 
         var updatedRegistrationMaterial = CreateRegistrationMaterial(
             registrationMaterial.RegistrationId,
             registrationMaterial.MaterialName,
             registration.OrganisationType,
+            applicationNumber,
             registrationMaterialOutcomeRequest.Status,
             statusUpdatedBy,
             statusUpdatedAt,
@@ -170,9 +172,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 Tasks = CreateRegistrationTasks(registrationId, organisationType),
                 Materials =
                 [
-                    CreateRegistrationMaterial(registrationId, "Plastic", organisationType),
-                    CreateRegistrationMaterial(registrationId, "Steel", organisationType),
-                    CreateRegistrationMaterial(registrationId, "Aluminium", organisationType),
+                    CreateRegistrationMaterial(registrationId, "Plastic", organisationType, "222019EFGF"),
+                    CreateRegistrationMaterial(registrationId, "Steel", organisationType, "333019EFGF"),
+                    CreateRegistrationMaterial(registrationId, "Aluminium", organisationType, "444019EFGF"),
                 ]
             };
     }
@@ -191,7 +193,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             Tasks = CreateRegistrationTasks(registrationId, organisationType),
             Materials =
             [
-                CreateRegistrationMaterial(registrationId, "Plastic", organisationType)
+                CreateRegistrationMaterial(registrationId, "Plastic", organisationType, "111019EFGF")
             ]
         };
     }
@@ -221,6 +223,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         int registrationId,
         string materialName,
         ApplicationOrganisationType organisationType,
+        string applicationNumber,
         ApplicationStatus? status = null,
         string? statusUpdatedBy = null,
         DateTime? statusUpdatedAt = null,
@@ -239,6 +242,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             StatusUpdatedBy = statusUpdatedBy,
             StatusUpdatedDate = statusUpdatedAt,
             RegistrationReferenceNumber = registrationNumber,
+            ApplicationReferenceNumber = applicationNumber,
             Tasks = CreateMaterialTasks(registrationMaterialId, organisationType)
         };
     }
