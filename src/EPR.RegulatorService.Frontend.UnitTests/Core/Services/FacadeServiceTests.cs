@@ -1696,6 +1696,59 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        public async Task GetRegistrationSubmissions_WithCancelledSubmission_SetsResubmissionStatusToNull()
+        {
+            // Arrange
+            var filter = new RegistrationSubmissionsFilterModel();
+
+            var cancelledSubmission = new RegistrationSubmissionOrganisationDetails
+            {
+                SubmissionStatus = RegistrationSubmissionStatus.Cancelled,
+                ResubmissionStatus = RegistrationSubmissionStatus.Pending, // Should be nulled
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+                {
+                    ResubmissionStatus = RegistrationSubmissionStatus.Pending // Should be nulled
+                }
+            };
+
+            var responseObject = new
+            {
+                items = new[] { cancelledSubmission },
+                currentPage = 1,
+                totalItems = 1,
+                pageSize = 10
+            };
+
+            string responseContent = JsonSerializer.Serialize(responseObject, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+            _mockHandler
+               .Protected()
+               .Setup<Task<HttpResponseMessage>>("SendAsync",
+                   ItExpr.IsAny<HttpRequestMessage>(),
+                   ItExpr.IsAny<CancellationToken>())
+               .ReturnsAsync(() =>
+               {
+                   var response = new HttpResponseMessage(HttpStatusCode.OK)
+                   {
+                       Content = new StringContent(responseContent, Encoding.UTF8, "application/json")
+                   };
+                   return response;
+               });
+
+            // Act
+            var result = await _facadeService.GetRegistrationSubmissions(filter);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.items.Count);
+
+            var item = result.items[0];
+            Assert.AreEqual(RegistrationSubmissionStatus.Cancelled, item.SubmissionStatus);
+            Assert.IsNull(item.ResubmissionStatus);
+            Assert.IsNull(item.SubmissionDetails.ResubmissionStatus);
+        }
+
+        [TestMethod]
         public async Task GetRegistrationSubmissions_Failure_ReturnsDefaultPaginatedList()
         {
             // Arrange
