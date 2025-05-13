@@ -409,6 +409,8 @@ public class FacadeService : IFacadeService
             var commonData = await ReadRequiredJsonContent(response.Content);
             var responseData = commonData.items.Select(x => (RegistrationSubmissionOrganisationDetails)x).ToList();
 
+            UpdateCancelledResubmissions(responseData);
+
             return new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
                 items = responseData,
@@ -429,6 +431,18 @@ public class FacadeService : IFacadeService
         }
 
         return null;
+    }
+
+    internal static List<RegistrationSubmissionOrganisationDetails> UpdateCancelledResubmissions(
+    List<RegistrationSubmissionOrganisationDetails> submissions)
+    {
+        foreach (var item in submissions.Where(s => s.SubmissionStatus == RegistrationSubmissionStatus.Cancelled))
+        {
+            item.ResubmissionStatus = null;
+            item.SubmissionDetails.ResubmissionStatus = null;
+        }
+
+        return submissions;
     }
 
     public static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
@@ -460,6 +474,19 @@ public class FacadeService : IFacadeService
         string content = await response.Content.ReadAsStringAsync();
 
         RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFE(content);
+
+        UpdateCancelledResubmissionStatus(result);
+
+        return result;
+    }
+
+    internal static RegistrationSubmissionOrganisationDetailsResponse UpdateCancelledResubmissionStatus(RegistrationSubmissionOrganisationDetailsResponse result)
+    {
+        if (result.SubmissionStatus == RegistrationSubmissionStatus.Cancelled)
+        {
+            result.ResubmissionStatus = null;
+            result.SubmissionDetails.ResubmissionStatus = null;
+        }
 
         return result;
     }

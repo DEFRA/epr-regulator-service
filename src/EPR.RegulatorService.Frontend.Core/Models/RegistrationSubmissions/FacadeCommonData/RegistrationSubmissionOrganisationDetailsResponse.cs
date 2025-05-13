@@ -19,7 +19,7 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public int RelevantYear { get; init; }
     public DateTime SubmissionDate { get; init; }
     public RegistrationSubmissionStatus SubmissionStatus { get; init; }
-    public RegistrationSubmissionStatus? ResubmissionStatus { get; init; }
+    public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
     public DateTime? StatusPendingDate { get; set; }
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
