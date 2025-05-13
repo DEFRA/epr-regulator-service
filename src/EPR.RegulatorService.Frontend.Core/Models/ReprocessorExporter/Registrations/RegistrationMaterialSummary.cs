@@ -20,5 +20,7 @@ public class RegistrationMaterialSummary
 
     public string? RegistrationReferenceNumber { get; init; }
 
+    public string? ApplicationReferenceNumber { get; init; }
+
     public List<RegistrationTask> Tasks { get; init; } = [];
 }

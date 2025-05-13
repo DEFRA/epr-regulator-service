@@ -22,6 +22,8 @@ public class ManageRegistrationMaterialViewModel
 
     public string? RegistrationReferenceNumber { get; init; }
 
+    public string? ApplicationReferenceNumber { get; init; }
+
     public RegistrationTaskViewModel? MaterialWasteLicensesTask { get; init; }
 
     public RegistrationTaskViewModel? InputsAndOutputsTask { get; init; }
