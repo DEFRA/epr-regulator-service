@@ -1,6 +1,8 @@
 using AutoMapper;
 
+using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
@@ -8,13 +10,13 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
 
 using FluentValidation;
 
 using Microsoft.FeatureManagement.Mvc;
 using Microsoft.AspNetCore.Mvc;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
-using EPR.RegulatorService.Frontend.Core.Configs;
+
 using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
@@ -186,7 +188,9 @@ public class RegistrationStatusController(
 
         int determinationWeeks = reprocessorExporterConfig.Value.DeterminationWeeks;
         viewModel.DeterminationWeeks = reprocessorExporterConfig.Value.DeterminationWeeks;
-        viewModel.DeterminationDate = CalculateDeterminationDate(determinationWeeks, registrationStatusSession.SubmittedDate, registrationStatusSession.PaymentDate);
+
+        var dulyMadeDate = CalculateDulyMadeDate(registrationStatusSession.SubmittedDate, registrationStatusSession.PaymentDate);
+        viewModel.DeterminationDate = CalculateDeterminationDate(determinationWeeks, dulyMadeDate);
 
         string pagePath = GetPagePath(PagePath.PaymentReview, registrationStatusSession.RegistrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
@@ -203,19 +207,34 @@ public class RegistrationStatusController(
 
         var registrationStatusSession = GetRegistrationStatusSession(session);
 
-        await reprocessorExporterService.MarkAsDulyMadeAsync(registrationStatusSession.RegistrationMaterialId);
+        var offlinePaymentRequest = mapper.Map<OfflinePaymentRequest>(registrationStatusSession);
+        await reprocessorExporterService.SubmitOfflinePaymentAsync(offlinePaymentRequest);
+
+        var dulyMadeRequest = CreateDulyMadeRequest(registrationStatusSession);
+        await reprocessorExporterService.MarkAsDulyMadeAsync(registrationStatusSession.RegistrationMaterialId, dulyMadeRequest);
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationStatusSession.RegistrationId });
     }
-    
-    private static DateTime CalculateDeterminationDate(int determinationWeeks, DateTime submittedDate, DateTime? paymentDate)
+
+    private MarkAsDulyMadeRequest CreateDulyMadeRequest(RegistrationStatusSession registrationStatusSession)
     {
-        var startDate = paymentDate.HasValue && paymentDate.Value > submittedDate
+        var dulyMadeDate = CalculateDulyMadeDate(registrationStatusSession.SubmittedDate, registrationStatusSession.PaymentDate);
+
+        var dulyMadeRequest = new MarkAsDulyMadeRequest
+        {
+            DulyMadeDate = dulyMadeDate,
+            DeterminationDate =
+                CalculateDeterminationDate(reprocessorExporterConfig.Value.DeterminationWeeks, dulyMadeDate)
+        };
+        return dulyMadeRequest;
+    }
+
+    private static DateTime CalculateDulyMadeDate(DateTime submittedDate, DateTime? paymentDate) =>
+        paymentDate.HasValue && paymentDate.Value > submittedDate
             ? paymentDate.Value
             : submittedDate;
 
-        return startDate.AddDays(determinationWeeks * 7);
-    }
+    private static DateTime CalculateDeterminationDate(int determinationWeeks, DateTime dulyMadeDate) => dulyMadeDate.AddDays(determinationWeeks * 7);
 
     private static string GetPagePath(string pagePath, int registrationMaterialId) =>
         $"{pagePath}?registrationMaterialId={registrationMaterialId}";

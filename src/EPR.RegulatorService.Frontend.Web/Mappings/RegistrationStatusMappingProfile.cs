@@ -21,5 +21,9 @@ public class RegistrationStatusMappingProfile : Profile
            .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.PaymentDate.HasValue ? src.PaymentDate.Value.Year : (int?)null));
 
         CreateMap<RegistrationStatusSession, PaymentReviewViewModel>();
+
+        CreateMap<RegistrationStatusSession, OfflinePaymentRequest>()
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.FeeAmount))
+            .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.ApplicationReferenceNumber));
     }
 }

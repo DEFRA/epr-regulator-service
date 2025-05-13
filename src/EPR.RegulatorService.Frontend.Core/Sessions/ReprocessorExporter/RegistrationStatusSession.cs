@@ -12,6 +12,7 @@ public class RegistrationStatusSession
     public decimal FeeAmount { get; init; }
     public string ApplicationReferenceNumber { get; init; }
     public DateTime SubmittedDate { get; init; }
+    public string Regulator { get; init; }
     public bool? FullPaymentMade { get; set; }
     public PaymentMethodType? PaymentMethod { get; set; }
     public DateTime? PaymentDate { get; set; }

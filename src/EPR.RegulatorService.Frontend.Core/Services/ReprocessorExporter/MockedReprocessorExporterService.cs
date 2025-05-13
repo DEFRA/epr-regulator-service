@@ -124,6 +124,39 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         });
     }
 
+    public Task MarkAsDulyMadeAsync(int registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
+    {
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
+
+        registrationMaterial.DeterminationDate = dulyMadeRequest.DeterminationDate;
+        
+        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.RegistrationDulyMade);
+        int? taskId;
+
+        if (task == null)
+        {
+            taskId = (registrationMaterialId * 1000) + registrationMaterial.Tasks.Count;
+        }
+        else
+        {
+            taskId = task.Id;
+            registrationMaterial.Tasks.Remove(task);
+        }
+
+        var newTask = new RegistrationTask
+        {
+            Id = taskId,
+            TaskName = RegulatorTaskType.RegistrationDulyMade,
+            Status = RegulatorTaskStatus.Completed
+        };
+
+        registrationMaterial.Tasks.Add(newTask);
+
+        return Task.CompletedTask;
+    }
+
+    public Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment) => Task.CompletedTask;
+    
     public Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
@@ -149,6 +182,81 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         registration.Materials.Add(updatedRegistrationMaterial);
 
         return Task.CompletedTask;
+    }
+    
+    public Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest)
+    {
+        var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
+        var task = registration.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateRegistrationTaskStatusRequest.TaskName);
+        int? taskId;
+        
+        if (task == null)
+        {
+            taskId = (updateRegistrationTaskStatusRequest.RegistrationId * 10) + registration.Tasks.Count;
+        }
+        else
+        {
+            taskId = task.Id;
+            registration.Tasks.Remove(task);
+        }
+
+        var newTask = new RegistrationTask
+        {
+            Id = taskId,
+            TaskName = Enum.Parse<RegulatorTaskType>(updateRegistrationTaskStatusRequest.TaskName),
+            Status = Enum.Parse<RegulatorTaskStatus>(updateRegistrationTaskStatusRequest.Status)
+        };
+
+        registration.Tasks.Add(newTask);
+
+        return Task.CompletedTask;
+    }
+
+    public Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest)
+    {
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == updateMaterialTaskStatusRequest.RegistrationMaterialId);
+        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateMaterialTaskStatusRequest.TaskName);
+        int? taskId;
+
+        if (task == null)
+        {
+            taskId = (updateMaterialTaskStatusRequest.RegistrationMaterialId * 1000) + registrationMaterial.Tasks.Count;
+        }
+        else
+        {
+            taskId = task.Id;
+            registrationMaterial.Tasks.Remove(task);
+        }
+
+        var newTask = new RegistrationTask
+        {
+            Id = taskId,
+            TaskName = Enum.Parse<RegulatorTaskType>(updateMaterialTaskStatusRequest.TaskName),
+            Status = Enum.Parse<RegulatorTaskStatus>(updateMaterialTaskStatusRequest.Status)
+        };
+
+        registrationMaterial.Tasks.Add(newTask);
+
+        return Task.CompletedTask;
+    }
+
+    public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
+    public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
+
+    public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
+        {
+            CapacityPeriod = "Per Year",
+            CapacityTonne = 50000,
+            LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],
+            MaterialName = "Plastic",
+            MaximumReprocessingCapacityTonne = 10000,
+            MaximumReprocessingPeriod = "Per Month",
+            PermitType = "Waste Exemption",
+        };
+
+        return Task.FromResult(registrationMaterialWasteLicence);
     }
 
     private static List<Registration> SeedRegistrations() =>
@@ -269,108 +377,5 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails},
             new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
         ];
-    }
-
-    public Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest)
-    {
-        var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
-        var task = registration.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateRegistrationTaskStatusRequest.TaskName);
-        int? taskId;
-        
-        if (task == null)
-        {
-            taskId = (updateRegistrationTaskStatusRequest.RegistrationId * 10) + registration.Tasks.Count;
-        }
-        else
-        {
-            taskId = task.Id;
-            registration.Tasks.Remove(task);
-        }
-
-        var newTask = new RegistrationTask
-        {
-            Id = taskId,
-            TaskName = Enum.Parse<RegulatorTaskType>(updateRegistrationTaskStatusRequest.TaskName),
-            Status = Enum.Parse<RegulatorTaskStatus>(updateRegistrationTaskStatusRequest.Status)
-        };
-
-        registration.Tasks.Add(newTask);
-
-        return Task.CompletedTask;
-    }
-
-    public Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest)
-    {
-        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == updateMaterialTaskStatusRequest.RegistrationMaterialId);
-        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateMaterialTaskStatusRequest.TaskName);
-        int? taskId;
-
-        if (task == null)
-        {
-            taskId = (updateMaterialTaskStatusRequest.RegistrationMaterialId * 1000) + registrationMaterial.Tasks.Count;
-        }
-        else
-        {
-            taskId = task.Id;
-            registrationMaterial.Tasks.Remove(task);
-        }
-
-        var newTask = new RegistrationTask
-        {
-            Id = taskId,
-            TaskName = Enum.Parse<RegulatorTaskType>(updateMaterialTaskStatusRequest.TaskName),
-            Status = Enum.Parse<RegulatorTaskStatus>(updateMaterialTaskStatusRequest.Status)
-        };
-
-        registrationMaterial.Tasks.Add(newTask);
-
-        return Task.CompletedTask;
-    }
-
-    public Task MarkAsDulyMadeAsync(int registrationMaterialId)
-    {
-        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
-        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.RegistrationDulyMade);
-        int? taskId;
-
-        if (task == null)
-        {
-            taskId = (registrationMaterialId * 1000) + registrationMaterial.Tasks.Count;
-        }
-        else
-        {
-            taskId = task.Id;
-            registrationMaterial.Tasks.Remove(task);
-        }
-
-        var newTask = new RegistrationTask
-        {
-            Id = taskId,
-            TaskName = RegulatorTaskType.RegistrationDulyMade,
-            Status = RegulatorTaskStatus.Completed
-        };
-
-        registrationMaterial.Tasks.Add(newTask);
-
-        return Task.CompletedTask;
-    }
-
-    public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
-    public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
-
-    public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
-    {
-        var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
-        {
-            CapacityPeriod = "Per Year",
-            CapacityTonne = 50000,
-            LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],
-            MaterialName = "Plastic",
-            MaximumReprocessingCapacityTonne = 10000,
-            MaximumReprocessingPeriod = "Per Month",
-            PermitType = "Waste Exemption",
-        };
-
-        return Task.FromResult(registrationMaterialWasteLicence);
     }
 }

@@ -108,11 +108,17 @@ public class ReprocessorExporterService(
         return registrationMaterialWasteLicence;
     }
 
+    public Task MarkAsDulyMadeAsync(int registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
+    {
+        throw new NotImplementedException("MarkAsDulyMadeAsync is not implemented.");
+    }
+
     public Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(int registrationMaterialId)
     {
-        // TODO: Implement this method
         throw new NotImplementedException("GetPaymentFeesByRegistrationMaterialIdAsync is not implemented.");
     }
+
+    public Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment) => throw new NotImplementedException();
 
     public async Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
@@ -149,8 +155,6 @@ public class ReprocessorExporterService(
 
         response.EnsureSuccessStatusCode();
     }
-
-    public Task MarkAsDulyMadeAsync(int registrationMaterialId) => throw new NotImplementedException();
 
     public async Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId)
     {
