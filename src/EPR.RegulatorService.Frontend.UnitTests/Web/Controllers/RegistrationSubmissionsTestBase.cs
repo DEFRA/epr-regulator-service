@@ -1,23 +1,23 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
-    using EPR.RegulatorService.Frontend.Web.Configs;
-    using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
-    using EPR.RegulatorService.Frontend.Web.Constants;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Options;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.AspNetCore.Mvc.ViewFeatures;
-    using EPR.RegulatorService.Frontend.Core.Sessions;
-    using EPR.RegulatorService.Frontend.Web.Sessions;
-    using EPR.RegulatorService.Frontend.Core.Services;
-    using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-    using Microsoft.Extensions.Logging;
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
+    using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Core.Services;
+    using EPR.RegulatorService.Frontend.Core.Sessions;
+    using EPR.RegulatorService.Frontend.Web.Configs;
+    using EPR.RegulatorService.Frontend.Web.Constants;
+    using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Web.Sessions;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Routing;
-    using System.Globalization;
+    using Microsoft.AspNetCore.Mvc.ViewFeatures;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
 
     public abstract class RegistrationSubmissionsTestBase
     {
@@ -29,16 +29,18 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         protected RegistrationSubmissionsController _controller = null!;
         protected Mock<HttpContext> _mockHttpContext = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _mockUrlsOptions = null!;
+        protected Mock<IOptions<RegistrationSubmissionsOptions>> _mockRegistrationSubmissionOptions = null!;
         protected Mock<IConfiguration> _mockConfiguration = null!;
         protected Mock<ISessionManager<JourneySession>> _mockSessionManager = null!;
         protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
         protected Mock<IUrlHelper> _mockUrlHelper = null!;
 
-        protected void SetupBase()
+        protected void SetupBase(bool? show2026RelevantYearFilter = false)
         {
             _mockHttpContext = new Mock<HttpContext>();
             _mockUrlsOptions = new Mock<IOptions<ExternalUrlsOptions>>();
+            _mockRegistrationSubmissionOptions = new Mock<IOptions<RegistrationSubmissionsOptions>>();
             _mockConfiguration = new Mock<IConfiguration>();
             _loggerMock = new Mock<ILogger<RegistrationSubmissionsController>>();
             _facadeServiceMock = new Mock<IFacadeService>();
@@ -59,6 +61,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     PowerBiLogin = PowerBiLogin
                 });
 
+            _mockRegistrationSubmissionOptions.Setup(mockRegistrationSubmissionOptions =>
+                mockRegistrationSubmissionOptions.Value)
+                .Returns(new RegistrationSubmissionsOptions
+                {
+                    Show2026RelevantYearFilter = show2026RelevantYearFilter.Value
+                });
+
             SetupJourneySession(null, null);
 
             _mockUrlHelper = new Mock<IUrlHelper>();
@@ -72,7 +81,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _mockSessionManager.Object,
                 _loggerMock.Object,
                 _mockConfiguration.Object,
-                _mockUrlsOptions.Object)
+                _mockUrlsOptions.Object,
+                _mockRegistrationSubmissionOptions.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -112,48 +122,51 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             (gotBackLinkObject as string)?.Should().Be(expectedBackLink);
         }
 
-        protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(Guid organisationId, int nationId = 3, string nationCode = "Sco" ) => new RegistrationSubmissionDetailsViewModel
-        {
-            SubmissionId = organisationId,
-            OrganisationId = organisationId,
-            OrganisationReference = "215 148",
-            OrganisationName = "Acme org Ltd.",
-            RegistrationReferenceNumber = "REF001",
-            ReferenceNumber = "REF002",
-            OrganisationType = RegistrationSubmissionOrganisationType.large,
-            BusinessAddress = new BusinessAddress
+        protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(
+            Guid organisationId,
+            int nationId = 3,
+            string nationCode = "Sco") => new RegistrationSubmissionDetailsViewModel
             {
-                BuildingName = string.Empty,
-                BuildingNumber = "10",
-                Street = "High Street",
-                County = "Randomshire",
-                PostCode = "A12 3BC"
-            },
-            CompaniesHouseNumber = "0123456",
-            RegisteredNation = nationCode,
-            NationId = nationId,
-            PowerBiLogin = "https://app.powerbi.com/",
-            Status = RegistrationSubmissionStatus.Queried,
-            SubmissionDetails = new SubmissionDetailsViewModel
-            {
+                SubmissionId = organisationId,
+                OrganisationId = organisationId,
+                OrganisationReference = "215 148",
+                OrganisationName = "Acme org Ltd.",
+                RegistrationReferenceNumber = "REF001",
+                ReferenceNumber = "REF002",
+                OrganisationType = RegistrationSubmissionOrganisationType.large,
+                BusinessAddress = new BusinessAddress
+                {
+                    BuildingName = string.Empty,
+                    BuildingNumber = "10",
+                    Street = "High Street",
+                    County = "Randomshire",
+                    PostCode = "A12 3BC"
+                },
+                CompaniesHouseNumber = "0123456",
+                RegisteredNation = nationCode,
+                NationId = nationId,
+                PowerBiLogin = "https://app.powerbi.com/",
                 Status = RegistrationSubmissionStatus.Queried,
-                LatestDecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
-                TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
-                SubmittedOnTime = true,
-                SubmittedBy = "Sally Smith",
-                AccountRole = Frontend.Core.Enums.ServiceRole.ApprovedPerson,
-                AccountRoleId = (int)Frontend.Core.Enums.ServiceRole.ApprovedPerson,
-                Telephone = "07553 937 831",
-                Email = "sally.smith@email.com",
-                DeclaredBy = "Sally Smith",
-                Files =
+                SubmissionDetails = new SubmissionDetailsViewModel
+                {
+                    Status = RegistrationSubmissionStatus.Queried,
+                    LatestDecisionDate = new DateTime(2024, 10, 21, 16, 23, 42, DateTimeKind.Utc),
+                    TimeAndDateOfSubmission = new DateTime(2024, 7, 10, 16, 23, 42, DateTimeKind.Utc),
+                    SubmittedOnTime = true,
+                    SubmittedBy = "Sally Smith",
+                    AccountRole = Frontend.Core.Enums.ServiceRole.ApprovedPerson,
+                    AccountRoleId = (int)Frontend.Core.Enums.ServiceRole.ApprovedPerson,
+                    Telephone = "07553 937 831",
+                    Email = "sally.smith@email.com",
+                    DeclaredBy = "Sally Smith",
+                    Files =
                     [
                     ],
-            },
-            ProducerComments = "producer comment",
-            RegulatorComments = "regulator comment",
-            RegistrationYear = DateTime.Now.Year
-        };
+                },
+                ProducerComments = "producer comment",
+                RegulatorComments = "regulator comment",
+                RegistrationYear = DateTime.Now.Year
+            };
 
         protected static PaymentDetailsViewModel GenerateValidPaymentDetailsViewModel() => new PaymentDetailsViewModel
         {
@@ -167,8 +180,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         protected static void MergeFilterChoices(RegulatorRegistrationSubmissionSession session, RegistrationSubmissionsFilterModel newChoices)
         {
-            if (session.LatestFilterChoices == null)
-                session.LatestFilterChoices = new RegistrationSubmissionsFilterModel();
+            session.LatestFilterChoices ??= new RegistrationSubmissionsFilterModel();
 
             session.LatestFilterChoices.OrganisationName = newChoices.OrganisationName ?? session.LatestFilterChoices.OrganisationName;
             session.LatestFilterChoices.OrganisationType = newChoices.OrganisationType ?? session.LatestFilterChoices.OrganisationType;
