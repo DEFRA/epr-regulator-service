@@ -7,13 +7,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
     [TestClass]
     public class CancelDateRegistrationSubmissionViewModelTests
     {
+        private readonly string _submissionId = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
         [TestMethod]
         public void CancelDateRegistrationSubmissionViewModel_ValidFutureDate_ShouldHaveNoValidationErrors()
         {
             // Arrange
             var viewModel = new CancelDateRegistrationSubmissionViewModel
             {
-                SubmissionId = Guid.NewGuid(),
+                SubmissionId = _submissionId,
                 Day = 15,
                 Month = 12,
                 Year = 2025 // Future date
@@ -33,7 +35,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             // Arrange
             var viewModel = new CancelDateRegistrationSubmissionViewModel
             {
-                SubmissionId = Guid.NewGuid(),
+                SubmissionId = _submissionId,
                 Day = 15,
                 Month = 10,
                 Year = 2023 // Past date
@@ -57,7 +59,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             // Arrange
             var viewModel = new CancelDateRegistrationSubmissionViewModel
             {
-                SubmissionId = Guid.NewGuid(),
+                SubmissionId = _submissionId,
                 Day = day,
                 Month = month,
                 Year = year
@@ -77,7 +79,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             // Arrange
             var viewModel = new CancelDateRegistrationSubmissionViewModel
             {
-                SubmissionId = Guid.NewGuid(),
+                SubmissionId = _submissionId,
                 Day = 31,
                 Month = 2, // Invalid date
                 Year = 2024
@@ -97,7 +99,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             // Arrange
             var viewModel = new CancelDateRegistrationSubmissionViewModel
             {
-                SubmissionId = Guid.NewGuid(),
+                SubmissionId = _submissionId,
                 Day = null,
                 Month = null,
                 Year = null
@@ -117,7 +119,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             // Arrange
             var viewModel = new CancelDateRegistrationSubmissionViewModel
             {
-                SubmissionId = Guid.NewGuid(),
+                SubmissionId = _submissionId,
                 Day = 35, // Out of range
                 Month = 12,
                 Year = 2024

@@ -1,95 +1,96 @@
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions;
+
+using EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.Shared.Helpers;
+using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+
+[TestClass]
+public class CancelRegistrationSubmissionViewModelTests
 {
-    using EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.Shared.Helpers;
-    using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
+    private readonly string _submissionId = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
 
-    [TestClass]
-    public class CancelRegistrationSubmissionViewModelTests
+    [TestMethod]
+    public void CancelRegistrationSubmissionViewModel_ShouldHaveNoValidationErrors_ForValidModel()
     {
-        [TestMethod]
-        public void CancelRegistrationSubmissionViewModel_ShouldHaveNoValidationErrors_ForValidModel()
+        // Arrange
+        var viewModel = new CancelRegistrationSubmissionViewModel
         {
-            // Arrange
-            var viewModel = new CancelRegistrationSubmissionViewModel
-            {
-                SubmissionId = Guid.NewGuid(),
-                CancellationReason = "This is a valid cancellation reason within the limit of 400 characters."
-            };
+            SubmissionId = _submissionId,
+            CancellationReason = "This is a valid cancellation reason within the limit of 400 characters."
+        };
 
-            // Act
-            var validationResults = ValidationHelper.ValidateModel(viewModel);
+        // Act
+        var validationResults = ValidationHelper.ValidateModel(viewModel);
 
-            // Assert
-            Assert.AreEqual(0, validationResults.Count, "Expected no validation errors for a valid model.");
-        }
+        // Assert
+        Assert.AreEqual(0, validationResults.Count, "Expected no validation errors for a valid model.");
+    }
 
-        [TestMethod]
-        public void CancelRegistrationSubmissionViewModel_ShouldHaveNoValidationErrors_ForANullCancellationReason()
+    [TestMethod]
+    public void CancelRegistrationSubmissionViewModel_ShouldHaveNoValidationErrors_ForANullCancellationReason()
+    {
+        // Arrange
+        var viewModel = new CancelRegistrationSubmissionViewModel
         {
-            // Arrange
-            var viewModel = new CancelRegistrationSubmissionViewModel
-            {
-                SubmissionId = Guid.NewGuid(),
-                CancellationReason = null // Nullable field
-            };
+            SubmissionId = _submissionId,
+            CancellationReason = null // Nullable field
+        };
 
-            // Act
-            var validationResults = ValidationHelper.ValidateModel(viewModel);
+        // Act
+        var validationResults = ValidationHelper.ValidateModel(viewModel);
 
-            // Assert
-            Assert.AreEqual(0, validationResults.Count, "Expected no validation errors when CancellationReason is null.");
-        }
+        // Assert
+        Assert.AreEqual(0, validationResults.Count, "Expected no validation errors when CancellationReason is null.");
+    }
 
-        [TestMethod]
-        public void CancelRegistrationSubmissionViewModel_ShouldHaveNoValidationErrors_ForACancellationReasonWithWhitespace()
+    [TestMethod]
+    public void CancelRegistrationSubmissionViewModel_ShouldHaveNoValidationErrors_ForACancellationReasonWithWhitespace()
+    {
+        // Arrange
+        var viewModel = new CancelRegistrationSubmissionViewModel
         {
-            // Arrange
-            var viewModel = new CancelRegistrationSubmissionViewModel
-            {
-                SubmissionId = Guid.NewGuid(),
-                CancellationReason = "     Valid cancellation reason."
-            };
+            SubmissionId = _submissionId,
+            CancellationReason = "     Valid cancellation reason."
+        };
 
-            // Act
-            var validationResults = ValidationHelper.ValidateModel(viewModel);
+        // Act
+        var validationResults = ValidationHelper.ValidateModel(viewModel);
 
-            // Assert
-            Assert.AreEqual(0, validationResults.Count, "Expected no validation errors when CancellationReason contains whitespace.");
-        }
+        // Assert
+        Assert.AreEqual(0, validationResults.Count, "Expected no validation errors when CancellationReason contains whitespace.");
+    }
 
-        [TestMethod]
-        public void CancelRegistrationSubmissionViewModel_ShouldHaveNoValidationErrors_ForAnEmptyCancellationReason()
+    [TestMethod]
+    public void CancelRegistrationSubmissionViewModel_ShouldHaveNoValidationErrors_ForAnEmptyCancellationReason()
+    {
+        // Arrange
+        var viewModel = new CancelRegistrationSubmissionViewModel
         {
-            // Arrange
-            var viewModel = new CancelRegistrationSubmissionViewModel
-            {
-                SubmissionId = Guid.NewGuid(),
-                CancellationReason = "" // Empty string
-            };
+            SubmissionId = _submissionId,
+            CancellationReason = "" // Empty string
+        };
 
-            // Act
-            var validationResults = ValidationHelper.ValidateModel(viewModel);
+        // Act
+        var validationResults = ValidationHelper.ValidateModel(viewModel);
 
-            // Assert
-            Assert.AreEqual(0, validationResults.Count, "Expected no validation errors for an empty CancellationReason.");
-        }
+        // Assert
+        Assert.AreEqual(0, validationResults.Count, "Expected no validation errors for an empty CancellationReason.");
+    }
 
-        [TestMethod]
-        public void CancelRegistrationSubmissionViewModel_ShouldHaveValidationError_WhenCancellationReasonTooLong()
+    [TestMethod]
+    public void CancelRegistrationSubmissionViewModel_ShouldHaveValidationError_WhenCancellationReasonTooLong()
+    {
+        // Arrange
+        var viewModel = new CancelRegistrationSubmissionViewModel
         {
-            // Arrange
-            var viewModel = new CancelRegistrationSubmissionViewModel
-            {
-                SubmissionId = Guid.NewGuid(),
-                CancellationReason = new string('A', 401) // Exceeds 400 characters
-            };
+            SubmissionId = _submissionId,
+            CancellationReason = new string('A', 401) // Exceeds 400 characters
+        };
 
-            // Act
-            var validationResults = ValidationHelper.ValidateModel(viewModel);
+        // Act
+        var validationResults = ValidationHelper.ValidateModel(viewModel);
 
-            // Assert
-            Assert.AreEqual(1, validationResults.Count, "Expected one validation error for a CancellationReason exceeding 400 characters.");
-            Assert.AreEqual("Error.CancellationReasonTooLong", validationResults[0].ErrorMessage, "Expected the correct error message for CancellationReason too long.");
-        }
+        // Assert
+        Assert.AreEqual(1, validationResults.Count, "Expected one validation error for a CancellationReason exceeding 400 characters.");
+        Assert.AreEqual("Error.CancellationReasonTooLong", validationResults[0].ErrorMessage, "Expected the correct error message for CancellationReason too long.");
     }
 }

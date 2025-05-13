@@ -6,6 +6,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
     [TestClass]
     public class ConfirmOfflinePaymentSubmissionViewModelTests
     {
+        private readonly string _submissionId = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
         [TestMethod]
         [DataRow("£100.00", DisplayName = "Valid amount")]
         [DataRow(null, DisplayName = "Null amount")]
@@ -15,7 +17,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             // Arrange
             var viewModel = new ConfirmOfflinePaymentSubmissionViewModel
             {
-                SubmissionId = Guid.NewGuid(),
+                SubmissionId = _submissionId,
                 IsOfflinePaymentConfirmed = true,
                 OfflinePaymentAmount = offlinePaymentAmount
             };
@@ -54,7 +56,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             // Arrange
             var viewModel = new ConfirmOfflinePaymentSubmissionViewModel
             {
-                SubmissionId = Guid.NewGuid(),
+                SubmissionId = _submissionId,
                 IsOfflinePaymentConfirmed = isOfflinePaymentConfirmed,
                 OfflinePaymentAmount = "£100.00"
             };
