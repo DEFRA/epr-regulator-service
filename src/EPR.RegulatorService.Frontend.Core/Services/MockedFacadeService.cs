@@ -438,12 +438,18 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         return response;
     }
 
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetTransformedRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
+        => await GetRegistrationSubmissions(filters);
+
     public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
     {
         RegistrationSubmissionOrganisationDetails objRet = null;
 
         return await Task.FromResult(objRet);
     }
+
+    public async Task<RegistrationSubmissionOrganisationDetails> GetTransformedRegistrationSubmissionDetails(Guid submissionId)
+        => await GetRegistrationSubmissionDetails(submissionId);
 
     public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(
         RegulatorDecisionRequest request) => await Task.FromResult(EndpointResponseStatus.Success);

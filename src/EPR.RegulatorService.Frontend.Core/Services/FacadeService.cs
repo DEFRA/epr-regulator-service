@@ -396,6 +396,20 @@ public class FacadeService : IFacadeService
         }
     }
 
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetTransformedRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
+    {
+        var result = await GetRegistrationSubmissions(filters);
+
+        foreach (var item in result.items.Where(s => s.SubmissionStatus == RegistrationSubmissionStatus.Cancelled))
+        {
+            item.ResubmissionStatus = null;
+            item.SubmissionDetails.ResubmissionStatus = null;
+        }
+
+        return result;
+
+    }
+
     public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
     {
         await PrepareAuthenticatedClient();
@@ -408,8 +422,6 @@ public class FacadeService : IFacadeService
         {
             var commonData = await ReadRequiredJsonContent(response.Content);
             var responseData = commonData.items.Select(x => (RegistrationSubmissionOrganisationDetails)x).ToList();
-
-            UpdateCancelledResubmissions(responseData);
 
             return new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
@@ -429,20 +441,6 @@ public class FacadeService : IFacadeService
                 pageSize = 20
             };
         }
-
-        return null;
-    }
-
-    internal static List<RegistrationSubmissionOrganisationDetails> UpdateCancelledResubmissions(
-    List<RegistrationSubmissionOrganisationDetails> submissions)
-    {
-        foreach (var item in submissions.Where(s => s.SubmissionStatus == RegistrationSubmissionStatus.Cancelled))
-        {
-            item.ResubmissionStatus = null;
-            item.SubmissionDetails.ResubmissionStatus = null;
-        }
-
-        return submissions;
     }
 
     public static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
@@ -461,6 +459,20 @@ public class FacadeService : IFacadeService
         }
     }
 
+
+    public async Task<RegistrationSubmissionOrganisationDetails> GetTransformedRegistrationSubmissionDetails(Guid submissionId)
+    {
+        var result = await GetRegistrationSubmissionDetails(submissionId);
+
+        if (result.SubmissionStatus == RegistrationSubmissionStatus.Cancelled)
+        {
+            result.ResubmissionStatus = null;
+            result.SubmissionDetails.ResubmissionStatus = null;
+        }
+
+        return result;
+    }
+
     public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
     {
         await PrepareAuthenticatedClient();
@@ -474,19 +486,6 @@ public class FacadeService : IFacadeService
         string content = await response.Content.ReadAsStringAsync();
 
         RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFE(content);
-
-        UpdateCancelledResubmissionStatus(result);
-
-        return result;
-    }
-
-    internal static RegistrationSubmissionOrganisationDetailsResponse UpdateCancelledResubmissionStatus(RegistrationSubmissionOrganisationDetailsResponse result)
-    {
-        if (result.SubmissionStatus == RegistrationSubmissionStatus.Cancelled)
-        {
-            result.ResubmissionStatus = null;
-            result.SubmissionDetails.ResubmissionStatus = null;
-        }
 
         return result;
     }

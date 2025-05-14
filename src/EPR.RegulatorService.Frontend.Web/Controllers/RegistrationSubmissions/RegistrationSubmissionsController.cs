@@ -130,7 +130,7 @@ public partial class RegistrationSubmissionsController(
 
             RegistrationSubmissionDetailsViewModel model = submissionId == null
                 ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-                : await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+                : await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetTransformedRegistrationSubmissionDetails);
 
             if (model == null)
             {

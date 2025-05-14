@@ -1696,7 +1696,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
-        public async Task GetRegistrationSubmissions_WithCancelledSubmission_SetsResubmissionStatusToNull()
+        public async Task GetTransformedRegistrationSubmissions_SetsResubmissionStatusToNull_ForACancelledSubmission()
         {
             // Arrange
             var filter = new RegistrationSubmissionsFilterModel();
@@ -1736,7 +1736,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                });
 
             // Act
-            var result = await _facadeService.GetRegistrationSubmissions(filter);
+            var result = await _facadeService.GetTransformedRegistrationSubmissions(filter);
 
             // Assert
             Assert.IsNotNull(result);
@@ -1746,6 +1746,34 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             Assert.AreEqual(RegistrationSubmissionStatus.Cancelled, item.SubmissionStatus);
             Assert.IsNull(item.ResubmissionStatus);
             Assert.IsNull(item.SubmissionDetails.ResubmissionStatus);
+        }
+
+        [TestMethod]
+        public async Task GetTransformedRegistrationSubmissions_Failure_ReturnsDefaultPaginatedList()
+        {
+            // Arrange
+            var filter = new RegistrationSubmissionsFilterModel();
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+
+            _mockHandler
+               .Protected()
+               .Setup<Task<HttpResponseMessage>>("SendAsync",
+                  ItExpr.IsAny<HttpRequestMessage>(),
+                  ItExpr.IsAny<CancellationToken>())
+               .ReturnsAsync(httpResponseMessage);
+
+            // Act
+            var result = await _facadeService.GetTransformedRegistrationSubmissions(filter);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.totalItems);
+            Assert.AreEqual(1, result.currentPage);
+            Assert.AreEqual(20, result.pageSize); // default page size in failure case
+            Assert.AreEqual(0, result.items.Count);
+
+            httpResponseMessage.Dispose();
         }
 
         [TestMethod]
@@ -1797,6 +1825,34 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        public async Task GetTransformedRegistrationSubmissions_ClientErrorStatusCode_ReturnsDefaultPaginatedList()
+        {
+            // Arrange
+            var filter = new RegistrationSubmissionsFilterModel();
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+            _mockHandler
+               .Protected()
+               .Setup<Task<HttpResponseMessage>>("SendAsync",
+                  ItExpr.IsAny<HttpRequestMessage>(),
+                  ItExpr.IsAny<CancellationToken>())
+               .ReturnsAsync(httpResponseMessage);
+
+            // Act
+            var result = await _facadeService.GetTransformedRegistrationSubmissions(filter);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.totalItems);
+            Assert.AreEqual(1, result.currentPage);
+            Assert.AreEqual(20, result.pageSize);
+            Assert.AreEqual(0, result.items.Count);
+
+            httpResponseMessage.Dispose();
+        }
+
+        [TestMethod]
         public async Task GetRegistrationSubmissionDetails_Success_ReturnsObject()
         {
             // Arrange
@@ -1827,11 +1883,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
-        public async Task GetRegistrationSubmissionDetails_CancelledSubmission_SetsResubmissionStatusToNull()
+        public async Task GetTranformedRegistrationSubmissionDetails_SetsResubmissionStatusToNull_ForACancelledSubmission()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            var expectedPath = $"registrations-submission-details/submissionId/{submissionId}";
+            string expectedPath = $"registrations-submission-details/submissionId/{submissionId}";
 
             var cancelledResponse = new RegistrationSubmissionOrganisationDetailsResponse
             {
@@ -1862,7 +1918,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 });
 
             // Act
-            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+            var result = await _facadeService.GetTransformedRegistrationSubmissionDetails(submissionId);
 
             // Assert
             Assert.IsNotNull(result);
