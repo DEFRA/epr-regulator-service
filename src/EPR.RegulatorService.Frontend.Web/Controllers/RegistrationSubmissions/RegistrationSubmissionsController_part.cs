@@ -63,11 +63,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                                             ? value2 : null;
             var sessionModelWhichMustMatchSession = orgDetailsChangeHistory ?? selectedRegistrations;
 
-            if (sessionModelWhichMustMatchSession is not null && sessionModelWhichMustMatchSession.SubmissionId != submissionId.Value)
-            {
-                sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId.Value];
-            }
-
             if (sessionModelWhichMustMatchSession is null)
             {
                 return false;
