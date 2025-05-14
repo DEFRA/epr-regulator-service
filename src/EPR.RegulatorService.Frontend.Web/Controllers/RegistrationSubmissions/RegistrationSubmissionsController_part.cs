@@ -57,9 +57,13 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 return false;
             }
 
-            var sessionModelWhichMustMatchSession = _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId.Value, out var value)
-                                                    ? value : _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
-            if (sessionModelWhichMustMatchSession?.SubmissionId != submissionId.Value)
+            var regulatorRegSubSession = _currentSession.RegulatorRegistrationSubmissionSession;
+            var orgDetailsChangeHistory = regulatorRegSubSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId.Value, out var value1)
+                                            ? value1 : null;
+            var selectedRegistrations = regulatorRegSubSession.SelectedRegistrations.TryGetValue(submissionId.Value, out var value2)
+                                            ? value2 : null;
+            var sessionModelWhichMustMatchSession = orgDetailsChangeHistory ?? selectedRegistrations;
+            if (sessionModelWhichMustMatchSession is null)
             {
                 return false;
             }
@@ -68,10 +72,21 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return true;
         }
 
-        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod) =>
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration?.SubmissionId == submissionId
-                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-                : await facadeMethod(submissionId);
+        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
+        {
+            if (_currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration))
+            {
+                return selectedRegistration;
+            }
+
+            var submission = await facadeMethod(submissionId);
+            if (submission is not null)
+            {
+                _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submission.SubmissionId] = submission;
+            }
+
+            return submission;
+        }
 
         private static void ClearFilters(RegulatorRegistrationSubmissionSession session,
                                   RegistrationSubmissionsFilterViewModel filters,
