@@ -189,7 +189,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 
             if (response == EndpointResponseStatus.Fail)
             {
-                return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.SubmissionDetails}?SubmissionId={submissionHash}" });
+                return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.SubmissionDetails}?submissionHash={submissionHash}" });
             }
 
             await _facadeService.SubmitPackagingDataResubmissionFeePaymentEventAsync(new FeePaymentRequest

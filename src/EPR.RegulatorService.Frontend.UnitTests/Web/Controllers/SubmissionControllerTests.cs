@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Text.Json;
 
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -935,10 +936,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             redirectResult.Should().NotBeNull();
             redirectResult!.ActionName.Should().Be(PagePath.Error);
             redirectResult.ControllerName.Should().Be("Error");
-            redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>("statusCode", 404));
-            redirectResult.RouteValues.Should().Contain(new KeyValuePair<string, object>(
-                "backLink",
-                $"{PagePath.SubmissionDetails}?submissionHash={_hashCode}"));
+            redirectResult.RouteValues.Should().Equal(new Dictionary<string, object>
+            {
+                { "statusCode", 404 },
+                { "backLink", $"{PagePath.SubmissionDetails}?submissionHash={_hashCode}" }
+
+            });
         }
 
         [TestMethod]
@@ -1023,6 +1026,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Veryify the redirect URL
             result.RouteName.Should().Be("ServiceNotAvailable");
+            result.RouteValues.Should().Equal(new Dictionary<string, object>
+            {
+                { "backLink", $"{PagePath.SubmissionDetails}?submissionHash={_hashCode}" }
+
+            });
             _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
         }
 
