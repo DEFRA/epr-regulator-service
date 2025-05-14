@@ -13,6 +13,8 @@ using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
+using Converters;
+
 public class ReprocessorExporterService(
     HttpClient httpClient,
     ITokenAcquisition tokenAcquisition,
@@ -24,6 +26,9 @@ public class ReprocessorExporterService(
         GetRegistrationMaterialById,
         GetAuthorisedMaterialsByRegistrationId,
         GetWasteLicenceByRegistrationMaterialId,
+        GetPaymentFeesByRegistrationMaterialId,
+        MarkAsDulyMade,
+        SubmitOfflinePayment,
         UpdateRegistrationMaterialOutcome,
         UpdateRegistrationTaskStatus,
         GetReprocessingIOByRegistrationMaterialId,
@@ -35,7 +40,11 @@ public class ReprocessorExporterService(
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+        Converters =
+        {
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
+            new PaymentMethodTypeConverter()
+        }
     };
 
     public async Task<Registration> GetRegistrationByIdAsync(int id)
@@ -108,10 +117,47 @@ public class ReprocessorExporterService(
         return registrationMaterialWasteLicence;
     }
 
-    public Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(int registrationMaterialId)
+    public async Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(int registrationMaterialId)
     {
-        // TODO: Implement this method
-        throw new NotImplementedException("GetPaymentFeesByRegistrationMaterialIdAsync is not implemented.");
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetPaymentFeesByRegistrationMaterialId);
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+
+        var response = await httpClient.GetAsync(path);
+
+        var registrationMaterialPaymentFees = await GetEntityFromResponse<RegistrationMaterialPaymentFees>(response);
+
+        return registrationMaterialPaymentFees;
+    }
+
+    public async Task MarkAsDulyMadeAsync(int registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAsDulyMade);
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+
+        string jsonContent = JsonSerializer.Serialize(dulyMadeRequest, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = GetVersionedEndpoint(Endpoints.SubmitOfflinePayment);
+        
+        string jsonContent = JsonSerializer.Serialize(offlinePayment, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
+
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
@@ -149,8 +195,6 @@ public class ReprocessorExporterService(
 
         response.EnsureSuccessStatusCode();
     }
-
-    public Task MarkAsDulyMadeAsync(int registrationMaterialId) => throw new NotImplementedException();
 
     public async Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId)
     {

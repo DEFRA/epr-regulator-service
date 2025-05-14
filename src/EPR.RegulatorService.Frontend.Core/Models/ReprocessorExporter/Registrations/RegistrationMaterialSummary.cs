@@ -10,7 +10,7 @@ public class RegistrationMaterialSummary
 
     public required string MaterialName { get; init; }
 
-    public DateTime? DeterminationDate { get; init; }
+    public DateTime? DeterminationDate { get; set; }
     
     public ApplicationStatus? Status { get; init; }
 

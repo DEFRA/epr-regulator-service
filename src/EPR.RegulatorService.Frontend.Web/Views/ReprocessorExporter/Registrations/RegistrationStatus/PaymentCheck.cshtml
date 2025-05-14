@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus
@@ -17,7 +18,10 @@
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend">
             <h1 class="govuk-heading-l">
-              <span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
+              @if (Model.ApplicationType == ApplicationOrganisationType.Reprocessor)
+              {
+                <span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
+              }
               Has full payment of @Model.FeeAmount.ToDisplayCurrency() been received?&nbsp;
             </h1>
           </legend>

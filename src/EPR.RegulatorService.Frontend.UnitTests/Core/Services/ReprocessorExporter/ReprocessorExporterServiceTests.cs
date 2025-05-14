@@ -1,22 +1,19 @@
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
+using FluentAssertions.Execution;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
-
 using Moq.Protected;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter
 {
-    using System.Text.Json;
-    using System.Text.Json.Serialization;
-
-    using FluentAssertions.Execution;
-
     [TestClass]
     public class ReprocessorExporterServiceTests
     {
@@ -32,6 +29,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         private const string UpdateApplicationTaskStatus = "v{apiVersion}/regulatorApplicationTaskStatus";
         private const string GetReprocessingIOByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/reprocessingIO";
         private const string GetSamplingPlanByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/samplingPlan";
+        private const string GetPaymentFeesByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/paymentFees";
+        private const string MarkAsDulyMadePath = "v{apiVersion}/registrationMaterials/{id}/markAsDulyMade";
+        private const string SubmitOfflinePaymentPath = "v{apiVersion}/registrationMaterials/offlinePayment";
 
         private ReprocessorExporterService _service; // System under test
 
@@ -72,7 +72,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                     { "UpdateRegistrationTaskStatus", UpdateRegistrationTaskStatus },
                     { "UpdateApplicationTaskStatus", UpdateApplicationTaskStatus },
                     { "GetReprocessingIOByRegistrationMaterialId", GetReprocessingIOByRegistrationMaterialIdPath },
-                    { "GetSamplingPlanByRegistrationMaterialId", GetSamplingPlanByRegistrationMaterialIdPath }
+                    { "GetSamplingPlanByRegistrationMaterialId", GetSamplingPlanByRegistrationMaterialIdPath },
+                    { "GetPaymentFeesByRegistrationMaterialId", GetPaymentFeesByRegistrationMaterialIdPath },
+                    { "MarkAsDulyMade", MarkAsDulyMadePath },
+                    { "SubmitOfflinePayment", SubmitOfflinePaymentPath }
                 }
             };
 
@@ -324,6 +327,53 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
         }
 
         [TestMethod]
+        public async Task MarkAsDulyMade_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+        {
+            // Arrange
+            const int registrationMaterialId = 123;
+            string expectedPath = MarkAsDulyMadePath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationMaterialId.ToString());
+
+            var request = new MarkAsDulyMadeRequest()
+            {
+                DeterminationDate = DateTime.Now,
+                DulyMadeDate = DateTime.Now.AddDays(-7)
+            };
+
+            var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+
+            SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+
+            // Act/Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.MarkAsDulyMadeAsync(registrationMaterialId, request));
+        }
+
+        [TestMethod]
+        public async Task SubmitOfflinePayment_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+        {
+            // Arrange
+            string expectedPath = SubmitOfflinePaymentPath
+                .Replace("{apiVersion}", ApiVersion.ToString());
+
+            var request = new OfflinePaymentRequest
+            {
+                Amount = 1234,
+                PaymentReference = "Test123",
+                PaymentDate = DateTime.Now.AddDays(-7),
+                PaymentMethod = PaymentMethodType.Cash,
+                Regulator = "Environment Agency (EA)"
+            };
+
+            var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+
+            SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+
+            // Act/Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.SubmitOfflinePaymentAsync(request));
+        }
+
+        [TestMethod]
         public async Task UpdateApplicationTaskStatus_WhenResponseCodeIsNotSuccess_ShouldThrowException()
         {
             // Arrange
@@ -429,6 +479,49 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetSamplingPlanByRegistrationMaterialIdAsync(registrationId));
         }
 
+        [TestMethod]
+        public async Task GetPaymentFeesByRegistrationMaterialIdAsync_WhenSuccessResponse_ReturnsRegistration()
+        {
+            // Arrange
+            const int registrationMaterialId = 123;
+            var expectedRegistrationPaymentFees = CreateRegistrationMaterialPaymentFees();
+            string expectedPath = GetPaymentFeesByRegistrationMaterialIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationMaterialId.ToString());
+
+            var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(expectedRegistrationPaymentFees, _jsonSerializerOptions))
+            };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+            // Act
+            var result = await _service.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedRegistrationPaymentFees);
+        }
+
+        [TestMethod]
+        public async Task GetPaymentFeesByRegistrationMaterialIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+        {
+            // Arrange
+            const int registrationMaterialId = 123;
+            string expectedPath = GetPaymentFeesByRegistrationMaterialIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", registrationMaterialId.ToString());
+
+            var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+
+            SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+            // Act/Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId));
+        }
+
         private void SetupHttpMessageExpectations(HttpMethod method, string path,
             HttpResponseMessage responseMessage) =>
             _httpMessageHandlerMock.Protected()
@@ -438,7 +531,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
                         req.Method == method && req.RequestUri == new Uri($"{BaseUrl}{path}")),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(responseMessage);
-
+        
         private static Registration CreateRegistration() =>
             new()
             {
@@ -542,5 +635,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExpor
             };
             return expectedSiteDetails;
         }
+
+        private static RegistrationMaterialPaymentFees CreateRegistrationMaterialPaymentFees() =>
+            new RegistrationMaterialPaymentFees
+            {
+                RegistrationId = 123,
+                OrganisationName = "Test Org",
+                ApplicationType = ApplicationOrganisationType.Reprocessor,
+                SiteAddress = "23, Ruby St, London, E12 3SE",
+                RegistrationMaterialId = 1234,
+                MaterialName = "Plastic",
+                FeeAmount = 2921,
+                ApplicationReferenceNumber = "ABC123456",
+                SubmittedDate = DateTime.Now.AddDays(-7),
+                Regulator = "GB-ENG"
+            };
     }
 }
