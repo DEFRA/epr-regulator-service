@@ -42,7 +42,7 @@ public class ManageRegistrationsMappingProfile : Profile
 
         CreateMap<RegistrationTask, RegistrationTaskViewModel>()
             .ForMember(dest => dest.StatusCssClass, opt => opt.MapFrom(src => MapRegistrationTaskStatusCssClass(src.Status)))
-            .ForMember(dest => dest.StatusText, opt => opt.MapFrom(src => MapRegistrationTaskStatusText(src.Status)));
+            .ForMember(dest => dest.StatusText, opt => opt.MapFrom(src => MapRegistrationTaskStatusText(src.Status, src.TaskName)));
     }
 
     private static string MapRegistrationMaterialStatusCssClass(ApplicationStatus? status) =>
@@ -71,11 +71,16 @@ public class ManageRegistrationsMappingProfile : Profile
             _ => "govuk-tag--grey"
         };
 
-    private static string MapRegistrationTaskStatusText(RegulatorTaskStatus taskStatus) =>
+    private static string MapRegistrationTaskStatusText(RegulatorTaskStatus taskStatus, RegulatorTaskType taskName) =>
         taskStatus switch
         {
             RegulatorTaskStatus.NotStarted => "Not started yet",
-            RegulatorTaskStatus.Completed => "Reviewed",
+            RegulatorTaskStatus.Completed => taskName switch
+            {
+                RegulatorTaskType.RegistrationDulyMade => "Duly Made",
+                RegulatorTaskType.AssignOfficer => "Officer Assigned",
+                _ => "Reviewed"
+            },
             _ => taskStatus.ToString()
         };
 }
