@@ -1,6 +1,8 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 
 @model PaymentDateViewModel
 
@@ -17,7 +19,10 @@
         <fieldset class="govuk-fieldset" role="group" aria-describedby="passport-issued-hint">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
             <h1 class="govuk-fieldset__heading">
-              <span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
+              @if (Model.ApplicationType == ApplicationOrganisationType.Reprocessor)
+              {
+                <span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
+              }
               Date payment received
             </h1>
           </legend>
