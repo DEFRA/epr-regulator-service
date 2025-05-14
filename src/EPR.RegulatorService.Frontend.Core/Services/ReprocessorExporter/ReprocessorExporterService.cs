@@ -13,6 +13,8 @@ using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
+using Converters;
+
 public class ReprocessorExporterService(
     HttpClient httpClient,
     ITokenAcquisition tokenAcquisition,
@@ -38,7 +40,11 @@ public class ReprocessorExporterService(
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+        Converters =
+        {
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
+            new PaymentMethodTypeConverter()
+        }
     };
 
     public async Task<Registration> GetRegistrationByIdAsync(int id)
