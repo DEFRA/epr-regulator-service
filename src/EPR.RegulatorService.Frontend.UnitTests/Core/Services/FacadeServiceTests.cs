@@ -1719,7 +1719,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 pageSize = 10
             };
 
-            string responseContent = JsonSerializer.Serialize(responseObject, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            string responseContent = JsonSerializer.Serialize(responseObject);
 
             _mockHandler
                .Protected()
