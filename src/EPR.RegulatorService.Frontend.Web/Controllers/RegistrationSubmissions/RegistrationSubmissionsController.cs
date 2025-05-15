@@ -57,7 +57,6 @@ public partial class RegistrationSubmissionsController(
         try
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;
 
             int nationId = _currentSession.UserData.Organisations[0].NationId ?? 0;
 
@@ -77,7 +76,6 @@ public partial class RegistrationSubmissionsController(
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
             _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
             return RedirectToAction(PagePath.Error, "Error");
         }
@@ -100,8 +98,6 @@ public partial class RegistrationSubmissionsController(
                 return response;
             }
 
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;
-
             ClearFilters(_currentSession.RegulatorRegistrationSubmissionSession,
                                filters,
                                filterType == FilterActions.ClearFilters);
@@ -112,7 +108,6 @@ public partial class RegistrationSubmissionsController(
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
             _logControllerError.Invoke(logger, $"Exception received processing POST to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
             return RedirectToAction(PagePath.Error, "Error");
         }
@@ -127,20 +122,14 @@ public partial class RegistrationSubmissionsController(
         try
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+            RegistrationSubmissionDetailsViewModel model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
 
-            RegistrationSubmissionDetailsViewModel model = submissionId == null
-                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-                : await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
-
-            if (model == null)
+            if (model is null)
             {
                 return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
             }
 
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = model;
-
             GeneratePowerBILink(model);
-
             SetBackLink(PagePath.RegistrationSubmissionsRoute);
             ViewBag.SubmissionId = model.SubmissionId;
 
@@ -159,7 +148,6 @@ public partial class RegistrationSubmissionsController(
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex);
             _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
             return RedirectToAction(PagePath.Error, "Error");
         }
@@ -247,8 +235,8 @@ public partial class RegistrationSubmissionsController(
             var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Granted);
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration = null;  // this will force a reload of the item in SubmissionDetails
-            //await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
+            // this will force a reload of the item in SubmissionDetails
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[existingModel.SubmissionId] = null;
 
             SaveSession(_currentSession);
 
@@ -378,7 +366,7 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(RejectRegistrationSubmission), model);
         }
 
-        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.RejectReason = model.RejectReason;
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[existingModel.SubmissionId].RejectReason = model.RejectReason;
         existingModel.RegulatorComments = model.RejectReason;
         existingModel.RejectReason = model.RejectReason;
 
@@ -441,7 +429,7 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(CancelRegistrationSubmission), model);
         }
 
-        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.CancellationReason = model.CancellationReason;
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[existingModel.SubmissionId].CancellationReason = model.CancellationReason;
 
         SaveSessionAndJourney(
             _currentSession.RegulatorRegistrationSubmissionSession,
@@ -659,7 +647,7 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionsFileDownload)]
-    public async Task<IActionResult> RegistrationSubmissionsFileDownload(string downloadType)
+    public async Task<IActionResult> RegistrationSubmissionsFileDownload(string downloadType, [FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -667,27 +655,37 @@ public partial class RegistrationSubmissionsController(
         _currentSession.RegulatorRegistrationSubmissionSession.FileDownloadRequestType = downloadType;
         await SaveSession(_currentSession);
 
-        return RedirectToAction(nameof(SubmissionDetailsFileDownload), "RegistrationSubmissions");
+        return RedirectToAction(nameof(SubmissionDetailsFileDownload), "RegistrationSubmissions", new { submissionId });
     }
 
     [HttpGet]
-    public async Task<IActionResult> FileDownloadInProgress()
+    [Route(PagePath.RegistrationSubmissionDetailsFileDownload)]
+    public async Task<IActionResult> SubmissionDetailsFileDownload([FromQuery] Guid submissionId)
+    {
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId }), false);
+
+        return View("RegistrationSubmissionFileDownload", submissionId);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> FileDownloadInProgress([FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        var registration = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration;
+        var registration = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId];
         var fileDownloadModel = CreateFileDownloadRequest(_currentSession, registration);
 
         if (fileDownloadModel == null)
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed));
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId });
         }
 
         var response = await _facadeService.GetFileDownload(fileDownloadModel);
 
         if (response.StatusCode == HttpStatusCode.Forbidden)
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning));
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning), new { submissionId });
         }
         else if (response.IsSuccessStatusCode)
         {
@@ -700,37 +698,28 @@ public partial class RegistrationSubmissionsController(
         }
         else
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed));
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId });
         }
     }
 
     [HttpGet]
-    [Route(PagePath.RegistrationSubmissionDetailsFileDownload)]
-    public async Task<IActionResult> SubmissionDetailsFileDownload()
-    {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId }), false);
-
-        return View("RegistrationSubmissionFileDownload");
-    }
-
-    [HttpGet]
     [Route(PagePath.RegistrationSubmissionFileDownloadFailed)]
-    public async Task<IActionResult> RegistrationSubmissionFileDownloadFailed()
+    public async Task<IActionResult> RegistrationSubmissionFileDownloadFailed([FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        var model = new OrganisationDetailsFileDownloadViewModel(true, false, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId);
+        var model = new OrganisationDetailsFileDownloadViewModel(true, false, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId);
         return View("RegistrationSubmissionFileDownloadFailed", model);
     }
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionFileDownloadSecurityWarning)]
-    public async Task<IActionResult> RegistrationSubmissionFileDownloadSecurityWarning()
+    public async Task<IActionResult> RegistrationSubmissionFileDownloadSecurityWarning([FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        var model = new OrganisationDetailsFileDownloadViewModel(true, true, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration.SubmissionId);
+        var model = new OrganisationDetailsFileDownloadViewModel(true, true, _currentSession
+            .RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId);
         return View("RegistrationSubmissionFileDownloadFailed", model);
     }
 

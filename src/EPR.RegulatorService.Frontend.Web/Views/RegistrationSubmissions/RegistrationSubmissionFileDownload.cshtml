@@ -1,24 +1,25 @@
+@model Guid
 @{
     ViewData["Title"] = Localizer["OrganisationDetailsFileDownload.Title"];
     var downloadCompleted = TempData["DownloadCompleted"] != null && (bool)TempData["DownloadCompleted"];
 }
 
-    <div class="govuk-width-container">
-      <main class="govuk-main-wrapper" id="main-content" role="main">
-          <div class="govuk-grid-row">
-              <div class="govuk-grid-column-full">               
-                      <partial name="Partials/_FileIsDownloadingStatus" />
-                      <div class="govuk-grid-row">
-                          <div class="govuk-grid-column-full">
-                            <a id="back-to-all-submissions" href="@ViewBag.BackLinkToDisplay" class="govuk-link govuk-link--no-visited-state">
-                                @SharedLocalizer["Link.BackToSubmissionDetails"]
-                            </a>
-                          </div>
-                      </div>
-                      @if (!downloadCompleted)
-                      {
-                          <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "RegistrationSubmissions")" />
-                      }                    
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">               
+                <partial name="Partials/_FileIsDownloadingStatus" />
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-full">
+                        <a id="back-to-all-submissions" href="@ViewBag.BackLinkToDisplay" class="govuk-link govuk-link--no-visited-state">
+                            @SharedLocalizer["Link.BackToSubmissionDetails"]
+                        </a>
+                    </div>
+                </div>
+                @if (!downloadCompleted)
+                {
+                    <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "RegistrationSubmissions", new { submissionId = Model })" />
+                }                    
               </div>
           </div>      
       </main>
