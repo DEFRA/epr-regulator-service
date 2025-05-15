@@ -389,6 +389,17 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, PagePath.CompleteQueryMaterialTask);
         SetBackLinkInfos(session, PagePath.CompleteQueryMaterialTask);
 
+        if (!ModelState.IsValid)
+        {
+            return HandleInvalidModelState(
+                session,
+                PagePath.QueryMaterialTask,
+                //session.ReprocessorExporterSession.RegistrationStatusSession,
+                queryMaterialTaskViewModel,
+                GetRegistrationsView(nameof(QueryMaterialTask))
+            );
+        }
+
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
             TaskName = queryMaterialTaskViewModel.TaskName.ToString(),
@@ -409,4 +420,11 @@ public class RegistrationsController(
 
     private static string GetRegistrationMaterialMethodPath(string pagePath, int registrationMaterialId) =>
         $"{pagePath}?registrationMaterialId={registrationMaterialId}";
+
+    private IActionResult HandleInvalidModelState<T>(JourneySession session, string pagePath, /*RegistrationStatusSession registrationStatusSession,*/ T viewModel, string viewName)
+    {
+        SetBackLinkInfos(session, pagePath);
+       // mapper.Map(registrationStatusSession, viewModel);
+        return View(viewName, viewModel);
+    }
 }
