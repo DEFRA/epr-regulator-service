@@ -130,7 +130,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         registrationMaterial.DeterminationDate = dulyMadeRequest.DeterminationDate;
         
-        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.RegistrationDulyMade);
+        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus);
         int? taskId;
 
         if (task == null)
@@ -146,7 +146,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var newTask = new RegistrationTask
         {
             Id = taskId,
-            TaskName = RegulatorTaskType.RegistrationDulyMade,
+            TaskName = RegulatorTaskType.CheckRegistrationStatus,
             Status = RegulatorTaskStatus.Completed
         };
 
@@ -364,7 +364,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             return
             [
                 new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions },
-                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.RegistrationDulyMade },
+                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.CheckRegistrationStatus },
                 new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs },
                 new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
             ];
@@ -373,7 +373,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return
         [
             new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialDetailsAndContact },
-            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.RegistrationDulyMade},
+            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.CheckRegistrationStatus},
             new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails},
             new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
         ];

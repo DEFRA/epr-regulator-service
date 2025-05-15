@@ -139,7 +139,7 @@ public class ManageRegistrationsMappingProfileTests
     }
 
     [TestMethod]
-    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.RegistrationDulyMade, "Duly Made")]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.CheckRegistrationStatus, "Duly Made")]
     [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.SamplingAndInspectionPlan, "Reviewed")]
     [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.AssignOfficer, "Officer Assigned")]
     [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.SiteAddressAndContactDetails, "Reviewed")]

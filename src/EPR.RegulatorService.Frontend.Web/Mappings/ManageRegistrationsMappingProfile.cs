@@ -28,7 +28,7 @@ public class ManageRegistrationsMappingProfile : Profile
             .ForMember(dest => dest.StatusText,
                 opt => opt.MapFrom(src => MapRegistrationMaterialStatusText(src.Status)))
             .ForMember(dest => dest.RegistrationStatusTask,
-                opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.RegistrationDulyMade)))
+                opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus)))
             .ForMember(dest => dest.MaterialWasteLicensesTask,
                 opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions)))
             .ForMember(dest => dest.InputsAndOutputsTask,
@@ -77,7 +77,7 @@ public class ManageRegistrationsMappingProfile : Profile
             RegulatorTaskStatus.NotStarted => "Not started yet",
             RegulatorTaskStatus.Completed => taskName switch
             {
-                RegulatorTaskType.RegistrationDulyMade => "Duly Made",
+                RegulatorTaskType.CheckRegistrationStatus => "Duly Made",
                 RegulatorTaskType.AssignOfficer => "Officer Assigned",
                 _ => "Reviewed"
             },
