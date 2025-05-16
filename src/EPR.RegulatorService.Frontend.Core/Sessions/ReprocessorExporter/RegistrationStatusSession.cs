@@ -1,6 +1,6 @@
-namespace EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
-using Enums.ReprocessorExporter;
+namespace EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 
 public class RegistrationStatusSession
 {

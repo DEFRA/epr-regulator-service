@@ -4,10 +4,9 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Mappings;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
-
-using Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
 
 [TestClass]
 public class RegistrationStatusMappingProfileTests

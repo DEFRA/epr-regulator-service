@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
+using EPR.RegulatorService.Frontend.Core.Converters;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
@@ -12,8 +13,6 @@ using Microsoft.Identity.Web;
 using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
-
-using Converters;
 
 public class ReprocessorExporterService(
     HttpClient httpClient,
@@ -257,6 +256,4 @@ public class ReprocessorExporterService(
 
         return pathTemplate;
     }
-
-    
 }

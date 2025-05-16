@@ -90,9 +90,7 @@ public class RegistrationStatusController(
 
         await SaveSession(session);
 
-        return registrationStatusSession.FullPaymentMade == true
-          ? RedirectToAction(PagePath.PaymentMethod, PagePath.ReprocessorExporterRegistrations)
-          : RedirectToAction(PagePath.QueryMaterialTask, PagePath.ReprocessorExporterRegistrations, new { registrationMaterialId = registrationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckRegistrationStatus });
+        return RedirectToAction(PagePath.PaymentMethod, PagePath.ReprocessorExporterRegistrations);
     }
 
     [HttpGet]
@@ -134,7 +132,7 @@ public class RegistrationStatusController(
 
         await SaveSession(session);
 
-        return RedirectToAction(PagePath.PaymentDate, PagePath.ReprocessorExporterRegistrations);
+        return RedirectToAction("PaymentDate", "RegistrationStatus");
     }
 
     [HttpGet]
@@ -177,7 +175,7 @@ public class RegistrationStatusController(
 
         await SaveSession(session);
 
-        return RedirectToAction(PagePath.PaymentReview, PagePath.ReprocessorExporterRegistrations);
+        return RedirectToAction("PaymentReview", "RegistrationStatus");
     }
 
     [HttpGet]
