@@ -7,6 +7,7 @@ public enum RegulatorTaskType
     ReprocessingInputsAndOutputs,
     SamplingAndInspectionPlan,
     RegistrationDulyMade,
+    CheckRegistrationStatus,
     AssignOfficer,
     MaterialsAuthorisedOnSite,
     MaterialDetailsAndContact,

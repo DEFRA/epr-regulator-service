@@ -1,0 +1,64 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model PaymentMethodViewModel
+
+@{
+	ViewData["Title"] = "Payment method";
+	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container ">
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend">
+
+            <h1 class="govuk-heading-l">
+              @if (Model.ApplicationType == ApplicationOrganisationType.Reprocessor)
+              {
+                <span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
+              }
+              What payment method was used?
+            </h1>
+          </legend>
+          
+          @if (!ViewData.ModelState.IsValid)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+          }
+
+          <form asp-controller="RegistrationStatus" asp-action="PaymentMethod" method="post">
+            <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
+
+              @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+              <div class="govuk-radios govuk-radios" data-module="govuk-radios">
+
+                @for (var i = 0; i < Model.PaymentMethods.Count; i++)
+                {
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="paymentMethod@(i)" name="PaymentMethod" type="radio" value="@Model.PaymentMethods[i].ToString()" @(Model.PaymentMethod == Model.PaymentMethods[i] ? "checked" : "")>
+                    <label class="govuk-label govuk-radios__label" for="paymentMethod@(i)">
+                      @Model.PaymentMethods[i].ToString()
+                    </label>
+                  </div>
+                }
+
+              </div>
+            </div>
+
+            <button type="submit" class="govuk-button" data-module="govuk-button">
+              Continue
+            </button>
+
+          </form>
+        </fieldset>
+      </div>
+    </div>
+  </main>
+</div>

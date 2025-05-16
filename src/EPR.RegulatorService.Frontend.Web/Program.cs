@@ -2,10 +2,9 @@ using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.FeatureManagement;
 using EPR.RegulatorService.Frontend.Web.HealthChecks;
-using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.Middleware;
+using EPR.RegulatorService.Frontend.Web.ModelBinders;
 
-using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Logging;
@@ -28,7 +27,8 @@ builder.Services
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         options.Cookie.Name = builder.Configuration.GetValue<string>("CookieOptions:AntiForgeryCookieName");
     })
-    .AddControllersWithViews()
+    .AddControllersWithViews(
+        options => options.ModelBinderProviders.Insert(0, new PaymentMethodTypeModelBinderProvider()))
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
 
