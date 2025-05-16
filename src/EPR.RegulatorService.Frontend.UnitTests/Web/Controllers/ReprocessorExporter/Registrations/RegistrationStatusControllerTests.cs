@@ -190,10 +190,10 @@ public class RegistrationStatusControllerTests
     }
 
     [TestMethod]
-    public async Task PaymentCheck_WhenCalledWithViewModelAndValidModelState_ShouldRedirectToPaymentMethod()
+    public async Task PaymentCheck_WhenCalledWithViewModelAndFullPaymentIsMade_ShouldRedirectToPaymentMethod()
     {
         // Arrange
-        var viewModel = new PaymentCheckViewModel { ApplicationType = ApplicationOrganisationType.Reprocessor };
+        var viewModel = new PaymentCheckViewModel { ApplicationType = ApplicationOrganisationType.Reprocessor, FullPaymentMade = true };
 
         _mapperMock.Setup(m =>
                 m.Map<PaymentCheckViewModel>(_journeySession.ReprocessorExporterSession.RegistrationStatusSession))
@@ -210,6 +210,30 @@ public class RegistrationStatusControllerTests
             var redirectResult = (RedirectToActionResult)response;
             redirectResult.ActionName.Should().Be("PaymentMethod");
             redirectResult.ControllerName.Should().Be("RegistrationStatus");
+        }
+    }
+
+    [TestMethod]
+    public async Task PaymentCheck_WhenCalledWithViewModelAndFullPaymentIsNotMade_ShouldRedirectToQueryTask()
+    {
+        // Arrange
+        var viewModel = new PaymentCheckViewModel { ApplicationType = ApplicationOrganisationType.Reprocessor, FullPaymentMade = false };
+
+        _mapperMock.Setup(m =>
+                m.Map<PaymentCheckViewModel>(_journeySession.ReprocessorExporterSession.RegistrationStatusSession))
+            .Returns(viewModel);
+
+        // Act
+        var response = await _registrationStatusController.PaymentCheck(viewModel);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<RedirectToActionResult>();
+
+            var redirectResult = (RedirectToActionResult)response;
+            redirectResult.ActionName.Should().Be("QueryMaterialTask");
+            redirectResult.ControllerName.Should().Be("Registrations");
         }
     }
 
