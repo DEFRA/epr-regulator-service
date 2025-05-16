@@ -11,5 +11,6 @@ public enum RegulatorTaskType
     MaterialsAuthorisedOnSite,
     MaterialDetailsAndContact,
     OverseasReprocessorAndInterimSiteDetails,
-    BusinessAddress
+    BusinessAddress,
+    RegistrationDulyMade 
 }
