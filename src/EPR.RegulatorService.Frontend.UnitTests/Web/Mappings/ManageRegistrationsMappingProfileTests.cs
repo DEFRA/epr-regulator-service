@@ -121,8 +121,7 @@ public class ManageRegistrationsMappingProfileTests
     [TestMethod]
     [DataRow(RegulatorTaskStatus.NotStarted, "Not started yet")]
     [DataRow(RegulatorTaskStatus.Queried, "Queried")]
-    public void Map_WhenCalledWithRegistrationTask_ShouldReturnRegistrationTaskViewModelToCheckStatusText(RegulatorTaskStatus status,
-        string expectedStatusText)
+    public void Map_WhenCalledWithNonCompletedRegistrationTask_ShouldReturnExpectedStatusText(RegulatorTaskStatus status, string expectedStatusText)
     {
         // Arrange
         var registrationTask = new RegistrationTask { Id = 1, Status = status, TaskName = RegulatorTaskType.SamplingAndInspectionPlan };
@@ -149,8 +148,7 @@ public class ManageRegistrationsMappingProfileTests
     [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.MaterialDetailsAndContact, "Reviewed")]
     [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails, "Reviewed")]
     [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.BusinessAddress, "Reviewed")]
-    public void Map_WhenCalledWithRegistrationTask_ShouldReturnRegistrationTaskViewModelToCheckCompleteStatusText(RegulatorTaskStatus status,
-    RegulatorTaskType taskName, string expectedStatusText)
+    public void Map_WhenCalledWithCompletedRegistrationTask_ShouldReturnExpectedStatusText(RegulatorTaskStatus status, RegulatorTaskType taskName, string expectedStatusText)
     {
         // Arrange
         var registrationTask = new RegistrationTask { Id = 1, Status = status, TaskName = taskName };

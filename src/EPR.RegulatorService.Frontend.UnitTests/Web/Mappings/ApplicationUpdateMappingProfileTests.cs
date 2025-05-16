@@ -4,12 +4,9 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Mappings;
-
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
-
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ApplicationUpdate;
 
-using Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 
 [TestClass]
 public class ApplicationUpdateMappingProfileTests

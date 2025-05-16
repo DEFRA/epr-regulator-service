@@ -1,6 +1,6 @@
-namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
-using Core.Enums.ReprocessorExporter;
+namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
 
 public abstract class RegistrationStatusViewModelBase
 {
