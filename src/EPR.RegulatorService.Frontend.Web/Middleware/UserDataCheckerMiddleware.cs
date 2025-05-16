@@ -36,7 +36,7 @@ namespace EPR.RegulatorService.Frontend.Web.Middleware
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            if (context.Request.Path != _configuration.GetValue<string>("HealthCheckPath") && context.User.Identity is { IsAuthenticated: true } && context.User.TryGetUserData() is null)
+            if (context.Request.Path != _configuration.GetValue<string>(ConfigKeys.HealthCheckPath) && context.User.Identity is { IsAuthenticated: true } && context.User.TryGetUserData() is null)
             {
                 if (IsRegistrationRequest(context.Request))
                 {
