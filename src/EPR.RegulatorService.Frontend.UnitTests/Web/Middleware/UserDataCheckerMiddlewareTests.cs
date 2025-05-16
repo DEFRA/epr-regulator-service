@@ -63,6 +63,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             _facadeServiceMock = new Mock<IFacadeService>();
 
             _configurationMock = new Mock<IConfiguration>();
+
+            var configurationSectionMock = new Mock<IConfigurationSection>();
+            configurationSectionMock.Setup(section => section.Value).Returns("/admin/health");
+            _configurationMock.Setup(config => config.GetSection(ConfigKeys.HealthCheckPath))
+                .Returns(configurationSectionMock.Object);
+
             _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
 
             SetupControllerName("UserDataControllerName");

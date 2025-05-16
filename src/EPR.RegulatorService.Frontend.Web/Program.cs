@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Core.Extensions;
+using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.FeatureManagement;
 using EPR.RegulatorService.Frontend.Web.HealthChecks;
@@ -90,7 +91,7 @@ app.MapControllerRoute(
     defaults: new { controller = "Applications", action = "Applications" });
 
 app.MapHealthChecks(
-    builder.Configuration.GetValue<string>("HealthCheckPath"),
+    builder.Configuration.GetValue<string>(ConfigKeys.HealthCheckPath),
     HealthCheckOptionBuilder.Build()).AllowAnonymous();
 
 app.MapRazorPages();
