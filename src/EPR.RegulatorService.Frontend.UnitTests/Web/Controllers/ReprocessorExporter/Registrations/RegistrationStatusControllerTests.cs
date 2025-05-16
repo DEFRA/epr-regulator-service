@@ -190,7 +190,7 @@ public class RegistrationStatusControllerTests
     }
 
     [TestMethod]
-    public async Task PaymentCheck_WhenCalledWithViewModelAndValidModelState_ShouldRedirectToPaymentMethod()
+    public async Task PaymentCheck_WhenCalledWithViewModelAndFullPaymentIsMade_ShouldRedirectToPaymentMethod()
     {
         // Arrange
         var viewModel = new PaymentCheckViewModel { ApplicationType = ApplicationOrganisationType.Reprocessor, FullPaymentMade = true };
@@ -214,7 +214,7 @@ public class RegistrationStatusControllerTests
     }
 
     [TestMethod]
-    public async Task PaymentCheck_WhenCalledWithViewModelAndValidModelState_ShouldRedirectToQueryTask()
+    public async Task PaymentCheck_WhenCalledWithViewModelAndFullPaymentIsNotMade_ShouldRedirectToQueryTask()
     {
         // Arrange
         var viewModel = new PaymentCheckViewModel { ApplicationType = ApplicationOrganisationType.Reprocessor, FullPaymentMade = false };
