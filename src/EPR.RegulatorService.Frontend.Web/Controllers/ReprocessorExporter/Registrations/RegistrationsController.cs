@@ -412,5 +412,4 @@ public class RegistrationsController(
 
     private static string GetRegistrationMaterialMethodPath(string pagePath, int registrationMaterialId) =>
         $"{pagePath}?registrationMaterialId={registrationMaterialId}";
-
   }
