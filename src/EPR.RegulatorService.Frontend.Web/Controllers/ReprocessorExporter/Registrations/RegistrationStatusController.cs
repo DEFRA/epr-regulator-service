@@ -91,8 +91,8 @@ public class RegistrationStatusController(
         await SaveSession(session);
 
         return registrationStatusSession.FullPaymentMade == true
-          ? RedirectToAction(PagePath.PaymentMethod, PagePath.ReprocessorExporterRegistrations)
-          : RedirectToAction(PagePath.QueryMaterialTask, PagePath.ReprocessorExporterRegistrations, new { registrationMaterialId = registrationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckRegistrationStatus });
+          ? RedirectToAction("PaymentMethod", "RegistrationStatus")
+          : RedirectToAction("QueryMaterialTask", "Registrations", new { registrationMaterialId = registrationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckRegistrationStatus });
 
     }
 
