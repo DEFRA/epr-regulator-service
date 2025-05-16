@@ -6,11 +6,11 @@ public enum RegulatorTaskType
     WasteLicensesPermitsAndExemptions,
     ReprocessingInputsAndOutputs,
     SamplingAndInspectionPlan,
+    RegistrationDulyMade,
     CheckRegistrationStatus,
     AssignOfficer,
     MaterialsAuthorisedOnSite,
     MaterialDetailsAndContact,
     OverseasReprocessorAndInterimSiteDetails,
-    BusinessAddress,
-    RegistrationDulyMade 
+    BusinessAddress
 }
