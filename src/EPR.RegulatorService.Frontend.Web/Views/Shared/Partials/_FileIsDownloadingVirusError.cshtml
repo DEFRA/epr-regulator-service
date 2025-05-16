@@ -3,7 +3,7 @@
 <h3 class="govuk-heading-m">@Localizer["OrganisationFileDownload.VirusPageInfo2"]</h3>
 <p class="govuk-body">@Localizer["OrganisationFileDownload.VirusPageInfo3"]</p>
 
-<form class="govuk-!-display-inline-block" method="get" asp-controller="Registrations" asp-action="RejectRegistration">
+<form class="govuk-!-display-inline-block" method="get" asp-controller="Registrations" asp-action="RejectRegistration" asp-route-submissionHash="@Model.SubmissionHash">
     <button class="govuk-button" data-module="govuk-button">
         @SharedLocalizer["FileDownload.RejectSubmission"]
     </button>

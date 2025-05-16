@@ -19,6 +19,8 @@ public class PaymentDetailsViewModel
                         )]
     public string? OfflinePayment { get; set; }
 
+    public int SubmissionHash { get; set; }
+
     public void EnsureTwoDecimalPlaces()
     {
         if (decimal.TryParse(OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))

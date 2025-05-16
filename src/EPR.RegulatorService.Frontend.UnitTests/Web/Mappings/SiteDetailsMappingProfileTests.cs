@@ -31,7 +31,7 @@ public class SiteDetailsMappingProfileTests
         // Arrange
         var siteDetails = new SiteDetails
         {
-            Id = 1,
+            RegistrationId = 1,
             SiteAddress = "123 Test Street",
             NationName = "England",
             GridReference = "321 Test Street",
@@ -45,7 +45,7 @@ public class SiteDetailsMappingProfileTests
         using (new AssertionScope())
         {
             viewModel.Should().NotBeNull();
-            viewModel.RegistrationId.Should().Be(siteDetails.Id);
+            viewModel.RegistrationId.Should().Be(siteDetails.RegistrationId);
             viewModel.Location.Should().Be(siteDetails.NationName);
             viewModel.SiteAddress.Should().Be(siteDetails.SiteAddress);
             viewModel.LegalDocumentAddress.Should().Be(siteDetails.LegalCorrespondenceAddress);

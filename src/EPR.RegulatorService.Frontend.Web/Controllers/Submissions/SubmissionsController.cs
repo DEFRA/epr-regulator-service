@@ -1,15 +1,20 @@
 using System.Globalization;
+using System.Linq;
 using System.Text.Json;
 
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Configs;
+using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Applications;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -20,11 +25,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 
@@ -34,9 +37,10 @@ public partial class SubmissionsController : Controller
 {
     private readonly ISessionManager<JourneySession> _sessionManager;
     private readonly string _pathBase;
-    private readonly SubmissionFiltersOptions _submissionFiltersOptions;
+    private readonly SubmissionFiltersConfig _submissionFiltersOptions;
     private readonly ExternalUrlsOptions _externalUrlsOptions;
     private readonly IFacadeService _facadeService;
+    private readonly ISubmissionFilterConfigService _submissionFilterConfigService;
     private readonly IPaymentFacadeService _paymentFacadeService;
     private const string SubmissionResultAccept = "SubmissionResultAccept";
     private const string SubmissionResultReject = "SubmissionResultReject";
@@ -45,16 +49,18 @@ public partial class SubmissionsController : Controller
     public SubmissionsController(
         ISessionManager<JourneySession> sessionManager,
         IConfiguration configuration,
-        IOptions<SubmissionFiltersOptions> submissionFiltersOptions,
+        IOptions<SubmissionFiltersConfig> submissionFiltersConfig,
         IOptions<ExternalUrlsOptions> externalUrlsOptions,
         IFacadeService facadeService,
+        ISubmissionFilterConfigService submissionFilterConfigService,
         IPaymentFacadeService paymentFacadeService)
     {
         _sessionManager = sessionManager;
         _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
-        _submissionFiltersOptions = submissionFiltersOptions.Value;
+        _submissionFiltersOptions = submissionFiltersConfig.Value;
         _externalUrlsOptions = externalUrlsOptions.Value;
         _facadeService = facadeService;
+        _submissionFilterConfigService = submissionFilterConfigService;
         _paymentFacadeService = paymentFacadeService;
     }
 
@@ -82,6 +88,8 @@ public partial class SubmissionsController : Controller
         EndpointResponseStatus? submissionResultReject = TempData.TryGetValue(SubmissionResultReject, out object? rejectSubmissionResult) ? (EndpointResponseStatus)rejectSubmissionResult : EndpointResponseStatus.NotSet;
         string? submissionResultOrganisationName = TempData.TryGetValue(SubmissionResultOrganisationName, out object? organisationName) ? organisationName.ToString() : string.Empty;
 
+        var (submissionYears, submissonPeriods) = _submissionFilterConfigService.GetFilteredSubmissionYearsAndPeriods();
+
         var model = new SubmissionsViewModel
         {
             SearchSubmissionYears = session.RegulatorSubmissionSession.SearchSubmissionYears,
@@ -95,8 +103,8 @@ public partial class SubmissionsController : Controller
             IsRejectedSubmissionChecked = session.RegulatorSubmissionSession.IsRejectedSubmissionChecked,
             PageNumber = session.RegulatorSubmissionSession.CurrentPageNumber,
             PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
-            SubmissionYears = _submissionFiltersOptions.Years,
-            SubmissionPeriods = _submissionFiltersOptions.PomPeriods,
+            SubmissionYears = submissionYears,
+            SubmissionPeriods = submissonPeriods,
             AcceptSubmissionResult = submissionResultAccept,
             RejectSubmissionResult = submissionResultReject,
             OrganisationName = submissionResultOrganisationName
@@ -155,20 +163,24 @@ public partial class SubmissionsController : Controller
             }
 
             var submission = JsonSerializer.Deserialize<Submission>(jsonSubmission);
-            session.RegulatorSubmissionSession.OrganisationSubmission = submission;
+
+            int hash = RegulatorSubmissionSession.GetSubmissionHashCode(submission);
+
+            session.RegulatorSubmissionSession.OrganisationSubmissions[hash] = submission;
 
             return await SaveSessionAndRedirect(
                 session,
                 nameof(SubmissionDetails),
                 PagePath.Submissions,
                 PagePath.SubmissionDetails,
-                null);
+                new { submissionHash = hash });
         }
 
         //if filtering
         if (filterType == FilterActions.ClearFilters)
         {
             viewModel.ClearFilters = true;
+            submissionFiltersModel.ClearFilters = true;
         }
 
         SetOrResetFilterValuesInSession(session, submissionFiltersModel);
@@ -183,25 +195,28 @@ public partial class SubmissionsController : Controller
 
     [HttpGet]
     [Route(PagePath.SubmissionDetails)]
-    public async Task<IActionResult> SubmissionDetails()
+    public async Task<IActionResult> SubmissionDetails([FromQuery] int submissionHash)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var model = GetSubmissionDetailsViewModel(session);
+        var model = GetSubmissionDetailsViewModel(session, submissionHash);
 
         if (model.IsResubmission)
         {
             var payCalParameters = await _facadeService.GetPomPayCalParameters(
-                        session.RegulatorSubmissionSession.OrganisationSubmission.SubmissionId,
-                        session.RegulatorSubmissionSession.OrganisationSubmission.ComplianceSchemeId);
+                        model.SubmissionId,
+                        model.ComplianceSchemeId);
 
             model.ReferenceFieldNotAvailable = model.ReferenceNotAvailable = true;
+
+            var sessionSubmission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionHash];
+
             if (payCalParameters is not null)
             {
-                session.RegulatorSubmissionSession.OrganisationSubmission.NationCode
+                sessionSubmission.NationCode
                     = model.NationCode = payCalParameters.NationCode;
-                session.RegulatorSubmissionSession.OrganisationSubmission.ReferenceNumber
+                sessionSubmission.ReferenceNumber
                     = model.ReferenceNumber = payCalParameters.Reference;
-                session.RegulatorSubmissionSession.OrganisationSubmission.MemberCount
+                sessionSubmission.MemberCount
                     = model.MemberCount = payCalParameters.MemberCount ?? 0;
                 model.ReferenceFieldNotAvailable = payCalParameters.ReferenceFieldNotAvailable;
                 model.ReferenceNotAvailable = payCalParameters.ReferenceNotAvailable;
@@ -223,7 +238,7 @@ public partial class SubmissionsController : Controller
         if (!ModelState.IsValid)
         {
             SetBackLink(session, PagePath.SubmissionDetails);
-            var model = GetSubmissionDetailsViewModel(session);
+            var model = GetSubmissionDetailsViewModel(session, paymentDetailsViewModel.SubmissionHash);
             return View(nameof(SubmissionDetails), model);
         }
 
@@ -239,19 +254,25 @@ public partial class SubmissionsController : Controller
             PagePath.SubmissionDetails,
             PagePath.ConfirmOfflinePaymentSubmission);
 
-        return RedirectToAction("ConfirmOfflinePaymentSubmission");
+        return RedirectToAction(
+            "ConfirmOfflinePaymentSubmission",
+            "Submissions",
+            new
+            {
+                submissionHash = paymentDetailsViewModel.SubmissionHash
+            });
     }
 
     [HttpGet]
     [Route(PagePath.ConfirmOfflinePaymentSubmission)]
-    public async Task<IActionResult> ConfirmOfflinePaymentSubmission()
+    public async Task<IActionResult> ConfirmOfflinePaymentSubmission([FromQuery] int submissionHash)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionHash];
 
         string offlinePayment = TempData.Peek("OfflinePaymentAmount").ToString();
 
-        SetBackLink(PagePath.SubmissionDetails);
+        SetBackLink($"{PagePath.SubmissionDetails}?submissionHash={submissionHash}");
 
         var model = new ConfirmOfflinePaymentSubmissionViewModel
         {
@@ -267,16 +288,16 @@ public partial class SubmissionsController : Controller
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[model.SubmissionHash.Value];
 
         if (!ModelState.IsValid)
         {
-            SetBackLink(PagePath.SubmissionDetails);
+            SetBackLink($"{PagePath.SubmissionDetails}?submissionHash={model.SubmissionHash}");
             return View(nameof(ConfirmOfflinePaymentSubmission), model);
         }
         else if (!(bool)model.IsOfflinePaymentConfirmed)
         {
-            return RedirectToAction("SubmissionDetails");
+            return RedirectToAction("SubmissionDetails", "Submissions", new { submissionHash = model.SubmissionHash.Value });
         }
 
         TempData.Remove("OfflinePaymentAmount");
@@ -287,29 +308,31 @@ public partial class SubmissionsController : Controller
                 new
                 {
                     statusCode = 404,
-                    backLink = PagePath.SubmissionDetails
+                    backLink = $"{PagePath.SubmissionDetails}?submissionHash={model.SubmissionHash.Value}"
                 })
             : await ProcessOfflinePaymentAsync(
-                session.RegulatorSubmissionSession.OrganisationSubmission.NationCode,
-                session.RegulatorSubmissionSession.OrganisationSubmission.ReferenceNumber, // To do: This will be done as part of 517712
+                submission.NationCode,
+                submission.ReferenceNumber, // To do: This will be done as part of 517712
                 model.OfflinePaymentAmount,
                 submission.UserId.Value,
-                submission.SubmissionId);
+                submission.SubmissionId,
+                model.SubmissionHash.Value);
     }
 
     [HttpGet]
     [Route(PagePath.AcceptSubmission)]
-    public async Task<IActionResult> AcceptSubmission()
+    public async Task<IActionResult> AcceptSubmission([FromQuery] int submissionHash)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
         var model = new AcceptSubmissionViewModel
         {
-            OrganisationName = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName
+            SubmissionHash = submissionHash,
+            OrganisationName = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionHash].OrganisationName
         };
 
         await SaveSessionAndJourney(session, PagePath.SubmissionDetails, PagePath.AcceptSubmission);
-        SetBackLink(session, PagePath.AcceptSubmission);
+        SetBackLink($"{PagePath.SubmissionDetails}?submissionHash={submissionHash}");
 
         return View(nameof(AcceptSubmission), model);
     }
@@ -319,10 +342,12 @@ public partial class SubmissionsController : Controller
     public async Task<IActionResult> AcceptSubmission(AcceptSubmissionViewModel model)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var organisationName = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName;
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[model.SubmissionHash];
+        string organisationName = submission.OrganisationName;
+
         if (!ModelState.IsValid)
         {
-            SetBackLink(session, PagePath.AcceptSubmission);
+            SetBackLink($"{PagePath.SubmissionDetails}?submissionHash={model.SubmissionHash}");
             return View(nameof(AcceptSubmission), model);
         }
 
@@ -330,14 +355,14 @@ public partial class SubmissionsController : Controller
         {
             var request = new RegulatorPoMDecisionCreateRequest
             {
-                SubmissionId = session.RegulatorSubmissionSession.OrganisationSubmission.SubmissionId,
+                SubmissionId = submission.SubmissionId,
                 Decision = RegulatorDecision.Accepted,
-                FileId = session.RegulatorSubmissionSession.OrganisationSubmission.FileId,
-                OrganisationId = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationId,
+                FileId = submission.FileId,
+                OrganisationId = submission.OrganisationId,
                 OrganisationName = organisationName,
-                OrganisationNumber = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationReference,
+                OrganisationNumber = submission.OrganisationReference,
                 IsResubmissionRequired = false,
-                SubmissionPeriod = session.RegulatorSubmissionSession.OrganisationSubmission.SubmissionPeriod
+                SubmissionPeriod = submission.SubmissionPeriod
 
             };
             var result = await _facadeService.SubmitPoMDecision(request);
@@ -353,28 +378,31 @@ public partial class SubmissionsController : Controller
                 null);
         }
 
-        return RedirectToAction("SubmissionDetails", "Submissions");
+        return RedirectToAction("SubmissionDetails", "Submissions", new { model.SubmissionHash });
     }
 
 
     [HttpGet]
     [Route(PagePath.RejectSubmission)]
-    public async Task<IActionResult> RejectSubmission()
+    public async Task<IActionResult> RejectSubmission([FromQuery] int submissionHash)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionHash];
+
         session.RegulatorSubmissionSession.RejectSubmissionJourneyData = new RejectSubmissionJourneyData
         {
-            SubmittedBy = $"{session.RegulatorSubmissionSession.OrganisationSubmission.FirstName} {session.RegulatorSubmissionSession.OrganisationSubmission.LastName}"
+            SubmittedBy = $"{submission.FirstName} {submission.LastName}"
         };
 
         var model = new RejectSubmissionViewModel
         {
+            SubmissionHash = submissionHash,
             SubmittedBy = session.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmittedBy
         };
 
         await SaveSessionAndJourney(session, PagePath.SubmissionDetails, PagePath.RejectSubmission);
-        SetBackLink(session, PagePath.RejectSubmission);
+        SetBackLink($"{PagePath.SubmissionDetails}?submissionHash={submissionHash}");
 
         return View(nameof(RejectSubmission), model);
     }
@@ -385,27 +413,28 @@ public partial class SubmissionsController : Controller
     public async Task<IActionResult> RejectSubmission(RejectSubmissionViewModel model)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var organisationName = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationName;
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[model.SubmissionHash];
+        string organisationName = submission.OrganisationName;
 
         if (!ModelState.IsValid)
         {
             model.SubmittedBy = session.RegulatorSubmissionSession.RejectSubmissionJourneyData.SubmittedBy;
 
-            SetBackLink(session, PagePath.RejectSubmission);
+            SetBackLink($"{PagePath.SubmissionDetails}?submissionHash={model.SubmissionHash}");
             return View(nameof(RejectSubmission), model);
         }
 
         var request = new RegulatorPoMDecisionCreateRequest
         {
-            SubmissionId = session.RegulatorSubmissionSession.OrganisationSubmission.SubmissionId,
+            SubmissionId = submission.SubmissionId,
             Decision = RegulatorDecision.Rejected,
             Comments = model.ReasonForRejection,
-            FileId = session.RegulatorSubmissionSession.OrganisationSubmission.FileId,
-            OrganisationId = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationId,
+            FileId = submission.FileId,
+            OrganisationId = submission.OrganisationId,
             OrganisationName = organisationName,
-            OrganisationNumber = session.RegulatorSubmissionSession.OrganisationSubmission.OrganisationReference,
+            OrganisationNumber = submission.OrganisationReference,
             IsResubmissionRequired = model.IsResubmissionRequired,
-            SubmissionPeriod = session.RegulatorSubmissionSession.OrganisationSubmission.SubmissionPeriod
+            SubmissionPeriod = submission.SubmissionPeriod
         };
 
         var result = await _facadeService.SubmitPoMDecision(request);
@@ -435,94 +464,95 @@ public partial class SubmissionsController : Controller
             PagePath.PageNotFoundPath, new { statusCode = 404, backLink = PagePath.Submissions });
     }
 
-        [HttpGet]
-        [Route(PagePath.SubmissionsFileDownload)]
-        public async Task<IActionResult> SubmissionsFileDownload()
-        {
-            TempData["DownloadCompleted"] = false;
+    [HttpGet]
+    [Route(PagePath.SubmissionsFileDownload)]
+    public async Task<IActionResult> SubmissionsFileDownload([FromQuery] int submissionHash)
+    {
+        TempData["DownloadCompleted"] = false;
 
-            return RedirectToAction(nameof(PackagingDataFileDownload), "Submissions");
+        return RedirectToAction(nameof(PackagingDataFileDownload), "Submissions", new { submissionHash });
+    }
+
+
+    [HttpGet]
+    [Route(PagePath.PackagingDataFileDownload)]
+    public IActionResult PackagingDataFileDownload([FromQuery] int submissionHash)
+    {
+        TempData["SubmissionHash"] = submissionHash;
+        return View("PackagingDataFileDownload");
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> FileDownloadInProgress([FromQuery] int submissionHash)
+    {
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionHash];
+        var fileDownloadModel = CreateFileDownloadRequest(submission);
+
+        if (fileDownloadModel == null)
+        {
+            return RedirectToAction(nameof(PackagingDataFileDownloadFailed), new { submissionHash });
         }
 
+        var response = await _facadeService.GetFileDownload(fileDownloadModel);
 
-        [HttpGet]
-        [Route(PagePath.PackagingDataFileDownload)]
-        public IActionResult PackagingDataFileDownload()
+        if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            return View("PackagingDataFileDownload");
+            return RedirectToAction(nameof(PackagingDataFileDownloadSecurityWarning), new { submissionHash });
+        }
+        else if (response.IsSuccessStatusCode)
+        {
+            var fileStream = await response.Content.ReadAsStreamAsync();
+            var contentDisposition = response.Content.Headers.ContentDisposition;
+            var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? submission.PomFileName;
+            TempData["DownloadCompleted"] = true;
+
+            return File(fileStream, "application/octet-stream", fileName);
+        }
+        else
+        {
+            return RedirectToAction(nameof(PackagingDataFileDownloadFailed), new { submissionHash });
+        }
+    }
+
+
+    [HttpGet]
+    [Route(PagePath.PackagingDataFileDownloadFailed)]
+    public IActionResult PackagingDataFileDownloadFailed([FromQuery] int submissionHash)
+    {
+        var model = new SubmissionDetailsFileDownloadViewModel(true, false) { SubmissionHash = submissionHash };
+        return View("PackagingDataFileDownloadFailed", model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.PackagingDataFileDownloadSecurityWarning)]
+    public async Task<IActionResult> PackagingDataFileDownloadSecurityWarning([FromQuery] int submissionHash)
+    {
+        var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        var submission = session.RegulatorSubmissionSession.OrganisationSubmissions[submissionHash];
+        string submittedBy = $"{submission.FirstName} {submission.LastName}";
+        var model = new SubmissionDetailsFileDownloadViewModel(true, true, null, submittedBy) { SubmissionHash = submissionHash };
+        return View("PackagingDataFileDownloadFailed", model);
+    }
+
+    private static FileDownloadRequest CreateFileDownloadRequest(Submission submission)
+    {
+        var fileDownloadModel = new FileDownloadRequest
+        {
+            SubmissionId = submission.SubmissionId,
+            SubmissionType = SubmissionType.Producer,
+            FileId = submission.FileId,
+            BlobName = submission.PomBlobName,
+            FileName = submission.PomFileName,
+        };
+
+        if (fileDownloadModel.FileId == null || fileDownloadModel.BlobName == null || fileDownloadModel.FileName == null)
+        {
+            return null;
         }
 
-
-        [HttpGet]
-        public async Task<IActionResult> FileDownloadInProgress()
-        {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
-            var fileDownloadModel = CreateFileDownloadRequest(submission);
-
-            if (fileDownloadModel == null)
-            {
-                return RedirectToAction(nameof(PackagingDataFileDownloadFailed));
-            }
-
-            var response = await _facadeService.GetFileDownload(fileDownloadModel);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
-            {
-                return RedirectToAction(nameof(PackagingDataFileDownloadSecurityWarning));
-            }
-            else if (response.IsSuccessStatusCode)
-            {
-                var fileStream = await response.Content.ReadAsStreamAsync();
-                var contentDisposition = response.Content.Headers.ContentDisposition;
-                var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? submission.PomFileName;
-                TempData["DownloadCompleted"] = true;
-
-                return File(fileStream, "application/octet-stream", fileName);
-            }
-            else
-            {
-                return RedirectToAction(nameof(PackagingDataFileDownloadFailed));
-            }
-        }
-
-
-        [HttpGet]
-        [Route(PagePath.PackagingDataFileDownloadFailed)]
-        public IActionResult PackagingDataFileDownloadFailed()
-        {
-            var model = new SubmissionDetailsFileDownloadViewModel(true, false);
-            return View("PackagingDataFileDownloadFailed", model);
-        }
-
-        [HttpGet]
-        [Route(PagePath.PackagingDataFileDownloadSecurityWarning)]
-        public async Task<IActionResult> PackagingDataFileDownloadSecurityWarning()
-        {
-            var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            var submission = session.RegulatorSubmissionSession.OrganisationSubmission;
-            string submittedBy = $"{submission.FirstName} {submission.LastName}";
-            var model = new SubmissionDetailsFileDownloadViewModel(true, true, null, submittedBy);
-            return View("PackagingDataFileDownloadFailed", model);
-        }
-
-        private static FileDownloadRequest CreateFileDownloadRequest(Submission submission)
-        {
-            var fileDownloadModel = new FileDownloadRequest
-            {
-                SubmissionId = submission.SubmissionId,
-                SubmissionType = SubmissionType.Producer,
-                FileId = submission.FileId,
-                BlobName = submission.PomBlobName,
-                FileName = submission.PomFileName,
-            };
-
-            if (fileDownloadModel.FileId == null || fileDownloadModel.BlobName == null || fileDownloadModel.FileName == null)
-            {
-                return null;
-            }
-
-            return fileDownloadModel;
-        }
+        return fileDownloadModel;
+    }
 
 }

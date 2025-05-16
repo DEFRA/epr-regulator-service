@@ -125,14 +125,14 @@ public class ReprocessorExporterServiceTests
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetRegistrationByIdAsync(registrationId));
     }
 
-    [TestMethod]
-    public async Task GetSiteDetailsByRegistrationIdAsync_WhenSuccessResponse_ReturnsSiteDetails()
-    {
-        // Arrange
-        var expectedSiteDetails = CreateSiteDetails();
-        string expectedPath = GetSiteAddressByRegistrationIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
-            .Replace("{id}", expectedSiteDetails.Id.ToString());
+        [TestMethod]
+        public async Task GetSiteDetailsByRegistrationIdAsync_WhenSuccessResponse_ReturnsSiteDetails()
+        {
+            // Arrange
+            var expectedSiteDetails = CreateSiteDetails();
+            string expectedPath = GetSiteAddressByRegistrationIdPath
+                .Replace("{apiVersion}", ApiVersion.ToString())
+                .Replace("{id}", expectedSiteDetails.RegistrationId.ToString());
 
         var response = new HttpResponseMessage
         {
@@ -142,8 +142,8 @@ public class ReprocessorExporterServiceTests
 
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
-        // Act
-         var result = await _service.GetSiteDetailsByRegistrationIdAsync(expectedSiteDetails.Id);
+            // Act
+             var result = await _service.GetSiteDetailsByRegistrationIdAsync(expectedSiteDetails.RegistrationId);
 
         // Assert
         using(new AssertionScope())
@@ -626,7 +626,7 @@ public class ReprocessorExporterServiceTests
     {
         var expectedSiteDetails = new SiteDetails
         {
-            Id = 2,
+            RegistrationId = 2,
             SiteAddress = "23, Ruby St, London, E12 3SE",
             NationName = "England",
             GridReference = "SJ 854 662",
