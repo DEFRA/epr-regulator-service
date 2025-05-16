@@ -89,7 +89,7 @@ public class RegistrationStatusController(
 
         await SaveSession(session);
 
-        return RedirectToAction(PagePath.PaymentMethod, PagePath.ReprocessorExporterRegistrations);
+        return RedirectToAction("PaymentMethod", "RegistrationStatus");
     }
 
     [HttpGet]
@@ -131,7 +131,7 @@ public class RegistrationStatusController(
 
         await SaveSession(session);
 
-        return RedirectToAction(PagePath.PaymentDate, PagePath.ReprocessorExporterRegistrations);
+        return RedirectToAction("PaymentDate", "RegistrationStatus");
     }
 
     [HttpGet]
@@ -174,7 +174,7 @@ public class RegistrationStatusController(
 
         await SaveSession(session);
 
-        return RedirectToAction(PagePath.PaymentReview, PagePath.ReprocessorExporterRegistrations);
+        return RedirectToAction("PaymentReview", "RegistrationStatus");
     }
 
     [HttpGet]
