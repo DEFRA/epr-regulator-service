@@ -310,8 +310,6 @@ public class RegistrationsControllerTests
         }
     }
 
-
-
     [TestMethod]
     public async Task CompleteRegistrationMaterialTask_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
