@@ -1,5 +1,6 @@
 @{
     ViewData["Title"] = Localizer["PackagingDataFileDownload.Title"];
+    var submissionHash = TempData["SubmissionHash"];
     var downloadCompleted = TempData["DownloadCompleted"] != null && (bool)TempData["DownloadCompleted"];
 }
 
@@ -13,13 +14,13 @@
                         @Html.ActionLink(SharedLocalizer["Link.BackToSubmissionDetails"].Value,
                                  "SubmissionDetails",
                                  "Submissions",
-                                 null,
+                                 new { submissionHash = @submissionHash},
                                  new { @class = "govuk-body govuk-link govuk-link--no-visited-state" })
                     </div>
                 </div>
                 @if (!downloadCompleted)
                 {
-                    <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "Submissions")" />
+                    <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "Submissions", new {submissionHash = @submissionHash})" />
                 }
             </div>
         </div>
