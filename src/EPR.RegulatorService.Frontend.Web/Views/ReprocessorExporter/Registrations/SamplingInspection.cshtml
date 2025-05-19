@@ -42,11 +42,11 @@
                     <br>
                     <div class="govuk-button-group !-margin-top-6">
 
-                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteSamplingInspection" asp-route-registrationMaterialId="@Model">
+                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteSamplingInspection" asp-route-registrationMaterialId="@Model.RegistrationMaterialId">
                             Mark as reviewed
                         </button>
 
-                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model, taskName = RegulatorTaskType.SamplingAndInspectionPlan })">
+                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model.RegistrationMaterialId, taskName = RegulatorTaskType.SamplingAndInspectionPlan })">
                             Query the sampling and inspection plan
                         </a>
                     </div>

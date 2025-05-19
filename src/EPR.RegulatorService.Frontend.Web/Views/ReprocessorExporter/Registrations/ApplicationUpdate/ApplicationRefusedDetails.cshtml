@@ -1,24 +1,23 @@
 @using EPR.RegulatorService.Frontend.Web.Extensions
-@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ApplicationUpdate;
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 
-@model ApplicationGrantedViewModel
+@model ApplicationRefusedViewModel
 
 @{
-    const string title = "Additional details";
-    ViewData["Title"] = title;
-    var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+  ViewData["Title"] = "Refusal details";
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 <div class="govuk-width-container ">
   <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
-	<form asp-controller="ApplicationUpdate" asp-action="ApplicationGrantedDetails" method="post">
+    <form asp-controller="ApplicationUpdate" asp-action="ApplicationRefusedDetails" method="post">
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
           <h1 class="govuk-heading-l">
             <span class="govuk-caption-l">@Model.MaterialName</span>
-            <label for="Comments">@title (optional)</label>
+            <label for="Comments">Provide refusal details</label>
           </h1>
 
           @if (!ViewData.ModelState.IsValid)
@@ -39,7 +38,7 @@
           </div>
 
           <button type="submit" class="govuk-button govuk-body govuk-!-margin-top-6" data-module="govuk-button">
-            Mark as granted
+            Mark as refused
           </button>
 
         </div>

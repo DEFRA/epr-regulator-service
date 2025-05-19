@@ -73,7 +73,7 @@ public static class ServiceProviderExtension
         services.Configure<EprCookieOptions>(configuration.GetSection(EprCookieOptions.ConfigSection));
         services.Configure<AnalyticsOptions>(configuration.GetSection(AnalyticsOptions.ConfigSection));
         services.Configure<PhaseBannerOptions>(configuration.GetSection(PhaseBannerOptions.ConfigSection));
-        services.Configure<SubmissionFiltersOptions>(configuration.GetSection(SubmissionFiltersOptions.ConfigSection));
+        services.Configure<SubmissionFiltersConfig>(configuration.GetSection(SubmissionFiltersConfig.ConfigSection));
         services.Configure<ExternalUrlsOptions>(configuration.GetSection(ExternalUrlsOptions.ConfigSection));
         services.Configure<EmailAddressOptions>(configuration.GetSection(EmailAddressOptions.ConfigSection));
         services.Configure<SiteDateOptions>(configuration.GetSection(SiteDateOptions.ConfigSection));
@@ -85,6 +85,9 @@ public static class ServiceProviderExtension
         services.Configure<PaymentFacadeApiConfig>(configuration.GetSection(PaymentFacadeApiConfig.ConfigSection));
         services.Configure<PaymentDetailsOptions>(configuration.GetSection(PaymentDetailsOptions.ConfigSection));
         services.Configure<ReprocessorExporterFacadeApiConfig>(configuration.GetSection(ReprocessorExporterFacadeApiConfig.ConfigSection));
+        services.Configure<PackagingDataSubmissionsConfig>(configuration.GetSection(PackagingDataSubmissionsConfig.ConfigSection));
+        services.Configure<RegistrationSubmissionsOptions>(configuration.GetSection(RegistrationSubmissionsOptions.ConfigSection));
+        services.Configure<ReprocessorExporterConfig>(configuration.GetSection(ReprocessorExporterConfig.ConfigSection));
     }
 
     private static void RegisterServices(IServiceCollection services)

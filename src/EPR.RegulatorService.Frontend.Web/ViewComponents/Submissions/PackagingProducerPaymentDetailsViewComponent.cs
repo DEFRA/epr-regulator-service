@@ -25,7 +25,8 @@ public class PackagingProducerPaymentDetailsViewComponent(IOptions<PaymentDetail
     {
         try
         {
-            if (viewModel.ReferenceFieldNotAvailable) {
+            if (viewModel.ReferenceFieldNotAvailable)
+            {
                 this.ViewBag.NoReferenceField = this.ViewBag.NoReferenceNumber = true;
                 return View(default(PackagingProducerPaymentDetailsViewModel));
             }
@@ -38,11 +39,11 @@ public class PackagingProducerPaymentDetailsViewComponent(IOptions<PaymentDetail
 
             var producerPaymentResponse = await paymentFacadeService
                 .GetProducerPaymentDetailsForResubmissionAsync(new PackagingProducerPaymentRequest
-            {
-                ReferenceNumber = viewModel.ReferenceNumber,
-                Regulator = viewModel.NationCode,
-                ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format
-            });
+                {
+                    ReferenceNumber = viewModel.ReferenceNumber,
+                    Regulator = viewModel.NationCode,
+                    ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format
+                });
 
             if (producerPaymentResponse is null)
             {
@@ -51,6 +52,7 @@ public class PackagingProducerPaymentDetailsViewComponent(IOptions<PaymentDetail
 
             var packagingProducerPaymentDetailsViewModel = new PackagingProducerPaymentDetailsViewModel
             {
+                SubmissionHash = viewModel.SubmissionHash,
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
                 ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),

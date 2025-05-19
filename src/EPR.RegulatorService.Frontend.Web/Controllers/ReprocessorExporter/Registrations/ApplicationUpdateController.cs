@@ -2,6 +2,7 @@ using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
@@ -9,6 +10,7 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ApplicationUpdate;
 
 using FluentValidation;
 
@@ -16,8 +18,6 @@ using Microsoft.FeatureManagement.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
-
-using Core.Models.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
@@ -44,7 +44,7 @@ public class ApplicationUpdateController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        return View(GetRegistrationsView(nameof(ApplicationUpdate)), viewModel);
+        return View(GetApplicationUpdateView(nameof(ApplicationUpdate)), viewModel);
     }
 
     [HttpPost]
@@ -61,7 +61,7 @@ public class ApplicationUpdateController(
                 GetApplicationUpdatePath(applicationUpdateSession.RegistrationMaterialId),
                 applicationUpdateSession,
                 viewModel,
-                GetRegistrationsView(nameof(ApplicationUpdate))
+                GetApplicationUpdateView(nameof(ApplicationUpdate))
                 );
         }
 
@@ -86,7 +86,7 @@ public class ApplicationUpdateController(
         await SaveSessionAndJourney(session, PagePath.ApplicationGrantedDetails);
         SetBackLinkInfos(session, PagePath.ApplicationGrantedDetails);
 
-        return View(GetRegistrationsView(nameof(ApplicationGrantedDetails)), viewModel);
+        return View(GetApplicationUpdateView(nameof(ApplicationGrantedDetails)), viewModel);
     }
 
     [HttpPost]
@@ -103,7 +103,7 @@ public class ApplicationUpdateController(
                 PagePath.ApplicationGrantedDetails,
                 applicationUpdateSession,
                 viewModel,
-                GetRegistrationsView(nameof(ApplicationGrantedDetails))
+                GetApplicationUpdateView(nameof(ApplicationGrantedDetails))
             );
         }
 
@@ -126,7 +126,7 @@ public class ApplicationUpdateController(
         await SaveSessionAndJourney(session, PagePath.ApplicationRefusedDetails);
         SetBackLinkInfos(session, PagePath.ApplicationRefusedDetails);
 
-        return View(GetRegistrationsView(nameof(ApplicationRefusedDetails)), viewModel);
+        return View(GetApplicationUpdateView(nameof(ApplicationRefusedDetails)), viewModel);
     }
 
     [HttpPost]
@@ -143,7 +143,7 @@ public class ApplicationUpdateController(
                 PagePath.ApplicationRefusedDetails,
                 applicationUpdateSession,
                 viewModel,
-                GetRegistrationsView(nameof(ApplicationRefusedDetails))
+                GetApplicationUpdateView(nameof(ApplicationRefusedDetails))
             );
         }
 
@@ -188,4 +188,6 @@ public class ApplicationUpdateController(
 
         return View(viewName, viewModel);
     }
+
+    protected static string GetApplicationUpdateView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/ApplicationUpdate/{viewName}.cshtml";
 }
