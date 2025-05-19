@@ -386,8 +386,11 @@ public class RegistrationsController(
     {
         var session = await GetSession();
 
-        await SaveSessionAndJourney(session, PagePath.CompleteQueryMaterialTask);
-        SetBackLinkInfos(session, PagePath.CompleteQueryMaterialTask);
+        if (!ModelState.IsValid)
+        {
+            SetBackLinkInfos(session, PagePath.QueryMaterialTask);
+            return View(GetRegistrationsView(nameof(QueryMaterialTask)), queryMaterialTaskViewModel);
+        }
 
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
@@ -409,4 +412,4 @@ public class RegistrationsController(
 
     private static string GetRegistrationMaterialMethodPath(string pagePath, int registrationMaterialId) =>
         $"{pagePath}?registrationMaterialId={registrationMaterialId}";
-}
+  }

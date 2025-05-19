@@ -9,6 +9,7 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ApplicationUpdate;
 
 using FluentAssertions.Execution;
 
@@ -285,6 +286,27 @@ public class RegistrationsControllerTests
             redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
             redirectToActionResult.RouteValues.Should().ContainKey("id");
             redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenCalledWithViewModelAndInvalidModelState_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new QueryMaterialTaskViewModel();
+
+        _controller.ModelState.AddModelError("Test", "Error");
+
+        // Act
+        var response = await _controller.QueryMaterialTask(viewModel);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
+
+            var viewResult = (ViewResult)response;
+            viewResult.ViewName.Should().EndWith("QueryMaterialTask.cshtml");
         }
     }
 
