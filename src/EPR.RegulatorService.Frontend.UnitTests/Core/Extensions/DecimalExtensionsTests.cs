@@ -39,4 +39,17 @@ public class DecimalExtensionsTests
         // Assert
         result.Should().Be(expectedText);
     }
+
+    [TestMethod]
+    public void ToDisplayCurrency_ShouldReturnFormattedString()
+    {
+        // Arrange  
+        const decimal decimalValue = 1234.56m;
+
+        // Act
+        string result = decimalValue.ToDisplayCurrency();
+
+        // Assert
+        result.Should().Be("£1,234.56");
+    }
 }
