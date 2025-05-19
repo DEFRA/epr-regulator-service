@@ -16,13 +16,13 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset__legend">
+          <legend>
             <h1 class="govuk-heading-l">
               @if (Model.ApplicationType == ApplicationOrganisationType.Reprocessor)
               {
                 <span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
               }
-              Has full payment of @Model.FeeAmount.ToDisplayCurrency() been received?&nbsp;
+              Has full payment of @Model.FeeAmount.ToDisplayCurrency() been received?
             </h1>
           </legend>
 
