@@ -18,6 +18,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.Extensions.Options;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
@@ -89,7 +90,10 @@ public class RegistrationStatusController(
 
         await SaveSession(session);
 
-        return RedirectToAction("PaymentMethod", "RegistrationStatus");
+        return registrationStatusSession.FullPaymentMade == true
+          ? RedirectToAction("PaymentMethod", "RegistrationStatus")
+          : RedirectToAction("QueryMaterialTask", "Registrations", new { registrationMaterialId = registrationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckRegistrationStatus });
+
     }
 
     [HttpGet]
