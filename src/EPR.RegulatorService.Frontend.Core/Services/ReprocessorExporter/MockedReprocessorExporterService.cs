@@ -1,7 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Http;
 
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
@@ -317,4 +319,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         return Task.FromResult(registrationMaterialWasteLicence);
     }
+
+    public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
+
 }

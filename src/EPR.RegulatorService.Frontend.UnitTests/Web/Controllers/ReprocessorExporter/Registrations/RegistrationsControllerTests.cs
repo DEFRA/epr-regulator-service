@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Text;
 
@@ -37,7 +38,6 @@ public class RegistrationsControllerTests
     private Mock<IMapper> _mockMapper;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IReprocessorExporterService> _mockReprocessorExporterService;
-    private Mock<IFacadeService> _mockFacadeService;
 
     [TestInitialize]
     public void TestInitialize()
@@ -71,9 +71,8 @@ public class RegistrationsControllerTests
             .ReturnsAsync(new JourneySession());
 
         _mockReprocessorExporterService = new Mock<IReprocessorExporterService>();
-        _mockFacadeService = new Mock<IFacadeService>();
 
-        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object, _mockMapper.Object, _mockFacadeService.Object);
+        _controller = new RegistrationsController(_mockSessionManager.Object, _mockReprocessorExporterService.Object, _mockConfiguration.Object, _mockMapper.Object);
 
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
@@ -1175,7 +1174,7 @@ public class RegistrationsControllerTests
     {
         // Arrange
         var registrationMaterialId = 1234;
-        var fileId = new Guid();
+        var fileId = Guid.NewGuid();
         const string filename = "test-file.txt";
         var fileBytes = Encoding.UTF8.GetBytes("Fake file content");
         const string contentType = "text/plain";
@@ -1190,8 +1189,8 @@ public class RegistrationsControllerTests
             FileName = filename
         };
 
-        _mockFacadeService
-            .Setup(service => service.GetFileDownload(It.Is<FileDownloadRequest>(r =>
+        _mockReprocessorExporterService
+            .Setup(service => service.DownloadSamplingInspectionFile(It.Is<FileDownloadRequest>(r =>
                 r.FileId == fileId && r.FileName == filename)))
             .ReturnsAsync(httpResponseMessage);
 
@@ -1216,13 +1215,12 @@ public class RegistrationsControllerTests
         // Arrange
         const int registrationMaterialId = 5678;
         const string filename = "missing-file.pdf";
-        var fileId = new Guid();
-        const string? blobname = "blobname";
+        var fileId = Guid.NewGuid();
 
         var notFoundResponse = new HttpResponseMessage(HttpStatusCode.NotFound);
 
-        _mockFacadeService
-            .Setup(service => service.GetFileDownload(It.IsAny<FileDownloadRequest>()))
+        _mockReprocessorExporterService
+            .Setup(service => service.DownloadSamplingInspectionFile(It.IsAny<FileDownloadRequest>()))
             .ReturnsAsync(notFoundResponse);
 
         // Act

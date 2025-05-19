@@ -29,8 +29,7 @@ public class RegistrationsController(
     ISessionManager<JourneySession> sessionManager,
     IReprocessorExporterService reprocessorExporterService,
     IConfiguration configuration,
-    IMapper mapper,
-    IFacadeService facadeService)
+    IMapper mapper)
     : ReprocessorExporterBaseController(sessionManager, configuration)
   
 {
@@ -415,10 +414,10 @@ public class RegistrationsController(
         var fileDownloadModel = new FileDownloadRequest
         {
             FileId = fileId,
-            FileName = filename,
+            FileName = filename
         };
 
-        var response = await facadeService.GetFileDownload(fileDownloadModel);
+        var response = await reprocessorExporterService.DownloadSamplingInspectionFile(fileDownloadModel);
 
         if(!response.IsSuccessStatusCode)
         {
