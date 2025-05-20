@@ -92,14 +92,14 @@ public class RegistrationStatusControllerTests
         // Act/Assert
         await Assert.ThrowsExceptionAsync<SessionException>(() => _registrationStatusController.FeesDue(1));
     }
-
+    
     [TestMethod]
-    public async Task FeesDue_WhenCalledWithIdAndApplicationUpdateSessionIsNull_ShouldCreateNewSessionFromRegistrationMaterialDetail()
+    public async Task FeesDue_WhenCalledWithIdAndRegistrationStatusSessionIsNull_ShouldCreateNewSessionFromRegistrationMaterialDetail()
     {
         // Arrange
         var paymentFees = CreateRegistrationPaymentFees(123);
 
-        _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = null;
+        _journeySession.ReprocessorExporterSession.RegistrationStatusSession = null;
 
         _reprocessorExporterServiceMock.Setup(r => r.GetPaymentFeesByRegistrationMaterialIdAsync(paymentFees.RegistrationMaterialId))
             .ReturnsAsync(paymentFees);
@@ -139,6 +139,21 @@ public class RegistrationStatusControllerTests
             viewResult.Model.Should().Be(expectedViewModel);
             viewResult.ViewName.Should().EndWith("FeesDue.cshtml");
         }
+    }
+
+    [TestMethod]
+    public async Task PaymentCheck_WhenCalledWithViewModelAndSessionIsNull_ShouldReturnViewResult()
+    {
+        // Arrange
+        var expectedViewModel = new PaymentCheckViewModel
+        {
+            ApplicationType = ApplicationOrganisationType.Reprocessor
+        };
+
+        _journeySession.ReprocessorExporterSession.RegistrationStatusSession = null;
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _registrationStatusController.PaymentCheck());
     }
 
     [TestMethod]
