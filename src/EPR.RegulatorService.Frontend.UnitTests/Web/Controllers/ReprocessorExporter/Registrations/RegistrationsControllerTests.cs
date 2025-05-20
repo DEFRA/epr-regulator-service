@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 
 using AutoMapper;
@@ -1216,6 +1217,8 @@ public class RegistrationsControllerTests
                 r.FileId == fileId && r.FileName == filename)))
             .ReturnsAsync(httpResponseMessage);
 
+        httpResponseMessage.Dispose();
+
         // Act
         var result = await _controller.DownloadSamplingAndInspectionFile(registrationMaterialId, filename, fileId);
 
@@ -1244,6 +1247,8 @@ public class RegistrationsControllerTests
         _mockReprocessorExporterService
             .Setup(service => service.DownloadSamplingInspectionFile(It.IsAny<FileDownloadRequest>()))
             .ReturnsAsync(notFoundResponse);
+
+        notFoundResponse.Dispose();
 
         // Act
         var result = await _controller.DownloadSamplingAndInspectionFile(registrationMaterialId, filename, fileId);
