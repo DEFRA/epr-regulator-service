@@ -1,3 +1,4 @@
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
@@ -18,4 +19,5 @@ public interface IReprocessorExporterService
     Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest);
     Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest);
     Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest);
+    Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request);
 }

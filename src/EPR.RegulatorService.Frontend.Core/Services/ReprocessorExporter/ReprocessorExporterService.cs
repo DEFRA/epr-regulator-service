@@ -11,6 +11,7 @@ using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registration
 
 using Microsoft.Identity.Web;
 using Microsoft.Extensions.Options;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
@@ -33,7 +34,8 @@ public class ReprocessorExporterService(
         GetReprocessingIOByRegistrationMaterialId,
         GetSamplingPlanByRegistrationMaterialId,
         UpdateApplicationTaskStatus,
-        GetSiteAddressByRegistrationId
+        GetSiteAddressByRegistrationId,
+        DownloadSamplingInspectionFile
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -221,6 +223,21 @@ public class ReprocessorExporterService(
         var registrationMaterialSamplingPlan = await GetEntityFromResponse<RegistrationMaterialSamplingPlan>(response);
 
         return registrationMaterialSamplingPlan;
+    }
+
+    public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.DownloadSamplingInspectionFile);
+
+        var response = await httpClient.PostAsJsonAsync(pathTemplate, request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new NotFoundException("Unable to download file.");
+        }
+        return response;
     }
 
     private async Task PrepareAuthenticatedClient()

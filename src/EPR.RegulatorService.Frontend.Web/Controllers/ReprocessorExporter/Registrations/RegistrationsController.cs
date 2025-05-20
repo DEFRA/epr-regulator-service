@@ -1,8 +1,12 @@
 using AutoMapper;
 
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -405,6 +409,28 @@ public class RegistrationsController(
         var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(queryMaterialTaskViewModel.RegistrationMaterialId);
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DownloadSamplingAndInspectionFile(int registrationMaterialId, string filename, Guid? fileId)
+    {
+        var fileDownloadModel = new FileDownloadRequest
+        {
+            FileId = fileId,
+            FileName = filename
+        };
+
+        var response = await reprocessorExporterService.DownloadSamplingInspectionFile(fileDownloadModel);
+
+        if(!response.IsSuccessStatusCode)
+        {
+            return NotFound();
+        }
+
+        var content = await response.Content.ReadAsByteArrayAsync();
+        var contentType = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
+        
+        return File(content, contentType, filename);
     }
 
     private static string GetRegistrationMethodPath(string pagePath, int registrationId) =>
