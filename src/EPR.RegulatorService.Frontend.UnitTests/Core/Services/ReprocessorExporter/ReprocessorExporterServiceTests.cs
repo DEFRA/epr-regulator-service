@@ -5,13 +5,16 @@ using System.Text.Json.Serialization;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
 using FluentAssertions.Execution;
+
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
+
 using Moq.Protected;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
@@ -122,19 +125,19 @@ public class ReprocessorExporterServiceTests
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
 
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
-        
+
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetRegistrationByIdAsync(registrationId));
     }
 
-        [TestMethod]
-        public async Task GetSiteDetailsByRegistrationIdAsync_WhenSuccessResponse_ReturnsSiteDetails()
-        {
-            // Arrange
-            var expectedSiteDetails = CreateSiteDetails();
-            string expectedPath = GetSiteAddressByRegistrationIdPath
-                .Replace("{apiVersion}", ApiVersion.ToString())
-                .Replace("{id}", expectedSiteDetails.RegistrationId.ToString());
+    [TestMethod]
+    public async Task GetSiteDetailsByRegistrationIdAsync_WhenSuccessResponse_ReturnsSiteDetails()
+    {
+        // Arrange
+        var expectedSiteDetails = CreateSiteDetails();
+        string expectedPath = GetSiteAddressByRegistrationIdPath
+            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{id}", expectedSiteDetails.RegistrationId.ToString());
 
         var response = new HttpResponseMessage
         {
@@ -144,11 +147,11 @@ public class ReprocessorExporterServiceTests
 
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
-            // Act
-             var result = await _service.GetSiteDetailsByRegistrationIdAsync(expectedSiteDetails.RegistrationId);
+        // Act
+        var result = await _service.GetSiteDetailsByRegistrationIdAsync(expectedSiteDetails.RegistrationId);
 
         // Assert
-        using(new AssertionScope())
+        using (new AssertionScope())
         {
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(expectedSiteDetails);
@@ -214,7 +217,7 @@ public class ReprocessorExporterServiceTests
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetRegistrationMaterialByIdAsync(registrationMaterialId));
     }
-    
+
     [TestMethod]
     public async Task GetWasteLicenceByRegistrationMaterialIdAsync_WhenSuccess_ReturnsRegistrationWasteLicences()
     {
@@ -257,7 +260,7 @@ public class ReprocessorExporterServiceTests
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId));
     }
-    
+
     [TestMethod]
     public async Task UpdateRegistrationMaterialOutcome_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
@@ -305,7 +308,7 @@ public class ReprocessorExporterServiceTests
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(expectedAuthorisedMaterials);
     }
-    
+
     [TestMethod]
     public async Task UpdateRegistrationTaskStatus_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
@@ -414,7 +417,7 @@ public class ReprocessorExporterServiceTests
         };
 
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
-        
+
         // Act
         var result = await _service.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId);
 
@@ -572,6 +575,36 @@ public class ReprocessorExporterServiceTests
         }
     }
 
+    [TestMethod]
+    public async Task DownloadSamplingInspectionFile_WhenResponseNotSuccessful_ThrowsNotFoundException()
+    {
+        // Arrange
+        var fileId = Guid.NewGuid();
+        const string filename = "test-document.pdf";
+        var request = new FileDownloadRequest
+        {
+            FileId = fileId,
+            FileName = filename
+        };
+
+        _optionsMock.Object.Value.Endpoints.Add("DownloadSamplingInspectionFile", "v{apiVersion}/registrations/file-download");
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.NotFound); // Simulate failure
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.RequestUri != null &&
+                    req.RequestUri.ToString().EndsWith("/registrations/file-download")),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(httpResponseMessage);
+
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() => _service.DownloadSamplingInspectionFile(request));
+    }
 
     private void SetupHttpMessageExpectations(HttpMethod method, string path,
         HttpResponseMessage responseMessage) =>
@@ -582,7 +615,7 @@ public class ReprocessorExporterServiceTests
                     req.Method == method && req.RequestUri == new Uri($"{BaseUrl}{path}")),
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(responseMessage);
-    
+
     private static Registration CreateRegistration() =>
         new()
         {
