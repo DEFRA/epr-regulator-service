@@ -1,9 +1,11 @@
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
@@ -521,6 +523,55 @@ public class ReprocessorExporterServiceTests
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId));
     }
+
+    [TestMethod]
+    public async Task DownloadSamplingAndInspectionFileAsync_WhenCalled_ReturnsHttpResponseMessage()
+    {
+        // Arrange
+        var fileId = Guid.NewGuid();
+        const string filename = "test-document.pdf";
+        var request = new FileDownloadRequest
+        {
+            FileId = fileId,
+            FileName = filename
+        };
+
+        var expectedContent = Encoding.UTF8.GetBytes("Sample PDF content");
+        const string contentType = "application/octet-stream";
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent(expectedContent)
+        };
+        httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+
+        _optionsMock.Object.Value.Endpoints.Add("DownloadSamplingInspectionFile", "v{apiVersion}/registrations/file-download");
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.RequestUri != null &&
+                    req.RequestUri.ToString().EndsWith("/registrations/file-download")),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(httpResponseMessage);
+
+        // Act
+        var result = await _service.DownloadSamplingInspectionFile(request);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseBytes = await result.Content.ReadAsByteArrayAsync();
+        using (new AssertionScope())
+        {
+            responseBytes.Should().BeEquivalentTo(expectedContent);
+            result.Content.Headers.ContentType?.MediaType.Should().Be(contentType);
+        }
+    }
+
 
     private void SetupHttpMessageExpectations(HttpMethod method, string path,
         HttpResponseMessage responseMessage) =>

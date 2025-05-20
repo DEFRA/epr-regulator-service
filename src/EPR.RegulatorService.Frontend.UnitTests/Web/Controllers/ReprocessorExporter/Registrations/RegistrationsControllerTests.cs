@@ -1200,7 +1200,7 @@ public class RegistrationsControllerTests
         var fileId = Guid.NewGuid();
         const string filename = "test-file.txt";
         var fileBytes = Encoding.UTF8.GetBytes("Fake file content");
-        const string contentType = "text/plain";
+        const string contentType = "application/octet-stream";
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
         {
@@ -1256,6 +1256,52 @@ public class RegistrationsControllerTests
         // Assert
         result.Should().BeOfType<NotFoundResult>();
     }
+
+    [TestMethod]
+    public async Task DownloadSamplingFile_UsesReprocessorExporterServiceAndReturnsFileContent()
+    {
+        // Arrange
+        var registrationMaterialId = 1234;
+        var fileId = Guid.NewGuid();
+        const string filename = "sample.pdf";
+        var fileBytes = Encoding.UTF8.GetBytes("Fake file content");
+        const string contentType = "application/octet-stream";
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent(fileBytes)
+        };
+        httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+        httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+        {
+            FileName = filename
+        };
+
+        _mockReprocessorExporterService
+            .Setup(service => service.DownloadSamplingInspectionFile(It.Is<FileDownloadRequest>(r =>
+                r.FileId == fileId && r.FileName == filename)))
+            .ReturnsAsync(httpResponseMessage);
+
+        // Act
+        var result = await _controller.DownloadSamplingAndInspectionFile(registrationMaterialId, filename, fileId);
+
+        // Assert
+        result.Should().BeOfType<FileContentResult>();
+
+        var fileResult = result as FileContentResult;
+        using (new AssertionScope())
+        {
+            fileResult!.ContentType.Should().Be(contentType);
+            fileResult.FileDownloadName.Should().Be(filename);
+            fileResult.FileContents.Should().BeEquivalentTo(fileBytes);
+        }
+
+        // Also assert that the correct service method was called
+        _mockReprocessorExporterService.Verify(service =>
+            service.DownloadSamplingInspectionFile(It.Is<FileDownloadRequest>(r =>
+                r.FileId == fileId && r.FileName == filename)), Times.Once);
+    }
+
 
 
     private static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
