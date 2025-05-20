@@ -1,14 +1,22 @@
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ApplicationUpdate;
 
 using FluentAssertions.Execution;
 
@@ -285,6 +293,27 @@ public class RegistrationsControllerTests
             redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
             redirectToActionResult.RouteValues.Should().ContainKey("id");
             redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
+    }
+
+    [TestMethod]
+    public async Task QueryMaterialTask_WhenCalledWithViewModelAndInvalidModelState_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new QueryMaterialTaskViewModel();
+
+        _controller.ModelState.AddModelError("Test", "Error");
+
+        // Act
+        var response = await _controller.QueryMaterialTask(viewModel);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
+
+            var viewResult = (ViewResult)response;
+            viewResult.ViewName.Should().EndWith("QueryMaterialTask.cshtml");
         }
     }
 
@@ -1162,6 +1191,119 @@ public class RegistrationsControllerTests
             redirectToActionResult.RouteValues["id"].Should().Be(RegistrationIdUrlValue);
         }
     }
+
+    [TestMethod]
+    public async Task DownloadSamplingFile_WhenFileExists_ReturnsFileContentResult()
+    {
+        // Arrange
+        var registrationMaterialId = 1234;
+        var fileId = Guid.NewGuid();
+        const string filename = "test-file.txt";
+        var fileBytes = Encoding.UTF8.GetBytes("Fake file content");
+        const string contentType = "application/octet-stream";
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent(fileBytes)
+        };
+        httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+        httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+        {
+            FileName = filename
+        };
+
+        _mockReprocessorExporterService
+            .Setup(service => service.DownloadSamplingInspectionFile(It.Is<FileDownloadRequest>(r =>
+                r.FileId == fileId && r.FileName == filename)))
+            .ReturnsAsync(httpResponseMessage);
+
+        // Act
+        var result = await _controller.DownloadSamplingAndInspectionFile(registrationMaterialId, filename, fileId);
+
+        // Assert
+        result.Should().BeOfType<FileContentResult>();
+
+        var fileResult = result as FileContentResult;
+        using (new AssertionScope())
+        {
+            fileResult!.ContentType.Should().Be(contentType);
+            fileResult.FileDownloadName.Should().Be(filename);
+            fileResult.FileContents.Should().BeEquivalentTo(fileBytes);
+        }
+
+        httpResponseMessage.Dispose();
+    }
+
+    [TestMethod]
+    public async Task DownloadSamplingFile_WhenFileNotFound_ReturnsNotFound()
+    {
+        // Arrange
+        const int registrationMaterialId = 5678;
+        const string filename = "missing-file.pdf";
+        var fileId = Guid.NewGuid();
+
+        var notFoundResponse = new HttpResponseMessage(HttpStatusCode.NotFound);
+
+        _mockReprocessorExporterService
+            .Setup(service => service.DownloadSamplingInspectionFile(It.IsAny<FileDownloadRequest>()))
+            .ReturnsAsync(notFoundResponse);
+
+        notFoundResponse.Dispose();
+
+        // Act
+        var result = await _controller.DownloadSamplingAndInspectionFile(registrationMaterialId, filename, fileId);
+
+        // Assert
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [TestMethod]
+    public async Task DownloadSamplingFile_UsesReprocessorExporterServiceAndReturnsFileContent()
+    {
+        // Arrange
+        var registrationMaterialId = 1234;
+        var fileId = Guid.NewGuid();
+        const string filename = "sample.pdf";
+        var fileBytes = Encoding.UTF8.GetBytes("Fake file content");
+        const string contentType = "application/octet-stream";
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent(fileBytes)
+        };
+        httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+        httpResponseMessage.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+        {
+            FileName = filename
+        };
+
+        _mockReprocessorExporterService
+            .Setup(service => service.DownloadSamplingInspectionFile(It.Is<FileDownloadRequest>(r =>
+                r.FileId == fileId && r.FileName == filename)))
+            .ReturnsAsync(httpResponseMessage);
+
+        // Act
+        var result = await _controller.DownloadSamplingAndInspectionFile(registrationMaterialId, filename, fileId);
+
+        // Assert
+        result.Should().BeOfType<FileContentResult>();
+
+        var fileResult = result as FileContentResult;
+        using (new AssertionScope())
+        {
+            fileResult!.ContentType.Should().Be(contentType);
+            fileResult.FileDownloadName.Should().Be(filename);
+            fileResult.FileContents.Should().BeEquivalentTo(fileBytes);
+        }
+
+        // Also assert that the correct service method was called
+        _mockReprocessorExporterService.Verify(service =>
+            service.DownloadSamplingInspectionFile(It.Is<FileDownloadRequest>(r =>
+                r.FileId == fileId && r.FileName == filename)), Times.Once);
+    }
+
+
+
     private static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
     {
         var hasBackLinkKey = viewResult.ViewData.TryGetValue(BackLinkViewDataKey, out var gotBackLinkObject);

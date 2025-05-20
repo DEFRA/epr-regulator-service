@@ -72,6 +72,12 @@ public static class PagePath
     public const string ApplicationRefusedDetails = "refused-details";
     public const string QueryRegistrationTask = "query-registration-task";
     public const string QueryMaterialTask = "query-material-task";
+    public const string FeesDue = "fees-due";
+    public const string PaymentCheck = "payment-check";
+    public const string PaymentMethod = "payment-method";
+    public const string PaymentDate = "payment-date";
+    public const string PaymentReview = "payment-review";
+    public const string MarkAsDulyMade = "duly-made";
 
     // Complete tasks paths
     public const string CompleteQueryRegistrationTask = "query-registration-task-complete";

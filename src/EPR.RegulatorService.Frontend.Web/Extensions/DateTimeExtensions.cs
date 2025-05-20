@@ -6,11 +6,17 @@ namespace EPR.RegulatorService.Frontend.Web.Extensions
             TimeZoneInfo.ConvertTimeFromUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById("Europe/London"));
 
         public static string ToDisplayDate(this DateTime? dateTime) =>
-            !dateTime.HasValue ? string.Empty : dateTime.Value.ToString("d MMMM yyyy");
+            !dateTime.HasValue ? string.Empty : dateTime.Value.ToDisplayDate();
+
+        public static string ToDisplayDate(this DateTime dateTime) =>
+            dateTime.ToString("d MMMM yyyy");
 
         public static string ToDisplayDateAndTime(this DateTime? dateTime) =>
             !dateTime.HasValue
                 ? string.Empty
-                : $"{dateTime.Value:d MMMM yyyy} at {dateTime.Value.ToString("h:mmtt").ToLower()}";
+                : dateTime.Value.ToDisplayDateAndTime();
+
+        public static string ToDisplayDateAndTime(this DateTime dateTime) =>
+            $"{dateTime:d MMMM yyyy} at {dateTime.ToString("h:mmtt").ToLower()}";
     }
 }

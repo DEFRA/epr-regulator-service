@@ -98,14 +98,33 @@ public class ManageRegistrationsMappingProfileTests
     }
 
     [TestMethod]
-    [DataRow(RegulatorTaskStatus.NotStarted, "Not started yet", "govuk-tag--grey")]
-    [DataRow(RegulatorTaskStatus.Completed, "Reviewed", "govuk-tag--blue")]
-    [DataRow(RegulatorTaskStatus.Queried, "Queried", "govuk-tag--orange")]
-    public void Map_WhenCalledWithRegistrationTask_ShouldReturnRegistrationTaskViewModel(RegulatorTaskStatus status,
-        string expectedStatusText, string expectedCssClass)
+    [DataRow(RegulatorTaskStatus.NotStarted,  "govuk-tag--grey")]
+    [DataRow(RegulatorTaskStatus.Queried, "govuk-tag--orange")]
+    [DataRow(RegulatorTaskStatus.Completed,  "govuk-tag--blue")]
+    public void Map_WhenCalledWithRegistrationTask_ShouldReturnRegistrationTaskViewModelToCheckStatusCss(RegulatorTaskStatus status,
+         string expectedCssClass)
     {
         // Arrange
-        var registrationTask = new RegistrationTask { Id = 1, Status = status };
+        var registrationTask = new RegistrationTask { Id = 1, Status = status, TaskName = RegulatorTaskType.SiteAddressAndContactDetails };
+
+        // Act
+        var viewModel = _mapper.Map<RegistrationTaskViewModel>(registrationTask);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            viewModel.TaskName.Should().Be(registrationTask.TaskName);
+            viewModel.StatusCssClass.Should().Be(expectedCssClass);
+        }
+    }
+
+    [TestMethod]
+    [DataRow(RegulatorTaskStatus.NotStarted, "Not started yet")]
+    [DataRow(RegulatorTaskStatus.Queried, "Queried")]
+    public void Map_WhenCalledWithNonCompletedRegistrationTask_ShouldReturnExpectedStatusText(RegulatorTaskStatus status, string expectedStatusText)
+    {
+        // Arrange
+        var registrationTask = new RegistrationTask { Id = 1, Status = status, TaskName = RegulatorTaskType.SamplingAndInspectionPlan };
 
         // Act
         var viewModel = _mapper.Map<RegistrationTaskViewModel>(registrationTask);
@@ -115,7 +134,33 @@ public class ManageRegistrationsMappingProfileTests
         {
             viewModel.TaskName.Should().Be(registrationTask.TaskName);
             viewModel.StatusText.Should().Be(expectedStatusText);
-            viewModel.StatusCssClass.Should().Be(expectedCssClass);
+        }
+    }
+
+    [TestMethod]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.CheckRegistrationStatus, "Duly Made")]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.SamplingAndInspectionPlan, "Reviewed")]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.AssignOfficer, "Officer Assigned")]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.SiteAddressAndContactDetails, "Reviewed")]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.WasteLicensesPermitsAndExemptions, "Reviewed")]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.ReprocessingInputsAndOutputs, "Reviewed")]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.MaterialsAuthorisedOnSite, "Reviewed")]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.MaterialDetailsAndContact, "Reviewed")]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails, "Reviewed")]
+    [DataRow(RegulatorTaskStatus.Completed, RegulatorTaskType.BusinessAddress, "Reviewed")]
+    public void Map_WhenCalledWithCompletedRegistrationTask_ShouldReturnExpectedStatusText(RegulatorTaskStatus status, RegulatorTaskType taskName, string expectedStatusText)
+    {
+        // Arrange
+        var registrationTask = new RegistrationTask { Id = 1, Status = status, TaskName = taskName };
+
+        // Act
+        var viewModel = _mapper.Map<RegistrationTaskViewModel>(registrationTask);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            viewModel.TaskName.Should().Be(registrationTask.TaskName);
+            viewModel.StatusText.Should().Be(expectedStatusText);
         }
     }
 

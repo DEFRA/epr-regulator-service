@@ -1,12 +1,16 @@
+using EPR.RegulatorService.Frontend.Core.Converters;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 
 using System.Text.Json;
 
 namespace EPR.RegulatorService.Frontend.Web.Sessions;
 
+
 public class JourneySessionManager : ISessionManager<JourneySession>
 {
     private readonly string _sessionKey = nameof(JourneySession);
+
+    private readonly JsonSerializerOptions _options = new() { Converters = { new PaymentMethodTypeConverter() } };
 
     private JourneySession? _sessionValue;
 
@@ -23,7 +27,7 @@ public class JourneySessionManager : ISessionManager<JourneySession>
 
         if (sessionString != null)
         {
-            _sessionValue = JsonSerializer.Deserialize<JourneySession>(sessionString);
+            _sessionValue = JsonSerializer.Deserialize<JourneySession>(sessionString, _options);
         }
 
         return _sessionValue;
@@ -40,7 +44,7 @@ public class JourneySessionManager : ISessionManager<JourneySession>
     {
         await session.LoadAsync();
 
-        session.SetString(_sessionKey, JsonSerializer.Serialize(sessionValue));
+        session.SetString(_sessionKey, JsonSerializer.Serialize(sessionValue, _options));
 
         _sessionValue = sessionValue;
     }

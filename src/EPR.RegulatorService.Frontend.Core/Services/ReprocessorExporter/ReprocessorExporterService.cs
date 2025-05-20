@@ -5,11 +5,13 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
+using EPR.RegulatorService.Frontend.Core.Converters;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 using Microsoft.Identity.Web;
 using Microsoft.Extensions.Options;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
@@ -24,18 +26,26 @@ public class ReprocessorExporterService(
         GetRegistrationMaterialById,
         GetAuthorisedMaterialsByRegistrationId,
         GetWasteLicenceByRegistrationMaterialId,
+        GetPaymentFeesByRegistrationMaterialId,
+        MarkAsDulyMade,
+        SubmitOfflinePayment,
         UpdateRegistrationMaterialOutcome,
         UpdateRegistrationTaskStatus,
         GetReprocessingIOByRegistrationMaterialId,
         GetSamplingPlanByRegistrationMaterialId,
         UpdateApplicationTaskStatus,
-        GetSiteAddressByRegistrationId
+        GetSiteAddressByRegistrationId,
+        DownloadSamplingInspectionFile
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+        Converters =
+        {
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase),
+            new PaymentMethodTypeConverter()
+        }
     };
 
     public async Task<Registration> GetRegistrationByIdAsync(int id)
@@ -108,6 +118,49 @@ public class ReprocessorExporterService(
         return registrationMaterialWasteLicence;
     }
 
+    public async Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetPaymentFeesByRegistrationMaterialId);
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+
+        var response = await httpClient.GetAsync(path);
+
+        var registrationMaterialPaymentFees = await GetEntityFromResponse<RegistrationMaterialPaymentFees>(response);
+
+        return registrationMaterialPaymentFees;
+    }
+
+    public async Task MarkAsDulyMadeAsync(int registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAsDulyMade);
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+
+        string jsonContent = JsonSerializer.Serialize(dulyMadeRequest, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = GetVersionedEndpoint(Endpoints.SubmitOfflinePayment);
+        
+        string jsonContent = JsonSerializer.Serialize(offlinePayment, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
+
+        response.EnsureSuccessStatusCode();
+    }
+
     public async Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         await PrepareAuthenticatedClient();
@@ -172,6 +225,21 @@ public class ReprocessorExporterService(
         return registrationMaterialSamplingPlan;
     }
 
+    public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.DownloadSamplingInspectionFile);
+
+        var response = await httpClient.PostAsJsonAsync(pathTemplate, request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new NotFoundException("Unable to download file.");
+        }
+        return response;
+    }
+
     private async Task PrepareAuthenticatedClient()
     {
         if (httpClient.BaseAddress == null)
@@ -205,6 +273,4 @@ public class ReprocessorExporterService(
 
         return pathTemplate;
     }
-
-    
 }
