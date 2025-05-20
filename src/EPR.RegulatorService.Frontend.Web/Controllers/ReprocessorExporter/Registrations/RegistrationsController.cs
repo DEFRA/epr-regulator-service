@@ -429,9 +429,8 @@ public class RegistrationsController(
 
         var content = await response.Content.ReadAsByteArrayAsync();
         var contentType = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
-        var contentDisposition = response.Content.Headers.ContentDisposition?.FileName ?? filename;
-
-        return File(content, contentType, contentDisposition);
+        
+        return File(content, contentType, filename);
     }
 
     private static string GetRegistrationMethodPath(string pagePath, int registrationId) =>
