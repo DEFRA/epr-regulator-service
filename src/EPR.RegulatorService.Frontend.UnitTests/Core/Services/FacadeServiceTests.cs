@@ -37,6 +37,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         private HttpClient _httpClient;
         private IOptions<PaginationConfig> _paginationConfig;
         private IOptions<FacadeApiConfig> _facadeApiConfig;
+        private IOptions<RegistrationSubmissionsConfig> _registrationSubmissionsConfig;
         private FacadeService _facadeService;
         private Fixture _fixture;
 
@@ -54,6 +55,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             _tokenAcquisitionMock = new Mock<ITokenAcquisition>();
             _httpClient = new HttpClient(_mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
             _paginationConfig = Options.Create(new PaginationConfig { PageSize = PAGE_SIZE });
+            _registrationSubmissionsConfig = Options.Create(new RegistrationSubmissionsConfig
+            {
+                Show2026RelevantYearFilter = false,
+                LateFeeCutOffDay = 1,
+                LateFeeCutOffMonth = 4
+            });
             _facadeApiConfig = Options.Create(new FacadeApiConfig
             {
                 Endpoints = new Dictionary<string, string>
@@ -84,9 +91,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ["GetPomResubmissionPaycalParameters"] = "pom/get-resubmission-paycal-parameters",
                 },
                 DownstreamScope = "api://default"
-            });
+            }
+            );
 
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
+            _facadeService = new FacadeService(
+                _httpClient,
+                _tokenAcquisitionMock.Object,
+                _paginationConfig,
+                _facadeApiConfig,
+                _registrationSubmissionsConfig,
+                _mockLogger.Object);
+
             _fixture = new Fixture();
         }
 
@@ -363,7 +378,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var organisationId = Guid.NewGuid();
 
             _httpClient.BaseAddress = null;
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
+            _facadeService = new FacadeService(
+                _httpClient,
+                _tokenAcquisitionMock.Object,
+                _paginationConfig,
+                _facadeApiConfig,
+                _registrationSubmissionsConfig,
+                _mockLogger.Object);
 
             // Act
             var result = await _facadeService.GetOrganisationEnrolments(organisationId);
@@ -380,7 +401,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var organisationNationTransfer = new OrganisationTransferNationRequest();
 
             _httpClient.BaseAddress = null;
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
+            _facadeService = new FacadeService(
+                _httpClient,
+                _tokenAcquisitionMock.Object,
+                _paginationConfig,
+                _facadeApiConfig,
+                _registrationSubmissionsConfig,
+                _mockLogger.Object);
 
             // Act
             var result = await _facadeService.TransferOrganisationNation(organisationNationTransfer);
@@ -1455,7 +1482,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 BaseUrl = "http://localhost/"
             });
 
-            var sut = new FacadeService(httpClient, _tokenAcquisitionMock.Object, _paginationConfig, facadeApiConfig, _mockLogger.Object);
+            var sut = new FacadeService(
+                httpClient,
+                _tokenAcquisitionMock.Object,
+                _paginationConfig,
+                facadeApiConfig,
+                _registrationSubmissionsConfig,
+                _mockLogger.Object);
+
             sut.GetRegistrationSubmissions(new RegistrationSubmissionsFilterModel { PageNumber = 1 });
             httpClient.DefaultRequestHeaders.Authorization.Should().NotBeNull();
         }
@@ -1539,7 +1573,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var submissionId = Guid.NewGuid();
 
             _httpClient.BaseAddress = null;
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
+            _facadeService = new FacadeService(
+                _httpClient,
+                _tokenAcquisitionMock.Object,
+                _paginationConfig,
+                _facadeApiConfig,
+                _registrationSubmissionsConfig,
+                _mockLogger.Object);
 
             // Act
             var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
