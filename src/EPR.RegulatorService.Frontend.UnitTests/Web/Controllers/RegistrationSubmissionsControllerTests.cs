@@ -3973,6 +3973,37 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region FileDownloadInProgress
 
         [TestMethod]
+        public async Task FileDownloadInProgress_Should_LogAndRedirectToPageNotFound_SubmissionIsNull()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
+            string expectedRedirectAction = nameof(RegistrationSubmissionsController.PageNotFound);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
+            {
+                SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
+                    { Guid.NewGuid(), detailsModel }
+                }
+            };
+
+            // Act
+            var result = await _controller.FileDownloadInProgress(submissionId) as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null");
+            Assert.AreEqual(expectedRedirectAction, result.ActionName, "Action name should match");
+            _loggerMock.Verify(
+                        x => x.Log(
+                            It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
+                            It.IsAny<EventId>(),
+                            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"{submissionId} - submission not found - ")),
+                            It.IsAny<Exception>(),
+                            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                        Times.Once);
+            _facadeServiceMock.Verify(m => m.GetFileDownload(It.IsAny<FileDownloadRequest>()), Times.Never);
+        }
+
+        [TestMethod]
         public async Task FileDownloadInProgress_ShouldRedirectToFileDownloadFailed_WhenFileDownloadModelIsNull()
         {
             // Arrange
