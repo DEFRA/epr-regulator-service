@@ -21,7 +21,5 @@ public interface IReprocessorExporterService
     Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest);
     Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request);
 
-    //Get registrationByDate
-    //This should return a registration
-    Task<Registration> GetRegistrationByDateAsync(int id);
+    Task<Registration> GetRegistrationWithFilteredAccreditationsAsync(int id, int? year = null);
 }

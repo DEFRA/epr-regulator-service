@@ -384,109 +384,141 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
 
-    public Task<Registration> GetRegistrationByDateAsync(int id)
+    public Task<Registration> GetRegistrationWithFilteredAccreditationsAsync(int id, int? year = null)
     {
-        if (id == 99999)
+        // Simulate data retrieval
+        var registration = GetMockedAccreditationRegistration(id);
+
+        // Apply year filter if specified
+        if (year.HasValue)
         {
-            throw new NotFoundException("Mocked exception for testing purposes.");
+            ApplySingleYearAccreditationFilter(registration, year.Value);
         }
 
+        return Task.FromResult(registration);
+    }
+
+    private static Registration GetMockedAccreditationRegistration(int id)
+    {
         var organisationType = id % 2 == 0
             ? ApplicationOrganisationType.Reprocessor
             : ApplicationOrganisationType.Exporter;
 
         var commonTasks = new List<AccreditationTask>
-    {
-        new AccreditationTask
         {
-            Id = 1,
-            TaskId = 1,
-            TaskName = "PRN tonnage and authority to issue PRNs",
-            Status = "Not Started Yet",
-            Year = "2025"
-        },
-        new AccreditationTask
-        {
-            Id = 2,
-            TaskId = 2,
-            TaskName = "Business plan",
-            Status = "Not Started Yet",
-            Year = "2025"
-        },
-        new AccreditationTask
-        {
-            Id = 3,
-            TaskId = 3,
-            TaskName = "Sampling and inspection plan",
-            Status = "Approved",
-            Year = "2025"
-        },
-        new AccreditationTask
-        {
-            Id = 4,
-            TaskId = 4,
-            TaskName = "Determine accreditation",
-            Status = "Not Started Yet",
-            Year = "2025"
-        }
-    };
+            new AccreditationTask
+            {
+                Id = 1,
+                TaskId = 1,
+                TaskName = "PRN tonnage and authority to issue PRNs",
+                Status = "Not Started Yet",
+                Year = "2025"
+            },
+            new AccreditationTask
+            {
+                Id = 2,
+                TaskId = 2,
+                TaskName = "Business plan",
+                Status = "Not Started Yet",
+                Year = "2025"
+            },
+            new AccreditationTask
+            {
+                Id = 3,
+                TaskId = 3,
+                TaskName = "Sampling and inspection plan",
+                Status = "Approved",
+                Year = "2025"
+            },
+            new AccreditationTask
+            {
+                Id = 4,
+                TaskId = 4,
+                TaskName = "Determine accreditation",
+                Status = "Not Started Yet",
+                Year = "2025"
+            }
+        };
 
-        var accreditation = new Registration
+        return new Registration
         {
             Id = id,
-            OrganisationName = organisationType == ApplicationOrganisationType.Reprocessor
-                ? "Green Ltd"
-                : "Blue Exports Ltd",
-            SiteAddress = organisationType == ApplicationOrganisationType.Reprocessor
-                ? "23 Ruby St, London, E12 3SE"
-                : "N/A",
-            SiteGridReference = organisationType == ApplicationOrganisationType.Reprocessor
-                ? "SJ 854 662"
-                : null,
+            OrganisationName = organisationType == ApplicationOrganisationType.Reprocessor ? "Green Ltd" : "Blue Exports Ltd",
+            SiteAddress = organisationType == ApplicationOrganisationType.Reprocessor ? "23 Ruby St, London, E12 3SE" : "N/A",
+            SiteGridReference = organisationType == ApplicationOrganisationType.Reprocessor ? "SJ 854 662" : null,
             OrganisationType = organisationType,
             Regulator = "Environment Agency (EA)",
             Materials = new List<RegistrationMaterialSummary>
-        {
-            new RegistrationMaterialSummary
+            {
+                new RegistrationMaterialSummary
                 {
                     Id = 101,
                     MaterialName = "Plastic",
-                    Accreditation = new Accreditation
+                    Accreditations = new List<Accreditation>
                     {
-                        AccreditationId = 5001,
-                        ApplicationReference = "357019EFGF",
-                        Status = "Granted",
-                        DeterminationDate = new DateTime(2024, 6, 2, 11, 34, 0, DateTimeKind.Utc),
-                        Tasks = commonTasks
+                        new Accreditation
+                        {
+                            Id = 5001,
+                            ApplicationReference = "357019EFGF-2024",
+                            Status = "Granted",
+                            DeterminationDate = new DateTime(2025, 6, 2),
+                            AccreditationYear = 2025,
+                            Tasks = commonTasks
+                        }
                     }
                 },
                 new RegistrationMaterialSummary
                 {
                     Id = 102,
                     MaterialName = "Steel",
-                    Accreditation = new Accreditation
+                    Accreditations = new List<Accreditation>
                     {
-                        AccreditationId = 5002,
-                        ApplicationReference = "357019EFGF",
-                        Status = "Granted",
-                        DeterminationDate = new DateTime(2024, 6, 2, 11, 34, 0, DateTimeKind.Utc),
-                        Tasks = commonTasks
+                        new Accreditation
+                        {
+                            Id = 5002,
+                            ApplicationReference = "357019EFGF-2025",
+                            Status = "Granted",
+                            DeterminationDate = new DateTime(2025, 6, 2),
+                            AccreditationYear = 2025,
+                            Tasks = commonTasks
+                        }
                     }
                 }
-        },
+            },
             Tasks = new List<RegistrationTask>
-        {
-            new RegistrationTask
             {
-                Id = 88,
-                //TaskId = 99,
-                TaskName = RegulatorTaskType.AssignOfficer,
-                Status = RegulatorTaskStatus.Completed
+                new RegistrationTask
+                {
+                    Id = 88,
+                    TaskName = RegulatorTaskType.AssignOfficer,
+                    Status = RegulatorTaskStatus.Completed
+                }
             }
-        }
         };
-
-        return Task.FromResult(accreditation);
     }
 
+    private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
+    {
+        foreach (var material in registration.Materials)
+        {
+            var accreditationsForYear = material.Accreditations
+                .Where(a => a.AccreditationYear == year)
+                .ToList();
+
+            if (accreditationsForYear.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"No accreditation found for MaterialId {material.Id} in year {year}.");
+            }
+
+            if (accreditationsForYear.Count > 1)
+            {
+                throw new InvalidOperationException(
+                    $"More than one accreditation found for MaterialId {material.Id} in year {year}.");
+            }
+
+            // Safe to assign — exactly one match
+            material.Accreditations = accreditationsForYear;
+        }
+    }
 }

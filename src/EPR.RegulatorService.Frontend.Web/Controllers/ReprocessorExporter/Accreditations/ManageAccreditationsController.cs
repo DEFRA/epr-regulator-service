@@ -21,21 +21,21 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Accr
 public class ManageAccreditationsController(
     IReprocessorExporterService reprocessorExporterService,
     IMapper mapper,
-    IValidator<IdRequest> validator,
+    IValidator<IdAndYearRequest> validator,
     ISessionManager<JourneySession> sessionManager,
     IConfiguration configuration) : ReprocessorExporterBaseController(sessionManager, configuration)
 {
     private readonly IReprocessorExporterService _reprocessorExporterService = reprocessorExporterService ?? throw new ArgumentNullException(nameof(reprocessorExporterService));
     private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    private readonly IValidator<IdRequest> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+    private readonly IValidator<IdAndYearRequest> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
 
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] int id)
+    public async Task<IActionResult> Index([FromQuery] int id, [FromQuery] int year)
     {
-        await _validator.ValidateAndThrowAsync(new IdRequest { Id = id });
+        var request = new IdAndYearRequest { Id = id, Year = year };
+        await _validator.ValidateAndThrowAsync(request);
 
-        // You may want to use a different service method if accreditations are separate from registrations
-        var registration = await _reprocessorExporterService.GetRegistrationByDateAsync(id);
+        var registration = await _reprocessorExporterService.GetRegistrationWithFilteredAccreditationsAsync(id, year);
 
         ViewBag.BackLinkToDisplay = "";
 
@@ -44,7 +44,7 @@ public class ManageAccreditationsController(
         var session = await GetSession();
         session.ReprocessorExporterSession = new ReprocessorExporterSession();
 
-        await SaveSessionAndJourney(session, $"{PagePath.ManageAccreditations}?id={id}");
+        await SaveSessionAndJourney(session, $"{PagePath.ManageAccreditations}?id={id}&year={year}");
 
         return View("~/Views/ReprocessorExporter/Accreditations/ManageAccreditations.cshtml", model);
     }

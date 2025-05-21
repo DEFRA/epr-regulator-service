@@ -11,7 +11,7 @@ public class ManageAccreditationsMappingProfile : Profile
     public ManageAccreditationsMappingProfile()
     {
         CreateMap<Registration, ManageAccreditationsViewModel>()
-            .ForMember(dest => dest.RegistrationId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.OrganisationName, opt => opt.MapFrom(src => src.OrganisationName))
             .ForMember(dest => dest.SiteAddress, opt => opt.MapFrom(src => src.SiteAddress))
             .ForMember(dest => dest.SiteGridReference, opt => opt.MapFrom(src => src.SiteGridReference))
@@ -21,12 +21,13 @@ public class ManageAccreditationsMappingProfile : Profile
             .ForMember(dest => dest.SiteLevelTasks, opt => opt.MapFrom(src => src.Tasks));
 
         CreateMap<RegistrationMaterialSummary, AccreditedMaterialViewModel>()
-            .ForMember(dest => dest.MaterialId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.MaterialName, opt => opt.MapFrom(src => src.MaterialName))
-            .ForMember(dest => dest.Accreditation, opt => opt.MapFrom(src => src.Accreditation));
+            // Take the single accreditation expected after service filtering
+            .ForMember(dest => dest.Accreditation, opt => opt.MapFrom(src => src.Accreditations.SingleOrDefault()));
 
         CreateMap<Accreditation, AccreditationDetailsViewModel>()
-            .ForMember(dest => dest.AccreditationId, opt => opt.MapFrom(src => src.AccreditationId))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.ApplicationReference, opt => opt.MapFrom(src => src.ApplicationReference))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
             .ForMember(dest => dest.DeterminationDate, opt => opt.MapFrom(src => src.DeterminationDate))

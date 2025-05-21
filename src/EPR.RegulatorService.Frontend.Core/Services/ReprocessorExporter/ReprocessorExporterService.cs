@@ -241,18 +241,59 @@ public class ReprocessorExporterService(
         return response;
     }
 
-    public async Task<Registration> GetRegistrationByDateAsync(int id)
+    public async Task<Registration> GetRegistrationWithFilteredAccreditationsAsync(int id, int? year = null)
     {
         await PrepareAuthenticatedClient();
 
+        // Backend may already filter by year (if supported), so we pass it along
+        var registration = await GetAccreditationRegistrationAsync(id, year);
+
+        // Defensive fallback: in case backend ignores or misapplies year filter
+        if (year.HasValue)
+        {
+            ApplySingleYearAccreditationFilter(registration, year.Value);
+        }
+
+        return registration;
+    }
+
+    private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
+    {
+        foreach (var material in registration.Materials)
+        {
+            var matchingAccreditations = material.Accreditations
+                .Where(a => a.AccreditationYear == year)
+                .ToList();
+
+            if (matchingAccreditations.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"No accreditation found for MaterialId {material.Id} in year {year}.");
+            }
+
+            if (matchingAccreditations.Count > 1)
+            {
+                throw new InvalidOperationException(
+                    $"More than one accreditation found for MaterialId {material.Id} in year {year}.");
+            }
+
+            // Safe to assign the filtered result — exactly one expected
+            material.Accreditations = matchingAccreditations;
+        }
+    }
+
+    private async Task<Registration> GetAccreditationRegistrationAsync(int id, int? year)
+    {
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetAccreditationById);
         string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
 
+        if (year.HasValue)
+        {
+            path += $"?year={year.Value}";
+        }
+
         var response = await httpClient.GetAsync(path);
-
-        var accreditation = await GetEntityFromResponse<Registration>(response);
-
-        return accreditation;
+        return await GetEntityFromResponse<Registration>(response);
     }
 
     private async Task PrepareAuthenticatedClient()
