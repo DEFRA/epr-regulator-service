@@ -86,7 +86,7 @@ public static class ServiceProviderExtension
         services.Configure<PaymentDetailsOptions>(configuration.GetSection(PaymentDetailsOptions.ConfigSection));
         services.Configure<ReprocessorExporterFacadeApiConfig>(configuration.GetSection(ReprocessorExporterFacadeApiConfig.ConfigSection));
         services.Configure<PackagingDataSubmissionsConfig>(configuration.GetSection(PackagingDataSubmissionsConfig.ConfigSection));
-        services.Configure<RegistrationSubmissionsOptions>(configuration.GetSection(RegistrationSubmissionsOptions.ConfigSection));
+        services.Configure<RegistrationSubmissionsConfig>(configuration.GetSection(RegistrationSubmissionsConfig.ConfigSection));
         services.Configure<ReprocessorExporterConfig>(configuration.GetSection(ReprocessorExporterConfig.ConfigSection));
     }
 

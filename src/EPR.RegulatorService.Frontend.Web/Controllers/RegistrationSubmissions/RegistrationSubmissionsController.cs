@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Net;
 
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
@@ -33,12 +34,12 @@ public partial class RegistrationSubmissionsController(
                 ILogger<RegistrationSubmissionsController> logger,
                 IConfiguration configuration,
                 IOptions<ExternalUrlsOptions> externalUrlsOptions,
-                IOptions<RegistrationSubmissionsOptions> registrationSubmissionOptions
+                IOptions<RegistrationSubmissionsConfig> registrationSubmissionsConfig
              ) : Controller
 {
     private readonly string _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
     private readonly ExternalUrlsOptions _externalUrlsOptions = externalUrlsOptions.Value;
-    private readonly RegistrationSubmissionsOptions _registrationSubmissionOptions = registrationSubmissionOptions.Value;
+    private readonly RegistrationSubmissionsConfig _registrationSubmissionsConfig = registrationSubmissionsConfig.Value;
     private readonly ISessionManager<JourneySession> _sessionManager = sessionManager;
     private readonly IFacadeService _facadeService = facade;
     private readonly IPaymentFacadeService _paymentFacadeService = paymentFacade;
