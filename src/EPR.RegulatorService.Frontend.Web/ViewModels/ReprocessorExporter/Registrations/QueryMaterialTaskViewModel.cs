@@ -8,8 +8,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
         public int RegistrationMaterialId { get; set; }
         public RegulatorTaskType TaskName { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Comments must be provided")]
-        [MaxLength(500, ErrorMessage = "Comments must be 500 characters or less")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Enter query details")]
+        [MaxLength(500, ErrorMessage = "Entry exceeds character maximum")]
         public string Comments { get; set; } = string.Empty;
 
     }

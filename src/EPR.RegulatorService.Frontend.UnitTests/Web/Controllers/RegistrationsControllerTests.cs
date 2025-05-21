@@ -2,6 +2,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
 using AutoFixture;
 
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -25,6 +26,7 @@ public class RegistrationsControllerTests : RegistrationTestBase
     public void Setup()
     {
         _fixture = new Fixture();
+        _fixture.Register(() => PaymentMethodType.CreditOrDebitCard);
         SetupBase();
     }
 

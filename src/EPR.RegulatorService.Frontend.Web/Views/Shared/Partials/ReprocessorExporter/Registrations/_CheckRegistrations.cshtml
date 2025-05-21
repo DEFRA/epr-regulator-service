@@ -1,1 +1,24 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations
+
+@model ManageRegistrationsViewModel
+
 <h2 class="govuk-heading-m">Check registrations are duly made and assign officer</h2>
+
+<ul class="app-task-list__items govuk-!-padding-left-0" style="margin-bottom: 30px;">
+
+  @foreach (var registrationMaterial in Model.Materials)
+  {
+
+  if (registrationMaterial.RegistrationStatusTask != null)
+  {
+    <li class="app-task-list__item">
+      <span class="app-task-list__task-name">
+        @registrationMaterial.MaterialName application reference: @registrationMaterial.ApplicationReferenceNumber <br>
+        <a href="@Url.ActionLink("FeesDue", "RegistrationStatus", new { registrationMaterialId = @registrationMaterial.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state">Check registration status</a>
+      </span>
+      <strong class="govuk-tag @registrationMaterial.RegistrationStatusTask.StatusCssClass app-task-list__tag" id="contact-information-status">@registrationMaterial.RegistrationStatusTask.StatusText</strong><br>
+    </li>
+    }
+  }
+
+</ul>

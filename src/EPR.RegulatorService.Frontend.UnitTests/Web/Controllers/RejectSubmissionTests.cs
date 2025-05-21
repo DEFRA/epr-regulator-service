@@ -6,6 +6,7 @@ using EPR.RegulatorService.Frontend.UnitTests.TestData;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,34 +16,36 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     public class RejectSubmissionTests : SubmissionsTestBase
     {
         private const string ViewName = "RejectSubmission";
-        private readonly Submission _testSubmission = TestSubmission.GetTestSubmission();
+        private int _hashCode;
 
         [TestInitialize]
         public void Setup()
         {
             SetupBase();
+            var testSubmission = TestSubmission.GetTestSubmission();
+            _hashCode = RegulatorSubmissionSession.GetSubmissionHashCode(testSubmission);
+
             JourneySessionMock = new JourneySession
             {
                 RegulatorSubmissionSession = new RegulatorSubmissionSession
                 {
                     Journey =
-                        new List<string>
-                        {
-                            PagePath.Submissions, PagePath.SubmissionDetails, PagePath.RejectSubmission
-                        },
+                        [
+                        PagePath.Submissions,
+                        PagePath.SubmissionDetails,
+                        PagePath.RejectSubmission
+                        ],
                     RejectSubmissionJourneyData = new RejectSubmissionJourneyData()
                     {
-                        SubmittedBy = _testSubmission.FirstName + " " + _testSubmission.LastName,
-                    },
-                    OrganisationSubmission = new Submission()
-                    {
-                        FileId = Guid.NewGuid(),
-                        OrganisationId = Guid.NewGuid(),
-                        OrganisationName = _testSubmission.OrganisationName,
-                        SubmissionId = _testSubmission.SubmissionId
+                        SubmittedBy = testSubmission.FirstName + " " + testSubmission.LastName,
                     }
                 }
             };
+
+            testSubmission.FileId = Guid.NewGuid();
+            testSubmission.OrganisationId = Guid.NewGuid();
+
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = testSubmission;
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
@@ -52,8 +55,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task GivenOnRejectSubmissionsPage_WhenRejectSubmissionsHttpGetCalled_ThenAssertBackLinkSet_And_Set_Session()
         {
             // Act
-            var result = await _systemUnderTest.RejectSubmission() as ViewResult;
+            var result = await _systemUnderTest.RejectSubmission(_hashCode) as ViewResult;
             var rejectSubmissionJourneyData = JourneySessionMock.RegulatorSubmissionSession.RejectSubmissionJourneyData;
+            string expectedBackLink = $"/regulators/{PagePath.SubmissionDetails}?submissionHash={_hashCode}";
 
             // Assert
             Assert.IsNotNull(result);
@@ -61,7 +65,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var model = result.Model as RejectSubmissionViewModel;
             Assert.IsNotNull(model);
             model.SubmittedBy.Should().Be(rejectSubmissionJourneyData.SubmittedBy);
-            AssertBackLink(result, PagePath.SubmissionDetails);
+            AssertBackLink(result, expectedBackLink);
         }
 
         [TestMethod]
@@ -73,6 +77,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Act
             var viewModel = new RejectSubmissionViewModel()
             {
+                SubmissionHash = _hashCode,
                 SubmittedBy = rejectSubmissionJourneyData.SubmittedBy!,
                 ReasonForRejection = null,
                 IsResubmissionRequired = false
@@ -101,6 +106,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Act
             var viewModel = new RejectSubmissionViewModel()
             {
+                SubmissionHash = _hashCode,
                 SubmittedBy = rejectSubmissionJourneyData.SubmittedBy!,
                 ReasonForRejection = RejectSubmissionDetails.LongRejectionReasonString,
                 IsResubmissionRequired = false
@@ -128,6 +134,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Act
             var viewModel = new RejectSubmissionViewModel()
             {
+                SubmissionHash = _hashCode,
                 SubmittedBy = rejectSubmissionJourneyData.SubmittedBy!,
                 ReasonForRejection = RejectSubmissionDetails.RejectionReasonString,
                 IsResubmissionRequired = false
@@ -153,6 +160,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var rejectSubmissionJourneyData = JourneySessionMock.RegulatorSubmissionSession.RejectSubmissionJourneyData;
             var viewModel = new RejectSubmissionViewModel()
             {
+                SubmissionHash = _hashCode,
                 SubmittedBy = rejectSubmissionJourneyData.SubmittedBy!,
                 ReasonForRejection = RejectSubmissionDetails.RejectionReasonString,
                 IsResubmissionRequired = false
@@ -169,7 +177,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             result.ActionName.Should().Be(nameof(SubmissionsController.Submissions));
 
             _systemUnderTest.TempData["SubmissionResultReject"].Should().Be(EndpointResponseStatus.Success);
-            _systemUnderTest.TempData["SubmissionResultOrganisationName"].Should().Be(_testSubmission.OrganisationName);
+            _systemUnderTest.TempData["SubmissionResultOrganisationName"].Should().Be("Test Org Ltd.");
 
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Once);
         }

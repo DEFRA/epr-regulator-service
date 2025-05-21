@@ -10,7 +10,7 @@ public class RegistrationMaterialSummary
 
     public required string MaterialName { get; init; }
 
-    public DateTime? DeterminationDate { get; init; }
+    public DateTime? DeterminationDate { get; set; }
     
     public ApplicationStatus? Status { get; init; }
 
@@ -19,6 +19,8 @@ public class RegistrationMaterialSummary
     public DateTime? StatusUpdatedDate { get; init; }
 
     public string? RegistrationReferenceNumber { get; init; }
+
+    public string? ApplicationReferenceNumber { get; init; }
 
     public List<RegistrationTask> Tasks { get; init; } = [];
 }

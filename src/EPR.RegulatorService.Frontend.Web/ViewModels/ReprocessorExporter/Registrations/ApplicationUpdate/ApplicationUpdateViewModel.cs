@@ -1,8 +1,8 @@
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-
 using System.ComponentModel.DataAnnotations;
 
-namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+
+namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ApplicationUpdate;
 
 public class ApplicationUpdateViewModel
 {
