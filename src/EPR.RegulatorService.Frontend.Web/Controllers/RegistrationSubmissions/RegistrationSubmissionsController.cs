@@ -663,10 +663,7 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionDetailsFileDownload)]
     public async Task<IActionResult> SubmissionDetailsFileDownload([FromQuery] Guid submissionId)
     {
-        ////_currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        ////SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId }), false);
         SetBackLink(Url.RouteUrl("SubmissionDetails", new { submissionId }), false);
-
         return View("RegistrationSubmissionFileDownload", submissionId);
     }
 
@@ -712,8 +709,6 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionFileDownloadFailed)]
     public async Task<IActionResult> RegistrationSubmissionFileDownloadFailed([FromQuery] Guid submissionId)
     {
-        ////_currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        ////var model = new OrganisationDetailsFileDownloadViewModel(true, false, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId);
         var model = new OrganisationDetailsFileDownloadViewModel(true, false, submissionId);
         return View("RegistrationSubmissionFileDownloadFailed", model);
     }
@@ -722,10 +717,6 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionFileDownloadSecurityWarning)]
     public async Task<IActionResult> RegistrationSubmissionFileDownloadSecurityWarning([FromQuery] Guid submissionId)
     {
-        ////_currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        ////var model = new OrganisationDetailsFileDownloadViewModel(true, true, _currentSession
-        ////    .RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId);
         var model = new OrganisationDetailsFileDownloadViewModel(true, true, submissionId);
         return View("RegistrationSubmissionFileDownloadFailed", model);
     }
