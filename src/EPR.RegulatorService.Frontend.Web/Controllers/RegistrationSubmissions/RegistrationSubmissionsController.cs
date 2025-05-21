@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 
@@ -662,8 +661,9 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionDetailsFileDownload)]
     public async Task<IActionResult> SubmissionDetailsFileDownload([FromQuery] Guid submissionId)
     {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId }), false);
+        ////_currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        ////SetBackLink(Url.RouteUrl("SubmissionDetails", new { _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId }), false);
+        SetBackLink(Url.RouteUrl("SubmissionDetails", new { submissionId }), false);
 
         return View("RegistrationSubmissionFileDownload", submissionId);
     }
@@ -672,10 +672,14 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> FileDownloadInProgress([FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        var submission = await FetchFromSessionOrFacadeAsync(submissionId, _facadeService.GetRegistrationSubmissionDetails);
+        if (submission is null)
+        {
+            _logControllerError.Invoke(logger, $"{submissionId} - submission not found - {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", default);
+            return RedirectToAction(nameof(PageNotFound));
+        }
 
-        var registration = _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId];
-        var fileDownloadModel = CreateFileDownloadRequest(_currentSession, registration);
-
+        var fileDownloadModel = CreateFileDownloadRequest(_currentSession, submission);
         if (fileDownloadModel == null)
         {
             return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId });
@@ -691,7 +695,7 @@ public partial class RegistrationSubmissionsController(
         {
             var fileStream = await response.Content.ReadAsStreamAsync();
             var contentDisposition = response.Content.Headers.ContentDisposition;
-            var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? registration.SubmissionDetails.Files[0].FileName ?? $"{registration.OrganisationReference}_details.csv";
+            var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? submission.SubmissionDetails.Files[0].FileName ?? $"{submission.OrganisationReference}_details.csv";
             TempData["DownloadCompleted"] = true;
 
             return File(fileStream, "application/octet-stream", fileName);
@@ -706,9 +710,9 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionFileDownloadFailed)]
     public async Task<IActionResult> RegistrationSubmissionFileDownloadFailed([FromQuery] Guid submissionId)
     {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        var model = new OrganisationDetailsFileDownloadViewModel(true, false, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId);
+        ////_currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        ////var model = new OrganisationDetailsFileDownloadViewModel(true, false, _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId);
+        var model = new OrganisationDetailsFileDownloadViewModel(true, false, submissionId);
         return View("RegistrationSubmissionFileDownloadFailed", model);
     }
 
@@ -716,10 +720,11 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionFileDownloadSecurityWarning)]
     public async Task<IActionResult> RegistrationSubmissionFileDownloadSecurityWarning([FromQuery] Guid submissionId)
     {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        ////_currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        var model = new OrganisationDetailsFileDownloadViewModel(true, true, _currentSession
-            .RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId);
+        ////var model = new OrganisationDetailsFileDownloadViewModel(true, true, _currentSession
+        ////    .RegulatorRegistrationSubmissionSession.SelectedRegistrations[submissionId].SubmissionId);
+        var model = new OrganisationDetailsFileDownloadViewModel(true, true, submissionId);
         return View("RegistrationSubmissionFileDownloadFailed", model);
     }
 
