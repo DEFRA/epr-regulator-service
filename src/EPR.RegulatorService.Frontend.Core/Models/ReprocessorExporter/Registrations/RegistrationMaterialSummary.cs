@@ -23,4 +23,6 @@ public class RegistrationMaterialSummary
     public string? ApplicationReferenceNumber { get; init; }
 
     public List<RegistrationTask> Tasks { get; init; } = [];
+
+    public Accreditation Accreditation { get; set; } = new();
 }

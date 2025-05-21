@@ -35,7 +35,7 @@ public class ReprocessorExporterService(
         GetSamplingPlanByRegistrationMaterialId,
         UpdateApplicationTaskStatus,
         GetSiteAddressByRegistrationId,
-        DownloadSamplingInspectionFile
+        GetAccreditationById
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -180,7 +180,7 @@ public class ReprocessorExporterService(
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);        
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);
 
         var response = await httpClient.PostAsJsonAsync(pathTemplate, updateRegistrationTaskStatusRequest);
 
@@ -238,6 +238,20 @@ public class ReprocessorExporterService(
             throw new NotFoundException("Unable to download file.");
         }
         return response;
+    }
+
+    public async Task<Registration> GetRegistrationByDateAsync(int id)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetAccreditationById);
+        string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
+
+        var response = await httpClient.GetAsync(path);
+
+        var accreditation = await GetEntityFromResponse<Registration>(response);
+
+        return accreditation;
     }
 
     private async Task PrepareAuthenticatedClient()

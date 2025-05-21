@@ -10,6 +10,8 @@ public class Registration
 
     public string? SiteAddress { get; init; }
 
+    public string? SiteGridReference { get; set; } = string.Empty;
+
     public ApplicationOrganisationType OrganisationType { get; init; }
 
     public required string Regulator { get; init; }
