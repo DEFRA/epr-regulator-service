@@ -1,0 +1,36 @@
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditedMaterialViewModel
+
+<h2 class="govuk-heading-m govuk-!-margin-top-6">Review @Model.MaterialName accreditation</h2>
+
+<p class="govuk-body">
+    Year: 2025<br />
+    Submitted by: Anna Faris (Site administrator)<br />
+    Contact person: Freda Pinto (Site manager)<br />
+    Telephone number and email: 02087651236 <a href="mailto:freda.pinto@greenltd.com" class="govuk-link govuk-link--no-visited-state">freda.pinto@greenltd.com</a>
+</p>
+
+<p class="govuk-body">
+    <strong>Determination date:</strong>
+    @if (Model.Accreditation.DeterminationDate.HasValue)
+    {
+        @Model.Accreditation.DeterminationDate.Value.ToString("d MMM yyyy")
+    }
+    else
+    {
+        <span>Not set yet</span>
+    }
+</p>
+
+<ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
+    @foreach (var task in Model.Accreditation.Tasks)
+    {
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="#">@task.TaskName</a>
+            </span>
+            <strong class="govuk-tag govuk-tag--grey app-task-list__tag">
+                @(string.IsNullOrEmpty(task.Status) ? "NOT STARTED YET" : task.Status.ToUpperInvariant())
+            </strong>
+        </li>
+    }
+</ul>

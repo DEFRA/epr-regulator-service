@@ -1,0 +1,14 @@
+@model List<EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditedMaterialViewModel>
+
+<h2 class="govuk-heading-m">Registration status</h2>
+<ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
+    @foreach (var material in Model)
+    {
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="#">@material.MaterialName</a>
+            </span>
+            <strong class="govuk-tag govuk-tag--green app-task-list__tag">@material.Accreditation.Status?.ToUpperInvariant()</strong>
+        </li>
+    }
+</ul>

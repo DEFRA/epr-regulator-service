@@ -108,7 +108,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials)
             .First(rm => rm.Id == registrationMaterialId);
-         
+
         var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
 
         return Task.FromResult(new RegistrationMaterialPaymentFees
@@ -131,7 +131,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
 
         registrationMaterial.DeterminationDate = dulyMadeRequest.DeterminationDate;
-        
+
         var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus);
         int? taskId;
 
@@ -158,7 +158,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     }
 
     public Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment) => Task.CompletedTask;
-    
+
     public Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
@@ -185,13 +185,13 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         return Task.CompletedTask;
     }
-    
+
     public Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest)
     {
         var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
         var task = registration.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateRegistrationTaskStatusRequest.TaskName);
         int? taskId;
-        
+
         if (task == null)
         {
             taskId = (updateRegistrationTaskStatusRequest.RegistrationId * 10) + registration.Tasks.Count;
@@ -384,66 +384,6 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
 
-        var newTask = new RegistrationTask
-        {
-            Id = taskId,
-            TaskName = Enum.Parse<RegulatorTaskType>(updateRegistrationTaskStatusRequest.TaskName),
-            Status = Enum.Parse<RegulatorTaskStatus>(updateRegistrationTaskStatusRequest.Status)
-        };
-
-        registration.Tasks.Add(newTask);
-
-        return Task.CompletedTask;
-    }
-
-    public Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest)
-    {
-        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == updateMaterialTaskStatusRequest.RegistrationMaterialId);
-        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateMaterialTaskStatusRequest.TaskName);
-        int? taskId;
-
-        if (task == null)
-        {
-            taskId = (updateMaterialTaskStatusRequest.RegistrationMaterialId * 1000) + registrationMaterial.Tasks.Count;
-        }
-        else
-        {
-            taskId = task.Id;
-            registrationMaterial.Tasks.Remove(task);
-        }
-
-        var newTask = new RegistrationTask
-        {
-            Id = taskId,
-            TaskName = Enum.Parse<RegulatorTaskType>(updateMaterialTaskStatusRequest.TaskName),
-            Status = Enum.Parse<RegulatorTaskStatus>(updateMaterialTaskStatusRequest.Status)
-        };
-
-        registrationMaterial.Tasks.Add(newTask);
-
-        return Task.CompletedTask;
-    }
-
-    public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
-    public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
-
-    public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
-    {
-        var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
-        {
-            RegistrationMaterialId = registrationMaterialId,
-            CapacityPeriod = "Per Year",
-            CapacityTonne = 50000,
-            LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],
-            MaterialName = "Plastic",
-            MaximumReprocessingCapacityTonne = 10000,
-            MaximumReprocessingPeriod = "Per Month",
-            PermitType = "Waste Exemption",
-        };
-
-        return Task.FromResult(registrationMaterialWasteLicence);
-    }
-
     public Task<Registration> GetRegistrationByDateAsync(int id)
     {
         if (id == 99999)
@@ -456,40 +396,40 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             : ApplicationOrganisationType.Exporter;
 
         var commonTasks = new List<AccreditationTask>
+    {
+        new AccreditationTask
         {
-            new AccreditationTask
-            {
-                Id = 1,
-                TaskId = 1,
-                TaskName = "PRN tonnage and authority to issue PRNs",
-                Status = "Not Started Yet",
-                Year = "2025"
-            },
-            new AccreditationTask
-            {
-                Id = 2,
-                TaskId = 2,
-                TaskName = "Business plan",
-                Status = "Not Started Yet",
-                Year = "2025"
-            },
-            new AccreditationTask
-            {
-                Id = 3,
-                TaskId = 3,
-                TaskName = "Sampling and inspection plan",
-                Status = "Approved",
-                Year = "2025"
-            },
-            new AccreditationTask
-            {
-                Id = 4,
-                TaskId = 4,
-                TaskName = "Determine accreditation",
-                Status = "Not Started Yet",
-                Year = "2025"
-            }
-        };
+            Id = 1,
+            TaskId = 1,
+            TaskName = "PRN tonnage and authority to issue PRNs",
+            Status = "Not Started Yet",
+            Year = "2025"
+        },
+        new AccreditationTask
+        {
+            Id = 2,
+            TaskId = 2,
+            TaskName = "Business plan",
+            Status = "Not Started Yet",
+            Year = "2025"
+        },
+        new AccreditationTask
+        {
+            Id = 3,
+            TaskId = 3,
+            TaskName = "Sampling and inspection plan",
+            Status = "Approved",
+            Year = "2025"
+        },
+        new AccreditationTask
+        {
+            Id = 4,
+            TaskId = 4,
+            TaskName = "Determine accreditation",
+            Status = "Not Started Yet",
+            Year = "2025"
+        }
+    };
 
         var accreditation = new Registration
         {
@@ -506,48 +446,47 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             OrganisationType = organisationType,
             Regulator = "Environment Agency (EA)",
             Materials = new List<RegistrationMaterialSummary>
-            {
-                new RegistrationMaterialSummary
-                    {
-                        Id = 101,
-                        MaterialName = "Plastic",
-                        Accreditation = new Accreditation
-                        {
-                            AccreditationId = 5001,
-                            ApplicationReference = "357019EFGF",
-                            Status = "Granted",
-                            DeterminationDate = new DateTime(2024, 6, 2, 11, 34, 0, DateTimeKind.Utc),
-                            Tasks = commonTasks
-                        }
-                    },
-                    new RegistrationMaterialSummary
-                    {
-                        Id = 102,
-                        MaterialName = "Steel",
-                        Accreditation = new Accreditation
-                        {
-                            AccreditationId = 5002,
-                            ApplicationReference = "357019EFGF",
-                            Status = "Granted",
-                            DeterminationDate = new DateTime(2024, 6, 2, 11, 34, 0, DateTimeKind.Utc),
-                            Tasks = commonTasks
-                        }
-                    }
-            },
-            Tasks = new List<RegistrationTask>
-            {
-                new RegistrationTask
+        {
+            new RegistrationMaterialSummary
                 {
-                    Id = 88,
-                    //TaskId = 99,
-                    TaskName = RegulatorTaskType.AssignOfficer,
-                    Status = RegulatorTaskStatus.Completed
+                    Id = 101,
+                    MaterialName = "Plastic",
+                    Accreditation = new Accreditation
+                    {
+                        AccreditationId = 5001,
+                        ApplicationReference = "357019EFGF",
+                        Status = "Granted",
+                        DeterminationDate = new DateTime(2024, 6, 2, 11, 34, 0, DateTimeKind.Utc),
+                        Tasks = commonTasks
+                    }
+                },
+                new RegistrationMaterialSummary
+                {
+                    Id = 102,
+                    MaterialName = "Steel",
+                    Accreditation = new Accreditation
+                    {
+                        AccreditationId = 5002,
+                        ApplicationReference = "357019EFGF",
+                        Status = "Granted",
+                        DeterminationDate = new DateTime(2024, 6, 2, 11, 34, 0, DateTimeKind.Utc),
+                        Tasks = commonTasks
+                    }
                 }
+        },
+            Tasks = new List<RegistrationTask>
+        {
+            new RegistrationTask
+            {
+                Id = 88,
+                //TaskId = 99,
+                TaskName = RegulatorTaskType.AssignOfficer,
+                Status = RegulatorTaskStatus.Completed
             }
+        }
         };
 
         return Task.FromResult(accreditation);
     }
-
 
 }

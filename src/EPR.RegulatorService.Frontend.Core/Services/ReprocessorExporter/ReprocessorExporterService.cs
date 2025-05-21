@@ -7,11 +7,11 @@ using System.Text.Json.Serialization;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Converters;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
-using Microsoft.Identity.Web;
 using Microsoft.Extensions.Options;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using Microsoft.Identity.Web;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
@@ -35,6 +35,7 @@ public class ReprocessorExporterService(
         GetSamplingPlanByRegistrationMaterialId,
         UpdateApplicationTaskStatus,
         GetSiteAddressByRegistrationId,
+        DownloadSamplingInspectionFile,
         GetAccreditationById
     }
 
@@ -54,9 +55,9 @@ public class ReprocessorExporterService(
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationById);
         string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
-        
+
         var response = await httpClient.GetAsync(path);
-        
+
         var registration = await GetEntityFromResponse<Registration>(response);
 
         return registration;
@@ -86,7 +87,7 @@ public class ReprocessorExporterService(
         var response = await httpClient.GetAsync(path);
 
         var registrationMaterialDetail = await GetEntityFromResponse<RegistrationMaterialDetail>(response);
-        
+
         return registrationMaterialDetail;
     }
 
@@ -152,7 +153,7 @@ public class ReprocessorExporterService(
         await PrepareAuthenticatedClient();
 
         string path = GetVersionedEndpoint(Endpoints.SubmitOfflinePayment);
-        
+
         string jsonContent = JsonSerializer.Serialize(offlinePayment, _jsonSerializerOptions);
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
