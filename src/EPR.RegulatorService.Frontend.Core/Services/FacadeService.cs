@@ -21,6 +21,8 @@ using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
+using EPR.RegulatorService.Frontend.Core.Extensions;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
@@ -439,6 +441,17 @@ public class FacadeService : IFacadeService
         {
             var response = JsonSerializer.Deserialize<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>(jsonContent, _jsonSerializerOptions);
 
+            foreach(var item in response.items)
+            {
+                item.SubmissionDate = item.SubmissionDate.UtcToGmt();
+                item.StatusPendingDate = item.StatusPendingDate?.UtcToGmt();
+                item.RegulatorCommentDate = item.RegulatorCommentDate?.UtcToGmt();
+                item.ProducerCommentDate = item.ProducerCommentDate?.UtcToGmt();
+                item.StatusPendingDate = item.StatusPendingDate?.UtcToGmt();
+                item.RegulatorDecisionDate = item.RegulatorDecisionDate?.UtcToGmt();
+                item.ResubmissionDate = item.ResubmissionDate?.UtcToGmt();
+            }
+
             return response;
         }
         catch (Exception ex)
@@ -469,6 +482,16 @@ public class FacadeService : IFacadeService
         try
         {
             var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
+
+            response.ProducerCommentDate = response.ProducerCommentDate?.UtcToGmt();
+            response.RegulatorDecisionDate = response.RegulatorDecisionDate?.UtcToGmt();
+            response.StatusPendingDate = response.StatusPendingDate?.UtcToGmt();
+
+            response.SubmissionDetails.DecisionDate = response.SubmissionDetails.DecisionDate?.UtcToGmt();
+            response.SubmissionDetails.TimeAndDateOfSubmission = response.SubmissionDetails.TimeAndDateOfSubmission.UtcToGmt();
+            response.SubmissionDetails.TimeAndDateOfResubmission = response.SubmissionDetails.TimeAndDateOfResubmission?.UtcToGmt();
+            response.SubmissionDetails.RegistrationDate = response.SubmissionDetails.RegistrationDate?.UtcToGmt();
+
             return response;
         }
         catch (Exception ex)
