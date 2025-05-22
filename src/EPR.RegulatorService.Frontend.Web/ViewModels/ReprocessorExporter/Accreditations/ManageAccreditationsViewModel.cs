@@ -5,7 +5,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accre
 
 public class ManageAccreditationsViewModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string OrganisationName { get; set; } = string.Empty;
 

@@ -3,7 +3,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accre
 
     public class AccreditedMaterialViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string MaterialName { get; set; } = string.Empty;
 

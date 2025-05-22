@@ -2,7 +2,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accre
 {
     public class IdAndYearRequest
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+
         public int Year { get; set; }
     }
 }

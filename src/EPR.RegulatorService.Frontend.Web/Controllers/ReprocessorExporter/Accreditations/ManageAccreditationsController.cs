@@ -7,7 +7,6 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentValidation;
 
@@ -30,7 +29,7 @@ public class ManageAccreditationsController(
     private readonly IValidator<IdAndYearRequest> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
 
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] int id, [FromQuery] int year)
+    public async Task<IActionResult> Index([FromQuery] Guid id, [FromQuery] int year)
     {
         var request = new IdAndYearRequest { Id = id, Year = year };
         await _validator.ValidateAndThrowAsync(request);

@@ -241,7 +241,7 @@ public class ReprocessorExporterService(
         return response;
     }
 
-    public async Task<Registration> GetRegistrationWithFilteredAccreditationsAsync(int id, int? year = null)
+    public async Task<Registration> GetRegistrationWithFilteredAccreditationsAsync(Guid id, int? year = null)
     {
         await PrepareAuthenticatedClient();
 
@@ -282,10 +282,10 @@ public class ReprocessorExporterService(
         }
     }
 
-    private async Task<Registration> GetAccreditationRegistrationAsync(int id, int? year)
+    private async Task<Registration> GetAccreditationRegistrationAsync(Guid id, int? year)
     {
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetAccreditationById);
-        string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", id.ToString());
 
         if (year.HasValue)
         {

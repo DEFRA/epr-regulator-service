@@ -2,7 +2,9 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
 
 public class Accreditation
 {
-    public int Id { get; set; }
+    public int Id { get; set; } // this will be removed
+
+    public Guid IdGuid { get; set; } // this will be replaced
 
     public string ApplicationReference { get; set; } = string.Empty;
 

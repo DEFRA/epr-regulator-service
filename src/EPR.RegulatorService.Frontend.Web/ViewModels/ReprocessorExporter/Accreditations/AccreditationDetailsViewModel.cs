@@ -2,10 +2,13 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accre
 {
     public class AccreditationDetailsViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+
         public string ApplicationReference { get; set; } = string.Empty;
 
         public string Status { get; set; } = string.Empty;
+
+        public int AccreditationYear { get; init; }
 
         public DateTime? DeterminationDate { get; set; }
 

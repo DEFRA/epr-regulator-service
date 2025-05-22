@@ -21,5 +21,5 @@ public interface IReprocessorExporterService
     Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest);
     Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request);
 
-    Task<Registration> GetRegistrationWithFilteredAccreditationsAsync(int id, int? year = null);
+    Task<Registration> GetRegistrationWithFilteredAccreditationsAsync(Guid id, int? year = null);
 }

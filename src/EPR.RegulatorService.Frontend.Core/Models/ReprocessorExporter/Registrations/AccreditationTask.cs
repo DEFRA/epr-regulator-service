@@ -4,7 +4,9 @@ using System;
 
 public class AccreditationTask
 {
-    public int Id { get; set; }
+    public int Id { get; set; } // this will be removed
+
+    public Guid IdGuid { get; set; } // this will be replaced
 
     public int TaskId { get; set; }
 
