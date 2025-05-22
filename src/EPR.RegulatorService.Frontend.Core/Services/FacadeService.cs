@@ -21,6 +21,8 @@ using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
+using EPR.RegulatorService.Frontend.Core.Extensions;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
@@ -431,6 +433,16 @@ public class FacadeService : IFacadeService
         return null;
     }
 
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetTransformedRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
+    {
+        var result = await GetRegistrationSubmissions(filters);
+
+        result.items.ToList()
+            .ForEach(TransformDateTimeFields);
+
+        return result;
+    }
+
     public static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
     {
         string jsonContent = await content.ReadAsStringAsync();
@@ -438,7 +450,6 @@ public class FacadeService : IFacadeService
         try
         {
             var response = JsonSerializer.Deserialize<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>(jsonContent, _jsonSerializerOptions);
-
             return response;
         }
         catch (Exception ex)
@@ -463,18 +474,24 @@ public class FacadeService : IFacadeService
 
         return result;
     }
-
-    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content)
+    public async Task<RegistrationSubmissionOrganisationDetails> GetTransformedRegistrationSubmissionDetails(Guid submissionId)
     {
-        try
-        {
-            var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
-            return response;
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidDataException("Cannot parse data from Facade for Submission Details", ex);
-        }
+        var response = await GetRegistrationSubmissionDetails(submissionId);
+
+        TransformDateTimeFields(response);
+
+        return response;
+    }
+
+    private static void TransformDateTimeFields(RegistrationSubmissionOrganisationDetails response)
+    {
+        response.ProducerCommentDate = response.ProducerCommentDate?.UtcToGmt();
+        response.StatusPendingDate = response.StatusPendingDate?.UtcToGmt();
+        response.RegulatorDecisionDate = response.RegulatorDecisionDate?.UtcToGmt();
+        response.SubmissionDetails.DecisionDate = response.SubmissionDetails.DecisionDate?.UtcToGmt();
+        response.SubmissionDetails.TimeAndDateOfSubmission = response.SubmissionDetails.TimeAndDateOfSubmission.UtcToGmt();
+        response.SubmissionDetails.TimeAndDateOfResubmission = response.SubmissionDetails.TimeAndDateOfResubmission?.UtcToGmt();
+        response.SubmissionDetails.RegistrationDate = response.SubmissionDetails.RegistrationDate?.UtcToGmt();
     }
 
     public async Task<EndpointResponseStatus> SubmitRegulatorRegistrationDecisionAsync(RegulatorDecisionRequest request)
@@ -552,6 +569,18 @@ public class FacadeService : IFacadeService
         }
     }
 
+    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content)
+    {
+        try
+        {
+            var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidDataException("Cannot parse data from Facade for Submission Details", ex);
+        }
+    }
     private async Task<List<T>> GetAllOrganisationSubmissions<T>(
         string? organisationName,
         string? organisationReference,

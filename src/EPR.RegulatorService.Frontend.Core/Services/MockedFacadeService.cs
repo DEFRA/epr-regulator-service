@@ -457,6 +457,13 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
     public async Task<PomPayCalParametersResponse> GetPomPayCalParameters(
        Guid submissionId, Guid? complianceSchemeId) => await Task.FromResult(new PomPayCalParametersResponse());
 
+    public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetTransformedRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
+       => await GetRegistrationSubmissions(filters);
+
+    public async Task<RegistrationSubmissionOrganisationDetails> GetTransformedRegistrationSubmissionDetails(Guid submissionId)
+           => await GetRegistrationSubmissionDetails(submissionId);
+
+
     private static OrganisationType? GetFilterOrganisationType(bool isDirectProducerChecked, bool isComplianceSchemeChecked)
     {
         if (isDirectProducerChecked && !isComplianceSchemeChecked)
