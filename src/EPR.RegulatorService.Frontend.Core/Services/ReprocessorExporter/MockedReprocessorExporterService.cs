@@ -277,8 +277,31 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return Task.FromResult(registrationMaterialReprocessingIO);
     }
 
-    public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
+    public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        var task = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId).Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.SamplingAndInspectionPlan);
 
+        var registrationMaterialSamplingPlan = new RegistrationMaterialSamplingPlan
+        {
+            MaterialName = "Plastic",
+            Files = new List<RegistrationMaterialSamplingPlanFile>
+            {
+                new RegistrationMaterialSamplingPlanFile
+                {
+                    Filename = "File0002-01-0.pdf",
+                    FileUploadType = "PDF",
+                    FileUploadStatus = "Completed",
+                    FileId = "123",
+                    UpdatedBy = "5d780e2d-5b43-4a45-92ac-7e2889582083",
+                    DateUploaded = DateTime.UtcNow
+
+                },
+            },
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
+        };
+        return Task.FromResult(registrationMaterialSamplingPlan);
+    }
+  
     public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
     {
         var task = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId).Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions);
