@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
+using Azure;
+
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
@@ -1733,6 +1735,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             Assert.AreEqual(facadeResponse.currentPage, result.currentPage);
             Assert.AreEqual(facadeResponse.totalItems, result.totalItems);
             Assert.AreEqual(facadeResponse.pageSize, result.pageSize);
+
+            Assert.AreEqual(facadeResponse.items[0].StatusPendingDate?.UtcToGmt(),
+                            result.items[0].StatusPendingDate);
+
+            Assert.AreEqual(facadeResponse.items[0].RegulatorDecisionDate?.UtcToGmt(),
+                result.items[0].RegulatorDecisionDate);
+
+            Assert.AreEqual(facadeResponse.items[0].ProducerCommentDate?.UtcToGmt(),
+                result.items[0].ProducerCommentDate);
+
             Assert.AreEqual(facadeResponse.items[0].SubmissionDetails.DecisionDate?.UtcToGmt(),
                             result.items[0].SubmissionDetails.DecisionDate);
             Assert.AreEqual(facadeResponse.items[0].SubmissionDetails.TimeAndDateOfSubmission.UtcToGmt(),
@@ -1832,11 +1844,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var registrationDate = DateTime.UtcNow;
             var decisionDate = DateTime.UtcNow;
             var timeAndDateOfSubmission = DateTime.UtcNow;
-            DateTime? timeAndDateOfResubmission = null;
+            var timeAndDateOfResubmission = DateTime.UtcNow;
 
             var expectedResult = new RegistrationSubmissionOrganisationDetailsResponse
             {
                 ApplicationReferenceNumber = applicationReferenceNumber,
+                ProducerCommentDate = decisionDate,
+                StatusPendingDate = decisionDate,
+                RegulatorDecisionDate = decisionDate,
                 SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
                 {
                     RegistrationDate = registrationDate,
@@ -1865,10 +1880,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(applicationReferenceNumber, result.ApplicationReferenceNumber);
+
+            Assert.AreEqual(result.ProducerCommentDate, decisionDate.UtcToGmt());
+            Assert.AreEqual(result.StatusPendingDate, decisionDate.UtcToGmt());
+            Assert.AreEqual(result.RegulatorDecisionDate, decisionDate.UtcToGmt());
             Assert.AreEqual(result.SubmissionDetails.RegistrationDate, registrationDate.UtcToGmt());
             Assert.AreEqual(result.SubmissionDetails.DecisionDate, decisionDate.UtcToGmt());
             Assert.AreEqual(result.SubmissionDetails.TimeAndDateOfSubmission, timeAndDateOfSubmission.UtcToGmt());
-            Assert.AreEqual(result.SubmissionDetails.TimeAndDateOfResubmission, timeAndDateOfResubmission);
+            Assert.AreEqual(result.SubmissionDetails.TimeAndDateOfResubmission, timeAndDateOfResubmission.UtcToGmt());
+
 
             httpResponseMessage.Dispose();
         }
