@@ -1780,7 +1780,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
+            _facadeServiceMock.Setup(x => x.GetTransformedRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId);
@@ -1814,7 +1814,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedViewName = nameof(_controller.RegistrationSubmissionDetails);
             var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
+            _facadeServiceMock.Setup(x => x.GetTransformedRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId) as ViewResult;
@@ -1846,14 +1846,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.SubmissionDetails.DeclaredBy, model.SubmissionDetails.DeclaredBy);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Files.Count, model.SubmissionDetails.Files.Count);
 
-            //// Assert PaymentDetailsViewModel properties
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.ApplicationProcessingFee, model.PaymentDetails.ApplicationProcessingFee);
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.OnlineMarketplaceFee, model.PaymentDetails.OnlineMarketplaceFee);
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.SubsidiaryFee, model.PaymentDetails.SubsidiaryFee);
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.TotalChargeableItems, model.PaymentDetails.TotalChargeableItems);
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.PreviousPaymentsReceived, model.PaymentDetails.PreviousPaymentsReceived);
-            //Assert.AreEqual(expectedViewModel.PaymentDetails.TotalOutstanding, model.PaymentDetails.TotalOutstanding);
-
             // Assert business address
             Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingName, model.BusinessAddress.BuildingName);
             Assert.AreEqual(expectedViewModel.BusinessAddress.BuildingNumber, model.BusinessAddress.BuildingNumber);
@@ -1877,7 +1869,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
 
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
+            _facadeServiceMock.Setup(x => x.GetTransformedRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId) as ViewResult;
@@ -2015,7 +2007,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             var exception = new Exception("General exception");
 
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Throws(exception);
+            _facadeServiceMock.Setup(x => x.GetTransformedRegistrationSubmissionDetails(It.IsAny<Guid>())).Throws(exception);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId);
@@ -2035,7 +2027,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var httpRequestException = new HttpRequestException("Not Found", null, HttpStatusCode.NotFound);
 
             // Setup the _facadeServiceMock to throw the HttpRequestException
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ThrowsAsync(httpRequestException);
+            _facadeServiceMock.Setup(x => x.GetTransformedRegistrationSubmissionDetails (It.IsAny<Guid>())).ThrowsAsync(httpRequestException);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId);
@@ -2066,7 +2058,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var httpRequestException = new HttpRequestException("Error", null, HttpStatusCode.InternalServerError); // Non-NotFound status code
 
             // Setup the _facadeServiceMock to throw the HttpRequestException
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ThrowsAsync(httpRequestException);
+            _facadeServiceMock.Setup(x => x.GetTransformedRegistrationSubmissionDetails(It.IsAny<Guid>())).ThrowsAsync(httpRequestException);
 
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId);

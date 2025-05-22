@@ -15,7 +15,7 @@ public class RegistrationSubmissionListViewComponent(IFacadeService facadeServic
     [ExcludeFromCodeCoverage]
     public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionsListViewModel request)
     {
-        var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(request.RegistrationsFilterModel);
+        var pagedOrganisationRegistrations = await facadeService.GetTransformedRegistrationSubmissions(request.RegistrationsFilterModel);
 
         request.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
         request.PaginationNavigationModel = new PaginationNavigationModel
