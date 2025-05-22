@@ -56,7 +56,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             throw new NotFoundException("Mocked exception for testing purposes.");
         }
 
-        var task = _registrations.FirstOrDefault(r => r.Id == id)?.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.SiteAddressAndContactDetails);
+        var task = _registrations.Single(r => r.Id == id).Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.SiteAddressAndContactDetails);
 
         var siteDetails = new SiteDetails
         {
@@ -65,7 +65,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             NationName = "England",
             GridReference = "SJ 854 662",
             LegalCorrespondenceAddress = "25 Ruby St, London, E12 3SE",
-            TaskStatus = (RegulatorTaskStatus)(task?.Status)
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
         };
 
         return Task.FromResult(siteDetails);
@@ -92,7 +92,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(int registrationId)
     {
-        var task = _registrations.FirstOrDefault(r => r.Id == registrationId)?.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.MaterialsAuthorisedOnSite);
+        var task = _registrations.Single(r => r.Id == registrationId).Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.MaterialsAuthorisedOnSite);
 
         return Task.FromResult(new RegistrationAuthorisedMaterials
         {
@@ -259,6 +259,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
     {
+        var task = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId).Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions);
+
         var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
         {
             RegistrationMaterialId = registrationMaterialId,
@@ -269,6 +271,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             MaximumReprocessingCapacityTonne = 10000,
             MaximumReprocessingPeriod = "Per Month",
             PermitType = "Waste Exemption",
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
         };
 
         return Task.FromResult(registrationMaterialWasteLicence);
