@@ -203,7 +203,7 @@ public class RegistrationStatusController(
         return View(GetRegistrationStatusView(nameof(PaymentReview)), viewModel);
     }
     
-    [HttpGet]
+    [HttpPost]
     [Route(PagePath.MarkAsDulyMade)]
     public async Task<IActionResult> MarkAsDulyMade()
     {
