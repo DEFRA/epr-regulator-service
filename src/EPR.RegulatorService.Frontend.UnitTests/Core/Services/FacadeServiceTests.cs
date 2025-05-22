@@ -1,5 +1,6 @@
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
@@ -1704,6 +1705,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             string responseContent = "{\"items\":[{\"submissionId\":\"1a502cae-05f5-44c4-b20c-d09d972d3288\",\"organisationId\":\"4761d4c0-96af-495a-bce9-f246a66b4b2c\",\"organisationName\":\"NESTRAL LTD\",\"organisationReference\":\"127909\",\"organisationType\":\"small\",\"applicationReferenceNumber\":\"PEPR12790925P1\",\"registrationReferenceNumber\":\"R25EP1279095154\",\"submissionDate\":\"2025-05-02T11:02:35.6399534Z\",\"registrationYear\":2025,\"submissionStatus\":\"Granted\",\"statusPendingDate\":null,\"nationId\":1,\"isResubmission\":false,\"resubmissionStatus\":null,\"resubmissionDate\":null,\"registrationDate\":\"2025-05-02T15:04:26.1984588Z\",\"regulatorDecisionDate\":null}],\"currentPage\":1,\"totalItems\":1,\"pageSize\":20}";
 
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(responseContent, Encoding.UTF8, "application/json")
+            };
+
             _mockHandler
                .Protected()
                .Setup<Task<HttpResponseMessage>>("SendAsync",
@@ -1713,14 +1719,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                {
                    Assert.AreEqual(HttpMethod.Post, request.Method);
                    Assert.AreEqual($"http://localhost/organisation-registration-submissions", request.RequestUri.ToString());
-
-                   return new HttpResponseMessage(HttpStatusCode.OK)
-                   {
-                       Content = new StringContent(responseContent, Encoding.UTF8, "application/json")
-                   };
+                   return httpResponseMessage;
                });
 
-            var facadeResponse  = await _facadeService.GetRegistrationSubmissions(filter);
+            var facadeResponse = await _facadeService.GetRegistrationSubmissions(filter);
 
             // Act
             var result = await _facadeService.GetTransformedRegistrationSubmissions(filter);
@@ -1739,6 +1741,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                             result.items[0].SubmissionDetails.TimeAndDateOfResubmission);
             Assert.AreEqual(facadeResponse.items[0].SubmissionDetails.RegistrationDate?.UtcToGmt(),
                             result.items[0].SubmissionDetails.RegistrationDate);
+
+            httpResponseMessage.Dispose();
         }
 
         [TestMethod]
@@ -1844,14 +1848,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             string json = JsonSerializer.Serialize(expectedResult);
 
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+
             _mockHandler.Protected()
                .Setup<Task<HttpResponseMessage>>("SendAsync",
                   ItExpr.IsAny<HttpRequestMessage>(),
                   ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
-               {
-                   Content = new StringContent(json, Encoding.UTF8, "application/json")
-               });
+               .ReturnsAsync(httpResponseMessage);
 
             // Act
             var result = await _facadeService.GetTransformedRegistrationSubmissionDetails(submissionId);
@@ -1863,6 +1869,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             Assert.AreEqual(result.SubmissionDetails.DecisionDate, decisionDate.UtcToGmt());
             Assert.AreEqual(result.SubmissionDetails.TimeAndDateOfSubmission, timeAndDateOfSubmission.UtcToGmt());
             Assert.AreEqual(result.SubmissionDetails.TimeAndDateOfResubmission, timeAndDateOfResubmission);
+
+            httpResponseMessage.Dispose();
         }
 
         [TestMethod]
