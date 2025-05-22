@@ -5,6 +5,7 @@ using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -157,15 +158,16 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel, [FromRoute] Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        var model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
 
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        if (model is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
         if (!ModelState.IsValid)
         {
-            return View(nameof(RegistrationSubmissionDetails), existingModel);
+            return View(nameof(RegistrationSubmissionDetails), model);
         }
 
         if (decimal.TryParse(paymentDetailsViewModel.OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))
@@ -179,7 +181,7 @@ public partial class RegistrationSubmissionsController(
             PagePath.RegistrationSubmissionsRoute,
             PagePath.RegistrationSubmissionsRoute);
 
-        return Redirect(Url.RouteUrl("ConfirmOfflinePaymentSubmission", new { existingModel.SubmissionId }));
+        return Redirect(Url.RouteUrl("ConfirmOfflinePaymentSubmission", new { submissionId }));
     }
 
     [HttpGet]
@@ -443,8 +445,8 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        var model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        if (model is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -457,13 +459,13 @@ public partial class RegistrationSubmissionsController(
 
         SetBackLink(Url.RouteUrl("SubmissionDetails", new { submissionId }), false);
 
-        var model = new ConfirmOfflinePaymentSubmissionViewModel
+        var confirmModel = new ConfirmOfflinePaymentSubmissionViewModel
         {
             SubmissionId = submissionId,
             OfflinePaymentAmount = offlinePayment
         };
 
-        return View(nameof(ConfirmOfflinePaymentSubmission), model);
+        return View(nameof(ConfirmOfflinePaymentSubmission), confirmModel);
     }
 
     [HttpPost]
@@ -471,8 +473,8 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
+        RegistrationSubmissionDetailsViewModel regSubmissionDetails = await FetchFromSessionOrFacadeAsync(model.SubmissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        if (regSubmissionDetails is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -484,13 +486,13 @@ public partial class RegistrationSubmissionsController(
         }
         else if (!(bool)model.IsOfflinePaymentConfirmed)
         {
-            return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
+            return RedirectToRoute("SubmissionDetails", new { regSubmissionDetails.SubmissionId });
         }
 
         TempData.Remove("OfflinePaymentAmount");
         return string.IsNullOrWhiteSpace(model.OfflinePaymentAmount)
             ? RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions")
-            : await ProcessOfflinePaymentAsync(existingModel, model.OfflinePaymentAmount);
+            : await ProcessOfflinePaymentAsync(regSubmissionDetails, model.OfflinePaymentAmount);
     }
 
     [HttpGet]
