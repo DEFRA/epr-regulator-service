@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+
 public class SiteDetails
 {
     public int RegistrationId { get; init; }
@@ -7,4 +9,5 @@ public class SiteDetails
     public string? NationName { get; init; }
     public string? GridReference { get; init; }
     public string? LegalCorrespondenceAddress { get; init; }
+    public RegulatorTaskStatus TaskStatus { get; init; }
 }

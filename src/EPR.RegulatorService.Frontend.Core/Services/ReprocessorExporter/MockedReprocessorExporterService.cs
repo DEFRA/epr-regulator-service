@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
@@ -54,6 +55,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             throw new NotFoundException("Mocked exception for testing purposes.");
         }
 
+        var task = _registrations.FirstOrDefault(r => r.Id == id)?.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.SiteAddressAndContactDetails);
+
         var siteDetails = new SiteDetails
         {
             RegistrationId = id,
@@ -61,6 +64,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             NationName = "England",
             GridReference = "SJ 854 662",
             LegalCorrespondenceAddress = "25 Ruby St, London, E12 3SE",
+            TaskStatus = (RegulatorTaskStatus)(task?.Status)
         };
 
         return Task.FromResult(siteDetails);
