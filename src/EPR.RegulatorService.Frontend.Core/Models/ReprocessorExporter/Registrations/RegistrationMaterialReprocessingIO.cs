@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations
 {
+    using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+
     public class RegistrationMaterialReprocessingIO
     {
         public required string MaterialName { get; set; }
@@ -14,5 +16,6 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
         public decimal ProcessLossTonne { get; set; }
         public decimal TotalInputs { get; set; }
         public decimal TotalOutputs { get; set; }
+        public RegulatorTaskStatus TaskStatus { get; init; }
     }
 }

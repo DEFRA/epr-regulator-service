@@ -254,7 +254,29 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return Task.CompletedTask;
     }
 
-    public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
+    public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId)
+    {
+        var task = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId).Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.ReprocessingInputsAndOutputs);
+
+        var registrationMaterialReprocessingIO = new RegistrationMaterialReprocessingIO
+        {
+            MaterialName = "Plastic",
+            SourcesOfPackagingWaste = "Shed",
+            PlantEquipmentUsed = "shredder",
+            UKPackagingWasteTonne = 6.00M,
+            NonUKPackagingWasteTonne = 2.00M,
+            NotPackingWasteTonne = 3.00M,
+            SenttoOtherSiteTonne = 5.00M,
+            ContaminantsTonne = 1.00M,
+            ProcessLossTonne = 4.00M,
+            TotalInputs = 7.00M,
+            TotalOutputs = 8.00M,
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
+
+        };
+        return Task.FromResult(registrationMaterialReprocessingIO);
+    }
+
     public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId) => throw new NotImplementedException();
 
     public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
