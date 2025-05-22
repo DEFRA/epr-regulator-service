@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
@@ -89,8 +90,11 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         });
     }
 
-    public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(int registrationId) =>
-        Task.FromResult(new RegistrationAuthorisedMaterials
+    public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(int registrationId)
+    {
+        var task = _registrations.FirstOrDefault(r => r.Id == registrationId)?.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.MaterialsAuthorisedOnSite);
+
+        return Task.FromResult(new RegistrationAuthorisedMaterials
         {
             RegistrationId = registrationId,
             OrganisationName = "MOCK Test Org",
@@ -104,9 +108,13 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                     MaterialName = "Steel",
                     Reason =
                         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem"
+
                 }
-            ]
+            ],
+            TaskStatus = (RegulatorTaskStatus)(task?.Status)
         });
+
+    }
 
     public Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(int registrationMaterialId)
     {
