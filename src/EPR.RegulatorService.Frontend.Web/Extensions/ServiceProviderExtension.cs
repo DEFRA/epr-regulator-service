@@ -6,6 +6,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Cookies;
+using EPR.RegulatorService.Frontend.Web.Filters;
 using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.Middleware;
 using EPR.RegulatorService.Frontend.Web.Sessions;
@@ -95,6 +96,7 @@ public static class ServiceProviderExtension
         services.AddSingleton<ICookieService, CookieService>();
         services.AddScoped<ISessionManager<JourneySession>, JourneySessionManager>();
         services.AddTransient<UserDataCheckerMiddleware>();
+        services.AddScoped<CheckSubmissionAndLoadIntoSessionFilter>();
     }
 
     private static void SetTempDataCookieOptions(IServiceCollection services, IConfiguration configuration)

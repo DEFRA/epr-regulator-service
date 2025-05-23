@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Net;
+using System.Reflection;
 
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
@@ -10,6 +11,7 @@ using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.Filters;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
@@ -26,6 +28,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 
 [FeatureGate(FeatureFlags.ManageRegistrationSubmissions)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
+[ServiceFilter(typeof(CheckSubmissionAndLoadIntoSessionFilter))]
 public partial class RegistrationSubmissionsController(
                 IFacadeService facade,
                 IPaymentFacadeService paymentFacade,
@@ -119,57 +122,39 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionDetails + "/{submissionId:guid}", Name = "SubmissionDetails")]
-    public async Task<IActionResult> RegistrationSubmissionDetails(Guid? submissionId)
+    public async Task<IActionResult> RegistrationSubmissionDetails(Guid submissionId)
     {
-        try
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel model = selectedRegistration;
+        if (model is null)
         {
-            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            RegistrationSubmissionDetailsViewModel model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
-
-            if (model is null)
-            {
-                return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-            }
-
-            GeneratePowerBILink(model);
-            SetBackLink(PagePath.RegistrationSubmissionsRoute);
-            ViewBag.SubmissionId = model.SubmissionId;
-
-            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
-
-            return View(nameof(RegistrationSubmissionDetails), model);
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
-        catch (HttpRequestException hex)
-        {
-            if (hex.StatusCode == HttpStatusCode.NotFound)
-            {
-                _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", hex);
-                return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-            }
-            return RedirectToAction(PagePath.Error, "Error");
-        }
-        catch (Exception ex)
-        {
-            _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
-            return RedirectToAction(PagePath.Error, "Error");
-        }
+
+        GeneratePowerBILink(model);
+        SetBackLink(PagePath.RegistrationSubmissionsRoute);
+        ViewBag.SubmissionId = model.SubmissionId;
+
+        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
+
+        return View(nameof(RegistrationSubmissionDetails), model);       
     }
 
     [HttpPost]
     [Route(PagePath.RegistrationSubmissionDetails + "/{submissionId:guid}", Name = "SubmitPaymentInfo")]
-    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel, [FromRoute] Guid? submissionId)
+    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel, [FromRoute] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
-
-        if (model is null)
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
         if (!ModelState.IsValid)
         {
-            return View(nameof(RegistrationSubmissionDetails), model);
+            return View(nameof(RegistrationSubmissionDetails), selectedRegistration);
         }
 
         if (decimal.TryParse(paymentDetailsViewModel.OfflinePayment, NumberStyles.Currency, CultureInfo.InvariantCulture, out decimal parsedValue))
@@ -188,11 +173,12 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.GrantRegistrationSubmission + "/{submissionId:guid}", Name = "GrantRegistrationSubmission")]
-    public async Task<IActionResult> GrantRegistrationSubmission(Guid? submissionId)
+    public async Task<IActionResult> GrantRegistrationSubmission(Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel existingModel = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -215,8 +201,9 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> GrantRegistrationSubmission(GrantRegistrationSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(model.SubmissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel existingModel = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -256,11 +243,11 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.QueryRegistrationSubmission + "/{submissionId:guid}")]
-    public async Task<IActionResult> QueryRegistrationSubmission(Guid? submissionId)
+    public async Task<IActionResult> QueryRegistrationSubmission(Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out RegistrationSubmissionDetailsViewModel existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -269,7 +256,7 @@ public partial class RegistrationSubmissionsController(
 
         var model = new QueryRegistrationSubmissionViewModel
         {
-            SubmissionId = submissionId.Value
+            SubmissionId = submissionId
         };
 
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
@@ -282,8 +269,9 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> QueryRegistrationSubmission(QueryRegistrationSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(model.SubmissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel existingModel = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -330,11 +318,12 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.RejectRegistrationSubmission + "/{submissionId:guid}", Name = "RejectRegistrationSubmission")]
-    public async Task<IActionResult> RejectRegistrationSubmission(Guid? submissionId)
+    public async Task<IActionResult> RejectRegistrationSubmission(Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out RegistrationSubmissionDetailsViewModel existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel existingModel = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -342,7 +331,7 @@ public partial class RegistrationSubmissionsController(
 
         var model = new RejectRegistrationSubmissionViewModel
         {
-            SubmissionId = submissionId.Value,
+            SubmissionId = submissionId,
             IsResubmission = existingModel.IsResubmission
         };
 
@@ -356,8 +345,9 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> RejectRegistrationSubmission(RejectRegistrationSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(model.SubmissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel existingModel = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -393,11 +383,11 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.CancelRegistrationSubmission + "/{submissionId:guid}", Name = "CancelRegistrationSubmission")]
-    public async Task<IActionResult> CancelRegistrationSubmission(Guid? submissionId)
+    public async Task<IActionResult> CancelRegistrationSubmission(Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -406,7 +396,7 @@ public partial class RegistrationSubmissionsController(
 
         var model = new CancelRegistrationSubmissionViewModel
         {
-            SubmissionId = submissionId.Value
+            SubmissionId = submissionId
         };
 
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
@@ -419,8 +409,9 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> CancelRegistrationSubmission(CancelRegistrationSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(model.SubmissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel existingModel = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -444,11 +435,11 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.ConfirmOfflinePaymentSubmission + "/{submissionId:guid}", Name = "ConfirmOfflinePaymentSubmission")]
-    public async Task<IActionResult> ConfirmOfflinePaymentSubmission(Guid? submissionId)
+    public async Task<IActionResult> ConfirmOfflinePaymentSubmission(Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
-        if (model is null)
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -475,8 +466,9 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        RegistrationSubmissionDetailsViewModel regSubmissionDetails = await FetchFromSessionOrFacadeAsync(model.SubmissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
-        if (regSubmissionDetails is null)
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(model.SubmissionId.Value, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel regSubmissionDetails = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -499,11 +491,12 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.CancellationConfirmation + "/{submissionId:guid}", Name = "CancellationConfirmation")]
-    public async Task<IActionResult> CancellationConfirmation(Guid? submissionId)
+    public async Task<IActionResult> CancellationConfirmation(Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel existingModel = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -526,11 +519,12 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.ConfirmRegistrationRefusal + "/{submissionId:guid}", Name = "ConfirmRegistrationRefusal")]
-    public async Task<IActionResult> ConfirmRegistrationRefusal(Guid? submissionId)
+    public async Task<IActionResult> ConfirmRegistrationRefusal(Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel existingModel = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -551,8 +545,9 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> ConfirmRegistrationRefusal(ConfirmRegistrationRefusalViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(model.SubmissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel existingModel = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -574,11 +569,11 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.CancelDateRegistrationSubmission + "/{submissionId:guid}", Name = "CancelDateRegistrationSubmission")]
-    public async Task<IActionResult> CancelDateRegistrationSubmission(Guid? submissionId)
+    public async Task<IActionResult> CancelDateRegistrationSubmission(Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -587,7 +582,7 @@ public partial class RegistrationSubmissionsController(
 
         var model = new CancelDateRegistrationSubmissionViewModel
         {
-            SubmissionId = submissionId.Value
+            SubmissionId = submissionId
         };
 
         ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
@@ -600,8 +595,9 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> CancelDateRegistrationSubmission(CancelDateRegistrationSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-        if (!GetOrRejectProvidedSubmissionId(model.SubmissionId, out var existingModel))
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(model.SubmissionId, out var selectedRegistration);
+        RegistrationSubmissionDetailsViewModel existingModel = selectedRegistration;
+        if (selectedRegistration is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -653,6 +649,11 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> RegistrationSubmissionsFileDownload(string downloadType, [FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        if (selectedRegistration is null)
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
 
         TempData["DownloadCompleted"] = false;
         _currentSession.RegulatorRegistrationSubmissionSession.FileDownloadRequestType = downloadType;
@@ -673,14 +674,14 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> FileDownloadInProgress([FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var submission = await FetchFromSessionOrFacadeAsync(submissionId, _facadeService.GetRegistrationSubmissionDetails);
-        if (submission is null)
-        {
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+        if (selectedRegistration is null)
+        { 
             _logControllerError.Invoke(logger, $"{submissionId} - submission not found - {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", default);
             return RedirectToAction(nameof(PageNotFound));
         }
 
-        var fileDownloadModel = CreateFileDownloadRequest(_currentSession, submission);
+        var fileDownloadModel = CreateFileDownloadRequest(_currentSession, selectedRegistration);
         if (fileDownloadModel == null)
         {
             return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId });
@@ -696,7 +697,7 @@ public partial class RegistrationSubmissionsController(
         {
             var fileStream = await response.Content.ReadAsStreamAsync();
             var contentDisposition = response.Content.Headers.ContentDisposition;
-            var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? submission.SubmissionDetails.Files[0].FileName ?? $"{submission.OrganisationReference}_details.csv";
+            var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? selectedRegistration.SubmissionDetails.Files[0].FileName ?? $"{selectedRegistration.OrganisationReference}_details.csv";
             TempData["DownloadCompleted"] = true;
 
             return File(fileStream, "application/octet-stream", fileName);

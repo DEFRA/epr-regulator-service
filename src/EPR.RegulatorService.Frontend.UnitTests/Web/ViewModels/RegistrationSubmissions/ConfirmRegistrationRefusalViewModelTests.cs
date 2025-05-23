@@ -30,7 +30,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             // Arrange
             var viewModel = new ConfirmRegistrationRefusalViewModel
             {
-                SubmissionId = null, // Nullable field
+                SubmissionId = Guid.Empty, // Nullable field
                 IsRegistrationRefusalConfirmed = true,
                 RejectReason = "Reason for refusal"
             };

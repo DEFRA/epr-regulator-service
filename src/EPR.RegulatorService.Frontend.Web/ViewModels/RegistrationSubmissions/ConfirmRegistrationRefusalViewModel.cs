@@ -4,7 +4,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
     public class ConfirmRegistrationRefusalViewModel
     {
-        public Guid? SubmissionId { get; set; }
+        public Guid SubmissionId { get; set; }
 
         [Required(ErrorMessage = "ConfirmRegistrationRefusal.ErrorMessage")]
         public bool? IsRegistrationRefusalConfirmed { get; set; }
