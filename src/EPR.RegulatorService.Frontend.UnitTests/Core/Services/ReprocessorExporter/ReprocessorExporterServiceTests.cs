@@ -37,6 +37,7 @@ public class ReprocessorExporterServiceTests
     private const string GetPaymentFeesByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/paymentFees";
     private const string MarkAsDulyMadePath = "v{apiVersion}/registrationMaterials/{id}/markAsDulyMade";
     private const string SubmitOfflinePaymentPath = "v{apiVersion}/registrationMaterials/offlinePayment";
+    private const string GetRegistrationByIdWithAccreditations = "v{apiVersion}/registrations/{id}/accreditations";
 
     private ReprocessorExporterService _service; // System under test
 
@@ -80,7 +81,8 @@ public class ReprocessorExporterServiceTests
                 { "GetSamplingPlanByRegistrationMaterialId", GetSamplingPlanByRegistrationMaterialIdPath },
                 { "GetPaymentFeesByRegistrationMaterialId", GetPaymentFeesByRegistrationMaterialIdPath },
                 { "MarkAsDulyMade", MarkAsDulyMadePath },
-                { "SubmitOfflinePayment", SubmitOfflinePaymentPath }
+                { "SubmitOfflinePayment", SubmitOfflinePaymentPath },
+                { "GetRegistrationByIdWithAccreditations", GetRegistrationByIdWithAccreditations },
             }
         };
 
@@ -604,6 +606,175 @@ public class ReprocessorExporterServiceTests
 
         // Act & Assert
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => _service.DownloadSamplingInspectionFile(request));
+    }
+
+    [TestMethod]
+    public async Task GetRegistrationByIdWithAccreditationsAsync_WhenNoYearProvided_ReturnsAllAccreditations()
+    {
+        var registrationId = Guid.NewGuid();
+
+        var registration = new Registration
+        {
+            IdGuid = registrationId,
+            OrganisationName = "All Year Org",
+            Regulator = "EA",
+            OrganisationType = ApplicationOrganisationType.Exporter,
+            Materials = [
+                new RegistrationMaterialSummary
+                {
+                    IdGuid = Guid.NewGuid(),
+                    MaterialName = "Plastic",
+                    Accreditations = [
+                        new Accreditation { AccreditationYear = 2023 },
+                        new Accreditation { AccreditationYear = 2024 }
+                    ]
+                }
+            ]
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations",
+            new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
+            });
+
+        var result = await _service.GetRegistrationByIdWithAccreditationsAsync(registrationId);
+
+        result.Should().NotBeNull();
+        result.Materials.Single().Accreditations.Should().HaveCount(2);
+    }
+
+    [TestMethod]
+    public async Task GetRegistrationByIdWithAccreditationsAsync_WhenYearProvided_ReturnsFilteredSingleAccreditation()
+    {
+        var registrationId = Guid.NewGuid();
+        var materialId = Guid.NewGuid();
+        const int year = 2025;
+
+        var accreditation = new Accreditation
+        {
+            IdGuid = Guid.NewGuid(),
+            AccreditationYear = year,
+            ApplicationReference = "APP-2025",
+            Status = "Approved"
+        };
+
+        var registration = new Registration
+        {
+            IdGuid = registrationId,
+            OrganisationName = "Test Org",
+            Regulator = "EA",
+            OrganisationType = ApplicationOrganisationType.Exporter,
+            Materials =
+            [
+                new RegistrationMaterialSummary
+            {
+                IdGuid = materialId,
+                MaterialName = "Plastic",
+                Accreditations = [ accreditation ]
+            }
+            ]
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
+            new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
+            });
+
+        var result = await _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year);
+
+        result.Should().NotBeNull();
+        result.Materials.Should().ContainSingle();
+        result.Materials.Single().Accreditations.Should().ContainSingle()
+            .Which.AccreditationYear.Should().Be(year);
+    }
+
+    [TestMethod]
+    public async Task GetRegistrationByIdWithAccreditationsAsync_WhenNoAccreditationMatchesYear_ThrowsInvalidOperation()
+    {
+        var registrationId = Guid.NewGuid();
+        const int year = 2025;
+
+        var registration = new Registration
+        {
+            IdGuid = registrationId,
+            OrganisationName = "Missing Year Org",
+            Regulator = "EA",
+            OrganisationType = ApplicationOrganisationType.Exporter,
+            Materials =
+            [
+                new RegistrationMaterialSummary
+                {
+                    IdGuid = Guid.NewGuid(),
+                    MaterialName = "Plastic",
+                    Accreditations = [] // No matching entries
+                }
+            ]
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
+            new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
+            });
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
+            _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year));
+    }
+
+    [TestMethod]
+    public async Task GetRegistrationByIdWithAccreditationsAsync_WhenMultipleAccreditationsForYear_ThrowsInvalidOperation()
+    {
+        var registrationId = Guid.NewGuid();
+        const int year = 2025;
+
+        var registration = new Registration
+        {
+            IdGuid = registrationId,
+            OrganisationName = "Duplicate Year Org",
+            Regulator = "EA",
+            OrganisationType = ApplicationOrganisationType.Exporter,
+            Materials =
+            [
+                new RegistrationMaterialSummary
+                {
+                    IdGuid = Guid.NewGuid(),
+                    MaterialName = "Plastic",
+                    Accreditations =
+                    [
+                        new Accreditation { AccreditationYear = year },
+                        new Accreditation { AccreditationYear = year }
+                    ]
+                }
+            ]
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
+            new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
+            });
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
+            _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year));
+    }
+
+    [TestMethod]
+    public async Task GetRegistrationByIdWithAccreditationsAsync_WhenInvalidGuid_ThrowsHttpRequestException()
+    {
+        var registrationId = Guid.NewGuid();
+        const int year = 2025;
+
+        SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
+            new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
+
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year));
     }
 
     private void SetupHttpMessageExpectations(HttpMethod method, string path,

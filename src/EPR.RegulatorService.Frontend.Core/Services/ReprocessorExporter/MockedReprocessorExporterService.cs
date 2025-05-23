@@ -384,7 +384,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
 
-    public Task<Registration> GetRegistrationWithFilteredAccreditationsAsync(Guid id, int? year = null)
+    public Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null)
     {
         var registration = GetMockedAccreditationRegistration(id);
 

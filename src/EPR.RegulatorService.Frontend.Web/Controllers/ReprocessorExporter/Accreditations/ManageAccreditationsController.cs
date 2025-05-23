@@ -34,7 +34,7 @@ public class ManageAccreditationsController(
         var request = new IdAndYearRequest { Id = id, Year = year };
         await _validator.ValidateAndThrowAsync(request);
 
-        var registration = await _reprocessorExporterService.GetRegistrationWithFilteredAccreditationsAsync(id, year);
+        var registration = await _reprocessorExporterService.GetRegistrationByIdWithAccreditationsAsync(id, year);
 
         ViewBag.BackLinkToDisplay = "";
 
