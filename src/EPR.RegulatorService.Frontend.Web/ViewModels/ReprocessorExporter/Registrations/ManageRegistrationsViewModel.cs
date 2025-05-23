@@ -4,7 +4,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
 
 public class ManageRegistrationsViewModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public required string OrganisationName { get; init; }
 

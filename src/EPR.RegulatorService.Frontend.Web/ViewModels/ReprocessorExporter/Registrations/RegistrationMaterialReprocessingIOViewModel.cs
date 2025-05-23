@@ -4,7 +4,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
 
     public class RegistrationMaterialReprocessingIOViewModel
     {
-        public required int RegistrationMaterialId { get; set; }
+        public required Guid RegistrationMaterialId { get; set; }
         public RegistrationMaterialReprocessingIO RegistrationMaterialReprocessingIO { get; set; }
     }
 }

@@ -33,7 +33,7 @@ public class ManageRegistrationsMappingProfileTests
         // Arrange
         var registrationDto = new Registration
         {
-            Id = 1,
+            Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             OrganisationName = "Test Organisation",
             SiteAddress = "123 Test Street",
             OrganisationType = ApplicationOrganisationType.Exporter,
@@ -42,7 +42,7 @@ public class ManageRegistrationsMappingProfileTests
             [
                 new RegistrationMaterialSummary
                 {
-                    Id = 1,
+                    Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
                     MaterialName = "Plastic",
                     Status = ApplicationStatus.Granted,
                     StatusUpdatedBy = "Test User",
@@ -54,23 +54,23 @@ public class ManageRegistrationsMappingProfileTests
             [
                 new RegistrationTask
                 {
-                    Id = 1, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress
+                    Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress
                 },
                 new RegistrationTask
                 {
-                    Id = 1,
+                    Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
                     Status = RegulatorTaskStatus.NotStarted,
                     TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite
                 },
                 new RegistrationTask
                 {
-                    Id = 1,
+                    Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
                     Status = RegulatorTaskStatus.NotStarted,
                     TaskName = RegulatorTaskType.SiteAddressAndContactDetails
                 },
                 new RegistrationTask
                 {
-                    Id = 1,
+                    Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
                     Status = RegulatorTaskStatus.NotStarted,
                     TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions
                 }
@@ -105,7 +105,7 @@ public class ManageRegistrationsMappingProfileTests
          string expectedCssClass)
     {
         // Arrange
-        var registrationTask = new RegistrationTask { Id = 1, Status = status, TaskName = RegulatorTaskType.SiteAddressAndContactDetails };
+        var registrationTask = new RegistrationTask { Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), Status = status, TaskName = RegulatorTaskType.SiteAddressAndContactDetails };
 
         // Act
         var viewModel = _mapper.Map<RegistrationTaskViewModel>(registrationTask);
@@ -124,7 +124,7 @@ public class ManageRegistrationsMappingProfileTests
     public void Map_WhenCalledWithNonCompletedRegistrationTask_ShouldReturnExpectedStatusText(RegulatorTaskStatus status, string expectedStatusText)
     {
         // Arrange
-        var registrationTask = new RegistrationTask { Id = 1, Status = status, TaskName = RegulatorTaskType.SamplingAndInspectionPlan };
+        var registrationTask = new RegistrationTask { Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), Status = status, TaskName = RegulatorTaskType.SamplingAndInspectionPlan };
 
         // Act
         var viewModel = _mapper.Map<RegistrationTaskViewModel>(registrationTask);
@@ -151,7 +151,7 @@ public class ManageRegistrationsMappingProfileTests
     public void Map_WhenCalledWithCompletedRegistrationTask_ShouldReturnExpectedStatusText(RegulatorTaskStatus status, RegulatorTaskType taskName, string expectedStatusText)
     {
         // Arrange
-        var registrationTask = new RegistrationTask { Id = 1, Status = status, TaskName = taskName };
+        var registrationTask = new RegistrationTask { Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), Status = status, TaskName = taskName };
 
         // Act
         var viewModel = _mapper.Map<RegistrationTaskViewModel>(registrationTask);
@@ -174,7 +174,7 @@ public class ManageRegistrationsMappingProfileTests
         // Arrange
         var registrationMaterial = new RegistrationMaterialSummary
         {
-            Id = 1,
+            Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             MaterialName = "Plastic",
             DeterminationDate = DateTime.Now.AddDays(-1),
             Status = applicationStatus,
@@ -185,31 +185,31 @@ public class ManageRegistrationsMappingProfileTests
             [
                 new RegistrationTask
                 {
-                    Id = 1,
+                    Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
                     Status = RegulatorTaskStatus.NotStarted,
                     TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions
                 },
                 new RegistrationTask
                 {
-                    Id = 1,
+                    Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
                     Status = RegulatorTaskStatus.NotStarted,
                     TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs
                 },
                 new RegistrationTask
                 {
-                    Id = 1,
+                    Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
                     Status = RegulatorTaskStatus.NotStarted,
                     TaskName = RegulatorTaskType.SamplingAndInspectionPlan
                 },
                 new RegistrationTask
                 {
-                    Id = 1,
+                    Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
                     Status = RegulatorTaskStatus.NotStarted,
                     TaskName = RegulatorTaskType.MaterialDetailsAndContact
                 },
                 new RegistrationTask
                 {
-                    Id = 1,
+                    Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
                     Status = RegulatorTaskStatus.NotStarted,
                     TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails
                 }

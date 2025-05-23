@@ -35,7 +35,7 @@ public class RegistrationsController(
 {
     [HttpGet]
     [Route(PagePath.AuthorisedMaterials)]
-    public async Task<IActionResult> AuthorisedMaterials(int registrationId)
+    public async Task<IActionResult> AuthorisedMaterials(Guid registrationId)
     {
         var session = await GetSession();
 
@@ -51,7 +51,7 @@ public class RegistrationsController(
 
     [HttpPost]
     [Route(PagePath.AuthorisedMaterials)]
-    public async Task<IActionResult> CompleteAuthorisedMaterials(int registrationId)
+    public async Task<IActionResult> CompleteAuthorisedMaterials(Guid registrationId)
     {        
         var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
         {
@@ -67,7 +67,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.UkSiteDetails)]
-    public async Task<IActionResult> UkSiteDetails(int registrationId)
+    public async Task<IActionResult> UkSiteDetails(Guid registrationId)
     {
         var session = await GetSession();
         string pagePath = GetRegistrationMethodPath(PagePath.UkSiteDetails, registrationId);
@@ -82,7 +82,7 @@ public class RegistrationsController(
 
     [HttpPost]
     [Route(PagePath.UkSiteDetails)]
-    public async Task<IActionResult> CompleteUkSiteDetails(int registrationId)
+    public async Task<IActionResult> CompleteUkSiteDetails(Guid registrationId)
     {
         var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
         {
@@ -98,7 +98,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.MaterialWasteLicences)]
-    public async Task<IActionResult> MaterialWasteLicences(int registrationMaterialId)
+    public async Task<IActionResult> MaterialWasteLicences(Guid registrationMaterialId)
     {
         var session = await GetSession();
 
@@ -114,7 +114,7 @@ public class RegistrationsController(
 
     [HttpPost]
     [Route(PagePath.MaterialWasteLicences)]
-    public async Task<IActionResult> CompleteMaterialWasteLicences(int registrationMaterialId)
+    public async Task<IActionResult> CompleteMaterialWasteLicences(Guid registrationMaterialId)
     {
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
@@ -132,7 +132,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.SamplingInspection)]
-    public async Task<IActionResult> SamplingInspection(int registrationMaterialId)
+    public async Task<IActionResult> SamplingInspection(Guid registrationMaterialId)
     {
         var session = await GetSession();
 
@@ -152,7 +152,7 @@ public class RegistrationsController(
 
     [HttpPost]
     [Route(PagePath.SamplingInspection)]
-    public async Task<IActionResult> CompleteSamplingInspection(int registrationMaterialId)
+    public async Task<IActionResult> CompleteSamplingInspection(Guid registrationMaterialId)
     {
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
@@ -170,7 +170,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.InputsAndOutputs)]
-    public async Task<IActionResult> InputsAndOutputs(int registrationMaterialId)
+    public async Task<IActionResult> InputsAndOutputs(Guid registrationMaterialId)
     {
         var session = await GetSession();
 
@@ -190,7 +190,7 @@ public class RegistrationsController(
 
     [HttpPost]
     [Route(PagePath.InputsAndOutputs)]
-    public async Task<IActionResult> CompleteInputsAndOutputs(int registrationMaterialId)
+    public async Task<IActionResult> CompleteInputsAndOutputs(Guid registrationMaterialId)
     {
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
@@ -208,7 +208,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.WasteLicences)]
-    public async Task<IActionResult> WasteLicences(int registrationId)
+    public async Task<IActionResult> WasteLicences(Guid registrationId)
     {
         var session = await GetSession();
 
@@ -221,7 +221,7 @@ public class RegistrationsController(
 
     [HttpPost]
     [Route(PagePath.WasteLicences)]
-    public async Task<IActionResult> CompleteWasteLicences(int registrationId)
+    public async Task<IActionResult> CompleteWasteLicences(Guid registrationId)
     {
         var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
         {
@@ -237,7 +237,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.BusinessAddress)]
-    public async Task<IActionResult> BusinessAddress(int registrationId)
+    public async Task<IActionResult> BusinessAddress(Guid registrationId)
     {
         var session = await GetSession();
 
@@ -250,7 +250,7 @@ public class RegistrationsController(
 
     [HttpPost]
     [Route(PagePath.BusinessAddress)]
-    public async Task<IActionResult> CompleteBusinessAddress(int registrationId)
+    public async Task<IActionResult> CompleteBusinessAddress(Guid registrationId)
     {
         var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
         {
@@ -266,7 +266,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.MaterialDetails)]
-    public async Task<IActionResult> MaterialDetails(int registrationMaterialId)
+    public async Task<IActionResult> MaterialDetails(Guid registrationMaterialId)
     {
         var session = await GetSession();
 
@@ -279,7 +279,7 @@ public class RegistrationsController(
 
     [HttpPost]
     [Route(PagePath.MaterialDetails)]
-    public async Task<IActionResult> CompleteMaterialDetails(int registrationMaterialId)
+    public async Task<IActionResult> CompleteMaterialDetails(Guid registrationMaterialId)
     {
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
@@ -297,7 +297,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.OverseasReprocessorInterim)]
-    public async Task<IActionResult> OverseasReprocessorInterim(int registrationMaterialId)
+    public async Task<IActionResult> OverseasReprocessorInterim(Guid registrationMaterialId)
     {        
         var session = await GetSession();
 
@@ -310,7 +310,7 @@ public class RegistrationsController(
 
     [HttpPost]
     [Route(PagePath.OverseasReprocessorInterim)]
-    public async Task<IActionResult> CompleteOverseasReprocessorInterim(int registrationMaterialId)
+    public async Task<IActionResult> CompleteOverseasReprocessorInterim(Guid registrationMaterialId)
     {        
         var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
         {
@@ -328,7 +328,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.QueryRegistrationTask)]
-    public async Task<IActionResult> QueryRegistrationTask(int registrationId, RegulatorTaskType taskName)
+    public async Task<IActionResult> QueryRegistrationTask(Guid registrationId, RegulatorTaskType taskName)
     {
         var session = await GetSession();
 
@@ -368,7 +368,7 @@ public class RegistrationsController(
 
     [HttpGet]
     [Route(PagePath.QueryMaterialTask)]
-    public async Task<IActionResult> QueryMaterialTask(int registrationMaterialId, RegulatorTaskType taskName)
+    public async Task<IActionResult> QueryMaterialTask(Guid registrationMaterialId, RegulatorTaskType taskName)
     {
         var session = await GetSession();
 
@@ -433,9 +433,9 @@ public class RegistrationsController(
         return File(content, contentType, filename);
     }
 
-    private static string GetRegistrationMethodPath(string pagePath, int registrationId) =>
+    private static string GetRegistrationMethodPath(string pagePath, Guid registrationId) =>
         $"{pagePath}?registrationId={registrationId}";
 
-    private static string GetRegistrationMaterialMethodPath(string pagePath, int registrationMaterialId) =>
+    private static string GetRegistrationMaterialMethodPath(string pagePath, Guid registrationMaterialId) =>
         $"{pagePath}?registrationMaterialId={registrationMaterialId}";
   }

@@ -24,7 +24,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
 public class ManageRegistrationsControllerTests
 {
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
-    private const int RegistrationId = 1;
+    private readonly Guid RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
 
     private ManageRegistrationsController _controller;
     private Mock<IReprocessorExporterService> _reprocessorExporterServiceMock;
@@ -166,7 +166,7 @@ public class ManageRegistrationsControllerTests
     public async Task Index_InvalidId_ShouldThrowValidationException()
     {
         // Arrange
-        var id = 0; // Invalid ID
+        var id = Guid.Empty; // Invalid ID
         var validationFailures = new List<ValidationFailure>
         {
             new ValidationFailure(nameof(IdRequest.Id), "ID must be greater than 0.")
