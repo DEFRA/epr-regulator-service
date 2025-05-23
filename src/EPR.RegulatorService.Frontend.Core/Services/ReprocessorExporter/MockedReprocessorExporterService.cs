@@ -451,10 +451,10 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 MaterialName = "Plastic",
                 Accreditations = new List<Accreditation>
                 {
-                    CreateAccreditation("aaaa1111-1111-1111-1111-111111111111", "MOCK-2025-PLASTIC", "Granted", new DateTime(2025, 6, 2), 2025, commonTasks),
-                    CreateAccreditation("aaaa2222-2222-2222-2222-222222222222", "MOCK-2026-PLASTIC", "Pending", new DateTime(2026, 5, 10), 2026, commonTasks),
-                    CreateAccreditation("cccc0000-0000-0000-0000-000000000001", "MOCK-2027-PLASTIC-A", "Pending", new DateTime(2027, 3, 5), 2027, commonTasks),
-                    CreateAccreditation("cccc0000-0000-0000-0000-000000000002", "MOCK-2027-PLASTIC-B", "Pending", new DateTime(2027, 8, 19), 2027, commonTasks)
+                    CreateAccreditation("aaaa1111-1111-1111-1111-111111111111", "MOCK-2025-PLASTIC", "Granted", new DateTime(2025, 6, 2, 0, 0, 0, DateTimeKind.Utc), 2025, commonTasks),
+                    CreateAccreditation("aaaa2222-2222-2222-2222-222222222222", "MOCK-2026-PLASTIC", "Pending", new DateTime(2026, 5, 10, 0, 0, 0, DateTimeKind.Utc), 2026, commonTasks),
+                    CreateAccreditation("cccc0000-0000-0000-0000-000000000001", "MOCK-2027-PLASTIC-A", "Pending", new DateTime(2027, 3, 5, 0, 0, 0, DateTimeKind.Utc), 2027, commonTasks),
+                    CreateAccreditation("cccc0000-0000-0000-0000-000000000002", "MOCK-2027-PLASTIC-B", "Pending", new DateTime(2027, 8, 19, 0, 0, 0, DateTimeKind.Utc), 2027, commonTasks)
                 }
             },
             new RegistrationMaterialSummary
@@ -463,8 +463,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 MaterialName = "Steel",
                 Accreditations = new List<Accreditation>
                 {
-                    CreateAccreditation("bbbb1111-1111-1111-1111-111111111111", "MOCK-2025-STEEL", "Granted", new DateTime(2025, 7, 15), 2025, commonTasks),
-                    CreateAccreditation("bbbb2222-2222-2222-2222-222222222222", "MOCK-2026-STEEL", "In Review", new DateTime(2026, 4, 22), 2026, commonTasks)
+                    CreateAccreditation("bbbb1111-1111-1111-1111-111111111111", "MOCK-2025-STEEL", "Granted", new DateTime(2025, 7, 15, 0, 0, 0, DateTimeKind.Utc), 2025, commonTasks),
+                    CreateAccreditation("bbbb2222-2222-2222-2222-222222222222", "MOCK-2026-STEEL", "In Review", new DateTime(2026, 4, 22, 0, 0, 0, DateTimeKind.Utc), 2026, commonTasks)
                 }
             }
         },
@@ -514,7 +514,4 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             material.Accreditations = matches;
         }
     }
-
-
-
 }
