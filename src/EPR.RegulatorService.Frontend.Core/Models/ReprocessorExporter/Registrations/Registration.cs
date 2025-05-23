@@ -4,11 +4,15 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
 
 public class Registration
 {
-    public int Id { get; init; }
+    public int Id { get; init; } // this will be removed
+
+    public Guid IdGuid { get; init; } // this will be replaced
 
     public required string OrganisationName { get; init; } = string.Empty;
 
     public string? SiteAddress { get; init; }
+
+    public string? SiteGridReference { get; set; } = string.Empty;
 
     public ApplicationOrganisationType OrganisationType { get; init; }
 
