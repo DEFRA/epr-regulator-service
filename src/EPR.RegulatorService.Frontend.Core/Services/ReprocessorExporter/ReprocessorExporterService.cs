@@ -240,6 +240,8 @@ public class ReprocessorExporterService(
         return response;
     }
 
+    public Task AddMaterialQueryNote(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest) => throw new NotImplementedException();
+
     private async Task PrepareAuthenticatedClient()
     {
         if (httpClient.BaseAddress == null)

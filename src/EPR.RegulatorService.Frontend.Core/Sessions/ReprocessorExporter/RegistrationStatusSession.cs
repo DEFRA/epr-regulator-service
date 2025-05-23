@@ -17,4 +17,5 @@ public class RegistrationStatusSession
     public bool? FullPaymentMade { get; set; }
     public PaymentMethodType? PaymentMethod { get; set; }
     public DateTime? PaymentDate { get; set; }
+    public Guid? RegulatorApplicationTaskStatusId { get; set; }
 }

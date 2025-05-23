@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.Extensions.Options;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.Query;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
@@ -136,6 +137,22 @@ public class RegistrationStatusController(
         await SaveSession(session);
 
         return RedirectToAction("PaymentDate", "RegistrationStatus");
+    }
+
+    [HttpGet]
+    [Route(PagePath.CheckRegistrationNote)]
+    public async Task<IActionResult> AddNote()
+    {
+        var session = await GetSession();
+
+        var registrationStatusSession = GetRegistrationStatusSession(session);
+
+        session.ReprocessorExporterSession.QueryMaterialSession = mapper.Map<QueryMaterialSession>(registrationStatusSession);        
+        session.ReprocessorExporterSession.QueryMaterialSession.PagePath = PagePath.FeesDue;
+
+        await SaveSession(session);
+
+        return RedirectToAction("AddMaterialQueryNote", "Query");
     }
 
     [HttpGet]

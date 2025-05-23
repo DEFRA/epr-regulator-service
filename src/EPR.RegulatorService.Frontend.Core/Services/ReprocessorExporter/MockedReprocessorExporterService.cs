@@ -384,4 +384,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
 
+    public Task AddMaterialQueryNote(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)
+    {
+        // TODO: Something!
+        return Task.CompletedTask;
+    }
 }
