@@ -401,40 +401,40 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var organisationType = ApplicationOrganisationType.Reprocessor; // Mocks always use Reprocessor
 
         var commonTasks = new List<AccreditationTask>
+    {
+        new AccreditationTask
         {
-            new AccreditationTask
-            {
-                IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec001"),
-                TaskId = 1,
-                TaskName = "PRN tonnage",
-                Status = "Not Started Yet",
-                Year = "2025"
-            },
-            new AccreditationTask
-            {
-                IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec002"),
-                TaskId = 2,
-                TaskName = "Business plan",
-                Status = "Not Started Yet",
-                Year = "2025"
-            },
-            new AccreditationTask
-            {
-                IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec003"),
-                TaskId = 3,
-                TaskName = "Sampling",
-                Status = "Approved",
-                Year = "2025"
-            },
-            new AccreditationTask
-            {
-                IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec004"),
-                TaskId = 4,
-                TaskName = "Determine accreditation",
-                Status = "Not Started Yet",
-                Year = "2025"
-            }
-        };
+            IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec001"),
+            TaskId = 1,
+            TaskName = "PRN tonnage",
+            Status = "Not Started Yet",
+            Year = "2025"
+        },
+        new AccreditationTask
+        {
+            IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec002"),
+            TaskId = 2,
+            TaskName = "Business plan",
+            Status = "Not Started Yet",
+            Year = "2025"
+        },
+        new AccreditationTask
+        {
+            IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec003"),
+            TaskId = 3,
+            TaskName = "Sampling",
+            Status = "Approved",
+            Year = "2025"
+        },
+        new AccreditationTask
+        {
+            IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec004"),
+            TaskId = 4,
+            TaskName = "Determine accreditation",
+            Status = "Not Started Yet",
+            Year = "2025"
+        }
+    };
 
         return new Registration
         {
@@ -444,90 +444,54 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             OrganisationType = organisationType,
             Regulator = "EA",
             Materials = new List<RegistrationMaterialSummary>
+        {
+            new RegistrationMaterialSummary
             {
-                new RegistrationMaterialSummary
+                IdGuid = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                MaterialName = "Plastic",
+                Accreditations = new List<Accreditation>
                 {
-                    IdGuid = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    MaterialName = "Plastic",
-                    Accreditations = new List<Accreditation>
-                    {
-                        new Accreditation
-                        {
-                            IdGuid = Guid.Parse("aaaa1111-1111-1111-1111-111111111111"),
-                            ApplicationReference = "MOCK-2025-PLASTIC",
-                            Status = "Granted",
-                            DeterminationDate = new DateTime(2025, 6, 2),
-                            AccreditationYear = 2025,
-                            Tasks = commonTasks
-                        },
-                        new Accreditation
-                        {
-                            IdGuid = Guid.Parse("aaaa2222-2222-2222-2222-222222222222"),
-                            ApplicationReference = "MOCK-2026-PLASTIC",
-                            Status = "Pending",
-                            DeterminationDate = new DateTime(2026, 5, 10),
-                            AccreditationYear = 2026,
-                            Tasks = commonTasks
-                        },
-                        new Accreditation
-                        {
-                            IdGuid = Guid.Parse("cccc0000-0000-0000-0000-000000000001"),
-                            ApplicationReference = "MOCK-2027-PLASTIC-A",
-                            Status = "Pending",
-                            DeterminationDate = new DateTime(2027, 3, 5),
-                            AccreditationYear = 2027,
-                            Tasks = commonTasks
-                        },
-                        new Accreditation
-                        {
-                            IdGuid = Guid.Parse("cccc0000-0000-0000-0000-000000000002"),
-                            ApplicationReference = "MOCK-2027-PLASTIC-B",
-                            Status = "Pending",
-                            DeterminationDate = new DateTime(2027, 8, 19),
-                            AccreditationYear = 2027,
-                            Tasks = commonTasks
-                        }
-                    }
-                },
-                new RegistrationMaterialSummary
-                {
-                    IdGuid = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                    MaterialName = "Steel",
-                    Accreditations = new List<Accreditation>
-                    {
-                        new Accreditation
-                        {
-                            IdGuid = Guid.Parse("bbbb1111-1111-1111-1111-111111111111"),
-                            ApplicationReference = "MOCK-2025-STEEL",
-                            Status = "Granted",
-                            DeterminationDate = new DateTime(2025, 7, 15),
-                            AccreditationYear = 2025,
-                            Tasks = commonTasks
-                        },
-                        new Accreditation
-                        {
-                            IdGuid = Guid.Parse("bbbb2222-2222-2222-2222-222222222222"),
-                            ApplicationReference = "MOCK-2026-STEEL",
-                            Status = "In Review",
-                            DeterminationDate = new DateTime(2026, 4, 22),
-                            AccreditationYear = 2026,
-                            Tasks = commonTasks
-                        }
-                    }
+                    CreateAccreditation("aaaa1111-1111-1111-1111-111111111111", "MOCK-2025-PLASTIC", "Granted", new DateTime(2025, 6, 2), 2025, commonTasks),
+                    CreateAccreditation("aaaa2222-2222-2222-2222-222222222222", "MOCK-2026-PLASTIC", "Pending", new DateTime(2026, 5, 10), 2026, commonTasks),
+                    CreateAccreditation("cccc0000-0000-0000-0000-000000000001", "MOCK-2027-PLASTIC-A", "Pending", new DateTime(2027, 3, 5), 2027, commonTasks),
+                    CreateAccreditation("cccc0000-0000-0000-0000-000000000002", "MOCK-2027-PLASTIC-B", "Pending", new DateTime(2027, 8, 19), 2027, commonTasks)
                 }
             },
-            Tasks = new List<RegistrationTask>
+            new RegistrationMaterialSummary
             {
-                new RegistrationTask
+                IdGuid = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                MaterialName = "Steel",
+                Accreditations = new List<Accreditation>
                 {
-                    IdGuid = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                    TaskName = RegulatorTaskType.AssignOfficer,
-                    Status = RegulatorTaskStatus.Completed
+                    CreateAccreditation("bbbb1111-1111-1111-1111-111111111111", "MOCK-2025-STEEL", "Granted", new DateTime(2025, 7, 15), 2025, commonTasks),
+                    CreateAccreditation("bbbb2222-2222-2222-2222-222222222222", "MOCK-2026-STEEL", "In Review", new DateTime(2026, 4, 22), 2026, commonTasks)
                 }
             }
+        },
+            Tasks = new List<RegistrationTask>
+        {
+            new RegistrationTask
+            {
+                IdGuid = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                TaskName = RegulatorTaskType.AssignOfficer,
+                Status = RegulatorTaskStatus.Completed
+            }
+        }
         };
     }
 
+    private static Accreditation CreateAccreditation(string guid, string reference, string status, DateTime date, int year, List<AccreditationTask> tasks)
+    {
+        return new Accreditation
+        {
+            IdGuid = Guid.Parse(guid),
+            ApplicationReference = reference,
+            Status = status,
+            DeterminationDate = date,
+            AccreditationYear = year,
+            Tasks = tasks
+        };
+    }
 
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
     {
@@ -550,6 +514,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             material.Accreditations = matches;
         }
     }
+
 
 
 }
