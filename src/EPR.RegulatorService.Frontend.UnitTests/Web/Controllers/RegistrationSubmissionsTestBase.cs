@@ -108,9 +108,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 {
                     LatestFilterChoices = filtersModel,
                     CurrentPageNumber = currentPageNumber,
-                    SelectedRegistration = selectedSubmission
+                    SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>()
                 }
             };
+            if (selectedSubmission is not null)
+            {
+                _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.Add(selectedSubmission.SubmissionId, selectedSubmission);
+            }
 
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(_journeySession);
