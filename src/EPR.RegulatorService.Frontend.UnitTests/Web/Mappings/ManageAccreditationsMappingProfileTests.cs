@@ -100,6 +100,30 @@ public class ManageAccreditationsMappingProfileTests
     [TestMethod]
     public void Map_Accreditation_To_AccreditationDetailsViewModel_ShouldMapCorrectly()
     {
+        var prnTask = new AccreditationTask
+        {
+            Id = Guid.NewGuid(),
+            TaskName = "PRN tonnage and authority to issue PRNs", // ✅ Matches mapping enum logic
+            Status = "Not Started",
+            Year = 2026
+        };
+
+        var businessPlanTask = new AccreditationTask
+        {
+            Id = Guid.NewGuid(),
+            TaskName = "Business plan", // ✅ Matches mapping enum logic
+            Status = "Approved",
+            Year = 2026
+        };
+
+        var samplingTask = new AccreditationTask
+        {
+            Id = Guid.NewGuid(),
+            TaskName = "Sampling and inspection plan", // ✅ Matches mapping enum logic
+            Status = "Queried",
+            Year = 2026
+        };
+
         var accreditation = new Accreditation
         {
             Id = Guid.NewGuid(),
@@ -107,15 +131,7 @@ public class ManageAccreditationsMappingProfileTests
             Status = "Pending",
             DeterminationDate = DateTime.Today,
             AccreditationYear = 2026,
-            Tasks = [
-                new AccreditationTask
-                {
-                    Id = Guid.NewGuid(),
-                    TaskName = "PRN tonnage",
-                    Status = "Not Started",
-                    Year = 2026
-                }
-            ]
+            Tasks = new List<AccreditationTask> { prnTask, businessPlanTask, samplingTask }
         };
 
         var viewModel = _mapper.Map<AccreditationDetailsViewModel>(accreditation);
@@ -127,13 +143,26 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.Status.Should().Be("Pending");
             viewModel.DeterminationDate.Should().Be(accreditation.DeterminationDate);
             viewModel.AccreditationYear.Should().Be(2026);
-            viewModel.Tasks.Should().ContainSingle().Which.TaskName.Should().Be("PRN tonnage");
+
+            viewModel.PRNTonnageTask.Should().NotBeNull();
+            viewModel.PRNTonnageTask!.StatusText.Should().Be("Not Started");
+            viewModel.PRNTonnageTask.StatusCssClass.Should().Be("govuk-tag--grey");
+
+            viewModel.BusinessPlanTask.Should().NotBeNull();
+            viewModel.BusinessPlanTask!.StatusText.Should().Be("Approved");
+            viewModel.BusinessPlanTask.StatusCssClass.Should().Be("govuk-tag--green");
+
+            viewModel.SamplingAndInspectionPlanTask.Should().NotBeNull();
+            viewModel.SamplingAndInspectionPlanTask!.StatusText.Should().Be("Queried");
+            viewModel.SamplingAndInspectionPlanTask.StatusCssClass.Should().Be("govuk-tag--orange");
         }
     }
+
 
     [TestMethod]
     public void Map_RegistrationTask_To_AccreditationTaskViewModel_ShouldMapCorrectly()
     {
+        // Arrange
         var registrationTask = new RegistrationTask
         {
             Id = Guid.NewGuid(),
@@ -141,14 +170,15 @@ public class ManageAccreditationsMappingProfileTests
             Status = RegulatorTaskStatus.Completed
         };
 
+        // Act
         var viewModel = _mapper.Map<AccreditationTaskViewModel>(registrationTask);
 
+        // Assert
         using (new AssertionScope())
         {
-            viewModel.Id.Should().Be(registrationTask.Id?.ToString());
-            viewModel.TaskName.Should().Be(registrationTask.TaskName.ToString());
-            viewModel.Status.Should().Be(registrationTask.Status.ToString());
-            viewModel.Year.Should().BeNull();
+            viewModel.TaskName.Should().Be(RegulatorTaskType.AssignOfficer);
+            viewModel.StatusText.Should().Be("Officer Assigned");
+            viewModel.StatusCssClass.Should().Be("govuk-tag--blue");
         }
     }
 }

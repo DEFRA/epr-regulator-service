@@ -1,7 +1,7 @@
+namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
+
 using System;
 using System.Collections.Generic;
-
-namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
 public class ManageAccreditationsViewModel
 {

@@ -2,11 +2,9 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accre
 
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
-public class AccreditationTaskViewModel
+public class RegistrationTaskViewModel
 {
     public RegulatorTaskType TaskName { get; init; }
-
-    public string StatusCssClass { get; init; } = "govuk-tag--grey";
-
-    public string StatusText { get; init; } = "Not started yet";
+    public required string StatusCssClass { get; init; }
+    public required string StatusText { get; init; }
 }

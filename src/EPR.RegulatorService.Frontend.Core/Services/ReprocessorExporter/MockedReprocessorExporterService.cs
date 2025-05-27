@@ -379,43 +379,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     private static Registration GetMockedAccreditationRegistration(Guid id)
     {
-        var organisationType = ApplicationOrganisationType.Reprocessor; // Mocks always use Reprocessor
-
-        var commonTasks = new List<AccreditationTask>
-    {
-        new AccreditationTask
-        {
-            Id = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec001"),
-            TaskId = 1,
-            TaskName = "PRN tonnage",
-            Status = "Not Started Yet",
-            Year = 2025
-        },
-        new AccreditationTask
-        {
-            Id = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec002"),
-            TaskId = 2,
-            TaskName = "Business plan",
-            Status = "Not Started Yet",
-            Year = 2025
-        },
-        new AccreditationTask
-        {
-            Id = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec003"),
-            TaskId = 3,
-            TaskName = "Sampling",
-            Status = "Approved",
-            Year = 2025
-        },
-        new AccreditationTask
-        {
-            Id = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec004"),
-            TaskId = 4,
-            TaskName = "Determine accreditation",
-            Status = "Not Started Yet",
-            Year = 2025
-        }
-    };
+        var organisationType = ApplicationOrganisationType.Reprocessor;
 
         return new Registration
         {
@@ -430,30 +394,35 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             {
                 Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 MaterialName = "Plastic",
+                Status = ApplicationStatus.Granted,
                 Accreditations = new List<Accreditation>
                 {
-                    CreateAccreditation("aaaa1111-1111-1111-1111-111111111111", "MOCK-2025-PLASTIC", "Granted", new DateTime(2025, 6, 2, 0, 0, 0, DateTimeKind.Utc), 2025, commonTasks),
-                    CreateAccreditation("aaaa2222-2222-2222-2222-222222222222", "MOCK-2026-PLASTIC", "Pending", new DateTime(2026, 5, 10, 0, 0, 0, DateTimeKind.Utc), 2026, commonTasks),
-                    CreateAccreditation("cccc0000-0000-0000-0000-000000000001", "MOCK-2027-PLASTIC-A", "Pending", new DateTime(2027, 3, 5, 0, 0, 0, DateTimeKind.Utc), 2027, commonTasks),
-                    CreateAccreditation("cccc0000-0000-0000-0000-000000000002", "MOCK-2027-PLASTIC-B", "Pending", new DateTime(2027, 8, 19, 0, 0, 0, DateTimeKind.Utc), 2027, commonTasks)
+                    CreateAccreditation("aaaa1111-1111-1111-1111-111111111111", "MOCK-2025-PLASTIC", "Granted", new DateTime(2025, 6, 2), 2025)
                 }
             },
             new RegistrationMaterialSummary
             {
                 Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                 MaterialName = "Steel",
+                Status = ApplicationStatus.Refused,
                 Accreditations = new List<Accreditation>
                 {
-                    CreateAccreditation("bbbb1111-1111-1111-1111-111111111111", "MOCK-2025-STEEL", "Granted", new DateTime(2025, 7, 15, 0, 0, 0, DateTimeKind.Utc), 2025, commonTasks),
-                    CreateAccreditation("bbbb2222-2222-2222-2222-222222222222", "MOCK-2026-STEEL", "In Review", new DateTime(2026, 4, 22, 0, 0, 0, DateTimeKind.Utc), 2026, commonTasks)
+                    CreateAccreditation("bbbb1111-1111-1111-1111-111111111111", "MOCK-2025-STEEL", "Refused", new DateTime(2025, 7, 15), 2025)
                 }
+            },
+            new RegistrationMaterialSummary
+            {
+                Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                MaterialName = "Glass",
+                Status = null, // Tests fallback logic for "Not started yet"
+                Accreditations = new List<Accreditation>()
             }
         },
             Tasks = new List<RegistrationTask>
         {
             new RegistrationTask
             {
-                Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
                 TaskName = RegulatorTaskType.AssignOfficer,
                 Status = RegulatorTaskStatus.Completed
             }
@@ -461,7 +430,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         };
     }
 
-    private static Accreditation CreateAccreditation(string guid, string reference, string status, DateTime date, int year, List<AccreditationTask> tasks)
+
+    private static Accreditation CreateAccreditation(string guid, string reference, string status, DateTime date, int year)
     {
         return new Accreditation
         {
@@ -470,9 +440,36 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             Status = status,
             DeterminationDate = date,
             AccreditationYear = year,
-            Tasks = tasks
+            Tasks = new List<AccreditationTask>
+            {
+                new AccreditationTask
+                {
+                    Id = Guid.NewGuid(),
+                    TaskId = 1,
+                    TaskName = "PRN tonnage and authority to issue PRNs",
+                    Status = "Not Started Yet",
+                    Year = year
+                },
+                new AccreditationTask
+                {
+                    Id = Guid.NewGuid(),
+                    TaskId = 2,
+                    TaskName = "Business plan",
+                    Status = "Not Started Yet",
+                    Year = year
+                },
+                new AccreditationTask
+                {
+                    Id = Guid.NewGuid(),
+                    TaskId = 3,
+                    TaskName = "Sampling and inspection plan",
+                    Status = "Approved",
+                    Year = year
+                }
+            }
         };
     }
+
 
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
     {

@@ -9,16 +9,17 @@
                 <a href="#">@material.MaterialName</a>
             </span>
 
-            @if (material.Accreditation is not null)
+            @if (material.RegistrationStatusTask is not null)
             {
-                <strong class="govuk-tag govuk-tag--green app-task-list__tag">
-                    @material.Accreditation.Status?.ToUpperInvariant()
+                <strong class="govuk-tag @material.RegistrationStatusTask.StatusCssClass app-task-list__tag">
+                    @material.RegistrationStatusTask.StatusText
                 </strong>
             }
+
             else
             {
                 <strong class="govuk-tag govuk-tag--grey app-task-list__tag">
-                    NO ACCREDITATION
+                    Not started yet
                 </strong>
             }
         </li>
