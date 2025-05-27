@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -22,6 +21,7 @@ public class ReprocessorExporterService(
 {
     private enum Endpoints
     {
+        AddMaterialQueryNote,
         GetRegistrationById,
         GetRegistrationMaterialById,
         GetAuthorisedMaterialsByRegistrationId,
@@ -240,7 +240,16 @@ public class ReprocessorExporterService(
         return response;
     }
 
-    public Task AddMaterialQueryNote(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest) => throw new NotImplementedException();
+    public async Task AddMaterialQueryNote(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.AddMaterialQueryNote);
+
+        var response = await httpClient.PostAsJsonAsync(pathTemplate, addNoteRequest);
+
+        response.EnsureSuccessStatusCode();
+    }
 
     private async Task PrepareAuthenticatedClient()
     {
