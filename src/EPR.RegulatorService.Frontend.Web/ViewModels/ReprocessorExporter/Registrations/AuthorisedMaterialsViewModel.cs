@@ -9,5 +9,4 @@ public class AuthorisedMaterialsViewModel
     public required string SiteAddress { get; init; }
     public required List<AuthorisedMaterialViewModel> Materials { get; init; }
     public RegulatorTaskStatus TaskStatus { get; init; }
-
 }
