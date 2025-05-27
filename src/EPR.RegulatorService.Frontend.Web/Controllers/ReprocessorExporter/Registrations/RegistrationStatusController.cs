@@ -35,7 +35,7 @@ public class RegistrationStatusController(
 {
     [HttpGet]
     [Route(PagePath.FeesDue)]
-    public async Task<IActionResult> FeesDue(int registrationMaterialId)
+    public async Task<IActionResult> FeesDue(Guid registrationMaterialId)
     {
         await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationMaterialId });
 
@@ -240,7 +240,7 @@ public class RegistrationStatusController(
 
     private static DateTime CalculateDeterminationDate(int determinationWeeks, DateTime dulyMadeDate) => dulyMadeDate.AddDays(determinationWeeks * 7);
 
-    private static string GetPagePath(string pagePath, int registrationMaterialId) =>
+    private static string GetPagePath(string pagePath, Guid registrationMaterialId) =>
         $"{pagePath}?registrationMaterialId={registrationMaterialId}";
 
     private static RegistrationStatusSession GetRegistrationStatusSession(JourneySession session)
@@ -253,7 +253,7 @@ public class RegistrationStatusController(
         return session.ReprocessorExporterSession.RegistrationStatusSession;
     }
 
-    private async Task<RegistrationStatusSession> GetOrCreateRegistrationStatusSession(int registrationMaterialId, JourneySession session)
+    private async Task<RegistrationStatusSession> GetOrCreateRegistrationStatusSession(Guid registrationMaterialId, JourneySession session)
     {
         if (session.ReprocessorExporterSession.RegistrationStatusSession == null)
         {

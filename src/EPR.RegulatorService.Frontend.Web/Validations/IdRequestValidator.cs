@@ -9,7 +9,8 @@ public class IdRequestValidator : AbstractValidator<IdRequest>
     public IdRequestValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0)
-            .WithMessage("ID must be greater than 0.");
+            .NotEmpty()
+            .NotEqual(Guid.Empty)
+            .WithMessage("ID is required.");
     }
 }
