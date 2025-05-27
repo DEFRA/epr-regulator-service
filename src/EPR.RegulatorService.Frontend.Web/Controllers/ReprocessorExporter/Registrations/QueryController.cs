@@ -58,7 +58,7 @@ public class QueryController (
             return View(GetQueryView(nameof(AddMaterialQueryNote)), viewModel);
         }
 
-        await reprocessorExporterService.AddMaterialQueryNote(queryMaterialSession.RegulatorApplicationTaskStatusId, new AddNoteRequest {Note = viewModel.Note! });
+        await reprocessorExporterService.AddMaterialQueryNoteAsync(queryMaterialSession.RegulatorApplicationTaskStatusId, new AddNoteRequest {Note = viewModel.Note! });
 
         return RedirectToAction(queryMaterialSession.PagePath, PagePath.ReprocessorExporterRegistrations, new { registrationMaterialId = queryMaterialSession.RegistrationMaterialId});
     }

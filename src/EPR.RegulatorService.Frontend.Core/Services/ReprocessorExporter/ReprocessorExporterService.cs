@@ -240,13 +240,14 @@ public class ReprocessorExporterService(
         return response;
     }
 
-    public async Task AddMaterialQueryNote(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)
+    public async Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.AddMaterialQueryNote);
+        string path = pathTemplate.Replace("{id}", regulatorApplicationTaskStatusId.ToString());
 
-        var response = await httpClient.PostAsJsonAsync(pathTemplate, addNoteRequest);
+        var response = await httpClient.PostAsJsonAsync(path, addNoteRequest);
 
         response.EnsureSuccessStatusCode();
     }

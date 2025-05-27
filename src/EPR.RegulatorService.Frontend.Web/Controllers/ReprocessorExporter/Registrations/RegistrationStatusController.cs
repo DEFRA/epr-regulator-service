@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.Extensions.Options;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.Query;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 

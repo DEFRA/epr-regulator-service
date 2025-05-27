@@ -153,7 +153,7 @@ public class RegistrationStatusControllerTests
         _journeySession.ReprocessorExporterSession.RegistrationStatusSession = null;
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _registrationStatusController.PaymentCheck());
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _registrationStatusController.PaymentCheck(expectedViewModel));
     }
 
     [TestMethod]
@@ -229,10 +229,16 @@ public class RegistrationStatusControllerTests
     }
 
     [TestMethod]
-    public async Task PaymentCheck_WhenCalledWithViewModelAndFullPaymentIsNotMade_ShouldRedirectToQueryTask()
+    [DataRow(RegulatorTaskStatus.Completed)]
+    [DataRow(RegulatorTaskStatus.CannotStartYet)]
+    [DataRow(RegulatorTaskStatus.NotStarted)]
+    [DataRow(RegulatorTaskStatus.Started)]
+    public async Task PaymentCheck_WhenCalledWithViewModelAndFullPaymentIsNotMadeAndTaskIsNotQueried_ShouldRedirectToQueryPage(RegulatorTaskStatus taskStatus)
     {
         // Arrange
         var viewModel = new PaymentCheckViewModel { ApplicationType = ApplicationOrganisationType.Reprocessor, FullPaymentMade = false };
+
+        _journeySession.ReprocessorExporterSession.RegistrationStatusSession = CreateRegistrationStatusSession(Guid.NewGuid(), taskStatus);
 
         _mapperMock.Setup(m =>
                 m.Map<PaymentCheckViewModel>(_journeySession.ReprocessorExporterSession.RegistrationStatusSession))
@@ -249,6 +255,38 @@ public class RegistrationStatusControllerTests
             var redirectResult = (RedirectToActionResult)response;
             redirectResult.ActionName.Should().Be("QueryMaterialTask");
             redirectResult.ControllerName.Should().Be("Registrations");
+        }
+    }
+
+    [TestMethod]
+    public async Task PaymentCheck_WhenCalledWithViewModelAndFullPaymentIsNotMadeAndTaskIsQueried_ShouldRedirectToAddNotePage()
+    {
+        // Arrange
+        var viewModel = new PaymentCheckViewModel { ApplicationType = ApplicationOrganisationType.Reprocessor, FullPaymentMade = false };
+
+        var registrationSession = CreateRegistrationStatusSession(Guid.NewGuid(), RegulatorTaskStatus.Queried);
+        _journeySession.ReprocessorExporterSession.RegistrationStatusSession = registrationSession;
+
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(registrationSession)).Returns(new QueryMaterialSession
+        {
+            OrganisationName = "TEST",
+            ApplicationType = ApplicationOrganisationType.Reprocessor,
+            RegulatorApplicationTaskStatusId = Guid.NewGuid(),
+            RegistrationMaterialId = registrationSession.RegistrationMaterialId,
+            PagePath = PagePath.FeesDue
+        });
+
+        // Act
+        var response = await _registrationStatusController.PaymentCheck(viewModel);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<RedirectToActionResult>();
+
+            var redirectResult = (RedirectToActionResult)response;
+            redirectResult.ActionName.Should().Be("AddMaterialQueryNote");
+            redirectResult.ControllerName.Should().Be("Query");
         }
     }
 
@@ -543,14 +581,18 @@ public class RegistrationStatusControllerTests
         }
     }
 
-    private static RegistrationStatusSession CreateRegistrationStatusSession(Guid registrationMaterialId) =>
+    private static RegistrationStatusSession CreateRegistrationStatusSession(
+        Guid registrationMaterialId,
+        RegulatorTaskStatus taskStatus = RegulatorTaskStatus.NotStarted) =>
         new()
         {
             OrganisationName = "Test Organisation",
             RegistrationMaterialId = registrationMaterialId,
             RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
-            MaterialName = "Plastic"
+            MaterialName = "Plastic",
+            TaskStatus = taskStatus,
         };
+
     private static RegistrationMaterialPaymentFees CreateRegistrationPaymentFees(Guid registrationMaterialId) =>
         new()
         {

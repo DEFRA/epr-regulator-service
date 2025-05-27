@@ -24,6 +24,7 @@ public class ReprocessorExporterServiceTests
 {
     private const string BaseUrl = "https://example.com/";
     private const int ApiVersion = 1;
+    private const string AddMaterialQueryNote = "v{apiVersion}/regulatorApplicationTaskStatus/{id}/queryNote";
     private const string GetRegistrationByIdPath = "v{apiVersion}/registrations/{id}";
     private const string GetRegistrationMaterialByIdPath = "v{apiVersion}/registrationMaterials/{id}";
     private const string GetSiteAddressByRegistrationIdPath = "v{apiVersion}/registrations/{id}/siteAddress";
@@ -68,6 +69,7 @@ public class ReprocessorExporterServiceTests
             DownstreamScope = "api://default",
             Endpoints = new Dictionary<string, string>
             {
+                { "AddMaterialQueryNote", AddMaterialQueryNote },
                 { "GetRegistrationById", GetRegistrationByIdPath },
                 { "GetRegistrationMaterialById", GetRegistrationMaterialByIdPath },
                 { "GetSiteAddressByRegistrationId", GetSiteAddressByRegistrationIdPath },
@@ -606,6 +608,28 @@ public class ReprocessorExporterServiceTests
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => _service.DownloadSamplingInspectionFile(request));
     }
 
+    [TestMethod]
+    public async Task AddMaterialQueryNote_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+    {
+        // Arrange
+        var materialTaskId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+        string expectedPath = AddMaterialQueryNote
+            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{id}", materialTaskId.ToString());
+        var request = new AddNoteRequest()
+        {
+            Note = "Test note",
+        };
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.AddMaterialQueryNoteAsync(materialTaskId, request));
+    }
+    
     private void SetupHttpMessageExpectations(HttpMethod method, string path,
         HttpResponseMessage responseMessage) =>
         _httpMessageHandlerMock.Protected()
