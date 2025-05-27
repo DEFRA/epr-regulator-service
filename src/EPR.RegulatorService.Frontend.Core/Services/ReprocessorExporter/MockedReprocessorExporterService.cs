@@ -1,8 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
-using System.Threading.Tasks;
 
-using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
@@ -75,8 +73,11 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         });
     }
 
-    public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(Guid registrationId) =>
-        Task.FromResult(new RegistrationAuthorisedMaterials
+    public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(Guid registrationId)
+    {
+        var task = _registrations.Single(r => r.Id == registrationId).Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.MaterialsAuthorisedOnSite);
+
+        return Task.FromResult(new RegistrationAuthorisedMaterials
         {
             RegistrationId = registrationId,
             OrganisationName = "MOCK Test Org",
@@ -93,14 +94,16 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
                 }
             ],
-            TaskStatus = (RegulatorTaskStatus)(task?.Status)
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
         });
+
+    }
 
     public Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials)
             .First(rm => rm.Id == registrationMaterialId);
-         
+
         var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
 
         return Task.FromResult(new RegistrationMaterialPaymentFees
@@ -123,7 +126,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
 
         registrationMaterial.DeterminationDate = dulyMadeRequest.DeterminationDate;
-        
+
         var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus);
         Guid? taskId;
 
@@ -150,7 +153,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     }
 
     public Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment) => Task.CompletedTask;
-    
+
     public Task UpdateRegistrationMaterialOutcomeAsync(Guid registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
@@ -177,13 +180,13 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         return Task.CompletedTask;
     }
-    
+
     public Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest)
     {
         var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
         var task = registration.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateRegistrationTaskStatusRequest.TaskName);
         Guid? taskId;
-        
+
         if (task == null)
         {
             taskId = Guid.NewGuid();
@@ -234,7 +237,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return Task.CompletedTask;
     }
 
-    public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId)
+    public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
         var task = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId).Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.ReprocessingInputsAndOutputs);
 
@@ -257,7 +260,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return Task.FromResult(registrationMaterialReprocessingIO);
     }
 
-    public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId)
+    public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
         var task = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId).Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.SamplingAndInspectionPlan);
 
@@ -281,8 +284,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         };
         return Task.FromResult(registrationMaterialSamplingPlan);
     }
-  
-    public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
+
+    public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
         var task = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId).Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions);
 
