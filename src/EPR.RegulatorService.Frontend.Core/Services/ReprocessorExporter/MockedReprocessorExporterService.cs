@@ -385,35 +385,35 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         new AccreditationTask
         {
-            IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec001"),
+            Id = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec001"),
             TaskId = 1,
             TaskName = "PRN tonnage",
             Status = "Not Started Yet",
-            Year = "2025"
+            Year = 2025
         },
         new AccreditationTask
         {
-            IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec002"),
+            Id = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec002"),
             TaskId = 2,
             TaskName = "Business plan",
             Status = "Not Started Yet",
-            Year = "2025"
+            Year = 2025
         },
         new AccreditationTask
         {
-            IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec003"),
+            Id = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec003"),
             TaskId = 3,
             TaskName = "Sampling",
             Status = "Approved",
-            Year = "2025"
+            Year = 2025
         },
         new AccreditationTask
         {
-            IdGuid = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec004"),
+            Id = Guid.Parse("c1d1f3d2-0c59-4c6e-8c8b-4e8eec2ec004"),
             TaskId = 4,
             TaskName = "Determine accreditation",
             Status = "Not Started Yet",
-            Year = "2025"
+            Year = 2025
         }
     };
 
@@ -465,7 +465,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         return new Accreditation
         {
-            IdGuid = Guid.Parse(guid),
+            Id = Guid.Parse(guid),
             ApplicationReference = reference,
             Status = status,
             DeterminationDate = date,
@@ -476,23 +476,36 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
     {
+        bool hasAtLeastOneAccreditation = false;
+
         foreach (var material in registration.Materials)
         {
-            var matches = material.Accreditations
+            var matchingAccreditations = material.Accreditations
                 .Where(a => a.AccreditationYear == year)
                 .ToList();
 
-            if (matches.Count == 0)
+            if (matchingAccreditations.Count > 1)
             {
-                throw new InvalidOperationException($"No accreditation found for {material.MaterialName} in year {year}.");
+                throw new InvalidOperationException(
+                    $"More than one accreditation found for MaterialId {material.Id} in year {year}.");
             }
 
-            if (matches.Count > 1)
+            if (matchingAccreditations.Count == 1)
             {
-                throw new InvalidOperationException($"Multiple accreditations found for {material.MaterialName} in year {year}.");
+                hasAtLeastOneAccreditation = true;
+                material.Accreditations = matchingAccreditations;
             }
+            else
+            {
+                material.Accreditations = new List<Accreditation>(); // Clean out non-matching years
+            }
+        }
 
-            material.Accreditations = matches;
+        if (!hasAtLeastOneAccreditation)
+        {
+            throw new InvalidOperationException(
+                $"No accreditations found for any materials in year {year}.");
         }
     }
+
 }

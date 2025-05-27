@@ -2,14 +2,12 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accre
 {
     public class AccreditationTaskViewModel
     {
-        public Guid Id { get; set; }
-
-        public int TaskId { get; set; }
+        public Guid? Id { get; set; }
 
         public string TaskName { get; set; } = string.Empty;
 
         public string Status { get; set; } = string.Empty;
 
-        public string? Year { get; set; }
+        public int? Year { get; set; }
     }
 }

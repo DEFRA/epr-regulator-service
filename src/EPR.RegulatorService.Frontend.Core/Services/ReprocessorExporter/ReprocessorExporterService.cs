@@ -55,9 +55,9 @@ public class ReprocessorExporterService(
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationById);
         string path = pathTemplate.Replace("{id}", id.ToString());
-        
+
         var response = await httpClient.GetAsync(path);
-        
+
         var registration = await GetEntityFromResponse<Registration>(response);
 
         return registration;
@@ -153,7 +153,7 @@ public class ReprocessorExporterService(
         await PrepareAuthenticatedClient();
 
         string path = GetVersionedEndpoint(Endpoints.SubmitOfflinePayment);
-        
+
         string jsonContent = JsonSerializer.Serialize(offlinePayment, _jsonSerializerOptions);
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
@@ -259,17 +259,13 @@ public class ReprocessorExporterService(
 
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
     {
+        bool hasAtLeastOneAccreditation = false;
+
         foreach (var material in registration.Materials)
         {
             var matchingAccreditations = material.Accreditations
                 .Where(a => a.AccreditationYear == year)
                 .ToList();
-
-            if (matchingAccreditations.Count == 0)
-            {
-                throw new InvalidOperationException(
-                    $"No accreditation found for MaterialId {material.Id} in year {year}.");
-            }
 
             if (matchingAccreditations.Count > 1)
             {
@@ -277,8 +273,22 @@ public class ReprocessorExporterService(
                     $"More than one accreditation found for MaterialId {material.Id} in year {year}.");
             }
 
-            // Safe to assign the filtered result � exactly one expected
-            material.Accreditations = matchingAccreditations;
+            if (matchingAccreditations.Count == 1)
+            {
+                hasAtLeastOneAccreditation = true;
+                material.Accreditations = matchingAccreditations;
+            }
+            else
+            {
+                // No matching accreditations — clear out the list for cleanliness
+                material.Accreditations = new List<Accreditation>();
+            }
+        }
+
+        if (!hasAtLeastOneAccreditation)
+        {
+            throw new InvalidOperationException(
+                $"No accreditations found for any materials in year {year}.");
         }
     }
 
@@ -312,14 +322,16 @@ public class ReprocessorExporterService(
     {
         response.EnsureSuccessStatusCode();
 
-        var entity = await response.Content.ReadFromJsonAsync<T>(_jsonSerializerOptions);
+        var rawJson = await response.Content.ReadAsStringAsync();
 
+        var entity = JsonSerializer.Deserialize<T>(rawJson, _jsonSerializerOptions);
         if (entity == null)
         {
-            throw new NotFoundException("Unable to deserialize response.");
+            throw new NotFoundException("Deserialized object is null.");
         }
 
         return entity;
+
     }
 
     private string GetVersionedEndpoint(Endpoints endpointName)

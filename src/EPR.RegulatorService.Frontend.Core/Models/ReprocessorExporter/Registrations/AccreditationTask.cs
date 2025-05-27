@@ -4,9 +4,7 @@ using System;
 
 public class AccreditationTask
 {
-    public int Id { get; set; } // this will be removed
-
-    public Guid IdGuid { get; set; } // this will be replaced
+    public Guid? Id { get; set; }
 
     public int TaskId { get; set; }
 
@@ -14,5 +12,5 @@ public class AccreditationTask
 
     public string Status { get; set; } = string.Empty;
 
-    public string? Year { get; set; }
+    public int? Year { get; set; }
 }

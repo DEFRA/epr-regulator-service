@@ -1,6 +1,5 @@
 using AutoMapper;
 
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
@@ -27,7 +26,7 @@ public class ManageAccreditationsMappingProfile : Profile
             .ForMember(dest => dest.Accreditation, opt => opt.MapFrom(src => src.Accreditations.SingleOrDefault()));
 
         CreateMap<Accreditation, AccreditationDetailsViewModel>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.IdGuid))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.ApplicationReference, opt => opt.MapFrom(src => src.ApplicationReference))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
             .ForMember(dest => dest.DeterminationDate, opt => opt.MapFrom(src => src.DeterminationDate))
@@ -35,15 +34,13 @@ public class ManageAccreditationsMappingProfile : Profile
             .ForMember(dest => dest.Tasks, opt => opt.MapFrom(src => src.Tasks));
 
         CreateMap<AccreditationTask, AccreditationTaskViewModel>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.IdGuid))
-            .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.TaskId))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.TaskName, opt => opt.MapFrom(src => src.TaskName))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
             .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.Year));
 
         CreateMap<RegistrationTask, AccreditationTaskViewModel>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => (int)src.TaskName))
             .ForMember(dest => dest.TaskName, opt => opt.MapFrom(src => src.TaskName.ToString()))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
             .ForMember(dest => dest.Year, opt => opt.Ignore());

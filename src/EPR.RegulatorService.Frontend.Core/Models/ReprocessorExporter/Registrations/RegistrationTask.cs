@@ -5,10 +5,10 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
 public class RegistrationTask
 {
     public Guid? Id { get; init; }
-    
+
     public RegulatorTaskType TaskName { get; init; }
 
     public RegulatorTaskStatus Status { get; init; }
 
-    public string? Year { get; set; }
+    public int? Year { get; set; }
 }

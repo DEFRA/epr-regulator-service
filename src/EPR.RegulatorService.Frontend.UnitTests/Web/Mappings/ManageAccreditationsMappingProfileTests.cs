@@ -61,7 +61,7 @@ public class ManageAccreditationsMappingProfileTests
                     Accreditations = [
                         new Accreditation
                         {
-                            IdGuid = Guid.NewGuid(),
+                            Id = Guid.NewGuid(),
                             ApplicationReference = "APP-123",
                             Status = "Approved",
                             DeterminationDate = DateTime.Today,
@@ -69,11 +69,10 @@ public class ManageAccreditationsMappingProfileTests
                             Tasks = [
                                 new AccreditationTask
                                 {
-                                    IdGuid = Guid.NewGuid(),
-                                    TaskId = 1,
+                                    Id = Guid.NewGuid(),
                                     TaskName = "Business plan",
                                     Status = "Approved",
-                                    Year = "2025"
+                                    Year = 2025
                                 }
                             ]
                         }
@@ -103,7 +102,7 @@ public class ManageAccreditationsMappingProfileTests
     {
         var accreditation = new Accreditation
         {
-            IdGuid = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             ApplicationReference = "APP-456",
             Status = "Pending",
             DeterminationDate = DateTime.Today,
@@ -111,11 +110,10 @@ public class ManageAccreditationsMappingProfileTests
             Tasks = [
                 new AccreditationTask
                 {
-                    IdGuid = Guid.NewGuid(),
-                    TaskId = 2,
+                    Id = Guid.NewGuid(),
                     TaskName = "PRN tonnage",
                     Status = "Not Started",
-                    Year = "2026"
+                    Year = 2026
                 }
             ]
         };
@@ -124,7 +122,7 @@ public class ManageAccreditationsMappingProfileTests
 
         using (new AssertionScope())
         {
-            viewModel.Id.Should().Be(accreditation.IdGuid);
+            viewModel.Id.Should().Be(accreditation.Id);
             viewModel.ApplicationReference.Should().Be("APP-456");
             viewModel.Status.Should().Be("Pending");
             viewModel.DeterminationDate.Should().Be(accreditation.DeterminationDate);
@@ -148,7 +146,6 @@ public class ManageAccreditationsMappingProfileTests
         using (new AssertionScope())
         {
             viewModel.Id.Should().Be(registrationTask.Id?.ToString());
-            viewModel.TaskId.Should().Be((int)registrationTask.TaskName);
             viewModel.TaskName.Should().Be(registrationTask.TaskName.ToString());
             viewModel.Status.Should().Be(registrationTask.Status.ToString());
             viewModel.Year.Should().BeNull();

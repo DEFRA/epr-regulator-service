@@ -8,7 +8,19 @@
             <span class="app-task-list__task-name">
                 <a href="#">@material.MaterialName</a>
             </span>
-            <strong class="govuk-tag govuk-tag--green app-task-list__tag">@material.Accreditation.Status?.ToUpperInvariant()</strong>
+
+            @if (material.Accreditation is not null)
+            {
+                <strong class="govuk-tag govuk-tag--green app-task-list__tag">
+                    @material.Accreditation.Status?.ToUpperInvariant()
+                </strong>
+            }
+            else
+            {
+                <strong class="govuk-tag govuk-tag--grey app-task-list__tag">
+                    NO ACCREDITATION
+                </strong>
+            }
         </li>
     }
 </ul>

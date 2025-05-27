@@ -654,7 +654,7 @@ public class ReprocessorExporterServiceTests
 
         var accreditation = new Accreditation
         {
-            IdGuid = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             AccreditationYear = year,
             ApplicationReference = "APP-2025",
             Status = "Approved"
@@ -693,7 +693,7 @@ public class ReprocessorExporterServiceTests
     }
 
     [TestMethod]
-    public async Task GetRegistrationByIdWithAccreditationsAsync_WhenNoAccreditationMatchesYear_ThrowsInvalidOperation()
+    public async Task GetRegistrationByIdWithAccreditationsAsync_WhenNoMaterialsHaveAccreditationsForYear_ThrowsInvalidOperation()
     {
         var registrationId = Guid.NewGuid();
         const int year = 2025;
@@ -701,17 +701,23 @@ public class ReprocessorExporterServiceTests
         var registration = new Registration
         {
             Id = registrationId,
-            OrganisationName = "Missing Year Org",
+            OrganisationName = "Test Org",
             Regulator = "EA",
             OrganisationType = ApplicationOrganisationType.Exporter,
             Materials =
             [
                 new RegistrationMaterialSummary
-                {
-                    Id = Guid.NewGuid(),
-                    MaterialName = "Plastic",
-                    Accreditations = [] // No matching entries
-                }
+            {
+                Id = Guid.NewGuid(),
+                MaterialName = "Plastic",
+                Accreditations = []
+            },
+            new RegistrationMaterialSummary
+            {
+                Id = Guid.NewGuid(),
+                MaterialName = "Steel",
+                Accreditations = []
+            }
             ]
         };
 
@@ -725,6 +731,59 @@ public class ReprocessorExporterServiceTests
         await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
             _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year));
     }
+
+    [TestMethod]
+    public async Task GetRegistrationByIdWithAccreditationsAsync_WhenSomeMaterialsHaveNoMatch_StillSucceeds()
+    {
+        var registrationId = Guid.NewGuid();
+        const int year = 2025;
+
+        var matchingAccreditation = new Accreditation
+        {
+            Id = Guid.NewGuid(),
+            AccreditationYear = year,
+            ApplicationReference = "APP-2025",
+            Status = "Approved"
+        };
+
+        var registration = new Registration
+        {
+            Id = registrationId,
+            OrganisationName = "Partial Match Org",
+            Regulator = "EA",
+            OrganisationType = ApplicationOrganisationType.Exporter,
+            Materials =
+            [
+                new RegistrationMaterialSummary
+            {
+                Id = Guid.NewGuid(),
+                MaterialName = "Plastic",
+                Accreditations = [ matchingAccreditation ]
+            },
+            new RegistrationMaterialSummary
+            {
+                Id = Guid.NewGuid(),
+                MaterialName = "Steel",
+                Accreditations = [] // no match
+            }
+            ]
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
+            new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
+            });
+
+        var result = await _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year);
+
+        result.Should().NotBeNull();
+        result.Materials.Should().HaveCount(2);
+        result.Materials.First(m => m.MaterialName == "Plastic").Accreditations.Should().ContainSingle();
+        result.Materials.First(m => m.MaterialName == "Steel").Accreditations.Should().BeEmpty();
+    }
+
 
     [TestMethod]
     public async Task GetRegistrationByIdWithAccreditationsAsync_WhenMultipleAccreditationsForYear_ThrowsInvalidOperation()
