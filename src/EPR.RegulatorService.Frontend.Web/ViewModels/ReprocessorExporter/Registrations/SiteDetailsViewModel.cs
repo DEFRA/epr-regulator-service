@@ -10,5 +10,4 @@ public class SiteDetailsViewModel
     public required string SiteGridReference { get; init; }
     public required string LegalDocumentAddress { get; init; }
     public RegulatorTaskStatus TaskStatus { get; init; }
-
 }
