@@ -4,7 +4,7 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 public class MaterialWasteLicencesViewModel
 {
-    public int RegistrationMaterialId { get; set; }
+    public Guid RegistrationMaterialId { get; set; }
 
     public required string MaterialName { get; set; }
 

@@ -8,7 +8,7 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
 
         public List<string> Journey { get; set; } = [];
 
-        public RegistrationSubmissionOrganisationDetails SelectedRegistration { get; set; }
+        public IDictionary<Guid, RegistrationSubmissionOrganisationDetails> SelectedRegistrations { get; set; } = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>();
 
         public int? CurrentPageNumber { get; set; }
 

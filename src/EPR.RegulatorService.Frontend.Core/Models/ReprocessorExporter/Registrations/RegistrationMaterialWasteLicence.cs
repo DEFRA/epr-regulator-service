@@ -4,7 +4,7 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 public class RegistrationMaterialWasteLicence
 {
-    public int RegistrationMaterialId { get; set; }
+    public Guid RegistrationMaterialId { get; set; }
 
     public required string PermitType { get; set; }
 

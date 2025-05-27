@@ -22,36 +22,21 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 {
     private readonly List<Registration> _registrations = SeedRegistrations();
 
-    public Task<Registration> GetRegistrationByIdAsync(int id)
+    public Task<Registration> GetRegistrationByIdAsync(Guid id)
     {
-        if (id == 99999)
+        if (id == Guid.Empty)
         {
             throw new NotFoundException("Mocked exception for testing purposes.");
         }
 
-        // Determine if the registration is for an Exporter or Reprocessor
-        // Even IDs return Reprocessor, Odd IDs return Exporter (mock convention)
-        var organisationType = id % 2 == 0
-            ? ApplicationOrganisationType.Reprocessor
-            : ApplicationOrganisationType.Exporter;
-
         var registration = _registrations.FirstOrDefault(r => r.Id == id);
-
-        if (registration == null)
-        {
-            registration = organisationType == ApplicationOrganisationType.Reprocessor
-                ? CreateReprocessorRegistration(id)
-                : CreateExporterRegistration(id);
-
-            _registrations.Add(registration);
-        }
 
         return Task.FromResult(registration);
     }
 
-    public Task<SiteDetails> GetSiteDetailsByRegistrationIdAsync(int id)
+    public Task<SiteDetails> GetSiteDetailsByRegistrationIdAsync(Guid id)
     {
-        if (id == 99999)
+        if (id == Guid.Empty)
         {
             throw new NotFoundException("Mocked exception for testing purposes.");
         }
@@ -71,7 +56,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return Task.FromResult(siteDetails);
     }
 
-    public Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int registrationMaterialId)
+    public Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(Guid registrationMaterialId)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials)
             .FirstOrDefault(rm => rm.Id == registrationMaterialId);
@@ -90,11 +75,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         });
     }
 
-    public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(int registrationId)
-    {
-        var task = _registrations.Single(r => r.Id == registrationId).Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.MaterialsAuthorisedOnSite);
-
-        return Task.FromResult(new RegistrationAuthorisedMaterials
+    public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(Guid registrationId) =>
+        Task.FromResult(new RegistrationAuthorisedMaterials
         {
             RegistrationId = registrationId,
             OrganisationName = "MOCK Test Org",
@@ -114,9 +96,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             TaskStatus = (RegulatorTaskStatus)(task?.Status)
         });
 
-    }
-
-    public Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(int registrationMaterialId)
+    public Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials)
             .First(rm => rm.Id == registrationMaterialId);
@@ -138,18 +118,18 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         });
     }
 
-    public Task MarkAsDulyMadeAsync(int registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
+    public Task MarkAsDulyMadeAsync(Guid registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
 
         registrationMaterial.DeterminationDate = dulyMadeRequest.DeterminationDate;
         
         var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus);
-        int? taskId;
+        Guid? taskId;
 
         if (task == null)
         {
-            taskId = (registrationMaterialId * 1000) + registrationMaterial.Tasks.Count;
+            taskId = Guid.NewGuid();
         }
         else
         {
@@ -171,7 +151,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment) => Task.CompletedTask;
     
-    public Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
+    public Task UpdateRegistrationMaterialOutcomeAsync(Guid registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
         var registration = _registrations.First(r => r.Id == registrationMaterial.RegistrationId);
@@ -202,11 +182,11 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
         var task = registration.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateRegistrationTaskStatusRequest.TaskName);
-        int? taskId;
+        Guid? taskId;
         
         if (task == null)
         {
-            taskId = (updateRegistrationTaskStatusRequest.RegistrationId * 10) + registration.Tasks.Count;
+            taskId = Guid.NewGuid();
         }
         else
         {
@@ -230,11 +210,11 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == updateMaterialTaskStatusRequest.RegistrationMaterialId);
         var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateMaterialTaskStatusRequest.TaskName);
-        int? taskId;
+        Guid? taskId;
 
         if (task == null)
         {
-            taskId = (updateMaterialTaskStatusRequest.RegistrationMaterialId * 1000) + registrationMaterial.Tasks.Count;
+            taskId = Guid.NewGuid();
         }
         else
         {
@@ -324,11 +304,11 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     private static List<Registration> SeedRegistrations() =>
     [
-        CreateExporterRegistration(1),
-        CreateReprocessorRegistration(2)
+        CreateExporterRegistration(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")),
+        CreateReprocessorRegistration(Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50"))
     ];
 
-    private static Registration CreateReprocessorRegistration(int registrationId)
+    private static Registration CreateReprocessorRegistration(Guid registrationId)
     {
         const ApplicationOrganisationType organisationType = ApplicationOrganisationType.Reprocessor;
 
@@ -350,7 +330,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             };
     }
 
-    private static Registration CreateExporterRegistration(int registrationId)
+    private static Registration CreateExporterRegistration(Guid registrationId)
     {
         const ApplicationOrganisationType organisationType = ApplicationOrganisationType.Exporter;
 
@@ -369,29 +349,27 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         };
     }
 
-    private static List<RegistrationTask> CreateRegistrationTasks(int registrationId, ApplicationOrganisationType organisationType)
+    private static List<RegistrationTask> CreateRegistrationTasks(Guid registrationId, ApplicationOrganisationType organisationType)
     {
-        int taskId = registrationId * 100;
-
         if (organisationType == ApplicationOrganisationType.Reprocessor)
         {
             return
             [
-                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SiteAddressAndContactDetails },
-                new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite }
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SiteAddressAndContactDetails },
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite }
             ];
         }
 
         return
         [
-            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress },
-            new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions }
+            new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.BusinessAddress },
+            new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions }
         ];
     }
 
 #pragma warning disable S107 - Ignoring the number of parameters in this method as it is required for testing purposes
     private static RegistrationMaterialSummary CreateRegistrationMaterial(
-        int registrationId,
+        Guid registrationId,
         string materialName,
         ApplicationOrganisationType organisationType,
         string applicationNumber,
@@ -401,7 +379,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         string? registrationNumber = null)
 #pragma warning restore S107
     {
-        int registrationMaterialId = registrationId * 10;
+        var registrationMaterialId = Guid.NewGuid();
 
         return new RegistrationMaterialSummary
         {
@@ -414,31 +392,29 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             StatusUpdatedDate = statusUpdatedAt,
             RegistrationReferenceNumber = registrationNumber,
             ApplicationReferenceNumber = applicationNumber,
-            Tasks = CreateMaterialTasks(registrationMaterialId, organisationType)
+            Tasks = CreateMaterialTasks(organisationType)
         };
     }
 
-    private static List<RegistrationTask> CreateMaterialTasks(int registrationMaterialId, ApplicationOrganisationType organisationType)
+    private static List<RegistrationTask> CreateMaterialTasks(ApplicationOrganisationType organisationType)
     {
-        int taskId = registrationMaterialId * 1000;
-
         if (organisationType == ApplicationOrganisationType.Reprocessor)
         {
             return
             [
-                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions },
-                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.CheckRegistrationStatus },
-                new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs },
-                new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions },
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.CheckRegistrationStatus },
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs },
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
             ];
         }
 
         return
         [
-            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialDetailsAndContact },
-            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.CheckRegistrationStatus},
-            new RegistrationTask { Id = taskId++, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails},
-            new RegistrationTask { Id = taskId, Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
+            new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialDetailsAndContact },
+            new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.CheckRegistrationStatus},
+            new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails},
+            new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
         ];
     }
 

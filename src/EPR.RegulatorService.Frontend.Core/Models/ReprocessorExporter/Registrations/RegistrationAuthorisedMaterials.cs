@@ -4,7 +4,7 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 public class RegistrationAuthorisedMaterials
 {
-    public int RegistrationId { get; init; }
+    public Guid RegistrationId { get; init; }
     public required string OrganisationName { get; init; }
     public required string SiteAddress { get; init; }
     public List<MaterialsAuthorisedOnSite> MaterialsAuthorisation { get; set; } = [];

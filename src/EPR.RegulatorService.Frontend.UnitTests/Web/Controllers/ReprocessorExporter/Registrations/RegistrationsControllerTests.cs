@@ -9,14 +9,12 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
-using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.ApplicationUpdate;
 
 using FluentAssertions.Execution;
 
@@ -30,9 +28,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
 public class RegistrationsControllerTests
 {
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
-    private const int RegistrationIdUrlValue = 1234;
+    private readonly Guid RegistrationIdUrlValue = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
 
-    private readonly string _manageRegistrationUrl = $"manage-registrations?id={RegistrationIdUrlValue}";
+    private readonly string _manageRegistrationUrl = $"manage-registrations?id={Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163").ToString()}";
 
     private RegistrationsController _controller;
     private Mock<ISessionManager<JourneySession>> _mockSessionManager;
@@ -104,7 +102,7 @@ public class RegistrationsControllerTests
     public async Task BusinessAddress_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
-        var registrationId = 1234;
+        var registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
 
@@ -141,7 +139,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.BusinessAddress(1);
+            await _controller.BusinessAddress(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
     }
 
@@ -149,7 +147,7 @@ public class RegistrationsControllerTests
     public async Task UkSiteDetails_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange
-        const int registrationId = 1234;
+        Guid registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
 
         // Arrange
         _mockSessionManager
@@ -167,7 +165,7 @@ public class RegistrationsControllerTests
     public async Task UkSiteDetails_ReturnView()
     {
         // Arrange
-        const int registrationId = 1234;
+        Guid registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
@@ -205,7 +203,7 @@ public class RegistrationsControllerTests
     public async Task CompleteUkSiteDetails_WhenTaskComplete_RedirectToManageRegistrations()
     {
         // Arrange
-        const int registrationId = 1234;
+        Guid registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
@@ -241,7 +239,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.AuthorisedMaterials(1);
+            await _controller.AuthorisedMaterials(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
     }
 
@@ -258,7 +256,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.AuthorisedMaterials(1);
+        var result = await _controller.AuthorisedMaterials(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -268,18 +266,18 @@ public class RegistrationsControllerTests
     public async Task CompleteQueryMaterialTask_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
-        var registrationId = 1234;
+        var registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(PagePath.CompleteQueryMaterialTask);
 
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
         _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorApplicationTaskStatusAsync(It.IsAny<UpdateMaterialTaskStatusRequest>()))
             .Returns(Task.CompletedTask);
-        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(1))
-            .ReturnsAsync(new RegistrationMaterialDetail { Id = 1, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
+        _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
 
         // Act
-        var result = await _controller.QueryMaterialTask(new QueryMaterialTaskViewModel { Comments = "", TaskName = RegulatorTaskType.MaterialDetailsAndContact, RegistrationMaterialId = 1});
+        var result = await _controller.QueryMaterialTask(new QueryMaterialTaskViewModel { Comments = "", TaskName = RegulatorTaskType.MaterialDetailsAndContact, RegistrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC") });
 
         // Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -321,7 +319,7 @@ public class RegistrationsControllerTests
     public async Task CompleteRegistrationMaterialTask_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
-        var registrationId = 1234;
+        var registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(PagePath.CompleteQueryMaterialTask);
 
@@ -351,7 +349,7 @@ public class RegistrationsControllerTests
     public async Task CompleteAuthorisedMaterials_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
-        var registrationId = 1234;
+        var registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(PagePath.AuthorisedMaterials);
 
@@ -381,7 +379,7 @@ public class RegistrationsControllerTests
     public async Task InputsAndOutputs_WhenRequestValid_ShouldReturnView()
     {
         // Arrange
-        int registrationMaterialId = 1234;
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(PagePath.InputsAndOutputs);
 
@@ -433,7 +431,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.InputsAndOutputs(1);
+            await _controller.InputsAndOutputs(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
     }
 
@@ -441,7 +439,7 @@ public class RegistrationsControllerTests
     public async Task InputsAndOutputs_ShouldReturnCorrectViewModel()
     {
         // Arrange
-        const int registrationMaterialId = 1;
+        Guid registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         const string expectedPreviousPage = $"{PagePath.ManageRegistrations}?id=1345";
 
         JourneySession journeySession = new JourneySession();
@@ -456,7 +454,7 @@ public class RegistrationsControllerTests
 
         var expectedViewModel = new RegistrationMaterialReprocessingIOViewModel
         {
-            RegistrationMaterialId = 1,
+            RegistrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             RegistrationMaterialReprocessingIO = registrationMaterialReprocessing
         };
 
@@ -481,7 +479,7 @@ public class RegistrationsControllerTests
     public async Task CompleteInputsAndOutputs_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
-        var registrationMaterialId = 1234;
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
 
         _mockReprocessorExporterService.Setup(x => x.GetRegistrationMaterialByIdAsync(registrationMaterialId))
             .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = RegistrationIdUrlValue, MaterialName = "Plastic" });
@@ -516,7 +514,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.SamplingInspection(1);
+        var result = await _controller.SamplingInspection(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         using (new AssertionScope())
@@ -531,7 +529,7 @@ public class RegistrationsControllerTests
     public async Task SamplingInspection_WhenRequestValid_ShouldReturnView()
     {
         // Arrange
-        int registrationMaterialId = 1234;
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(PagePath.SamplingInspection);
 
@@ -585,7 +583,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.SamplingInspection(1);
+            await _controller.SamplingInspection(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
     }
 
@@ -603,7 +601,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.SamplingInspection(1);
+        var result = await _controller.SamplingInspection(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -621,7 +619,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.SamplingInspection(1);
+        var result = await _controller.SamplingInspection(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -633,7 +631,7 @@ public class RegistrationsControllerTests
     public async Task CompleteSamplingInspection_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
-        var registrationMaterialId = 1234;
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
         
@@ -674,7 +672,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.QueryRegistrationTask(1, RegulatorTaskType.SiteAddressAndContactDetails);
+        var result = await _controller.QueryRegistrationTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.SiteAddressAndContactDetails);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -692,7 +690,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.QueryRegistrationTask(1, RegulatorTaskType.SiteAddressAndContactDetails);
+        var result = await _controller.QueryRegistrationTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.SiteAddressAndContactDetails);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -710,7 +708,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.QueryRegistrationTask(1, RegulatorTaskType.SiteAddressAndContactDetails);
+        var result = await _controller.QueryRegistrationTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.SiteAddressAndContactDetails);
 
         // Assert
         using (new AssertionScope())
@@ -732,7 +730,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.QueryRegistrationTask(1, RegulatorTaskType.SiteAddressAndContactDetails);
+            await _controller.QueryRegistrationTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.SiteAddressAndContactDetails);
         });
     }
 
@@ -746,7 +744,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim(1);
+        var result = await _controller.OverseasReprocessorInterim(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         using (new AssertionScope())
@@ -768,7 +766,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.OverseasReprocessorInterim(1);
+            await _controller.OverseasReprocessorInterim(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
     }
 
@@ -786,7 +784,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim(1);
+        var result = await _controller.OverseasReprocessorInterim(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -804,7 +802,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.OverseasReprocessorInterim(1);
+        var result = await _controller.OverseasReprocessorInterim(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -816,7 +814,7 @@ public class RegistrationsControllerTests
     public async Task CompleteOverseasReprocessorInterim_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
-        var registrationMaterialId = 1234;
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
@@ -857,7 +855,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.WasteLicensesPermitsAndExemptions);
+        var result = await _controller.QueryMaterialTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.WasteLicensesPermitsAndExemptions);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -875,7 +873,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
+        var result = await _controller.QueryMaterialTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.MaterialsAuthorisedOnSite);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -893,7 +891,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
+        var result = await _controller.QueryMaterialTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.MaterialsAuthorisedOnSite);
 
         // Assert
         using (new AssertionScope())
@@ -915,7 +913,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.QueryMaterialTask(1, RegulatorTaskType.MaterialsAuthorisedOnSite);
+            await _controller.QueryMaterialTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.MaterialsAuthorisedOnSite);
         });
     }
 
@@ -951,7 +949,7 @@ public class RegistrationsControllerTests
         // Act and Assert
         await Assert.ThrowsExceptionAsync<SessionException>(async () =>
         {
-            await _controller.WasteLicences(1);
+            await _controller.WasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
     }
 
@@ -969,7 +967,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.WasteLicences(1);
+        var result = await _controller.WasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -987,7 +985,7 @@ public class RegistrationsControllerTests
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.WasteLicences(1);
+        var result = await _controller.WasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -999,7 +997,7 @@ public class RegistrationsControllerTests
     public async Task CompleteWasteLicences_WhenTaskComplete_RedirectToManageRegistrations()
     {
         // Arrange
-        const int registrationId = 1234;
+        Guid registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(PagePath.WasteLicences);
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
@@ -1034,7 +1032,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.MaterialDetails(1);
+        var result = await _controller.MaterialDetails(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         using (new AssertionScope())
@@ -1054,14 +1052,14 @@ public class RegistrationsControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialDetails(1));
+        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialDetails(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
     }
 
     [TestMethod]
     public async Task CompleteMaterialDetails_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
-        var registrationMaterialId = 1234;
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
         
@@ -1097,7 +1095,7 @@ public class RegistrationsControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialWasteLicences(1));
+        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialWasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
     }
 
     [TestMethod]
@@ -1110,7 +1108,7 @@ public class RegistrationsControllerTests
         _mockSessionManager.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         // Act
-        var result = await _controller.MaterialWasteLicences(1);
+        var result = await _controller.MaterialWasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         using (new AssertionScope())
@@ -1148,7 +1146,7 @@ public class RegistrationsControllerTests
             .Returns(expectedViewModel);
 
         // Act
-        var result = await _controller.MaterialWasteLicences(1);
+        var result = await _controller.MaterialWasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         using (new AssertionScope())
@@ -1165,7 +1163,7 @@ public class RegistrationsControllerTests
     public async Task CompleteMaterialWasteLicences_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
-        var registrationMaterialId = 1234;
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 

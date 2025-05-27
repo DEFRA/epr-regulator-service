@@ -4,7 +4,7 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 public class SiteDetails
 {
-    public int RegistrationId { get; init; }
+    public Guid RegistrationId { get; init; }
     public string? SiteAddress { get; init; }
     public string? NationName { get; init; }
     public string? GridReference { get; init; }

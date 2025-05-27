@@ -32,7 +32,7 @@ public class AuthorisedMaterialsProfileTests
         // Arrange
         var registration = new RegistrationAuthorisedMaterials
         {
-            RegistrationId = 1,
+            RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             OrganisationName = "Test Organisation",
             SiteAddress = "123 Test Street",
             MaterialsAuthorisation = []
@@ -57,7 +57,7 @@ public class AuthorisedMaterialsProfileTests
         // Arrange
         var registration = new RegistrationAuthorisedMaterials
         {
-            RegistrationId = 1,
+            RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             OrganisationName = "Test Organisation",
             SiteAddress = "123 Test Street",
             MaterialsAuthorisation = [
