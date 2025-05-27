@@ -1,6 +1,13 @@
 @model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditedMaterialViewModel
 
-@if (Model?.Accreditation != null)
+@{
+    var acc = Model?.Accreditation;
+    var displayAccreditation = acc != null
+        && !string.Equals(acc.Status, "Started", StringComparison.OrdinalIgnoreCase)
+        && !string.Equals(acc.Status, "Withdrawn", StringComparison.OrdinalIgnoreCase);
+}
+
+@if (displayAccreditation)
 {
     <h2 class="govuk-heading-m govuk-!-margin-top-6">
         Review @(Model.MaterialName) accreditation

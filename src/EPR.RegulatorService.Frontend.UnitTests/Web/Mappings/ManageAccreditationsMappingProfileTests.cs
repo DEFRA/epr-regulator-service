@@ -181,4 +181,35 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.StatusCssClass.Should().Be("govuk-tag--blue");
         }
     }
+
+    [TestMethod]
+    public void Map_RegistrationMaterialSummary_To_AccreditedMaterialViewModel_MapsStatusFieldsCorrectly()
+    {
+        // Arrange
+        var material = new RegistrationMaterialSummary
+        {
+            Id = Guid.NewGuid(),
+            MaterialName = "Aluminium",
+            Status = ApplicationStatus.Refused
+        };
+
+        // Act
+        var viewModel = _mapper.Map<AccreditedMaterialViewModel>(material);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            viewModel.Id.Should().Be(material.Id);
+            viewModel.MaterialName.Should().Be("Aluminium");
+
+            // This is the raw enum
+            viewModel.RegistrationStatusRaw.Should().Be(ApplicationStatus.Refused);
+
+            // This is the mapped status text and tag
+            viewModel.RegistrationStatusTask.Should().NotBeNull();
+            viewModel.RegistrationStatusTask.StatusText.Should().Be("Refused");
+            viewModel.RegistrationStatusTask.StatusCssClass.Should().Be("govuk-tag--red");
+        }
+    }
+
 }

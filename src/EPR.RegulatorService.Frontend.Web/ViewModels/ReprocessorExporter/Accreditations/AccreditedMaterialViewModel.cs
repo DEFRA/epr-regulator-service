@@ -1,4 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+
 public class AccreditedMaterialViewModel
 {
     public Guid Id { get; set; }
@@ -12,4 +14,16 @@ public class AccreditedMaterialViewModel
     // Therefore, the ViewModel keeps a single `Accreditation` property.
     // If multiple exist for the same year, it indicates a backend data issue and an error is thrown in the service layer.
     public AccreditationDetailsViewModel? Accreditation { get; set; } = new();
+
+    public ApplicationStatus? RegistrationStatusRaw { get; init; }
+
+
+    public bool ShouldDisplay =>
+        !IsStatusInactive(RegistrationStatusTask?.StatusText) &&
+        (Accreditation?.ShouldDisplay ?? false);
+
+    private static bool IsStatusInactive(string? status) =>
+        string.IsNullOrWhiteSpace(status) ||
+        status.Equals("Not started yet", StringComparison.OrdinalIgnoreCase) ||
+        status.Equals("Withdrawn", StringComparison.OrdinalIgnoreCase);
 }

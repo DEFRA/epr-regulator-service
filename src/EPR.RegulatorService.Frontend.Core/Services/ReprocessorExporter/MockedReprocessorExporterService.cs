@@ -389,46 +389,97 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             OrganisationType = organisationType,
             Regulator = "EA",
             Materials = new List<RegistrationMaterialSummary>
-        {
-            new RegistrationMaterialSummary
             {
-                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                MaterialName = "Plastic",
-                Status = ApplicationStatus.Granted,
-                Accreditations = new List<Accreditation>
+                // Should be displayed — both material and accreditation are meaningful
+                new RegistrationMaterialSummary
                 {
-                    CreateAccreditation("aaaa1111-1111-1111-1111-111111111111", "MOCK-2025-PLASTIC", "Granted", new DateTime(2025, 6, 2), 2025)
+                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    MaterialName = "Plastic",
+                    Status = ApplicationStatus.Granted,
+                    Accreditations = new List<Accreditation>
+                    {
+                        CreateAccreditation("aaaa1111-1111-1111-1111-111111111111", "MOCK-2025-PLASTIC", "Granted", new DateTime(2025, 6, 2), 2025)
+                    }
+                },
+
+                // Not shown — material status is Withdrawn
+                new RegistrationMaterialSummary
+                {
+                    Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                    MaterialName = "Steel",
+                    Status = ApplicationStatus.Withdrawn,
+                    Accreditations = new List<Accreditation>
+                    {
+                        CreateAccreditation("bbbb1111-1111-1111-1111-111111111111", "MOCK-2025-STEEL", "Granted", new DateTime(2025, 7, 15), 2025)
+                    }
+                },
+
+                // Not shown — material status is null
+                new RegistrationMaterialSummary
+                {
+                    Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                    MaterialName = "Glass",
+                    Status = null,
+                    Accreditations = new List<Accreditation>()
+                },
+
+                // Not shown — material status is Started
+                new RegistrationMaterialSummary
+                {
+                    Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                    MaterialName = "Wood",
+                    Status = ApplicationStatus.Started,
+                    Accreditations = new List<Accreditation>()
+                },
+
+                // Not shown — material is Granted, but accreditation is Started
+                new RegistrationMaterialSummary
+                {
+                    Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
+                    MaterialName = "Cardboard",
+                    Status = ApplicationStatus.Granted,
+                    Accreditations = new List<Accreditation>
+                    {
+                        CreateAccreditation("cccc1111-1111-1111-1111-111111111111", "MOCK-2025-CARD", "Started", new DateTime(2025, 8, 1), 2025)
+                    }
+                },
+
+                // Not shown — material is Granted, but accreditation is Withdrawn
+                new RegistrationMaterialSummary
+                {
+                    Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
+                    MaterialName = "Rubber",
+                    Status = ApplicationStatus.Granted,
+                    Accreditations = new List<Accreditation>
+                    {
+                        CreateAccreditation("cccc2222-2222-2222-2222-222222222222", "MOCK-2025-RUBBER", "Withdrawn", new DateTime(2025, 10, 1), 2025)
+                    }
+                },
+
+                // Should be displayed — good status, good accreditation
+                new RegistrationMaterialSummary
+                {
+                    Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
+                    MaterialName = "Aluminium",
+                    Status = ApplicationStatus.Granted,
+                    Accreditations = new List<Accreditation>
+                    {
+                        CreateAccreditation("dddd1111-1111-1111-1111-111111111111", "MOCK-2025-ALU", "Granted", new DateTime(2025, 9, 1), 2025)
+                    }
                 }
             },
-            new RegistrationMaterialSummary
-            {
-                Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                MaterialName = "Steel",
-                Status = ApplicationStatus.Refused,
-                Accreditations = new List<Accreditation>
-                {
-                    CreateAccreditation("bbbb1111-1111-1111-1111-111111111111", "MOCK-2025-STEEL", "Refused", new DateTime(2025, 7, 15), 2025)
-                }
-            },
-            new RegistrationMaterialSummary
-            {
-                Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                MaterialName = "Glass",
-                Status = null, // Tests fallback logic for "Not started yet"
-                Accreditations = new List<Accreditation>()
-            }
-        },
             Tasks = new List<RegistrationTask>
-        {
-            new RegistrationTask
             {
-                Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-                TaskName = RegulatorTaskType.AssignOfficer,
-                Status = RegulatorTaskStatus.Completed
+                new RegistrationTask
+                {
+                    Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                    TaskName = RegulatorTaskType.AssignOfficer,
+                    Status = RegulatorTaskStatus.Completed
+                }
             }
-        }
         };
     }
+
 
 
     private static Accreditation CreateAccreditation(string guid, string reference, string status, DateTime date, int year)

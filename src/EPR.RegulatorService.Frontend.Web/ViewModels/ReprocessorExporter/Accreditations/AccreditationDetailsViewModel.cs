@@ -18,4 +18,11 @@ public class AccreditationDetailsViewModel
 
     public AccreditationTaskViewModel? SamplingAndInspectionPlanTask { get; set; }
 
+    public bool ShouldDisplay =>
+        !IsStatusInactive(Status);
+
+    private static bool IsStatusInactive(string status) =>
+        string.IsNullOrWhiteSpace(status) ||
+        status.Equals("Not started yet", StringComparison.OrdinalIgnoreCase) ||
+        status.Equals("Withdrawn", StringComparison.OrdinalIgnoreCase);
 }

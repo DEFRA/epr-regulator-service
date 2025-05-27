@@ -29,6 +29,7 @@ public class ManageAccreditationsMappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.MaterialName, opt => opt.MapFrom(src => src.MaterialName))
             .ForMember(dest => dest.RegistrationStatusTask, opt => opt.MapFrom(src => MapApplicationStatusToViewModel(src.Status)))
+            .ForMember(dest => dest.RegistrationStatusRaw, opt => opt.MapFrom(src => src.Status))
             .ForMember(dest => dest.Accreditation, opt => opt.MapFrom(src => src.Accreditations.SingleOrDefault()));
 
         CreateMap<Accreditation, AccreditationDetailsViewModel>()

@@ -65,10 +65,108 @@ public class MockedReprocessorExporterServiceTests
         var id = Guid.Empty;
 
         // Act
-        var exception = await Assert.ThrowsExceptionAsync<NotFoundException>( () => _service.GetRegistrationByIdAsync(id));
+        var exception = await Assert.ThrowsExceptionAsync<NotFoundException>(() => _service.GetRegistrationByIdAsync(id));
 
         // Assert
         exception.Message.Should().Be("Mocked exception for testing purposes.");
     }
 
+    [TestMethod]
+    public async Task ShouldDisplayMaterial_WhenMaterialStatusIsGranted_ShouldBeDisplayed()
+    {
+        var result = await _service.GetRegistrationByIdWithAccreditationsAsync(Guid.NewGuid()); // ID doesn't matter in mock
+        var material = result.Materials.FirstOrDefault(m => m.MaterialName == "Plastic");
+
+        using (new AssertionScope())
+        {
+            material.Should().NotBeNull();
+            material!.Status.Should().Be(ApplicationStatus.Granted);
+            material.Accreditations.Should().ContainSingle(a => a.Status == "Granted");
+        }
+    }
+
+
+    [TestMethod]
+    public async Task ShouldNotDisplayMaterial_WhenMaterialStatusIsWithdrawn_EvenIfAccreditationIsGranted()
+    {
+        var result = await _service.GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50"));
+        var material = result.Materials.FirstOrDefault(m => m.MaterialName == "Steel");
+
+        using (new AssertionScope())
+        {
+            material.Should().NotBeNull();
+            material!.Status.Should().Be(ApplicationStatus.Withdrawn);
+            material.Accreditations.Should().ContainSingle(a => a.Status == "Granted");
+        }
+    }
+
+    [TestMethod]
+    public async Task ShouldNotDisplayMaterial_WhenStatusIsNull_AndNoAccreditations()
+    {
+        var result = await _service.GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50"));
+        var material = result.Materials.FirstOrDefault(m => m.MaterialName == "Glass");
+
+        using (new AssertionScope())
+        {
+            material.Should().NotBeNull();
+            material!.Status.Should().BeNull();
+            material.Accreditations.Should().BeEmpty();
+        }
+    }
+
+    [TestMethod]
+    public async Task ShouldNotDisplayMaterial_WhenStatusIsStarted_AndNoAccreditations()
+    {
+        var result = await _service.GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50"));
+        var material = result.Materials.FirstOrDefault(m => m.MaterialName == "Wood");
+
+        using (new AssertionScope())
+        {
+            material.Should().NotBeNull();
+            material!.Status.Should().Be(ApplicationStatus.Started);
+            material.Accreditations.Should().BeEmpty();
+        }
+    }
+
+    [TestMethod]
+    public async Task ShouldNotDisplayMaterial_WhenStatusIsGranted_ButAccreditationIsStarted()
+    {
+        var result = await _service.GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50"));
+        var material = result.Materials.FirstOrDefault(m => m.MaterialName == "Cardboard");
+
+        using (new AssertionScope())
+        {
+            material.Should().NotBeNull();
+            material!.Status.Should().Be(ApplicationStatus.Granted);
+            material.Accreditations.Should().ContainSingle(a => a.Status == "Started");
+        }
+    }
+
+    [TestMethod]
+    public async Task ShouldNotDisplayMaterial_WhenStatusIsGranted_ButAccreditationIsWithdrawn()
+    {
+        var result = await _service.GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50"));
+        var material = result.Materials.FirstOrDefault(m => m.MaterialName == "Rubber");
+
+        using (new AssertionScope())
+        {
+            material.Should().NotBeNull();
+            material!.Status.Should().Be(ApplicationStatus.Granted);
+            material.Accreditations.Should().ContainSingle(a => a.Status == "Withdrawn");
+        }
+    }
+
+    [TestMethod]
+    public async Task ShouldDisplayMaterial_WhenStatusIsGranted_AndAccreditationIsGranted()
+    {
+        var result = await _service.GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50"));
+        var material = result.Materials.FirstOrDefault(m => m.MaterialName == "Aluminium");
+
+        using (new AssertionScope())
+        {
+            material.Should().NotBeNull();
+            material!.Status.Should().Be(ApplicationStatus.Granted);
+            material.Accreditations.Should().ContainSingle(a => a.Status == "Granted");
+        }
+    }
 }
