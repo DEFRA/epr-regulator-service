@@ -122,13 +122,9 @@ public partial class RegistrationSubmissionsController(
         try
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            RegistrationSubmissionDetailsViewModel model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+            RegistrationSubmissionDetailsViewModel model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetTransformedRegistrationSubmissionDetails);
 
-            RegistrationSubmissionDetailsViewModel model = submissionId == null
-                ? _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistration
-                : await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetTransformedRegistrationSubmissionDetails);
-
-            if (model == null)
+            if (model is null)
             {
                 return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
             }
