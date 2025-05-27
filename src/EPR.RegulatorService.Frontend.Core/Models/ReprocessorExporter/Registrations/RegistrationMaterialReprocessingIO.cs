@@ -1,6 +1,7 @@
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+
 namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations
 {
-    using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
     public class RegistrationMaterialReprocessingIO
     {
