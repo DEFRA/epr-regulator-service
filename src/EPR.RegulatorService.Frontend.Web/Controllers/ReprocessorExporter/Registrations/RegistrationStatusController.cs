@@ -158,7 +158,7 @@ public class RegistrationStatusController(
 
         var registrationStatusSession = GetRegistrationStatusSession(session);
 
-        session.ReprocessorExporterSession.QueryMaterialSession = mapper.Map<QueryMaterialSession>(registrationStatusSession);        
+        session.ReprocessorExporterSession.QueryMaterialSession = mapper.Map<QueryMaterialSession>(registrationStatusSession);
         session.ReprocessorExporterSession.QueryMaterialSession.PagePath = PagePath.FeesDue;
 
         await SaveSession(session);

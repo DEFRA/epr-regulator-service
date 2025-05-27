@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using static StackExchange.Redis.Role;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
@@ -578,6 +579,34 @@ public class RegistrationStatusControllerTests
             var redirectResult = (RedirectToActionResult)response;
             redirectResult.ActionName.Should().Be("Index");
             redirectResult.ControllerName.Should().Be("ManageRegistrations");
+        }
+    }
+
+    [TestMethod]
+    public async Task AddNote_ShouldRedirectToAddMaterialQueryNotePage()
+    {
+        // Arrange
+        _mapperMock
+            .Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationStatusSession>()))
+            .Returns(new QueryMaterialSession
+            {
+                OrganisationName = "Test",
+                RegulatorApplicationTaskStatusId = Guid.NewGuid(),
+                RegistrationMaterialId = Guid.NewGuid(),
+                PagePath = PagePath.FeesDue
+            });
+
+        // Act
+        var response = await _registrationStatusController.AddNote();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<RedirectToActionResult>();
+
+            var redirectResult = (RedirectToActionResult)response;
+            redirectResult.ActionName.Should().Be("AddMaterialQueryNote");
+            redirectResult.ControllerName.Should().Be("Query");
         }
     }
 

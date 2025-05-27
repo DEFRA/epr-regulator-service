@@ -9,7 +9,9 @@ public class QueryNoteMappingProfile : Profile
 {
     public QueryNoteMappingProfile()
     {
-        CreateMap<RegistrationStatusSession, QueryMaterialSession>();
-        CreateMap<QueryMaterialSession, AddMaterialQueryNoteViewModel>();
+        CreateMap<RegistrationStatusSession, QueryMaterialSession>()
+            .ForMember(dest => dest.PagePath, opt => opt.Ignore());
+        CreateMap<QueryMaterialSession, AddMaterialQueryNoteViewModel>()
+            .ForMember(dest => dest.Note, opt => opt.Ignore());
     }
 }
