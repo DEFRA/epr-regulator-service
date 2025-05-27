@@ -4,7 +4,7 @@ using Core.Enums.ReprocessorExporter;
 
 public class FeesDueViewModel : RegistrationStatusViewModelBase
 {
-    public int RegistrationId { get; init; }
+    public Guid RegistrationId { get; init; }
     public string ApplicationReferenceNumber { get; init; }
     public Guid RegistrationMaterialId { get; init; }
     public string MaterialName { get; init; }

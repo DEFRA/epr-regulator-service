@@ -111,8 +111,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             SubmittedDate = DateTime.Now.AddDays(-7),
             Regulator = "GB-ENG",
             TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted,
-            // TODO: Add task id
-            //RegulatorApplicationTaskStatusId = task?
+            RegulatorApplicationTaskStatusId = task?.Id
         });
     }
 

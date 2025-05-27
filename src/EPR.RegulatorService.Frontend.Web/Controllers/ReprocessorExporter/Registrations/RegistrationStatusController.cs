@@ -91,10 +91,22 @@ public class RegistrationStatusController(
 
         await SaveSession(session);
 
-        return registrationStatusSession.FullPaymentMade == true
-          ? RedirectToAction("PaymentMethod", "RegistrationStatus")
-          : RedirectToAction("QueryMaterialTask", "Registrations", new { registrationMaterialId = registrationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckRegistrationStatus });
+        if (registrationStatusSession.FullPaymentMade == true)
+        {
+            return RedirectToAction("PaymentMethod", "RegistrationStatus");
+        }
 
+        if (registrationStatusSession.TaskStatus == RegulatorTaskStatus.Queried)
+        {
+            session.ReprocessorExporterSession.QueryMaterialSession = mapper.Map<QueryMaterialSession>(registrationStatusSession);
+            session.ReprocessorExporterSession.QueryMaterialSession.PagePath = PagePath.FeesDue;
+
+            await SaveSession(session);
+
+            return RedirectToAction("AddMaterialQueryNote", "Query");
+        }
+
+        return RedirectToAction("QueryMaterialTask", "Registrations", new { registrationMaterialId = registrationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckRegistrationStatus });
     }
 
     [HttpGet]

@@ -8,6 +8,6 @@ public class QueryMaterialSession
     public string? SiteAddress { get; init; }
     public ApplicationOrganisationType ApplicationType { get; init; }
     public required Guid RegulatorApplicationTaskStatusId { get; init; }
-    public required int RegistrationMaterialId { get; init; }
+    public required Guid RegistrationMaterialId { get; init; }
     public required string PagePath { get; set; }
 }
