@@ -322,16 +322,14 @@ public class ReprocessorExporterService(
     {
         response.EnsureSuccessStatusCode();
 
-        var rawJson = await response.Content.ReadAsStringAsync();
+        var entity = await response.Content.ReadFromJsonAsync<T>(_jsonSerializerOptions);
 
-        var entity = JsonSerializer.Deserialize<T>(rawJson, _jsonSerializerOptions);
         if (entity == null)
         {
-            throw new NotFoundException("Deserialized object is null.");
+            throw new NotFoundException("Unable to deserialize response.");
         }
 
         return entity;
-
     }
 
     private string GetVersionedEndpoint(Endpoints endpointName)
