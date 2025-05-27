@@ -18,4 +18,5 @@ public class RegistrationStatusSession
     public PaymentMethodType? PaymentMethod { get; set; }
     public DateTime? PaymentDate { get; set; }
     public Guid? RegulatorApplicationTaskStatusId { get; set; }
+    public RegulatorTaskStatus TaskStatus { get; init; }
 }

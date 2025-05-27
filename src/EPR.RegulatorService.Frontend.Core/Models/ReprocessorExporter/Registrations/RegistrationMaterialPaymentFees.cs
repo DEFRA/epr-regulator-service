@@ -15,4 +15,5 @@ public class RegistrationMaterialPaymentFees
     public decimal FeeAmount { get; init; }
     public required string Regulator { get; init; }
     public Guid? RegulatorApplicationTaskStatusId { get; init; }
+    public RegulatorTaskStatus TaskStatus { get; init; }
 }
