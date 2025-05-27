@@ -38,7 +38,7 @@ public class RegistrationStatusControllerTests
     [TestInitialize]
     public void TestInitialize()
     {
-        const int registrationMaterialId = 123;
+        Guid registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
 
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         _mapperMock = new Mock<IMapper>();
@@ -90,14 +90,14 @@ public class RegistrationStatusControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _registrationStatusController.FeesDue(1));
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _registrationStatusController.FeesDue(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
     }
     
     [TestMethod]
     public async Task FeesDue_WhenCalledWithIdAndRegistrationStatusSessionIsNull_ShouldCreateNewSessionFromRegistrationMaterialDetail()
     {
         // Arrange
-        var paymentFees = CreateRegistrationPaymentFees(123);
+        var paymentFees = CreateRegistrationPaymentFees(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
 
         _journeySession.ReprocessorExporterSession.RegistrationStatusSession = null;
 
@@ -128,7 +128,7 @@ public class RegistrationStatusControllerTests
             .Returns(expectedViewModel);
 
         // Act
-        var response = await _registrationStatusController.FeesDue(1);
+        var response = await _registrationStatusController.FeesDue(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         using (new AssertionScope())
@@ -543,21 +543,21 @@ public class RegistrationStatusControllerTests
         }
     }
 
-    private static RegistrationStatusSession CreateRegistrationStatusSession(int registrationMaterialId) =>
+    private static RegistrationStatusSession CreateRegistrationStatusSession(Guid registrationMaterialId) =>
         new()
         {
             OrganisationName = "Test Organisation",
             RegistrationMaterialId = registrationMaterialId,
-            RegistrationId = 1,
+            RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             MaterialName = "Plastic"
         };
-    private static RegistrationMaterialPaymentFees CreateRegistrationPaymentFees(int registrationMaterialId) =>
+    private static RegistrationMaterialPaymentFees CreateRegistrationPaymentFees(Guid registrationMaterialId) =>
         new()
         {
             OrganisationName = "Test Organisation",
             ApplicationType = ApplicationOrganisationType.Reprocessor,
             RegistrationMaterialId = registrationMaterialId,
-            RegistrationId = 1,
+            RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             MaterialName = "Plastic",
             ApplicationReferenceNumber = "123456789",
             Regulator = "Regulator"

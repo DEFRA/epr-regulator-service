@@ -119,7 +119,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetRegistrationByIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
-        const int registrationId = 123;
+        var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetRegistrationByIdPath
             .Replace("{apiVersion}", ApiVersion.ToString())
             .Replace("{id}", registrationId.ToString());
@@ -164,7 +164,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetSiteDetailsByRegistrationIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowExceptions()
     {
         // Arrange
-        const int registrationId = 123;
+        var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetSiteAddressByRegistrationIdPath
             .Replace("{apiVersion}", ApiVersion.ToString())
             .Replace("{id}", registrationId.ToString());
@@ -207,7 +207,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetRegistrationMaterialByIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
-        const int registrationMaterialId = 123;
+        var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetRegistrationMaterialByIdPath
             .Replace("{apiVersion}", ApiVersion.ToString())
             .Replace("{id}", registrationMaterialId.ToString());
@@ -224,7 +224,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetWasteLicenceByRegistrationMaterialIdAsync_WhenSuccess_ReturnsRegistrationWasteLicences()
     {
         // Arrange
-        const int registrationMaterialId = 1234;
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var expectedWasteLicence = CreateRegistrationWasteLicence();
         string expectedPath = GetWasteLicenceByRegistrationMaterialId
             .Replace("{apiVersion}", ApiVersion.ToString())
@@ -250,7 +250,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetWasteLicenceByRegistrationMaterialId_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
-        const int registrationMaterialId = 123;
+        var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetWasteLicenceByRegistrationMaterialId
             .Replace("{apiVersion}", ApiVersion.ToString())
             .Replace("{id}", registrationMaterialId.ToString());
@@ -267,7 +267,7 @@ public class ReprocessorExporterServiceTests
     public async Task UpdateRegistrationMaterialOutcome_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
-        const int registrationMaterialId = 123;
+        var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = UpdateRegistrationMaterialOutcome
             .Replace("{apiVersion}", ApiVersion.ToString())
             .Replace("{id}", registrationMaterialId.ToString());
@@ -289,7 +289,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetAuthorisedMaterialsByRegistrationIdAsync_WhenSuccess_ReturnsRegistrationAuthorisedMaterial()
     {
         // Arrange
-        const int registrationId = 1234;
+        var registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var expectedAuthorisedMaterials = CreateRegistrationAuthorisedMaterials(registrationId);
         string expectedPath = GetAuthorisedMaterialsByRegistrationId
             .Replace("{apiVersion}", ApiVersion.ToString())
@@ -315,7 +315,7 @@ public class ReprocessorExporterServiceTests
     public async Task UpdateRegistrationTaskStatus_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
-        const int registrationId = 123;
+        var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = UpdateRegistrationTaskStatus
             .Replace("{apiVersion}", ApiVersion.ToString());
         var request = new UpdateRegistrationTaskStatusRequest
@@ -337,7 +337,7 @@ public class ReprocessorExporterServiceTests
     public async Task MarkAsDulyMade_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
-        const int registrationMaterialId = 123;
+        var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = MarkAsDulyMadePath
             .Replace("{apiVersion}", ApiVersion.ToString())
             .Replace("{id}", registrationMaterialId.ToString());
@@ -384,7 +384,7 @@ public class ReprocessorExporterServiceTests
     public async Task UpdateApplicationTaskStatus_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
-        const int registrationMaterialId = 123;
+        var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = UpdateApplicationTaskStatus
             .Replace("{apiVersion}", ApiVersion.ToString());
         var request = new UpdateMaterialTaskStatusRequest()
@@ -406,7 +406,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetReprocessingIOByRegistrationMaterialIdAsync_WhenSuccessResponse_ReturnsReprocessingIO()
     {
         // Arrange
-        int registrationMaterialId = 1;
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         var expectedReprocessingIO = CreateReprocessingIO();
         string expectedPath = GetReprocessingIOByRegistrationMaterialIdPath
             .Replace("{apiVersion}", ApiVersion.ToString())
@@ -431,7 +431,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetReprocessingIOByRegistrationMaterialIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
-        const int registrationId = 123;
+        var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetRegistrationByIdPath
             .Replace("{apiVersion}", ApiVersion.ToString())
             .Replace("{id}", registrationId.ToString());
@@ -448,7 +448,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetSamplingPlanByRegistrationMaterialIdAsync_WhenSuccessResponse_ReturnsSamplingPlan()
     {
         // Arrange
-        int registrationMaterialId = 1;
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         var expectedSamplingPlan = CreateSamplingPlan();
         string expectedPath = GetSamplingPlanByRegistrationMaterialIdPath
             .Replace("{apiVersion}", ApiVersion.ToString())
@@ -473,7 +473,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetSamplingPlanByRegistrationMaterialIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
-        const int registrationId = 123;
+        var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetSamplingPlanByRegistrationMaterialIdPath
             .Replace("{apiVersion}", ApiVersion.ToString())
             .Replace("{id}", registrationId.ToString());
@@ -490,7 +490,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetPaymentFeesByRegistrationMaterialIdAsync_WhenSuccessResponse_ReturnsRegistration()
     {
         // Arrange
-        const int registrationMaterialId = 123;
+        var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         var expectedRegistrationPaymentFees = CreateRegistrationMaterialPaymentFees();
         string expectedPath = GetPaymentFeesByRegistrationMaterialIdPath
             .Replace("{apiVersion}", ApiVersion.ToString())
@@ -516,7 +516,7 @@ public class ReprocessorExporterServiceTests
     public async Task GetPaymentFeesByRegistrationMaterialIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
-        const int registrationMaterialId = 123;
+        var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetPaymentFeesByRegistrationMaterialIdPath
             .Replace("{apiVersion}", ApiVersion.ToString())
             .Replace("{id}", registrationMaterialId.ToString());
@@ -790,7 +790,7 @@ public class ReprocessorExporterServiceTests
     private static Registration CreateRegistration() =>
         new()
         {
-            Id = 123,
+            Id = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
             OrganisationName = "Blue Exports Ltd",
             SiteAddress = "N/A",
             OrganisationType = ApplicationOrganisationType.Reprocessor,
@@ -817,13 +817,13 @@ public class ReprocessorExporterServiceTests
     private static RegistrationMaterialDetail CreateRegistrationMaterial() =>
         new()
         {
-            Id = 123456,
-            RegistrationId = 123,
+            Id = Guid.Parse("A6B60D2B-C998-40EF-BFE4-014AE4A24624"),
+            RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
             MaterialName = "Plastic",
             Status = ApplicationStatus.Granted,
         };
 
-    private static RegistrationAuthorisedMaterials CreateRegistrationAuthorisedMaterials(int registrationId) =>
+    private static RegistrationAuthorisedMaterials CreateRegistrationAuthorisedMaterials(Guid registrationId) =>
         new()
         {
             RegistrationId = registrationId,
@@ -881,7 +881,7 @@ public class ReprocessorExporterServiceTests
     {
         var expectedSiteDetails = new SiteDetails
         {
-            RegistrationId = 2,
+            RegistrationId = Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50"),
             SiteAddress = "23, Ruby St, London, E12 3SE",
             NationName = "England",
             GridReference = "SJ 854 662",
@@ -894,11 +894,11 @@ public class ReprocessorExporterServiceTests
     private static RegistrationMaterialPaymentFees CreateRegistrationMaterialPaymentFees() =>
         new RegistrationMaterialPaymentFees
         {
-            RegistrationId = 123,
+            RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
             OrganisationName = "Test Org",
             ApplicationType = ApplicationOrganisationType.Reprocessor,
             SiteAddress = "23, Ruby St, London, E12 3SE",
-            RegistrationMaterialId = 1234,
+            RegistrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163"),
             MaterialName = "Plastic",
             FeeAmount = 2921,
             ApplicationReferenceNumber = "ABC123456",

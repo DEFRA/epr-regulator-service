@@ -31,7 +31,7 @@ public class ApplicationUpdateController(
 {
     [HttpGet]
     [Route(PagePath.ApplicationUpdate)]
-    public async Task<IActionResult> ApplicationUpdate(int registrationMaterialId)
+    public async Task<IActionResult> ApplicationUpdate(Guid registrationMaterialId)
     {
         await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationMaterialId });
 
@@ -154,7 +154,7 @@ public class ApplicationUpdateController(
         return RedirectToAction(PagePath.ManageRegistrations, PagePath.ReprocessorExporterRegistrations, new { id = applicationUpdateSession.RegistrationId });
     }
 
-    private static string GetApplicationUpdatePath(int registrationMaterialId) =>
+    private static string GetApplicationUpdatePath(Guid registrationMaterialId) =>
         $"{PagePath.ApplicationUpdate}?registrationMaterialId={registrationMaterialId}";
 
     private static ApplicationUpdateSession GetApplicationUpdateSession(JourneySession session)
@@ -167,7 +167,7 @@ public class ApplicationUpdateController(
         return session.ReprocessorExporterSession.ApplicationUpdateSession;
     }
 
-    private async Task<ApplicationUpdateSession> GetOrCreateApplicationUpdateSession(int registrationMaterialId, JourneySession session)
+    private async Task<ApplicationUpdateSession> GetOrCreateApplicationUpdateSession(Guid registrationMaterialId, JourneySession session)
     {
         if (session.ReprocessorExporterSession.ApplicationUpdateSession == null)
         {

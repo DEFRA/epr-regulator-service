@@ -4,9 +4,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
 
 public class Registration
 {
-    public int Id { get; init; } // this will be removed
-
-    public Guid IdGuid { get; init; } // this will be replaced
+    public Guid Id { get; init; }
 
     public required string OrganisationName { get; init; } = string.Empty;
 
