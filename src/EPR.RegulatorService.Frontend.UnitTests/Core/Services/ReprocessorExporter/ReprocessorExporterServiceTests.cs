@@ -615,14 +615,14 @@ public class ReprocessorExporterServiceTests
 
         var registration = new Registration
         {
-            IdGuid = registrationId,
+            Id = registrationId,
             OrganisationName = "All Year Org",
             Regulator = "EA",
             OrganisationType = ApplicationOrganisationType.Exporter,
             Materials = [
                 new RegistrationMaterialSummary
                 {
-                    IdGuid = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     MaterialName = "Plastic",
                     Accreditations = [
                         new Accreditation { AccreditationYear = 2023 },
@@ -662,18 +662,18 @@ public class ReprocessorExporterServiceTests
 
         var registration = new Registration
         {
-            IdGuid = registrationId,
+            Id = registrationId,
             OrganisationName = "Test Org",
             Regulator = "EA",
             OrganisationType = ApplicationOrganisationType.Exporter,
             Materials =
             [
                 new RegistrationMaterialSummary
-            {
-                IdGuid = materialId,
-                MaterialName = "Plastic",
-                Accreditations = [ accreditation ]
-            }
+                {
+                    Id = materialId,
+                    MaterialName = "Plastic",
+                    Accreditations = [ accreditation ]
+                }
             ]
         };
 
@@ -700,7 +700,7 @@ public class ReprocessorExporterServiceTests
 
         var registration = new Registration
         {
-            IdGuid = registrationId,
+            Id = registrationId,
             OrganisationName = "Missing Year Org",
             Regulator = "EA",
             OrganisationType = ApplicationOrganisationType.Exporter,
@@ -708,7 +708,7 @@ public class ReprocessorExporterServiceTests
             [
                 new RegistrationMaterialSummary
                 {
-                    IdGuid = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     MaterialName = "Plastic",
                     Accreditations = [] // No matching entries
                 }
@@ -734,7 +734,7 @@ public class ReprocessorExporterServiceTests
 
         var registration = new Registration
         {
-            IdGuid = registrationId,
+            Id = registrationId,
             OrganisationName = "Duplicate Year Org",
             Regulator = "EA",
             OrganisationType = ApplicationOrganisationType.Exporter,
@@ -742,7 +742,7 @@ public class ReprocessorExporterServiceTests
             [
                 new RegistrationMaterialSummary
                 {
-                    IdGuid = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     MaterialName = "Plastic",
                     Accreditations =
                     [

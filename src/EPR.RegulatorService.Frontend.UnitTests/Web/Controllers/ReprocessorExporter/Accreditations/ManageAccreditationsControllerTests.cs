@@ -92,7 +92,7 @@ public class ManageAccreditationsControllerTests
         var request = new IdAndYearRequest { Id = ValidRegistrationGuid, Year = ValidYear };
         var registration = new Registration
         {
-            IdGuid = ValidRegistrationGuid,
+            Id = ValidRegistrationGuid,
             OrganisationName = "Mock Org",
             Regulator = "EA",
             SiteAddress = "123 Fake Street",

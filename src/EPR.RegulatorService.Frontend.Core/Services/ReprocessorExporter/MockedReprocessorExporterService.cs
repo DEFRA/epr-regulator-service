@@ -116,7 +116,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
 
         registrationMaterial.DeterminationDate = dulyMadeRequest.DeterminationDate;
-        
+
         var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus);
         Guid? taskId;
 
@@ -143,7 +143,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     }
 
     public Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment) => Task.CompletedTask;
-    
+
     public Task UpdateRegistrationMaterialOutcomeAsync(Guid registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
@@ -176,7 +176,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
         var task = registration.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateRegistrationTaskStatusRequest.TaskName);
         Guid? taskId;
-        
+
         if (task == null)
         {
             taskId = Guid.NewGuid();
@@ -419,7 +419,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         return new Registration
         {
-            IdGuid = id,
+            Id = id,
             OrganisationName = "Mock Green Ltd",
             SiteAddress = "23 Ruby St, London",
             OrganisationType = organisationType,
@@ -428,7 +428,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         {
             new RegistrationMaterialSummary
             {
-                IdGuid = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 MaterialName = "Plastic",
                 Accreditations = new List<Accreditation>
                 {
@@ -440,7 +440,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             },
             new RegistrationMaterialSummary
             {
-                IdGuid = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                 MaterialName = "Steel",
                 Accreditations = new List<Accreditation>
                 {
@@ -453,7 +453,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         {
             new RegistrationTask
             {
-                IdGuid = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                 TaskName = RegulatorTaskType.AssignOfficer,
                 Status = RegulatorTaskStatus.Completed
             }

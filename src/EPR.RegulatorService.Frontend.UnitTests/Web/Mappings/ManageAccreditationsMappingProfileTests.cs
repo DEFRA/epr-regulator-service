@@ -39,7 +39,7 @@ public class ManageAccreditationsMappingProfileTests
     {
         var registration = new Registration
         {
-            IdGuid = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             OrganisationName = "Test Org",
             SiteAddress = "123 Test Lane",
             SiteGridReference = "AB1234",
@@ -48,7 +48,7 @@ public class ManageAccreditationsMappingProfileTests
             Tasks = [
                 new RegistrationTask
                 {
-                    IdGuid = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     TaskName = RegulatorTaskType.AssignOfficer,
                     Status = RegulatorTaskStatus.Completed
                 }
@@ -56,7 +56,7 @@ public class ManageAccreditationsMappingProfileTests
             Materials = [
                 new RegistrationMaterialSummary
                 {
-                    IdGuid = Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     MaterialName = "Plastic",
                     Accreditations = [
                         new Accreditation
@@ -86,7 +86,7 @@ public class ManageAccreditationsMappingProfileTests
 
         using (new AssertionScope())
         {
-            viewModel.Id.Should().Be(registration.IdGuid);
+            viewModel.Id.Should().Be(registration.Id);
             viewModel.OrganisationName.Should().Be(registration.OrganisationName);
             viewModel.SiteAddress.Should().Be(registration.SiteAddress);
             viewModel.SiteGridReference.Should().Be(registration.SiteGridReference);
@@ -138,7 +138,7 @@ public class ManageAccreditationsMappingProfileTests
     {
         var registrationTask = new RegistrationTask
         {
-            IdGuid = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             TaskName = RegulatorTaskType.AssignOfficer,
             Status = RegulatorTaskStatus.Completed
         };
@@ -147,7 +147,7 @@ public class ManageAccreditationsMappingProfileTests
 
         using (new AssertionScope())
         {
-            viewModel.Id.Should().Be(registrationTask.IdGuid?.ToString());
+            viewModel.Id.Should().Be(registrationTask.Id?.ToString());
             viewModel.TaskId.Should().Be((int)registrationTask.TaskName);
             viewModel.TaskName.Should().Be(registrationTask.TaskName.ToString());
             viewModel.Status.Should().Be(registrationTask.Status.ToString());
