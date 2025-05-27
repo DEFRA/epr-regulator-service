@@ -1,39 +1,28 @@
-using AutoMapper;
-
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
-using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
-using EPR.RegulatorService.Frontend.Web.Sessions;
 
 using FluentAssertions.Execution;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using static StackExchange.Redis.Role;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
 [TestClass]
-public class RegistrationStatusControllerTests
+public class RegistrationStatusControllerTests : RegistrationControllerTestBase
 {
     private const int DeterminationWeeks = 12;
     private RegistrationStatusController _registrationStatusController; // System under test
 
-    private Mock<ISessionManager<JourneySession>> _sessionManagerMock;
-    private Mock<IMapper> _mapperMock;
-    private Mock<IReprocessorExporterService> _reprocessorExporterServiceMock;
-
-    private JourneySession _journeySession;
     private RegistrationStatusSession _registrationStatusSession;
 
     [TestInitialize]
@@ -41,32 +30,15 @@ public class RegistrationStatusControllerTests
     {
         Guid registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
 
-        _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
-        _mapperMock = new Mock<IMapper>();
-        _reprocessorExporterServiceMock = new Mock<IReprocessorExporterService>();
-
+        CreateCommonMocks();
+        CreateSessionMock();
+        
         var validatorMock = new Mock<IValidator<IdRequest>>();
-        var configurationSectionMock = new Mock<IConfigurationSection>();
-        var configurationMock = new Mock<IConfiguration>();
-
-        configurationSectionMock
-            .Setup(section => section.Value)
-            .Returns("/regulators");
-
-        configurationMock
-            .Setup(config => config.GetSection(ConfigKeys.PathBase))
-            .Returns(configurationSectionMock.Object);
+        var configurationMock = CreateConfigurationMock();
 
         _registrationStatusSession = CreateRegistrationStatusSession(registrationMaterialId);
-        _journeySession = new JourneySession
-        {
-            ReprocessorExporterSession = { RegistrationStatusSession = _registrationStatusSession }
-        };
-
-        _sessionManagerMock
-            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(_journeySession);
-
+        _journeySession.ReprocessorExporterSession.RegistrationStatusSession = _registrationStatusSession;
+        
         var reprocessorConfigMock = new Mock<IOptions<ReprocessorExporterConfig>>();
         reprocessorConfigMock.Setup(c => c.Value).Returns(new ReprocessorExporterConfig{ DeterminationWeeks = DeterminationWeeks});
 
@@ -143,7 +115,7 @@ public class RegistrationStatusControllerTests
     }
 
     [TestMethod]
-    public async Task PaymentCheck_WhenCalledWithViewModelAndSessionIsNull_ShouldReturnViewResult()
+    public async Task PaymentCheck_WhenCalledWithViewModelAndSessionIsNull_ShouldThrowException()
     {
         // Arrange
         var expectedViewModel = new PaymentCheckViewModel
