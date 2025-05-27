@@ -4,7 +4,7 @@ using Core.Enums.ReprocessorExporter;
 
 public class ManageRegistrationMaterialViewModel
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
 
     public required string MaterialName { get; init; }
 

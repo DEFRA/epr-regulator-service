@@ -29,11 +29,11 @@ public class RegistrationStatusMappingProfileTests
         // Arrange
         var registrationMaterialPaymentFees = new RegistrationMaterialPaymentFees
         {
-            RegistrationId = 123,
+            RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
             OrganisationName = "Test Org Name",
             ApplicationType = ApplicationOrganisationType.Reprocessor,
             SiteAddress = "Test Site Address",
-            RegistrationMaterialId = 1234,
+            RegistrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163"),
             MaterialName = "Plastic",
             FeeAmount = 2921,
             ApplicationReferenceNumber = "ABC123456",
@@ -172,11 +172,11 @@ public class RegistrationStatusMappingProfileTests
 
     private static RegistrationStatusSession CreateRegistrationStatusSession() => new()
     {
-        RegistrationId = 123,
+        RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
         OrganisationName = "Test Org Name",
         ApplicationType = ApplicationOrganisationType.Reprocessor,
         SiteAddress = "Test Site Address",
-        RegistrationMaterialId = 1234,
+        RegistrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163"),
         MaterialName = "Plastic",
         FeeAmount = 2921,
         ApplicationReferenceNumber = "ABC123456",

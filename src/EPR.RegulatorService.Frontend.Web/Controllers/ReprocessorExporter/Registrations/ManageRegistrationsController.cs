@@ -28,7 +28,7 @@ public class ManageRegistrationsController(IReprocessorExporterService reprocess
     private readonly IValidator<IdRequest> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
 
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] int id)
+    public async Task<IActionResult> Index([FromQuery] Guid id)
     {
         await _validator.ValidateAndThrowAsync(new IdRequest { Id = id });
 

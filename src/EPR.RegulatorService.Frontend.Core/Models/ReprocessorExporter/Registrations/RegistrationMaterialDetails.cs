@@ -4,9 +4,9 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
 
 public class RegistrationMaterialDetail
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
 
-    public int RegistrationId { get; init; }
+    public Guid RegistrationId { get; init; }
 
     public required string MaterialName { get; init; }
 

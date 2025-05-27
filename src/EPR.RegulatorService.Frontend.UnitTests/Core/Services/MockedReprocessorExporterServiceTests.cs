@@ -15,10 +15,10 @@ public class MockedReprocessorExporterServiceTests
     public void TestInitialize() => _service = new MockedReprocessorExporterService();
 
     [TestMethod]
-    public async Task GetRegistrationById_EvenId_ShouldReturnReprocessor()
+    public async Task GetRegistrationById_ValidId_ShouldReturnReprocessor()
     {
         // Arrange
-        var id = 2;
+        var id = Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50");
 
         // Act
         var result = await _service.GetRegistrationByIdAsync(id);
@@ -37,10 +37,10 @@ public class MockedReprocessorExporterServiceTests
     }
 
     [TestMethod]
-    public async Task GetRegistrationById_OddId_ShouldReturnExporter()
+    public async Task GetRegistrationById_ValidId_ShouldReturnExporter()
     {
         // Arrange
-        var id = 3;
+        var id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
 
         // Act
         var result = await _service.GetRegistrationByIdAsync(id);
@@ -59,38 +59,10 @@ public class MockedReprocessorExporterServiceTests
     }
 
     [TestMethod]
-    public async Task GetRegistrationById_NegativeId_ShouldReturnCorrectType()
+    public async Task GetRegistrationById_WhenIdIsEmpty_ShouldThrowException()
     {
         // Arrange
-        var id = -4; // Even negative number, should still be Reprocessor
-
-        // Act
-        var result = await _service.GetRegistrationByIdAsync(id);
-
-        // Assert
-        result.Should().NotBeNull();
-        result!.OrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
-    }
-
-    [TestMethod]
-    public async Task GetRegistrationById_NonExistentId_ShouldStillReturnValidObject()
-    {
-        // Arrange
-        var id = 9999; // High value, but service doesn't check for real existence
-
-        // Act
-        var result = await _service.GetRegistrationByIdAsync(id);
-
-        // Assert
-        result.Should().NotBeNull();
-        result!.Id.Should().Be(id); // Service should still return a mock object
-    }
-
-    [TestMethod]
-    public async Task GetRegistrationById_WhenIdIs99999_ShouldThrowException()
-    {
-        // Arrange
-        var id = 99999;
+        var id = Guid.Empty;
 
         // Act
         var exception = await Assert.ThrowsExceptionAsync<NotFoundException>( () => _service.GetRegistrationByIdAsync(id));

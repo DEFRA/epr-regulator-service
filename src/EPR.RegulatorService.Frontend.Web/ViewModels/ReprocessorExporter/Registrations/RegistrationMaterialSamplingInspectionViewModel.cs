@@ -4,6 +4,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
 
 public class RegistrationMaterialSamplingInspectionViewModel
 {
-    public int RegistrationMaterialId { get; set; }
+    public Guid RegistrationMaterialId { get; set; }
     public RegistrationMaterialSamplingPlan RegistrationMaterialSamplingPlan { get; set; }
 }
