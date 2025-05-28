@@ -9,7 +9,7 @@ public class AccreditationMaterialPaymentFees
     public required ApplicationOrganisationType ApplicationType { get; init; }
     public string? SiteAddress { get; init; }
     public required string ApplicationReferenceNumber { get; init; }
-    public int RegistrationMaterialId { get; init; }
+    public Guid RegistrationMaterialId { get; init; }
     public required string MaterialName { get; init; }
     public DateTime SubmittedDate { get; init; }
     public decimal FeeAmount { get; init; }

@@ -524,28 +524,22 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationMaterialId)
     {
-        //var registrationMaterial = _registrations.SelectMany(r => r.Materials)
-        //    .First(rm => rm.Id == accreditationMaterialId);
-
-        //var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
-
-        //return Task.FromResult(new AccreditationMaterialPaymentFees
-        //{
-        //    AccreditationId = registration.Id,
-        //    OrganisationName = registration.OrganisationName,
-        //    ApplicationType = registration.OrganisationType,
-        //    SiteAddress = registration.SiteAddress,
-        //    RegistrationMaterialId = registrationMaterial.Id,
-        //    MaterialName = registrationMaterial.MaterialName,
-        //    FeeAmount = 2921,
-        //    ApplicationReferenceNumber = "ABC123456",
-        //    SubmittedDate = DateTime.Now.AddDays(-7),
-        //    Regulator = "GB-ENG"
-        //});
-        return new Task<AccreditationMaterialPaymentFees>(() =>
+        var mockPaymentFees = new AccreditationMaterialPaymentFees
         {
-            throw new NotImplementedException("Mocked method for testing purposes.");
-        });
+            AccreditationId = 12345,
+            OrganisationName = "Mock Green Ltd",
+            ApplicationType = ApplicationOrganisationType.Reprocessor,
+            SiteAddress = "23 Ruby Street, London, E12 3SE",
+            ApplicationReferenceNumber = "MOCK-REF-2025",
+            RegistrationMaterialId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+            MaterialName = "Plastic",
+            SubmittedDate = new DateTime(2025, 5, 15),
+            FeeAmount = 2921.00m,
+            Regulator = "EA"
+        };
+
+        return Task.FromResult(mockPaymentFees);
+
     }
 
 

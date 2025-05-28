@@ -23,7 +23,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Accr
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route(PagePath.ReprocessorExporterAccreditations)]
-public class AccreditationsStatusController(
+public class AccreditationStatusController(
     IMapper mapper,
     IValidator<IdAndYearRequest> validator,
     IReprocessorExporterService reprocessorExporterService,
@@ -239,7 +239,7 @@ public class AccreditationsStatusController(
 
     private static DateTime CalculateDeterminationDate(int determinationWeeks, DateTime dulyMadeDate) => dulyMadeDate.AddDays(determinationWeeks * 7);
 
-    private static string GetPagePath(string pagePath, int registrationMaterialId) =>
+    private static string GetPagePath(string pagePath, Guid registrationMaterialId) =>
         $"{pagePath}?registrationMaterialId={registrationMaterialId}";
 
     private static AccreditationStatusSession GetAccreditationStatusSession(JourneySession session)

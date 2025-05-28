@@ -33,7 +33,7 @@
             @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
           }
 
-          <form asp-controller="RegistrationStatus" asp-action="PaymentMethod" method="post">
+		 <form asp-controller="AccreditationStatus" asp-action="PaymentMethod" method="post">
             <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
 
               @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
