@@ -369,6 +369,11 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         var registration = GetMockedAccreditationRegistration(id);
 
+        if (registration == null)
+        {
+            throw new KeyNotFoundException($"No mock registration found for id {id}");
+        }
+
         if (year.HasValue)
         {
             ApplySingleYearAccreditationFilter(registration, year.Value);
@@ -379,108 +384,102 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     private static Registration GetMockedAccreditationRegistration(Guid id)
     {
-        var organisationType = ApplicationOrganisationType.Reprocessor;
+        var registrations = GetAllMockedRegistrations();
+        return registrations.FirstOrDefault(r => r.Id == id);
+    }
 
-        return new Registration
+    private static List<Registration> GetAllMockedRegistrations()
+    {
+        return new List<Registration>
         {
-            Id = id,
-            OrganisationName = "Mock Green Ltd",
-            SiteAddress = "23 Ruby St, London",
-            OrganisationType = organisationType,
-            Regulator = "EA",
-            Materials = new List<RegistrationMaterialSummary>
-            {
-                // Should be displayed — both material and accreditation are meaningful
-                new RegistrationMaterialSummary
-                {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    MaterialName = "Plastic",
-                    Status = ApplicationStatus.Granted,
-                    Accreditations = new List<Accreditation>
-                    {
-                        CreateAccreditation("aaaa1111-1111-1111-1111-111111111111", "MOCK-2025-PLASTIC", "Granted", new DateTime(2025, 6, 2), 2025)
-                    }
-                },
+            // Happy path: Granted + one accreditation (Granted)
+            CreateMockRegistration(
+                "839544fd-9b08-4823-9277-5615072a6803", "Mock Org 1", "Plastic",
+                "49c5d1ec-8934-47d6-8cd7-4f465b7c0ad6", ApplicationStatus.Granted,
+                new[] { ("dda7cd75-5fd3-44cb-accc-e4e9323b2af3", "Granted", 2025) }),
 
-                // Not shown — material status is Withdrawn
-                new RegistrationMaterialSummary
-                {
-                    Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                    MaterialName = "Steel",
-                    Status = ApplicationStatus.Withdrawn,
-                    Accreditations = new List<Accreditation>
-                    {
-                        CreateAccreditation("bbbb1111-1111-1111-1111-111111111111", "MOCK-2025-STEEL", "Granted", new DateTime(2025, 7, 15), 2025)
-                    }
-                },
+            // Material Withdrawn (should not show)
+            CreateMockRegistration(
+                "11dec0d4-b0db-44a6-84f3-3de06e46262c", "Mock Org 2", "Steel",
+                "9f253f8b-60e5-44f8-953a-9b35300d1874", ApplicationStatus.Withdrawn,
+                new[] { ("cea32558-d0ec-4efb-bb0d-7af2e425dd0c", "Granted", 2025) }),
 
-                // Not shown — material status is null
-                new RegistrationMaterialSummary
-                {
-                    Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                    MaterialName = "Glass",
-                    Status = null,
-                    Accreditations = new List<Accreditation>()
-                },
+            // Accreditation ReadyToSubmit (should not show)
+            CreateMockRegistration(
+                "12345678-aaaa-bbbb-cccc-111111111111", "Mock Org 3", "Wood",
+                "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", ApplicationStatus.Granted,
+                new[] { ("eeeeaaaa-1111-2222-3333-444444444444", "ReadyToSubmit", 2025) }),
 
-                // Not shown — material status is Started
-                new RegistrationMaterialSummary
-                {
-                    Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-                    MaterialName = "Wood",
-                    Status = ApplicationStatus.Started,
-                    Accreditations = new List<Accreditation>()
-                },
+            // No accreditation for that year (e.g. only 2024)
+            CreateMockRegistration(
+                "23456789-bbbb-cccc-dddd-222222222222", "Mock Org 4", "Glass",
+                "bbbbbbbb-cccc-dddd-eeee-ffffffffffff", ApplicationStatus.Granted,
+                new[] { ("ffffbbbb-5555-6666-7777-888888888888", "Granted", 2024) }),
 
-                // Not shown — material is Granted, but accreditation is Started
-                new RegistrationMaterialSummary
+            // Throws: More than one accreditation for same year
+            CreateMockRegistration(
+                "34567890-cccc-dddd-eeee-333333333333", "Mock Org 5", "Textiles",
+                "cccccccc-dddd-eeee-ffff-000000000000", ApplicationStatus.Granted,
+                new[]
                 {
-                    Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
-                    MaterialName = "Cardboard",
-                    Status = ApplicationStatus.Granted,
-                    Accreditations = new List<Accreditation>
-                    {
-                        CreateAccreditation("cccc1111-1111-1111-1111-111111111111", "MOCK-2025-CARD", "Started", new DateTime(2025, 8, 1), 2025)
-                    }
-                },
+                    ("11112222-aaaa-bbbb-cccc-999999999999", "Granted", 2025),
+                    ("22223333-bbbb-cccc-dddd-aaaaaaaaaaaa", "Granted", 2025)
+                }),
 
-                // Not shown — material is Granted, but accreditation is Withdrawn
-                new RegistrationMaterialSummary
+            // Valid material with two years of accreditations
+            CreateMockRegistration(
+                "45678901-dddd-eeee-ffff-444444444444", "Mock Org 6", "Paper",
+                "dddddddd-eeee-ffff-1111-222222222222", ApplicationStatus.Granted,
+                new[]
                 {
-                    Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
-                    MaterialName = "Rubber",
-                    Status = ApplicationStatus.Granted,
-                    Accreditations = new List<Accreditation>
-                    {
-                        CreateAccreditation("cccc2222-2222-2222-2222-222222222222", "MOCK-2025-RUBBER", "Withdrawn", new DateTime(2025, 10, 1), 2025)
-                    }
-                },
-
-                // Should be displayed — good status, good accreditation
-                new RegistrationMaterialSummary
-                {
-                    Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
-                    MaterialName = "Aluminium",
-                    Status = ApplicationStatus.Granted,
-                    Accreditations = new List<Accreditation>
-                    {
-                        CreateAccreditation("dddd1111-1111-1111-1111-111111111111", "MOCK-2025-ALU", "Granted", new DateTime(2025, 9, 1), 2025)
-                    }
-                }
-            },
-            Tasks = new List<RegistrationTask>
-            {
-                new RegistrationTask
-                {
-                    Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-                    TaskName = RegulatorTaskType.AssignOfficer,
-                    Status = RegulatorTaskStatus.Completed
-                }
-            }
+                    ("99990000-aaaa-bbbb-cccc-dddddddddddd", "Granted", 2025),
+                    ("88887777-bbbb-cccc-dddd-eeeeeeeeeeee", "Granted", 2026)
+                })
         };
     }
 
-
+    private static Registration CreateMockRegistration(
+    string registrationId,
+    string orgName,
+    string material,
+    string materialId,
+    ApplicationStatus materialStatus,
+    (string id, string status, int year)[] accreditations)
+    {
+        return new Registration
+        {
+            Id = Guid.Parse(registrationId),
+            OrganisationName = orgName,
+            SiteAddress = "23 Ruby St, London",
+            OrganisationType = ApplicationOrganisationType.Reprocessor,
+            Regulator = "EA",
+            Materials = new List<RegistrationMaterialSummary>
+        {
+            new RegistrationMaterialSummary
+            {
+                Id = Guid.Parse(materialId),
+                MaterialName = material,
+                Status = materialStatus,
+                Accreditations = accreditations.Select(x =>
+                    CreateAccreditation(
+                        guid: x.id,
+                        reference: $"MOCK-{x.year}-{material.ToUpper()}",
+                        status: x.status,
+                        date: new DateTime(x.year, 6, 1),
+                        year: x.year)).ToList()
+            }
+        },
+            Tasks = new List<RegistrationTask>
+        {
+            new RegistrationTask
+            {
+                Id = Guid.NewGuid(),
+                TaskName = RegulatorTaskType.AssignOfficer,
+                Status = RegulatorTaskStatus.Completed
+            }
+        }
+        };
+    }
 
     private static Accreditation CreateAccreditation(string guid, string reference, string status, DateTime date, int year)
     {
@@ -492,35 +491,34 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             DeterminationDate = date,
             AccreditationYear = year,
             Tasks = new List<AccreditationTask>
+        {
+            new AccreditationTask
             {
-                new AccreditationTask
-                {
-                    Id = Guid.NewGuid(),
-                    TaskId = 1,
-                    TaskName = "PRN tonnage and authority to issue PRNs",
-                    Status = "Not Started Yet",
-                    Year = year
-                },
-                new AccreditationTask
-                {
-                    Id = Guid.NewGuid(),
-                    TaskId = 2,
-                    TaskName = "Business plan",
-                    Status = "Not Started Yet",
-                    Year = year
-                },
-                new AccreditationTask
-                {
-                    Id = Guid.NewGuid(),
-                    TaskId = 3,
-                    TaskName = "Sampling and inspection plan",
-                    Status = "Approved",
-                    Year = year
-                }
+                Id = Guid.NewGuid(),
+                TaskId = 1,
+                TaskName = "PRN tonnage and authority to issue PRNs",
+                Status = "Not Started Yet",
+                Year = year
+            },
+            new AccreditationTask
+            {
+                Id = Guid.NewGuid(),
+                TaskId = 2,
+                TaskName = "Business plan",
+                Status = "Not Started Yet",
+                Year = year
+            },
+            new AccreditationTask
+            {
+                Id = Guid.NewGuid(),
+                TaskId = 3,
+                TaskName = "Sampling and inspection plan",
+                Status = "Approved",
+                Year = year
             }
+        }
         };
     }
-
 
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
     {
@@ -528,9 +526,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         foreach (var material in registration.Materials)
         {
-            var matchingAccreditations = material.Accreditations
+            var matchingAccreditations = material.Accreditations?
                 .Where(a => a.AccreditationYear == year)
-                .ToList();
+                .ToList() ?? new List<Accreditation>();
 
             if (matchingAccreditations.Count > 1)
             {
@@ -545,7 +543,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             }
             else
             {
-                material.Accreditations = new List<Accreditation>(); // Clean out non-matching years
+                material.Accreditations = new List<Accreditation>();
             }
         }
 
@@ -555,5 +553,4 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 $"No accreditations found for any materials in year {year}.");
         }
     }
-
 }

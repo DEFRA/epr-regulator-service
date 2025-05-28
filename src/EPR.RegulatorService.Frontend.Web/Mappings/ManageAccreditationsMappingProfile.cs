@@ -35,7 +35,7 @@ public class ManageAccreditationsMappingProfile : Profile
         CreateMap<Accreditation, AccreditationDetailsViewModel>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.ApplicationReference, opt => opt.MapFrom(src => src.ApplicationReference))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapStatusStringToEnum(src.Status)))
             .ForMember(dest => dest.DeterminationDate, opt => opt.MapFrom(src => src.DeterminationDate))
             .ForMember(dest => dest.AccreditationYear, opt => opt.MapFrom(src => src.AccreditationYear))
             .ForMember(dest => dest.PRNTonnageTask, opt => opt.Ignore())
@@ -54,7 +54,17 @@ public class ManageAccreditationsMappingProfile : Profile
             .ForMember(dest => dest.StatusCssClass, opt => opt.MapFrom(src => MapTaskStatusCssClass(src.Status.ToString())));
     }
 
-    // Accreditation task mapping (string-based)
+    // Converts a string to ApplicationStatus enum
+    private static ApplicationStatus MapStatusStringToEnum(string status)
+    {
+        if (Enum.TryParse<ApplicationStatus>(status, ignoreCase: true, out var parsed))
+        {
+            return parsed;
+        }
+
+        return ApplicationStatus.Started; // fallback
+    }
+
     private static AccreditationTaskViewModel MapAccreditationTask(IEnumerable<AccreditationTask> tasks, string name)
     {
         var match = tasks.FirstOrDefault(t => string.Equals(t.TaskName, name, StringComparison.OrdinalIgnoreCase));
@@ -68,7 +78,6 @@ public class ManageAccreditationsMappingProfile : Profile
         };
     }
 
-    // Registration task mapping (enum-based)
     private static AccreditationTaskViewModel MapRegistrationTaskToAccreditationTaskViewModel(RegistrationTask task)
     {
         return new AccreditationTaskViewModel
@@ -79,10 +88,8 @@ public class ManageAccreditationsMappingProfile : Profile
         };
     }
 
-    // Accreditation task status text
-    private static string MapTaskStatusText(string status)
-    {
-        return status.ToLowerInvariant() switch
+    private static string MapTaskStatusText(string status) =>
+        status.ToLowerInvariant() switch
         {
             "not started" => "Not Started",
             "not started yet" => "Not started yet",
@@ -91,12 +98,9 @@ public class ManageAccreditationsMappingProfile : Profile
             "completed" => "Completed",
             _ => "Not Started"
         };
-    }
 
-    // Registration task status text
-    private static string MapTaskStatusText(string status, RegulatorTaskType taskName)
-    {
-        return status.ToLowerInvariant() switch
+    private static string MapTaskStatusText(string status, RegulatorTaskType taskName) =>
+        status.ToLowerInvariant() switch
         {
             "completed" => taskName switch
             {
@@ -107,7 +111,6 @@ public class ManageAccreditationsMappingProfile : Profile
             "queried" => "Queried",
             _ => "Not started yet"
         };
-    }
 
     private static string MapTaskStatusCssClass(string status) =>
         status.ToLowerInvariant() switch
@@ -127,15 +130,13 @@ public class ManageAccreditationsMappingProfile : Profile
             _ => throw new InvalidOperationException($"Unknown accreditation task name: {name}")
         };
 
-    private static RegistrationTaskViewModel MapApplicationStatusToViewModel(ApplicationStatus? status)
-    {
-        return new RegistrationTaskViewModel
+    private static RegistrationTaskViewModel MapApplicationStatusToViewModel(ApplicationStatus? status) =>
+        new()
         {
             TaskName = RegulatorTaskType.CheckRegistrationStatus,
             StatusText = MapApplicationStatusText(status),
             StatusCssClass = MapApplicationStatusCssClass(status)
         };
-    }
 
     private static string MapApplicationStatusText(ApplicationStatus? status) =>
         status switch

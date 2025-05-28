@@ -3,25 +3,8 @@
 
 <h2 class="govuk-heading-m">Registration status</h2>
 <ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
-    @foreach (var material in Model)
+    @foreach (var material in Model.Where(m => m.ShouldDisplay))
     {
-        // Skip registration materials that should not be shown
-        if (material.RegistrationStatusRaw is null ||
-        material.RegistrationStatusRaw == ApplicationStatus.Started ||
-        material.RegistrationStatusRaw == ApplicationStatus.Withdrawn)
-        {
-            continue;
-        }
-
-        var anyMeaningfulAccreditation = material.Accreditation is not null &&
-        !string.Equals(material.Accreditation.Status, "Started", StringComparison.OrdinalIgnoreCase) &&
-        !string.Equals(material.Accreditation.Status, "Withdrawn", StringComparison.OrdinalIgnoreCase);
-
-        if (!anyMeaningfulAccreditation)
-        {
-            continue;
-        }
-
         <li class="app-task-list__item">
             <span class="app-task-list__task-name">
                 <a href="#">@material.MaterialName</a>

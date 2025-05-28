@@ -100,6 +100,7 @@ public class ManageAccreditationsMappingProfileTests
     [TestMethod]
     public void Map_Accreditation_To_AccreditationDetailsViewModel_ShouldMapCorrectly()
     {
+        // Arrange
         var prnTask = new AccreditationTask
         {
             Id = Guid.NewGuid(),
@@ -128,19 +129,21 @@ public class ManageAccreditationsMappingProfileTests
         {
             Id = Guid.NewGuid(),
             ApplicationReference = "APP-456",
-            Status = "Pending",
+            Status = ApplicationStatus.Granted.ToString(), // ✅ Matching enum string
             DeterminationDate = DateTime.Today,
             AccreditationYear = 2026,
             Tasks = new List<AccreditationTask> { prnTask, businessPlanTask, samplingTask }
         };
 
+        // Act
         var viewModel = _mapper.Map<AccreditationDetailsViewModel>(accreditation);
 
+        // Assert
         using (new AssertionScope())
         {
             viewModel.Id.Should().Be(accreditation.Id);
             viewModel.ApplicationReference.Should().Be("APP-456");
-            viewModel.Status.Should().Be("Pending");
+            viewModel.Status.Should().Be(ApplicationStatus.Granted);
             viewModel.DeterminationDate.Should().Be(accreditation.DeterminationDate);
             viewModel.AccreditationYear.Should().Be(2026);
 
@@ -157,7 +160,6 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.SamplingAndInspectionPlanTask.StatusCssClass.Should().Be("govuk-tag--orange");
         }
     }
-
 
     [TestMethod]
     public void Map_RegistrationTask_To_AccreditationTaskViewModel_ShouldMapCorrectly()

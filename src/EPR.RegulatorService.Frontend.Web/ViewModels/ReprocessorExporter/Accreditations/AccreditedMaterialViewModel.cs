@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
+
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 
 public class AccreditedMaterialViewModel
 {
@@ -17,13 +19,6 @@ public class AccreditedMaterialViewModel
 
     public ApplicationStatus? RegistrationStatusRaw { get; init; }
 
-
     public bool ShouldDisplay =>
-        !IsStatusInactive(RegistrationStatusTask?.StatusText) &&
-        (Accreditation?.ShouldDisplay ?? false);
-
-    private static bool IsStatusInactive(string? status) =>
-        string.IsNullOrWhiteSpace(status) ||
-        status.Equals("Not started yet", StringComparison.OrdinalIgnoreCase) ||
-        status.Equals("Withdrawn", StringComparison.OrdinalIgnoreCase);
+        AccreditationDisplayHelper.ShouldDisplayMaterial(RegistrationStatusRaw, Accreditation);
 }
