@@ -4,6 +4,7 @@ using System.Net.Http;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
@@ -519,6 +520,32 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 }
             }
         };
+    }
+
+    public Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationMaterialId)
+    {
+        //var registrationMaterial = _registrations.SelectMany(r => r.Materials)
+        //    .First(rm => rm.Id == accreditationMaterialId);
+
+        //var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
+
+        //return Task.FromResult(new AccreditationMaterialPaymentFees
+        //{
+        //    AccreditationId = registration.Id,
+        //    OrganisationName = registration.OrganisationName,
+        //    ApplicationType = registration.OrganisationType,
+        //    SiteAddress = registration.SiteAddress,
+        //    RegistrationMaterialId = registrationMaterial.Id,
+        //    MaterialName = registrationMaterial.MaterialName,
+        //    FeeAmount = 2921,
+        //    ApplicationReferenceNumber = "ABC123456",
+        //    SubmittedDate = DateTime.Now.AddDays(-7),
+        //    Regulator = "GB-ENG"
+        //});
+        return new Task<AccreditationMaterialPaymentFees>(() =>
+        {
+            throw new NotImplementedException("Mocked method for testing purposes.");
+        });
     }
 
 

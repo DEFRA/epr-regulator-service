@@ -8,6 +8,7 @@ using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Converters;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 using Microsoft.Extensions.Options;
@@ -36,7 +37,8 @@ public class ReprocessorExporterService(
         UpdateApplicationTaskStatus,
         GetSiteAddressByRegistrationId,
         DownloadSamplingInspectionFile,
-        GetRegistrationByIdWithAccreditations
+        GetRegistrationByIdWithAccreditations,
+        GetPaymentFeesByAccreditationMaterialId
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -304,6 +306,20 @@ public class ReprocessorExporterService(
 
         var response = await httpClient.GetAsync(path);
         return await GetEntityFromResponse<Registration>(response);
+    }
+
+    public async Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationMaterialId)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetPaymentFeesByAccreditationMaterialId);
+        string path = pathTemplate.Replace("{id}", accreditationMaterialId.ToString());
+
+        var response = await httpClient.GetAsync(path);
+
+        var accreditationMaterialPaymentFees = await GetEntityFromResponse<AccreditationMaterialPaymentFees>(response);
+
+        return accreditationMaterialPaymentFees;
     }
 
     private async Task PrepareAuthenticatedClient()
