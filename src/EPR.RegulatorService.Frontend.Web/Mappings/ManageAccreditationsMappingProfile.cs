@@ -144,6 +144,7 @@ public class ManageAccreditationsMappingProfile : Profile
             ApplicationStatus.Granted => "Granted",
             ApplicationStatus.Refused => "Refused",
             ApplicationStatus.Withdrawn => "Withdrawn",
+            ApplicationStatus.RegulatorReviewing => "Regulator Reviewing",
             _ => "Not started yet"
         };
 
@@ -153,6 +154,7 @@ public class ManageAccreditationsMappingProfile : Profile
             ApplicationStatus.Granted => "govuk-tag--green",
             ApplicationStatus.Refused => "govuk-tag--red",
             ApplicationStatus.Withdrawn => "govuk-tag--grey",
+            ApplicationStatus.RegulatorReviewing => "govuk-tag--blue",
             _ => "govuk-tag--grey"
         };
 }
