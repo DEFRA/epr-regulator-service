@@ -48,6 +48,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             NationName = "England",
             GridReference = "SJ 854 662",
             LegalCorrespondenceAddress = "25 Ruby St, London, E12 3SE",
+            RegulatorRegistrationTaskStatusId = task?.Id,
             TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
         };
 
@@ -427,8 +428,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
 
-    public Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)
-    {
-        return Task.CompletedTask;
-    }
+    public Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
+
+    public Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
 }

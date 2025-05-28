@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 using AutoMapper;
 
 using EPR.Common.Authorization.Constants;
@@ -9,6 +11,7 @@ using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registration
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
@@ -17,8 +20,6 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-
-using static StackExchange.Redis.Role;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
@@ -37,6 +38,8 @@ public class RegistrationsController(
     [Route(PagePath.AuthorisedMaterials)]
     public async Task<IActionResult> AuthorisedMaterials(Guid registrationId)
     {
+        //await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationId });
+
         var session = await GetSession();
 
         string pagePath = GetRegistrationMethodPath(PagePath.AuthorisedMaterials, registrationId);
@@ -69,12 +72,23 @@ public class RegistrationsController(
     [Route(PagePath.UkSiteDetails)]
     public async Task<IActionResult> UkSiteDetails(Guid registrationId)
     {
+        //await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationId });
+
         var session = await GetSession();
         string pagePath = GetRegistrationMethodPath(PagePath.UkSiteDetails, registrationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
         var siteDetails = await reprocessorExporterService.GetSiteDetailsByRegistrationIdAsync(registrationId);
+
+        if (siteDetails.TaskStatus == RegulatorTaskStatus.Queried)
+        {
+            var queryRegistrationSession = mapper.Map<QueryRegistrationSession>(siteDetails);
+            queryRegistrationSession.PagePath = PagePath.UkSiteDetails;
+            session.ReprocessorExporterSession.QueryRegistrationSession = queryRegistrationSession;
+            await SaveSession(session);
+        }
+
         var viewModel = mapper.Map<SiteDetailsViewModel>(siteDetails);
 
         return View(GetRegistrationsView(nameof(UkSiteDetails)), viewModel);
@@ -95,11 +109,13 @@ public class RegistrationsController(
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
     }
-
+    
     [HttpGet]
     [Route(PagePath.MaterialWasteLicences)]
     public async Task<IActionResult> MaterialWasteLicences(Guid registrationMaterialId)
     {
+        //await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationId });
+
         var session = await GetSession();
 
         string pagePath = GetRegistrationMaterialMethodPath(PagePath.MaterialWasteLicences, registrationMaterialId);
@@ -134,6 +150,8 @@ public class RegistrationsController(
     [Route(PagePath.SamplingInspection)]
     public async Task<IActionResult> SamplingInspection(Guid registrationMaterialId)
     {
+        //await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationId });
+
         var session = await GetSession();
 
         string pagePath = GetRegistrationMaterialMethodPath(PagePath.SamplingInspection, registrationMaterialId);
@@ -172,6 +190,8 @@ public class RegistrationsController(
     [Route(PagePath.InputsAndOutputs)]
     public async Task<IActionResult> InputsAndOutputs(Guid registrationMaterialId)
     {
+        //await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationId });
+
         var session = await GetSession();
 
         string pagePath = GetRegistrationMaterialMethodPath(PagePath.InputsAndOutputs, registrationMaterialId);
@@ -210,6 +230,8 @@ public class RegistrationsController(
     [Route(PagePath.WasteLicences)]
     public async Task<IActionResult> WasteLicences(Guid registrationId)
     {
+        //await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationId });
+
         var session = await GetSession();
 
         string pagePath = GetRegistrationMethodPath(PagePath.WasteLicences, registrationId);
@@ -239,6 +261,8 @@ public class RegistrationsController(
     [Route(PagePath.BusinessAddress)]
     public async Task<IActionResult> BusinessAddress(Guid registrationId)
     {
+        //await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationId });
+
         var session = await GetSession();
 
         string pagePath = GetRegistrationMethodPath(PagePath.BusinessAddress, registrationId);
@@ -268,6 +292,8 @@ public class RegistrationsController(
     [Route(PagePath.MaterialDetails)]
     public async Task<IActionResult> MaterialDetails(Guid registrationMaterialId)
     {
+        //await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationId });
+
         var session = await GetSession();
 
         string pagePath = GetRegistrationMaterialMethodPath(PagePath.MaterialDetails, registrationMaterialId);
@@ -298,7 +324,9 @@ public class RegistrationsController(
     [HttpGet]
     [Route(PagePath.OverseasReprocessorInterim)]
     public async Task<IActionResult> OverseasReprocessorInterim(Guid registrationMaterialId)
-    {        
+    {
+        //await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationId });
+
         var session = await GetSession();
 
         string pagePath = GetRegistrationMaterialMethodPath(PagePath.OverseasReprocessorInterim, registrationMaterialId);

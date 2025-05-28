@@ -65,7 +65,7 @@ public class QueryNoteMappingProfileTests
         };
 
         // Act
-        var result = _mapper.Map<AddMaterialQueryNoteViewModel>(queryMaterialSession);
+        var result = _mapper.Map<AddQueryNoteViewModel>(queryMaterialSession);
 
         // Assert
         result.Should().NotBeNull();

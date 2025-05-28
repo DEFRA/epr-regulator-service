@@ -9,5 +9,6 @@ public class SiteDetails
     public string? NationName { get; init; }
     public string? GridReference { get; init; }
     public string? LegalCorrespondenceAddress { get; init; }
+    public Guid? RegulatorRegistrationTaskStatusId { get; init; }
     public RegulatorTaskStatus TaskStatus { get; init; }
 }

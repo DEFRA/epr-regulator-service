@@ -70,10 +70,10 @@ public class QueryControllerTests : RegistrationControllerTestBase
     public async Task AddMaterialQueryNote_WhenCalledWithValidSession_ShouldReturnViewResult()
     {
         // Arrange
-        var expectedViewModel = new AddMaterialQueryNoteViewModel();
+        var expectedViewModel = new AddQueryNoteViewModel();
 
         _mapperMock.Setup(m =>
-                m.Map<AddMaterialQueryNoteViewModel>(_journeySession.ReprocessorExporterSession.QueryMaterialSession))
+                m.Map<AddQueryNoteViewModel>(_journeySession.ReprocessorExporterSession.QueryMaterialSession))
             .Returns(expectedViewModel);
 
         // Act
@@ -96,7 +96,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
         // Arrange
         var expectedTaskId = _journeySession.ReprocessorExporterSession.QueryMaterialSession!.RegulatorApplicationTaskStatusId;
 
-        var viewModel = new AddMaterialQueryNoteViewModel
+        var viewModel = new AddQueryNoteViewModel
         {
             Note = "Test note",
             OrganisationName = "TestOrg",
@@ -120,7 +120,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
         // Arrange
         string expectedReturnPath = _journeySession.ReprocessorExporterSession.QueryMaterialSession!.PagePath;
 
-        var viewModel = new AddMaterialQueryNoteViewModel
+        var viewModel = new AddQueryNoteViewModel
         {
             Note = "Test note",
             OrganisationName = "TestOrg",
@@ -146,7 +146,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
     public async Task AddMaterialQueryNote_WhenCalledWithViewModelAndInvalidModelState_ShouldRedisplayView()
     {
         // Arrange
-        var viewModel = new AddMaterialQueryNoteViewModel
+        var viewModel = new AddQueryNoteViewModel
         {
             Note = "Test note",
             OrganisationName = "TestOrg",
