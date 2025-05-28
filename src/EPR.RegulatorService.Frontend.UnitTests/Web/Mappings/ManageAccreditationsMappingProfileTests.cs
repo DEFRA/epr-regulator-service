@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using AutoMapper;
 
@@ -212,6 +213,88 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.RegistrationStatusTask.StatusText.Should().Be("Refused");
             viewModel.RegistrationStatusTask.StatusCssClass.Should().Be("govuk-tag--red");
         }
+    }
+
+    [TestMethod]
+    public void Map_InvalidStatusString_To_Enum_ShouldFallbackToStarted()
+    {
+        var profile = new ManageAccreditationsMappingProfile();
+        var method = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapStatusStringToEnum", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+
+        var result = (ApplicationStatus)method.Invoke(null, new object[] { "UNKNOWN_STATUS" });
+
+        result.Should().Be(ApplicationStatus.Started);
+    }
+
+    [TestMethod]
+    public void MapStringToEnum_WithUnknownName_ShouldThrow()
+    {
+        var profile = new ManageAccreditationsMappingProfile();
+        var method = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapStringToEnum", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+
+        Action act = () => method.Invoke(null, new object[] { "Unrecognised Task Name" });
+
+        act.Should().Throw<TargetInvocationException>()
+            .WithInnerException<InvalidOperationException>()
+            .WithMessage("Unknown accreditation task name: Unrecognised Task Name");
+    }
+
+    [TestMethod]
+    public void MapTaskStatusText_WithUnknownStringStatus_ShouldReturnDefault()
+    {
+        var method = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapTaskStatusText", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static,
+                       null, new[] { typeof(string) }, null);
+
+        method.Should().NotBeNull("the method should be found with correct binding flags");
+
+        var result = (string)method!.Invoke(null, new object[] { "UNKNOWN" });
+
+        result.Should().Be("Not Started");
+    }
+
+    [TestMethod]
+    public void MapTaskStatusText_WithUnknownStatusAndTask_ShouldReturnNotStartedYet()
+    {
+        var method = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapTaskStatusText", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null,
+                       new[] { typeof(string), typeof(RegulatorTaskType) }, null);
+
+        method.Should().NotBeNull("the method should be found with correct binding flags");
+
+        var result = (string)method!.Invoke(null, new object[] { "UNKNOWN", RegulatorTaskType.AssignOfficer });
+
+        result.Should().Be("Not started yet");
+    }
+
+    [TestMethod]
+    public void MapTaskStatusCssClass_WithUnknownStatus_ShouldReturnGrey()
+    {
+        var profile = new ManageAccreditationsMappingProfile();
+        var method = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapTaskStatusCssClass", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+
+        var result = (string)method.Invoke(null, new object[] { "UNKNOWN" });
+
+        result.Should().Be("govuk-tag--grey");
+    }
+
+    [TestMethod]
+    public void MapApplicationStatus_NullStatus_ShouldReturnDefaults()
+    {
+        var profile = new ManageAccreditationsMappingProfile();
+        var mapText = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapApplicationStatusText", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        var mapClass = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapApplicationStatusCssClass", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+
+        var text = (string)mapText.Invoke(null, new object[] { null });
+        var cssClass = (string)mapClass.Invoke(null, new object[] { null });
+
+        text.Should().Be("Not started yet");
+        cssClass.Should().Be("govuk-tag--grey");
     }
 
 }
