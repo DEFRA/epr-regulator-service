@@ -237,7 +237,7 @@ public partial class RegistrationSubmissionsController(
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
             // this will force a reload of the item in SubmissionDetails
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[existingModel.SubmissionId] = null;
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.Remove(existingModel.SubmissionId);
 
             SaveSession(_currentSession);
 
