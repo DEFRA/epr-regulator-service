@@ -280,7 +280,7 @@ public class ReprocessorExporterService(
             }
             else
             {
-                // No matching accreditations — clear out the list for cleanliness
+                // No matching accreditations � clear out the list for cleanliness
                 material.Accreditations = new List<Accreditation>();
             }
         }
