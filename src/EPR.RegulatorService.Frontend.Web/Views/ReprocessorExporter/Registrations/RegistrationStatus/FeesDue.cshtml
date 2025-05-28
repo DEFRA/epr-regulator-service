@@ -22,7 +22,6 @@
         </h1>
         
         <form method="get" asp-controller="RegistrationStatus" asp-action="PaymentCheck">
-
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
@@ -42,18 +41,33 @@
             </div>
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                Registration fee for @Model.MaterialName.ToLower() 
+                Registration fee for @Model.MaterialName.ToLower()
               </dt>
               <dd class="govuk-summary-list__value">
                 @Model.FeeAmount.ToDisplayCurrency()
               </dd>
             </div>
-           
+
           </dl>
-        
-          <button type="submit" class="govuk-button">
-            Continue
-          </button>
+
+          <div class="govuk-button-group">
+
+            <button type="submit" class="govuk-button">
+              Continue
+            </button>
+
+            @if (Model.TaskStatus == RegulatorTaskStatus.Queried)
+            {
+              <button type="submit" class="govuk-button govuk-button--secondary" asp-controller="RegistrationStatus" asp-action="AddNote">
+                Add note
+              </button>
+
+              <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationId })" class="govuk-button govuk-button--secondary">
+                Back to application
+              </a>
+            }
+
+          </div>
         </form>
       </div>
     </div>
