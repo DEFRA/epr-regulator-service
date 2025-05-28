@@ -159,6 +159,8 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.SamplingAndInspectionPlanTask.Should().NotBeNull();
             viewModel.SamplingAndInspectionPlanTask!.StatusText.Should().Be("Queried");
             viewModel.SamplingAndInspectionPlanTask.StatusCssClass.Should().Be("govuk-tag--orange");
+
+            viewModel.ShouldDisplay.Should().BeTrue();
         }
     }
 
@@ -212,6 +214,8 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.RegistrationStatusTask.Should().NotBeNull();
             viewModel.RegistrationStatusTask.StatusText.Should().Be("Refused");
             viewModel.RegistrationStatusTask.StatusCssClass.Should().Be("govuk-tag--red");
+
+            viewModel.ShouldDisplay.Should().BeFalse();
         }
     }
 
@@ -295,6 +299,54 @@ public class ManageAccreditationsMappingProfileTests
 
         text.Should().Be("Not started yet");
         cssClass.Should().Be("govuk-tag--grey");
+    }
+
+    [TestMethod]
+    public void MapTaskStatusText_UnknownStatus_ShouldReturnNotStarted()
+    {
+        var method = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapTaskStatusText", BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(string) }, null);
+
+        method.Should().NotBeNull();
+
+        var result = (string)method!.Invoke(null, new object[] { "foobar" });
+
+        result.Should().Be("Not Started");
+    }
+
+    [TestMethod]
+    public void MapTaskStatusText_CompletedStatus_UnknownTask_ShouldReturnReviewed()
+    {
+        var method = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapTaskStatusText", BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(string), typeof(RegulatorTaskType) }, null);
+
+        method.Should().NotBeNull();
+
+        var result = (string)method!.Invoke(null, new object[] { "completed", (RegulatorTaskType)999 });
+
+        result.Should().Be("Reviewed");
+    }
+
+    [TestMethod]
+    public void MapApplicationStatusText_UnknownStatus_ShouldReturnNotStartedYet()
+    {
+        var method = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapApplicationStatusText", BindingFlags.NonPublic | BindingFlags.Static);
+
+        var result = (string)method!.Invoke(null, new object[] { (ApplicationStatus?)123 });
+
+        result.Should().Be("Not started yet");
+    }
+
+    [TestMethod]
+    public void MapApplicationStatusCssClass_UnknownStatus_ShouldReturnGrey()
+    {
+        var method = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapApplicationStatusCssClass", BindingFlags.NonPublic | BindingFlags.Static);
+
+        var result = (string)method!.Invoke(null, new object[] { (ApplicationStatus?)123 });
+
+        result.Should().Be("govuk-tag--grey");
     }
 
 }
