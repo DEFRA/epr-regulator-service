@@ -91,12 +91,12 @@ public class ManageAccreditationsMappingProfile : Profile
     private static string MapTaskStatusText(string status) =>
         status.ToLowerInvariant() switch
         {
-            "not started" => "Not Started",
+            "not started" => "Not Started yet",
             "not started yet" => "Not started yet",
             "approved" => "Approved",
             "queried" => "Queried",
             "completed" => "Completed",
-            _ => "Not Started"
+            _ => "Not Started Yet"
         };
 
     private static string MapTaskStatusText(string status, RegulatorTaskType taskName) =>

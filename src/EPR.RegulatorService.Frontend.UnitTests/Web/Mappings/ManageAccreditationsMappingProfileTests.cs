@@ -149,7 +149,7 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.AccreditationYear.Should().Be(2026);
 
             viewModel.PRNTonnageTask.Should().NotBeNull();
-            viewModel.PRNTonnageTask!.StatusText.Should().Be("Not Started");
+            viewModel.PRNTonnageTask!.StatusText.Should().Be("Not Started yet");
             viewModel.PRNTonnageTask.StatusCssClass.Should().Be("govuk-tag--grey");
 
             viewModel.BusinessPlanTask.Should().NotBeNull();
@@ -256,7 +256,7 @@ public class ManageAccreditationsMappingProfileTests
 
         var result = (string)method!.Invoke(null, new object[] { "UNKNOWN" });
 
-        result.Should().Be("Not Started");
+        result.Should().Be("Not Started Yet");
     }
 
     [TestMethod]
@@ -311,7 +311,7 @@ public class ManageAccreditationsMappingProfileTests
 
         var result = (string)method!.Invoke(null, new object[] { "foobar" });
 
-        result.Should().Be("Not Started");
+        result.Should().Be("Not Started Yet");
     }
 
     [TestMethod]
