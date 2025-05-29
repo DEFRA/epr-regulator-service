@@ -4,7 +4,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accredit
 
 public class AccreditationMaterialPaymentFees
 {
-    public int AccreditationId { get; init; }
+    public Guid AccreditationId { get; init; }
     public required string OrganisationName { get; init; }
     public required ApplicationOrganisationType ApplicationType { get; init; }
     public string? SiteAddress { get; init; }

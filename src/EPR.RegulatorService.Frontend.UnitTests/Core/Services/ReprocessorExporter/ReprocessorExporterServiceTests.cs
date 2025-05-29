@@ -7,6 +7,7 @@ using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
@@ -835,6 +836,205 @@ public class ReprocessorExporterServiceTests
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
             _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year));
     }
+
+    [TestMethod]
+    public async Task GetPaymentFeesByAccreditationMaterialIdAsync_WhenResponseIsSuccess_ReturnsPaymentFees()
+    {
+        // Arrange
+        var accreditationMaterialId = Guid.NewGuid();
+        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationMaterialId}/paymentFees";
+
+        var expectedFees = new AccreditationMaterialPaymentFees
+        {
+            AccreditationId = accreditationMaterialId,
+            OrganisationName = "Accredited Plastics Ltd",
+            SiteAddress = "123 Test Lane, Recycling City",
+            MaterialName = "Plastic", // Required
+            ApplicationType = ApplicationOrganisationType.Reprocessor,
+            ApplicationReferenceNumber = "ACC-2025-XYZ",
+            FeeAmount = 3500,
+            SubmittedDate = DateTime.UtcNow.AddDays(-3),
+            Regulator = "EA"
+        };
+
+        _optionsMock.Object.Value.Endpoints.Add("GetPaymentFeesByAccreditationMaterialId", "v{apiVersion}/accreditationMaterials/{id}/paymentFees");
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(JsonSerializer.Serialize(expectedFees, _jsonSerializerOptions))
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act
+        var result = await _service.GetPaymentFeesByAccreditationMaterialIdAsync(accreditationMaterialId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(expectedFees);
+    }
+
+    [TestMethod]
+    public async Task GetPaymentFeesByAccreditationMaterialIdAsync_WhenNotFound_ThrowsHttpRequestException()
+    {
+        // Arrange
+        var accreditationMaterialId = Guid.NewGuid();
+        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationMaterialId}/paymentFees";
+
+        var response = new HttpResponseMessage(HttpStatusCode.NotFound);
+
+        _optionsMock.Object.Value.Endpoints.Add("GetPaymentFeesByAccreditationMaterialId", "v{apiVersion}/accreditationMaterials/{id}/paymentFees");
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetPaymentFeesByAccreditationMaterialIdAsync(accreditationMaterialId));
+    }
+
+    [TestMethod]
+    public async Task SubmitAccreditationOfflinePaymentAsync_WhenResponseIsSuccess_SendsCorrectRequest()
+    {
+        // Arrange
+        var request = new AccreditationOfflinePaymentRequest
+        {
+            Amount = 2000,
+            PaymentDate = DateTime.UtcNow,
+            PaymentMethod = PaymentMethodType.BankTransfer,
+            PaymentReference = "ACC-PAY-123",
+            Regulator = "EA"
+        };
+
+        const string expectedPath = "v1/accreditationMaterials/offlinePayment";
+        _optionsMock.Object.Value.Endpoints.Add("SubmitAccreditationOfflinePayment", expectedPath);
+
+        var response = new HttpResponseMessage(HttpStatusCode.OK);
+        HttpRequestMessage? capturedRequest = null;
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequest = req)
+            .ReturnsAsync(response);
+
+        // Act
+        await _service.SubmitAccreditationOfflinePaymentAsync(request);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.Method.Should().Be(HttpMethod.Post);
+        capturedRequest.RequestUri!.ToString().Should().EndWith(expectedPath);
+        var body = await capturedRequest.Content!.ReadAsStringAsync();
+        body.Should().Contain("ACC-PAY-123");
+    }
+
+    [TestMethod]
+    public async Task SubmitAccreditationOfflinePaymentAsync_WhenResponseIsNotSuccess_ThrowsException_AndSendsCorrectRequest()
+    {
+        // Arrange
+        var request = new AccreditationOfflinePaymentRequest
+        {
+            Amount = 1500,
+            PaymentDate = DateTime.UtcNow.AddDays(-1),
+            PaymentMethod = PaymentMethodType.Cheque,
+            PaymentReference = "FAIL123",
+            Regulator = "EA"
+        };
+
+        const string expectedPath = "v1/accreditationMaterials/offlinePayment";
+        _optionsMock.Object.Value.Endpoints.Add("SubmitAccreditationOfflinePayment", expectedPath);
+
+        var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+        HttpRequestMessage? capturedRequest = null;
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequest = req)
+            .ReturnsAsync(response);
+
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.SubmitAccreditationOfflinePaymentAsync(request));
+
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.Method.Should().Be(HttpMethod.Post);
+        capturedRequest.RequestUri!.ToString().Should().EndWith(expectedPath);
+        var body = await capturedRequest.Content!.ReadAsStringAsync();
+        body.Should().Contain("FAIL123");
+    }
+
+    [TestMethod]
+    public async Task MarkAccreditationAsDulyMadeAsync_WhenResponseIsSuccess_SendsCorrectRequest()
+    {
+        // Arrange
+        var accreditationMaterialId = Guid.NewGuid();
+        var request = new AccreditationMarkAsDulyMadeRequest
+        {
+            DeterminationDate = DateTime.UtcNow,
+            DulyMadeDate = DateTime.UtcNow.AddDays(-5)
+        };
+
+        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationMaterialId}/markAsDulyMade";
+        _optionsMock.Object.Value.Endpoints.Add("MarkAccreditationAsDulyMade", "v{apiVersion}/accreditationMaterials/{id}/markAsDulyMade");
+
+        var response = new HttpResponseMessage(HttpStatusCode.OK);
+        HttpRequestMessage? capturedRequest = null;
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequest = req)
+            .ReturnsAsync(response);
+
+        // Act
+        await _service.MarkAccreditationAsDulyMadeAsync(accreditationMaterialId, request);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.Method.Should().Be(HttpMethod.Post);
+        capturedRequest.RequestUri!.ToString().Should().EndWith($"/accreditationMaterials/{accreditationMaterialId}/markAsDulyMade");
+        var body = await capturedRequest.Content!.ReadAsStringAsync();
+        body.Should().Contain("determinationDate").And.Contain("dulyMadeDate");
+    }
+
+    [TestMethod]
+    public async Task MarkAccreditationAsDulyMadeAsync_WhenResponseIsNotSuccess_ThrowsException_AndSendsCorrectRequest()
+    {
+        // Arrange
+        var accreditationMaterialId = Guid.NewGuid();
+        var request = new AccreditationMarkAsDulyMadeRequest
+        {
+            DeterminationDate = DateTime.UtcNow,
+            DulyMadeDate = DateTime.UtcNow.AddDays(-2)
+        };
+
+        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationMaterialId}/markAsDulyMade";
+        _optionsMock.Object.Value.Endpoints.Add("MarkAccreditationAsDulyMade", "v{apiVersion}/accreditationMaterials/{id}/markAsDulyMade");
+
+        var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+        HttpRequestMessage? capturedRequest = null;
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequest = req)
+            .ReturnsAsync(response);
+
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.MarkAccreditationAsDulyMadeAsync(accreditationMaterialId, request));
+
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.Method.Should().Be(HttpMethod.Post);
+        capturedRequest.RequestUri!.ToString().Should().EndWith($"/accreditationMaterials/{accreditationMaterialId}/markAsDulyMade");
+        var body = await capturedRequest.Content!.ReadAsStringAsync();
+        body.Should().Contain("determinationDate").And.Contain("dulyMadeDate");
+    }
+
+
+
 
     private void SetupHttpMessageExpectations(HttpMethod method, string path,
         HttpResponseMessage responseMessage) =>

@@ -527,7 +527,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         var mockPaymentFees = new AccreditationMaterialPaymentFees
         {
-            AccreditationId = 12345,
+            AccreditationId = Guid.NewGuid(),
             OrganisationName = "Mock Green Ltd",
             ApplicationType = ApplicationOrganisationType.Reprocessor,
             SiteAddress = "23 Ruby Street, London, E12 3SE",
@@ -546,34 +546,45 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task MarkAccreditationAsDulyMadeAsync(Guid accreditationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
     {
-        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == accreditationMaterialId);
+        var registrationMaterial = _registrations
+            .SelectMany(r => r.Materials)
+            .FirstOrDefault(rm => rm.Id == accreditationMaterialId);
+
+        if (registrationMaterial == null)
+        {
+            throw new NotFoundException("Registration material not found.");
+        }
 
         registrationMaterial.DeterminationDate = dulyMadeRequest.DeterminationDate;
 
-        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.CheckAccreditationStatus);
-        Guid? taskId;
+        // Assume we're dealing with a single accreditation per material for now
+        var accreditation = registrationMaterial.Accreditations.FirstOrDefault();
+
+        if (accreditation == null)
+        {
+            throw new InvalidOperationException("No accreditation found for this material.");
+        }
+
+        // Try to find an existing task for accreditation determination
+        var task = accreditation.Tasks.SingleOrDefault(t => t.TaskName == "Check Accreditation Status");
 
         if (task == null)
         {
-            taskId = Guid.NewGuid();
-        }
-        else
-        {
-            taskId = task.Id;
-            registrationMaterial.Tasks.Remove(task);
+            task = new AccreditationTask
+            {
+                Id = Guid.NewGuid(),
+                TaskId = 999, // Placeholder task ID — replace with real one if known
+                TaskName = "Check Accreditation Status",
+                Year = accreditation.AccreditationYear
+            };
+            accreditation.Tasks.Add(task);
         }
 
-        var newTask = new RegistrationTask
-        {
-            Id = taskId,
-            TaskName = RegulatorTaskType.CheckRegistrationStatus,
-            Status = RegulatorTaskStatus.Completed
-        };
-
-        registrationMaterial.Tasks.Add(newTask);
+        task.Status = "Completed";
 
         return Task.CompletedTask;
     }
+
 
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
     {
