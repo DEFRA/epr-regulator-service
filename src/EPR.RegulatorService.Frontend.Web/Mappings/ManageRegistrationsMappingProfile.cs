@@ -42,7 +42,8 @@ public class ManageRegistrationsMappingProfile : Profile
 
         CreateMap<RegistrationTask, RegistrationTaskViewModel>()
             .ForMember(dest => dest.StatusCssClass, opt => opt.MapFrom(src => MapRegistrationTaskStatusCssClass(src.Status)))
-            .ForMember(dest => dest.StatusText, opt => opt.MapFrom(src => MapRegistrationTaskStatusText(src.Status, src.TaskName)));
+            .ForMember(dest => dest.StatusText, opt => opt.MapFrom(src => MapRegistrationTaskStatusText(src.Status, src.TaskName)))
+            .ForMember(dest => dest.TaskStatus, opt => opt.MapFrom(src => src.Status));
     }
 
     private static string MapRegistrationMaterialStatusCssClass(ApplicationStatus? status) =>

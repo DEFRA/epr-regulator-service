@@ -28,5 +28,6 @@ public class RegistrationStatusMappingProfile : Profile
         CreateMap<RegistrationStatusSession, OfflinePaymentRequest>()
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.FeeAmount))
             .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.ApplicationReferenceNumber));
+        CreateMap<RegistrationMaterialPaymentFees, PaymentReviewViewModel>();
     }
 }

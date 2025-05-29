@@ -78,6 +78,7 @@ public static class PagePath
     public const string PaymentDate = "payment-date";
     public const string PaymentReview = "payment-review";
     public const string MarkAsDulyMade = "duly-made";
+    public const string RegistrationApplicationStatus = "registration-application-status";
 
     // Complete tasks paths
     public const string CompleteQueryRegistrationTask = "query-registration-task-complete";
