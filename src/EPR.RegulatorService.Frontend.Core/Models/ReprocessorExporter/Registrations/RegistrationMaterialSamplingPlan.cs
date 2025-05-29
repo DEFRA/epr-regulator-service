@@ -4,6 +4,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
 {
     public class RegistrationMaterialSamplingPlan
     {
+        public Guid RegistrationMaterialId { get; set; }
         public required string MaterialName { get; set; }
         public List<RegistrationMaterialSamplingPlanFile> Files { get; set; } = [];
         public RegulatorTaskStatus TaskStatus { get; init; }

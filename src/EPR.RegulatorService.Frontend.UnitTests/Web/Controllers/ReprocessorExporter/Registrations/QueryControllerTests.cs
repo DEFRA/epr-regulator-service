@@ -99,8 +99,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
         var viewModel = new AddQueryNoteViewModel
         {
             Note = "Test note",
-            OrganisationName = "TestOrg",
-            ApplicationType = ApplicationOrganisationType.Reprocessor
+            OrganisationName = "TestOrg"
         };
         
         // Act
@@ -123,8 +122,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
         var viewModel = new AddQueryNoteViewModel
         {
             Note = "Test note",
-            OrganisationName = "TestOrg",
-            ApplicationType = ApplicationOrganisationType.Reprocessor
+            OrganisationName = "TestOrg"
         };
 
         // Act
@@ -149,8 +147,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
         var viewModel = new AddQueryNoteViewModel
         {
             Note = "Test note",
-            OrganisationName = "TestOrg",
-            ApplicationType = ApplicationOrganisationType.Reprocessor
+            OrganisationName = "TestOrg"
         };
 
         _queryController.ModelState.AddModelError("Test", "Error");

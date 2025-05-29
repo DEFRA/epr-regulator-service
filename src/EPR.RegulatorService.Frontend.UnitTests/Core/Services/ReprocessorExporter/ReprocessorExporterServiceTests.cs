@@ -735,6 +735,7 @@ public class ReprocessorExporterServiceTests
         var expectedSiteDetails = new SiteDetails
         {
             RegistrationId = Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50"),
+            OrganisationName = "Test Org",
             SiteAddress = "23, Ruby St, London, E12 3SE",
             NationName = "England",
             GridReference = "SJ 854 662",

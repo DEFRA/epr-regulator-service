@@ -25,7 +25,7 @@ public class QueryController (
     : ReprocessorExporterBaseController(sessionManager, configuration)
 {
     private const string RegistrationNoteFormAction = "AddRegistrationQueryNote";
-    private const string MaterialNoteFormAction = "AddRegistrationQueryNote";
+    private const string MaterialNoteFormAction = "AddMaterialQueryNote";
     private const string AddQueryNoteView = "~/Views/ReprocessorExporter/Registrations/Query/AddQueryNote.cshtml";
 
     [HttpGet]

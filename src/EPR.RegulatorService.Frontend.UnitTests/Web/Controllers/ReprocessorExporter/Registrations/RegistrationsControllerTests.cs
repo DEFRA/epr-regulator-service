@@ -18,6 +18,8 @@ using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
+using FluentValidation;
+
 [TestClass]
 public class RegistrationsControllerTests : RegistrationControllerTestBase
 {
@@ -34,7 +36,6 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         CreateCommonMocks();
         CreateSessionMock();
 
-        var configurationSectionMock = new Mock<IConfigurationSection>();
         var mockRequest = new Mock<HttpRequest>();
         var mockHeaders = new Mock<IHeaderDictionary>();
 
@@ -45,14 +46,11 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         // Set the mock Request to the HttpContext
         mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
-
-        configurationSectionMock
-            .Setup(section => section.Value)
-            .Returns("/regulators");
-
-        var mockConfiguration = CreateConfigurationMock();
         
-        _controller = new RegistrationsController(_sessionManagerMock.Object, _reprocessorExporterServiceMock.Object, mockConfiguration.Object, _mapperMock.Object);
+        var configurationMock = CreateConfigurationMock();
+        var validatorMock = new Mock<IValidator<IdRequest>>();
+        
+        _controller = new RegistrationsController(_sessionManagerMock.Object, _reprocessorExporterServiceMock.Object, configurationMock.Object, _mapperMock.Object, validatorMock.Object);
 
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
@@ -150,7 +148,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
-        var siteDetails = new SiteDetails { RegistrationId = registrationId };
+        var siteDetails = new SiteDetails { RegistrationId = registrationId, OrganisationName = "Test Org" };
         _reprocessorExporterServiceMock.Setup(s => s.GetSiteDetailsByRegistrationIdAsync(registrationId)).ReturnsAsync(siteDetails);
         _mapperMock.Setup(m => m.Map<SiteDetailsViewModel>(siteDetails)).Returns(new SiteDetailsViewModel { RegistrationId = registrationId,
             LegalDocumentAddress = "LegalDocumentAddress1", Location = "Location1", SiteAddress = "SiteAddress1", SiteGridReference = "SiteGridReference1"

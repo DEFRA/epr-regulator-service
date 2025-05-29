@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
@@ -39,12 +38,14 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             throw new NotFoundException("Mocked exception for testing purposes.");
         }
 
-        var task = _registrations.Single(r => r.Id == id).Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.SiteAddressAndContactDetails);
+        var registration = _registrations.Single(r => r.Id == id);
+        var task = registration.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.SiteAddressAndContactDetails);
 
         var siteDetails = new SiteDetails
         {
             RegistrationId = id,
-            SiteAddress = "16 Ruby St, London, E12 3SE",
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
             NationName = "England",
             GridReference = "SJ 854 662",
             LegalCorrespondenceAddress = "25 Ruby St, London, E12 3SE",
@@ -244,10 +245,15 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
-        var task = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId).Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.ReprocessingInputsAndOutputs);
-
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
+        var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
+        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.ReprocessingInputsAndOutputs);
+        
         var registrationMaterialReprocessingIO = new RegistrationMaterialReprocessingIO
         {
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress!,
+            RegistrationMaterialId = registrationMaterialId,
             MaterialName = "Plastic",
             SourcesOfPackagingWaste = "Shed",
             PlantEquipmentUsed = "shredder",
@@ -260,8 +266,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             TotalInputs = 7.00M,
             TotalOutputs = 8.00M,
             TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
-
         };
+
         return Task.FromResult(registrationMaterialReprocessingIO);
     }
 
@@ -271,6 +277,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         var registrationMaterialSamplingPlan = new RegistrationMaterialSamplingPlan
         {
+            RegistrationMaterialId = registrationMaterialId,
             MaterialName = "Plastic",
             Files = new List<RegistrationMaterialSamplingPlanFile>
             {

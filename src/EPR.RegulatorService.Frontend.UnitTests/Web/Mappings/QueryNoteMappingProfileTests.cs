@@ -71,7 +71,6 @@ public class QueryNoteMappingProfileTests
         result.Should().NotBeNull();
         result.OrganisationName.Should().Be(queryMaterialSession.OrganisationName);
         result.SiteAddress.Should().Be(queryMaterialSession.SiteAddress);
-        result.ApplicationType.Should().Be(queryMaterialSession.ApplicationType);
         result.Note.Should().BeNull();
     }
 }

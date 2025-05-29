@@ -52,9 +52,9 @@
                     @if (Model.TaskStatus != RegulatorTaskStatus.Completed)
                     {
                         <div class="govuk-button-group !-margin-top-6">
-                          <button type="submit" class="govuk-button" formmethod="post" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteUkSiteDetails" asp-route-registrationId="@Model.RegistrationId">
-                            Mark as reviewed
-                          </button>
+                            <button type="submit" class="govuk-button" formmethod="post" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteUkSiteDetails" asp-route-registrationId="@Model.RegistrationId">
+                              Mark as reviewed
+                            </button>
 
                             @if (Model.TaskStatus == RegulatorTaskStatus.Queried)
                             {
