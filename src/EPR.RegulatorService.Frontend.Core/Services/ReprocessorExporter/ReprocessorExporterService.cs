@@ -38,7 +38,9 @@ public class ReprocessorExporterService(
         GetSiteAddressByRegistrationId,
         DownloadSamplingInspectionFile,
         GetRegistrationByIdWithAccreditations,
-        GetPaymentFeesByAccreditationMaterialId
+        GetPaymentFeesByAccreditationMaterialId,
+        SubmitAccreditationOfflinePayment,
+        MarkAccreditationAsDulyMade
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -322,12 +324,11 @@ public class ReprocessorExporterService(
         return accreditationMaterialPaymentFees;
     }
 
-    //ToDo: update this method to point to correct backend endpoint once available
     public async Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment)
     {
         await PrepareAuthenticatedClient();
 
-        string path = GetVersionedEndpoint(Endpoints.SubmitOfflinePayment);
+        string path = GetVersionedEndpoint(Endpoints.SubmitAccreditationOfflinePayment);
 
         string jsonContent = JsonSerializer.Serialize(offlinePayment, _jsonSerializerOptions);
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
@@ -337,13 +338,12 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
-    //ToDo: update this method to point to correct backend endpoint once available
-    public async Task MarkAccreditationAsDulyMadeAsync(Guid registrationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
+    public async Task MarkAccreditationAsDulyMadeAsync(Guid accreditationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAsDulyMade);
-        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString());
+        string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAccreditationAsDulyMade);
+        string path = pathTemplate.Replace("{id}", accreditationMaterialId.ToString());
 
         string jsonContent = JsonSerializer.Serialize(dulyMadeRequest, _jsonSerializerOptions);
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");

@@ -25,5 +25,5 @@ public interface IReprocessorExporterService
     Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null);
     Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationMaterialId);
     Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment);
-    Task MarkAccreditationAsDulyMadeAsync(Guid registrationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest);
+    Task MarkAccreditationAsDulyMadeAsync(Guid accreditationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest);
 }

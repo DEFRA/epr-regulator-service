@@ -544,9 +544,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment) => Task.CompletedTask;
 
-    public Task MarkAccreditationAsDulyMadeAsync(Guid registrationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
+    public Task MarkAccreditationAsDulyMadeAsync(Guid accreditationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
     {
-        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == accreditationMaterialId);
 
         registrationMaterial.DeterminationDate = dulyMadeRequest.DeterminationDate;
 
