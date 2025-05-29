@@ -1,7 +1,6 @@
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
-using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
 
@@ -26,7 +25,7 @@ public class AccreditationStatusMappingProfile : Profile
         CreateMap<AccreditationStatusSession, PaymentReviewViewModel>()
             .ForMember(dest => dest.DeterminationDate, opt => opt.Ignore())
             .ForMember(dest => dest.DeterminationWeeks, opt => opt.Ignore()); 
-        CreateMap<AccreditationStatusSession, OfflinePaymentRequest>()
+        CreateMap<AccreditationStatusSession, AccreditationOfflinePaymentRequest>()
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.FeeAmount))
             .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.ApplicationReferenceNumber));
     }
