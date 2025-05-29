@@ -4,7 +4,7 @@
 @model PaymentReviewViewModel
 
 @{
-    const string title = "Application status";
+    string title = $"{Model.MaterialName} registration application status";
     ViewData["Title"] = title;
 }
 
@@ -16,6 +16,7 @@
                 <h1 class="govuk-heading-l">@Model.MaterialName registration application status</h1>
 
                 <form asp-controller="RegistrationStatus" asp-action="MarkAsDulyMade" method="post">
+
                     <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
@@ -25,17 +26,53 @@
                                 Yes
                             </dd>
                         </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Payment method
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.PaymentMethod
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Payment date
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.PaymentDate.ToDisplayDate()
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Date and time submitted
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.SubmittedDate.ToDisplayDateAndTime()
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Duly made date
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.DulyMadeDate.ToDisplayDate()
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Determination date
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.DeterminationDate.ToDisplayDate()
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                            </dd>
+                        </div>
                     </dl>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Date and time submitted
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.SubmittedDate.ToDisplayDateAndTime()
-                        </dd>
-                        <dd class="govuk-summary-list__actions">
-                        </dd>
-                    </div>
                     <button type="submit" class="govuk-button" data-module="govuk-button">
                         Back
                     </button>

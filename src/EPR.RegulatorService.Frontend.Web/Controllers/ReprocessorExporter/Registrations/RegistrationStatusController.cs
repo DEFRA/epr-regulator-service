@@ -211,17 +211,7 @@ public class RegistrationStatusController(
 
         var registrationMaterial = await reprocessorExporterService.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId);
         var viewModel = mapper.Map<PaymentReviewViewModel>(registrationMaterial);
-        //session.ReprocessorExporterSession.RegistrationStatusSession.
 
-        /*viewModel = new PaymentReviewViewModel
-            {
-                MaterialName = "Steel",
-                SubmittedDate = DateTime.Now,
-                PaymentMethod = PaymentMethodType.BankTransfer,
-                PaymentDate = DateTime.Now,
-                DeterminationDate = DateTime.Now,
-                DeterminationWeeks = 5
-            };*/
         string pagePath = GetPagePath(PagePath.RegistrationApplicationStatus, registrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
