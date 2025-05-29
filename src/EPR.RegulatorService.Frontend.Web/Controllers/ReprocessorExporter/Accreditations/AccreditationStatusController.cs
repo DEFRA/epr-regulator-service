@@ -201,36 +201,36 @@ public class AccreditationStatusController(
 
         return View(GetAccreditationStatusView(nameof(PaymentReview)), viewModel);
     }
-    
-    //[HttpGet]
-    //[Route(PagePath.MarkAsDulyMade)]
-    //public async Task<IActionResult> MarkAsDulyMade()
-    //{
-    //    var session = await GetSession();
 
-    //    var accreditationStatusSession = GetAccreditationStatusSession(session);
+    [HttpGet]
+    [Route(PagePath.MarkAsDulyMade)]
+    public async Task<IActionResult> MarkAsDulyMade()
+    {
+        var session = await GetSession();
 
-    //    var offlinePaymentRequest = mapper.Map<OfflinePaymentRequest>(accreditationStatusSession);
-    //    await reprocessorExporterService.SubmitOfflinePaymentAsync(offlinePaymentRequest);
+        var accreditationStatusSession = GetAccreditationStatusSession(session);
 
-    //    var dulyMadeRequest = CreateDulyMadeRequest(accreditationStatusSession);
-    //    await reprocessorExporterService.MarkAsDulyMadeAsync(accreditationStatusSession.RegistrationMaterialId, dulyMadeRequest);
+        var offlinePaymentRequest = mapper.Map<AccreditationOfflinePaymentRequest>(accreditationStatusSession);
+        await reprocessorExporterService.SubmitAccreditationOfflinePaymentAsync(offlinePaymentRequest);
 
-    //    return RedirectToAction("Index", "ManageAccreditations", new { id = accreditationStatusSession.RegistrationId });
-    //}
+        var dulyMadeRequest = CreateDulyMadeRequest(accreditationStatusSession);
+        await reprocessorExporterService.MarkAccreditationAsDulyMadeAsync(accreditationStatusSession.RegistrationMaterialId, dulyMadeRequest);
 
-    //private MarkAsDulyMadeRequest CreateDulyMadeRequest(AccreditationStatusSession accreditationStatusSession)
-    //{
-    //    var dulyMadeDate = CalculateDulyMadeDate(accreditationStatusSession.SubmittedDate, accreditationStatusSession.PaymentDate);
+        return RedirectToAction("Index", "ManageAccreditations", new { id = accreditationStatusSession.RegistrationId });
+    }
 
-    //    var dulyMadeRequest = new MarkAsDulyMadeRequest
-    //    {
-    //        DulyMadeDate = dulyMadeDate,
-    //        DeterminationDate =
-    //            CalculateDeterminationDate(reprocessorExporterConfig.Value.DeterminationWeeks, dulyMadeDate)
-    //    };
-    //    return dulyMadeRequest;
-    //}
+    private AccreditationMarkAsDulyMadeRequest CreateDulyMadeRequest(AccreditationStatusSession accreditationStatusSession)
+    {
+        var dulyMadeDate = CalculateDulyMadeDate(accreditationStatusSession.SubmittedDate, accreditationStatusSession.PaymentDate);
+
+        var dulyMadeRequest = new AccreditationMarkAsDulyMadeRequest
+        {
+            DulyMadeDate = dulyMadeDate,
+            DeterminationDate =
+                CalculateDeterminationDate(reprocessorExporterConfig.Value.DeterminationWeeks, dulyMadeDate)
+        };
+        return dulyMadeRequest;
+    }
 
     private static DateTime CalculateDulyMadeDate(DateTime submittedDate, DateTime? paymentDate) =>
         paymentDate.HasValue && paymentDate.Value > submittedDate

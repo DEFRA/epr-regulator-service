@@ -2,7 +2,7 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 
-public class OfflinePaymentRequest
+public class AccreditationOfflinePaymentRequest
 {
     public decimal Amount { get; init; }
     public string PaymentReference { get; init; }

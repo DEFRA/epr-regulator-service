@@ -30,7 +30,7 @@
           @if (!ViewData.ModelState.IsValid)
           {
             @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
-          }
+          }		  
 
 		 <form asp-controller="AccreditationStatus" asp-action="PaymentDate" method="post">
             <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "")">
@@ -67,6 +67,11 @@
                 </div>
               </div>
             </div>
+
+						<input type="hidden" asp-for="ApplicationType" />
+						<input type="hidden" asp-for="OrganisationName" />
+						<input type="hidden" asp-for="SiteAddress" />
+
             
             <button type="submit" class="govuk-button" data-module="govuk-button">
               Continue

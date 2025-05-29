@@ -4,7 +4,7 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 
 public class AccreditationStatusSession
 {
-    public int RegistrationId { get; set; }
+    public Guid RegistrationId { get; set; }
     public required string OrganisationName { get; init; }
     public ApplicationOrganisationType ApplicationType { get; init; }
     public string? SiteAddress { get; init; }
@@ -17,4 +17,5 @@ public class AccreditationStatusSession
     public bool? FullPaymentMade { get; set; }
     public PaymentMethodType? PaymentMethod { get; set; }
     public DateTime? PaymentDate { get; set; }
+    public int? Year { get; set; }
 }

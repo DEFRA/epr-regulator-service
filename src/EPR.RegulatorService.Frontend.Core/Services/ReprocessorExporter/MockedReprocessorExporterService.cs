@@ -351,7 +351,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions },
                 new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.CheckRegistrationStatus },
                 new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs },
-                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan },
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.CheckAccreditationStatus }
             ];
         }
 
@@ -539,9 +540,40 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         };
 
         return Task.FromResult(mockPaymentFees);
-
     }
 
+    public Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment) => Task.CompletedTask;
+
+    public Task MarkAccreditationAsDulyMadeAsync(Guid registrationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
+    {
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
+
+        registrationMaterial.DeterminationDate = dulyMadeRequest.DeterminationDate;
+
+        var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.CheckAccreditationStatus);
+        Guid? taskId;
+
+        if (task == null)
+        {
+            taskId = Guid.NewGuid();
+        }
+        else
+        {
+            taskId = task.Id;
+            registrationMaterial.Tasks.Remove(task);
+        }
+
+        var newTask = new RegistrationTask
+        {
+            Id = taskId,
+            TaskName = RegulatorTaskType.CheckRegistrationStatus,
+            Status = RegulatorTaskStatus.Completed
+        };
+
+        registrationMaterial.Tasks.Add(newTask);
+
+        return Task.CompletedTask;
+    }
 
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
     {

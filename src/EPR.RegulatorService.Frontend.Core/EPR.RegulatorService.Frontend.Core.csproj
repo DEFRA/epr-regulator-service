@@ -14,11 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\ReprocessorExporter\Accreditations\MarkAsDulyMadeRequest.cs" />
-    <Compile Remove="Models\ReprocessorExporter\Accreditations\OfflinePaymentRequest.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="EPR.Common.Authorization" Version="1.0.17" />
     <PackageReference Include="libphonenumber-csharp" Version="8.13.44" />

@@ -25,7 +25,7 @@
                 Yes
               </dd>
               <dd class="govuk-summary-list__actions">
-                <a href="@Url.ActionLink("PaymentCheck", "RegistrationStatus")" class="govuk-link govuk-link--no-visited-state">Change</a>
+                <a href="@Url.ActionLink("PaymentCheck", "AccreditationStatus")" class="govuk-link govuk-link--no-visited-state">Change</a>
               </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -36,7 +36,7 @@
                 @Model.PaymentMethod!.ToString()
               </dd>
               <dd class="govuk-summary-list__actions">
-                <a href="@Url.ActionLink("PaymentMethod", "RegistrationStatus")" class="govuk-link govuk-link--no-visited-state">Change</a>
+				<a href="@Url.ActionLink("PaymentMethod", "AccreditationStatus")" class="govuk-link govuk-link--no-visited-state">Change</a>
               </dd>
             </div>
 
@@ -48,7 +48,7 @@
                 @Model.PaymentDate.ToDisplayDate()
               </dd>
               <dd class="govuk-summary-list__actions">
-                <a href="@Url.ActionLink("PaymentDate", "RegistrationStatus")" class="govuk-link govuk-link--no-visited-state">Change</a>
+				<a href="@Url.ActionLink("PaymentDate", "AccreditationStatus")" class="govuk-link govuk-link--no-visited-state">Change</a>
               </dd>
             </div>
 

@@ -322,6 +322,37 @@ public class ReprocessorExporterService(
         return accreditationMaterialPaymentFees;
     }
 
+    //ToDo: update this method to point to correct backend endpoint once available
+    public async Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = GetVersionedEndpoint(Endpoints.SubmitOfflinePayment);
+
+        string jsonContent = JsonSerializer.Serialize(offlinePayment, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    //ToDo: update this method to point to correct backend endpoint once available
+    public async Task MarkAccreditationAsDulyMadeAsync(Guid registrationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAsDulyMade);
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString());
+
+        string jsonContent = JsonSerializer.Serialize(dulyMadeRequest, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
+
+        response.EnsureSuccessStatusCode();
+    }
+
     private async Task PrepareAuthenticatedClient()
     {
         if (httpClient.BaseAddress == null)
