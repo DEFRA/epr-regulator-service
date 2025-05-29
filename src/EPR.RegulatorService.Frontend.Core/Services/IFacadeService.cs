@@ -68,4 +68,8 @@ public interface IFacadeService
     Task SubmitPackagingDataResubmissionFeePaymentEventAsync(FeePaymentRequest request);
 
     Task<PomPayCalParametersResponse> GetPomPayCalParameters(Guid submissionId, Guid? complianceSchemeId);
+
+    Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetTransformedRegistrationSubmissions(RegistrationSubmissionsFilterModel filters);
+
+    Task<RegistrationSubmissionOrganisationDetails> GetTransformedRegistrationSubmissionDetails(Guid submissionId);
 }

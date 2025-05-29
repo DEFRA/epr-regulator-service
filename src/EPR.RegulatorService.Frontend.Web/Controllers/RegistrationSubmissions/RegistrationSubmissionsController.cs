@@ -124,7 +124,7 @@ public partial class RegistrationSubmissionsController(
         try
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-            RegistrationSubmissionDetailsViewModel model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+            RegistrationSubmissionDetailsViewModel model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetTransformedRegistrationSubmissionDetails);
 
             if (model is null)
             {

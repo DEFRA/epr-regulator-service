@@ -1,10 +1,14 @@
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
+using Azure;
+
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.MockedData;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
@@ -1696,6 +1700,64 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        public async Task GetTransformedRegistrationSubmissions_Success_ReturnsPaginatedList()
+        {
+            // Arrange
+            var filter = new RegistrationSubmissionsFilterModel();
+
+            string responseContent = "{\"items\":[{\"submissionId\":\"1a502cae-05f5-44c4-b20c-d09d972d3288\",\"organisationId\":\"4761d4c0-96af-495a-bce9-f246a66b4b2c\",\"organisationName\":\"NESTRAL LTD\",\"organisationReference\":\"127909\",\"organisationType\":\"small\",\"applicationReferenceNumber\":\"PEPR12790925P1\",\"registrationReferenceNumber\":\"R25EP1279095154\",\"submissionDate\":\"2025-05-02T11:02:35.6399534Z\",\"registrationYear\":2025,\"submissionStatus\":\"Granted\",\"statusPendingDate\":null,\"nationId\":1,\"isResubmission\":false,\"resubmissionStatus\":null,\"resubmissionDate\":null,\"registrationDate\":\"2025-05-02T15:04:26.1984588Z\",\"regulatorDecisionDate\":null}],\"currentPage\":1,\"totalItems\":1,\"pageSize\":20}";
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(responseContent, Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler
+               .Protected()
+               .Setup<Task<HttpResponseMessage>>("SendAsync",
+                  ItExpr.IsAny<HttpRequestMessage>(),
+                  ItExpr.IsAny<CancellationToken>())
+               .ReturnsAsync((HttpRequestMessage request, CancellationToken token) =>
+               {
+                   Assert.AreEqual(HttpMethod.Post, request.Method);
+                   Assert.AreEqual($"http://localhost/organisation-registration-submissions", request.RequestUri.ToString());
+                   return httpResponseMessage;
+               });
+
+            var facadeResponse = await _facadeService.GetRegistrationSubmissions(filter);
+
+            // Act
+            var result = await _facadeService.GetTransformedRegistrationSubmissions(filter);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(facadeResponse.items.Count, result.items.Count);
+            Assert.AreEqual(facadeResponse.currentPage, result.currentPage);
+            Assert.AreEqual(facadeResponse.totalItems, result.totalItems);
+            Assert.AreEqual(facadeResponse.pageSize, result.pageSize);
+
+            Assert.AreEqual(facadeResponse.items[0].StatusPendingDate?.UtcToGmt(),
+                            result.items[0].StatusPendingDate);
+
+            Assert.AreEqual(facadeResponse.items[0].RegulatorDecisionDate?.UtcToGmt(),
+                result.items[0].RegulatorDecisionDate);
+
+            Assert.AreEqual(facadeResponse.items[0].ProducerCommentDate?.UtcToGmt(),
+                result.items[0].ProducerCommentDate);
+
+            Assert.AreEqual(facadeResponse.items[0].SubmissionDetails.DecisionDate?.UtcToGmt(),
+                            result.items[0].SubmissionDetails.DecisionDate);
+            Assert.AreEqual(facadeResponse.items[0].SubmissionDetails.TimeAndDateOfSubmission.UtcToGmt(),
+                            result.items[0].SubmissionDetails.TimeAndDateOfSubmission);
+            Assert.AreEqual(facadeResponse.items[0].SubmissionDetails.TimeAndDateOfResubmission?.UtcToGmt(),
+                            result.items[0].SubmissionDetails.TimeAndDateOfResubmission);
+            Assert.AreEqual(facadeResponse.items[0].SubmissionDetails.RegistrationDate?.UtcToGmt(),
+                            result.items[0].SubmissionDetails.RegistrationDate);
+
+            httpResponseMessage.Dispose();
+        }
+
+        [TestMethod]
         public async Task GetRegistrationSubmissions_Failure_ReturnsDefaultPaginatedList()
         {
             // Arrange
@@ -1771,6 +1833,64 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("TEST", ((RegistrationSubmissionOrganisationDetails)result).ApplicationReferenceNumber);
+        }
+
+        [TestMethod]
+        public async Task GetTransformedRegistrationSubmissionDetails_Success_ReturnsObject()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            string applicationReferenceNumber = "Test123";
+            var registrationDate = DateTime.UtcNow;
+            var decisionDate = DateTime.UtcNow;
+            var timeAndDateOfSubmission = DateTime.UtcNow;
+            var timeAndDateOfResubmission = DateTime.UtcNow;
+
+            var expectedResult = new RegistrationSubmissionOrganisationDetailsResponse
+            {
+                ApplicationReferenceNumber = applicationReferenceNumber,
+                ProducerCommentDate = decisionDate,
+                StatusPendingDate = decisionDate,
+                RegulatorDecisionDate = decisionDate,
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+                {
+                    RegistrationDate = registrationDate,
+                    DecisionDate = decisionDate,
+                    TimeAndDateOfResubmission = timeAndDateOfResubmission,
+                    TimeAndDateOfSubmission = timeAndDateOfSubmission
+                }
+            };
+
+            string json = JsonSerializer.Serialize(expectedResult);
+
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+
+            _mockHandler.Protected()
+               .Setup<Task<HttpResponseMessage>>("SendAsync",
+                  ItExpr.IsAny<HttpRequestMessage>(),
+                  ItExpr.IsAny<CancellationToken>())
+               .ReturnsAsync(httpResponseMessage);
+
+            // Act
+            var result = await _facadeService.GetTransformedRegistrationSubmissionDetails(submissionId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(applicationReferenceNumber, result.ApplicationReferenceNumber);
+
+            Assert.AreEqual(result.ProducerCommentDate, decisionDate.UtcToGmt());
+            Assert.AreEqual(result.StatusPendingDate, decisionDate.UtcToGmt());
+            Assert.AreEqual(result.RegulatorDecisionDate, decisionDate.UtcToGmt());
+            Assert.AreEqual(result.SubmissionDetails.RegistrationDate, registrationDate.UtcToGmt());
+            Assert.AreEqual(result.SubmissionDetails.DecisionDate, decisionDate.UtcToGmt());
+            Assert.AreEqual(result.SubmissionDetails.TimeAndDateOfSubmission, timeAndDateOfSubmission.UtcToGmt());
+            Assert.AreEqual(result.SubmissionDetails.TimeAndDateOfResubmission, timeAndDateOfResubmission.UtcToGmt());
+
+
+            httpResponseMessage.Dispose();
         }
 
         [TestMethod]
