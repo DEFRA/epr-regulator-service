@@ -148,7 +148,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         journeySession.RegulatorSession.Journey.Add(PagePath.UkSiteDetails);
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
-        var siteDetails = new SiteDetails { RegistrationId = registrationId, OrganisationName = "Test Org" };
+        var siteDetails = new SiteDetails { RegistrationId = registrationId, OrganisationName = "Test Org", SiteAddress = "Test Site address" };
         _reprocessorExporterServiceMock.Setup(s => s.GetSiteDetailsByRegistrationIdAsync(registrationId)).ReturnsAsync(siteDetails);
         _mapperMock.Setup(m => m.Map<SiteDetailsViewModel>(siteDetails)).Returns(new SiteDetailsViewModel { RegistrationId = registrationId,
             LegalDocumentAddress = "LegalDocumentAddress1", Location = "Location1", SiteAddress = "SiteAddress1", SiteGridReference = "SiteGridReference1"
@@ -366,6 +366,8 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         _reprocessorExporterServiceMock.Setup(x => x.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId))
             .ReturnsAsync(new RegistrationMaterialReprocessingIO
             {
+                OrganisationName = "Test Organisation",
+                SiteAddress = "Test Site address",
                 MaterialName = "Plastic",
                 SourcesOfPackagingWaste = "N/A",
                 PlantEquipmentUsed = "N/A",
@@ -427,7 +429,11 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
 
         var registrationMaterialReprocessing = new RegistrationMaterialReprocessingIO
         {
-            MaterialName = "Plastic", SourcesOfPackagingWaste = "Test", PlantEquipmentUsed = "Test"
+            OrganisationName = "Test Organisation",
+            SiteAddress = "Test Site address",
+            MaterialName = "Plastic",
+            SourcesOfPackagingWaste = "Test",
+            PlantEquipmentUsed = "Test"
         };
 
         var expectedViewModel = new RegistrationMaterialReprocessingIOViewModel
@@ -516,6 +522,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         _reprocessorExporterServiceMock.Setup(x => x.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId))
             .ReturnsAsync(new RegistrationMaterialSamplingPlan
             {
+                OrganisationName = "Test org",
                 MaterialName = "Plastic",
                 Files = new List<RegistrationMaterialSamplingPlanFile>
                 {

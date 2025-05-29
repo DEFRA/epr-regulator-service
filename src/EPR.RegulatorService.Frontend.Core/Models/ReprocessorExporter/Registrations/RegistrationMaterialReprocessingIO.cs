@@ -4,6 +4,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
 
 public class RegistrationMaterialReprocessingIO
 {
+    public Guid RegistrationId { get; set; }
     public required string OrganisationName { get; init; }
     public required string SiteAddress { get; init; }
     public Guid RegistrationMaterialId { get; set; }
@@ -19,5 +20,6 @@ public class RegistrationMaterialReprocessingIO
     public decimal ProcessLossTonne { get; set; }
     public decimal TotalInputs { get; set; }
     public decimal TotalOutputs { get; set; }
+    public Guid? RegulatorApplicationTaskStatusId { get; init; }
     public RegulatorTaskStatus TaskStatus { get; init; }
 }

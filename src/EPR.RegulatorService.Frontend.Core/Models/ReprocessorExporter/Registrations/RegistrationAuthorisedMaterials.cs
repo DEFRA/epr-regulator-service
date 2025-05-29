@@ -8,5 +8,6 @@ public class RegistrationAuthorisedMaterials
     public required string OrganisationName { get; init; }
     public required string SiteAddress { get; init; }
     public List<MaterialsAuthorisedOnSite> MaterialsAuthorisation { get; set; } = [];
+    public Guid? RegulatorRegistrationTaskStatusId { get; init; }
     public RegulatorTaskStatus TaskStatus { get; init; }
 }

@@ -273,14 +273,19 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
-        var task = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId).Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.SamplingAndInspectionPlan);
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
+        var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
+        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.SamplingAndInspectionPlan);
 
         var registrationMaterialSamplingPlan = new RegistrationMaterialSamplingPlan
         {
+            RegistrationId = registration.Id,
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
             RegistrationMaterialId = registrationMaterialId,
             MaterialName = "Plastic",
-            Files = new List<RegistrationMaterialSamplingPlanFile>
-            {
+            Files =
+            [
                 new RegistrationMaterialSamplingPlanFile
                 {
                     Filename = "File0002-01-0.pdf",
@@ -289,9 +294,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                     FileId = "123",
                     UpdatedBy = "5d780e2d-5b43-4a45-92ac-7e2889582083",
                     DateUploaded = DateTime.UtcNow
+                }
 
-                },
-            },
+            ],
             TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
         };
         return Task.FromResult(registrationMaterialSamplingPlan);
@@ -299,10 +304,16 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
-        var task = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId).Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions);
+        var registrationMaterial =
+            _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
+        var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
+        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions);
 
         var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
         {
+            RegistrationId = registration.Id,
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
             RegistrationMaterialId = registrationMaterialId,
             CapacityPeriod = "Per Year",
             CapacityTonne = 50000,
