@@ -55,6 +55,7 @@ public class FacadeService : IFacadeService
     private readonly ITokenAcquisition _tokenAcquisition;
     private readonly PaginationConfig _paginationConfig;
     private readonly FacadeApiConfig _facadeApiConfig;
+    private readonly RegistrationSubmissionsConfig _registrationSubmissionsConfig;
     private readonly ILogger<FacadeService> _logger;
 
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -73,12 +74,14 @@ public class FacadeService : IFacadeService
         ITokenAcquisition tokenAcquisition,
         IOptions<PaginationConfig> paginationOptions,
         IOptions<FacadeApiConfig> facadeApiOptions,
+        IOptions<RegistrationSubmissionsConfig> registrationSubmissionsConfig,
         ILogger<FacadeService> logger)
     {
         _httpClient = httpClient;
         _tokenAcquisition = tokenAcquisition;
         _paginationConfig = paginationOptions.Value;
         _facadeApiConfig = facadeApiOptions.Value;
+        _registrationSubmissionsConfig = registrationSubmissionsConfig.Value;
         _scopes = [_facadeApiConfig.DownstreamScope];
         _logger = logger;
     }
@@ -451,7 +454,16 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        string path = _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath].Replace("{0}", submissionId.ToString());
+        int lateFeeCutOffDay = _registrationSubmissionsConfig.LateFeeCutOffDay;
+
+        int lateFeeCutOffMonth = _registrationSubmissionsConfig.LateFeeCutOffMonth;
+
+        string path = string.Format(
+            CultureInfo.InvariantCulture,
+            _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath],
+            submissionId,
+            lateFeeCutOffDay,
+            lateFeeCutOffMonth);
 
         var response = await _httpClient.GetAsync(path);
 
@@ -459,7 +471,7 @@ public class FacadeService : IFacadeService
 
         string content = await response.Content.ReadAsStringAsync();
 
-        RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFE(content);
+        var result = ConvertCommonDataToFE(content);
 
         return result;
     }
