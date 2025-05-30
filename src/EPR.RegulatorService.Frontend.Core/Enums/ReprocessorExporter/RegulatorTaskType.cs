@@ -17,5 +17,5 @@ public enum RegulatorTaskType
     // New for accreditation
     PRNTonnage,
     BusinessPlan,
-    CheckAccreditationStatus
+    DulyMade
 }

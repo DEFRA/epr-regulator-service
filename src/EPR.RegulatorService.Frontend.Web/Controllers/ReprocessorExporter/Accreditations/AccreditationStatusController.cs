@@ -93,7 +93,7 @@ public class AccreditationStatusController(
 
         return accreditationStatusSession.FullPaymentMade == true
           ? RedirectToAction("PaymentMethod", "AccreditationStatus")
-          : RedirectToAction("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = accreditationStatusSession.AccreditationId, taskName = RegulatorTaskType.CheckAccreditationStatus });
+          : RedirectToAction("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = accreditationStatusSession.AccreditationId, taskName = RegulatorTaskType.DulyMade });
 
     }
 

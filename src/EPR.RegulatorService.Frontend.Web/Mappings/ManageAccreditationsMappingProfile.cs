@@ -131,7 +131,7 @@ public class ManageAccreditationsMappingProfile : Profile
             "prn tonnage and authority to issue prns" => RegulatorTaskType.PRNTonnage,
             "business plan" => RegulatorTaskType.BusinessPlan,
             "sampling and inspection plan" => RegulatorTaskType.SamplingAndInspectionPlan,
-            "check accreditation status" => RegulatorTaskType.CheckAccreditationStatus,
+            "check accreditation status" => RegulatorTaskType.DulyMade,
             _ => throw new InvalidOperationException($"Unknown accreditation task name: {name}")
         };
 
