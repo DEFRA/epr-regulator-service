@@ -252,6 +252,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var registrationMaterialReprocessingIO = new RegistrationMaterialReprocessingIO
         {
             OrganisationName = registration.OrganisationName,
+            RegistrationId = registration.Id,
             SiteAddress = registration.SiteAddress!,
             RegistrationMaterialId = registrationMaterialId,
             MaterialName = "Plastic",
