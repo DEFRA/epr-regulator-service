@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.Query;
 
 public class AddQueryNoteViewModel
