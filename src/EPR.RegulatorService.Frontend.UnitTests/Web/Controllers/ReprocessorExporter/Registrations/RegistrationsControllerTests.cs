@@ -14,9 +14,10 @@ using FluentAssertions.Execution;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
+
+using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 
 using FluentValidation;
 
@@ -175,6 +176,47 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             viewModel.SiteAddress.Should().Be("SiteAddress1");
             viewModel.SiteGridReference.Should().Be("SiteGridReference1");
         }
+    }
+
+    [TestMethod]
+    public async Task UkSiteDetails_WhenTaskIsQueried_ShouldCreateQueryRegistrationSession()
+    {
+        // Arrange
+        Guid registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
+        JourneySession journeySession = new JourneySession();
+        
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        var siteDetails = new SiteDetails
+        {
+            RegistrationId = registrationId,
+            OrganisationName = "Test Org",
+            SiteAddress = "Test Site address",
+            TaskStatus = RegulatorTaskStatus.Queried,
+            RegulatorRegistrationTaskStatusId = Guid.NewGuid()
+        };
+        _reprocessorExporterServiceMock.Setup(s => s.GetSiteDetailsByRegistrationIdAsync(registrationId)).ReturnsAsync(siteDetails);
+
+        _mapperMock.Setup(m => m.Map<QueryRegistrationSession>(siteDetails)).Returns(new QueryRegistrationSession
+        {
+            OrganisationName = siteDetails.OrganisationName,
+            RegistrationId = siteDetails.RegistrationId,
+            RegulatorRegistrationTaskStatusId = siteDetails.RegulatorRegistrationTaskStatusId!.Value,
+            PagePath = string.Empty
+        });
+        
+        // Act
+        await _controller.UkSiteDetails(registrationId);
+
+        // Assert
+        journeySession.ReprocessorExporterSession.QueryMaterialSession.Should().BeNull();
+        journeySession.ReprocessorExporterSession.QueryRegistrationSession.Should().NotBeNull();
+
+        var queryRegistrationSession = journeySession.ReprocessorExporterSession.QueryRegistrationSession;
+        queryRegistrationSession!.PagePath.Should().Be(PagePath.UkSiteDetails);
+        queryRegistrationSession.OrganisationName.Should().Be(siteDetails.OrganisationName);
+        queryRegistrationSession.RegulatorRegistrationTaskStatusId.Should().Be(siteDetails.RegulatorRegistrationTaskStatusId.Value);
+        queryRegistrationSession.RegistrationId.Should().Be(siteDetails.RegistrationId);
     }
 
     [TestMethod]
@@ -1186,6 +1228,42 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     }
 
     [TestMethod]
+    public async Task MaterialWasteLicences_WhenTaskIsQueried_ShouldCreateQueryMaterialSession()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
+        JourneySession journeySession = new JourneySession();
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        var wasteLicences = CreateMaterialWasteLicencesModel(RegulatorTaskStatus.Queried);
+
+        _reprocessorExporterServiceMock.Setup(m => m.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(wasteLicences);
+
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(wasteLicences)).Returns(new QueryMaterialSession
+        {
+            OrganisationName = wasteLicences.OrganisationName,
+            RegistrationMaterialId = wasteLicences.RegistrationMaterialId,
+            RegulatorApplicationTaskStatusId = wasteLicences.RegulatorApplicationTaskStatusId!.Value,
+            PagePath = string.Empty
+        });
+
+        // Act
+        await _controller.MaterialWasteLicences(registrationMaterialId);
+
+        // Assert
+        journeySession.ReprocessorExporterSession.QueryRegistrationSession.Should().BeNull();
+        journeySession.ReprocessorExporterSession.QueryMaterialSession.Should().NotBeNull();
+
+        var queryMaterialSession = journeySession.ReprocessorExporterSession.QueryMaterialSession;
+        queryMaterialSession!.PagePath.Should().Be(PagePath.MaterialWasteLicences);
+        queryMaterialSession.OrganisationName.Should().Be(wasteLicences.OrganisationName);
+        queryMaterialSession.RegulatorApplicationTaskStatusId.Should().Be(wasteLicences.RegulatorApplicationTaskStatusId.Value);
+        queryMaterialSession.RegistrationMaterialId.Should().Be(wasteLicences.RegistrationMaterialId);
+    }
+
+    [TestMethod]
     public async Task CompleteMaterialWasteLicences_WhenTaskComplete_ShouldRedirectToManageRegistrations()
     {
         // Arrange
@@ -1333,7 +1411,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         (gotBackLinkObject as string)?.Should().Be(expectedBackLink);
     }
 
-    private static RegistrationMaterialWasteLicence CreateMaterialWasteLicencesModel()
+    private static RegistrationMaterialWasteLicence CreateMaterialWasteLicencesModel(RegulatorTaskStatus taskStatus = RegulatorTaskStatus.NotStarted)
     {
         var wasteLicences = new RegistrationMaterialWasteLicence
         {
@@ -1341,7 +1419,12 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             PermitType = "PermitType",
             LicenceNumbers = [],
             MaximumReprocessingPeriod = "Max period",
-            MaterialName = "Plastic"
+            MaterialName = "Plastic",
+            RegulatorApplicationTaskStatusId = Guid.NewGuid(),
+            RegistrationId = Guid.NewGuid(),
+            RegistrationMaterialId = Guid.NewGuid(),
+            TaskStatus = taskStatus
+
         };
         return wasteLicences;
     }
