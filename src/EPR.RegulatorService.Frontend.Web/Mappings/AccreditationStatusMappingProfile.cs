@@ -13,7 +13,9 @@ public class AccreditationStatusMappingProfile : Profile
         CreateMap<AccreditationMaterialPaymentFees, AccreditationStatusSession>()
             .ForMember(dest => dest.FullPaymentMade, opt => opt.Ignore())
             .ForMember(dest => dest.PaymentMethod, opt => opt.Ignore())
-            .ForMember(dest => dest.PaymentDate, opt => opt.Ignore());
+            .ForMember(dest => dest.PaymentDate, opt => opt.Ignore())
+            .ForMember(dest => dest.RegistrationId, opt => opt.Ignore())
+            .ForMember(dest => dest.Year, opt => opt.Ignore());
         CreateMap<AccreditationStatusSession, FeesDueViewModel>();
         CreateMap<AccreditationStatusSession, PaymentCheckViewModel>();
         CreateMap<AccreditationStatusSession, PaymentMethodViewModel>()

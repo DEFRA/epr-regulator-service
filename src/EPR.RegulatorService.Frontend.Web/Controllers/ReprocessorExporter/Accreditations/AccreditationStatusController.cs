@@ -43,6 +43,9 @@ public class AccreditationStatusController(
         var accreditationStatusSession = await GetOrCreateAccreditationStatusSession(id, session);
         var viewModel = mapper.Map<FeesDueViewModel>(accreditationStatusSession);
 
+        accreditationStatusSession.Year = year;
+        accreditationStatusSession.RegistrationId = id;
+
         string pagePath = GetPagePath(PagePath.FeesDue, accreditationStatusSession.RegistrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
