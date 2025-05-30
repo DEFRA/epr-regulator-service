@@ -43,4 +43,18 @@ public class EnumExtensionMethods
         // Assert
         actualRegistrationSubmissionType.Should().Be(expectedRegistrationSubmissionType);
     }
+
+    [TestMethod]
+    public async Task GetDescription_EnumWithNull_ReturnEmptyString()
+    {
+        // Arrange
+        string expectedDescription = string.Empty;
+        Enum genericNullEnum = null;
+
+        // Act
+        string actualDescription = genericNullEnum.GetDescription();
+
+        // Assert
+        actualDescription.Should().Be(expectedDescription);
+    }
 }
