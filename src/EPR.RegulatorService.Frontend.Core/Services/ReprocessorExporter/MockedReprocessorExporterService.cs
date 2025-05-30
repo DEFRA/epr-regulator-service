@@ -372,7 +372,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         _registrationAccreditations ??= GetMockedAccreditationRegistration(id);
 
-        if (registration == null)
+        if (_registrationAccreditations == null)
         {
             throw new KeyNotFoundException($"No mock registration found for id {id}");
         }
@@ -548,8 +548,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public async Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest)
     {
-        _registrationAccreditations ??= await GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("22222222-2222-2222-2222-222222222222"), 2025);
-        updateAccreditationTaskStatusRequest.AccreditationId = Guid.Parse("aaaa1111-1111-1111-1111-111111111111");
+        _registrationAccreditations ??= await GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("839544fd-9b08-4823-9277-5615072a6803"), 2025);
+        updateAccreditationTaskStatusRequest.AccreditationId = Guid.Parse("dda7cd75-5fd3-44cb-accc-e4e9323b2af3");
         var accreditation = _registrationAccreditations.Materials
             .SelectMany(m => m.Accreditations)
             .FirstOrDefault(a => a.Id == updateAccreditationTaskStatusRequest.AccreditationId);
@@ -558,7 +558,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         {
             Id = Guid.NewGuid(),
             TaskId = 4,
-            TaskName = updateAccreditationTaskStatusRequest.TaskName,
+            TaskName = "Check accreditation status",
             Status = updateAccreditationTaskStatusRequest.Status,
             Year = 2025
         };
