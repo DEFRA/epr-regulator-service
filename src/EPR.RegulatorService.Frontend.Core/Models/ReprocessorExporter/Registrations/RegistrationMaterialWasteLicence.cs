@@ -1,5 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+
 public class RegistrationMaterialWasteLicence
 {
     public Guid RegistrationMaterialId { get; set; }
@@ -17,4 +19,6 @@ public class RegistrationMaterialWasteLicence
     public required string MaximumReprocessingPeriod { get; set; }
 
     public required string MaterialName { get; set; }
+
+    public RegulatorTaskStatus TaskStatus { get; init; }
 }

@@ -47,16 +47,18 @@
           </dl>
 
           <br/>
-
-          <div class="govuk-button-group !-margin-top-6">
-            <button type="submit" class="govuk-button" data-module="govuk-button" formmethod="post" asp-controller="Registrations" asp-action="CompleteAuthorisedMaterials" asp-route-registrationId="@Model.RegistrationId">
-              Mark as reviewed
-            </button>
+          @if (Model.TaskStatus != RegulatorTaskStatus.Completed)
+          {
+            <div class="govuk-button-group !-margin-top-6">
+              <button type="submit" class="govuk-button" data-module="govuk-button" formmethod="post" asp-controller="Registrations" asp-action="CompleteAuthorisedMaterials" asp-route-registrationId="@Model.RegistrationId">
+                Mark as reviewed
+              </button>
                         
-            <a href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model.RegistrationId, taskName = RegulatorTaskType.MaterialsAuthorisedOnSite })" class="govuk-button govuk-button--secondary">
-              Query the materials authorised on site
+              <a href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model.RegistrationId, taskName = RegulatorTaskType.MaterialsAuthorisedOnSite })" class="govuk-button govuk-button--secondary">
+                Query the materials authorised on site
             </a>
           </div>
+          }
         </form>
 
       </div>
