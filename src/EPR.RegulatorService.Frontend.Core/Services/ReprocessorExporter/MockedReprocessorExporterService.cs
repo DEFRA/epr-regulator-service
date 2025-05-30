@@ -523,16 +523,16 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         };
     }
 
-    public Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationMaterialId)
+    public Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationId)
     {
         var mockPaymentFees = new AccreditationMaterialPaymentFees
         {
-            AccreditationId = Guid.Parse("aaaa1111-1111-1111-1111-111111111111"),
+            AccreditationId = accreditationId,
             OrganisationName = "Mock Green Ltd",
             ApplicationType = ApplicationOrganisationType.Reprocessor,
             SiteAddress = "23 Ruby Street, London, E12 3SE",
             ApplicationReferenceNumber = "MOCK-REF-2025",
-            RegistrationMaterialId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            RegistrationMaterialId = Guid.Parse("839544fd-9b08-4823-9277-5615072a6803"),
             MaterialName = "Plastic",
             SubmittedDate = new DateTime(2025, 5, 15),
             FeeAmount = 2921.00m,
@@ -549,7 +549,6 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     public async Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest)
     {
         _registrationAccreditations ??= await GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("839544fd-9b08-4823-9277-5615072a6803"), 2025);
-        updateAccreditationTaskStatusRequest.AccreditationId = Guid.Parse("dda7cd75-5fd3-44cb-accc-e4e9323b2af3");
         var accreditation = _registrationAccreditations.Materials
             .SelectMany(m => m.Accreditations)
             .FirstOrDefault(a => a.Id == updateAccreditationTaskStatusRequest.AccreditationId);

@@ -44,7 +44,6 @@ public class AccreditationStatusController(
         var viewModel = mapper.Map<FeesDueViewModel>(accreditationStatusSession);
 
         accreditationStatusSession.Year = year;
-        accreditationStatusSession.RegistrationId = id;
 
         string pagePath = GetPagePath(PagePath.FeesDue, accreditationStatusSession.RegistrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
@@ -94,7 +93,7 @@ public class AccreditationStatusController(
 
         return accreditationStatusSession.FullPaymentMade == true
           ? RedirectToAction("PaymentMethod", "AccreditationStatus")
-          : RedirectToAction("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = accreditationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckAccreditationStatus });
+          : RedirectToAction("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = accreditationStatusSession.AccreditationId, taskName = RegulatorTaskType.CheckAccreditationStatus });
 
     }
 
@@ -219,7 +218,7 @@ public class AccreditationStatusController(
         var dulyMadeRequest = CreateDulyMadeRequest(accreditationStatusSession);
         await reprocessorExporterService.MarkAccreditationAsDulyMadeAsync(accreditationStatusSession.RegistrationMaterialId, dulyMadeRequest);
 
-        return RedirectToAction("Index", "ManageAccreditations", new { id = accreditationStatusSession.RegistrationId, year = accreditationStatusSession.Year });
+        return RedirectToAction("Index", "ManageAccreditations", new { id = session.ReprocessorExporterSession.RegistrationId, year = accreditationStatusSession.Year });
     }
 
     [HttpGet]
@@ -264,7 +263,7 @@ public class AccreditationStatusController(
 
         return RedirectToAction("Index", "ManageAccreditations", new
         {
-            id = session.ReprocessorExporterSession.AccreditationStatusSession.RegistrationId,
+            id = session.ReprocessorExporterSession.RegistrationId,
             year = session.ReprocessorExporterSession.AccreditationStatusSession.Year
         });
     }
@@ -302,11 +301,11 @@ public class AccreditationStatusController(
         return session.ReprocessorExporterSession.AccreditationStatusSession;
     }
 
-    private async Task<AccreditationStatusSession> GetOrCreateAccreditationStatusSession(Guid accreditationMaterialId, JourneySession session)
+    private async Task<AccreditationStatusSession> GetOrCreateAccreditationStatusSession(Guid accreditationId, JourneySession session)
     {
         if (session.ReprocessorExporterSession.AccreditationStatusSession == null)
         {
-            var accreditationMaterial = await reprocessorExporterService.GetPaymentFeesByAccreditationMaterialIdAsync(accreditationMaterialId);
+            var accreditationMaterial = await reprocessorExporterService.GetPaymentFeesByAccreditationMaterialIdAsync(accreditationId);
             var accreditationStatusSession = mapper.Map<AccreditationStatusSession>(accreditationMaterial);
 
             session.ReprocessorExporterSession.AccreditationStatusSession = accreditationStatusSession;

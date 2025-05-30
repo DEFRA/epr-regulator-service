@@ -23,7 +23,7 @@ public interface IReprocessorExporterService
     Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request);
 
     Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null);
-    Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationMaterialId);
+    Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationId);
     Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment);
     Task MarkAccreditationAsDulyMadeAsync(Guid accreditationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest);
     Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest);

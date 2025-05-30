@@ -5,6 +5,7 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 public class AccreditationStatusSession
 {
     public Guid RegistrationId { get; set; }
+    public Guid AccreditationId { get; set; }
     public required string OrganisationName { get; init; }
     public ApplicationOrganisationType ApplicationType { get; init; }
     public string? SiteAddress { get; init; }

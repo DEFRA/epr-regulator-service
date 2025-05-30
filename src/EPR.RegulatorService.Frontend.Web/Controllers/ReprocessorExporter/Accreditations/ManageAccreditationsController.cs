@@ -45,7 +45,7 @@ public class ManageAccreditationsController(
 
         var session = await GetSession();
         session.ReprocessorExporterSession = new ReprocessorExporterSession();
-
+        session.ReprocessorExporterSession.RegistrationId = id;
         await SaveSessionAndJourney(session, $"{PagePath.ManageAccreditations}?id={id}&year={year}");
 
         return View("~/Views/ReprocessorExporter/Accreditations/ManageAccreditations.cshtml", model);

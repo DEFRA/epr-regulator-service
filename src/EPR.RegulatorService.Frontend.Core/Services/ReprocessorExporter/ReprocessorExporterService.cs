@@ -40,7 +40,8 @@ public class ReprocessorExporterService(
         GetRegistrationByIdWithAccreditations,
         GetPaymentFeesByAccreditationMaterialId,
         SubmitAccreditationOfflinePayment,
-        MarkAccreditationAsDulyMade
+        MarkAccreditationAsDulyMade,
+        MarkAccreditationAsQueried
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -310,12 +311,12 @@ public class ReprocessorExporterService(
         return await GetEntityFromResponse<Registration>(response);
     }
 
-    public async Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationMaterialId)
+    public async Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationId)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetPaymentFeesByAccreditationMaterialId);
-        string path = pathTemplate.Replace("{id}", accreditationMaterialId.ToString());
+        string path = pathTemplate.Replace("{id}", accreditationId.ToString());
 
         var response = await httpClient.GetAsync(path);
 
@@ -357,7 +358,7 @@ public class ReprocessorExporterService(
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);
+        string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAccreditationAsQueried);
 
         var response = await httpClient.PostAsJsonAsync(pathTemplate, updateAccreditationTaskStatusRequest);
 
