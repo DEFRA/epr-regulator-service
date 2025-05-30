@@ -43,6 +43,9 @@ public class AccreditationStatusController(
         var accreditationStatusSession = await GetOrCreateAccreditationStatusSession(id, session);
         var viewModel = mapper.Map<FeesDueViewModel>(accreditationStatusSession);
 
+        accreditationStatusSession.Year = year;
+        accreditationStatusSession.RegistrationId = id;
+
         string pagePath = GetPagePath(PagePath.FeesDue, accreditationStatusSession.RegistrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
@@ -202,7 +205,7 @@ public class AccreditationStatusController(
         return View(GetAccreditationStatusView(nameof(PaymentReview)), viewModel);
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route(PagePath.MarkAsDulyMade)]
     public async Task<IActionResult> MarkAsDulyMade()
     {
@@ -216,7 +219,7 @@ public class AccreditationStatusController(
         var dulyMadeRequest = CreateDulyMadeRequest(accreditationStatusSession);
         await reprocessorExporterService.MarkAccreditationAsDulyMadeAsync(accreditationStatusSession.RegistrationMaterialId, dulyMadeRequest);
 
-        return RedirectToAction("Index", "ManageAccreditations", new { id = accreditationStatusSession.RegistrationId });
+        return RedirectToAction("Index", "ManageAccreditations", new { id = accreditationStatusSession.RegistrationId, year = accreditationStatusSession.Year });
     }
 
     [HttpGet]
