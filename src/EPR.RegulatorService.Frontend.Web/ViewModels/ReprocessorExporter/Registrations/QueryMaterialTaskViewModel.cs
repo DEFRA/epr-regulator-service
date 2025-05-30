@@ -5,7 +5,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
 
     public class QueryMaterialTaskViewModel
     {
-        public int RegistrationMaterialId { get; set; }
+        public Guid RegistrationMaterialId { get; set; }
         public RegulatorTaskType TaskName { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "Enter query details")]

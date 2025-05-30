@@ -17,43 +17,16 @@ public class IdRequestValidatorTests
     }
 
     [TestMethod]
-    public void Should_Have_Error_When_Id_Is_Zero()
+    public void Should_Have_Error_When_Id_Is_Empt()
     {
         // Arrange
-        var model = new IdRequest { Id = 0 };
+        var model = new IdRequest { Id = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(model);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Id)
-              .WithErrorMessage("ID must be greater than 0.");
-    }
-
-    [TestMethod]
-    public void Should_Have_Error_When_Id_Is_Negative()
-    {
-        // Arrange
-        var model = new IdRequest { Id = -5 };
-
-        // Act
-        var result = _validator.TestValidate(model);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Id)
-              .WithErrorMessage("ID must be greater than 0.");
-    }
-
-    [TestMethod]
-    public void Should_Not_Have_Error_When_Id_Is_Positive()
-    {
-        // Arrange
-        var model = new IdRequest { Id = 10 };
-
-        // Act
-        var result = _validator.TestValidate(model);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+              .WithErrorMessage("ID is required.");
     }
 }

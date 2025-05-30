@@ -2,5 +2,5 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
 
 public class IdRequest
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

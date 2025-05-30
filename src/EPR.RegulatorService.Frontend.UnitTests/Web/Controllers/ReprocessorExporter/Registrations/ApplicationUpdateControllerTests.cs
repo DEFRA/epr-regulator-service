@@ -34,7 +34,7 @@ public class ApplicationUpdateControllerTests
     [TestInitialize]
     public void TestInitialize()
     {
-        const int registrationMaterialId = 123;
+        Guid registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
 
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         _mapperMock = new Mock<IMapper>();
@@ -81,14 +81,14 @@ public class ApplicationUpdateControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(1));
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
     }
 
     [TestMethod]
     public async Task ApplicationUpdate_WhenCalledWithIdAndApplicationUpdateSessionIsNull_ShouldCreateNewSessionFromRegistrationMaterialDetail()
     {
         // Arrange
-        var registrationMaterial = CreateRegistrationMaterialDetail(123);
+        var registrationMaterial = CreateRegistrationMaterialDetail(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
 
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = null;
 
@@ -116,7 +116,7 @@ public class ApplicationUpdateControllerTests
             .Returns(expectedViewModel);
 
         // Act
-        var response = await _applicationUpdateController.ApplicationUpdate(1);
+        var response = await _applicationUpdateController.ApplicationUpdate(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         using (new AssertionScope())
@@ -348,19 +348,19 @@ public class ApplicationUpdateControllerTests
         }
     }
 
-    private static RegistrationMaterialDetail CreateRegistrationMaterialDetail(int registrationMaterialId) =>
+    private static RegistrationMaterialDetail CreateRegistrationMaterialDetail(Guid registrationMaterialId) =>
         new()
         {
             Id = registrationMaterialId,
-            RegistrationId = 1,
+            RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             MaterialName = "Plastic"
         };
 
-    private static ApplicationUpdateSession CreateApplicationUpdateSession(int registrationMaterialId) =>
+    private static ApplicationUpdateSession CreateApplicationUpdateSession(Guid registrationMaterialId) =>
         new()
         {
             RegistrationMaterialId = registrationMaterialId,
-            RegistrationId = 1,
+            RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             MaterialName = "Plastic"
         };
 }

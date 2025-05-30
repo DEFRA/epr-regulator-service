@@ -3,7 +3,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
     public class UpdateRegistrationTaskStatusRequest
     {
         public string TaskName { get; set; }
-        public int RegistrationId { get; set; }
+        public Guid RegistrationId { get; set; }
         public string Status { get; set; }
         public string? Comments { get; set; }
 
