@@ -41,11 +41,13 @@ public class ManageAccreditationsMappingProfile : Profile
             .ForMember(dest => dest.PRNTonnageTask, opt => opt.Ignore())
             .ForMember(dest => dest.BusinessPlanTask, opt => opt.Ignore())
             .ForMember(dest => dest.SamplingAndInspectionPlanTask, opt => opt.Ignore())
+            .ForMember(dest => dest.CheckAccreditationStatusTask, opt => opt.Ignore())
             .AfterMap((src, dest) =>
             {
                 dest.PRNTonnageTask = MapAccreditationTask(src.Tasks, "PRN tonnage and authority to issue PRNs");
                 dest.BusinessPlanTask = MapAccreditationTask(src.Tasks, "Business plan");
                 dest.SamplingAndInspectionPlanTask = MapAccreditationTask(src.Tasks, "Sampling and inspection plan");
+                dest.CheckAccreditationStatusTask = MapAccreditationTask(src.Tasks, "Check accreditation status");
             });
 
         CreateMap<RegistrationTask, AccreditationTaskViewModel>()
@@ -96,6 +98,7 @@ public class ManageAccreditationsMappingProfile : Profile
             "approved" => "Approved",
             "queried" => "Queried",
             "completed" => "Completed",
+            "duly made" => "Duly Made",
             _ => "Not Started Yet"
         };
 
@@ -118,6 +121,7 @@ public class ManageAccreditationsMappingProfile : Profile
             "completed" => "govuk-tag--blue",
             "approved" => "govuk-tag--green",
             "queried" => "govuk-tag--orange",
+            "duly made" => "govuk-tag--blue",
             _ => "govuk-tag--grey"
         };
 
@@ -127,6 +131,7 @@ public class ManageAccreditationsMappingProfile : Profile
             "prn tonnage and authority to issue prns" => RegulatorTaskType.PRNTonnage,
             "business plan" => RegulatorTaskType.BusinessPlan,
             "sampling and inspection plan" => RegulatorTaskType.SamplingAndInspectionPlan,
+            "check accreditation status" => RegulatorTaskType.CheckAccreditationStatus,
             _ => throw new InvalidOperationException($"Unknown accreditation task name: {name}")
         };
 

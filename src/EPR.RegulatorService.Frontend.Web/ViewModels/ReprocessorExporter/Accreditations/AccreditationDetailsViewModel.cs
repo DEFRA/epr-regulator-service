@@ -21,6 +21,8 @@ public class AccreditationDetailsViewModel
 
     public AccreditationTaskViewModel? SamplingAndInspectionPlanTask { get; set; }
 
+    public AccreditationTaskViewModel? CheckAccreditationStatusTask { get; set; }
+
     public bool ShouldDisplay =>
         AccreditationDisplayHelper.ShouldDisplayAccreditation(Status);
 }

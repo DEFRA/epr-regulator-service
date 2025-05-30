@@ -143,7 +143,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     }
 
     public Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment) => Task.CompletedTask;
-    
+
     public Task UpdateRegistrationMaterialOutcomeAsync(Guid registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
@@ -176,7 +176,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
         var task = registration.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateRegistrationTaskStatusRequest.TaskName);
         Guid? taskId;
-        
+
         if (task == null)
         {
             taskId = Guid.NewGuid();
@@ -491,32 +491,40 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             DeterminationDate = date,
             AccreditationYear = year,
             Tasks = new List<AccreditationTask>
-        {
-            new AccreditationTask
             {
-                Id = Guid.NewGuid(),
-                TaskId = 1,
-                TaskName = "PRN tonnage and authority to issue PRNs",
-                Status = "Not Started Yet",
-                Year = year
-            },
-            new AccreditationTask
-            {
-                Id = Guid.NewGuid(),
-                TaskId = 2,
-                TaskName = "Business plan",
-                Status = "Not Started Yet",
-                Year = year
-            },
-            new AccreditationTask
-            {
-                Id = Guid.NewGuid(),
-                TaskId = 3,
-                TaskName = "Sampling and inspection plan",
-                Status = "Approved",
-                Year = year
+                new AccreditationTask
+                {
+                    Id = Guid.NewGuid(),
+                    TaskId = 1,
+                    TaskName = "PRN tonnage and authority to issue PRNs",
+                    Status = "Not Started Yet",
+                    Year = year
+                },
+                new AccreditationTask
+                {
+                    Id = Guid.NewGuid(),
+                    TaskId = 2,
+                    TaskName = "Business plan",
+                    Status = "Not Started Yet",
+                    Year = year
+                },
+                new AccreditationTask
+                {
+                    Id = Guid.NewGuid(),
+                    TaskId = 3,
+                    TaskName = "Sampling and inspection plan",
+                    Status = "Approved",
+                    Year = year
+                },
+                new AccreditationTask
+                {
+                    Id = Guid.NewGuid(),
+                    TaskId = 4,
+                    TaskName = "Check accreditation status",
+                    Status = "Duly made",
+                    Year = year
+                }
             }
-        }
         };
     }
 

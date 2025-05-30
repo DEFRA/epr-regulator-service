@@ -7,14 +7,16 @@
 
         @foreach (var material in Model.Materials)
         {
-            if (material.ShouldDisplay)
+            if (material.ShouldDisplay && material.Accreditation?.CheckAccreditationStatusTask != null)
             {
                 <li class="app-task-list__item">
                     <span class="app-task-list__task-name">
-                        @($"{material.MaterialName} application reference: {material.Accreditation!.ApplicationReference}")<br />
-                        <a href="#">Check accreditation status</a>
+                        @($"{material.MaterialName} application reference: {material.Accreditation.ApplicationReference}")<br />
+                        <a href="#">@material.Accreditation.CheckAccreditationStatusTask.TaskName</a>
                     </span>
-                    <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not Started yet</strong>
+                    <strong class="govuk-tag @material.Accreditation.CheckAccreditationStatusTask.StatusCssClass app-task-list__tag">
+                        @material.Accreditation.CheckAccreditationStatusTask.StatusText
+                    </strong>
                 </li>
             }
         }
