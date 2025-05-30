@@ -20,6 +20,7 @@ namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 public class MockedReprocessorExporterService : IReprocessorExporterService
 {
     private readonly List<Registration> _registrations = SeedRegistrations();
+    private Registration _registrationAccreditations = null;
 
     public Task<Registration> GetRegistrationByIdAsync(Guid id)
     {
@@ -369,14 +370,14 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null)
     {
-        var registration = GetMockedAccreditationRegistration(id);
+        _registrationAccreditations ??= GetMockedAccreditationRegistration(id);
 
         if (year.HasValue)
         {
-            ApplySingleYearAccreditationFilter(registration, year.Value);
+            ApplySingleYearAccreditationFilter(_registrationAccreditations, year.Value);
         }
 
-        return Task.FromResult(registration);
+        return Task.FromResult(_registrationAccreditations);
     }
 
     private static Registration GetMockedAccreditationRegistration(Guid id)
@@ -482,8 +483,6 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         };
     }
 
-
-
     private static Accreditation CreateAccreditation(string guid, string reference, string status, DateTime date, int year)
     {
         return new Accreditation
@@ -585,6 +584,25 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return Task.CompletedTask;
     }
 
+    public async Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest)
+    {
+        _registrationAccreditations ??= await GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("22222222-2222-2222-2222-222222222222"), 2025);
+        updateAccreditationTaskStatusRequest.AccreditationId = Guid.Parse("aaaa1111-1111-1111-1111-111111111111");
+        var accreditation = _registrationAccreditations.Materials
+            .SelectMany(m => m.Accreditations)
+            .FirstOrDefault(a => a.Id == updateAccreditationTaskStatusRequest.AccreditationId);
+
+        var newTask = new AccreditationTask
+        {
+            Id = Guid.NewGuid(),
+            TaskId = 4,
+            TaskName = updateAccreditationTaskStatusRequest.TaskName,
+            Status = updateAccreditationTaskStatusRequest.Status,
+            Year = 2025
+        };
+
+        accreditation?.Tasks.Add(newTask);
+    }
 
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
     {

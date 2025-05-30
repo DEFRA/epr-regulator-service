@@ -91,7 +91,7 @@ public class AccreditationStatusController(
 
         return accreditationStatusSession.FullPaymentMade == true
           ? RedirectToAction("PaymentMethod", "AccreditationStatus")
-          : RedirectToAction("QueryAccreditationTask", "ManageAccreditations", new { registrationId = accreditationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckAccreditationStatus });
+          : RedirectToAction("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = accreditationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckAccreditationStatus });
 
     }
 
@@ -217,6 +217,53 @@ public class AccreditationStatusController(
         await reprocessorExporterService.MarkAccreditationAsDulyMadeAsync(accreditationStatusSession.RegistrationMaterialId, dulyMadeRequest);
 
         return RedirectToAction("Index", "ManageAccreditations", new { id = accreditationStatusSession.RegistrationId });
+    }
+
+    [HttpGet]
+    [Route(PagePath.QueryAccreditationTask)]
+    public async Task<IActionResult> QueryAccreditationTask(Guid accreditationId, RegulatorTaskType taskName)
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.QueryAccreditationTask);
+        SetBackLinkInfos(session, PagePath.QueryAccreditationTask);
+
+        var queryAccreditationTaskViewModel = new QueryAccreditationTaskViewModel
+        {
+            AccreditationId = accreditationId,
+            TaskName = taskName
+        };
+
+        return View(GetAccreditationStatusView(nameof(QueryAccreditationTask)), queryAccreditationTaskViewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePath.QueryAccreditationTask)]
+    public async Task<IActionResult> QueryAccreditationTask(QueryAccreditationTaskViewModel queryAccreditationTaskViewModel)
+    {
+        var session = await GetSession();
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLinkInfos(session, PagePath.QueryMaterialTask);
+            return View(GetAccreditationStatusView(nameof(QueryAccreditationTask)), queryAccreditationTaskViewModel);
+        }
+
+        var updateAccreditationTaskStatusRequest = new UpdateAccreditationTaskStatusRequest
+        {
+            TaskName = queryAccreditationTaskViewModel.TaskName.ToString(),
+            AccreditationId = queryAccreditationTaskViewModel.AccreditationId,
+            Status = RegulatorTaskStatus.Queried.ToString(),
+            Comments = queryAccreditationTaskViewModel.Comments
+        };
+
+        await reprocessorExporterService.UpdateRegulatorAccreditationTaskStatusAsync(updateAccreditationTaskStatusRequest);
+
+        return RedirectToAction("Index", "ManageAccreditations", new
+        {
+            id = session.ReprocessorExporterSession.AccreditationStatusSession.RegistrationId,
+            year = session.ReprocessorExporterSession.AccreditationStatusSession.Year
+        });
     }
 
     private AccreditationMarkAsDulyMadeRequest CreateDulyMadeRequest(AccreditationStatusSession accreditationStatusSession)

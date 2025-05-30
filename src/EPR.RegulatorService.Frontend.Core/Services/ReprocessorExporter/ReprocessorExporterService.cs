@@ -353,6 +353,17 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);
+
+        var response = await httpClient.PostAsJsonAsync(pathTemplate, updateAccreditationTaskStatusRequest);
+
+        response.EnsureSuccessStatusCode();
+    }
+
     private async Task PrepareAuthenticatedClient()
     {
         if (httpClient.BaseAddress == null)
