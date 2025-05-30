@@ -8,6 +8,7 @@ public class InputsAndOutputsMappingProfile : Profile
 {
     public InputsAndOutputsMappingProfile()
     {
-        CreateMap<RegistrationMaterialReprocessingIO, QueryMaterialSession>();
+        CreateMap<RegistrationMaterialReprocessingIO, QueryMaterialSession>()
+            .ForMember(dest => dest.PagePath, opt => opt.Ignore());
     }
 }

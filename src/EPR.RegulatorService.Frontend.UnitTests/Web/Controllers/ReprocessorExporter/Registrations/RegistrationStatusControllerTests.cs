@@ -243,7 +243,6 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
         _mapperMock.Setup(m => m.Map<QueryMaterialSession>(registrationSession)).Returns(new QueryMaterialSession
         {
             OrganisationName = "TEST",
-            ApplicationType = ApplicationOrganisationType.Reprocessor,
             RegulatorApplicationTaskStatusId = Guid.NewGuid(),
             RegistrationMaterialId = registrationSession.RegistrationMaterialId,
             PagePath = PagePath.FeesDue

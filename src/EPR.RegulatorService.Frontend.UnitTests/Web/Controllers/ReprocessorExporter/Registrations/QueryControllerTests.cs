@@ -297,7 +297,6 @@ public class QueryControllerTests : RegistrationControllerTestBase
         new()
         {
             OrganisationName = "TestOrg",
-            ApplicationType = ApplicationOrganisationType.Reprocessor,
             RegistrationMaterialId = Guid.NewGuid(),
             RegulatorApplicationTaskStatusId = Guid.NewGuid(),
             PagePath = PagePath.FeesDue

@@ -9,6 +9,7 @@ public class SamplingAndInspectionMappingProfile : Profile
 {
     public SamplingAndInspectionMappingProfile()
     {
-        CreateMap<RegistrationMaterialSamplingPlan, QueryMaterialSession>();
+        CreateMap<RegistrationMaterialSamplingPlan, QueryMaterialSession>()
+            .ForMember(dest => dest.PagePath, opt =>opt.Ignore());
     }
 }
