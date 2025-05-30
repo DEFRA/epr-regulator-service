@@ -11,7 +11,7 @@ public class RegistrationMaterialSummary
     public required string MaterialName { get; init; }
 
     public DateTime? DeterminationDate { get; set; }
-    
+
     public ApplicationStatus? Status { get; init; }
 
     public string? StatusUpdatedBy { get; init; }
@@ -23,4 +23,7 @@ public class RegistrationMaterialSummary
     public string? ApplicationReferenceNumber { get; init; }
 
     public List<RegistrationTask> Tasks { get; init; } = [];
+
+    // Supports multiple accreditations, one per year
+    public List<Accreditation> Accreditations { get; set; } = [];
 }

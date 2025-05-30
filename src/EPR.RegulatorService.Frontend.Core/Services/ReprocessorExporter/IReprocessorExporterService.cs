@@ -20,5 +20,7 @@ public interface IReprocessorExporterService
     Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest);
     Task UpdateRegulatorApplicationTaskStatusAsync(UpdateMaterialTaskStatusRequest updateMaterialTaskStatusRequest);
     Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request);
+
+    Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null);
     Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest);
 }
