@@ -6,6 +6,10 @@ public static class EnumExtensionMethods
 {
     public static string GetDescription(this Enum genericEnum)
     {
+        if ( genericEnum is null )
+        {
+            return string.Empty;
+        }
         var genericEnumType = genericEnum.GetType();
         var memberInfo = genericEnumType.GetMember(genericEnum.ToString());
         if ((memberInfo.Length > 0))
