@@ -6,11 +6,11 @@ using System.Text.Json.Serialization;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Converters;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
-using Microsoft.Identity.Web;
 using Microsoft.Extensions.Options;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using Microsoft.Identity.Web;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
@@ -36,7 +36,8 @@ public class ReprocessorExporterService(
         GetSamplingPlanByRegistrationMaterialId,
         UpdateApplicationTaskStatus,
         GetSiteAddressByRegistrationId,
-        DownloadSamplingInspectionFile
+        DownloadSamplingInspectionFile,
+        GetRegistrationByIdWithAccreditations
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -55,9 +56,9 @@ public class ReprocessorExporterService(
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationById);
         string path = pathTemplate.Replace("{id}", id.ToString());
-        
+
         var response = await httpClient.GetAsync(path);
-        
+
         var registration = await GetEntityFromResponse<Registration>(response);
 
         return registration;
@@ -87,7 +88,7 @@ public class ReprocessorExporterService(
         var response = await httpClient.GetAsync(path);
 
         var registrationMaterialDetail = await GetEntityFromResponse<RegistrationMaterialDetail>(response);
-        
+
         return registrationMaterialDetail;
     }
 
@@ -153,7 +154,7 @@ public class ReprocessorExporterService(
         await PrepareAuthenticatedClient();
 
         string path = GetVersionedEndpoint(Endpoints.SubmitOfflinePayment);
-        
+
         string jsonContent = JsonSerializer.Serialize(offlinePayment, _jsonSerializerOptions);
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
@@ -181,7 +182,7 @@ public class ReprocessorExporterService(
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);        
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);
 
         var response = await httpClient.PostAsJsonAsync(pathTemplate, updateRegistrationTaskStatusRequest);
 
@@ -239,6 +240,71 @@ public class ReprocessorExporterService(
             throw new NotFoundException("Unable to download file.");
         }
         return response;
+    }
+
+    public async Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null)
+    {
+        await PrepareAuthenticatedClient();
+
+        // Backend may already filter by year (if supported), so we pass it along
+        var registration = await GetAccreditationRegistrationAsync(id, year);
+
+        // Defensive fallback: in case backend ignores or misapplies year filter
+        if (year.HasValue)
+        {
+            ApplySingleYearAccreditationFilter(registration, year.Value);
+        }
+
+        return registration;
+    }
+
+    private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
+    {
+        bool hasAtLeastOneAccreditation = false;
+
+        foreach (var material in registration.Materials)
+        {
+            var matchingAccreditations = material.Accreditations
+                .Where(a => a.AccreditationYear == year)
+                .ToList();
+
+            if (matchingAccreditations.Count > 1)
+            {
+                throw new InvalidOperationException(
+                    $"More than one accreditation found for MaterialId {material.Id} in year {year}.");
+            }
+
+            if (matchingAccreditations.Count == 1)
+            {
+                hasAtLeastOneAccreditation = true;
+                material.Accreditations = matchingAccreditations;
+            }
+            else
+            {
+                // No matching accreditations � clear out the list for cleanliness
+                material.Accreditations = new List<Accreditation>();
+            }
+        }
+
+        if (!hasAtLeastOneAccreditation)
+        {
+            throw new InvalidOperationException(
+                $"No accreditations found for any materials in year {year}.");
+        }
+    }
+
+    private async Task<Registration> GetAccreditationRegistrationAsync(Guid id, int? year)
+    {
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationByIdWithAccreditations);
+        string path = pathTemplate.Replace("{id}", id.ToString());
+
+        if (year.HasValue)
+        {
+            path += $"?year={year.Value}";
+        }
+
+        var response = await httpClient.GetAsync(path);
+        return await GetEntityFromResponse<Registration>(response);
     }
 
     public async Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)

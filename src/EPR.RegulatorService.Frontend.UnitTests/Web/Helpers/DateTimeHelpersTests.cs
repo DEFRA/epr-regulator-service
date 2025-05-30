@@ -1,6 +1,7 @@
-﻿namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers;
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers;
 
 using AutoFixture;
+
 using Frontend.Web.Helpers;
 
 public class DateTimeHelpersTests
