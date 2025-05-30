@@ -86,7 +86,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
 
             var viewResult = (ViewResult)response;
             viewResult.Model.Should().Be(expectedViewModel);
-            viewResult.ViewName.Should().EndWith("AddMaterialQueryNote.cshtml");
+            viewResult.ViewName.Should().EndWith("AddQueryNote.cshtml");
         }
     }
 
@@ -161,7 +161,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
             response.Should().BeOfType<ViewResult>();
 
             var viewResult = (ViewResult)response;
-            viewResult.ViewName.Should().EndWith("AddMaterialQueryNote.cshtml");
+            viewResult.ViewName.Should().EndWith("AddQueryNote.cshtml");
         }
     }
 }
