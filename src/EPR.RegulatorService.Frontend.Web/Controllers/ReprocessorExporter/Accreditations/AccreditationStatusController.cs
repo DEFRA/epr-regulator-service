@@ -91,7 +91,7 @@ public class AccreditationStatusController(
 
         return accreditationStatusSession.FullPaymentMade == true
           ? RedirectToAction("PaymentMethod", "AccreditationStatus")
-          : RedirectToAction("QueryMaterialTask", "ManageAccreditations", new { registrationMaterialId = accreditationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckAccreditationStatus });//ToDo: this action needs checking
+          : RedirectToAction("QueryAccreditationTask", "ManageAccreditations", new { registrationId = accreditationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckAccreditationStatus });
 
     }
 

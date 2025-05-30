@@ -80,10 +80,12 @@ public static class PagePath
     public const string MarkAsDulyMade = "duly-made";
     public const string ReprocessorExporterAccreditations = "accreditations";
     public const string ManageAccreditations = "manage-accreditations";
+    public const string QueryAccreditationTask = "query-accreditation-task";
 
     // Complete tasks paths
     public const string CompleteQueryRegistrationTask = "query-registration-task-complete";
     public const string CompleteQueryMaterialTask = "query-material-task-complete";
+    public const string CompleteQueryAccreditationTask = "query-accreditation-task-complete";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

@@ -1,5 +1,7 @@
 using AutoMapper;
 
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
@@ -7,6 +9,7 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentValidation;
 
@@ -46,5 +49,45 @@ public class ManageAccreditationsController(
         await SaveSessionAndJourney(session, $"{PagePath.ManageAccreditations}?id={id}&year={year}");
 
         return View("~/Views/ReprocessorExporter/Accreditations/ManageAccreditations.cshtml", model);
+    }
+
+    [HttpGet]
+    [Route(PagePath.QueryAccreditationTask)]
+    public async Task<IActionResult> QueryAccreditationTask(Guid registrationId, RegulatorTaskType taskName)
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.QueryAccreditationTask);
+        SetBackLinkInfos(session, PagePath.QueryAccreditationTask);
+
+        var queryAccreditationTaskViewModel = new QueryAccreditationTaskViewModel
+        {
+            RegistrationId = registrationId,
+            TaskName = taskName
+        };
+
+        return View("~/Views/ReprocessorExporter/Accreditations/QueryAccreditationTask.cshtml", queryAccreditationTaskViewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePath.QueryAccreditationTask)]
+    public async Task<IActionResult> QueryRegistrationTask(QueryAccreditationTaskViewModel queryAccreditationTaskViewModel)
+    {
+        var session = await GetSession();
+
+        await SaveSessionAndJourney(session, PagePath.CompleteQueryAccreditationTask);
+        SetBackLinkInfos(session, PagePath.CompleteQueryAccreditationTask);
+
+        var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
+        {
+            TaskName = queryAccreditationTaskViewModel.TaskName.ToString(),
+            RegistrationId = queryAccreditationTaskViewModel.RegistrationId,
+            Status = RegulatorTaskStatus.Queried.ToString(),
+            Comments = queryAccreditationTaskViewModel.Comments
+        };
+
+        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(updateRegistrationTaskStatusRequest);
+
+        return RedirectToAction("Index", "ManageRegistrations", new { id = queryAccreditationTaskViewModel.RegistrationId });
     }
 }
