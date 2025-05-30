@@ -44,9 +44,9 @@ public class AccreditationStatusController(
         var viewModel = mapper.Map<FeesDueViewModel>(accreditationStatusSession);
 
         accreditationStatusSession.Year = year;
-        accreditationStatusSession.RegistrationId = id;
+        accreditationStatusSession.AccreditationId = id;
 
-        string pagePath = GetPagePath(PagePath.FeesDue, accreditationStatusSession.RegistrationMaterialId);
+        string pagePath = GetPagePath(PagePath.FeesDue, accreditationStatusSession.AccreditationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
@@ -62,7 +62,7 @@ public class AccreditationStatusController(
         var accreditationStatusSession = GetAccreditationStatusSession(session);
         var viewModel = mapper.Map<PaymentCheckViewModel>(accreditationStatusSession);
 
-        string pagePath = GetPagePath(PagePath.PaymentCheck, accreditationStatusSession.RegistrationMaterialId);
+        string pagePath = GetPagePath(PagePath.PaymentCheck, accreditationStatusSession.AccreditationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
@@ -81,7 +81,7 @@ public class AccreditationStatusController(
         {
             return HandleInvalidModelState(
                 session,
-                GetPagePath(PagePath.PaymentCheck, accreditationStatusSession.RegistrationMaterialId),
+                GetPagePath(PagePath.PaymentCheck, accreditationStatusSession.AccreditationId),
                 accreditationStatusSession,
                 viewModel,
                 GetAccreditationStatusView(nameof(PaymentCheck))
@@ -107,7 +107,7 @@ public class AccreditationStatusController(
         var accreditationStatusSession = GetAccreditationStatusSession(session);
         var viewModel = mapper.Map<PaymentMethodViewModel>(accreditationStatusSession);
 
-        string pagePath = GetPagePath(PagePath.PaymentMethod, accreditationStatusSession.RegistrationMaterialId);
+        string pagePath = GetPagePath(PagePath.PaymentMethod, accreditationStatusSession.AccreditationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
@@ -126,7 +126,7 @@ public class AccreditationStatusController(
         {
             return HandleInvalidModelState(
                 session,
-                GetPagePath(PagePath.PaymentMethod, accreditationStatusSession.RegistrationMaterialId),
+                GetPagePath(PagePath.PaymentMethod, accreditationStatusSession.AccreditationId),
                 accreditationStatusSession,
                 viewModel,
                 GetAccreditationStatusView(nameof(PaymentMethod))
@@ -149,7 +149,7 @@ public class AccreditationStatusController(
         var accreditationStatusSession = GetAccreditationStatusSession(session);
         var viewModel = mapper.Map<PaymentDateViewModel>(accreditationStatusSession);
 
-        string pagePath = GetPagePath(PagePath.PaymentDate, accreditationStatusSession.RegistrationMaterialId);
+        string pagePath = GetPagePath(PagePath.PaymentDate, accreditationStatusSession.AccreditationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
@@ -168,7 +168,7 @@ public class AccreditationStatusController(
         {
             return HandleInvalidModelState(
                 session,
-                GetPagePath(PagePath.PaymentDate, accreditationStatusSession.RegistrationMaterialId),
+                GetPagePath(PagePath.PaymentDate, accreditationStatusSession.AccreditationId),
                 accreditationStatusSession,
                 viewModel,
                 GetAccreditationStatusView(nameof(PaymentDate))
@@ -198,7 +198,7 @@ public class AccreditationStatusController(
         var dulyMadeDate = CalculateDulyMadeDate(accreditationStatusSession.SubmittedDate, accreditationStatusSession.PaymentDate);
         viewModel.DeterminationDate = CalculateDeterminationDate(determinationWeeks, dulyMadeDate);
 
-        string pagePath = GetPagePath(PagePath.PaymentReview, accreditationStatusSession.RegistrationMaterialId);
+        string pagePath = GetPagePath(PagePath.PaymentReview, accreditationStatusSession.AccreditationId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
@@ -217,7 +217,7 @@ public class AccreditationStatusController(
         await reprocessorExporterService.SubmitAccreditationOfflinePaymentAsync(offlinePaymentRequest);
 
         var dulyMadeRequest = CreateDulyMadeRequest(accreditationStatusSession);
-        await reprocessorExporterService.MarkAccreditationAsDulyMadeAsync(accreditationStatusSession.RegistrationMaterialId, dulyMadeRequest);
+        await reprocessorExporterService.MarkAccreditationAsDulyMadeAsync(accreditationStatusSession.AccreditationId, dulyMadeRequest);
 
         return RedirectToAction("Index", "ManageAccreditations", new { id = accreditationStatusSession.RegistrationId, year = accreditationStatusSession.Year });
     }
@@ -255,11 +255,11 @@ public class AccreditationStatusController(
         return session.ReprocessorExporterSession.AccreditationStatusSession;
     }
 
-    private async Task<AccreditationStatusSession> GetOrCreateAccreditationStatusSession(Guid accreditationMaterialId, JourneySession session)
+    private async Task<AccreditationStatusSession> GetOrCreateAccreditationStatusSession(Guid accreditationId, JourneySession session)
     {
         if (session.ReprocessorExporterSession.AccreditationStatusSession == null)
         {
-            var accreditationMaterial = await reprocessorExporterService.GetPaymentFeesByAccreditationMaterialIdAsync(accreditationMaterialId);
+            var accreditationMaterial = await reprocessorExporterService.GetPaymentFeesByAccreditationMaterialIdAsync(accreditationId);
             var accreditationStatusSession = mapper.Map<AccreditationStatusSession>(accreditationMaterial);
 
             session.ReprocessorExporterSession.AccreditationStatusSession = accreditationStatusSession;
