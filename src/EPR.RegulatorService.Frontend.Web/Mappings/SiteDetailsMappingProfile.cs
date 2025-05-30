@@ -14,6 +14,7 @@ public class SiteDetailsMappingProfile : Profile
             .ForMember(dest => dest.SiteGridReference, opt => opt.MapFrom(src => (src.GridReference)))
             .ForMember(dest => dest.LegalDocumentAddress, opt => opt.MapFrom(src => (src.LegalCorrespondenceAddress)));
 
-        CreateMap<SiteDetails, QueryRegistrationSession>();
+        CreateMap<SiteDetails, QueryRegistrationSession>()
+            .ForMember(dest => dest.PagePath, opt => opt.Ignore());
     }
 }

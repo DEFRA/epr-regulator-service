@@ -225,16 +225,25 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     public async Task AuthorisedMaterials_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
     {
         // Arrange
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
+
         var mockHeaders = new Mock<IHeaderDictionary>();
         mockHeaders.Setup(h => h["Referer"]).Returns((string?)null); // Simulating missing Referer header
 
         var mockRequest = new Mock<HttpRequest>();
         mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
 
+        _reprocessorExporterServiceMock
+            .Setup(s => s.GetAuthorisedMaterialsByRegistrationIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationAuthorisedMaterials
+            {
+                OrganisationName = "TestOrg", SiteAddress = "Site address"
+            });
+
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
         // Act
-        var result = await _controller.AuthorisedMaterials(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
+        var result = await _controller.AuthorisedMaterials(registrationMaterialId);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -492,13 +501,19 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     public async Task SamplingInspection_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
         // Arrange
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
+        _reprocessorExporterServiceMock
+            .Setup(s => s.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(
+                new RegistrationMaterialSamplingPlan { OrganisationName = "Test Org", MaterialName = "Plastic" });
+
         // Act
-        var result = await _controller.SamplingInspection(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
+        var result = await _controller.SamplingInspection(registrationMaterialId);
 
         // Assert
         using (new AssertionScope())
@@ -576,6 +591,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     public async Task SamplingInspection_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
     {
         // Arrange
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         var mockHeaders = new Mock<IHeaderDictionary>();
         mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
         mockHeaders.Setup(h => h.Referer).Returns((string?)null);
@@ -585,8 +601,13 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
 
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
+        _reprocessorExporterServiceMock
+            .Setup(s => s.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(
+                new RegistrationMaterialSamplingPlan { OrganisationName = "Test Org", MaterialName = "Plastic" });
+
         // Act
-        var result = await _controller.SamplingInspection(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
+        var result = await _controller.SamplingInspection(registrationMaterialId);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -598,13 +619,19 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     public async Task SamplingInspection_WhenHeadersIsMissing_ShouldSetHomeBackLink()
     {
         // Arrange
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         var mockRequest = new Mock<HttpRequest>();
         mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
 
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
+        _reprocessorExporterServiceMock
+            .Setup(s => s.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(
+                new RegistrationMaterialSamplingPlan { OrganisationName = "Test Org", MaterialName = "Plastic" });
+
         // Act
-        var result = await _controller.SamplingInspection(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
+        var result = await _controller.SamplingInspection(registrationMaterialId);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -1087,13 +1114,20 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     public async Task MaterialWasteLicences_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
         // Arrange
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
+
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
+        var wasteLicences = CreateMaterialWasteLicencesModel();
+
+        _reprocessorExporterServiceMock.Setup(m => m.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(wasteLicences);
+
         // Act
-        var result = await _controller.MaterialWasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
+        var result = await _controller.MaterialWasteLicences(registrationMaterialId);
 
         // Assert
         using (new AssertionScope())
@@ -1110,10 +1144,17 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         // Arrange
         const string expectedPreviousPage = $"{PagePath.ManageRegistrations}?id=1345";
 
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
+
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(expectedPreviousPage);
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        var wasteLicences = CreateMaterialWasteLicencesModel();
+
+        _reprocessorExporterServiceMock.Setup(m => m.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(wasteLicences);
 
         var expectedViewModel = new MaterialWasteLicencesViewModel
         {
@@ -1127,11 +1168,11 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             PermitType = "Waste Exemption",
         };
 
-        _mapperMock.Setup(m => m.Map<MaterialWasteLicencesViewModel>(It.IsAny<RegistrationMaterialWasteLicence>()))
+        _mapperMock.Setup(m => m.Map<MaterialWasteLicencesViewModel>(wasteLicences))
             .Returns(expectedViewModel);
 
         // Act
-        var result = await _controller.MaterialWasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
+        var result = await _controller.MaterialWasteLicences(registrationMaterialId);
 
         // Assert
         using (new AssertionScope())
@@ -1290,5 +1331,18 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         var hasBackLinkKey = viewResult.ViewData.TryGetValue(BackLinkViewDataKey, out var gotBackLinkObject);
         hasBackLinkKey.Should().BeTrue();
         (gotBackLinkObject as string)?.Should().Be(expectedBackLink);
+    }
+
+    private static RegistrationMaterialWasteLicence CreateMaterialWasteLicencesModel()
+    {
+        var wasteLicences = new RegistrationMaterialWasteLicence
+        {
+            OrganisationName = "TestOrg",
+            PermitType = "PermitType",
+            LicenceNumbers = [],
+            MaximumReprocessingPeriod = "Max period",
+            MaterialName = "Plastic"
+        };
+        return wasteLicences;
     }
 }

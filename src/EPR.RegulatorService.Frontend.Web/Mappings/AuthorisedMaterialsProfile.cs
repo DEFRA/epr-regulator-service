@@ -17,6 +17,7 @@ public class AuthorisedMaterialsProfile : Profile
 
         CreateMap<MaterialsAuthorisedOnSite, AuthorisedMaterialViewModel>();
 
-        CreateMap<RegistrationAuthorisedMaterials, QueryRegistrationSession>();
+        CreateMap<RegistrationAuthorisedMaterials, QueryRegistrationSession>()
+            .ForMember(dest => dest.PagePath, opt => opt.Ignore());
     }
 }
