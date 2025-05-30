@@ -32,6 +32,7 @@ public class SiteDetailsMappingProfileTests
         var siteDetails = new SiteDetails
         {
             RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
+            OrganisationName = "Test Org",
             SiteAddress = "123 Test Street",
             NationName = "England",
             GridReference = "321 Test Street",
@@ -50,6 +51,7 @@ public class SiteDetailsMappingProfileTests
             viewModel.SiteAddress.Should().Be(siteDetails.SiteAddress);
             viewModel.LegalDocumentAddress.Should().Be(siteDetails.LegalCorrespondenceAddress);
             viewModel.SiteGridReference.Should().Be(siteDetails.GridReference);
+            viewModel.TaskStatus.Should().Be(siteDetails.TaskStatus);
         }
     }
 }

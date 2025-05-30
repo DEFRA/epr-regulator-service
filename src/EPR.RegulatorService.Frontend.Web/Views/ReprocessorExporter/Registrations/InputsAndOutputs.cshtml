@@ -116,16 +116,31 @@
                     </dl>
 
                     <br>
+                    @if (Model.RegistrationMaterialReprocessingIO.TaskStatus != RegulatorTaskStatus.Completed)
+                    {
+                        <div class="govuk-button-group !-margin-top-6">
+                            <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteInputsAndOutputs" asp-route-registrationMaterialId="@Model.RegistrationMaterialId">
+                              Mark as reviewed
+                            </button>
 
-                    <div class="govuk-button-group !-margin-top-6">
-                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteInputsAndOutputs" asp-route-registrationMaterialId="@Model.RegistrationMaterialId">
-                            Mark as reviewed
-                        </button>
+                            @if (Model.RegistrationMaterialReprocessingIO.TaskStatus == RegulatorTaskStatus.Queried)
+                            {
+                                <a href="@Url.Action("AddMaterialQueryNote", "Query")" class="govuk-button govuk-button--secondary">
+                                  Add note
+                                </a>
 
-                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = @Model.RegistrationMaterialId, taskName = RegulatorTaskType.ReprocessingInputsAndOutputs })">
-                            Query the reprocessing inputs and outputs
-                        </a>
-                    </div>
+                                <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationMaterialReprocessingIO.RegistrationId })" class="govuk-button govuk-button--secondary">
+                                  Back to application
+                                </a>
+                            }
+                            else
+                            {
+                              <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = @Model.RegistrationMaterialId, taskName = RegulatorTaskType.ReprocessingInputsAndOutputs })">
+                                Query the reprocessing inputs and outputs
+                              </a>
+                            }
+                        </div>
+                    }
                 </form>
             </div>
         </div>

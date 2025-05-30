@@ -14,42 +14,58 @@
                     Sampling and inspection plan
                 </h1>
 
-                  <form asp-controller="Registrations">
+                <form asp-controller="Registrations">
                     <table aria-describedby="tableDesc" class="govuk-table">
-                          <thead class="govuk-table__head">
-                              <tr class="govuk-table__row">
-                                  <th class="govuk-table__header">Uploaded file</th>
-                                  <th class="govuk-table__header">Date uploaded</th>
-                                  <th class="govuk-table__header">Uploaded by</th>
-                              </tr>
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header">Uploaded file</th>
+                                <th class="govuk-table__header">Date uploaded</th>
+                                <th class="govuk-table__header">Uploaded by</th>
+                            </tr>
 
-                          </thead>
-                          <tbody class="govuk-table__body">
+                        </thead>
+                        <tbody class="govuk-table__body">
                             @foreach (var file in Model.RegistrationMaterialSamplingPlan.Files.OrderByDescending(f => f.Filename).ThenByDescending(f => f.DateUploaded))
-                              {
-                                  <tr class="govuk-table__row">
-                                      <td class="govuk-table__cell">
-										<a href="@Url.Action("DownloadSamplingAndInspectionFile", "Registrations", new { registrationMaterialId = Model.RegistrationMaterialId, filename = file.Filename, fileId = file.FileId })" class="govuk-link">
-											@file.Filename
-										</a>
-									  </td>
-                                      <td class="govuk-table__cell">@file.DateUploaded?.ToString("d MMMM yyyy")</td>
-                                      <td class="govuk-table__cell">@file.UpdatedBy</td>
-                                  </tr>
-                              }
-                          </tbody>
+                            {
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">
+                                        <a href="@Url.Action("DownloadSamplingAndInspectionFile", "Registrations", new { registrationMaterialId = Model.RegistrationMaterialId, filename = file.Filename, fileId = file.FileId })" class="govuk-link">
+                                            @file.Filename
+                                        </a>
+                                    </td>
+                                    <td class="govuk-table__cell">@file.DateUploaded?.ToString("d MMMM yyyy")</td>
+                                    <td class="govuk-table__cell">@file.UpdatedBy</td>
+                                </tr>
+                            }
+                        </tbody>
                     </table>
                     <br>
-                    <div class="govuk-button-group !-margin-top-6">
+                    @if (Model.RegistrationMaterialSamplingPlan.TaskStatus != RegulatorTaskStatus.Completed)
+                    {
+                        <div class="govuk-button-group !-margin-top-6">
 
-                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteSamplingInspection" asp-route-registrationMaterialId="@Model.RegistrationMaterialId">
-                            Mark as reviewed
-                        </button>
+                            <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteSamplingInspection" asp-route-registrationMaterialId="@Model.RegistrationMaterialId">
+                                Mark as reviewed
+                            </button>
 
-                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model.RegistrationMaterialId, taskName = RegulatorTaskType.SamplingAndInspectionPlan })">
-                            Query the sampling and inspection plan
-                        </a>
-                    </div>
+                            @if (Model.RegistrationMaterialSamplingPlan.TaskStatus == RegulatorTaskStatus.Queried)
+                            {
+                                <a href="@Url.Action("AddMaterialQueryNote", "Query")" class="govuk-button govuk-button--secondary">
+                                  Add note
+                                </a>
+
+                                <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationMaterialSamplingPlan.RegistrationId })" class="govuk-button govuk-button--secondary">
+                                  Back to application
+                                </a>
+                            }
+                            else
+                            {
+                              <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model.RegistrationMaterialId, taskName = RegulatorTaskType.SamplingAndInspectionPlan })">
+                                Query the sampling and inspection plan
+                              </a>
+                            }
+                        </div>
+                    }
                 </form>
             </div>
         </div>

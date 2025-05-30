@@ -1,18 +1,13 @@
-using AutoMapper;
-
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
-using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
-using EPR.RegulatorService.Frontend.Web.Sessions;
 
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using FluentAssertions.Execution;
@@ -21,55 +16,30 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
 [TestClass]
-public class ApplicationUpdateControllerTests
+public class ApplicationUpdateControllerTests : RegistrationControllerTestBase
 {
     private ApplicationUpdateController _applicationUpdateController; // System under test
-
-    private Mock<ISessionManager<JourneySession>> _sessionManagerMock;
-    private Mock<IMapper> _mapperMock;
-    private Mock<IReprocessorExporterService> _reprocessorExporterServiceMock;
-
-    private JourneySession _journeySession;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        Guid registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
-
-        _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
-        _mapperMock = new Mock<IMapper>();
-        _reprocessorExporterServiceMock = new Mock<IReprocessorExporterService>();
+        CreateCommonMocks();
+        CreateSessionMock();
 
         var validatorMock = new Mock<IValidator<IdRequest>>();
-        var configurationSectionMock = new Mock<IConfigurationSection>();
-        var configurationMock = new Mock<IConfiguration>();
-        
-        configurationSectionMock
-            .Setup(section => section.Value)
-            .Returns("/regulators");
+        var configurationMock = CreateConfigurationMock();
 
-        configurationMock
-            .Setup(config => config.GetSection(ConfigKeys.PathBase))
-            .Returns(configurationSectionMock.Object);
-
-        _journeySession = new JourneySession
-        {
-            ReprocessorExporterSession = { ApplicationUpdateSession = CreateApplicationUpdateSession(registrationMaterialId) }
-        };
-
-        _sessionManagerMock
-            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(_journeySession);
-
+        Guid registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+        _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = CreateApplicationUpdateSession(registrationMaterialId);
+    
         _applicationUpdateController = new ApplicationUpdateController(
             _mapperMock.Object,
             validatorMock.Object,
             _reprocessorExporterServiceMock.Object,
             _sessionManagerMock.Object,
-        configurationMock.Object );
-
-        var httpContextMock = new Mock<HttpContext>();
-        _applicationUpdateController.ControllerContext.HttpContext = httpContextMock.Object;
+            configurationMock.Object);
+        
+        _applicationUpdateController.ControllerContext.HttpContext = _httpContextMock.Object;
     }
 
     [TestMethod]

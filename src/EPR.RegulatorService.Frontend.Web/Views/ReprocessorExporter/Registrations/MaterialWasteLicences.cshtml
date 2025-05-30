@@ -33,48 +33,63 @@
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
-                          <dt class="govuk-summary-list__key">
-                            @Model.ReferenceNumberLabel
-                          </dt>
-                          <dd class="govuk-summary-list__value">
-							@foreach (var number in @Model.LicenceNumbers)
-                            {
-                              @number <br />
-                            }
-                          </dd>
+                            <dt class="govuk-summary-list__key">
+                                @Model.ReferenceNumberLabel
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @foreach (var number in @Model.LicenceNumbers)
+                                {
+                                    @number <br />
+                                }
+                            </dd>
                         </div>
                         @if (Model is { CapacityTonne: not null, CapacityPeriod: not null })
                         {
-                          <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                              Authorised capacity (tonnes)
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-									@Model.CapacityTonne.ToDisplayNumber() tonnes/ @Model.CapacityPeriod
-                            </dd>
-                          </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Authorised capacity (tonnes)
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @Model.CapacityTonne.ToDisplayNumber() tonnes/ @Model.CapacityPeriod
+                                </dd>
+                            </div>
                         }
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
                                 Maximum site capacity
                             </dt>
                             <dd class="govuk-summary-list__value">
-								@Model.MaximumReprocessingCapacityTonne.ToDisplayNumber() tonnes/ @Model.MaximumReprocessingPeriod
+                                @Model.MaximumReprocessingCapacityTonne.ToDisplayNumber() tonnes/ @Model.MaximumReprocessingPeriod
                             </dd>
                         </div>
                     </dl>
 
                     <br>
-
-                    <div class="govuk-button-group !-margin-top-6">
-                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteMaterialWasteLicences" asp-route-registrationMaterialId="@Model.RegistrationMaterialId">
+                    @if (Model.TaskStatus != RegulatorTaskStatus.Completed)
+                    {
+                        <div class="govuk-button-group !-margin-top-6">
+                          <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteMaterialWasteLicences" asp-route-registrationMaterialId="@Model.RegistrationMaterialId">
                             Mark as reviewed
-                        </button>
+                          </button>
+                          
+                          @if (Model.TaskStatus == RegulatorTaskStatus.Queried)
+                          {
+                              <a href="@Url.Action("AddMaterialQueryNote", "Query")" class="govuk-button govuk-button--secondary">
+                                Add note
+                              </a>
 
-                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model.RegistrationMaterialId, taskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions })">
-                            Query waste licences, permits or exemptions
-                        </a>
-                    </div>
+                              <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationId })" class="govuk-button govuk-button--secondary">
+                                Back to application
+                              </a>
+                          }
+                          else
+                          {
+                              <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model.RegistrationMaterialId, taskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions })">
+                                Query waste licences, permits or exemptions
+                              </a>
+                          }
+                        </div>
+                    }
                 </form>
             </div>
         </div>

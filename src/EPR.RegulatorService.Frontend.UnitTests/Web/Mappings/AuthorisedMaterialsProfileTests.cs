@@ -47,6 +47,7 @@ public class AuthorisedMaterialsProfileTests
             viewModel.RegistrationId.Should().Be(registration.RegistrationId);
             viewModel.OrganisationName.Should().Be(registration.OrganisationName);
             viewModel.SiteAddress.Should().Be(registration.SiteAddress);
+            viewModel.TaskStatus.Should().Be(registration.TaskStatus);
         }
     }
 
