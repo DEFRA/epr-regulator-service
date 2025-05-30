@@ -26,4 +26,5 @@ public static class FeatureFlags
     public const string ShowYourFeedbackFooter = "ShowYourFeedbackFooter";
 
     public const string ShowFeesWaiveButton = "ShowFeesWaiveButton";
+    public const string ShowComplianceSchemeMembership = "ShowComplianceSchemeMembership";
 }
