@@ -11,4 +11,5 @@ public class OrganisationSearchResult
     public Guid ExternalId { get; set; }
     public string CompanyHouseNumber { get; set; }
     public bool IsComplianceScheme { get; set; }
+    public string MemberOfComplianceSchemeName { get; set; }
 }

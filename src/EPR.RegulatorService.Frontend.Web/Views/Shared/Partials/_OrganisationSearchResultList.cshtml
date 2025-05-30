@@ -1,56 +1,69 @@
+@using EPR.RegulatorService.Frontend.Web.Configs
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager;
 @model EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorSearchPage.OrganisationSearchResultsListViewModel
 @{
-  var organisationRecordIndex = "";
+    var organisationRecordIndex = "";
 }
 <h1 id="tableTitle" class="govuk-heading-xl govuk-!-margin-bottom-8">@Localizer["Table.Title"]</h1>
 
 <table id="organisationTable" class="govuk-table responsive-table" aria-label="Organisation Application Listing">
-  <thead role="rowgroup" class="govuk-table__head">
-  <tr role="row" class="govuk-table__row">
-    <th id="companyHeader" role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.Company"]</th>
-    <th id="organisationIdHeader" role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.OrganisationId"]</th>
-    <th id="companyHouseNumberHeader" role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.CompanyHouseNumber"]</th>
-  </tr>
-  </thead>
-  <tbody id="organisationTableBody"class="govuk-table__body">
+    <thead role="rowgroup" class="govuk-table__head">
+        <tr role="row" class="govuk-table__row">
+            <th id="companyHeader" role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.Company"]</th>
+            <th id="organisationIdHeader" role="columnheader" scope="col" class="govuk-table__header epr-width-thirty-percent">@Localizer["Table.Header.OrganisationId"]</th>
+            <th id="companyHouseNumberHeader" role="columnheader" scope="col" class="govuk-table__header epr-width-ten-percent">@Localizer["Table.Header.CompanyHouseNumber"]</th>
+        </tr>
+    </thead>
+    <tbody id="organisationTableBody" class="govuk-table__body">
 
-  <!-- look at the for-each-partial in razor -->
-  @foreach (var organisation in Model.PagedOrganisationSearchResults
-    .Select((value, index) => new {Index = index, Value = value}))
-  {
-    organisationRecordIndex = organisation.Index == 0 ? "" : organisation.Index.ToString();
+        <!-- look at the for-each-partial in razor -->
+        @foreach (var organisation in Model.PagedOrganisationSearchResults
+          .Select((value, index) => new { Index = index, Value = value }))
+        {
+            organisationRecordIndex = organisation.Index == 0 ? "" : organisation.Index.ToString();
 
-    <tr id="row@(organisation.Index)" role="row" class="govuk-table__row">
-      <td id="companyCell@(organisation.Index)" role="gridcell" class="govuk-table__cell vertical-middle-align">
-        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Company"]</span>
-        <p class="govuk-body">
-          <a id="organisationIdCell@(organisation.Index)" href="@Url.ActionLink("RegulatorCompanyDetail",
+            <tr id="row@(organisation.Index)" role="row" class="govuk-table__row">
+                <td id="companyCell@(organisation.Index)" role="gridcell" class="govuk-table__cell vertical-middle-align">
+                    <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Company"]</span>
+                    <p class="govuk-body">
+                        <a id="organisationIdCell@(organisation.Index)" href="@Url.ActionLink("RegulatorCompanyDetail",
                      "SearchManageApprovers",
                      new { organisationId = organisation.Value.ExternalId })">
-            @organisation.Value.OrganisationName
-          </a>
-          <br/>
-          @(organisation.Value.IsComplianceScheme
-            ? Localizer["OrgType.ComplianceScheme"]
-            : organisation.Value.OrganisationType.Contains("InDirectProducer")
-              ? Localizer["OrgType.InDirectProducer"]
-              : Localizer["OrgType.DirectProducer"])
-      </td>
-      <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.OrganisationId"]</span>
-        <p id="companyHouseCell@(organisation.Index)" class="govuk-body">
-          @organisation.Value.OrganisationId
-        </p>
-      </td>
-      <td role="gridcell" class="govuk-table__cell vertical-middle-align">
-        <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.CompanyHouseNumber"]</span>
-        <p id="companyHouseNumberCell@(organisation.Index)"class="govuk-body">
-          @organisation.Value.CompanyHouseNumber
-        </p>
-      </td>
-    </tr>
-  }
-  </tbody>
+                            @organisation.Value.OrganisationName
+                        </a>
+                        <br />
+                        @if (await FeatureManager.IsEnabledAsync(FeatureFlags.ShowComplianceSchemeMembership))
+                        {
+                            @(organisation.Value.IsComplianceScheme
+                                ? Localizer["OrgType.ComplianceScheme"]
+                                : organisation.Value.OrganisationType.Contains("InDirectProducer")
+                                ? Localizer["OrgType.MemberOfScheme", organisation.Value.MemberOfComplianceSchemeName]
+                                : Localizer["OrgType.DirectProducer"])
+                        }
+                        else
+                        {
+                            @(organisation.Value.IsComplianceScheme
+                                ? Localizer["OrgType.ComplianceScheme"]
+                                : organisation.Value.OrganisationType.Contains("InDirectProducer")
+                                ? Localizer["OrgType.InDirectProducer"]
+                                : Localizer["OrgType.DirectProducer"])
+                        }
+                </td>
+                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                    <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.OrganisationId"]</span>
+                    <p id="companyHouseCell@(organisation.Index)" class="govuk-body">
+                        @organisation.Value.OrganisationId
+                    </p>
+                </td>
+                <td role="gridcell" class="govuk-table__cell vertical-middle-align">
+                    <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.CompanyHouseNumber"]</span>
+                    <p id="companyHouseNumberCell@(organisation.Index)" class="govuk-body">
+                        @organisation.Value.CompanyHouseNumber
+                    </p>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 @await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel)
 
