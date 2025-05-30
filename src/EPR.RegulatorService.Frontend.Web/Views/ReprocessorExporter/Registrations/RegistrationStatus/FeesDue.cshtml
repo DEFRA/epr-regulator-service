@@ -21,40 +21,52 @@
           @title
         </h1>
         
-        <form method="get" asp-controller="RegistrationStatus" asp-action="PaymentCheck">
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Date and time submitted
+            </dt>
+            <dd class="govuk-summary-list__value">
+              @Model.SubmittedDate.ToDisplayDateAndTime()
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Payment reference
+            </dt>
+            <dd class="govuk-summary-list__value">
+              @Model.ApplicationReferenceNumber
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Registration fee for @Model.MaterialName.ToLower()
+            </dt>
+            <dd class="govuk-summary-list__value">
+              @Model.FeeAmount.ToDisplayCurrency()
+            </dd>
+          </div>
 
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Date and time submitted
-              </dt>
-              <dd class="govuk-summary-list__value">
-                @Model.SubmittedDate.ToDisplayDateAndTime()
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Payment reference
-              </dt>
-              <dd class="govuk-summary-list__value">
-                @Model.ApplicationReferenceNumber
-              </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">
-                Registration fee for @Model.MaterialName.ToLower() 
-              </dt>
-              <dd class="govuk-summary-list__value">
-                @Model.FeeAmount.ToDisplayCurrency()
-              </dd>
-            </div>
-           
-          </dl>
-        
-          <button type="submit" class="govuk-button">
+        </dl>
+
+        <div class="govuk-button-group">
+
+          <a href="@Url.Action("PaymentCheck", "RegistrationStatus")" class="govuk-button">  
             Continue
-          </button>
-        </form>
+          </a>
+
+          @if (Model.TaskStatus == RegulatorTaskStatus.Queried)
+          {
+              <a href="@Url.Action("AddNote", "RegistrationStatus")" class="govuk-button govuk-button--secondary">  
+                Add note  
+              </a>
+
+            <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationId })" class="govuk-button govuk-button--secondary">
+              Back to application
+            </a>
+          }
+
+        </div>
       </div>
     </div>
   </main>

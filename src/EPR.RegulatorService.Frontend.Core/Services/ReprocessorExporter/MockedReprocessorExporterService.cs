@@ -96,6 +96,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
 
+        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus);
+
         return Task.FromResult(new RegistrationMaterialPaymentFees
         {
             RegistrationId = registration.Id,
@@ -107,7 +109,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             FeeAmount = 2921,
             ApplicationReferenceNumber = "ABC123456",
             SubmittedDate = DateTime.Now.AddDays(-7),
-            Regulator = "GB-ENG"
+            Regulator = "GB-ENG",
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted,
+            RegulatorApplicationTaskStatusId = task?.Id
         });
     }
 
@@ -552,5 +556,10 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             throw new InvalidOperationException(
                 $"No accreditations found for any materials in year {year}.");
         }
+    }
+
+    public Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)
+    {
+        return Task.CompletedTask;
     }
 }
