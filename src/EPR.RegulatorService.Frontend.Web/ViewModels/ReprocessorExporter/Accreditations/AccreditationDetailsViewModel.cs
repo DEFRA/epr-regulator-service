@@ -1,4 +1,6 @@
-namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Web.Helpers;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
 public class AccreditationDetailsViewModel
 {
@@ -6,7 +8,7 @@ public class AccreditationDetailsViewModel
 
     public string ApplicationReference { get; set; } = string.Empty;
 
-    public string Status { get; set; } = string.Empty;
+    public ApplicationStatus Status { get; set; }
 
     public int AccreditationYear { get; init; }
 
@@ -18,11 +20,8 @@ public class AccreditationDetailsViewModel
 
     public AccreditationTaskViewModel? SamplingAndInspectionPlanTask { get; set; }
 
-    public bool ShouldDisplay =>
-        !IsStatusInactive(Status);
+    public AccreditationTaskViewModel? CheckAccreditationStatusTask { get; set; }
 
-    private static bool IsStatusInactive(string status) =>
-        string.IsNullOrWhiteSpace(status) ||
-        status.Equals("Not started yet", StringComparison.OrdinalIgnoreCase) ||
-        status.Equals("Withdrawn", StringComparison.OrdinalIgnoreCase);
+    public bool ShouldDisplay =>
+        AccreditationDisplayHelper.ShouldDisplayAccreditation(Status);
 }

@@ -1,26 +1,31 @@
 @model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.ManageAccreditationsViewModel
 
-<h2 class="govuk-heading-m">Check accreditations are duly made and assign officer</h2>
-<ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
+@if (Model.Materials.Any(m => m.ShouldDisplay))
+{
+	<h2 class="govuk-heading-m">Check accreditations are duly made and assign officer</h2>
+	<ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
 
-    @foreach (var material in Model.Materials)
-    {
-        if (material.ShouldDisplay)
-        {
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    @($"{material.MaterialName} application reference: {material.Accreditation!.ApplicationReference}")<br />
-                    <a href="#">Check accreditation status</a>
-                </span>
-                <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not Started yet</strong>
-            </li>
-        }
-    }
+		@foreach (var material in Model.Materials)
+		{
+			if (material.ShouldDisplay && material.Accreditation?.CheckAccreditationStatusTask != null)
+			{
+				<li class="app-task-list__item">
+					<span class="app-task-list__task-name">
+						@($"{material.MaterialName} application reference: {material.Accreditation.ApplicationReference}")<br />
+						<a href="#">@material.Accreditation.CheckAccreditationStatusTask.TaskName</a>
+					</span>
+					<strong class="govuk-tag @material.Accreditation.CheckAccreditationStatusTask.StatusCssClass app-task-list__tag">
+						@material.Accreditation.CheckAccreditationStatusTask.StatusText
+					</strong>
+				</li>
+			}
+		}
 
-    <li class="app-task-list__item">
-        <span class="app-task-list__task-name">
-            <a href="#">Assign officer</a>
-        </span>
-        <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not Started yet</strong>
-    </li>
-</ul>
+		<li class="app-task-list__item">
+			<span class="app-task-list__task-name">
+				<a href="#">Assign officer</a>
+			</span>
+			<strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not Started yet</strong>
+		</li>
+	</ul>
+}

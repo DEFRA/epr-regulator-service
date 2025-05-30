@@ -35,17 +35,19 @@ public class ManageAccreditationsMappingProfile : Profile
         CreateMap<Accreditation, AccreditationDetailsViewModel>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.ApplicationReference, opt => opt.MapFrom(src => src.ApplicationReference))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapStatusStringToEnum(src.Status)))
             .ForMember(dest => dest.DeterminationDate, opt => opt.MapFrom(src => src.DeterminationDate))
             .ForMember(dest => dest.AccreditationYear, opt => opt.MapFrom(src => src.AccreditationYear))
             .ForMember(dest => dest.PRNTonnageTask, opt => opt.Ignore())
             .ForMember(dest => dest.BusinessPlanTask, opt => opt.Ignore())
             .ForMember(dest => dest.SamplingAndInspectionPlanTask, opt => opt.Ignore())
+            .ForMember(dest => dest.CheckAccreditationStatusTask, opt => opt.Ignore())
             .AfterMap((src, dest) =>
             {
                 dest.PRNTonnageTask = MapAccreditationTask(src.Tasks, "PRN tonnage and authority to issue PRNs");
                 dest.BusinessPlanTask = MapAccreditationTask(src.Tasks, "Business plan");
                 dest.SamplingAndInspectionPlanTask = MapAccreditationTask(src.Tasks, "Sampling and inspection plan");
+                dest.CheckAccreditationStatusTask = MapAccreditationTask(src.Tasks, "Check accreditation status");
             });
 
         CreateMap<RegistrationTask, AccreditationTaskViewModel>()
@@ -54,7 +56,17 @@ public class ManageAccreditationsMappingProfile : Profile
             .ForMember(dest => dest.StatusCssClass, opt => opt.MapFrom(src => MapTaskStatusCssClass(src.Status.ToString())));
     }
 
-    // Accreditation task mapping (string-based)
+    // Converts a string to ApplicationStatus enum
+    private static ApplicationStatus MapStatusStringToEnum(string status)
+    {
+        if (Enum.TryParse<ApplicationStatus>(status, ignoreCase: true, out var parsed))
+        {
+            return parsed;
+        }
+
+        return ApplicationStatus.Started; // fallback
+    }
+
     private static AccreditationTaskViewModel MapAccreditationTask(IEnumerable<AccreditationTask> tasks, string name)
     {
         var match = tasks.FirstOrDefault(t => string.Equals(t.TaskName, name, StringComparison.OrdinalIgnoreCase));
@@ -68,7 +80,6 @@ public class ManageAccreditationsMappingProfile : Profile
         };
     }
 
-    // Registration task mapping (enum-based)
     private static AccreditationTaskViewModel MapRegistrationTaskToAccreditationTaskViewModel(RegistrationTask task)
     {
         return new AccreditationTaskViewModel
@@ -79,24 +90,20 @@ public class ManageAccreditationsMappingProfile : Profile
         };
     }
 
-    // Accreditation task status text
-    private static string MapTaskStatusText(string status)
-    {
-        return status.ToLowerInvariant() switch
+    private static string MapTaskStatusText(string status) =>
+        status.ToLowerInvariant() switch
         {
-            "not started" => "Not Started",
+            "not started" => "Not Started yet",
             "not started yet" => "Not started yet",
             "approved" => "Approved",
             "queried" => "Queried",
             "completed" => "Completed",
-            _ => "Not Started"
+            "duly made" => "Duly Made",
+            _ => "Not Started Yet"
         };
-    }
 
-    // Registration task status text
-    private static string MapTaskStatusText(string status, RegulatorTaskType taskName)
-    {
-        return status.ToLowerInvariant() switch
+    private static string MapTaskStatusText(string status, RegulatorTaskType taskName) =>
+        status.ToLowerInvariant() switch
         {
             "completed" => taskName switch
             {
@@ -107,7 +114,6 @@ public class ManageAccreditationsMappingProfile : Profile
             "queried" => "Queried",
             _ => "Not started yet"
         };
-    }
 
     private static string MapTaskStatusCssClass(string status) =>
         status.ToLowerInvariant() switch
@@ -115,6 +121,7 @@ public class ManageAccreditationsMappingProfile : Profile
             "completed" => "govuk-tag--blue",
             "approved" => "govuk-tag--green",
             "queried" => "govuk-tag--orange",
+            "duly made" => "govuk-tag--blue",
             _ => "govuk-tag--grey"
         };
 
@@ -124,18 +131,17 @@ public class ManageAccreditationsMappingProfile : Profile
             "prn tonnage and authority to issue prns" => RegulatorTaskType.PRNTonnage,
             "business plan" => RegulatorTaskType.BusinessPlan,
             "sampling and inspection plan" => RegulatorTaskType.SamplingAndInspectionPlan,
+            "check accreditation status" => RegulatorTaskType.CheckAccreditationStatus,
             _ => throw new InvalidOperationException($"Unknown accreditation task name: {name}")
         };
 
-    private static RegistrationTaskViewModel MapApplicationStatusToViewModel(ApplicationStatus? status)
-    {
-        return new RegistrationTaskViewModel
+    private static RegistrationTaskViewModel MapApplicationStatusToViewModel(ApplicationStatus? status) =>
+        new()
         {
             TaskName = RegulatorTaskType.CheckRegistrationStatus,
             StatusText = MapApplicationStatusText(status),
             StatusCssClass = MapApplicationStatusCssClass(status)
         };
-    }
 
     private static string MapApplicationStatusText(ApplicationStatus? status) =>
         status switch
@@ -143,6 +149,7 @@ public class ManageAccreditationsMappingProfile : Profile
             ApplicationStatus.Granted => "Granted",
             ApplicationStatus.Refused => "Refused",
             ApplicationStatus.Withdrawn => "Withdrawn",
+            ApplicationStatus.RegulatorReviewing => "Regulator Reviewing",
             _ => "Not started yet"
         };
 
@@ -152,6 +159,7 @@ public class ManageAccreditationsMappingProfile : Profile
             ApplicationStatus.Granted => "govuk-tag--green",
             ApplicationStatus.Refused => "govuk-tag--red",
             ApplicationStatus.Withdrawn => "govuk-tag--grey",
+            ApplicationStatus.RegulatorReviewing => "govuk-tag--blue",
             _ => "govuk-tag--grey"
         };
 }

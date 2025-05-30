@@ -2,8 +2,15 @@ namespace EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 public enum ApplicationStatus
 {
-    Started,
     Granted,
     Refused,
-    Withdrawn
+    Started,
+    Submitted,
+    RegulatorReviewing,
+    Queried,
+    Updated,
+    Withdrawn,
+    Suspended,
+    Cancelled,
+    ReadyToSubmit
 }
