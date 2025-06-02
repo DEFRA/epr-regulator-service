@@ -83,6 +83,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             if (submission is not null)
             {
                 _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submission.SubmissionId] = submission;
+                SaveSession(_currentSession);
             }
 
             return submission;
@@ -236,9 +237,24 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             if (status == EndpointResponseStatus.Success)
             {
                 existingModel.RegulatorComments = regulatorDecisionRequest.Comments;
-                existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
-                existingModel.SubmissionDetails.Status = existingModel.Status;
-                existingModel.SubmissionDetails.LatestDecisionDate = DateTime.UtcNow;
+
+                if (existingModel.IsResubmission && regulatorDecisionRequest.Status != "Cancelled")
+                {
+                    existingModel.ResubmissionStatus = regulatorDecisionRequest.Status switch
+                    {
+                        "Granted" => RegistrationSubmissionStatus.Accepted,
+                        "Refused" => RegistrationSubmissionStatus.Rejected,
+                        _ => existingModel.ResubmissionStatus
+                    };
+                    existingModel.SubmissionDetails.ResubmissionStatus = existingModel.ResubmissionStatus;
+                    existingModel.SubmissionDetails.ResubmissionDecisionDate = DateTime.UtcNow;
+                }
+                else
+                {
+                    existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
+                    existingModel.SubmissionDetails.Status = existingModel.Status;
+                    existingModel.SubmissionDetails.LatestDecisionDate = DateTime.UtcNow;
+                }
 
                 if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
                 {
