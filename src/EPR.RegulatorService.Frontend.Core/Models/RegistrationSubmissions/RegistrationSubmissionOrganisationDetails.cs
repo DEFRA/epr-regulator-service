@@ -38,6 +38,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
     public DateTime? StatusPendingDate { get; set; }
     public string? RegulatorComments { get; set; } = string.Empty;
     public string? ProducerComments { get; set; } = string.Empty;
+    public DateTime? RegulatorResubmissionDecisionDate { get; set; }
     public DateTime? RegulatorDecisionDate { get; set; }
     public DateTime? ProducerCommentDate { get; set; }
     public string ApplicationReferenceNumber { get; set; } = String.Empty;
@@ -103,8 +104,9 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                     RegistrationDate = response.RegistrationDate,
                     TimeAndDateOfSubmission = response.SubmissionDate,
                     TimeAndDateOfResubmission = response.ResubmissionDate,
-                    ResubmissionStatus = response.ResubmissionStatus
-                    
+                    ResubmissionStatus = response.ResubmissionStatus,
+                    StatusPendingDate = response.StatusPendingDate,
+                    ResubmissionDecisionDate = response.ResubmissionDecisionDate
                 }
             };
 
@@ -147,6 +149,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             IsComplianceScheme = response.IsComplianceScheme,
             SubmissionDetails = response.SubmissionDetails,
             RegulatorDecisionDate = response.RegulatorDecisionDate,
+            RegulatorResubmissionDecisionDate = response.RegulatorResubmissionDecisionDate,
             ProducerCommentDate = response.ProducerCommentDate,
             SubmissionPeriod = response.SubmissionPeriod,
             CsoMembershipDetails = response.CsoMembershipDetails,
@@ -162,6 +165,8 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             }
         };
 
+        registrationSubmissionOrganisationDetails.SubmissionDetails.ResubmissionDecisionDate = response.RegulatorResubmissionDecisionDate;
+        registrationSubmissionOrganisationDetails.SubmissionDetails.StatusPendingDate = response.StatusPendingDate;
         registrationSubmissionOrganisationDetails.SubmissionDetails.IsResubmission = response.IsResubmission;
         registrationSubmissionOrganisationDetails.SubmissionDetails.ResubmissionFileId = response.ResubmissionFileId;
         return registrationSubmissionOrganisationDetails;

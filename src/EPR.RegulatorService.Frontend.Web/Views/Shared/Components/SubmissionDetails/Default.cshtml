@@ -52,7 +52,7 @@
                     } else
                     {
                         <dd class="govuk-summary-list__value">
-                            @(model.LatestDecisionDate?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture))
+                            @( (model.ResubmissionDecisionDate ?? model.LatestDecisionDate)?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture))
                         </dd>
                     }
                 </div>

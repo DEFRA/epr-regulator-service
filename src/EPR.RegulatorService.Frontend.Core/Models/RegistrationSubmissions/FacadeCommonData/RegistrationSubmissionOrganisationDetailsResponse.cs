@@ -38,6 +38,7 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public string Postcode { get; set; }
 
     public RegistrationSubmissionOrganisationSubmissionSummaryDetails SubmissionDetails { get; set; }
+    public DateTime? RegulatorResubmissionDecisionDate { get; set; }
     public DateTime? RegulatorDecisionDate { get; set; }
     public DateTime? ProducerCommentDate { get; set; }
     public Guid? RegulatorUserId { get; set; }
