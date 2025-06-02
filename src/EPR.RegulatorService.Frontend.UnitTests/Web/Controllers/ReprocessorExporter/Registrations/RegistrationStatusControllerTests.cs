@@ -516,6 +516,42 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
     }
 
     [TestMethod]
+    public async Task RegistrationApplicationStatus_WhenCalledAfterDulyMade_ShouldReturnApplicationStatusView()
+    {
+        // Arrange
+        var registrationPaymentFees = CreateRegistrationPaymentFees(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
+        var expectedViewModel = new PaymentReviewViewModel
+        {
+            MaterialName = "Plastic",
+            SubmittedDate = DateTime.Now.AddDays(-7),
+            PaymentMethod = PaymentMethodType.BankTransfer,
+            PaymentDate = DateTime.Now.AddDays(-7),
+            DulyMadeDate = DateTime.Now.AddDays(-5),
+            DeterminationDate = DateTime.Now.AddDays(+16)
+        };
+
+        _reprocessorExporterServiceMock.Setup(r => r.GetPaymentFeesByRegistrationMaterialIdAsync(registrationPaymentFees.RegistrationMaterialId))
+        .ReturnsAsync(registrationPaymentFees);
+
+        _mapperMock.Setup(m =>
+                m.Map<PaymentReviewViewModel>(registrationPaymentFees))
+            .Returns(expectedViewModel);
+
+        // Act
+        var response = await _registrationStatusController.RegistrationApplicationStatus(registrationPaymentFees.RegistrationMaterialId);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
+
+            var viewResult = (ViewResult)response;
+            viewResult.Model.Should().Be(expectedViewModel);
+            viewResult.ViewName.Should().EndWith("RegistrationApplicationStatus.cshtml");
+        }
+    }
+
+    [TestMethod]
     public async Task MarkAsDulyMade_WhenCalledWithValidSession_ShouldCallFacade()
     {
         // Arrange
@@ -603,6 +639,11 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
             RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             MaterialName = "Plastic",
             ApplicationReferenceNumber = "123456789",
-            Regulator = "Regulator"
-        };
+            Regulator = "Regulator",
+            SubmittedDate = DateTime.Now.AddDays(-7),
+            PaymentMethod = PaymentMethodType.BankTransfer,
+            PaymentDate = DateTime.Now.AddDays(-7),
+            DulyMadeDate = DateTime.Now.AddDays(-5),
+            DeterminationDate = DateTime.Now.AddDays(+16)
+};
 }

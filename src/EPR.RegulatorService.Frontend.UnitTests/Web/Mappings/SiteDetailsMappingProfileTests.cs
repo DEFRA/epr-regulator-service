@@ -50,6 +50,7 @@ public class SiteDetailsMappingProfileTests
             viewModel.SiteAddress.Should().Be(siteDetails.SiteAddress);
             viewModel.LegalDocumentAddress.Should().Be(siteDetails.LegalCorrespondenceAddress);
             viewModel.SiteGridReference.Should().Be(siteDetails.GridReference);
+            viewModel.TaskStatus.Should().Be(siteDetails.TaskStatus);
         }
     }
 }

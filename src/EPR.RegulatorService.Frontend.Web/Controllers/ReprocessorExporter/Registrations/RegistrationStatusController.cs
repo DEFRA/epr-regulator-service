@@ -40,7 +40,7 @@ public class RegistrationStatusController(
         await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationMaterialId });
 
         var session = await GetSession();
-        
+
         var registrationStatusSession = await GetOrCreateRegistrationStatusSession(registrationMaterialId, session);
         var viewModel = mapper.Map<FeesDueViewModel>(registrationStatusSession);
 
@@ -230,7 +230,23 @@ public class RegistrationStatusController(
 
         return View(GetRegistrationStatusView(nameof(PaymentReview)), viewModel);
     }
-    
+
+    [HttpGet]
+    [Route(PagePath.RegistrationApplicationStatus)]
+    public async Task<IActionResult> RegistrationApplicationStatus(Guid registrationMaterialId)
+    {
+        var session = await GetSession();
+
+        var registrationMaterial = await reprocessorExporterService.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId);
+        var viewModel = mapper.Map<PaymentReviewViewModel>(registrationMaterial);
+
+        string pagePath = GetPagePath(PagePath.RegistrationApplicationStatus, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
+
+        return View(GetRegistrationStatusView(nameof(RegistrationApplicationStatus)), viewModel);
+    }
+
     [HttpPost]
     [Route(PagePath.MarkAsDulyMade)]
     public async Task<IActionResult> MarkAsDulyMade()
