@@ -39,6 +39,9 @@ public class ReprocessorExporterServiceTests
     private const string MarkAsDulyMadePath = "v{apiVersion}/registrationMaterials/{id}/markAsDulyMade";
     private const string SubmitOfflinePaymentPath = "v{apiVersion}/registrationMaterials/offlinePayment";
     private const string GetRegistrationByIdWithAccreditations = "v{apiVersion}/registrations/{id}/accreditations";
+    private const string MarkAccreditationAsQueried = "v{apiVersion}/registrations/{id}/accreditations";
+
+    
 
     private ReprocessorExporterService _service; // System under test
 
@@ -84,6 +87,7 @@ public class ReprocessorExporterServiceTests
                 { "MarkAsDulyMade", MarkAsDulyMadePath },
                 { "SubmitOfflinePayment", SubmitOfflinePaymentPath },
                 { "GetRegistrationByIdWithAccreditations", GetRegistrationByIdWithAccreditations },
+                { "MarkAccreditationAsQueried", MarkAccreditationAsQueried },
             }
         };
 
@@ -1031,6 +1035,28 @@ public class ReprocessorExporterServiceTests
         capturedRequest.RequestUri!.ToString().Should().EndWith($"/accreditationMaterials/{accreditationMaterialId}/markAsDulyMade");
         var body = await capturedRequest.Content!.ReadAsStringAsync();
         body.Should().Contain("determinationDate").And.Contain("dulyMadeDate");
+    }
+
+    [TestMethod]
+    public async Task UpdateRegulatorAccreditationTaskStatusAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+    {
+        // Arrange
+        var accreditationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+        string expectedPath = MarkAccreditationAsQueried
+            .Replace("{apiVersion}", ApiVersion.ToString());
+        var request = new UpdateAccreditationTaskStatusRequest
+        {
+            TaskName = RegulatorTaskType.DulyMade.ToString(),
+            AccreditationId = accreditationId,
+            Status = RegulatorTaskStatus.Completed.ToString()
+        };
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorAccreditationTaskStatusAsync(request));
     }
 
     private void SetupHttpMessageExpectations(HttpMethod method, string path,

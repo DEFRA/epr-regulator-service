@@ -658,6 +658,29 @@ public class AccreditationStatusControllerTests
         }
     }
 
+    [TestMethod]
+    public async Task QueryAccreditationTask_InvalidModelState_ReturnsViewWithViewModel()
+    {
+        // Arrange
+        var viewModel = new QueryAccreditationTaskViewModel
+        {
+            AccreditationId = Guid.NewGuid(),
+            TaskName = RegulatorTaskType.CheckRegistrationStatus
+        };
+
+        // Simulate invalid model state
+        _controller.ModelState.AddModelError("Comments", "Required");
+
+        // Act
+        var result = await _controller.QueryAccreditationTask(viewModel);
+
+        // Assert
+        var viewResult = result as ViewResult;
+        viewResult.Should().NotBeNull();
+        viewResult!.ViewName.Should().Be("~/Views/ReprocessorExporter/Accreditations/AccreditationStatus/QueryAccreditationTask.cshtml");
+        viewResult.Model.Should().Be(viewModel);
+    }
+
     private static JourneySession CreateJourneySession(Guid registrationId, Guid accreditationId) =>
     new JourneySession
     {
