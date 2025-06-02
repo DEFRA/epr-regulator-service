@@ -25,17 +25,28 @@ public class ReprocessorExporterServiceTests
 {
     private const string BaseUrl = "https://example.com/";
     private const int ApiVersion = 1;
+    private const string AddMaterialQueryNote = "v{apiVersion}/regulatorApplicationTaskStatus/{id}/queryNote";
     private const string GetRegistrationByIdPath = "v{apiVersion}/registrations/{id}";
     private const string GetRegistrationMaterialByIdPath = "v{apiVersion}/registrationMaterials/{id}";
     private const string GetSiteAddressByRegistrationIdPath = "v{apiVersion}/registrations/{id}/siteAddress";
     private const string GetAuthorisedMaterialsByRegistrationId = "v{apiVersion}/registrations/{id}/authorisedMaterial";
-    private const string GetWasteLicenceByRegistrationMaterialId = "v{apiVersion}/registrationMaterials/{id}/wasteLicences";
+
+    private const string GetWasteLicenceByRegistrationMaterialId =
+        "v{apiVersion}/registrationMaterials/{id}/wasteLicences";
+
     private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
     private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
     private const string UpdateApplicationTaskStatus = "v{apiVersion}/regulatorApplicationTaskStatus";
-    private const string GetReprocessingIOByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/reprocessingIO";
-    private const string GetSamplingPlanByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/samplingPlan";
-    private const string GetPaymentFeesByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/paymentFees";
+
+    private const string GetReprocessingIOByRegistrationMaterialIdPath =
+        "v{apiVersion}/registrationMaterials/{id}/reprocessingIO";
+
+    private const string GetSamplingPlanByRegistrationMaterialIdPath =
+        "v{apiVersion}/registrationMaterials/{id}/samplingPlan";
+
+    private const string GetPaymentFeesByRegistrationMaterialIdPath =
+        "v{apiVersion}/registrationMaterials/{id}/paymentFees";
+
     private const string MarkAsDulyMadePath = "v{apiVersion}/registrationMaterials/{id}/markAsDulyMade";
     private const string SubmitOfflinePaymentPath = "v{apiVersion}/registrationMaterials/offlinePayment";
     private const string GetRegistrationByIdWithAccreditations = "v{apiVersion}/registrations/{id}/accreditations";
@@ -73,6 +84,7 @@ public class ReprocessorExporterServiceTests
             DownstreamScope = "api://default",
             Endpoints = new Dictionary<string, string>
             {
+                { "AddMaterialQueryNote", AddMaterialQueryNote },
                 { "GetRegistrationById", GetRegistrationByIdPath },
                 { "GetRegistrationMaterialById", GetRegistrationMaterialByIdPath },
                 { "GetSiteAddressByRegistrationId", GetSiteAddressByRegistrationIdPath },
@@ -134,7 +146,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetRegistrationByIdAsync(registrationId));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetRegistrationByIdAsync(registrationId));
     }
 
     [TestMethod]
@@ -179,7 +192,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetSiteDetailsByRegistrationIdAsync(registrationId));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetSiteDetailsByRegistrationIdAsync(registrationId));
     }
 
 
@@ -195,7 +209,8 @@ public class ReprocessorExporterServiceTests
         var response = new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
-            Content = new StringContent(JsonSerializer.Serialize(expectedRegistrationMaterial, _jsonSerializerOptions))
+            Content = new StringContent(JsonSerializer.Serialize(expectedRegistrationMaterial,
+                _jsonSerializerOptions))
         };
 
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
@@ -222,7 +237,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetRegistrationMaterialByIdAsync(registrationMaterialId));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetRegistrationMaterialByIdAsync(registrationMaterialId));
     }
 
     [TestMethod]
@@ -265,7 +281,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId));
     }
 
     [TestMethod]
@@ -278,8 +295,7 @@ public class ReprocessorExporterServiceTests
             .Replace("{id}", registrationMaterialId.ToString());
         var request = new RegistrationMaterialOutcomeRequest
         {
-            Status = ApplicationStatus.Granted,
-            Comments = "Test comment"
+            Status = ApplicationStatus.Granted, Comments = "Test comment"
         };
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
@@ -287,7 +303,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegistrationMaterialOutcomeAsync(registrationMaterialId, request));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.UpdateRegistrationMaterialOutcomeAsync(registrationMaterialId, request));
     }
 
     [TestMethod]
@@ -303,7 +320,8 @@ public class ReprocessorExporterServiceTests
         var response = new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
-            Content = new StringContent(JsonSerializer.Serialize(expectedAuthorisedMaterials, _jsonSerializerOptions))
+            Content = new StringContent(JsonSerializer.Serialize(expectedAuthorisedMaterials,
+                _jsonSerializerOptions))
         };
 
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
@@ -335,7 +353,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorRegistrationTaskStatusAsync(request));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.UpdateRegulatorRegistrationTaskStatusAsync(request));
     }
 
     [TestMethod]
@@ -349,8 +368,7 @@ public class ReprocessorExporterServiceTests
 
         var request = new MarkAsDulyMadeRequest()
         {
-            DeterminationDate = DateTime.Now,
-            DulyMadeDate = DateTime.Now.AddDays(-7)
+            DeterminationDate = DateTime.Now, DulyMadeDate = DateTime.Now.AddDays(-7)
         };
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
@@ -358,7 +376,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.MarkAsDulyMadeAsync(registrationMaterialId, request));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.MarkAsDulyMadeAsync(registrationMaterialId, request));
     }
 
     [TestMethod]
@@ -404,7 +423,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorApplicationTaskStatusAsync(request));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.UpdateRegulatorApplicationTaskStatusAsync(request));
     }
 
     [TestMethod]
@@ -412,7 +432,7 @@ public class ReprocessorExporterServiceTests
     {
         // Arrange
         var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
-        var expectedReprocessingIO = CreateReprocessingIO();
+        var expectedReprocessingIO = CreateReprocessingIO(registrationMaterialId);
         string expectedPath = GetReprocessingIOByRegistrationMaterialIdPath
             .Replace("{apiVersion}", ApiVersion.ToString())
             .Replace("{id}", registrationMaterialId.ToString());
@@ -446,7 +466,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetRegistrationByIdAsync(registrationId));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetRegistrationByIdAsync(registrationId));
     }
 
     [TestMethod]
@@ -488,7 +509,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetSamplingPlanByRegistrationMaterialIdAsync(registrationId));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetSamplingPlanByRegistrationMaterialIdAsync(registrationId));
     }
 
     [TestMethod]
@@ -504,7 +526,8 @@ public class ReprocessorExporterServiceTests
         var response = new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
-            Content = new StringContent(JsonSerializer.Serialize(expectedRegistrationPaymentFees, _jsonSerializerOptions))
+            Content = new StringContent(JsonSerializer.Serialize(expectedRegistrationPaymentFees,
+                _jsonSerializerOptions))
         };
 
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
@@ -531,7 +554,8 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId));
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId));
     }
 
     [TestMethod]
@@ -540,11 +564,7 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var fileId = Guid.NewGuid();
         const string filename = "test-document.pdf";
-        var request = new FileDownloadRequest
-        {
-            FileId = fileId,
-            FileName = filename
-        };
+        var request = new FileDownloadRequest { FileId = fileId, FileName = filename };
 
         var expectedContent = Encoding.UTF8.GetBytes("Sample PDF content");
         const string contentType = "application/octet-stream";
@@ -555,7 +575,8 @@ public class ReprocessorExporterServiceTests
         };
         httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
 
-        _optionsMock.Object.Value.Endpoints.Add("DownloadSamplingInspectionFile", "v{apiVersion}/registrations/file-download");
+        _optionsMock.Object.Value.Endpoints.Add("DownloadSamplingInspectionFile",
+            "v{apiVersion}/registrations/file-download");
 
         _httpMessageHandlerMock
             .Protected()
@@ -588,13 +609,10 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var fileId = Guid.NewGuid();
         const string filename = "test-document.pdf";
-        var request = new FileDownloadRequest
-        {
-            FileId = fileId,
-            FileName = filename
-        };
+        var request = new FileDownloadRequest { FileId = fileId, FileName = filename };
 
-        _optionsMock.Object.Value.Endpoints.Add("DownloadSamplingInspectionFile", "v{apiVersion}/registrations/file-download");
+        _optionsMock.Object.Value.Endpoints.Add("DownloadSamplingInspectionFile",
+            "v{apiVersion}/registrations/file-download");
 
         var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.NotFound); // Simulate failure
 
@@ -1059,6 +1077,24 @@ public class ReprocessorExporterServiceTests
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorAccreditationTaskStatusAsync(request));
     }
 
+    public async Task AddMaterialQueryNote_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+    {
+        // Arrange
+        var materialTaskId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+        string expectedPath = AddMaterialQueryNote
+            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{id}", materialTaskId.ToString());
+        var request = new AddNoteRequest() { Note = "Test note", };
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.AddMaterialQueryNoteAsync(materialTaskId, request));
+    }
+
     private void SetupHttpMessageExpectations(HttpMethod method, string path,
         HttpResponseMessage responseMessage) =>
         _httpMessageHandlerMock.Protected()
@@ -1079,9 +1115,13 @@ public class ReprocessorExporterServiceTests
             Regulator = "Environment Agency (EA)"
         };
 
-    private static RegistrationMaterialReprocessingIO CreateReprocessingIO() =>
+    private static RegistrationMaterialReprocessingIO CreateReprocessingIO(Guid registrationMaterialId) =>
         new()
         {
+            RegistrationId = Guid.NewGuid(),
+            SiteAddress = "23, Ruby St, London, E12 3SE",
+            OrganisationName = "Test Org",
+            RegistrationMaterialId = registrationMaterialId,
             MaterialName = "Plastic",
             SourcesOfPackagingWaste = "N/A",
             PlantEquipmentUsed = "N/A",
@@ -1128,6 +1168,9 @@ public class ReprocessorExporterServiceTests
     {
         var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
         {
+            RegistrationId = Guid.NewGuid(),
+            OrganisationName = "Test Org",
+            SiteAddress = "23, Ruby St, London, E12 3SE",
             CapacityPeriod = "Per Year",
             CapacityTonne = 50000,
             LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],
@@ -1143,6 +1186,7 @@ public class ReprocessorExporterServiceTests
     private static RegistrationMaterialSamplingPlan CreateSamplingPlan() =>
         new()
         {
+            OrganisationName = "Test Org",
             MaterialName = "Plastic",
             Files = new List<RegistrationMaterialSamplingPlanFile>
             {
@@ -1164,6 +1208,7 @@ public class ReprocessorExporterServiceTests
         var expectedSiteDetails = new SiteDetails
         {
             RegistrationId = Guid.Parse("84FFEFDC-2306-4854-9B93-4A8A376D7E50"),
+            OrganisationName = "Test Org",
             SiteAddress = "23, Ruby St, London, E12 3SE",
             NationName = "England",
             GridReference = "SJ 854 662",

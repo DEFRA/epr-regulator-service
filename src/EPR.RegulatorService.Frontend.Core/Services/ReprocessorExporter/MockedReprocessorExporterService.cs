@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
@@ -41,13 +40,19 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             throw new NotFoundException("Mocked exception for testing purposes.");
         }
 
+        var registration = _registrations.Single(r => r.Id == id);
+        var task = registration.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.SiteAddressAndContactDetails);
+
         var siteDetails = new SiteDetails
         {
             RegistrationId = id,
-            SiteAddress = "16 Ruby St, London, E12 3SE",
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
             NationName = "England",
             GridReference = "SJ 854 662",
             LegalCorrespondenceAddress = "25 Ruby St, London, E12 3SE",
+            RegulatorRegistrationTaskStatusId = task?.Id,
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
         };
 
         return Task.FromResult(siteDetails);
@@ -72,8 +77,11 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         });
     }
 
-    public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(Guid registrationId) =>
-        Task.FromResult(new RegistrationAuthorisedMaterials
+    public Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(Guid registrationId)
+    {
+        var task = _registrations.Single(r => r.Id == registrationId).Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.MaterialsAuthorisedOnSite);
+
+        return Task.FromResult(new RegistrationAuthorisedMaterials
         {
             RegistrationId = registrationId,
             OrganisationName = "MOCK Test Org",
@@ -87,9 +95,13 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                     MaterialName = "Steel",
                     Reason =
                         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate aliquet ornare. Vestibulum dolor nunc, tincidunt a diam nec, mattis venenatis sem"
+
                 }
-            ]
+            ],
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
         });
+
+    }
 
     public Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
@@ -97,6 +109,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             .First(rm => rm.Id == registrationMaterialId);
 
         var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
+
+        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus);
 
         return Task.FromResult(new RegistrationMaterialPaymentFees
         {
@@ -109,7 +123,13 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             FeeAmount = 2921,
             ApplicationReferenceNumber = "ABC123456",
             SubmittedDate = DateTime.Now.AddDays(-7),
-            Regulator = "GB-ENG"
+            Regulator = "GB-ENG",
+            PaymentMethod = PaymentMethodType.BankTransfer,
+            PaymentDate = DateTime.Now.AddDays(-7),
+            DulyMadeDate = DateTime.Now.AddDays(-5),
+            DeterminationDate = DateTime.Now.AddDays(+16),
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted,
+            RegulatorApplicationTaskStatusId = task?.Id
         });
     }
 
@@ -145,7 +165,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     }
 
     public Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment) => Task.CompletedTask;
-    
+
     public Task UpdateRegistrationMaterialOutcomeAsync(Guid registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
@@ -178,7 +198,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
         var task = registration.Tasks.SingleOrDefault(t => t.TaskName.ToString() == updateRegistrationTaskStatusRequest.TaskName);
         Guid? taskId;
-        
+
         if (task == null)
         {
             taskId = Guid.NewGuid();
@@ -229,13 +249,78 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         return Task.CompletedTask;
     }
 
-    public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(Guid registrationMaterialId) => throw new NotImplementedException();
-    public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(Guid registrationMaterialId) => throw new NotImplementedException();
+    public Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(Guid registrationMaterialId)
+    {
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
+        var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
+        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.ReprocessingInputsAndOutputs);
+        
+        var registrationMaterialReprocessingIO = new RegistrationMaterialReprocessingIO
+        {
+            OrganisationName = registration.OrganisationName,
+            RegistrationId = registration.Id,
+            SiteAddress = registration.SiteAddress!,
+            RegistrationMaterialId = registrationMaterialId,
+            MaterialName = "Plastic",
+            SourcesOfPackagingWaste = "Shed",
+            PlantEquipmentUsed = "shredder",
+            UKPackagingWasteTonne = 6.00M,
+            NonUKPackagingWasteTonne = 2.00M,
+            NotPackingWasteTonne = 3.00M,
+            SenttoOtherSiteTonne = 5.00M,
+            ContaminantsTonne = 1.00M,
+            ProcessLossTonne = 4.00M,
+            TotalInputs = 7.00M,
+            TotalOutputs = 8.00M,
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
+        };
+
+        return Task.FromResult(registrationMaterialReprocessingIO);
+    }
+
+    public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(Guid registrationMaterialId)
+    {
+        var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
+        var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
+        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.SamplingAndInspectionPlan);
+
+        var registrationMaterialSamplingPlan = new RegistrationMaterialSamplingPlan
+        {
+            RegistrationId = registration.Id,
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
+            RegistrationMaterialId = registrationMaterialId,
+            MaterialName = "Plastic",
+            Files =
+            [
+                new RegistrationMaterialSamplingPlanFile
+                {
+                    Filename = "File0002-01-0.pdf",
+                    FileUploadType = "PDF",
+                    FileUploadStatus = "Completed",
+                    FileId = "123",
+                    UpdatedBy = "5d780e2d-5b43-4a45-92ac-7e2889582083",
+                    DateUploaded = DateTime.UtcNow
+                }
+
+            ],
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
+        };
+        return Task.FromResult(registrationMaterialSamplingPlan);
+    }
 
     public Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
+        var registrationMaterial =
+            _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
+        var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
+        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions);
+
         var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
         {
+            RegistrationId = registration.Id,
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
             RegistrationMaterialId = registrationMaterialId,
             CapacityPeriod = "Per Year",
             CapacityTonne = 50000,
@@ -244,6 +329,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             MaximumReprocessingCapacityTonne = 10000,
             MaximumReprocessingPeriod = "Per Month",
             PermitType = "Waste Exemption",
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
         };
 
         return Task.FromResult(registrationMaterialWasteLicence);
@@ -597,4 +683,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 $"No accreditations found for any materials in year {year}.");
         }
     }
+
+    public Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
+
+    public Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
 }

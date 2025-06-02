@@ -40,7 +40,7 @@ public class RegistrationStatusController(
         await validator.ValidateAndThrowAsync(new IdRequest { Id = registrationMaterialId });
 
         var session = await GetSession();
-        
+
         var registrationStatusSession = await GetOrCreateRegistrationStatusSession(registrationMaterialId, session);
         var viewModel = mapper.Map<FeesDueViewModel>(registrationStatusSession);
 
@@ -90,10 +90,22 @@ public class RegistrationStatusController(
 
         await SaveSession(session);
 
-        return registrationStatusSession.FullPaymentMade == true
-          ? RedirectToAction("PaymentMethod", "RegistrationStatus")
-          : RedirectToAction("QueryMaterialTask", "Registrations", new { registrationMaterialId = registrationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckRegistrationStatus });
+        if (registrationStatusSession.FullPaymentMade == true)
+        {
+            return RedirectToAction("PaymentMethod", "RegistrationStatus");
+        }
 
+        if (registrationStatusSession.TaskStatus == RegulatorTaskStatus.Queried)
+        {
+            session.ReprocessorExporterSession.QueryMaterialSession = mapper.Map<QueryMaterialSession>(registrationStatusSession);
+            session.ReprocessorExporterSession.QueryMaterialSession.PagePath = PagePath.FeesDue;
+
+            await SaveSession(session);
+
+            return RedirectToAction("AddMaterialQueryNote", "Query");
+        }
+
+        return RedirectToAction("QueryMaterialTask", "Registrations", new { registrationMaterialId = registrationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckRegistrationStatus });
     }
 
     [HttpGet]
@@ -136,6 +148,22 @@ public class RegistrationStatusController(
         await SaveSession(session);
 
         return RedirectToAction("PaymentDate", "RegistrationStatus");
+    }
+
+    [HttpGet]
+    [Route(PagePath.CheckRegistrationNote)]
+    public async Task<IActionResult> AddNote()
+    {
+        var session = await GetSession();
+
+        var registrationStatusSession = GetRegistrationStatusSession(session);
+
+        session.ReprocessorExporterSession.QueryMaterialSession = mapper.Map<QueryMaterialSession>(registrationStatusSession);
+        session.ReprocessorExporterSession.QueryMaterialSession.PagePath = PagePath.FeesDue;
+
+        await SaveSession(session);
+
+        return RedirectToAction("AddMaterialQueryNote", "Query");
     }
 
     [HttpGet]
@@ -202,7 +230,23 @@ public class RegistrationStatusController(
 
         return View(GetRegistrationStatusView(nameof(PaymentReview)), viewModel);
     }
-    
+
+    [HttpGet]
+    [Route(PagePath.RegistrationApplicationStatus)]
+    public async Task<IActionResult> RegistrationApplicationStatus(Guid registrationMaterialId)
+    {
+        var session = await GetSession();
+
+        var registrationMaterial = await reprocessorExporterService.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId);
+        var viewModel = mapper.Map<PaymentReviewViewModel>(registrationMaterial);
+
+        string pagePath = GetPagePath(PagePath.RegistrationApplicationStatus, registrationMaterialId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
+
+        return View(GetRegistrationStatusView(nameof(RegistrationApplicationStatus)), viewModel);
+    }
+
     [HttpPost]
     [Route(PagePath.MarkAsDulyMade)]
     public async Task<IActionResult> MarkAsDulyMade()

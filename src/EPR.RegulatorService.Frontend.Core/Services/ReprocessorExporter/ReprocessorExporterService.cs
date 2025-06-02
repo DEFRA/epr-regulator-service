@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -23,6 +22,8 @@ public class ReprocessorExporterService(
 {
     private enum Endpoints
     {
+        AddMaterialQueryNote,
+        AddRegistrationQueryNote,
         GetRegistrationById,
         GetRegistrationMaterialById,
         GetAuthorisedMaterialsByRegistrationId,
@@ -361,6 +362,30 @@ public class ReprocessorExporterService(
         string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAccreditationAsQueried);
 
         var response = await httpClient.PostAsJsonAsync(pathTemplate, updateAccreditationTaskStatusRequest);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.AddMaterialQueryNote);
+        string path = pathTemplate.Replace("{id}", regulatorApplicationTaskStatusId.ToString());
+
+        var response = await httpClient.PostAsJsonAsync(path, addNoteRequest);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.AddRegistrationQueryNote);
+        string path = pathTemplate.Replace("{id}", regulatorRegistrationTaskStatusId.ToString());
+
+        var response = await httpClient.PostAsJsonAsync(path, addNoteRequest);
 
         response.EnsureSuccessStatusCode();
     }
