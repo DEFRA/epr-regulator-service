@@ -842,11 +842,11 @@ public class ReprocessorExporterServiceTests
     }
 
     [TestMethod]
-    public async Task GetPaymentFeesByAccreditationMaterialIdAsync_WhenResponseIsSuccess_ReturnsPaymentFees()
+    public async Task GetPaymentFeesByAccreditationIdAsync_WhenResponseIsSuccess_ReturnsPaymentFees()
     {
         // Arrange
         var accreditationMaterialId = Guid.NewGuid();
-        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationMaterialId}/paymentFees";
+        var expectedPath = $"v{ApiVersion}/accreditations/{accreditationMaterialId}/paymentFees";
 
         var expectedFees = new AccreditationMaterialPaymentFees
         {
@@ -861,7 +861,7 @@ public class ReprocessorExporterServiceTests
             Regulator = "EA"
         };
 
-        _optionsMock.Object.Value.Endpoints.Add("GetPaymentFeesByAccreditationMaterialId", "v{apiVersion}/accreditationMaterials/{id}/paymentFees");
+        _optionsMock.Object.Value.Endpoints.Add("GetPaymentFeesByAccreditationId", "v{apiVersion}/accreditations/{id}/paymentFees");
 
         var response = new HttpResponseMessage
         {
@@ -872,7 +872,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
         // Act
-        var result = await _service.GetPaymentFeesByAccreditationMaterialIdAsync(accreditationMaterialId);
+        var result = await _service.GetPaymentFeesByAccreditationIdAsync(accreditationMaterialId);
 
         // Assert
         result.Should().NotBeNull();
@@ -884,17 +884,17 @@ public class ReprocessorExporterServiceTests
     {
         // Arrange
         var accreditationMaterialId = Guid.NewGuid();
-        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationMaterialId}/paymentFees";
+        var expectedPath = $"v{ApiVersion}/accreditations/{accreditationMaterialId}/paymentFees";
 
         var response = new HttpResponseMessage(HttpStatusCode.NotFound);
 
-        _optionsMock.Object.Value.Endpoints.Add("GetPaymentFeesByAccreditationMaterialId", "v{apiVersion}/accreditationMaterials/{id}/paymentFees");
+        _optionsMock.Object.Value.Endpoints.Add("GetPaymentFeesByAccreditationId", "v{apiVersion}/accreditations/{id}/paymentFees");
 
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
         // Act & Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
-            _service.GetPaymentFeesByAccreditationMaterialIdAsync(accreditationMaterialId));
+            _service.GetPaymentFeesByAccreditationIdAsync(accreditationMaterialId));
     }
 
     [TestMethod]

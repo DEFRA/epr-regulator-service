@@ -130,7 +130,7 @@ public class AccreditationStatusControllerTests
 
         _journeySession.ReprocessorExporterSession.AccreditationStatusSession = null;
 
-        _mockReprocessorExporterService.Setup(r => r.GetPaymentFeesByAccreditationMaterialIdAsync(paymentFees.AccreditationId))
+        _mockReprocessorExporterService.Setup(r => r.GetPaymentFeesByAccreditationIdAsync(paymentFees.AccreditationId))
             .ReturnsAsync(paymentFees);
 
         _mapperMock.Setup(m => m.Map<AccreditationStatusSession>(paymentFees))
@@ -138,7 +138,6 @@ public class AccreditationStatusControllerTests
             {
                 MaterialName = "Test Material",
                 OrganisationName = "Test Organisation",
-                RegistrationMaterialId = paymentFees.RegistrationMaterialId,
                 AccreditationId = paymentFees.AccreditationId,
                 RegistrationId = _registrationId,
                 Year = 2025,
@@ -690,7 +689,6 @@ public class AccreditationStatusControllerTests
             AccreditationStatusSession = new AccreditationStatusSession
             {
                 OrganisationName = "Test Organisation",
-                RegistrationMaterialId = Guid.NewGuid(),
                 MaterialName = "Test Material",
                 RegistrationId = registrationId,
                 AccreditationId = accreditationId,
@@ -711,7 +709,6 @@ public class AccreditationStatusControllerTests
         {
             OrganisationName = "Test Organisation",
             ApplicationType = ApplicationOrganisationType.Reprocessor,
-            RegistrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             AccreditationId = accreditationId,
             MaterialName = "Plastic",
             ApplicationReferenceNumber = "123456789",

@@ -3,7 +3,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accre
 public class FeesDueViewModel : AccreditationStatusViewModelBase
 {
     public string ApplicationReferenceNumber { get; init; }
-    public Guid RegistrationMaterialId { get; init; }
     public string MaterialName { get; init; }
     public DateTime SubmittedDate { get; init; }
     public decimal FeeAmount { get; init; }

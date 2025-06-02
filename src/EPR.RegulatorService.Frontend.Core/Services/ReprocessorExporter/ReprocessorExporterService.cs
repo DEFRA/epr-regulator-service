@@ -38,7 +38,7 @@ public class ReprocessorExporterService(
         GetSiteAddressByRegistrationId,
         DownloadSamplingInspectionFile,
         GetRegistrationByIdWithAccreditations,
-        GetPaymentFeesByAccreditationMaterialId,
+        GetPaymentFeesByAccreditationId,
         SubmitAccreditationOfflinePayment,
         MarkAccreditationAsDulyMade,
         MarkAccreditationAsQueried
@@ -311,12 +311,12 @@ public class ReprocessorExporterService(
         return await GetEntityFromResponse<Registration>(response);
     }
 
-    public async Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationId)
+    public async Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationIdAsync(Guid id)
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = GetVersionedEndpoint(Endpoints.GetPaymentFeesByAccreditationMaterialId);
-        string path = pathTemplate.Replace("{id}", accreditationId.ToString());
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetPaymentFeesByAccreditationId);
+        string path = pathTemplate.Replace("{id}", id.ToString());
 
         var response = await httpClient.GetAsync(path);
 

@@ -523,16 +523,15 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         };
     }
 
-    public Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationMaterialIdAsync(Guid accreditationId)
+    public Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationIdAsync(Guid id)
     {
         var mockPaymentFees = new AccreditationMaterialPaymentFees
         {
-            AccreditationId = accreditationId,
+            AccreditationId = id,
             OrganisationName = "Mock Green Ltd",
             ApplicationType = ApplicationOrganisationType.Reprocessor,
             SiteAddress = "23 Ruby Street, London, E12 3SE",
             ApplicationReferenceNumber = "MOCK-REF-2025",
-            RegistrationMaterialId = Guid.Parse("839544fd-9b08-4823-9277-5615072a6803"),
             MaterialName = "Plastic",
             SubmittedDate = new DateTime(2025, 5, 15),
             FeeAmount = 2921.00m,

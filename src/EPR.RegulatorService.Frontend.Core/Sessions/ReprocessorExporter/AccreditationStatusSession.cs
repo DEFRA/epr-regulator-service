@@ -9,7 +9,6 @@ public class AccreditationStatusSession
     public required string OrganisationName { get; init; }
     public ApplicationOrganisationType ApplicationType { get; init; }
     public string? SiteAddress { get; init; }
-    public required Guid RegistrationMaterialId { get; init; }
     public required string MaterialName { get; init; }
     public decimal FeeAmount { get; init; }
     public string ApplicationReferenceNumber { get; init; }

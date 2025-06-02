@@ -29,7 +29,6 @@ public class AccreditationStatusMappingProfileTests
         // Arrange
         var source = new AccreditationMaterialPaymentFees
         {
-            RegistrationMaterialId = Guid.Parse("A1B2C3D4-E5F6-7890-1234-56789ABCDEF0"),
             ApplicationReferenceNumber = "REF-001",
             FeeAmount = 150.50m,
             MaterialName = "Glass",
@@ -51,7 +50,6 @@ public class AccreditationStatusMappingProfileTests
         result.OrganisationName.Should().Be(source.OrganisationName);
         result.SiteAddress.Should().Be(source.SiteAddress);
         result.SubmittedDate.Should().Be(source.SubmittedDate);
-        result.RegistrationMaterialId.Should().Be(source.RegistrationMaterialId);
     }
 
 
@@ -166,7 +164,6 @@ public class AccreditationStatusMappingProfileTests
         return new AccreditationStatusSession
         {
             RegistrationId = Guid.NewGuid(),
-            RegistrationMaterialId = Guid.NewGuid(),
             ApplicationReferenceNumber = "REF-001",
             FeeAmount = 150.50m,
             FullPaymentMade = true,
