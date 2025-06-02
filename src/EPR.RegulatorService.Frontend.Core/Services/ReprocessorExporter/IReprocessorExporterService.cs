@@ -22,4 +22,5 @@ public interface IReprocessorExporterService
     Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request);
 
     Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null);
+    Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest);
 }

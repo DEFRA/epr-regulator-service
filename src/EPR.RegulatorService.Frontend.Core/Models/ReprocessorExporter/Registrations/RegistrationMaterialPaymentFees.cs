@@ -18,4 +18,6 @@ public class RegistrationMaterialPaymentFees
     public PaymentMethodType? PaymentMethod { get; init; }
     public DateTime? DulyMadeDate { get; init; }
     public DateTime? DeterminationDate { get; init; }
+    public Guid? RegulatorApplicationTaskStatusId { get; init; }
+    public RegulatorTaskStatus TaskStatus { get; init; }
 }

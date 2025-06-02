@@ -80,6 +80,8 @@ public static class PagePath
     public const string MarkAsDulyMade = "duly-made";
     public const string ReprocessorExporterAccreditations = "accreditations";
     public const string ManageAccreditations = "manage-accreditations";
+    public const string CheckRegistrationNote = "check-registration-note";
+    public const string AddMaterialQueryNote = "add-material-note";
     public const string RegistrationApplicationStatus = "registration-application-status";
 
     // Complete tasks paths
