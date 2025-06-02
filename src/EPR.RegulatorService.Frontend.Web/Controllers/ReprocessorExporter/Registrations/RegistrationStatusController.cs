@@ -219,7 +219,6 @@ public class RegistrationStatusController(
         return View(GetRegistrationStatusView(nameof(RegistrationApplicationStatus)), viewModel);
     }
 
-
     [HttpPost]
     [Route(PagePath.MarkAsDulyMade)]
     public async Task<IActionResult> MarkAsDulyMade()
