@@ -65,7 +65,9 @@
                                 Determination date
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                @Model.DeterminationDate.ToDisplayDate()
+                            @(Model.DeterminationWeeks > 0
+                                ? $"{Model.DeterminationDate.ToDisplayDate()} ({Model.DeterminationWeeks} weeks)"
+                                : Model.DeterminationDate.ToDisplayDate())
                             </dd>
                             <dd class="govuk-summary-list__actions">
                             </dd>

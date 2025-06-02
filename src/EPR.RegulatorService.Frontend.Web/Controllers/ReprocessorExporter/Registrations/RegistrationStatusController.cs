@@ -1,5 +1,5 @@
 using AutoMapper;
-
+using System;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -240,6 +240,9 @@ public class RegistrationStatusController(
         var registrationMaterial = await reprocessorExporterService.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId);
         var viewModel = mapper.Map<PaymentReviewViewModel>(registrationMaterial);
 
+        viewModel.DeterminationWeeks = registrationMaterial.DeterminationDate.HasValue && registrationMaterial.DulyMadeDate.HasValue ?
+            CalculateDeterminationWeeks(registrationMaterial.DeterminationDate.Value, registrationMaterial.DulyMadeDate.Value) : 0;
+
         string pagePath = GetPagePath(PagePath.RegistrationApplicationStatus, registrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
@@ -262,6 +265,13 @@ public class RegistrationStatusController(
         await reprocessorExporterService.MarkAsDulyMadeAsync(registrationStatusSession.RegistrationMaterialId, dulyMadeRequest);
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationStatusSession.RegistrationId });
+    }
+
+    private static int CalculateDeterminationWeeks(DateTime determinationDate, DateTime dulyMadeDate)
+    {
+        double totalWeeks = (determinationDate.Date - dulyMadeDate.Date).TotalDays / 7;
+        int roundedWeeks = (int)Math.Round(totalWeeks, MidpointRounding.AwayFromZero);
+        return roundedWeeks;
     }
 
     private MarkAsDulyMadeRequest CreateDulyMadeRequest(RegistrationStatusSession registrationStatusSession)
