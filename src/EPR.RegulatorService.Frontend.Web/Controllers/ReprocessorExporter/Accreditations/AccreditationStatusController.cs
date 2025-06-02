@@ -216,7 +216,7 @@ public class AccreditationStatusController(
         await reprocessorExporterService.SubmitAccreditationOfflinePaymentAsync(offlinePaymentRequest);
 
         var dulyMadeRequest = CreateDulyMadeRequest(accreditationStatusSession);
-        await reprocessorExporterService.MarkAccreditationAsDulyMadeAsync(accreditationStatusSession.RegistrationMaterialId, dulyMadeRequest);
+        await reprocessorExporterService.MarkAccreditationAsDulyMadeAsync(accreditationStatusSession.AccreditationId, dulyMadeRequest);
 
         return RedirectToAction("Index", "ManageAccreditations", new { id = session.ReprocessorExporterSession.RegistrationId, year = accreditationStatusSession.Year });
     }
