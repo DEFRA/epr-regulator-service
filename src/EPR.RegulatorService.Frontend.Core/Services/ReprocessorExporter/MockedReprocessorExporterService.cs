@@ -117,7 +117,11 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             FeeAmount = 2921,
             ApplicationReferenceNumber = "ABC123456",
             SubmittedDate = DateTime.Now.AddDays(-7),
-            Regulator = "GB-ENG"
+            Regulator = "GB-ENG",
+            PaymentMethod = PaymentMethodType.BankTransfer,
+            PaymentDate = DateTime.Now.AddDays(-7),
+            DulyMadeDate = DateTime.Now.AddDays(-5),
+            DeterminationDate = DateTime.Now.AddDays(+16)
         });
     }
 

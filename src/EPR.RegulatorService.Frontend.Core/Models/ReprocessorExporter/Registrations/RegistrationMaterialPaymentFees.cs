@@ -14,4 +14,8 @@ public class RegistrationMaterialPaymentFees
     public DateTime SubmittedDate { get; init; }
     public decimal FeeAmount { get; init; }
     public required string Regulator { get; init; }
+    public DateTime? PaymentDate { get; init; }
+    public PaymentMethodType? PaymentMethod { get; init; }
+    public DateTime? DulyMadeDate { get; init; }
+    public DateTime? DeterminationDate { get; init; }
 }
