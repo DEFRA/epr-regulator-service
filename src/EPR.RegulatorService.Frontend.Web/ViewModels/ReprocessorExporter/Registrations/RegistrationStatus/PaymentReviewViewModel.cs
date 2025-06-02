@@ -4,6 +4,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
 
 public class PaymentReviewViewModel
 {
+    public Guid RegistrationId { get; init; }
     public required string MaterialName { get; init; }
     public DateTime SubmittedDate { get; init; }
     public PaymentMethodType? PaymentMethod { get; init; }
