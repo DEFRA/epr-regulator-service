@@ -11,5 +11,5 @@ public class PaymentReviewViewModel
     public DateTime? PaymentDate { get; init; }
     public DateTime DeterminationDate { get; set; }
     public int DeterminationWeeks { get; set; }
-    public DateTime DulyMadeDate { get; init; }
+    public DateTime? DulyMadeDate { get; init; }
 }
