@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using static StackExchange.Redis.Role;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
@@ -504,7 +503,6 @@ public class RegistrationStatusControllerTests
             viewResult.ViewName.Should().EndWith("PaymentReview.cshtml");
         }
     }
-
 
     [TestMethod]
     public async Task RegistrationApplicationStatus_WhenCalledAfterDulyMade_ShouldReturnApplicationStatusView()
