@@ -504,7 +504,6 @@ public class RegistrationStatusControllerTests
         }
     }
 
-
     [TestMethod]
     public async Task RegistrationApplicationStatus_WhenCalledAfterDulyMade_ShouldReturnApplicationStatusView()
     {
