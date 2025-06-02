@@ -83,6 +83,7 @@ public static class PagePath
     public const string CheckRegistrationNote = "check-registration-note";
     public const string AddRegistrationQueryNote = "add-registration-note";
     public const string AddMaterialQueryNote = "add-material-note";
+    public const string RegistrationApplicationStatus = "registration-application-status";
 
     // Complete tasks paths
     public const string CompleteQueryRegistrationTask = "query-registration-task-complete";

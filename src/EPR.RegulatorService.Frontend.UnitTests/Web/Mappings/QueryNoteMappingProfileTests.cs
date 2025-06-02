@@ -72,3 +72,5 @@ public class QueryNoteMappingProfileTests
         result.Note.Should().BeNull();
     }
 }
+
+

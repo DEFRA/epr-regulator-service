@@ -24,6 +24,14 @@ public class QueryControllerTests : RegistrationControllerTestBase
         CreateCommonMocks();
         CreateSessionMock();
         
+        _journeySession.ReprocessorExporterSession.QueryMaterialSession = new QueryMaterialSession
+        {
+            OrganisationName = "TestOrg",
+            RegistrationMaterialId = Guid.NewGuid(),
+            RegulatorApplicationTaskStatusId = Guid.NewGuid(),
+            PagePath = PagePath.FeesDue
+        };
+
         var configurationMock = CreateConfigurationMock();
         
         _queryController = new QueryController(

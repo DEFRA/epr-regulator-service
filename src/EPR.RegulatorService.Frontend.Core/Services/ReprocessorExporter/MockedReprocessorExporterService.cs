@@ -122,6 +122,10 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             ApplicationReferenceNumber = "ABC123456",
             SubmittedDate = DateTime.Now.AddDays(-7),
             Regulator = "GB-ENG",
+            PaymentMethod = PaymentMethodType.BankTransfer,
+            PaymentDate = DateTime.Now.AddDays(-7),
+            DulyMadeDate = DateTime.Now.AddDays(-5),
+            DeterminationDate = DateTime.Now.AddDays(+16),
             TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted,
             RegulatorApplicationTaskStatusId = task?.Id
         });
@@ -635,6 +639,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 $"No accreditations found for any materials in year {year}.");
         }
     }
+
     public Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
 
     public Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
