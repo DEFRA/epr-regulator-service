@@ -93,7 +93,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials)
             .First(rm => rm.Id == registrationMaterialId);
-         
+
         var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
 
         return Task.FromResult(new RegistrationMaterialPaymentFees
@@ -120,7 +120,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
 
         registrationMaterial.DeterminationDate = dulyMadeRequest.DeterminationDate;
-        
+
         var task = registrationMaterial.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus);
         Guid? taskId;
 
@@ -174,7 +174,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         return Task.CompletedTask;
     }
-    
+
     public Task UpdateRegulatorRegistrationTaskStatusAsync(UpdateRegistrationTaskStatusRequest updateRegistrationTaskStatusRequest)
     {
         var registration = _registrations.Single(r => r.Id == updateRegistrationTaskStatusRequest.RegistrationId);
@@ -369,4 +369,192 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
 
+    public Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null)
+    {
+        var registration = GetMockedAccreditationRegistration(id);
+
+        if (registration == null)
+        {
+            throw new KeyNotFoundException($"No mock registration found for id {id}");
+        }
+
+        if (year.HasValue)
+        {
+            ApplySingleYearAccreditationFilter(registration, year.Value);
+        }
+
+        return Task.FromResult(registration);
+    }
+
+    private static Registration GetMockedAccreditationRegistration(Guid id)
+    {
+        var registrations = GetAllMockedRegistrations();
+        return registrations.FirstOrDefault(r => r.Id == id);
+    }
+
+    private static List<Registration> GetAllMockedRegistrations()
+    {
+        return new List<Registration>
+        {
+            // Happy path: Granted + one accreditation (Granted)
+            CreateMockRegistration(
+                "839544fd-9b08-4823-9277-5615072a6803", "Mock Org 1", "Plastic",
+                "49c5d1ec-8934-47d6-8cd7-4f465b7c0ad6", ApplicationStatus.Granted,
+                new[] { ("dda7cd75-5fd3-44cb-accc-e4e9323b2af3", "Granted", 2025) }),
+
+            // Material Withdrawn (should not show)
+            CreateMockRegistration(
+                "11dec0d4-b0db-44a6-84f3-3de06e46262c", "Mock Org 2", "Steel",
+                "9f253f8b-60e5-44f8-953a-9b35300d1874", ApplicationStatus.Withdrawn,
+                new[] { ("cea32558-d0ec-4efb-bb0d-7af2e425dd0c", "Granted", 2025) }),
+
+            // Accreditation ReadyToSubmit (should not show)
+            CreateMockRegistration(
+                "12345678-aaaa-bbbb-cccc-111111111111", "Mock Org 3", "Wood",
+                "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", ApplicationStatus.Granted,
+                new[] { ("eeeeaaaa-1111-2222-3333-444444444444", "ReadyToSubmit", 2025) }),
+
+            // No accreditation for that year (e.g. only 2024)
+            CreateMockRegistration(
+                "23456789-bbbb-cccc-dddd-222222222222", "Mock Org 4", "Glass",
+                "bbbbbbbb-cccc-dddd-eeee-ffffffffffff", ApplicationStatus.Granted,
+                new[] { ("ffffbbbb-5555-6666-7777-888888888888", "Granted", 2024) }),
+
+            // Throws: More than one accreditation for same year
+            CreateMockRegistration(
+                "34567890-cccc-dddd-eeee-333333333333", "Mock Org 5", "Textiles",
+                "cccccccc-dddd-eeee-ffff-000000000000", ApplicationStatus.Granted,
+                new[]
+                {
+                    ("11112222-aaaa-bbbb-cccc-999999999999", "Granted", 2025),
+                    ("22223333-bbbb-cccc-dddd-aaaaaaaaaaaa", "Granted", 2025)
+                }),
+
+            // Valid material with two years of accreditations
+            CreateMockRegistration(
+                "45678901-dddd-eeee-ffff-444444444444", "Mock Org 6", "Paper",
+                "dddddddd-eeee-ffff-1111-222222222222", ApplicationStatus.Granted,
+                new[]
+                {
+                    ("99990000-aaaa-bbbb-cccc-dddddddddddd", "Granted", 2025),
+                    ("88887777-bbbb-cccc-dddd-eeeeeeeeeeee", "Granted", 2026)
+                })
+        };
+    }
+
+    private static Registration CreateMockRegistration(
+    string registrationId,
+    string orgName,
+    string material,
+    string materialId,
+    ApplicationStatus materialStatus,
+    (string id, string status, int year)[] accreditations)
+    {
+        return new Registration
+        {
+            Id = Guid.Parse(registrationId),
+            OrganisationName = orgName,
+            SiteAddress = "23 Ruby St, London",
+            OrganisationType = ApplicationOrganisationType.Reprocessor,
+            Regulator = "EA",
+            Materials = new List<RegistrationMaterialSummary>
+        {
+            new RegistrationMaterialSummary
+            {
+                Id = Guid.Parse(materialId),
+                MaterialName = material,
+                Status = materialStatus,
+                Accreditations = accreditations.Select(x =>
+                    CreateAccreditation(
+                        guid: x.id,
+                        reference: $"MOCK-{x.year}-{material.ToUpper()}",
+                        status: x.status,
+                        date: new DateTime(x.year, 6, 1),
+                        year: x.year)).ToList()
+            }
+        },
+            Tasks = new List<RegistrationTask>
+        {
+            new RegistrationTask
+            {
+                Id = Guid.NewGuid(),
+                TaskName = RegulatorTaskType.AssignOfficer,
+                Status = RegulatorTaskStatus.Completed
+            }
+        }
+        };
+    }
+
+    private static Accreditation CreateAccreditation(string guid, string reference, string status, DateTime date, int year)
+    {
+        return new Accreditation
+        {
+            Id = Guid.Parse(guid),
+            ApplicationReference = reference,
+            Status = status,
+            DeterminationDate = date,
+            AccreditationYear = year,
+            Tasks = new List<AccreditationTask>
+        {
+            new AccreditationTask
+            {
+                Id = Guid.NewGuid(),
+                TaskId = 1,
+                TaskName = "PRN tonnage and authority to issue PRNs",
+                Status = "Not Started Yet",
+                Year = year
+            },
+            new AccreditationTask
+            {
+                Id = Guid.NewGuid(),
+                TaskId = 2,
+                TaskName = "Business plan",
+                Status = "Not Started Yet",
+                Year = year
+            },
+            new AccreditationTask
+            {
+                Id = Guid.NewGuid(),
+                TaskId = 3,
+                TaskName = "Sampling and inspection plan",
+                Status = "Approved",
+                Year = year
+            }
+        }
+        };
+    }
+
+    private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
+    {
+        bool hasAtLeastOneAccreditation = false;
+
+        foreach (var material in registration.Materials)
+        {
+            var matchingAccreditations = material.Accreditations?
+                .Where(a => a.AccreditationYear == year)
+                .ToList() ?? new List<Accreditation>();
+
+            if (matchingAccreditations.Count > 1)
+            {
+                throw new InvalidOperationException(
+                    $"More than one accreditation found for MaterialId {material.Id} in year {year}.");
+            }
+
+            if (matchingAccreditations.Count == 1)
+            {
+                hasAtLeastOneAccreditation = true;
+                material.Accreditations = matchingAccreditations;
+            }
+            else
+            {
+                material.Accreditations = new List<Accreditation>();
+            }
+        }
+
+        if (!hasAtLeastOneAccreditation)
+        {
+            throw new InvalidOperationException(
+                $"No accreditations found for any materials in year {year}.");
+        }
+    }
 }

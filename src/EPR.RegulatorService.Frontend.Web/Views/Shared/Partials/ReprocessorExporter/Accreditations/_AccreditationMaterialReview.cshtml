@@ -1,0 +1,74 @@
+@using EPR.RegulatorService.Frontend.Web.Helpers
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditedMaterialViewModel
+
+@if (AccreditationDisplayHelper.ShouldDisplayMaterial(Model.RegistrationStatusRaw, Model.Accreditation))
+{
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">
+        Review @(Model.MaterialName) accreditation
+    </h2>
+
+    <p class="govuk-body">
+        Year: @Model.Accreditation!.AccreditationYear<br />
+        Submitted by: Anna Faris (Site administrator)<br />
+        Contact person: Freda Pinto (Site manager)<br />
+        Telephone number and email: 02087651236
+        <a href="mailto:freda.pinto@greenltd.com" class="govuk-link govuk-link--no-visited-state">freda.pinto@greenltd.com</a>
+    </p>
+
+    <p class="govuk-body">
+        <strong>Determination date:</strong>
+        @if (Model.Accreditation.DeterminationDate != null)
+        {
+            @Model.Accreditation.DeterminationDate.Value.ToString("d MMM yyyy")
+        }
+        else
+        {
+            <span>Not set yet</span>
+        }
+    </p>
+
+    <ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
+        @if (Model.Accreditation.PRNTonnageTask != null)
+        {
+            <li class="app-task-list__item">
+                <span class="app-task-list__task-name">
+                    <a href="#">PRN tonnage and authority to issue PRNs</a>
+                </span>
+                <strong class="govuk-tag @Model.Accreditation.PRNTonnageTask.StatusCssClass app-task-list__tag">
+                    @Model.Accreditation.PRNTonnageTask.StatusText
+                </strong>
+            </li>
+        }
+
+        @if (Model.Accreditation.BusinessPlanTask != null)
+        {
+            <li class="app-task-list__item">
+                <span class="app-task-list__task-name">
+                    <a href="#">Business plan</a>
+                </span>
+                <strong class="govuk-tag @Model.Accreditation.BusinessPlanTask.StatusCssClass app-task-list__tag">
+                    @Model.Accreditation.BusinessPlanTask.StatusText
+                </strong>
+            </li>
+        }
+
+        @if (Model.Accreditation.SamplingAndInspectionPlanTask != null)
+        {
+            <li class="app-task-list__item">
+                <span class="app-task-list__task-name">
+                    <a href="#">Sampling and inspection plan</a>
+                </span>
+                <strong class="govuk-tag @Model.Accreditation.SamplingAndInspectionPlanTask.StatusCssClass app-task-list__tag">
+                    @Model.Accreditation.SamplingAndInspectionPlanTask.StatusText
+                </strong>
+            </li>
+        }
+
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="#">Update accreditation status</a>
+            </span>
+            <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started yet</strong>
+        </li>
+    </ul>
+}
