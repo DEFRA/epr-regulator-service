@@ -4,6 +4,8 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
 
 public class MaterialWasteLicencesViewModel
 {
+    public Guid RegistrationId { get; set; }
+
     public Guid RegistrationMaterialId { get; set; }
 
     public required string MaterialName { get; set; }

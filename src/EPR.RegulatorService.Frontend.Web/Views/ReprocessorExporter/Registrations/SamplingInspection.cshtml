@@ -48,9 +48,22 @@
                                 Mark as reviewed
                             </button>
 
-                            <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model.RegistrationMaterialId, taskName = RegulatorTaskType.SamplingAndInspectionPlan })">
+                            @if (Model.RegistrationMaterialSamplingPlan.TaskStatus == RegulatorTaskStatus.Queried)
+                            {
+                                <a href="@Url.Action("AddMaterialQueryNote", "Query")" class="govuk-button govuk-button--secondary">
+                                  Add note
+                                </a>
+
+                                <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationMaterialSamplingPlan.RegistrationId })" class="govuk-button govuk-button--secondary">
+                                  Back to application
+                                </a>
+                            }
+                            else
+                            {
+                              <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model.RegistrationMaterialId, taskName = RegulatorTaskType.SamplingAndInspectionPlan })">
                                 Query the sampling and inspection plan
-                            </a>
+                              </a>
+                            }
                         </div>
                     }
                 </form>

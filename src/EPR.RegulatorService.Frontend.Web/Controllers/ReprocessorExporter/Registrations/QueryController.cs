@@ -24,35 +24,80 @@ public class QueryController (
     IConfiguration configuration)
     : ReprocessorExporterBaseController(sessionManager, configuration)
 {
+    private const string RegistrationNoteFormAction = "AddRegistrationQueryNote";
+    private const string MaterialNoteFormAction = "AddMaterialQueryNote";
+    private const string AddQueryNoteView = "~/Views/ReprocessorExporter/Registrations/Query/AddQueryNote.cshtml";
+
+    [HttpGet]
+    [Route(PagePath.AddRegistrationQueryNote)]
+
+    public async Task<IActionResult> AddRegistrationQueryNote()
+    {
+        var session = await GetSession();
+        var queryRegistrationSession = GetQueryRegistrationSession(session);
+
+        await SaveSessionAndJourney(session, PagePath.AddRegistrationQueryNote);
+        SetBackLinkInfos(session, PagePath.AddRegistrationQueryNote);
+
+        var viewModel = mapper.Map<AddQueryNoteViewModel>(queryRegistrationSession);
+        viewModel.FormAction = RegistrationNoteFormAction;
+
+        return View(AddQueryNoteView, viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePath.AddRegistrationQueryNote)]
+
+    public async Task<IActionResult> AddRegistrationQueryNote(AddQueryNoteViewModel viewModel)
+    {
+        var session = await GetSession();
+        var queryRegistrationSession = GetQueryRegistrationSession(session);
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLinkInfos(session, PagePath.AddMaterialQueryNote);
+            mapper.Map(queryRegistrationSession, viewModel);
+            viewModel.FormAction = RegistrationNoteFormAction;
+            return View(AddQueryNoteView, viewModel);
+        }
+
+        await reprocessorExporterService.AddRegistrationQueryNoteAsync(queryRegistrationSession.RegulatorRegistrationTaskStatusId, new AddNoteRequest { Note = viewModel.Note! });
+
+        return RedirectToAction(queryRegistrationSession.PagePath, PagePath.ReprocessorExporterRegistrations, new { registrationId = queryRegistrationSession.RegistrationId });
+    }
+
     [HttpGet]
     [Route(PagePath.AddMaterialQueryNote)]
 
     public async Task<IActionResult> AddMaterialQueryNote()
     {
         var session = await GetSession();
-        var queryMaterialSession = GetQueryMaterialSessionSession(session);
+        var queryMaterialSession = GetQueryMaterialSession(session);
 
         await SaveSessionAndJourney(session, PagePath.AddMaterialQueryNote);
         SetBackLinkInfos(session, PagePath.AddMaterialQueryNote);
         
-        var viewModel = mapper.Map<AddMaterialQueryNoteViewModel>(queryMaterialSession);
+        var viewModel = mapper.Map<AddQueryNoteViewModel>(queryMaterialSession);
+        viewModel.FormAction = MaterialNoteFormAction;
         
-        return View(GetQueryView(nameof(AddMaterialQueryNote)), viewModel);
+        return View(AddQueryNoteView, viewModel);
     }
 
     [HttpPost]
     [Route(PagePath.AddMaterialQueryNote)]
 
-    public async Task<IActionResult> AddMaterialQueryNote(AddMaterialQueryNoteViewModel viewModel)
+    public async Task<IActionResult> AddMaterialQueryNote(AddQueryNoteViewModel viewModel)
     {
         var session = await GetSession();
-        var queryMaterialSession = GetQueryMaterialSessionSession(session);
+        var queryMaterialSession = GetQueryMaterialSession(session);
 
         if (!ModelState.IsValid)
         {
             SetBackLinkInfos(session, PagePath.AddMaterialQueryNote);
             mapper.Map(queryMaterialSession, viewModel);
-            return View(GetQueryView(nameof(AddMaterialQueryNote)), viewModel);
+            viewModel.FormAction = MaterialNoteFormAction;
+
+            return View(AddQueryNoteView, viewModel);
         }
 
         await reprocessorExporterService.AddMaterialQueryNoteAsync(queryMaterialSession.RegulatorApplicationTaskStatusId, new AddNoteRequest {Note = viewModel.Note! });
@@ -60,7 +105,17 @@ public class QueryController (
         return RedirectToAction(queryMaterialSession.PagePath, PagePath.ReprocessorExporterRegistrations, new { registrationMaterialId = queryMaterialSession.RegistrationMaterialId});
     }
 
-    private static QueryMaterialSession GetQueryMaterialSessionSession(JourneySession session)
+    private static QueryRegistrationSession GetQueryRegistrationSession(JourneySession session)
+    {
+        if (session.ReprocessorExporterSession.QueryRegistrationSession == null)
+        {
+            throw new SessionException("QueryRegistrationSession does not exist");
+        }
+
+        return session.ReprocessorExporterSession.QueryRegistrationSession;
+    }
+
+    private static QueryMaterialSession GetQueryMaterialSession(JourneySession session)
     {
         if (session.ReprocessorExporterSession.QueryMaterialSession == null)
         {
@@ -69,6 +124,4 @@ public class QueryController (
 
         return session.ReprocessorExporterSession.QueryMaterialSession;
     }
-
-    protected static string GetQueryView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/Query/{viewName}.cshtml";
 }

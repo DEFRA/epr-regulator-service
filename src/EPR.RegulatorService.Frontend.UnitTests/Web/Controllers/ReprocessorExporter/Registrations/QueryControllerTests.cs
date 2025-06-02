@@ -27,7 +27,6 @@ public class QueryControllerTests : RegistrationControllerTestBase
         _journeySession.ReprocessorExporterSession.QueryMaterialSession = new QueryMaterialSession
         {
             OrganisationName = "TestOrg",
-            ApplicationType = ApplicationOrganisationType.Reprocessor,
             RegistrationMaterialId = Guid.NewGuid(),
             RegulatorApplicationTaskStatusId = Guid.NewGuid(),
             PagePath = PagePath.FeesDue
@@ -70,10 +69,12 @@ public class QueryControllerTests : RegistrationControllerTestBase
     public async Task AddMaterialQueryNote_WhenCalledWithValidSession_ShouldReturnViewResult()
     {
         // Arrange
-        var expectedViewModel = new AddMaterialQueryNoteViewModel();
+        var expectedViewModel = new AddQueryNoteViewModel();
+
+        _journeySession.ReprocessorExporterSession.QueryMaterialSession = CreateQueryMaterialSession();
 
         _mapperMock.Setup(m =>
-                m.Map<AddMaterialQueryNoteViewModel>(_journeySession.ReprocessorExporterSession.QueryMaterialSession))
+                m.Map<AddQueryNoteViewModel>(_journeySession.ReprocessorExporterSession.QueryMaterialSession))
             .Returns(expectedViewModel);
 
         // Act
@@ -86,7 +87,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
 
             var viewResult = (ViewResult)response;
             viewResult.Model.Should().Be(expectedViewModel);
-            viewResult.ViewName.Should().EndWith("AddMaterialQueryNote.cshtml");
+            viewResult.ViewName.Should().EndWith("AddQueryNote.cshtml");
         }
     }
 
@@ -94,13 +95,14 @@ public class QueryControllerTests : RegistrationControllerTestBase
     public async Task AddMaterialQueryNote_WhenCalledWithViewModelAndValidModelState_ShouldCallApi()
     {
         // Arrange
+        _journeySession.ReprocessorExporterSession.QueryMaterialSession = CreateQueryMaterialSession();
+
         var expectedTaskId = _journeySession.ReprocessorExporterSession.QueryMaterialSession!.RegulatorApplicationTaskStatusId;
 
-        var viewModel = new AddMaterialQueryNoteViewModel
+        var viewModel = new AddQueryNoteViewModel
         {
             Note = "Test note",
-            OrganisationName = "TestOrg",
-            ApplicationType = ApplicationOrganisationType.Reprocessor
+            OrganisationName = "TestOrg"
         };
         
         // Act
@@ -118,13 +120,14 @@ public class QueryControllerTests : RegistrationControllerTestBase
     public async Task AddMaterialQueryNote_WhenCalledWithViewModelAndValidModelState_ShouldRedirectToReturnPage()
     {
         // Arrange
+        _journeySession.ReprocessorExporterSession.QueryMaterialSession = CreateQueryMaterialSession();
+
         string expectedReturnPath = _journeySession.ReprocessorExporterSession.QueryMaterialSession!.PagePath;
 
-        var viewModel = new AddMaterialQueryNoteViewModel
+        var viewModel = new AddQueryNoteViewModel
         {
             Note = "Test note",
-            OrganisationName = "TestOrg",
-            ApplicationType = ApplicationOrganisationType.Reprocessor
+            OrganisationName = "TestOrg"
         };
 
         // Act
@@ -146,12 +149,13 @@ public class QueryControllerTests : RegistrationControllerTestBase
     public async Task AddMaterialQueryNote_WhenCalledWithViewModelAndInvalidModelState_ShouldRedisplayView()
     {
         // Arrange
-        var viewModel = new AddMaterialQueryNoteViewModel
+        var viewModel = new AddQueryNoteViewModel
         {
             Note = "Test note",
-            OrganisationName = "TestOrg",
-            ApplicationType = ApplicationOrganisationType.Reprocessor
+            OrganisationName = "TestOrg"
         };
+
+        _journeySession.ReprocessorExporterSession.QueryMaterialSession = CreateQueryMaterialSession();
 
         _queryController.ModelState.AddModelError("Test", "Error");
 
@@ -164,7 +168,154 @@ public class QueryControllerTests : RegistrationControllerTestBase
             response.Should().BeOfType<ViewResult>();
 
             var viewResult = (ViewResult)response;
-            viewResult.ViewName.Should().EndWith("AddMaterialQueryNote.cshtml");
+            viewResult.ViewName.Should().EndWith("AddQueryNote.cshtml");
         }
     }
+
+    [TestMethod]
+    public async Task AddRegistrationQueryNote_WhenSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!);
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _queryController.AddRegistrationQueryNote());
+    }
+
+    [TestMethod]
+    public async Task AddRegistrationQueryNote_WhenQueryRegistrationSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        _journeySession.ReprocessorExporterSession.QueryRegistrationSession = null;
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _queryController.AddRegistrationQueryNote());
+    }
+
+    [TestMethod]
+    public async Task AddRegistrationQueryNote_WhenCalledWithValidSession_ShouldReturnViewResult()
+    {
+        // Arrange
+        var expectedViewModel = new AddQueryNoteViewModel();
+
+        _journeySession.ReprocessorExporterSession.QueryRegistrationSession = CreateQueryRegistrationSession();
+
+        _mapperMock.Setup(m =>
+                m.Map<AddQueryNoteViewModel>(_journeySession.ReprocessorExporterSession.QueryRegistrationSession))
+            .Returns(expectedViewModel);
+
+        // Act
+        var response = await _queryController.AddRegistrationQueryNote();
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
+
+            var viewResult = (ViewResult)response;
+            viewResult.Model.Should().Be(expectedViewModel);
+            viewResult.ViewName.Should().EndWith("AddQueryNote.cshtml");
+        }
+    }
+
+    [TestMethod]
+    public async Task AddRegistrationQueryNote_WhenCalledWithViewModelAndValidModelState_ShouldCallApi()
+    {
+        // Arrange
+        _journeySession.ReprocessorExporterSession.QueryRegistrationSession = CreateQueryRegistrationSession();
+
+        var expectedTaskId = _journeySession.ReprocessorExporterSession.QueryRegistrationSession!.RegulatorRegistrationTaskStatusId;
+
+        var viewModel = new AddQueryNoteViewModel
+        {
+            Note = "Test note",
+            OrganisationName = "TestOrg"
+        };
+
+        // Act
+        await _queryController.AddRegistrationQueryNote(viewModel);
+
+        // Assert
+        expectedTaskId.Should().NotBeEmpty();
+        _reprocessorExporterServiceMock.Verify(m => m.AddRegistrationQueryNoteAsync(
+                expectedTaskId,
+                It.Is<AddNoteRequest>(r => r.Note == viewModel.Note)),
+                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task AddRegistrationQueryNote_WhenCalledWithViewModelAndValidModelState_ShouldRedirectToReturnPage()
+    {
+        // Arrange
+        _journeySession.ReprocessorExporterSession.QueryRegistrationSession = CreateQueryRegistrationSession();
+
+        string expectedReturnPath = _journeySession.ReprocessorExporterSession.QueryRegistrationSession!.PagePath;
+
+        var viewModel = new AddQueryNoteViewModel
+        {
+            Note = "Test note",
+            OrganisationName = "TestOrg"
+        };
+
+        // Act
+        var response = await _queryController.AddRegistrationQueryNote(viewModel);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<RedirectToActionResult>();
+
+            var redirectResult = (RedirectToActionResult)response;
+            expectedReturnPath.Should().NotBeNullOrEmpty();
+            redirectResult.ActionName.Should().Be(expectedReturnPath);
+            redirectResult.ControllerName.Should().Be(PagePath.ReprocessorExporterRegistrations);
+        }
+    }
+
+    [TestMethod]
+    public async Task AddRegistrationQueryNote_WhenCalledWithViewModelAndInvalidModelState_ShouldRedisplayView()
+    {
+        // Arrange
+        var viewModel = new AddQueryNoteViewModel
+        {
+            Note = "Test note",
+            OrganisationName = "TestOrg"
+        };
+
+        _journeySession.ReprocessorExporterSession.QueryRegistrationSession = CreateQueryRegistrationSession();
+
+        _queryController.ModelState.AddModelError("Test", "Error");
+
+        // Act
+        var response = await _queryController.AddRegistrationQueryNote(viewModel);
+
+        // Assert
+        using (new AssertionScope())
+        {
+            response.Should().BeOfType<ViewResult>();
+
+            var viewResult = (ViewResult)response;
+            viewResult.ViewName.Should().EndWith("AddQueryNote.cshtml");
+        }
+    }
+
+    private QueryMaterialSession CreateQueryMaterialSession() =>
+        new()
+        {
+            OrganisationName = "TestOrg",
+            RegistrationMaterialId = Guid.NewGuid(),
+            RegulatorApplicationTaskStatusId = Guid.NewGuid(),
+            PagePath = PagePath.FeesDue
+        };
+
+    private QueryRegistrationSession CreateQueryRegistrationSession() =>
+        new()
+        {
+            OrganisationName = "TestOrg",
+            RegistrationId = Guid.NewGuid(),
+            RegulatorRegistrationTaskStatusId = Guid.NewGuid(),
+            PagePath = PagePath.FeesDue
+        };
 }

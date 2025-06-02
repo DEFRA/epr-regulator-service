@@ -23,4 +23,5 @@ public interface IReprocessorExporterService
 
     Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null);
     Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest);
+    Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest);
 }

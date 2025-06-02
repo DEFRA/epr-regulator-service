@@ -143,6 +143,7 @@ public class MaterialWasteLicencesMappingProfileTests
     {
         var materialWasteLicence = new RegistrationMaterialWasteLicence
         {
+            OrganisationName = "Test Org",
             CapacityPeriod = capacityPeriod,
             CapacityTonne = 50000,
             LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],

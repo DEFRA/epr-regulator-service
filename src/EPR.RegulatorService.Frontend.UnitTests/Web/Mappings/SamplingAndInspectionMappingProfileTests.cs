@@ -3,21 +3,20 @@ using AutoMapper;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Mappings;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.Query;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 
-using Frontend.Web.Constants;
+using Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 [TestClass]
-public class QueryNoteMappingProfileTests
+public class SamplingAndInspectionMappingProfileTests
 {
     private IMapper _mapper;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<QueryNoteMappingProfile>());
+        var config = new MapperConfiguration(cfg => cfg.AddProfile<SamplingAndInspectionMappingProfile>());
         _mapper = config.CreateMapper();
     }
 
@@ -25,17 +24,16 @@ public class QueryNoteMappingProfileTests
     public void Mapping_Configuration_IsValid() => _mapper.ConfigurationProvider.AssertConfigurationIsValid();
 
     [TestMethod]
-    public void Map_WhenCalledWithRegistrationStatusSession_ShouldReturnQueryMaterialSession()
+    public void Map_WhenCalledWithRegistrationMaterialSamplingPlan_ShouldReturnQueryMaterialSession()
     {
         // Arrange
-        var registrationStatusSession = new RegistrationStatusSession
+        var registrationStatusSession = new RegistrationMaterialSamplingPlan
         {
             OrganisationName = "Test Organisation",
-            ApplicationType = ApplicationOrganisationType.Reprocessor,
+            SiteAddress = "Site address",
             RegistrationId = Guid.NewGuid(),
             RegistrationMaterialId = Guid.NewGuid(),
             MaterialName = "Plastic",
-            Regulator = "EA",
             RegulatorApplicationTaskStatusId = Guid.NewGuid(),
             TaskStatus = RegulatorTaskStatus.Completed,
         };
@@ -46,31 +44,8 @@ public class QueryNoteMappingProfileTests
         // Assert
         result.Should().NotBeNull();
         result.OrganisationName.Should().Be(registrationStatusSession.OrganisationName);
+        result.SiteAddress.Should().Be(registrationStatusSession.SiteAddress);
         result.RegistrationMaterialId.Should().Be(registrationStatusSession.RegistrationMaterialId);
         result.RegulatorApplicationTaskStatusId.Should().Be(registrationStatusSession.RegulatorApplicationTaskStatusId.Value);
     }
-
-    [TestMethod]
-    public void Map_WhenCalledWithQueryMaterialSession_ShouldReturnAddMaterialQueryNoteViewModel()
-    {
-        // Arrange
-        var queryMaterialSession = new QueryMaterialSession
-        {
-            OrganisationName = "Test Organisation",
-            RegistrationMaterialId = Guid.NewGuid(),
-            RegulatorApplicationTaskStatusId = Guid.NewGuid(),
-            PagePath = PagePath.FeesDue
-        };
-
-        // Act
-        var result = _mapper.Map<AddQueryNoteViewModel>(queryMaterialSession);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.OrganisationName.Should().Be(queryMaterialSession.OrganisationName);
-        result.SiteAddress.Should().Be(queryMaterialSession.SiteAddress);
-        result.Note.Should().BeNull();
-    }
 }
-
-

@@ -1,15 +1,14 @@
-@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.Query
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 
-@model AddMaterialQueryNoteViewModel
+@model AddQueryNoteViewModel
 
 @{
   const string title = "Provide query details";
   ViewData["Title"] = title;
-	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 }
 
 <div class="govuk-width-container">
@@ -17,14 +16,15 @@
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
-        <form asp-controller="Query" asp-action="AddMaterialQueryNote">
+        <form asp-controller="Query" asp-action="@Model.FormAction">
           <h1 class="govuk-heading-l">
-            @if (Model.ApplicationType == ApplicationOrganisationType.Reprocessor)
+            @if (!string.IsNullOrWhiteSpace(Model.OrganisationName) && !string.IsNullOrWhiteSpace(Model.SiteAddress))
             {
               <span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
             }
             <label for="Note">Provide query details</label>
           </h1>
+          <p class="govuk-body">Details entered here will not be shared with the applicant directly but may be subject to a Freedom of Information (FOI) request. </p>
 
           @if (!ViewData.ModelState.IsValid)
           {
@@ -41,7 +41,7 @@
 
           </div>
 
-          <button type="submit" class="govuk-button govuk-body govuk-!-margin-top-6" data-module="govuk-button">
+          <button type="submit" class="govuk-button govuk-body" data-module="govuk-button">
             Add query note
           </button>
         </form>

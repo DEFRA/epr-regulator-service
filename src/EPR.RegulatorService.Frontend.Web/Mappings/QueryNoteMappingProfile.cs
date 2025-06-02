@@ -11,7 +11,11 @@ public class QueryNoteMappingProfile : Profile
     {
         CreateMap<RegistrationStatusSession, QueryMaterialSession>()
             .ForMember(dest => dest.PagePath, opt => opt.Ignore());
-        CreateMap<QueryMaterialSession, AddMaterialQueryNoteViewModel>()
-            .ForMember(dest => dest.Note, opt => opt.Ignore());
+        CreateMap<QueryMaterialSession, AddQueryNoteViewModel>()
+            .ForMember(dest => dest.Note, opt => opt.Ignore())
+            .ForMember(dest => dest.FormAction, opt => opt.Ignore());
+        CreateMap<QueryRegistrationSession, AddQueryNoteViewModel>()
+            .ForMember(dest => dest.Note, opt => opt.Ignore())
+            .ForMember(dest => dest.FormAction, opt => opt.Ignore());
     }
 }

@@ -23,7 +23,7 @@
             {
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-				  @material.MaterialName
+                  @material.MaterialName
                 </dt>
                 <dd class="govuk-summary-list__value">
                   @if (!material.IsMaterialRegistered)
@@ -53,11 +53,24 @@
               <button type="submit" class="govuk-button" data-module="govuk-button" formmethod="post" asp-controller="Registrations" asp-action="CompleteAuthorisedMaterials" asp-route-registrationId="@Model.RegistrationId">
                 Mark as reviewed
               </button>
-                        
-              <a href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model.RegistrationId, taskName = RegulatorTaskType.MaterialsAuthorisedOnSite })" class="govuk-button govuk-button--secondary">
-                Query the materials authorised on site
-            </a>
-          </div>
+              
+              @if (Model.TaskStatus == RegulatorTaskStatus.Queried)
+              {
+                <a href="@Url.Action("AddRegistrationQueryNote", "Query")" class="govuk-button govuk-button--secondary">
+                  Add note
+                </a>
+
+                <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationId })" class="govuk-button govuk-button--secondary">
+                  Back to application
+                </a>
+              }
+              else
+              {
+                <a href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model.RegistrationId, taskName = RegulatorTaskType.MaterialsAuthorisedOnSite })" class="govuk-button govuk-button--secondary">
+                  Query the materials authorised on site
+                </a>
+              }
+            </div>
           }
         </form>
 

@@ -50,16 +50,15 @@
         </dl>
 
         <div class="govuk-button-group">
-
-          <a href="@Url.Action("PaymentCheck", "RegistrationStatus")" class="govuk-button">  
+          <a href="@Url.Action("PaymentCheck", "RegistrationStatus")" class="govuk-button">
             Continue
           </a>
 
           @if (Model.TaskStatus == RegulatorTaskStatus.Queried)
           {
-              <a href="@Url.Action("AddNote", "RegistrationStatus")" class="govuk-button govuk-button--secondary">  
-                Add note  
-              </a>
+            <a href="@Url.Action("AddNote", "RegistrationStatus")" class="govuk-button govuk-button--secondary">
+              Add note
+            </a>
 
             <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationId })" class="govuk-button govuk-button--secondary">
               Back to application
