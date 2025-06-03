@@ -98,6 +98,8 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 ResubmissionFileId = response.ResubmissionFileId,
                 SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
                 {
+                    StatusPendingDate = response.StatusPendingDate,
+                    DecisionDate = response.RegulatorDecisionDate,
                     IsResubmission = response.IsResubmission,
                     ResubmissionFileId = response.ResubmissionFileId,
                     RegistrationDate = response.RegistrationDate,
@@ -162,6 +164,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             }
         };
 
+        registrationSubmissionOrganisationDetails.StatusPendingDate = response.StatusPendingDate;
         registrationSubmissionOrganisationDetails.SubmissionDetails.IsResubmission = response.IsResubmission;
         registrationSubmissionOrganisationDetails.SubmissionDetails.ResubmissionFileId = response.ResubmissionFileId;
         return registrationSubmissionOrganisationDetails;
