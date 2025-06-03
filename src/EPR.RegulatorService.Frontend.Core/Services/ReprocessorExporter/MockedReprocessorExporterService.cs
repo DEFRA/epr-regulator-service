@@ -629,7 +629,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment) => Task.CompletedTask;
 
-    public Task MarkAccreditationAsDulyMadeAsync(Guid accreditationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest) => Task.CompletedTask;
+    public Task MarkAccreditationAsDulyMadeAsync(Guid accreditationId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest) => Task.CompletedTask;
 
     public async Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest)
     {

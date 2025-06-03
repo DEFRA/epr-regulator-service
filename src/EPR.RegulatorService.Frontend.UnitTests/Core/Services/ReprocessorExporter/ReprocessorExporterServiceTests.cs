@@ -50,7 +50,7 @@ public class ReprocessorExporterServiceTests
     private const string MarkAsDulyMadePath = "v{apiVersion}/registrationMaterials/{id}/markAsDulyMade";
     private const string SubmitOfflinePaymentPath = "v{apiVersion}/registrationMaterials/offlinePayment";
     private const string GetRegistrationByIdWithAccreditations = "v{apiVersion}/registrations/{id}/accreditations";
-    private const string MarkAccreditationAsQueried = "v{apiVersion}/registrations/{id}/accreditations";
+    private const string UpdateAccreditationTaskStatus = "v{apiVersion}/regulatorAccreditationTaskStatus";
 
     
 
@@ -99,7 +99,7 @@ public class ReprocessorExporterServiceTests
                 { "MarkAsDulyMade", MarkAsDulyMadePath },
                 { "SubmitOfflinePayment", SubmitOfflinePaymentPath },
                 { "GetRegistrationByIdWithAccreditations", GetRegistrationByIdWithAccreditations },
-                { "MarkAccreditationAsQueried", MarkAccreditationAsQueried },
+                { "UpdateAccreditationTaskStatus", UpdateAccreditationTaskStatus },
             }
         };
 
@@ -863,12 +863,12 @@ public class ReprocessorExporterServiceTests
     public async Task GetPaymentFeesByAccreditationIdAsync_WhenResponseIsSuccess_ReturnsPaymentFees()
     {
         // Arrange
-        var accreditationMaterialId = Guid.NewGuid();
-        var expectedPath = $"v{ApiVersion}/accreditations/{accreditationMaterialId}/paymentFees";
+        var accreditationId = Guid.NewGuid();
+        var expectedPath = $"v{ApiVersion}/accreditations/{accreditationId}/paymentFees";
 
         var expectedFees = new AccreditationMaterialPaymentFees
         {
-            AccreditationId = accreditationMaterialId,
+            AccreditationId = accreditationId,
             OrganisationName = "Accredited Plastics Ltd",
             SiteAddress = "123 Test Lane, Recycling City",
             MaterialName = "Plastic", // Required
@@ -890,7 +890,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
 
         // Act
-        var result = await _service.GetPaymentFeesByAccreditationIdAsync(accreditationMaterialId);
+        var result = await _service.GetPaymentFeesByAccreditationIdAsync(accreditationId);
 
         // Assert
         result.Should().NotBeNull();
@@ -898,11 +898,11 @@ public class ReprocessorExporterServiceTests
     }
 
     [TestMethod]
-    public async Task GetPaymentFeesByAccreditationMaterialIdAsync_WhenNotFound_ThrowsHttpRequestException()
+    public async Task GetPaymentFeesByAccreditationIdAsync_WhenNotFound_ThrowsHttpRequestException()
     {
         // Arrange
-        var accreditationMaterialId = Guid.NewGuid();
-        var expectedPath = $"v{ApiVersion}/accreditations/{accreditationMaterialId}/paymentFees";
+        var accreditationId = Guid.NewGuid();
+        var expectedPath = $"v{ApiVersion}/accreditations/{accreditationId}/paymentFees";
 
         var response = new HttpResponseMessage(HttpStatusCode.NotFound);
 
@@ -912,7 +912,7 @@ public class ReprocessorExporterServiceTests
 
         // Act & Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
-            _service.GetPaymentFeesByAccreditationIdAsync(accreditationMaterialId));
+            _service.GetPaymentFeesByAccreditationIdAsync(accreditationId));
     }
 
     [TestMethod]
@@ -991,14 +991,14 @@ public class ReprocessorExporterServiceTests
     public async Task MarkAccreditationAsDulyMadeAsync_WhenResponseIsSuccess_SendsCorrectRequest()
     {
         // Arrange
-        var accreditationMaterialId = Guid.NewGuid();
+        var accreditationId = Guid.NewGuid();
         var request = new AccreditationMarkAsDulyMadeRequest
         {
             DeterminationDate = DateTime.UtcNow,
             DulyMadeDate = DateTime.UtcNow.AddDays(-5)
         };
 
-        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationMaterialId}/markAsDulyMade";
+        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationId}/markAsDulyMade";
         _optionsMock.Object.Value.Endpoints.Add("MarkAccreditationAsDulyMade", "v{apiVersion}/accreditationMaterials/{id}/markAsDulyMade");
 
         var response = new HttpResponseMessage(HttpStatusCode.OK);
@@ -1011,12 +1011,12 @@ public class ReprocessorExporterServiceTests
             .ReturnsAsync(response);
 
         // Act
-        await _service.MarkAccreditationAsDulyMadeAsync(accreditationMaterialId, request);
+        await _service.MarkAccreditationAsDulyMadeAsync(accreditationId, request);
 
         // Assert
         capturedRequest.Should().NotBeNull();
         capturedRequest!.Method.Should().Be(HttpMethod.Post);
-        capturedRequest.RequestUri!.ToString().Should().EndWith($"/accreditationMaterials/{accreditationMaterialId}/markAsDulyMade");
+        capturedRequest.RequestUri!.ToString().Should().EndWith($"/accreditationMaterials/{accreditationId}/markAsDulyMade");
         var body = await capturedRequest.Content!.ReadAsStringAsync();
         body.Should().Contain("determinationDate").And.Contain("dulyMadeDate");
     }
@@ -1025,14 +1025,14 @@ public class ReprocessorExporterServiceTests
     public async Task MarkAccreditationAsDulyMadeAsync_WhenResponseIsNotSuccess_ThrowsException_AndSendsCorrectRequest()
     {
         // Arrange
-        var accreditationMaterialId = Guid.NewGuid();
+        var accreditationId = Guid.NewGuid();
         var request = new AccreditationMarkAsDulyMadeRequest
         {
             DeterminationDate = DateTime.UtcNow,
             DulyMadeDate = DateTime.UtcNow.AddDays(-2)
         };
 
-        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationMaterialId}/markAsDulyMade";
+        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationId}/markAsDulyMade";
         _optionsMock.Object.Value.Endpoints.Add("MarkAccreditationAsDulyMade", "v{apiVersion}/accreditationMaterials/{id}/markAsDulyMade");
 
         var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
@@ -1046,11 +1046,11 @@ public class ReprocessorExporterServiceTests
 
         // Act & Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
-            _service.MarkAccreditationAsDulyMadeAsync(accreditationMaterialId, request));
+            _service.MarkAccreditationAsDulyMadeAsync(accreditationId, request));
 
         capturedRequest.Should().NotBeNull();
         capturedRequest!.Method.Should().Be(HttpMethod.Post);
-        capturedRequest.RequestUri!.ToString().Should().EndWith($"/accreditationMaterials/{accreditationMaterialId}/markAsDulyMade");
+        capturedRequest.RequestUri!.ToString().Should().EndWith($"/accreditationMaterials/{accreditationId}/markAsDulyMade");
         var body = await capturedRequest.Content!.ReadAsStringAsync();
         body.Should().Contain("determinationDate").And.Contain("dulyMadeDate");
     }
@@ -1060,7 +1060,7 @@ public class ReprocessorExporterServiceTests
     {
         // Arrange
         var accreditationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
-        string expectedPath = MarkAccreditationAsQueried
+        string expectedPath = UpdateAccreditationTaskStatus
             .Replace("{apiVersion}", ApiVersion.ToString());
         var request = new UpdateAccreditationTaskStatusRequest
         {

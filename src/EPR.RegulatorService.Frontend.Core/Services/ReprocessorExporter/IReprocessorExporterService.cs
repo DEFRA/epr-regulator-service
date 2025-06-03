@@ -27,6 +27,6 @@ public interface IReprocessorExporterService
     Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest);
     Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationIdAsync(Guid id);
     Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment);
-    Task MarkAccreditationAsDulyMadeAsync(Guid accreditationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest);
+    Task MarkAccreditationAsDulyMadeAsync(Guid accreditationId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest);
     Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest);
 }

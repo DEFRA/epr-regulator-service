@@ -42,7 +42,7 @@ public class ReprocessorExporterService(
         GetPaymentFeesByAccreditationId,
         SubmitAccreditationOfflinePayment,
         MarkAccreditationAsDulyMade,
-        MarkAccreditationAsQueried
+        UpdateAccreditationTaskStatus
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -340,12 +340,12 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task MarkAccreditationAsDulyMadeAsync(Guid accreditationMaterialId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
+    public async Task MarkAccreditationAsDulyMadeAsync(Guid accreditationId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAccreditationAsDulyMade);
-        string path = pathTemplate.Replace("{id}", accreditationMaterialId.ToString());
+        string path = pathTemplate.Replace("{id}", accreditationId.ToString());
 
         string jsonContent = JsonSerializer.Serialize(dulyMadeRequest, _jsonSerializerOptions);
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
@@ -359,7 +359,7 @@ public class ReprocessorExporterService(
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAccreditationAsQueried);
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateAccreditationTaskStatus);
 
         var response = await httpClient.PostAsJsonAsync(pathTemplate, updateAccreditationTaskStatusRequest);
 
