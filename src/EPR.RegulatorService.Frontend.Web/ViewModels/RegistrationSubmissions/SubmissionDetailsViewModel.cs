@@ -98,7 +98,7 @@ public class SubmissionDetailsViewModel
             _ => TimeAndDateOfSubmission,
         } ?? TimeAndDateOfSubmission;
 
-        return targetDate.ToString(Status switch { RegistrationSubmissionStatus.Cancelled => "dd MMMM yyyy", _ => format }, CultureInfo.InvariantCulture);
+        return targetDate.ToString(Status switch { RegistrationSubmissionStatus.Cancelled when StatusPendingDate.HasValue => "dd MMMM yyyy", _ => format }, CultureInfo.InvariantCulture);
     }
 
     public static implicit operator RegistrationSubmissionOrganisationSubmissionSummaryDetails(SubmissionDetailsViewModel details)
