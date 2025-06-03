@@ -469,6 +469,7 @@ public class FacadeService : IFacadeService
         try
         {
             var response = JsonSerializer.Deserialize<RegistrationSubmissionOrganisationDetailsResponse>(content, _jsonSerializerOptions);
+            response.SubmissionDetails.StatusPendingDate = response.StatusPendingDate;
             return response;
         }
         catch (Exception ex)

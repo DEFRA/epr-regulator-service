@@ -24,6 +24,8 @@ public class RegistrationSubmissionOrganisationSubmissionSummaryDetails
 
     public DateTime? DecisionDate { get; set; }
 
+    public DateTime? StatusPendingDate { get; set; }
+
     public DateTime TimeAndDateOfSubmission { get; set; }
 
     [JsonPropertyName("resubmissionDate")]
