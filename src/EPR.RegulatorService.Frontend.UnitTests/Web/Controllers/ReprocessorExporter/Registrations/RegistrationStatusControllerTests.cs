@@ -70,7 +70,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
     public async Task FeesDue_WhenCalledWithIdAndRegistrationStatusSessionIsNull_ShouldCreateNewSessionFromRegistrationMaterialDetail()
     {
         // Arrange
-        var paymentFees = CreateRegistrationPaymentFees(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
+        var paymentFees = CreateRegistrationPaymentFees(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"), DateTime.Now.AddDays(+16), DateTime.Now.AddDays(-5));
 
         _journeySession.ReprocessorExporterSession.RegistrationStatusSession = null;
 
@@ -515,18 +515,26 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
     }
 
     [TestMethod]
-    public async Task RegistrationApplicationStatus_WhenCalledAfterDulyMade_ShouldReturnApplicationStatusView()
+    [DataRow("2025-06-01", "2025-05-29", 0)] //01June - 29May = 3/7 = 0.42
+    [DataRow("2025-06-02", "2025-05-29", 1)] //02June - 29May = 4/7 = 0.57
+    [DataRow("2025-06-19", "2025-05-29", 3)] //19June - 29May = 21/7 = 3
+    [DataRow("2025-06-24", "2025-05-29", 4)] //24June - 29May = 26/7 = 3.71
+    [DataRow("2025-06-25", "2025-05-29", 4)] //19June - 29May = 27/7 = 3.85
+    public async Task RegistrationApplicationStatus_WhenCalledAfterDulyMade_ShouldReturnApplicationStatusView(string determinationDateString, string dulyMadeDateString, int expectedDeterminationWeeks)
     {
         // Arrange
-        var registrationPaymentFees = CreateRegistrationPaymentFees(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
+        var determinationDateTime = DateTime.Parse(determinationDateString);
+        var dulyMadeDateTime = DateTime.Parse(dulyMadeDateString);
+
+        var registrationPaymentFees = CreateRegistrationPaymentFees(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"), determinationDateTime, dulyMadeDateTime);
         var expectedViewModel = new PaymentReviewViewModel
         {
             MaterialName = "Plastic",
             SubmittedDate = DateTime.Now.AddDays(-7),
             PaymentMethod = PaymentMethodType.BankTransfer,
             PaymentDate = DateTime.Now.AddDays(-7),
-            DulyMadeDate = DateTime.Now.AddDays(-5),
-            DeterminationDate = DateTime.Now.AddDays(+16)
+            DulyMadeDate = dulyMadeDateTime,
+            DeterminationDate = determinationDateTime
         };
 
         _reprocessorExporterServiceMock.Setup(r => r.GetPaymentFeesByRegistrationMaterialIdAsync(registrationPaymentFees.RegistrationMaterialId))
@@ -547,6 +555,8 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
             var viewResult = (ViewResult)response;
             viewResult.Model.Should().Be(expectedViewModel);
             viewResult.ViewName.Should().EndWith("RegistrationApplicationStatus.cshtml");
+            var viewModel = (PaymentReviewViewModel)viewResult.Model;
+            viewModel.DeterminationWeeks.Should().Be(expectedDeterminationWeeks);
         }
     }
 
@@ -629,7 +639,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
             TaskStatus = taskStatus,
         };
 
-    private static RegistrationMaterialPaymentFees CreateRegistrationPaymentFees(Guid registrationMaterialId) =>
+    private static RegistrationMaterialPaymentFees CreateRegistrationPaymentFees(Guid registrationMaterialId, DateTime determinationDate, DateTime dulyMadeDate) =>
         new()
         {
             OrganisationName = "Test Organisation",
@@ -642,7 +652,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
             SubmittedDate = DateTime.Now.AddDays(-7),
             PaymentMethod = PaymentMethodType.BankTransfer,
             PaymentDate = DateTime.Now.AddDays(-7),
-            DulyMadeDate = DateTime.Now.AddDays(-5),
-            DeterminationDate = DateTime.Now.AddDays(+16)
-};
+            DulyMadeDate = dulyMadeDate,
+            DeterminationDate = determinationDate
+        };
 }

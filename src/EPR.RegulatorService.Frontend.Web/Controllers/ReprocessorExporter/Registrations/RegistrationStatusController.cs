@@ -240,8 +240,7 @@ public class RegistrationStatusController(
         var registrationMaterial = await reprocessorExporterService.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId);
         var viewModel = mapper.Map<PaymentReviewViewModel>(registrationMaterial);
 
-        viewModel.DeterminationWeeks = registrationMaterial.DeterminationDate.HasValue && registrationMaterial.DulyMadeDate.HasValue ?
-            CalculateDeterminationWeeks(registrationMaterial.DeterminationDate.Value, registrationMaterial.DulyMadeDate.Value) : 0;
+        viewModel.DeterminationWeeks = CalculateDeterminationWeeks(registrationMaterial.DeterminationDate, registrationMaterial.DulyMadeDate);
 
         string pagePath = GetPagePath(PagePath.RegistrationApplicationStatus, registrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
@@ -267,11 +266,15 @@ public class RegistrationStatusController(
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationStatusSession.RegistrationId });
     }
 
-    private static int CalculateDeterminationWeeks(DateTime determinationDate, DateTime dulyMadeDate)
+    private static int CalculateDeterminationWeeks(DateTime? determinationDate, DateTime? dulyMadeDate)
     {
-        double totalWeeks = (determinationDate.Date - dulyMadeDate.Date).TotalDays / 7;
-        int roundedWeeks = (int)Math.Round(totalWeeks, MidpointRounding.AwayFromZero);
-        return roundedWeeks;
+        if (determinationDate.HasValue && dulyMadeDate.HasValue)
+        {
+            double totalWeeks = (determinationDate.Value.Date - dulyMadeDate.Value.Date).TotalDays / 7;
+            int roundedWeeks = (int)Math.Round(totalWeeks, MidpointRounding.AwayFromZero);
+            return roundedWeeks;
+        }
+        return 0;
     }
 
     private MarkAsDulyMadeRequest CreateDulyMadeRequest(RegistrationStatusSession registrationStatusSession)
