@@ -6,6 +6,8 @@ using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
 
+using FluentAssertions.Execution;
+
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 
 [TestClass]
@@ -43,6 +45,7 @@ public class AccreditationStatusMappingProfileTests
         var result = _mapper.Map<AccreditationStatusSession>(source);
 
         // Assert
+        using var scope = new AssertionScope();
         result.Should().NotBeNull();
         result.ApplicationReferenceNumber.Should().Be(source.ApplicationReferenceNumber);
         result.FeeAmount.Should().Be(source.FeeAmount);
@@ -50,6 +53,7 @@ public class AccreditationStatusMappingProfileTests
         result.OrganisationName.Should().Be(source.OrganisationName);
         result.SiteAddress.Should().Be(source.SiteAddress);
         result.SubmittedDate.Should().Be(source.SubmittedDate);
+        
     }
 
 
@@ -63,6 +67,7 @@ public class AccreditationStatusMappingProfileTests
         var result = _mapper.Map<FeesDueViewModel>(session);
 
         // Assert
+        using var scope = new AssertionScope();
         result.Should().NotBeNull();
         result.FeeAmount.Should().Be(session.FeeAmount);
     }
@@ -77,6 +82,7 @@ public class AccreditationStatusMappingProfileTests
         var result = _mapper.Map<PaymentCheckViewModel>(session);
 
         // Assert
+        using var scope = new AssertionScope();
         result.Should().NotBeNull();
         result.FullPaymentMade.Should().Be(session.FullPaymentMade);
     }
@@ -91,6 +97,7 @@ public class AccreditationStatusMappingProfileTests
         var result = _mapper.Map<PaymentMethodViewModel>(session);
 
         // Assert
+        using var scope = new AssertionScope();
         result.Should().NotBeNull();
         result.PaymentMethod.Should().Be(session.PaymentMethod);
     }
@@ -106,6 +113,7 @@ public class AccreditationStatusMappingProfileTests
         var result = _mapper.Map<PaymentDateViewModel>(session);
 
         // Assert
+        using var scope = new AssertionScope();
         result.Should().NotBeNull();
         result.Day.Should().Be(30);
         result.Month.Should().Be(5);
@@ -123,6 +131,7 @@ public class AccreditationStatusMappingProfileTests
         var result = _mapper.Map<PaymentDateViewModel>(session);
 
         // Assert
+        using var scope = new AssertionScope();
         result.Should().NotBeNull();
         result.Day.Should().BeNull();
         result.Month.Should().BeNull();
@@ -139,6 +148,7 @@ public class AccreditationStatusMappingProfileTests
         var result = _mapper.Map<PaymentReviewViewModel>(session);
 
         // Assert
+        using var scope = new AssertionScope();
         result.Should().NotBeNull();
         result.PaymentDate.Should().Be(session.PaymentDate);
         result.PaymentMethod.Should().Be(session.PaymentMethod);
@@ -154,6 +164,7 @@ public class AccreditationStatusMappingProfileTests
         var result = _mapper.Map<AccreditationOfflinePaymentRequest>(session);
 
         // Assert
+        using var scope = new AssertionScope();
         result.Should().NotBeNull();
         result.PaymentReference.Should().Be(session.ApplicationReferenceNumber);
         result.Amount.Should().Be(session.FeeAmount);
