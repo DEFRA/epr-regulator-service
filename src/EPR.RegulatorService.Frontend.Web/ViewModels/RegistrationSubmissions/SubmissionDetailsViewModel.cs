@@ -57,6 +57,7 @@ public class SubmissionDetailsViewModel
     public RegistrationSubmissionStatus Status { get; set; }
     public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
     public DateTime? LatestDecisionDate { get; set; }
+    public DateTime? ResubmissionDecisionDate { get; set; }
     public DateTime? StatusPendingDate { get; set; }
 
     public DateTime TimeAndDateOfSubmission { get; set; }
@@ -116,9 +117,11 @@ public class SubmissionDetailsViewModel
             DeclaredBy = details.DeclaredBy,
             SubmittedBy = details.SubmittedBy,
             DecisionDate = details.LatestDecisionDate,
+            ResubmissionDecisionDate = details.ResubmissionDecisionDate,
             Status = details.Status,
             ResubmissionStatus = details.ResubmissionStatus,
             SubmittedOnTime = details.SubmittedOnTime,
+            StatusPendingDate = details.StatusPendingDate,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
             TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,
             RegistrationDate = details.RegistrationDate,
@@ -153,8 +156,10 @@ public class SubmissionDetailsViewModel
             DeclaredBy = details.DeclaredBy,
             SubmittedBy = details.SubmittedBy,
             LatestDecisionDate = details.DecisionDate,
+            ResubmissionDecisionDate = details.ResubmissionDecisionDate,
             Status = details.Status,
             ResubmissionStatus = details.ResubmissionStatus,
+            StatusPendingDate = details.StatusPendingDate,
             SubmittedOnTime = details.SubmittedOnTime,
             TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
             TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,

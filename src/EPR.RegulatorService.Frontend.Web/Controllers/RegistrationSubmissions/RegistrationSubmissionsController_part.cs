@@ -238,7 +238,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             if (status == EndpointResponseStatus.Success)
             {
                 existingModel.RegulatorComments = regulatorDecisionRequest.Comments;
-                if (existingModel.IsResubmission && regulatorDecisionRequest.Status != "Cancelled")
+                if (existingModel.IsResubmission && "Granted Refused".Contains(regulatorDecisionRequest.Status))
                 {
                     existingModel.ResubmissionStatus = regulatorDecisionRequest.Status switch
                     {
@@ -247,6 +247,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                         _ => existingModel.ResubmissionStatus
                     };
                     existingModel.SubmissionDetails.ResubmissionStatus = existingModel.ResubmissionStatus;
+                    existingModel.SubmissionDetails.ResubmissionDecisionDate = DateTime.UtcNow;
                 }
                 else
                 {
