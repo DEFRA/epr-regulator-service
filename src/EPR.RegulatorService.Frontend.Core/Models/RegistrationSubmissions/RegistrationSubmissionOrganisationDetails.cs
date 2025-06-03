@@ -99,6 +99,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 ResubmissionFileId = response.ResubmissionFileId,
                 SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
                 {
+                    DecisionDate = response.RegulatorDecisionDate,
                     IsResubmission = response.IsResubmission,
                     ResubmissionFileId = response.ResubmissionFileId,
                     RegistrationDate = response.RegistrationDate,
