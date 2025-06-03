@@ -520,11 +520,14 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
     [DataRow("2025-06-19", "2025-05-29", 3)] //19June - 29May = 21/7 = 3
     [DataRow("2025-06-24", "2025-05-29", 4)] //24June - 29May = 26/7 = 3.71
     [DataRow("2025-06-25", "2025-05-29", 4)] //19June - 29May = 27/7 = 3.85
-    public async Task RegistrationApplicationStatus_WhenCalledAfterDulyMade_ShouldReturnApplicationStatusView(string determinationDateString, string dulyMadeDateString, int expectedDeterminationWeeks)
+    [DataRow(null, "2025-05-29", 0)] 
+    [DataRow("2025-05-29", null, 0)] 
+    [DataRow(null, null, 0)]
+    public async Task RegistrationApplicationStatus_WhenCalledAfterDulyMade_ShouldReturnApplicationStatusView(string? determinationDateString, string? dulyMadeDateString, int expectedDeterminationWeeks)
     {
         // Arrange
-        var determinationDateTime = DateTime.Parse(determinationDateString);
-        var dulyMadeDateTime = DateTime.Parse(dulyMadeDateString);
+        DateTime? determinationDateTime = determinationDateString == null ? null : DateTime.Parse(determinationDateString);
+        DateTime? dulyMadeDateTime = dulyMadeDateString == null ? null : DateTime.Parse(dulyMadeDateString);
 
         var registrationPaymentFees = CreateRegistrationPaymentFees(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"), determinationDateTime, dulyMadeDateTime);
         var expectedViewModel = new PaymentReviewViewModel
@@ -534,7 +537,6 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
             PaymentMethod = PaymentMethodType.BankTransfer,
             PaymentDate = DateTime.Now.AddDays(-7),
             DulyMadeDate = dulyMadeDateTime,
-            DeterminationDate = determinationDateTime
         };
 
         _reprocessorExporterServiceMock.Setup(r => r.GetPaymentFeesByRegistrationMaterialIdAsync(registrationPaymentFees.RegistrationMaterialId))
@@ -639,7 +641,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
             TaskStatus = taskStatus,
         };
 
-    private static RegistrationMaterialPaymentFees CreateRegistrationPaymentFees(Guid registrationMaterialId, DateTime determinationDate, DateTime dulyMadeDate) =>
+    private static RegistrationMaterialPaymentFees CreateRegistrationPaymentFees(Guid registrationMaterialId, DateTime? determinationDate, DateTime? dulyMadeDate) =>
         new()
         {
             OrganisationName = "Test Organisation",
