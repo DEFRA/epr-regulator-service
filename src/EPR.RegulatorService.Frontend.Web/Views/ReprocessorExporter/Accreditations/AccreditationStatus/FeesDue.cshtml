@@ -3,7 +3,7 @@
 @using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
 
 @{
-	const string title = "Fees and payment due";
+	const string title = "Payment details";
   ViewData["Title"] = title;
 }
 
@@ -40,10 +40,18 @@
                 @Model.ApplicationReferenceNumber
               </dd>
             </div>
+			<div class="govuk-summary-list__row">
+				<dt class="govuk-summary-list__key">
+					Tonnage band
+				</dt>
+				<dd class="govuk-summary-list__value">
+					@Model.PrnTonnage
+				</dd>
+			</div>
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                Registration fee for @Model.MaterialName.ToLower() 
-              </dt>
+				  Accreditation charge for @Model.MaterialName.ToLower()
+			  </dt>
               <dd class="govuk-summary-list__value">
                 @Model.FeeAmount.ToDisplayCurrency()
               </dd>

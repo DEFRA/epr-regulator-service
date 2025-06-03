@@ -621,7 +621,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             MaterialName = "Plastic",
             SubmittedDate = new DateTime(2025, 5, 15),
             FeeAmount = 2921.00m,
-            Regulator = "EA"
+            Regulator = "EA",
+            PrnTonnage = PrnTonnageType.Upto5000Tonnes,
         };
 
         return Task.FromResult(mockPaymentFees);

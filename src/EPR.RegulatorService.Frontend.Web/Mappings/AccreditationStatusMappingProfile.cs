@@ -1,5 +1,6 @@
 using AutoMapper;
 
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
@@ -15,7 +16,8 @@ public class AccreditationStatusMappingProfile : Profile
             .ForMember(dest => dest.PaymentMethod, opt => opt.Ignore())
             .ForMember(dest => dest.PaymentDate, opt => opt.Ignore())
             .ForMember(dest => dest.RegistrationId, opt => opt.Ignore())
-            .ForMember(dest => dest.Year, opt => opt.Ignore());
+            .ForMember(dest => dest.Year, opt => opt.Ignore())
+            .ForMember(dest => dest.PrnTonnage, opt => opt.MapFrom(src => MapPrnTonnageType(src.PrnTonnage)));
         CreateMap<AccreditationStatusSession, FeesDueViewModel>();
         CreateMap<AccreditationStatusSession, PaymentCheckViewModel>();
         CreateMap<AccreditationStatusSession, PaymentMethodViewModel>()
@@ -31,4 +33,14 @@ public class AccreditationStatusMappingProfile : Profile
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.FeeAmount))
             .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.ApplicationReferenceNumber));
     }
+
+    private static string MapPrnTonnageType(PrnTonnageType prnTonnageType) =>
+        prnTonnageType switch
+        {
+            PrnTonnageType.Upto500Tonnes => "Up to 500 tonnes",
+            PrnTonnageType.Upto5000Tonnes => "Up to 5,000 tonnes",
+            PrnTonnageType.Upto10000Tonnes => "Up to 10,000 tonnes",
+            PrnTonnageType.Over10000Tonnes => "Over 10,000 tonnes",
+            _ => ""
+        };
 }

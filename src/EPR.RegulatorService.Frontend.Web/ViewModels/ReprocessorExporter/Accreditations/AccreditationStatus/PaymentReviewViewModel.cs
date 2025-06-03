@@ -4,6 +4,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accre
 
 public class PaymentReviewViewModel
 {
+    public decimal FeeAmount { get; init; }
     public required string MaterialName { get; init; }
     public DateTime SubmittedDate { get; init; }
     public PaymentMethodType? PaymentMethod { get; init; }

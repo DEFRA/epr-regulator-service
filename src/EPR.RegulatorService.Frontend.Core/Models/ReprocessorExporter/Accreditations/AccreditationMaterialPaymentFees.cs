@@ -12,5 +12,6 @@ public class AccreditationMaterialPaymentFees
     public required string MaterialName { get; init; }
     public DateTime SubmittedDate { get; init; }
     public decimal FeeAmount { get; init; }
+    public PrnTonnageType PrnTonnage { get; set; }
     public required string Regulator { get; init; }
 }

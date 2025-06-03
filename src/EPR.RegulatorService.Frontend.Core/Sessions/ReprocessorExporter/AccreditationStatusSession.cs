@@ -17,5 +17,6 @@ public class AccreditationStatusSession
     public bool? FullPaymentMade { get; set; }
     public PaymentMethodType? PaymentMethod { get; set; }
     public DateTime? PaymentDate { get; set; }
+    public string PrnTonnage { get; set; }
     public int? Year { get; set; }
 }
