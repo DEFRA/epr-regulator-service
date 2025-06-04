@@ -22,7 +22,7 @@
 					Payment amount
 				</dt>
 				<dd class="govuk-summary-list__value">
-					@Model.FeeAmount.ToDisplayCurrency()
+					@Model.FeeAmount.ToDisplayCurrency(false)
 				</dd>
 				<dd class="govuk-summary-list__actions">
 				</dd>
@@ -67,7 +67,7 @@
                 Date and time submitted
               </dt>
               <dd class="govuk-summary-list__value">
-                @Model.SubmittedDate.ToDisplayDateAndTime()
+                @Model.SubmittedDate.ToDisplayDateAndTime(false)
               </dd>
               <dd class="govuk-summary-list__actions">
               </dd>
