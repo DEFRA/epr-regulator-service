@@ -126,7 +126,7 @@
                             @if (Model.RegistrationMaterialReprocessingIO.TaskStatus == RegulatorTaskStatus.Queried)
                             {
                                 <a href="@Url.Action("AddMaterialQueryNote", "Query")" class="govuk-button govuk-button--secondary">
-                                  Add note
+                                    Add a query note
                                 </a>
 
                                 <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationMaterialReprocessingIO.RegistrationId })" class="govuk-button govuk-button--secondary">
