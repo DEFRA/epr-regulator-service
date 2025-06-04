@@ -57,7 +57,7 @@
               @if (Model.TaskStatus == RegulatorTaskStatus.Queried)
               {
                 <a href="@Url.Action("AddRegistrationQueryNote", "Query")" class="govuk-button govuk-button--secondary">
-                  Add note
+                  Add a query note
                 </a>
 
                 <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationId })" class="govuk-button govuk-button--secondary">
