@@ -347,4 +347,30 @@ public class ManageAccreditationsMappingProfileTests
         result.Should().Be("govuk-tag--grey");
     }
 
+    [TestMethod]
+    public void MapTaskStatusText_KnownStatuses_ShouldReturnExpectedResults()
+    {
+        var method = typeof(ManageAccreditationsMappingProfile)
+            .GetMethod("MapTaskStatusText", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(string) }, null);
+
+        method.Should().NotBeNull("the method should be found with correct binding flags");
+
+        var testCases = new Dictionary<string, string>
+        {
+            { "not started", "Not Started yet" },
+            { "not started yet", "Not started yet" },
+            { "approved", "Approved" },
+            { "queried", "Queried" },
+            { "completed", "Completed" },
+            { "duly made", "Duly Made" },
+            { "dulymade", "Duly Made" }
+        };
+
+        foreach (var testCase in testCases)
+        {
+            var result = (string)method!.Invoke(null, new object[] { testCase.Key });
+
+            result.Should().Be(testCase.Value, $"because '{testCase.Key}' should map to '{testCase.Value}'");
+        }
+    }
 }
