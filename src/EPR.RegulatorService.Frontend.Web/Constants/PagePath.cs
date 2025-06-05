@@ -84,10 +84,12 @@ public static class PagePath
     public const string AddRegistrationQueryNote = "add-registration-note";
     public const string AddMaterialQueryNote = "add-material-note";
     public const string RegistrationApplicationStatus = "registration-application-status";
+    public const string QueryAccreditationTask = "query-accreditation-task";
 
     // Complete tasks paths
     public const string CompleteQueryRegistrationTask = "query-registration-task-complete";
     public const string CompleteQueryMaterialTask = "query-material-task-complete";
+    public const string CompleteQueryAccreditationTask = "query-accreditation-task-complete";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

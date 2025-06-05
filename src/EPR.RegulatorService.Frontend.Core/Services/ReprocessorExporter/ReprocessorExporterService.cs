@@ -7,6 +7,7 @@ using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Converters;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 using Microsoft.Extensions.Options;
@@ -37,7 +38,11 @@ public class ReprocessorExporterService(
         UpdateApplicationTaskStatus,
         GetSiteAddressByRegistrationId,
         DownloadSamplingInspectionFile,
-        GetRegistrationByIdWithAccreditations
+        GetRegistrationByIdWithAccreditations,
+        GetPaymentFeesByAccreditationId,
+        SubmitAccreditationOfflinePayment,
+        MarkAccreditationAsDulyMade,
+        UpdateAccreditationTaskStatus
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -305,6 +310,60 @@ public class ReprocessorExporterService(
 
         var response = await httpClient.GetAsync(path);
         return await GetEntityFromResponse<Registration>(response);
+    }
+
+    public async Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationIdAsync(Guid id)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetPaymentFeesByAccreditationId);
+        string path = pathTemplate.Replace("{id}", id.ToString());
+
+        var response = await httpClient.GetAsync(path);
+
+        var accreditationMaterialPaymentFees = await GetEntityFromResponse<AccreditationMaterialPaymentFees>(response);
+
+        return accreditationMaterialPaymentFees;
+    }
+
+    public async Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = GetVersionedEndpoint(Endpoints.SubmitAccreditationOfflinePayment);
+
+        string jsonContent = JsonSerializer.Serialize(offlinePayment, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task MarkAccreditationAsDulyMadeAsync(Guid accreditationId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAccreditationAsDulyMade);
+        string path = pathTemplate.Replace("{id}", accreditationId.ToString());
+
+        string jsonContent = JsonSerializer.Serialize(dulyMadeRequest, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateAccreditationTaskStatus);
+
+        var response = await httpClient.PostAsJsonAsync(pathTemplate, updateAccreditationTaskStatusRequest);
+
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)

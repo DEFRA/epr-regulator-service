@@ -1,0 +1,69 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
+
+@{
+	const string title = "Payment details";
+  ViewData["Title"] = title;
+}
+
+@model FeesDueViewModel
+
+<div class="govuk-width-container ">
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+        <h1 class="govuk-heading-l">
+          @if (Model.ApplicationType == ApplicationOrganisationType.Reprocessor)
+          {
+            <span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
+          }
+          @title
+        </h1>
+        
+        <form method="get" asp-controller="AccreditationStatus" asp-action="PaymentCheck">
+
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Date and time submitted
+              </dt>
+              <dd class="govuk-summary-list__value">
+                @Model.SubmittedDate.ToDisplayDateAndTime(false)
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Payment reference
+              </dt>
+              <dd class="govuk-summary-list__value">
+                @Model.ApplicationReferenceNumber
+              </dd>
+            </div>
+			<div class="govuk-summary-list__row">
+				<dt class="govuk-summary-list__key">
+					Tonnage band
+				</dt>
+				<dd class="govuk-summary-list__value">
+					@Model.PrnTonnage
+				</dd>
+			</div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+				  Accreditation charge for @Model.MaterialName.ToLower()
+			  </dt>
+              <dd class="govuk-summary-list__value">
+                @Model.FeeAmount.ToDisplayCurrency(false)
+              </dd>
+            </div>
+           
+          </dl>
+        
+          <button type="submit" class="govuk-button">
+            Continue
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>

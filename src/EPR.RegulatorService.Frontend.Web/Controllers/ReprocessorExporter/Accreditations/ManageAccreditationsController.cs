@@ -1,5 +1,7 @@
 using AutoMapper;
 
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
@@ -7,6 +9,7 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentValidation;
 
@@ -42,7 +45,7 @@ public class ManageAccreditationsController(
 
         var session = await GetSession();
         session.ReprocessorExporterSession = new ReprocessorExporterSession();
-
+        session.ReprocessorExporterSession.RegistrationId = id;
         await SaveSessionAndJourney(session, $"{PagePath.ManageAccreditations}?id={id}&year={year}");
 
         return View("~/Views/ReprocessorExporter/Accreditations/ManageAccreditations.cshtml", model);

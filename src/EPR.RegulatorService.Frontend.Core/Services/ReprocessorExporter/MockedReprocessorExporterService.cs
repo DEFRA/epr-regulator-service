@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
@@ -18,6 +19,7 @@ namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 public class MockedReprocessorExporterService : IReprocessorExporterService
 {
     private readonly List<Registration> _registrations = SeedRegistrations();
+    private Registration _registrationAccreditations = null;
 
     public Task<Registration> GetRegistrationByIdAsync(Guid id)
     {
@@ -436,7 +438,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions },
                 new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.CheckRegistrationStatus },
                 new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs },
-                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan },
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.DulyMade }
             ];
         }
 
@@ -453,19 +456,19 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null)
     {
-        var registration = GetMockedAccreditationRegistration(id);
+        _registrationAccreditations ??= GetMockedAccreditationRegistration(id);
 
-        if (registration == null)
+        if (_registrationAccreditations == null)
         {
             throw new KeyNotFoundException($"No mock registration found for id {id}");
         }
 
         if (year.HasValue)
         {
-            ApplySingleYearAccreditationFilter(registration, year.Value);
+            ApplySingleYearAccreditationFilter(_registrationAccreditations, year.Value);
         }
 
-        return Task.FromResult(registration);
+        return Task.FromResult(_registrationAccreditations);
     }
 
     private static Registration GetMockedAccreditationRegistration(Guid id)
@@ -604,6 +607,48 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             }
         }
         };
+    }
+
+    public Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationIdAsync(Guid id)
+    {
+        var mockPaymentFees = new AccreditationMaterialPaymentFees
+        {
+            AccreditationId = id,
+            OrganisationName = "Mock Green Ltd",
+            ApplicationType = ApplicationOrganisationType.Reprocessor,
+            SiteAddress = "23 Ruby Street, London, E12 3SE",
+            ApplicationReferenceNumber = "MOCK-REF-2025",
+            MaterialName = "Plastic",
+            SubmittedDate = new DateTime(2025, 5, 15),
+            FeeAmount = 2921.00m,
+            Regulator = "EA",
+            PrnTonnage = PrnTonnageType.Upto5000Tonnes,
+        };
+
+        return Task.FromResult(mockPaymentFees);
+    }
+
+    public Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment) => Task.CompletedTask;
+
+    public Task MarkAccreditationAsDulyMadeAsync(Guid accreditationId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest) => Task.CompletedTask;
+
+    public async Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest)
+    {
+        _registrationAccreditations ??= await GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("839544fd-9b08-4823-9277-5615072a6803"), 2025);
+        var accreditation = _registrationAccreditations.Materials
+            .SelectMany(m => m.Accreditations)
+            .FirstOrDefault(a => a.Id == updateAccreditationTaskStatusRequest.AccreditationId);
+
+        var newTask = new AccreditationTask
+        {
+            Id = Guid.NewGuid(),
+            TaskId = 4,
+            TaskName = "Check accreditation status",
+            Status = updateAccreditationTaskStatusRequest.Status,
+            Year = 2025
+        };
+
+        accreditation?.Tasks.Add(newTask);
     }
 
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
