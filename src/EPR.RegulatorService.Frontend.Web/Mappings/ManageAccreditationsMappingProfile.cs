@@ -44,11 +44,12 @@ public class ManageAccreditationsMappingProfile : Profile
             .ForMember(dest => dest.CheckAccreditationStatusTask, opt => opt.Ignore())
             .AfterMap((src, dest) =>
             {
-                dest.PRNTonnageTask = MapAccreditationTask(src.Tasks, "PRN tonnage and authority to issue PRNs");
-                dest.BusinessPlanTask = MapAccreditationTask(src.Tasks, "Business plan");
-                dest.SamplingAndInspectionPlanTask = MapAccreditationTask(src.Tasks, "Sampling and inspection plan");
-                dest.CheckAccreditationStatusTask = MapAccreditationTask(src.Tasks, "Check accreditation status");
+                dest.PRNTonnageTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.PRNTonnage);
+                dest.BusinessPlanTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.BusinessPlan);
+                dest.SamplingAndInspectionPlanTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.SamplingAndInspectionPlan);
+                dest.CheckAccreditationStatusTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.DulyMade);
             });
+
 
         CreateMap<RegistrationTask, AccreditationTaskViewModel>()
             .ForMember(dest => dest.TaskName, opt => opt.MapFrom(src => src.TaskName))
@@ -67,15 +68,15 @@ public class ManageAccreditationsMappingProfile : Profile
         return ApplicationStatus.Started; // fallback
     }
 
-    private static AccreditationTaskViewModel MapAccreditationTask(IEnumerable<AccreditationTask> tasks, string name)
+    private static AccreditationTaskViewModel MapAccreditationTask(IEnumerable<AccreditationTask> tasks, RegulatorTaskType taskName)
     {
-        var match = tasks.FirstOrDefault(t => string.Equals(t.TaskName, name, StringComparison.OrdinalIgnoreCase));
+        var match = tasks.FirstOrDefault(t => t.TaskName == taskName.ToString());
         var status = match?.Status ?? string.Empty;
 
         return new AccreditationTaskViewModel
         {
-            TaskName = MapStringToEnum(name),
-            StatusText = MapTaskStatusText(status),
+            TaskName = taskName,
+            StatusText = MapTaskStatusText(status, taskName),
             StatusCssClass = MapTaskStatusCssClass(status)
         };
     }
@@ -99,6 +100,7 @@ public class ManageAccreditationsMappingProfile : Profile
             "queried" => "Queried",
             "completed" => "Completed",
             "duly made" => "Duly Made",
+            "dulymade" => "Duly Made",
             _ => "Not Started Yet"
         };
 
@@ -108,9 +110,11 @@ public class ManageAccreditationsMappingProfile : Profile
             "completed" => taskName switch
             {
                 RegulatorTaskType.CheckRegistrationStatus => "Duly Made",
+                RegulatorTaskType.DulyMade => "Duly Made",
                 RegulatorTaskType.AssignOfficer => "Officer Assigned",
                 _ => "Reviewed"
             },
+            "approved" => "Approved",
             "queried" => "Queried",
             _ => "Not started yet"
         };
@@ -122,17 +126,8 @@ public class ManageAccreditationsMappingProfile : Profile
             "approved" => "govuk-tag--green",
             "queried" => "govuk-tag--orange",
             "duly made" => "govuk-tag--blue",
+            "dulymade" => "govuk-tag--blue",
             _ => "govuk-tag--grey"
-        };
-
-    private static RegulatorTaskType MapStringToEnum(string name) =>
-        name.ToLowerInvariant() switch
-        {
-            "prn tonnage and authority to issue prns" => RegulatorTaskType.PRNTonnage,
-            "business plan" => RegulatorTaskType.BusinessPlan,
-            "sampling and inspection plan" => RegulatorTaskType.SamplingAndInspectionPlan,
-            "check accreditation status" => RegulatorTaskType.DulyMade,
-            _ => throw new InvalidOperationException($"Unknown accreditation task name: {name}")
         };
 
     private static RegistrationTaskViewModel MapApplicationStatusToViewModel(ApplicationStatus? status) =>

@@ -105,7 +105,7 @@ public class ManageAccreditationsMappingProfileTests
         var prnTask = new AccreditationTask
         {
             Id = Guid.NewGuid(),
-            TaskName = "PRN tonnage and authority to issue PRNs", // ✅ Matches mapping enum logic
+            TaskName = "PRNTonnage", // Matches mapping enum logic
             Status = "Not Started",
             Year = 2026
         };
@@ -113,7 +113,7 @@ public class ManageAccreditationsMappingProfileTests
         var businessPlanTask = new AccreditationTask
         {
             Id = Guid.NewGuid(),
-            TaskName = "Business plan", // ✅ Matches mapping enum logic
+            TaskName = "BusinessPlan", // Matches mapping enum logic
             Status = "Approved",
             Year = 2026
         };
@@ -121,8 +121,16 @@ public class ManageAccreditationsMappingProfileTests
         var samplingTask = new AccreditationTask
         {
             Id = Guid.NewGuid(),
-            TaskName = "Sampling and inspection plan", // ✅ Matches mapping enum logic
+            TaskName = "SamplingAndInspectionPlan", // Matches mapping enum logic
             Status = "Queried",
+            Year = 2026
+        };
+
+        var dulyMadeTask = new AccreditationTask
+        {
+            Id = Guid.NewGuid(),
+            TaskName = "DulyMade", // Matches mapping enum logic
+            Status = "Completed",
             Year = 2026
         };
 
@@ -130,10 +138,10 @@ public class ManageAccreditationsMappingProfileTests
         {
             Id = Guid.NewGuid(),
             ApplicationReference = "APP-456",
-            Status = ApplicationStatus.Granted.ToString(), // ✅ Matching enum string
+            Status = ApplicationStatus.Granted.ToString(), // Matching enum string
             DeterminationDate = DateTime.Today,
             AccreditationYear = 2026,
-            Tasks = new List<AccreditationTask> { prnTask, businessPlanTask, samplingTask }
+            Tasks = new List<AccreditationTask> { prnTask, businessPlanTask, samplingTask, dulyMadeTask }
         };
 
         // Act
@@ -149,7 +157,7 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.AccreditationYear.Should().Be(2026);
 
             viewModel.PRNTonnageTask.Should().NotBeNull();
-            viewModel.PRNTonnageTask!.StatusText.Should().Be("Not Started yet");
+            viewModel.PRNTonnageTask!.StatusText.Should().Be("Not started yet");
             viewModel.PRNTonnageTask.StatusCssClass.Should().Be("govuk-tag--grey");
 
             viewModel.BusinessPlanTask.Should().NotBeNull();
@@ -159,6 +167,10 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.SamplingAndInspectionPlanTask.Should().NotBeNull();
             viewModel.SamplingAndInspectionPlanTask!.StatusText.Should().Be("Queried");
             viewModel.SamplingAndInspectionPlanTask.StatusCssClass.Should().Be("govuk-tag--orange");
+
+            viewModel.CheckAccreditationStatusTask.Should().NotBeNull();
+            viewModel.CheckAccreditationStatusTask!.StatusText.Should().Be("Duly Made");
+            viewModel.CheckAccreditationStatusTask.StatusCssClass.Should().Be("govuk-tag--blue");
 
             viewModel.ShouldDisplay.Should().BeTrue();
         }
@@ -229,20 +241,6 @@ public class ManageAccreditationsMappingProfileTests
         var result = (ApplicationStatus)method.Invoke(null, new object[] { "UNKNOWN_STATUS" });
 
         result.Should().Be(ApplicationStatus.Started);
-    }
-
-    [TestMethod]
-    public void MapStringToEnum_WithUnknownName_ShouldThrow()
-    {
-        var profile = new ManageAccreditationsMappingProfile();
-        var method = typeof(ManageAccreditationsMappingProfile)
-            .GetMethod("MapStringToEnum", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-
-        Action act = () => method.Invoke(null, new object[] { "Unrecognised Task Name" });
-
-        act.Should().Throw<TargetInvocationException>()
-            .WithInnerException<InvalidOperationException>()
-            .WithMessage("Unknown accreditation task name: Unrecognised Task Name");
     }
 
     [TestMethod]
