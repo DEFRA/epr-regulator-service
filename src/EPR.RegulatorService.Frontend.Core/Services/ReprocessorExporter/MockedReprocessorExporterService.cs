@@ -133,6 +133,23 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         });
     }
 
+    public Task<WasteCarrierDetails> GetWasteCarrierDetailsByRegistrationIdAsync(Guid registrationId)
+    {
+        var registration = _registrations.Single(r => r.Id == registrationId);
+
+        var task = registration.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.WasteCarrierBrokerDealerNumber);
+
+        return Task.FromResult(new WasteCarrierDetails
+        {
+            RegistrationId = registration.Id,
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
+            WasteCarrierBrokerDealerNumber = "WCB123456789",
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted,
+            RegulatorRegistrationTaskStatusId = task?.Id
+        });
+    }
+
     public Task MarkAsDulyMadeAsync(Guid registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
@@ -389,7 +406,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             return
             [
                 new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SiteAddressAndContactDetails },
-                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite }
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite },
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteCarrierBrokerDealerNumber }
             ];
         }
 

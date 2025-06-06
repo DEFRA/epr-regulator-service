@@ -27,6 +27,7 @@ public class ReprocessorExporterService(
         GetRegistrationById,
         GetRegistrationMaterialById,
         GetAuthorisedMaterialsByRegistrationId,
+        GetWasteCarrierDetailsByRegistrationId,
         GetWasteLicenceByRegistrationMaterialId,
         GetPaymentFeesByRegistrationMaterialId,
         MarkAsDulyMade,
@@ -137,6 +138,20 @@ public class ReprocessorExporterService(
         var registrationMaterialPaymentFees = await GetEntityFromResponse<RegistrationMaterialPaymentFees>(response);
 
         return registrationMaterialPaymentFees;
+    }
+
+    public async Task<WasteCarrierDetails> GetWasteCarrierDetailsByRegistrationIdAsync(Guid registrationId)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetWasteCarrierDetailsByRegistrationId);
+        string path = pathTemplate.Replace("{id}", registrationId.ToString());
+
+        var response = await httpClient.GetAsync(path);
+
+        var wasteCarrierDetails = await GetEntityFromResponse<WasteCarrierDetails>(response);
+
+        return wasteCarrierDetails;
     }
 
     public async Task MarkAsDulyMadeAsync(Guid registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
