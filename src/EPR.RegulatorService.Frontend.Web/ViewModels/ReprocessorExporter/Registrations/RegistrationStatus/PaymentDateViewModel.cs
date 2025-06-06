@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 using EPR.RegulatorService.Frontend.Web.Validators;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
@@ -10,5 +12,6 @@ public class PaymentDateViewModel : RegistrationStatusViewModelBase
 
     public int? Month { get; init; }
 
+    [Range(2000, 2100, ErrorMessage = "Enter a valid year in YYYY format")]
     public int? Year { get; init; }
 }

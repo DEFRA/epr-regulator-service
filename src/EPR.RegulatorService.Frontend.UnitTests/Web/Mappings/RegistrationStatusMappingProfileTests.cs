@@ -29,11 +29,11 @@ public class RegistrationStatusMappingProfileTests
         // Arrange
         var registrationMaterialPaymentFees = new RegistrationMaterialPaymentFees
         {
-            RegistrationId = 123,
+            RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
             OrganisationName = "Test Org Name",
             ApplicationType = ApplicationOrganisationType.Reprocessor,
             SiteAddress = "Test Site Address",
-            RegistrationMaterialId = 1234,
+            RegistrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163"),
             MaterialName = "Plastic",
             FeeAmount = 2921,
             ApplicationReferenceNumber = "ABC123456",
@@ -41,8 +41,8 @@ public class RegistrationStatusMappingProfileTests
             Regulator = "GB-ENG"
         };
 
-        // Act
-        var registrationStatusSession = _mapper.Map<RegistrationStatusSession>(registrationMaterialPaymentFees);
+            // Act
+            var registrationStatusSession = _mapper.Map<RegistrationStatusSession>(registrationMaterialPaymentFees);
 
         // Assert
         registrationStatusSession.Should().NotBeNull();
@@ -153,6 +153,39 @@ public class RegistrationStatusMappingProfileTests
     }
 
     [TestMethod]
+    public void Map_WhenCalledWithSession_ShouldReturnPaymentReviewViewModelForApplicationStatus()
+    {
+        // Arrange
+        var registrationMaterialPaymentFees = new RegistrationMaterialPaymentFees
+        {
+            RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
+            OrganisationName = "Test Org Name",
+            ApplicationType = ApplicationOrganisationType.Reprocessor,
+            SiteAddress = "Test Site Address",
+            RegistrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163"),
+            MaterialName = "Plastic",
+            FeeAmount = 2921,
+            ApplicationReferenceNumber = "ABC123456",
+            SubmittedDate = DateTime.Now.AddDays(-7),
+            Regulator = "GB-ENG",
+            DulyMadeDate = DateTime.Now.AddDays(-5),
+            DeterminationDate = DateTime.Now.AddDays(+16)
+        };
+        // Act
+        var viewModel = _mapper.Map<PaymentReviewViewModel>(registrationMaterialPaymentFees);
+
+        // Assert
+        viewModel.Should().NotBeNull();
+        viewModel.MaterialName.Should().Be(registrationMaterialPaymentFees.MaterialName);
+        viewModel.SubmittedDate.Should().Be(registrationMaterialPaymentFees.SubmittedDate);
+        viewModel.PaymentMethod.Should().Be(registrationMaterialPaymentFees.PaymentMethod);
+        viewModel.PaymentDate.Should().Be(registrationMaterialPaymentFees.PaymentDate);
+        viewModel.DeterminationDate.Should().Be(registrationMaterialPaymentFees.DeterminationDate);
+        viewModel.DulyMadeDate.Should().Be(registrationMaterialPaymentFees.DulyMadeDate);
+        viewModel.DeterminationWeeks.Should().Be(0);
+    }
+
+    [TestMethod]
     public void Map_WhenCalledWithSession_ShouldReturnOfflinePaymentRequest()
     {
         // Arrange
@@ -172,11 +205,11 @@ public class RegistrationStatusMappingProfileTests
 
     private static RegistrationStatusSession CreateRegistrationStatusSession() => new()
     {
-        RegistrationId = 123,
+        RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
         OrganisationName = "Test Org Name",
         ApplicationType = ApplicationOrganisationType.Reprocessor,
         SiteAddress = "Test Site Address",
-        RegistrationMaterialId = 1234,
+        RegistrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163"),
         MaterialName = "Plastic",
         FeeAmount = 2921,
         ApplicationReferenceNumber = "ABC123456",

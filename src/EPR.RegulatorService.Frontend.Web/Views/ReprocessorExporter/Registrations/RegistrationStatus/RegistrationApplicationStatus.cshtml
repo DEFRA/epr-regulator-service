@@ -1,0 +1,83 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus
+
+@model PaymentReviewViewModel
+
+@{
+    string title = $"{Model.MaterialName} registration application status";
+    ViewData["Title"] = title;
+}
+
+<div class="govuk-width-container ">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+
+                <h1 class="govuk-heading-l">@Model.MaterialName registration application status</h1>
+
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Full Payment received
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                Yes
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Payment method
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.PaymentMethod
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Payment date
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.PaymentDate.ToDisplayDate()
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Date and time submitted
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.SubmittedDate.ToDisplayDateAndTime()
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Duly made date
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.DulyMadeDate.ToDisplayDate()
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Determination date
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                            @(Model.DeterminationWeeks > 0
+                                ? $"{Model.DeterminationDate.ToDisplayDate()} ({Model.DeterminationWeeks} weeks)"
+                                : Model.DeterminationDate.ToDisplayDate())
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                            </dd>
+                        </div>
+                    </dl>
+
+                    <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationId })" class="govuk-button" data-module="govuk-button">
+                        Back
+                    </a>
+            </div>
+        </div>
+    </main>
+</div>

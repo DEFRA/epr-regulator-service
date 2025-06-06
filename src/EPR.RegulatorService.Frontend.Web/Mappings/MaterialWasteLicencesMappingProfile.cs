@@ -6,6 +6,8 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 
 namespace EPR.RegulatorService.Frontend.Web.Mappings;
 
+using Core.Sessions.ReprocessorExporter;
+
 public class MaterialWasteLicencesMappingProfile : Profile
 {
     public MaterialWasteLicencesMappingProfile()
@@ -14,6 +16,8 @@ public class MaterialWasteLicencesMappingProfile : Profile
             .ForMember(dest => dest.ReferenceNumberLabel, opt => opt.MapFrom(src => GetReferenceNumberLabel(src.PermitType)))
             .ForMember(dest => dest.CapacityPeriod, opt => opt.MapFrom(src => GetPeriodText(src.CapacityPeriod)))
             .ForMember(dest => dest.MaximumReprocessingPeriod, opt => opt.MapFrom(src => GetPeriodText(src.MaximumReprocessingPeriod)));
+        
+        CreateMap<RegistrationMaterialWasteLicence, QueryMaterialSession>();
     }
 
     private static string GetReferenceNumberLabel(string permitType) =>

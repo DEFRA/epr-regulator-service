@@ -11,7 +11,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
     public class UpdateMaterialTaskStatusRequest
     {
         public string TaskName { get; set; }                 
-        public int RegistrationMaterialId { get; set; }
+        public Guid RegistrationMaterialId { get; set; }
         public string Status { get; set; }              
         public string? Comments { get; set; }
 

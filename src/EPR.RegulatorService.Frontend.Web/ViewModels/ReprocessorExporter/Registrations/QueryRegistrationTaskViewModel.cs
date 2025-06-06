@@ -5,7 +5,7 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Regis
 
     public class QueryRegistrationTaskViewModel
     {
-        public int RegistrationId { get; set; }
+        public Guid RegistrationId { get; set; }
         public RegulatorTaskType TaskName { get; set; }
         [Required(AllowEmptyStrings = false, ErrorMessage = "Comments must be provided")]
         [MaxLength(500, ErrorMessage = "Comments must be 500 characters or less")]

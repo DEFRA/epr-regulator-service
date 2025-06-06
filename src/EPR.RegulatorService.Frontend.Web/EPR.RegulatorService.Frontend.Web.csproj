@@ -32,9 +32,13 @@
   </Target>
 
   <ItemGroup>
+    <Compile Remove="Controllers\ReprocessorExporter\Accreditation\**" />
     <Compile Remove="out\**" />
+    <Content Remove="Controllers\ReprocessorExporter\Accreditation\**" />
     <Content Remove="out\**" />
+    <EmbeddedResource Remove="Controllers\ReprocessorExporter\Accreditation\**" />
     <EmbeddedResource Remove="out\**" />
+    <None Remove="Controllers\ReprocessorExporter\Accreditation\**" />
     <None Remove="out\**" />
   </ItemGroup>
 
@@ -504,8 +508,5 @@
   <ItemGroup>
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
     <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\ReprocessorExporter\Accreditation\" />
   </ItemGroup>
 </Project>

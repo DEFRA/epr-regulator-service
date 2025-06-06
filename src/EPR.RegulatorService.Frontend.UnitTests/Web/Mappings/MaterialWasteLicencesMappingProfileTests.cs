@@ -1,5 +1,6 @@
 using AutoMapper;
 
+using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Constants.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Mappings;
@@ -38,6 +39,7 @@ public class MaterialWasteLicencesMappingProfileTests
             viewModel.MaterialName.Should().Be(materialWasteLicence.MaterialName);
             viewModel.MaximumReprocessingCapacityTonne.Should().Be(materialWasteLicence.MaximumReprocessingCapacityTonne);
             viewModel.PermitType.Should().Be(materialWasteLicence.PermitType);
+            viewModel.TaskStatus.Should().Be(materialWasteLicence.TaskStatus);
         }
     }
 
@@ -141,6 +143,7 @@ public class MaterialWasteLicencesMappingProfileTests
     {
         var materialWasteLicence = new RegistrationMaterialWasteLicence
         {
+            OrganisationName = "Test Org",
             CapacityPeriod = capacityPeriod,
             CapacityTonne = 50000,
             LicenceNumbers = ["DFG34573453, ABC34573453, GHI34573453"],

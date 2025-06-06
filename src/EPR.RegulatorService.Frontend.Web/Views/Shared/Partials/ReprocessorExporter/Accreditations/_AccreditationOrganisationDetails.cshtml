@@ -1,0 +1,14 @@
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.ManageAccreditationsViewModel
+
+<ul class="govuk-list">
+    <li><strong>Application type:</strong> @Model.ApplicationType</li>
+    @if (!string.IsNullOrEmpty(Model.SiteAddress))
+    {
+        <li><strong>Site address:</strong> @Model.SiteAddress</li>
+    }
+    @if (!string.IsNullOrEmpty(Model.SiteGridReference))
+    {
+        <li><strong>Site grid reference:</strong> @Model.SiteGridReference</li>
+    }
+    <li><strong>Regulator:</strong> @Model.Regulator</li>
+</ul>

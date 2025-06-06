@@ -24,9 +24,12 @@ public class RegistrationStatusMappingProfile : Profile
            .ForMember(dest => dest.Year, opt => opt.MapFrom(src => src.PaymentDate.HasValue ? src.PaymentDate.Value.Year : (int?)null));
         CreateMap<RegistrationStatusSession, PaymentReviewViewModel>()
             .ForMember(dest => dest.DeterminationDate, opt => opt.Ignore())
-            .ForMember(dest => dest.DeterminationWeeks, opt => opt.Ignore()); 
+            .ForMember(dest => dest.DeterminationWeeks, opt => opt.Ignore())
+            .ForMember(dest => dest.DulyMadeDate, opt => opt.Ignore());
         CreateMap<RegistrationStatusSession, OfflinePaymentRequest>()
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.FeeAmount))
             .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.ApplicationReferenceNumber));
+        CreateMap<RegistrationMaterialPaymentFees, PaymentReviewViewModel>()
+            .ForMember(dest => dest.DeterminationWeeks, opt => opt.Ignore());
     }
 }

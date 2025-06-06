@@ -56,10 +56,10 @@ public static class PagePath
     public const string PackagingDataFileDownloadFailed = "packaging-data-file-download-failed";
     public const string PackagingDataFileDownloadSecurityWarning = "packaging-data-file-download-security-warning";
     public const string AuthorisedMaterials = "authorised-materials";
-    public const string ReprocessorExporterRegistrations = "registrations"; 
+    public const string ReprocessorExporterRegistrations = "registrations";
     public const string ManageRegistrations = "manage-registrations";
     public const string Accreditation = "accreditation";
-    public const string UkSiteDetails="uksite-details";
+    public const string UkSiteDetails = "uksite-details";
     public const string InputsAndOutputs = "reprocessing-throughputs";
     public const string MaterialDetails = "materials-contact";
     public const string MaterialWasteLicences = "permits-exemptions";
@@ -78,10 +78,18 @@ public static class PagePath
     public const string PaymentDate = "payment-date";
     public const string PaymentReview = "payment-review";
     public const string MarkAsDulyMade = "duly-made";
+    public const string ReprocessorExporterAccreditations = "accreditations";
+    public const string ManageAccreditations = "manage-accreditations";
+    public const string CheckRegistrationNote = "check-registration-note";
+    public const string AddRegistrationQueryNote = "add-registration-note";
+    public const string AddMaterialQueryNote = "add-material-note";
+    public const string RegistrationApplicationStatus = "registration-application-status";
+    public const string QueryAccreditationTask = "query-accreditation-task";
 
     // Complete tasks paths
     public const string CompleteQueryRegistrationTask = "query-registration-task-complete";
     public const string CompleteQueryMaterialTask = "query-material-task-complete";
+    public const string CompleteQueryAccreditationTask = "query-accreditation-task-complete";
 
     // Non journey paths
     public const string Accessibility = "accessibility";

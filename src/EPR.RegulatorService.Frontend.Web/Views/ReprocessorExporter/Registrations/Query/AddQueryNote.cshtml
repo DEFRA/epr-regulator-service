@@ -1,0 +1,52 @@
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.Query
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model AddQueryNoteViewModel
+
+@{
+  const string title = "Provide query details";
+  ViewData["Title"] = title;
+  var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+}
+
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+        <form asp-controller="Query" asp-action="@Model.FormAction">
+          <h1 class="govuk-heading-l">
+            @if (!string.IsNullOrWhiteSpace(Model.OrganisationName) && !string.IsNullOrWhiteSpace(Model.SiteAddress))
+            {
+              <span class="govuk-caption-l">@Model.OrganisationName: @Model.SiteAddress</span>
+            }
+            <label for="Note">Provide query details</label>
+          </h1>
+          <p class="govuk-body">Details entered here will not be shared with the applicant directly but may be subject to a Freedom of Information (FOI) request. </p>
+
+          @if (!ViewData.ModelState.IsValid)
+          {
+            @await Html.PartialAsync("Partials/Govuk/_ErrorSummary", errorsViewModel)
+          }
+
+          <div class="govuk-form-group@(!ViewData.ModelState.IsValid ? " govuk-form-group--error" : "") govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+            @await Html.PartialAsync("Partials/Govuk/_ErrorList", errorsViewModel)
+            <textarea class="govuk-textarea govuk-js-character-count" id="Note" name="Note" aria-describedby="Note-info" rows="5">@Model.Note</textarea>
+            <div id="Note-info" class="govuk-hint govuk-character-count__message govuk-character-count__status">
+              You can enter up to 500 characters
+            </div>
+            <div class="govuk-hint govuk-character-count__message"></div>
+
+          </div>
+
+          <button type="submit" class="govuk-button govuk-body" data-module="govuk-button">
+            Add query note
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
