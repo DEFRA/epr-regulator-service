@@ -8,6 +8,6 @@ public class AddQueryNoteViewModel
     public string? SiteAddress { get; init; }
     public string? FormAction { get; set; }
     [Required(ErrorMessage = "Enter query details")]
-    [MaxLength(500, ErrorMessage = "Comments must be 500 characters or less")]
+    [MaxLength(500, ErrorMessage = "Entry exceeds character maximum")]
     public string? Note { get; set; }
 }
