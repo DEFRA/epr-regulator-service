@@ -31,7 +31,7 @@ public class ReprocessorExporterServiceTests
     private const string GetRegistrationMaterialByIdPath = "v{apiVersion}/registrationMaterials/{id}";
     private const string GetSiteAddressByRegistrationIdPath = "v{apiVersion}/registrations/{id}/siteAddress";
     private const string GetAuthorisedMaterialsByRegistrationId = "v{apiVersion}/registrations/{id}/authorisedMaterial";
-    private const string GetWasteCarrierDetailsByRegistrationId = "v{apiVersion}/registration/{id}/wasteCarrier";
+    private const string GetWasteCarrierDetailsByRegistrationId = "v{apiVersion}/registrations/{id}/wasteCarrier";
     private const string GetWasteLicenceByRegistrationMaterialId = "v{apiVersion}/registrationMaterials/{id}/wasteLicences";
     private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
     private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
