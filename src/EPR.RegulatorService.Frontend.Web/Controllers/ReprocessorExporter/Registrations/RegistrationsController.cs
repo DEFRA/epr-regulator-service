@@ -106,8 +106,7 @@ public class RegistrationsController(
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
     }
-
-
+    
     [HttpGet]
     [Route(PagePath.WasteCarrierDetails)]
     public async Task<IActionResult> WasteCarrierDetails(Guid registrationId)
