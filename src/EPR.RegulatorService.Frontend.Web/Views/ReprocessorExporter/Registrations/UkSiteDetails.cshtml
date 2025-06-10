@@ -28,7 +28,7 @@
                                 Site address
                             </dt>
                             <dd class="govuk-summary-list__value">
-                               @Model.SiteAddress
+                                @Model.SiteAddress
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -49,15 +49,31 @@
                         </div>
                     </dl>
                     <br>
-                    <div class="govuk-button-group !-margin-top-6">
-                        <button type="submit" class="govuk-button" formmethod="post" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteUkSiteDetails" asp-route-registrationId="@Model.RegistrationId">
-                            Mark as reviewed
-                        </button>
+                    @if (Model.TaskStatus != RegulatorTaskStatus.Completed)
+                    {
+                        <div class="govuk-button-group !-margin-top-6">
+                            <button type="submit" class="govuk-button" formmethod="post" data-module="govuk-button" asp-controller="Registrations" asp-action="CompleteUkSiteDetails" asp-route-registrationId="@Model.RegistrationId">
+                              Mark as reviewed
+                            </button>
 
-                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model.RegistrationId, taskName = RegulatorTaskType.SiteAddressAndContactDetails })">
-                            Query the site address
-                        </a>
-                    </div>
+                            @if (Model.TaskStatus == RegulatorTaskStatus.Queried)
+                            {
+                                <a href="@Url.Action("AddRegistrationQueryNote", "Query")" class="govuk-button govuk-button--secondary">
+                                    Add a query note
+                                </a>
+                                
+                                <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationId })" class="govuk-button govuk-button--secondary">
+                                  Back to application
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model.RegistrationId, taskName = RegulatorTaskType.SiteAddressAndContactDetails })">
+                                  Query the site address
+                                </a>
+                            }
+                        </div>
+                    }
                 </form>
             </div>
         </div>

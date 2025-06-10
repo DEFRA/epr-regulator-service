@@ -29,7 +29,7 @@ public class ApplicationUpdateMappingProfileTests
         // Arrange
         var registrationMaterial = new RegistrationMaterialDetail
         {
-            Id = 1,
+            Id = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             MaterialName = "Plastic",
             Status = ApplicationStatus.Granted
         };
@@ -94,8 +94,8 @@ public class ApplicationUpdateMappingProfileTests
     {
         var applicationUpdateSession = new ApplicationUpdateSession
         {
-            RegistrationMaterialId = 1,
-            RegistrationId = 10,
+            RegistrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
+            RegistrationId = Guid.Parse("E8D23BC1-5086-44C3-9220-E5D56BBF1315"),
             MaterialName = "Plastic",
             Status = ApplicationStatus.Granted
         };
