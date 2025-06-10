@@ -36,13 +36,22 @@ public class ReprocessorExporterServiceTests
     private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
     private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
     private const string UpdateApplicationTaskStatus = "v{apiVersion}/regulatorApplicationTaskStatus";
-    private const string GetReprocessingIOByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/reprocessingIO";
-    private const string GetSamplingPlanByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/samplingPlan";
-    private const string GetPaymentFeesByRegistrationMaterialIdPath = "v{apiVersion}/registrationMaterials/{id}/paymentFees";
+
+    private const string GetReprocessingIOByRegistrationMaterialIdPath =
+        "v{apiVersion}/registrationMaterials/{id}/reprocessingIO";
+
+    private const string GetSamplingPlanByRegistrationMaterialIdPath =
+        "v{apiVersion}/registrationMaterials/{id}/samplingPlan";
+
+    private const string GetPaymentFeesByRegistrationMaterialIdPath =
+        "v{apiVersion}/registrationMaterials/{id}/paymentFees";
+
     private const string MarkAsDulyMadePath = "v{apiVersion}/registrationMaterials/{id}/markAsDulyMade";
     private const string SubmitOfflinePaymentPath = "v{apiVersion}/registrationMaterials/offlinePayment";
     private const string GetRegistrationByIdWithAccreditations = "v{apiVersion}/registrations/{id}/accreditations";
     private const string UpdateAccreditationTaskStatus = "v{apiVersion}/regulatorAccreditationTaskStatus";
+
+    
 
     private ReprocessorExporterService _service; // System under test
 

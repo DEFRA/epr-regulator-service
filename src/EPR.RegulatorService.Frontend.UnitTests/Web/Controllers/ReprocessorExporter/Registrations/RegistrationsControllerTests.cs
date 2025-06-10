@@ -679,6 +679,11 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync(
                 new RegistrationMaterialSamplingPlan { OrganisationName = "Test Org", MaterialName = "Plastic" });
 
+        _reprocessorExporterServiceMock
+            .Setup(s => s.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(
+                new RegistrationMaterialSamplingPlan { OrganisationName = "Test Org", MaterialName = "Plastic" });
+
         // Act
         var result = await _controller.SamplingInspection(registrationMaterialId);
 
