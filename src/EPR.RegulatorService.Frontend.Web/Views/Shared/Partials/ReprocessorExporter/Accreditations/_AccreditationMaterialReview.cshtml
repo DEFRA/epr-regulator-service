@@ -5,61 +5,61 @@
 {
 	@if (AccreditationDisplayHelper.ShouldDisplayMaterial(material.RegistrationStatusRaw, material.Accreditation))
 	{
-		<h2 class="govuk-heading-m govuk-!-margin-top-6">
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">
 			Review @(material.MaterialName) accreditation
-		</h2>
+    </h2>
 
-		<p class="govuk-body">
+    <p class="govuk-body">
 			Year: @material.Accreditation!.AccreditationYear<br />
-			Submitted by: Anna Faris (Site administrator)<br />
-			Contact person: Freda Pinto (Site manager)<br />
-			Telephone number and email: 02087651236
-			<a href="mailto:freda.pinto@greenltd.com" class="govuk-link govuk-link--no-visited-state">freda.pinto@greenltd.com</a>
-		</p>
+        Submitted by: Anna Faris (Site administrator)<br />
+        Contact person: Freda Pinto (Site manager)<br />
+        Telephone number and email: 02087651236
+        <a href="mailto:freda.pinto@greenltd.com" class="govuk-link govuk-link--no-visited-state">freda.pinto@greenltd.com</a>
+    </p>
 
-		<p class="govuk-body">
-			<strong>Determination date:</strong>
+    <p class="govuk-body">
+        <strong>Determination date:</strong>
 			@if (material.Accreditation.DeterminationDate != null)
-			{
+        {
 				@material.Accreditation.DeterminationDate.Value.ToString("d MMM yyyy")
-			}
-			else
-			{
-				<span>Not set yet</span>
-			}
-		</p>
+        }
+        else
+        {
+            <span>Not set yet</span>
+        }
+    </p>
 
-		<ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
+    <ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
 			@if (material.Accreditation.PRNTonnageTask != null)
-			{
-				<li class="app-task-list__item">
-					<span class="app-task-list__task-name">
-						<a href="#">PRN tonnage and authority to issue PRNs</a>
-					</span>
+        {
+            <li class="app-task-list__item">
+                <span class="app-task-list__task-name">
+                    <a href="#">PRN tonnage and authority to issue PRNs</a>
+                </span>
 					<strong class="govuk-tag @material.Accreditation.PRNTonnageTask.StatusCssClass app-task-list__tag">
 						@material.Accreditation.PRNTonnageTask.StatusText
-					</strong>
-				</li>
-			}
+                </strong>
+            </li>
+        }
 
 			@if (material.Accreditation.BusinessPlanTask != null)
-			{
-				<li class="app-task-list__item">
-					<span class="app-task-list__task-name">
-						<a href="#">Business plan</a>
-					</span>
+        {
+            <li class="app-task-list__item">
+                <span class="app-task-list__task-name">
+                    <a href="#">Business plan</a>
+                </span>
 					<strong class="govuk-tag @material.Accreditation.BusinessPlanTask.StatusCssClass app-task-list__tag">
 						@material.Accreditation.BusinessPlanTask.StatusText
-					</strong>
-				</li>
-			}
+                </strong>
+            </li>
+        }
 
 			@if (material.Accreditation.SamplingAndInspectionPlanTask != null)
-			{
-				<li class="app-task-list__item">
-					<span class="app-task-list__task-name">
-						<a href="#">Sampling and inspection plan</a>
-					</span>
+        {
+            <li class="app-task-list__item">
+                <span class="app-task-list__task-name">
+                    <a href="#">Sampling and inspection plan</a>
+                </span>
 					<strong class="govuk-tag @material.Accreditation.SamplingAndInspectionPlanTask.StatusCssClass app-task-list__tag">
 						@material.Accreditation.SamplingAndInspectionPlanTask.StatusText
 					</strong>
@@ -82,16 +82,16 @@
 					</span>
 					<strong class="govuk-tag @material.Accreditation.EvidenceOfBroadlyEquivalentStandardsTask.StatusCssClass app-task-list__tag">
 						@material.Accreditation.EvidenceOfBroadlyEquivalentStandardsTask.StatusText
-					</strong>
-				</li>
-			}
+                </strong>
+            </li>
+        }
 
-			<li class="app-task-list__item">
-				<span class="app-task-list__task-name">
-					<a href="#">Update accreditation status</a>
-				</span>
-				<strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started yet</strong>
-			</li>
-		</ul>
-	}
+        <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                <a href="#">Update accreditation status</a>
+            </span>
+            <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started yet</strong>
+        </li>
+    </ul>
+}
 }
