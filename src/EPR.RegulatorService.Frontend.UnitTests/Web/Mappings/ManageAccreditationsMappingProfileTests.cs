@@ -146,7 +146,7 @@ public class ManageAccreditationsMappingProfileTests
         {
             Id = Guid.NewGuid(),
             TaskName = "EvidenceOfBroadlyEquivalentStandards", // Matches mapping enum logic
-            Status = "Queried",
+            Status = "Completed",
             Year = 2026
         };
 
@@ -193,8 +193,8 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.OverseasReprocessingSitesTask.StatusCssClass.Should().Be("govuk-tag--blue");
 
             viewModel.EvidenceOfBroadlyEquivalentStandardsTask.Should().NotBeNull();
-            viewModel.EvidenceOfBroadlyEquivalentStandardsTask!.StatusText.Should().Be("Queried");
-            viewModel.EvidenceOfBroadlyEquivalentStandardsTask.StatusCssClass.Should().Be("govuk-tag--orange");
+            viewModel.EvidenceOfBroadlyEquivalentStandardsTask!.StatusText.Should().Be("Evidence of Broadly Equivalent Standards");
+            viewModel.EvidenceOfBroadlyEquivalentStandardsTask.StatusCssClass.Should().Be("govuk-tag--blue");
 
             viewModel.ShouldDisplay.Should().BeTrue();
         }
