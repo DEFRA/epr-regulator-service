@@ -17,14 +17,11 @@
 
                 @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Accreditations/_AccreditationOrganisationDetails.cshtml", Model)
 
-                @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Accreditations/_AccreditationRegistrationStatus.cshtml", Model.Materials)
+                @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Accreditations/_AccreditationRegistrationStatus.cshtml", Model)
 
                 @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Accreditations/_AccreditationCheckStatus.cshtml", Model)
 
-                @foreach (var material in Model.Materials)
-                {
-                    @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Accreditations/_AccreditationMaterialReview.cshtml", material)
-                }
+                @await Html.PartialAsync("~/Views/Shared/Partials/ReprocessorExporter/Accreditations/_AccreditationMaterialReview.cshtml", Model)
 
             </div>
         </div>

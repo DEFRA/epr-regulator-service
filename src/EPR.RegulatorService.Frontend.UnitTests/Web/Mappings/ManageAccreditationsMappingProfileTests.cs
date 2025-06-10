@@ -134,6 +134,22 @@ public class ManageAccreditationsMappingProfileTests
             Year = 2026
         };
 
+        var overseasReprocessing = new AccreditationTask
+        {
+            Id = Guid.NewGuid(),
+            TaskName = "OverseasReprocessingSites", // Matches mapping enum logic
+            Status = "Completed",
+            Year = 2026
+        };
+
+        var evidenceOfBroadlyEquivalentStandards = new AccreditationTask
+        {
+            Id = Guid.NewGuid(),
+            TaskName = "EvidenceOfBroadlyEquivalentStandards", // Matches mapping enum logic
+            Status = "Queried",
+            Year = 2026
+        };
+
         var accreditation = new Accreditation
         {
             Id = Guid.NewGuid(),
@@ -141,7 +157,7 @@ public class ManageAccreditationsMappingProfileTests
             Status = ApplicationStatus.Granted.ToString(), // Matching enum string
             DeterminationDate = DateTime.Today,
             AccreditationYear = 2026,
-            Tasks = new List<AccreditationTask> { prnTask, businessPlanTask, samplingTask, dulyMadeTask }
+            Tasks = new List<AccreditationTask> { prnTask, businessPlanTask, samplingTask, dulyMadeTask, overseasReprocessing, evidenceOfBroadlyEquivalentStandards }
         };
 
         // Act
@@ -171,6 +187,14 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.CheckAccreditationStatusTask.Should().NotBeNull();
             viewModel.CheckAccreditationStatusTask!.StatusText.Should().Be("Duly Made");
             viewModel.CheckAccreditationStatusTask.StatusCssClass.Should().Be("govuk-tag--blue");
+
+            viewModel.OverseasReprocessingSitesTask.Should().NotBeNull();
+            viewModel.OverseasReprocessingSitesTask!.StatusText.Should().Be("Overseas Reprocessing Sites");
+            viewModel.OverseasReprocessingSitesTask.StatusCssClass.Should().Be("govuk-tag--blue");
+
+            viewModel.EvidenceOfBroadlyEquivalentStandardsTask.Should().NotBeNull();
+            viewModel.EvidenceOfBroadlyEquivalentStandardsTask!.StatusText.Should().Be("Queried");
+            viewModel.EvidenceOfBroadlyEquivalentStandardsTask.StatusCssClass.Should().Be("govuk-tag--orange");
 
             viewModel.ShouldDisplay.Should().BeTrue();
         }

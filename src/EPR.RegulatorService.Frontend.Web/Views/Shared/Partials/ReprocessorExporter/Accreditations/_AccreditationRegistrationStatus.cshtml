@@ -1,14 +1,14 @@
 @using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
-@model List<EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditedMaterialViewModel>
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.ManageAccreditationsViewModel
 
 <h2 class="govuk-heading-m">Registration status</h2>
 <ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
-    @foreach (var material in Model.Where(m => m.ShouldDisplay))
+	@foreach (var material in Model.Materials.Where(m => m.ShouldDisplay))
     {
         <li class="app-task-list__item">
             <span class="app-task-list__task-name">
-                <a href="#">@material.MaterialName</a>
-            </span>
+				<a href="@Url.ActionLink("Index", "ManageRegistrations", new { id = Model.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state">@material.MaterialName</a>
+			</span>
 
             <strong class="govuk-tag @material.RegistrationStatusTask.StatusCssClass app-task-list__tag">
                 @material.RegistrationStatusTask.StatusText
