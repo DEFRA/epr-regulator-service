@@ -20,6 +20,8 @@ using Moq.Protected;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
 
+using Frontend.Core.Enums;
+
 [TestClass]
 public class ReprocessorExporterServiceTests
 {
@@ -51,11 +53,8 @@ public class ReprocessorExporterServiceTests
     private const string SubmitOfflinePaymentPath = "v{apiVersion}/registrationMaterials/offlinePayment";
     private const string GetRegistrationByIdWithAccreditations = "v{apiVersion}/registrations/{id}/accreditations";
     private const string UpdateAccreditationTaskStatus = "v{apiVersion}/regulatorAccreditationTaskStatus";
-
-    
-
+    private const string GetSamplingPlanByAccreditationIdPath = "v{apiVersion}/accreditations/{id}/samplingPlan";
     private ReprocessorExporterService _service; // System under test
-
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
     private Mock<IOptions<ReprocessorExporterFacadeApiConfig>> _optionsMock;
     private HttpClient _httpClient;
@@ -100,6 +99,8 @@ public class ReprocessorExporterServiceTests
                 { "SubmitOfflinePayment", SubmitOfflinePaymentPath },
                 { "GetRegistrationByIdWithAccreditations", GetRegistrationByIdWithAccreditations },
                 { "UpdateAccreditationTaskStatus", UpdateAccreditationTaskStatus },
+                { "GetSamplingPlanByAccreditationId", GetSamplingPlanByAccreditationIdPath }
+
             }
         };
 
@@ -632,6 +633,51 @@ public class ReprocessorExporterServiceTests
     }
 
     [TestMethod]
+    public async Task DownloadSamplingAndInspectionFileAsync_WithAccreditationSubmissionType_callsAccreditationEndpoint()
+    {
+        // Arrange
+        var fileId = Guid.NewGuid();
+        const string filename = "test-document.pdf";
+        var request = new FileDownloadRequest { FileId = fileId, FileName = filename, SubmissionType = SubmissionType.Accreditation };
+
+        var expectedContent = Encoding.UTF8.GetBytes("Accreditation Sampling & Inspection PDF file content");
+        const string contentType = "application/octet-stream";
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent(expectedContent)
+        };
+        httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+
+        _optionsMock.Object.Value.Endpoints.Add("DownloadAccreditationSamplingInspectionFile", "v{apiVersion}/accreditations/file-download");
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.RequestUri != null &&
+                    req.RequestUri.ToString().EndsWith("/accreditations/file-download")),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(httpResponseMessage);
+
+        // Act
+        var result = await _service.DownloadSamplingInspectionFile(request);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseBytes = await result.Content.ReadAsByteArrayAsync();
+        using (new AssertionScope())
+        {
+            responseBytes.Should().BeEquivalentTo(expectedContent);
+            result.Content.Headers.ContentType?.MediaType.Should().Be(contentType);
+        }
+    }
+
+
+    [TestMethod]
     public async Task GetRegistrationByIdWithAccreditationsAsync_WhenNoYearProvided_ReturnsAllAccreditations()
     {
         var registrationId = Guid.NewGuid();
@@ -1075,6 +1121,64 @@ public class ReprocessorExporterServiceTests
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorAccreditationTaskStatusAsync(request));
+    }
+    [TestMethod]
+    public async Task GetSamplingPlanByAccreditationIdAsync_WhenSuccessResponse_ReturnsSamplingPlan()
+    {
+        // Arrange
+        var accreditationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
+
+        var expectedSamplingPlan = new AccreditationSamplingPlan
+        {
+            MaterialName = "Plastic",
+            Files = new List<AccreditationSamplingPlanFile>
+            {
+                new AccreditationSamplingPlanFile
+                {
+                    Filename = $"FileName.pdf",
+                    FileUploadType = "",
+                    FileUploadStatus = "",
+                    DateUploaded = DateTime.UtcNow,
+                    UpdatedBy = "Test User",
+                    FileId = Guid.NewGuid().ToString()
+                }
+            }
+        };
+
+        string expectedPath = GetSamplingPlanByAccreditationIdPath.Replace("{apiVersion}", ApiVersion.ToString())
+                                                                .Replace("{id}", accreditationId.ToString());
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(JsonSerializer.Serialize(expectedSamplingPlan, _jsonSerializerOptions))
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act
+        var result = await _service.GetSamplingPlanByAccreditationIdAsync(accreditationId);
+
+        // Assert
+        Assert.IsNotNull(result);
+    }
+
+    [TestMethod]
+    public async Task GetSamplingPlanByAccreditationIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+    {
+        // Arrange
+        var accreditationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+
+        string expectedPath = GetSamplingPlanByAccreditationIdPath.Replace("{apiVersion}", ApiVersion.ToString())
+                                                                .Replace("{id}", accreditationId.ToString());
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetSamplingPlanByAccreditationIdAsync(accreditationId));
     }
 
     public async Task AddMaterialQueryNote_WhenResponseCodeIsNotSuccess_ShouldThrowException()
