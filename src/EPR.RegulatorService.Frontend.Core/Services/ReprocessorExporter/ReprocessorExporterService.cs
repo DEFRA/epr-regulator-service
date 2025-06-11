@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -7,11 +6,12 @@ using System.Text.Json.Serialization;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Converters;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
-using Microsoft.Identity.Web;
 using Microsoft.Extensions.Options;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
+using Microsoft.Identity.Web;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
@@ -22,6 +22,8 @@ public class ReprocessorExporterService(
 {
     private enum Endpoints
     {
+        AddMaterialQueryNote,
+        AddRegistrationQueryNote,
         GetRegistrationById,
         GetRegistrationMaterialById,
         GetAuthorisedMaterialsByRegistrationId,
@@ -35,7 +37,12 @@ public class ReprocessorExporterService(
         GetSamplingPlanByRegistrationMaterialId,
         UpdateApplicationTaskStatus,
         GetSiteAddressByRegistrationId,
-        DownloadSamplingInspectionFile
+        DownloadSamplingInspectionFile,
+        GetRegistrationByIdWithAccreditations,
+        GetPaymentFeesByAccreditationId,
+        SubmitAccreditationOfflinePayment,
+        MarkAccreditationAsDulyMade,
+        UpdateAccreditationTaskStatus
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -48,26 +55,26 @@ public class ReprocessorExporterService(
         }
     };
 
-    public async Task<Registration> GetRegistrationByIdAsync(int id)
+    public async Task<Registration> GetRegistrationByIdAsync(Guid id)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationById);
-        string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
-        
+        string path = pathTemplate.Replace("{id}", id.ToString());
+
         var response = await httpClient.GetAsync(path);
-        
+
         var registration = await GetEntityFromResponse<Registration>(response);
 
         return registration;
     }
 
-    public async Task<SiteDetails> GetSiteDetailsByRegistrationIdAsync(int id)
+    public async Task<SiteDetails> GetSiteDetailsByRegistrationIdAsync(Guid id)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetSiteAddressByRegistrationId);
-        string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", id.ToString());
 
         var response = await httpClient.GetAsync(path);
 
@@ -76,26 +83,26 @@ public class ReprocessorExporterService(
         return siteDetails;
     }
 
-    public async Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(int id)
+    public async Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(Guid id)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationMaterialById);
-        string path = pathTemplate.Replace("{id}", id.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", id.ToString());
 
         var response = await httpClient.GetAsync(path);
 
         var registrationMaterialDetail = await GetEntityFromResponse<RegistrationMaterialDetail>(response);
-        
+
         return registrationMaterialDetail;
     }
 
-    public async Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(int registrationId)
+    public async Task<RegistrationAuthorisedMaterials> GetAuthorisedMaterialsByRegistrationIdAsync(Guid registrationId)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetAuthorisedMaterialsByRegistrationId);
-        string path = pathTemplate.Replace("{id}", registrationId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", registrationId.ToString());
 
         var response = await httpClient.GetAsync(path);
 
@@ -104,12 +111,12 @@ public class ReprocessorExporterService(
         return registrationAuthorisedMaterials;
     }
 
-    public async Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(int registrationMaterialId)
+    public async Task<RegistrationMaterialWasteLicence> GetWasteLicenceByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetWasteLicenceByRegistrationMaterialId);
-        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString());
 
         var response = await httpClient.GetAsync(path);
 
@@ -118,12 +125,12 @@ public class ReprocessorExporterService(
         return registrationMaterialWasteLicence;
     }
 
-    public async Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(int registrationMaterialId)
+    public async Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetPaymentFeesByRegistrationMaterialId);
-        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString());
 
         var response = await httpClient.GetAsync(path);
 
@@ -132,12 +139,12 @@ public class ReprocessorExporterService(
         return registrationMaterialPaymentFees;
     }
 
-    public async Task MarkAsDulyMadeAsync(int registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
+    public async Task MarkAsDulyMadeAsync(Guid registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAsDulyMade);
-        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString());
 
         string jsonContent = JsonSerializer.Serialize(dulyMadeRequest, _jsonSerializerOptions);
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
@@ -152,7 +159,7 @@ public class ReprocessorExporterService(
         await PrepareAuthenticatedClient();
 
         string path = GetVersionedEndpoint(Endpoints.SubmitOfflinePayment);
-        
+
         string jsonContent = JsonSerializer.Serialize(offlinePayment, _jsonSerializerOptions);
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
@@ -161,12 +168,12 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task UpdateRegistrationMaterialOutcomeAsync(int registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
+    public async Task UpdateRegistrationMaterialOutcomeAsync(Guid registrationMaterialId, RegistrationMaterialOutcomeRequest registrationMaterialOutcomeRequest)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationMaterialOutcome);
-        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString());
 
         string jsonContent = JsonSerializer.Serialize(registrationMaterialOutcomeRequest, _jsonSerializerOptions);
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
@@ -180,7 +187,7 @@ public class ReprocessorExporterService(
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);        
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateRegistrationTaskStatus);
 
         var response = await httpClient.PostAsJsonAsync(pathTemplate, updateRegistrationTaskStatusRequest);
 
@@ -197,12 +204,12 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(int registrationMaterialId)
+    public async Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetReprocessingIOByRegistrationMaterialId);
-        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString());
 
         var response = await httpClient.GetAsync(path);
 
@@ -211,12 +218,12 @@ public class ReprocessorExporterService(
         return registrationMaterialReprocessingIO;
     }
 
-    public async Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(int registrationMaterialId)
+    public async Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetSamplingPlanByRegistrationMaterialId);
-        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString(CultureInfo.InvariantCulture));
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString());
 
         var response = await httpClient.GetAsync(path);
 
@@ -238,6 +245,149 @@ public class ReprocessorExporterService(
             throw new NotFoundException("Unable to download file.");
         }
         return response;
+    }
+
+    public async Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null)
+    {
+        await PrepareAuthenticatedClient();
+
+        // Backend may already filter by year (if supported), so we pass it along
+        var registration = await GetAccreditationRegistrationAsync(id, year);
+
+        // Defensive fallback: in case backend ignores or misapplies year filter
+        if (year.HasValue)
+        {
+            ApplySingleYearAccreditationFilter(registration, year.Value);
+        }
+
+        return registration;
+    }
+
+    private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
+    {
+        bool hasAtLeastOneAccreditation = false;
+
+        foreach (var material in registration.Materials)
+        {
+            var matchingAccreditations = material.Accreditations
+                .Where(a => a.AccreditationYear == year)
+                .ToList();
+
+            if (matchingAccreditations.Count > 1)
+            {
+                throw new InvalidOperationException(
+                    $"More than one accreditation found for MaterialId {material.Id} in year {year}.");
+            }
+
+            if (matchingAccreditations.Count == 1)
+            {
+                hasAtLeastOneAccreditation = true;
+                material.Accreditations = matchingAccreditations;
+            }
+            else
+            {
+                // No matching accreditations � clear out the list for cleanliness
+                material.Accreditations = new List<Accreditation>();
+            }
+        }
+
+        if (!hasAtLeastOneAccreditation)
+        {
+            throw new InvalidOperationException(
+                $"No accreditations found for any materials in year {year}.");
+        }
+    }
+
+    private async Task<Registration> GetAccreditationRegistrationAsync(Guid id, int? year)
+    {
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationByIdWithAccreditations);
+        string path = pathTemplate.Replace("{id}", id.ToString());
+
+        if (year.HasValue)
+        {
+            path += $"?year={year.Value}";
+        }
+
+        var response = await httpClient.GetAsync(path);
+        return await GetEntityFromResponse<Registration>(response);
+    }
+
+    public async Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationIdAsync(Guid id)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetPaymentFeesByAccreditationId);
+        string path = pathTemplate.Replace("{id}", id.ToString());
+
+        var response = await httpClient.GetAsync(path);
+
+        var accreditationMaterialPaymentFees = await GetEntityFromResponse<AccreditationMaterialPaymentFees>(response);
+
+        return accreditationMaterialPaymentFees;
+    }
+
+    public async Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment)
+    {
+        await PrepareAuthenticatedClient();
+
+        string path = GetVersionedEndpoint(Endpoints.SubmitAccreditationOfflinePayment);
+
+        string jsonContent = JsonSerializer.Serialize(offlinePayment, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task MarkAccreditationAsDulyMadeAsync(Guid accreditationId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.MarkAccreditationAsDulyMade);
+        string path = pathTemplate.Replace("{id}", accreditationId.ToString());
+
+        string jsonContent = JsonSerializer.Serialize(dulyMadeRequest, _jsonSerializerOptions);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        var response = await httpClient.PostAsync(path, content);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.UpdateAccreditationTaskStatus);
+
+        var response = await httpClient.PostAsJsonAsync(pathTemplate, updateAccreditationTaskStatusRequest);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.AddMaterialQueryNote);
+        string path = pathTemplate.Replace("{id}", regulatorApplicationTaskStatusId.ToString());
+
+        var response = await httpClient.PostAsJsonAsync(path, addNoteRequest);
+
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.AddRegistrationQueryNote);
+        string path = pathTemplate.Replace("{id}", regulatorRegistrationTaskStatusId.ToString());
+
+        var response = await httpClient.PostAsJsonAsync(path, addNoteRequest);
+
+        response.EnsureSuccessStatusCode();
     }
 
     private async Task PrepareAuthenticatedClient()

@@ -1,18 +1,13 @@
-using AutoMapper;
-
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
-using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
-using EPR.RegulatorService.Frontend.Web.Sessions;
 
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using FluentAssertions.Execution;
@@ -21,55 +16,30 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
 [TestClass]
-public class ApplicationUpdateControllerTests
+public class ApplicationUpdateControllerTests : RegistrationControllerTestBase
 {
     private ApplicationUpdateController _applicationUpdateController; // System under test
-
-    private Mock<ISessionManager<JourneySession>> _sessionManagerMock;
-    private Mock<IMapper> _mapperMock;
-    private Mock<IReprocessorExporterService> _reprocessorExporterServiceMock;
-
-    private JourneySession _journeySession;
 
     [TestInitialize]
     public void TestInitialize()
     {
-        const int registrationMaterialId = 123;
-
-        _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
-        _mapperMock = new Mock<IMapper>();
-        _reprocessorExporterServiceMock = new Mock<IReprocessorExporterService>();
+        CreateCommonMocks();
+        CreateSessionMock();
 
         var validatorMock = new Mock<IValidator<IdRequest>>();
-        var configurationSectionMock = new Mock<IConfigurationSection>();
-        var configurationMock = new Mock<IConfiguration>();
-        
-        configurationSectionMock
-            .Setup(section => section.Value)
-            .Returns("/regulators");
+        var configurationMock = CreateConfigurationMock();
 
-        configurationMock
-            .Setup(config => config.GetSection(ConfigKeys.PathBase))
-            .Returns(configurationSectionMock.Object);
-
-        _journeySession = new JourneySession
-        {
-            ReprocessorExporterSession = { ApplicationUpdateSession = CreateApplicationUpdateSession(registrationMaterialId) }
-        };
-
-        _sessionManagerMock
-            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync(_journeySession);
-
+        Guid registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+        _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = CreateApplicationUpdateSession(registrationMaterialId);
+    
         _applicationUpdateController = new ApplicationUpdateController(
             _mapperMock.Object,
             validatorMock.Object,
             _reprocessorExporterServiceMock.Object,
             _sessionManagerMock.Object,
-        configurationMock.Object );
-
-        var httpContextMock = new Mock<HttpContext>();
-        _applicationUpdateController.ControllerContext.HttpContext = httpContextMock.Object;
+            configurationMock.Object);
+        
+        _applicationUpdateController.ControllerContext.HttpContext = _httpContextMock.Object;
     }
 
     [TestMethod]
@@ -81,14 +51,14 @@ public class ApplicationUpdateControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(1));
+        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
     }
 
     [TestMethod]
     public async Task ApplicationUpdate_WhenCalledWithIdAndApplicationUpdateSessionIsNull_ShouldCreateNewSessionFromRegistrationMaterialDetail()
     {
         // Arrange
-        var registrationMaterial = CreateRegistrationMaterialDetail(123);
+        var registrationMaterial = CreateRegistrationMaterialDetail(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"));
 
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = null;
 
@@ -116,7 +86,7 @@ public class ApplicationUpdateControllerTests
             .Returns(expectedViewModel);
 
         // Act
-        var response = await _applicationUpdateController.ApplicationUpdate(1);
+        var response = await _applicationUpdateController.ApplicationUpdate(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
         // Assert
         using (new AssertionScope())
@@ -348,19 +318,19 @@ public class ApplicationUpdateControllerTests
         }
     }
 
-    private static RegistrationMaterialDetail CreateRegistrationMaterialDetail(int registrationMaterialId) =>
+    private static RegistrationMaterialDetail CreateRegistrationMaterialDetail(Guid registrationMaterialId) =>
         new()
         {
             Id = registrationMaterialId,
-            RegistrationId = 1,
+            RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             MaterialName = "Plastic"
         };
 
-    private static ApplicationUpdateSession CreateApplicationUpdateSession(int registrationMaterialId) =>
+    private static ApplicationUpdateSession CreateApplicationUpdateSession(Guid registrationMaterialId) =>
         new()
         {
             RegistrationMaterialId = registrationMaterialId,
-            RegistrationId = 1,
+            RegistrationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"),
             MaterialName = "Plastic"
         };
 }
