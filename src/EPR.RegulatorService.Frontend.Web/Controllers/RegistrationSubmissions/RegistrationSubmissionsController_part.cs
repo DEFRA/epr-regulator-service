@@ -27,7 +27,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 PageNumber = 1,
                 PageSize = 20,
                 NationId = nationId,
-                Show2026RelevantYearFilter = _registrationSubmissionOptions.Show2026RelevantYearFilter
+                Show2026RelevantYearFilter = _registrationSubmissionsConfig.Show2026RelevantYearFilter
             };
             existingSessionFilters.PageNumber = session.CurrentPageNumber;
 
