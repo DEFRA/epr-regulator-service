@@ -2,11 +2,11 @@
 
 <ul class="govuk-list">
     <li><strong>Application type:</strong> @Model.ApplicationType</li>
-    @if (!string.IsNullOrEmpty(Model.SiteAddress))
+	@if (Model.ApplicationType == "Reprocessor" && !string.IsNullOrEmpty(Model.SiteAddress))
     {
         <li><strong>Site address:</strong> @Model.SiteAddress</li>
     }
-    @if (!string.IsNullOrEmpty(Model.SiteGridReference))
+	@if (Model.ApplicationType == "Reprocessor" && !string.IsNullOrEmpty(Model.SiteGridReference))
     {
         <li><strong>Site grid reference:</strong> @Model.SiteGridReference</li>
     }

@@ -1,14 +1,16 @@
 @using EPR.RegulatorService.Frontend.Web.Helpers
-@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditedMaterialViewModel
+@model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.ManageAccreditationsViewModel
 
-@if (AccreditationDisplayHelper.ShouldDisplayMaterial(Model.RegistrationStatusRaw, Model.Accreditation))
+@foreach (var material in Model.Materials)
 {
+	@if (AccreditationDisplayHelper.ShouldDisplayMaterial(material.RegistrationStatusRaw, material.Accreditation))
+	{
     <h2 class="govuk-heading-m govuk-!-margin-top-6">
-        Review @(Model.MaterialName) accreditation
+			Review @(material.MaterialName) accreditation
     </h2>
 
     <p class="govuk-body">
-        Year: @Model.Accreditation!.AccreditationYear<br />
+			Year: @material.Accreditation!.AccreditationYear<br />
         Submitted by: Anna Faris (Site administrator)<br />
         Contact person: Freda Pinto (Site manager)<br />
         Telephone number and email: 02087651236
@@ -17,9 +19,9 @@
 
     <p class="govuk-body">
         <strong>Determination date:</strong>
-        @if (Model.Accreditation.DeterminationDate != null)
+			@if (material.Accreditation.DeterminationDate != null)
         {
-            @Model.Accreditation.DeterminationDate.Value.ToString("d MMM yyyy")
+				@material.Accreditation.DeterminationDate.Value.ToString("d MMM yyyy")
         }
         else
         {
@@ -28,38 +30,58 @@
     </p>
 
     <ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
-        @if (Model.Accreditation.PRNTonnageTask != null)
+			@if (material.Accreditation.PRNTonnageTask != null)
         {
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
                     <a href="#">PRN tonnage and authority to issue PRNs</a>
                 </span>
-                <strong class="govuk-tag @Model.Accreditation.PRNTonnageTask.StatusCssClass app-task-list__tag">
-                    @Model.Accreditation.PRNTonnageTask.StatusText
+					<strong class="govuk-tag @material.Accreditation.PRNTonnageTask.StatusCssClass app-task-list__tag">
+						@material.Accreditation.PRNTonnageTask.StatusText
                 </strong>
             </li>
         }
 
-        @if (Model.Accreditation.BusinessPlanTask != null)
+			@if (material.Accreditation.BusinessPlanTask != null)
         {
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
                     <a href="#">Business plan</a>
                 </span>
-                <strong class="govuk-tag @Model.Accreditation.BusinessPlanTask.StatusCssClass app-task-list__tag">
-                    @Model.Accreditation.BusinessPlanTask.StatusText
+					<strong class="govuk-tag @material.Accreditation.BusinessPlanTask.StatusCssClass app-task-list__tag">
+						@material.Accreditation.BusinessPlanTask.StatusText
                 </strong>
             </li>
         }
 
-        @if (Model.Accreditation.SamplingAndInspectionPlanTask != null)
+			@if (material.Accreditation.SamplingAndInspectionPlanTask != null)
         {
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
                     <a href="#">Sampling and inspection plan</a>
                 </span>
-                <strong class="govuk-tag @Model.Accreditation.SamplingAndInspectionPlanTask.StatusCssClass app-task-list__tag">
-                    @Model.Accreditation.SamplingAndInspectionPlanTask.StatusText
+					<strong class="govuk-tag @material.Accreditation.SamplingAndInspectionPlanTask.StatusCssClass app-task-list__tag">
+						@material.Accreditation.SamplingAndInspectionPlanTask.StatusText
+					</strong>
+				</li>
+			}
+
+			@if (Model.ApplicationType == "Exporter")
+			{
+				<li class="app-task-list__item">
+					<span class="app-task-list__task-name">
+						<a href="#">Overseas reprocessing sites</a>
+					</span>
+					<strong class="govuk-tag @material.Accreditation.OverseasReprocessingSitesTask.StatusCssClass app-task-list__tag">
+						@material.Accreditation.OverseasReprocessingSitesTask.StatusText
+					</strong>
+				</li>
+				<li class="app-task-list__item">
+					<span class="app-task-list__task-name">
+						<a href="#">Evidence of broadly equivalent standards</a>
+					</span>
+					<strong class="govuk-tag @material.Accreditation.EvidenceOfBroadlyEquivalentStandardsTask.StatusCssClass app-task-list__tag">
+						@material.Accreditation.EvidenceOfBroadlyEquivalentStandardsTask.StatusText
                 </strong>
             </li>
         }
@@ -71,4 +93,5 @@
             <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started yet</strong>
         </li>
     </ul>
+}
 }
