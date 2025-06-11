@@ -47,15 +47,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Validators
         public void GetValidationResult_ReturnsSuccess_WhenDayMonthAndYearArePresent()
         {
             // Arrange
-            var paymentDataViewModel = new PaymentDateViewModel { ApplicationType = ApplicationOrganisationType.Reprocessor, Day = null, Month = 6, Year = 2025 };
+            var paymentDataViewModel = new PaymentDateViewModel { ApplicationType = ApplicationOrganisationType.Reprocessor, Day = 11, Month = 6, Year = 2025 };
             var context = new ValidationContext(paymentDataViewModel);
 
             // Act
             var result = _validator.GetValidationResult(paymentDataViewModel, context);
 
             //Assert
-            result.Should().NotBeNull();
-            result!.ErrorMessage.Should().Be("Enter date in DD MM YYYY format");
+            result.Should().Be(ValidationResult.Success);
         }
     }
 }
