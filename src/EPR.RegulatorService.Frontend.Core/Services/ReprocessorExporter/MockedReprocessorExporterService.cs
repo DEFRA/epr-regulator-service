@@ -452,6 +452,30 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         ];
     }
     public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
+    
+    public Task<AccreditationSamplingPlan> GetSamplingPlanByAccreditationIdAsync(Guid accreditationId)
+    {
+        return Task.FromResult(new AccreditationSamplingPlan
+        {
+            MaterialName = "Plastic",
+            Files =
+            [
+                new AccreditationSamplingPlanFile
+                {
+                    Filename = "File0002-01-0.pdf",
+                    FileUploadType = "PDF",
+                    FileUploadStatus = "Completed",
+                    FileId = "123",
+                    UpdatedBy = "5d780e2d-5b43-4a45-92ac-7e2889582083",
+                    DateUploaded = DateTime.UtcNow
+                }
+
+            ]
+        });
+    }
+
+    public async Task<HttpResponseMessage> DownloadAccreditationSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
+
     public Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null)
     {
         _registrationAccreditations ??= GetMockedAccreditationRegistration(id);
@@ -682,29 +706,6 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 $"No accreditations found for any materials in year {year}.");
         }
     }
-    
-    public Task<AccreditationSamplingPlan> GetSamplingPlanByAccreditationIdAsync(Guid accreditationId)
-    {
-        return Task.FromResult(new AccreditationSamplingPlan
-        {
-            MaterialName = "Plastic",
-            Files =
-            [
-                new AccreditationSamplingPlanFile
-                {
-                    Filename = "File0002-01-0.pdf",
-                    FileUploadType = "PDF",
-                    FileUploadStatus = "Completed",
-                    FileId = "123",
-                    UpdatedBy = "5d780e2d-5b43-4a45-92ac-7e2889582083",
-                    DateUploaded = DateTime.UtcNow
-                }
-
-            ]
-        });
-    }
-
-    public async Task<HttpResponseMessage> DownloadAccreditationSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
 
     public Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
 

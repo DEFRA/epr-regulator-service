@@ -310,7 +310,7 @@ public class ReprocessorExporterService(
                 $"No accreditations found for any materials in year {year}.");
         }
     }
-
+    
     private async Task<Registration> GetAccreditationRegistrationAsync(Guid id, int? year)
     {
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationByIdWithAccreditations);

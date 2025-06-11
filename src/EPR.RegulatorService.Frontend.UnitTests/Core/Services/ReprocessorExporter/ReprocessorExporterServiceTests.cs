@@ -54,9 +54,7 @@ public class ReprocessorExporterServiceTests
     private const string GetRegistrationByIdWithAccreditations = "v{apiVersion}/registrations/{id}/accreditations";
     private const string UpdateAccreditationTaskStatus = "v{apiVersion}/regulatorAccreditationTaskStatus";
     private const string GetSamplingPlanByAccreditationIdPath = "v{apiVersion}/accreditations/{id}/samplingPlan";
-    
     private ReprocessorExporterService _service; // System under test
-
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
     private Mock<IOptions<ReprocessorExporterFacadeApiConfig>> _optionsMock;
     private HttpClient _httpClient;
@@ -101,7 +99,8 @@ public class ReprocessorExporterServiceTests
                 { "SubmitOfflinePayment", SubmitOfflinePaymentPath },
                 { "GetRegistrationByIdWithAccreditations", GetRegistrationByIdWithAccreditations },
                 { "UpdateAccreditationTaskStatus", UpdateAccreditationTaskStatus },
-                { "GetSamplingPlanByAccreditationId", GetSamplingPlanByAccreditationIdPath },
+                { "GetSamplingPlanByAccreditationId", GetSamplingPlanByAccreditationIdPath }
+
             }
         };
 
@@ -297,8 +296,7 @@ public class ReprocessorExporterServiceTests
             .Replace("{id}", registrationMaterialId.ToString());
         var request = new RegistrationMaterialOutcomeRequest
         {
-            Status = ApplicationStatus.Granted,
-            Comments = "Test comment"
+            Status = ApplicationStatus.Granted, Comments = "Test comment"
         };
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
@@ -371,8 +369,7 @@ public class ReprocessorExporterServiceTests
 
         var request = new MarkAsDulyMadeRequest()
         {
-            DeterminationDate = DateTime.Now,
-            DulyMadeDate = DateTime.Now.AddDays(-7)
+            DeterminationDate = DateTime.Now, DulyMadeDate = DateTime.Now.AddDays(-7)
         };
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
@@ -641,7 +638,7 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var fileId = Guid.NewGuid();
         const string filename = "test-document.pdf";
-        var request = new FileDownloadRequest { FileId = fileId, FileName = filename, SubmissionType = SubmissionType.Accreditation};
+        var request = new FileDownloadRequest { FileId = fileId, FileName = filename, SubmissionType = SubmissionType.Accreditation };
 
         var expectedContent = Encoding.UTF8.GetBytes("Accreditation Sampling & Inspection PDF file content");
         const string contentType = "application/octet-stream";
@@ -1125,7 +1122,6 @@ public class ReprocessorExporterServiceTests
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorAccreditationTaskStatusAsync(request));
     }
-
     [TestMethod]
     public async Task GetSamplingPlanByAccreditationIdAsync_WhenSuccessResponse_ReturnsSamplingPlan()
     {
@@ -1184,7 +1180,7 @@ public class ReprocessorExporterServiceTests
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
             _service.GetSamplingPlanByAccreditationIdAsync(accreditationId));
     }
-    
+
     public async Task AddMaterialQueryNote_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
