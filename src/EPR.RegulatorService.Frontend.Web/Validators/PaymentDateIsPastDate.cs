@@ -8,7 +8,7 @@ public class PaymentDateIsPastDateAttribute : ValidationAttribute
 {    
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        if (value is not PaymentDateViewModel { Day: not null, Month: not null, Year: not null } model)
+        if (value is not IPaymentDateViewModel { Day: not null, Month: not null, Year: not null } model)
         {
             return ValidationResult.Success;
         }
@@ -16,7 +16,7 @@ public class PaymentDateIsPastDateAttribute : ValidationAttribute
         return !IsPastDate(model) ? new ValidationResult(ErrorMessage) : ValidationResult.Success;
     }
 
-    private static bool IsPastDate(PaymentDateViewModel model)
+    private static bool IsPastDate(IPaymentDateViewModel model)
     {
         bool isValidDate = DateOnly.TryParse($"{model.Year.Value:D4}-{model.Month.Value:D2}-{model.Day.Value:D2}",
             out var parsedDate);
