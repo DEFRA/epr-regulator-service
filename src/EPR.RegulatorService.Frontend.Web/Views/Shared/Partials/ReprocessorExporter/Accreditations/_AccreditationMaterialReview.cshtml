@@ -76,9 +76,9 @@
         {
           <li class="app-task-list__item">
             <span class="app-task-list__task-name">
-                        <a href="@Url.ActionLink("SamplingInspection", "Accreditations", new { accreditationId = material.Accreditation.Id, year = material.Accreditation!.AccreditationYear })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state">Sampling and inspection plan</a>
+                        <a href="@Url.ActionLink("SamplingInspection", "Accreditations", new { accreditationId = @material.Accreditation.Id, year = @material.Accreditation!.AccreditationYear })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state">Sampling and inspection plan</a>
             </span>
-                    <strong class="govuk-tag material.Accreditation.SamplingAndInspectionPlanTask.StatusCssClass app-task-list__tag">
+                    <strong class="govuk-tag @material.Accreditation.SamplingAndInspectionPlanTask.StatusCssClass app-task-list__tag">
                       @material.Accreditation.SamplingAndInspectionPlanTask.StatusText
             </strong>
           </li>
