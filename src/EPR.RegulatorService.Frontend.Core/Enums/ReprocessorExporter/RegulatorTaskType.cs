@@ -18,6 +18,6 @@ public enum RegulatorTaskType
     PRNTonnage,
     BusinessPlan,
     DulyMade,
-    OverseasReprocessingSites,
-    EvidenceOfBroadlyEquivalentStandards
+    OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandards,
+    PERNsTonnageAndAuthorityToIssuePERNs
 }
