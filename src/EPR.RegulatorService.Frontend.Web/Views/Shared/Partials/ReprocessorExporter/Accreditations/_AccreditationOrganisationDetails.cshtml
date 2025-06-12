@@ -1,12 +1,13 @@
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
 @model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.ManageAccreditationsViewModel
 
 <ul class="govuk-list">
     <li><strong>Application type:</strong> @Model.ApplicationType</li>
-	@if (Model.ApplicationType == "Reprocessor" && !string.IsNullOrEmpty(Model.SiteAddress))
+	@if (Model.ApplicationType == ApplicationOrganisationType.Reprocessor.ToString() && !string.IsNullOrEmpty(Model.SiteAddress))
     {
         <li><strong>Site address:</strong> @Model.SiteAddress</li>
     }
-	@if (Model.ApplicationType == "Reprocessor" && !string.IsNullOrEmpty(Model.SiteGridReference))
+	@if (Model.ApplicationType == ApplicationOrganisationType.Reprocessor.ToString() && !string.IsNullOrEmpty(Model.SiteGridReference))
     {
         <li><strong>Site grid reference:</strong> @Model.SiteGridReference</li>
     }

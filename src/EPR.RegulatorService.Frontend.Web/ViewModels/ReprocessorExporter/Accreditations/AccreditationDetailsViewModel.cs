@@ -25,10 +25,9 @@ public class AccreditationDetailsViewModel
 
     public AccreditationTaskViewModel? CheckAccreditationStatusTask { get; set; }
 
-    public AccreditationTaskViewModel? OverseasReprocessingSitesTask { get; set; }
+    public AccreditationTaskViewModel? PERNsTonnageAndAuthorityToIssuePERNsTask { get; set; }
 
-    public AccreditationTaskViewModel? EvidenceOfBroadlyEquivalentStandardsTask { get; set; }
-
+    public AccreditationTaskViewModel? OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask { get; set; }
 
     public bool ShouldDisplay =>
         AccreditationDisplayHelper.ShouldDisplayAccreditation(Status);

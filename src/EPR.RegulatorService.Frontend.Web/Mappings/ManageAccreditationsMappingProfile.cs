@@ -42,16 +42,16 @@ public class ManageAccreditationsMappingProfile : Profile
             .ForMember(dest => dest.BusinessPlanTask, opt => opt.Ignore())
             .ForMember(dest => dest.SamplingAndInspectionPlanTask, opt => opt.Ignore())
             .ForMember(dest => dest.CheckAccreditationStatusTask, opt => opt.Ignore())
-            .ForMember(dest => dest.OverseasReprocessingSitesTask, opt => opt.Ignore())
-            .ForMember(dest => dest.EvidenceOfBroadlyEquivalentStandardsTask, opt => opt.Ignore())
+            .ForMember(dest => dest.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask, opt => opt.Ignore())
+            .ForMember(dest => dest.PERNsTonnageAndAuthorityToIssuePERNsTask, opt => opt.Ignore())
             .AfterMap((src, dest) =>
             {
                 dest.PRNTonnageTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.PRNTonnage);
                 dest.BusinessPlanTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.BusinessPlan);
                 dest.SamplingAndInspectionPlanTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.SamplingAndInspectionPlan);
                 dest.CheckAccreditationStatusTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.DulyMade);
-                dest.OverseasReprocessingSitesTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.OverseasReprocessingSites);
-                dest.EvidenceOfBroadlyEquivalentStandardsTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.EvidenceOfBroadlyEquivalentStandards);
+                dest.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandards);
+                dest.PERNsTonnageAndAuthorityToIssuePERNsTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.PERNsTonnageAndAuthorityToIssuePERNs);
             });
 
 
@@ -116,8 +116,6 @@ public class ManageAccreditationsMappingProfile : Profile
                 RegulatorTaskType.CheckRegistrationStatus => "Duly Made",
                 RegulatorTaskType.DulyMade => "Duly Made",
                 RegulatorTaskType.AssignOfficer => "Officer Assigned",
-                RegulatorTaskType.OverseasReprocessingSites => "Overseas Reprocessing Sites",
-                RegulatorTaskType.EvidenceOfBroadlyEquivalentStandards => "Evidence of Broadly Equivalent Standards",
                 _ => "Reviewed"
             },
             "approved" => "Approved",
