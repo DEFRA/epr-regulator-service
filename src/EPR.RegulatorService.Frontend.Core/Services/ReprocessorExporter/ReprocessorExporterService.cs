@@ -15,6 +15,8 @@ using Microsoft.Identity.Web;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
+using Enums;
+
 public class ReprocessorExporterService(
     HttpClient httpClient,
     ITokenAcquisition tokenAcquisition,
@@ -43,7 +45,9 @@ public class ReprocessorExporterService(
         GetPaymentFeesByAccreditationId,
         SubmitAccreditationOfflinePayment,
         MarkAccreditationAsDulyMade,
-        UpdateAccreditationTaskStatus
+        UpdateAccreditationTaskStatus,
+        GetSamplingPlanByAccreditationId,
+        DownloadAccreditationSamplingInspectionFile
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -251,7 +255,16 @@ public class ReprocessorExporterService(
     {
         await PrepareAuthenticatedClient();
 
-        string pathTemplate = GetVersionedEndpoint(Endpoints.DownloadSamplingInspectionFile);
+        string pathTemplate;
+        switch (request.SubmissionType)
+        {
+            case SubmissionType.Accreditation:
+                pathTemplate = GetVersionedEndpoint(Endpoints.DownloadAccreditationSamplingInspectionFile);
+                break;
+            default:
+                pathTemplate = GetVersionedEndpoint(Endpoints.DownloadSamplingInspectionFile);
+                break;
+        }
 
         var response = await httpClient.PostAsJsonAsync(pathTemplate, request);
 
@@ -312,7 +325,7 @@ public class ReprocessorExporterService(
                 $"No accreditations found for any materials in year {year}.");
         }
     }
-
+    
     private async Task<Registration> GetAccreditationRegistrationAsync(Guid id, int? year)
     {
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationByIdWithAccreditations);
@@ -437,5 +450,18 @@ public class ReprocessorExporterService(
         string pathTemplate = reprocessorExporterFacadeConfig.Value.Endpoints[endpointName.ToString()].Replace("{apiVersion}", version);
 
         return pathTemplate;
+    }
+
+    public async Task<AccreditationSamplingPlan> GetSamplingPlanByAccreditationIdAsync(Guid accreditationId)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetSamplingPlanByAccreditationId);
+        string path = pathTemplate.Replace("{id}", accreditationId.ToString());
+
+        var response = await httpClient.GetAsync(path);
+        var accreditationSamplingPlan = await GetEntityFromResponse<AccreditationSamplingPlan>(response);
+
+        return accreditationSamplingPlan;
     }
 }
