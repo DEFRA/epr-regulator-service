@@ -28,14 +28,13 @@ public class ReprocessorExporterServiceTests
     private const string BaseUrl = "https://example.com/";
     private const int ApiVersion = 1;
     private const string AddMaterialQueryNote = "v{apiVersion}/regulatorApplicationTaskStatus/{id}/queryNote";
+    private const string AddRegistrationQueryNote = "v{apiVersion}/regulatorRegistrationTaskStatus/{id}/queryNote";
     private const string GetRegistrationByIdPath = "v{apiVersion}/registrations/{id}";
     private const string GetRegistrationMaterialByIdPath = "v{apiVersion}/registrationMaterials/{id}";
     private const string GetSiteAddressByRegistrationIdPath = "v{apiVersion}/registrations/{id}/siteAddress";
     private const string GetAuthorisedMaterialsByRegistrationId = "v{apiVersion}/registrations/{id}/authorisedMaterial";
-
-    private const string GetWasteLicenceByRegistrationMaterialId =
-        "v{apiVersion}/registrationMaterials/{id}/wasteLicences";
-
+    private const string GetWasteCarrierDetailsByRegistrationId = "v{apiVersion}/registrations/{id}/wasteCarrier";
+    private const string GetWasteLicenceByRegistrationMaterialId = "v{apiVersion}/registrationMaterials/{id}/wasteLicences";
     private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
     private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
     private const string UpdateApplicationTaskStatus = "v{apiVersion}/regulatorApplicationTaskStatus";
@@ -84,10 +83,12 @@ public class ReprocessorExporterServiceTests
             Endpoints = new Dictionary<string, string>
             {
                 { "AddMaterialQueryNote", AddMaterialQueryNote },
+                { "AddRegistrationQueryNote", AddRegistrationQueryNote },
                 { "GetRegistrationById", GetRegistrationByIdPath },
                 { "GetRegistrationMaterialById", GetRegistrationMaterialByIdPath },
                 { "GetSiteAddressByRegistrationId", GetSiteAddressByRegistrationIdPath },
                 { "GetAuthorisedMaterialsByRegistrationId", GetAuthorisedMaterialsByRegistrationId },
+                { "GetWasteCarrierDetailsByRegistrationId", GetWasteCarrierDetailsByRegistrationId },
                 { "GetWasteLicenceByRegistrationMaterialId", GetWasteLicenceByRegistrationMaterialId },
                 { "UpdateRegistrationMaterialOutcome", UpdateRegistrationMaterialOutcome },
                 { "UpdateRegistrationTaskStatus", UpdateRegistrationTaskStatus },
@@ -285,6 +286,51 @@ public class ReprocessorExporterServiceTests
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
             _service.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId));
     }
+
+    [TestMethod]
+    public async Task GetWasteCarrierByRegistrationIdAsync_WhenSuccess_ReturnsWasteCarrierDetails()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
+        var expectedWasteCarrier = CreateWasteCarrierDetails();
+        string expectedPath = GetWasteCarrierDetailsByRegistrationId
+            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{id}", registrationMaterialId.ToString());
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(JsonSerializer.Serialize(expectedWasteCarrier, _jsonSerializerOptions))
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act
+        var result = await _service.GetWasteCarrierDetailsByRegistrationIdAsync(registrationMaterialId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(expectedWasteCarrier);
+    }
+
+    [TestMethod]
+    public async Task GetWasteCarrierByRegistrationMaterialId_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+    {
+        // Arrange
+        var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+        string expectedPath = GetWasteCarrierDetailsByRegistrationId
+            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{id}", registrationId.ToString());
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetWasteCarrierDetailsByRegistrationIdAsync(registrationId));
+    }
+
 
     [TestMethod]
     public async Task UpdateRegistrationMaterialOutcome_WhenResponseCodeIsNotSuccess_ShouldThrowException()
@@ -1181,6 +1227,7 @@ public class ReprocessorExporterServiceTests
             _service.GetSamplingPlanByAccreditationIdAsync(accreditationId));
     }
 
+    [TestMethod]
     public async Task AddMaterialQueryNote_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
@@ -1197,6 +1244,25 @@ public class ReprocessorExporterServiceTests
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
             _service.AddMaterialQueryNoteAsync(materialTaskId, request));
+    }
+
+    [TestMethod]
+    public async Task AddRegistrationQueryNote_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+    {
+        // Arrange
+        var registrationTaskId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+        string expectedPath = AddRegistrationQueryNote
+            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{id}", registrationTaskId.ToString());
+        var request = new AddNoteRequest { Note = "Test note", };
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.AddRegistrationQueryNoteAsync(registrationTaskId, request));
     }
 
     private void SetupHttpMessageExpectations(HttpMethod method, string path,
@@ -1323,7 +1389,7 @@ public class ReprocessorExporterServiceTests
     }
 
     private static RegistrationMaterialPaymentFees CreateRegistrationMaterialPaymentFees() =>
-        new RegistrationMaterialPaymentFees
+        new()
         {
             RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
             OrganisationName = "Test Org",
@@ -1335,5 +1401,16 @@ public class ReprocessorExporterServiceTests
             ApplicationReferenceNumber = "ABC123456",
             SubmittedDate = DateTime.Now.AddDays(-7),
             Regulator = "GB-ENG"
+        };
+
+    private static WasteCarrierDetails CreateWasteCarrierDetails() =>
+        new()
+        {
+            RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
+            OrganisationName = "Test Org",
+            SiteAddress = "23, Ruby St, London, E12 3SE",
+            WasteCarrierBrokerDealerNumber = "WCB123456789",
+            RegulatorRegistrationTaskStatusId = Guid.NewGuid(),
+            TaskStatus = RegulatorTaskStatus.Queried
         };
 }

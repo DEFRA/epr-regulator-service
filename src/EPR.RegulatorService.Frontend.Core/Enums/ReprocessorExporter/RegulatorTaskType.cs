@@ -13,6 +13,7 @@ public enum RegulatorTaskType
     MaterialDetailsAndContact,
     OverseasReprocessorAndInterimSiteDetails,
     BusinessAddress,
+    WasteCarrierBrokerDealerNumber,
 
     // New for accreditation
     PRNTonnage,

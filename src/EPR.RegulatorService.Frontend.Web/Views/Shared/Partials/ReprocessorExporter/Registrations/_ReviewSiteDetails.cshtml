@@ -16,11 +16,21 @@
     </li>
   }
 
+  @if (Model.ReprocessorWasteCarrierTask != null)
+  {
+    <li class="app-task-list__item">
+      <span class="app-task-list__task-name">
+        <a href="@Url.ActionLink("WasteCarrierDetails", "Registrations", new { registrationId = @Model.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state">Waste carrier, broker or dealer registration number</a>
+      </span>
+      <strong class="govuk-tag @Model.ReprocessorWasteCarrierTask.StatusCssClass app-task-list__tag">@Model.ReprocessorWasteCarrierTask.StatusText</strong><br>
+    </li>
+  }
+
   @if(Model.MaterialsAuthorisedOnSiteTask != null)
   {
     <li class="app-task-list__item">
       <span class="app-task-list__task-name">
-				<a href="@Url.ActionLink("AuthorisedMaterials", "Registrations", new { registrationId = @Model.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Materials authorised on site</a>
+        <a href="@Url.ActionLink("AuthorisedMaterials", "Registrations", new { registrationId = @Model.Id })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state"> Materials authorised on site</a>
       </span>
       <strong class="govuk-tag @Model.MaterialsAuthorisedOnSiteTask.StatusCssClass app-task-list__tag">@Model.MaterialsAuthorisedOnSiteTask.StatusText</strong><br>
     </li>
