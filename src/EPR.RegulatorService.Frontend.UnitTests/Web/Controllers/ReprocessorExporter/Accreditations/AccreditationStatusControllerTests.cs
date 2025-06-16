@@ -3,6 +3,7 @@ using AutoMapper;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -678,6 +679,151 @@ public class AccreditationStatusControllerTests
         viewResult.Should().NotBeNull();
         viewResult!.ViewName.Should().Be("~/Views/ReprocessorExporter/Accreditations/AccreditationStatus/QueryAccreditationTask.cshtml");
         viewResult.Model.Should().Be(viewModel);
+    }
+
+
+    [TestMethod]
+    public async Task AccreditationBusinessPlan_Should_ReturnResult()
+    {
+        // Arrange
+        var journeySession = CreateJourneySession(_registrationId, _accreditationId);
+        journeySession.RegulatorSession.Journey.Add(PagePath.AccreditationBusinessPlan);
+
+        var queryNotes = new List<QueryNote>();
+        
+
+        var queryNote1 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "First Note"
+        };
+
+        var queryNote2 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        var queryNote3 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        queryNotes.Add(queryNote1);
+        queryNotes.Add(queryNote2);
+        queryNotes.Add(queryNote3);
+
+        var viewModel = new AccreditationBusinessPlanViewModel
+        {
+            AccreditationId = _accreditationId,
+            BusinessCollectionsNotes = string.Empty,
+            BusinessCollectionsPercentage = 0.00M,
+            CommunicationsNotes = string.Empty,
+            CommunicationsPercentage = 0.20M,
+            InfrastructureNotes = "Infrastructure notes testing",
+            InfrastructurePercentage = 0.30M,
+            MaterialName = "Plastic",
+            NewMarketsNotes = "New Market Testing notes",
+            NewMarketsPercentage = 0.40M,
+            NewUsersRecycledPackagingWasteNotes = string.Empty,
+            NewUsersRecycledPackagingWastePercentage = 0.25M,
+            NotCoveredOtherCategoriesNotes = string.Empty,
+            NotCoveredOtherCategoriesPercentage = 5.00M,
+            OrganisationName = "",
+            RecycledWasteNotes = "No recycled waste notes at this time",
+            RecycledWastePercentage = 10.00M,
+            SiteAddress = "To Be Confirmed",
+            TaskStatus = "Reviewed",
+            QueryNotes = queryNotes           
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+       
+        _mockReprocessorExporterService.Setup(x => x.GetAccreditionBusinessPlanByIdAsync(_accreditationId))
+            .Returns(It.IsAny<Task<AccreditationBusinessPlanDto>>);
+
+        // Act
+        var result = await _controller.AccreditationBusinessPlan(viewModel);
+
+        // Assert
+        Assert.IsNotNull(result);       
+    }
+
+    [TestMethod]
+    public async Task AccreditationBusinessPlan_Post_Should_Be_RedirectToActionResult()
+    {
+        // Arrange
+        var journeySession = CreateJourneySession(_registrationId, _accreditationId);
+        journeySession.RegulatorSession.Journey.Add(PagePath.AccreditationBusinessPlan);
+
+        var queryNotes = new List<QueryNote>();
+
+
+        var queryNote1 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "First Note"
+        };
+
+        var queryNote2 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        var queryNote3 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        queryNotes.Add(queryNote1);
+        queryNotes.Add(queryNote2);
+        queryNotes.Add(queryNote3);
+
+        var viewModel = new AccreditationBusinessPlanViewModel
+        {
+            AccreditationId = _accreditationId,
+            BusinessCollectionsNotes = string.Empty,
+            BusinessCollectionsPercentage = 0.00M,
+            CommunicationsNotes = string.Empty,
+            CommunicationsPercentage = 0.20M,
+            InfrastructureNotes = "Infrastructure notes testing",
+            InfrastructurePercentage = 0.30M,
+            MaterialName = "Plastic",
+            NewMarketsNotes = "New Market Testing notes",
+            NewMarketsPercentage = 0.40M,
+            NewUsersRecycledPackagingWasteNotes = string.Empty,
+            NewUsersRecycledPackagingWastePercentage = 0.25M,
+            NotCoveredOtherCategoriesNotes = string.Empty,
+            NotCoveredOtherCategoriesPercentage = 5.00M,
+            OrganisationName = "",
+            RecycledWasteNotes = "No recycled waste notes at this time",
+            RecycledWastePercentage = 10.00M,
+            SiteAddress = "To Be Confirmed",
+            TaskStatus = "Reviewed",
+            QueryNotes = queryNotes
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        _mockReprocessorExporterService.Setup(x => x.GetAccreditionBusinessPlanByIdAsync(_accreditationId))
+            .Returns(It.IsAny<Task<AccreditationBusinessPlanDto>>);
+
+        // Act
+        var result = await _controller.AccreditationBusinessPlan(viewModel);
+
+        var redirectResult = result as RedirectToActionResult;
+
+        // Assert
+        redirectResult.Should().BeOfType<RedirectToActionResult>();       
     }
 
     private static JourneySession CreateJourneySession(Guid registrationId, Guid accreditationId) =>

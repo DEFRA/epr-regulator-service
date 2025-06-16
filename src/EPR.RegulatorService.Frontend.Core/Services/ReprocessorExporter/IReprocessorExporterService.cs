@@ -29,4 +29,5 @@ public interface IReprocessorExporterService
     Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment);
     Task MarkAccreditationAsDulyMadeAsync(Guid accreditationId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest);
     Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest);
+    Task<AccreditationBusinessPlanDto> GetAccreditionBusinessPlanByIdAsync(Guid id);
 }
