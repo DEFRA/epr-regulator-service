@@ -36,7 +36,7 @@ WORKDIR /home/dotnet/EPR.RegulatorService.Frontend.Web
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
-FROM defradigital/dotnetcore:dotnet8.0
+FROM defradigital/dotnetcore-development:1.9.6-dotnet8.0
 USER dotnet
 COPY --from=build-env /home/dotnet/EPR.RegulatorService.Frontend.Web/out .
 
