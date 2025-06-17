@@ -74,19 +74,19 @@
                           
                           @if (Model.TaskStatus == RegulatorTaskStatus.Queried)
                           {
-                              <a href="@Url.Action("AddMaterialQueryNote", "Query")" class="govuk-button govuk-button--secondary">
-                                Add a query note
-                              </a>
+                            <a href="@Url.Action("AddMaterialQueryNote", "Query")" class="govuk-button govuk-button--secondary">
+                              Add a query note
+                            </a>
 
-                              <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationId })" class="govuk-button govuk-button--secondary">
-                                Back to application
-                              </a>
+                            <a href="@Url.Action("Index", "ManageRegistrations", new { id = Model.RegistrationId })" class="govuk-button govuk-button--secondary">
+                              Back to application
+                            </a>
                           }
                           else
                           {
-                              <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model.RegistrationMaterialId, taskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions })">
-                                Query waste licences, permits or exemptions
-                              </a>
+                                <a href="@Url.Action("QueryMaterialTask", "Query")" class="govuk-button govuk-button--secondary">
+                              Query waste licences, permits or exemptions
+                            </a>
                           }
                         </div>
                     }

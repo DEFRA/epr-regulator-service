@@ -15,6 +15,8 @@ using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
+using Core.Enums.ReprocessorExporter;
+
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route(PagePath.ReprocessorExporterRegistrations)]
 public class QueryController (
@@ -64,6 +66,96 @@ public class QueryController (
         await reprocessorExporterService.AddRegistrationQueryNoteAsync(queryRegistrationSession.RegulatorRegistrationTaskStatusId, new AddNoteRequest { Note = viewModel.Note! });
 
         return RedirectToAction(queryRegistrationSession.PagePath, PagePath.ReprocessorExporterRegistrations, new { registrationId = queryRegistrationSession.RegistrationId });
+    }
+
+    [HttpGet]
+    [Route(PagePath.QueryRegistrationTask)]
+
+    public async Task<IActionResult> QueryRegistrationTask()
+    {
+        var session = await GetSession();
+        var queryRegistrationSession = GetQueryRegistrationSession(session);
+
+        await SaveSessionAndJourney(session, PagePath.QueryRegistrationTask);
+        SetBackLinkInfos(session, PagePath.QueryRegistrationTask);
+
+        var viewModel = mapper.Map<AddQueryNoteViewModel>(queryRegistrationSession);
+        viewModel.FormAction = nameof(QueryRegistrationTask);
+
+        return View(AddQueryNoteView, viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePath.QueryRegistrationTask)]
+
+    public async Task<IActionResult> QueryRegistrationTask(AddQueryNoteViewModel viewModel)
+    {
+        var session = await GetSession();
+        var queryRegistrationSession = GetQueryRegistrationSession(session);
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLinkInfos(session, PagePath.QueryRegistrationTask);
+            mapper.Map(queryRegistrationSession, viewModel);
+            viewModel.FormAction = nameof(QueryRegistrationTask);
+            return View(AddQueryNoteView, viewModel);
+        }
+
+        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(
+            new UpdateRegistrationTaskStatusRequest
+            {
+                Comments = viewModel.Note,
+                RegistrationId = queryRegistrationSession.RegistrationId,
+                Status = RegulatorTaskStatus.Queried.ToString(),
+                TaskName = queryRegistrationSession.TaskName.ToString()
+            });
+
+        return RedirectToAction("Index", "ManageRegistrations", new { Id = queryRegistrationSession.RegistrationId });
+    }
+
+    [HttpGet]
+    [Route(PagePath.QueryMaterialTask)]
+
+    public async Task<IActionResult> QueryMaterialTask()
+    {
+        var session = await GetSession();
+        var queryMaterialSession = GetQueryMaterialSession(session);
+
+        await SaveSessionAndJourney(session, PagePath.QueryMaterialTask);
+        SetBackLinkInfos(session, PagePath.QueryMaterialTask);
+
+        var viewModel = mapper.Map<AddQueryNoteViewModel>(queryMaterialSession);
+        viewModel.FormAction = nameof(QueryMaterialTask);
+
+        return View(AddQueryNoteView, viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePath.QueryMaterialTask)]
+
+    public async Task<IActionResult> QueryMaterialTask(AddQueryNoteViewModel viewModel)
+    {
+        var session = await GetSession();
+        var queryMaterialSession = GetQueryMaterialSession(session);
+
+        if (!ModelState.IsValid)
+        {
+            SetBackLinkInfos(session, PagePath.QueryMaterialTask);
+            mapper.Map(queryMaterialSession, viewModel);
+            viewModel.FormAction = nameof(QueryMaterialTask);
+            return View(AddQueryNoteView, viewModel);
+        }
+
+        await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(
+            new UpdateMaterialTaskStatusRequest
+            {
+                Comments = viewModel.Note,
+                RegistrationMaterialId = queryMaterialSession.RegistrationMaterialId,
+                Status = RegulatorTaskStatus.Queried.ToString(),
+                TaskName = queryMaterialSession.TaskName.ToString()
+            });
+
+        return RedirectToAction("Index", "ManageRegistrations", new { Id = queryMaterialSession.RegistrationId });
     }
 
     [HttpGet]

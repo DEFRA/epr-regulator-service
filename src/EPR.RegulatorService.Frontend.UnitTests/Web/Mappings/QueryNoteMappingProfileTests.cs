@@ -56,10 +56,13 @@ public class QueryNoteMappingProfileTests
         // Arrange
         var queryMaterialSession = new QueryMaterialSession
         {
+            RegistrationId = Guid.NewGuid(),
             OrganisationName = "Test Organisation",
             RegistrationMaterialId = Guid.NewGuid(),
             RegulatorApplicationTaskStatusId = Guid.NewGuid(),
-            PagePath = PagePath.FeesDue
+            PagePath = PagePath.FeesDue,
+            TaskStatus = RegulatorTaskStatus.NotStarted,
+            TaskName = RegulatorTaskType.CheckRegistrationStatus
         };
 
         // Act

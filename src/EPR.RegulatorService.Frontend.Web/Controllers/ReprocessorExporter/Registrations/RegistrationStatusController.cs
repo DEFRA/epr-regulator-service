@@ -95,17 +95,18 @@ public class RegistrationStatusController(
             return RedirectToAction("PaymentMethod", "RegistrationStatus");
         }
 
+        session.ReprocessorExporterSession.QueryMaterialSession = mapper.Map<QueryMaterialSession>(registrationStatusSession);
+        session.ReprocessorExporterSession.QueryMaterialSession.PagePath = PagePath.FeesDue;
+        session.ReprocessorExporterSession.QueryMaterialSession.TaskName = RegulatorTaskType.CheckRegistrationStatus;
+
+        await SaveSession(session);
+
         if (registrationStatusSession.TaskStatus == RegulatorTaskStatus.Queried)
         {
-            session.ReprocessorExporterSession.QueryMaterialSession = mapper.Map<QueryMaterialSession>(registrationStatusSession);
-            session.ReprocessorExporterSession.QueryMaterialSession.PagePath = PagePath.FeesDue;
-
-            await SaveSession(session);
-
             return RedirectToAction("AddMaterialQueryNote", "Query");
         }
 
-        return RedirectToAction("QueryMaterialTask", "Registrations", new { registrationMaterialId = registrationStatusSession.RegistrationMaterialId, taskName = RegulatorTaskType.CheckRegistrationStatus });
+        return RedirectToAction("QueryMaterialTask", "Query");
     }
 
     [HttpGet]

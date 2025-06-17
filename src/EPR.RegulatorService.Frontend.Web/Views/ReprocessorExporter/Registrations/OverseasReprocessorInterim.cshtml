@@ -1,4 +1,3 @@
-@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 @{
     ViewData["Title"] = "Overseas reprocessor and interim site details";
 }
@@ -74,7 +73,7 @@
                             Mark as reviewed
                         </button>
 
-                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryMaterialTask", "Registrations", new { registrationMaterialId = Model, taskName = RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails })">
+                        <a href="@Url.Action("QueryMaterialTask", "Query")" class="govuk-button govuk-button--secondary">
                             Query overseas and interim site details
                         </a>
                     </div>

@@ -1,4 +1,3 @@
-@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 @{
     ViewData["Title"] = "Waste licences, permits or exemptions";
 }
@@ -60,7 +59,7 @@
                             Mark as reviewed
                         </button>
 
-                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryRegistrationTask", "Registrations", new { registrationId = Model, taskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions })">
+                        <a href="@Url.Action("QueryRegistrationTask", "Query")" class="govuk-button govuk-button--secondary">
                             Query waste licences, permits or exemptions
                         </a>
                     </div>

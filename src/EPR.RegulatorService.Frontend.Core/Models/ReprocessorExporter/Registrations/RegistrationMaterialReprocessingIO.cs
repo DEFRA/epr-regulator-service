@@ -1,12 +1,7 @@
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-
 namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
-public class RegistrationMaterialReprocessingIO
+public class RegistrationMaterialReprocessingIO : RegistrationSectionBase
 {
-    public Guid RegistrationId { get; set; }
-    public required string OrganisationName { get; init; }
-    public required string SiteAddress { get; init; }
     public Guid RegistrationMaterialId { get; set; }
     public required string MaterialName { get; set; }
     public required string SourcesOfPackagingWaste { get; set; }
@@ -21,5 +16,4 @@ public class RegistrationMaterialReprocessingIO
     public decimal TotalInputs { get; set; }
     public decimal TotalOutputs { get; set; }
     public Guid? RegulatorApplicationTaskStatusId { get; init; }
-    public RegulatorTaskStatus TaskStatus { get; init; }
 }

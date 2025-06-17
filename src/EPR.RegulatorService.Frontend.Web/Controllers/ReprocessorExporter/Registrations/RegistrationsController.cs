@@ -12,13 +12,12 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
-
-using FluentValidation;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
@@ -47,8 +46,7 @@ public class RegistrationsController(
             await reprocessorExporterService.GetAuthorisedMaterialsByRegistrationIdAsync(registrationId);
         var viewModel = mapper.Map<AuthorisedMaterialsViewModel>(registrationAuthorisedMaterials);
 
-        await CreateQueryRegistrationSession(registrationAuthorisedMaterials.TaskStatus,
-            registrationAuthorisedMaterials, session, PagePath.AuthorisedMaterials);
+        await CreateQueryRegistrationSession(registrationAuthorisedMaterials, session, PagePath.AuthorisedMaterials, RegulatorTaskType.MaterialsAuthorisedOnSite);
 
         return View(GetRegistrationsView(nameof(AuthorisedMaterials)), viewModel);
     }
@@ -64,8 +62,7 @@ public class RegistrationsController(
             Status = RegulatorTaskStatus.Completed.ToString(),
         };
 
-        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(
-            updateRegistrationTaskStatusRequest);
+        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
     }
@@ -83,7 +80,7 @@ public class RegistrationsController(
 
         var siteDetails = await reprocessorExporterService.GetSiteDetailsByRegistrationIdAsync(registrationId);
 
-        await CreateQueryRegistrationSession(siteDetails.TaskStatus, siteDetails, session, PagePath.UkSiteDetails);
+        await CreateQueryRegistrationSession(siteDetails, session, PagePath.UkSiteDetails, RegulatorTaskType.SiteAddressAndContactDetails);
 
         var viewModel = mapper.Map<SiteDetailsViewModel>(siteDetails);
 
@@ -120,7 +117,7 @@ public class RegistrationsController(
 
         var wasteCarrierDetails = await reprocessorExporterService.GetWasteCarrierDetailsByRegistrationIdAsync(registrationId);
 
-        await CreateQueryRegistrationSession(wasteCarrierDetails.TaskStatus, wasteCarrierDetails, session, PagePath.WasteCarrierDetails);
+        await CreateQueryRegistrationSession(wasteCarrierDetails, session, PagePath.WasteCarrierDetails, RegulatorTaskType.WasteCarrierBrokerDealerNumber);
 
         var viewModel = mapper.Map<WasteCarrierDetailsViewModel>(wasteCarrierDetails);
 
@@ -160,7 +157,7 @@ public class RegistrationsController(
             await reprocessorExporterService.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId);
         var viewModel = mapper.Map<MaterialWasteLicencesViewModel>(materialWasteLicences);
 
-        await CreateQueryMaterialSession(materialWasteLicences.TaskStatus, materialWasteLicences, session, PagePath.MaterialWasteLicences);
+        await CreateQueryMaterialSession(materialWasteLicences, session, PagePath.MaterialWasteLicences, RegulatorTaskType.WasteLicensesPermitsAndExemptions);
 
         return View(GetRegistrationsView(nameof(MaterialWasteLicences)), viewModel);
     }
@@ -203,7 +200,7 @@ public class RegistrationsController(
             RegistrationMaterialId = registrationMaterialId, RegistrationMaterialSamplingPlan = samplingPlan
         };
 
-        await CreateQueryMaterialSession(samplingPlan.TaskStatus, samplingPlan, session, PagePath.SamplingInspection);
+        await CreateQueryMaterialSession(samplingPlan, session, PagePath.SamplingInspection, RegulatorTaskType.SamplingAndInspectionPlan);
         
         return View(GetRegistrationsView(nameof(SamplingInspection)), model);
     }
@@ -246,7 +243,7 @@ public class RegistrationsController(
             RegistrationMaterialId = registrationMaterialId, RegistrationMaterialReprocessingIO = reprocessingInputsAndOutputs
         };
 
-        await CreateQueryMaterialSession(reprocessingInputsAndOutputs.TaskStatus, reprocessingInputsAndOutputs, session, PagePath.InputsAndOutputs);
+        await CreateQueryMaterialSession(reprocessingInputsAndOutputs, session, PagePath.InputsAndOutputs, RegulatorTaskType.ReprocessingInputsAndOutputs);
 
         return View(GetRegistrationsView(nameof(InputsAndOutputs)), model);
     }
@@ -282,6 +279,8 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
+        await CreateQueryRegistrationSession(new RegistrationWasteLicences(), session, PagePath.WasteLicences, RegulatorTaskType.WasteLicensesPermitsAndExemptions);
+
         return View(GetRegistrationsView(nameof(WasteLicences)), registrationId);
     }
 
@@ -296,8 +295,7 @@ public class RegistrationsController(
             Status = RegulatorTaskStatus.Completed.ToString(),
         };
 
-        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(
-            updateRegistrationTaskStatusRequest);
+        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
     }
@@ -314,6 +312,8 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
+        await CreateQueryRegistrationSession(new RegistrationBusinessAddress(), session, PagePath.BusinessAddress, RegulatorTaskType.BusinessAddress);
+
         return View(GetRegistrationsView(nameof(BusinessAddress)), registrationId);
     }
 
@@ -328,8 +328,7 @@ public class RegistrationsController(
             Status = RegulatorTaskStatus.Completed.ToString(),
         };
 
-        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(
-            updateRegistrationTaskStatusRequest);
+        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
     }
@@ -345,6 +344,8 @@ public class RegistrationsController(
         string pagePath = GetRegistrationMaterialMethodPath(PagePath.MaterialDetails, registrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
+
+        await CreateQueryMaterialSession(new RegistrationMaterialDetail { MaterialName = "Plastic" }, session, PagePath.MaterialDetails, RegulatorTaskType.MaterialDetailsAndContact);
 
         return View(GetRegistrationsView(nameof(MaterialDetails)), registrationMaterialId);
     }
@@ -362,8 +363,7 @@ public class RegistrationsController(
 
         await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        var registrationMaterial =
-            await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
     }
@@ -381,6 +381,8 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
+        await CreateQueryMaterialSession(new OverseasReprocessorInterimSites(), session, PagePath.OverseasReprocessorInterim, RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails);
+
         return View(GetRegistrationsView(nameof(OverseasReprocessorInterim)), registrationMaterialId);
     }
 
@@ -397,96 +399,7 @@ public class RegistrationsController(
 
         await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
 
-        var registrationMaterial =
-            await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
-
-        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
-    }
-
-    [HttpGet]
-    [Route(PagePath.QueryRegistrationTask)]
-    public async Task<IActionResult> QueryRegistrationTask(Guid registrationId, RegulatorTaskType taskName)
-    {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.QueryRegistrationTask);
-        SetBackLinkInfos(session, PagePath.QueryRegistrationTask);
-
-        var queryRegistrationTaskViewModel = new QueryRegistrationTaskViewModel
-        {
-            RegistrationId = registrationId, TaskName = taskName
-        };
-
-        return View(GetRegistrationsView(nameof(QueryRegistrationTask)), queryRegistrationTaskViewModel);
-    }
-
-    [HttpPost]
-    [Route(PagePath.QueryRegistrationTask)]
-    public async Task<IActionResult> QueryRegistrationTask(
-        QueryRegistrationTaskViewModel queryRegistrationTaskViewModel)
-    {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.CompleteQueryRegistrationTask);
-        SetBackLinkInfos(session, PagePath.CompleteQueryRegistrationTask);
-
-        var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
-        {
-            TaskName = queryRegistrationTaskViewModel.TaskName.ToString(),
-            RegistrationId = queryRegistrationTaskViewModel.RegistrationId,
-            Status = RegulatorTaskStatus.Queried.ToString(),
-            Comments = queryRegistrationTaskViewModel.Comments
-        };
-
-        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(
-            updateRegistrationTaskStatusRequest);
-
-        return RedirectToAction("Index", "ManageRegistrations",
-            new { id = queryRegistrationTaskViewModel.RegistrationId });
-    }
-
-    [HttpGet]
-    [Route(PagePath.QueryMaterialTask)]
-    public async Task<IActionResult> QueryMaterialTask(Guid registrationMaterialId, RegulatorTaskType taskName)
-    {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.QueryMaterialTask);
-        SetBackLinkInfos(session, PagePath.QueryMaterialTask);
-
-        var queryMaterialTaskViewModel = new QueryMaterialTaskViewModel
-        {
-            RegistrationMaterialId = registrationMaterialId, TaskName = taskName
-        };
-
-        return View(GetRegistrationsView(nameof(QueryMaterialTask)), queryMaterialTaskViewModel);
-    }
-
-    [HttpPost]
-    [Route(PagePath.QueryMaterialTask)]
-    public async Task<IActionResult> QueryMaterialTask(QueryMaterialTaskViewModel queryMaterialTaskViewModel)
-    {
-        var session = await GetSession();
-
-        if (!ModelState.IsValid)
-        {
-            SetBackLinkInfos(session, PagePath.QueryMaterialTask);
-            return View(GetRegistrationsView(nameof(QueryMaterialTask)), queryMaterialTaskViewModel);
-        }
-
-        var updateRegistrationTaskStatusRequest = new UpdateMaterialTaskStatusRequest
-        {
-            TaskName = queryMaterialTaskViewModel.TaskName.ToString(),
-            RegistrationMaterialId = queryMaterialTaskViewModel.RegistrationMaterialId,
-            Status = RegulatorTaskStatus.Queried.ToString(),
-            Comments = queryMaterialTaskViewModel.Comments
-        };
-
-        await reprocessorExporterService.UpdateRegulatorApplicationTaskStatusAsync(updateRegistrationTaskStatusRequest);
-
-        var registrationMaterial =
-            await reprocessorExporterService.GetRegistrationMaterialByIdAsync(queryMaterialTaskViewModel
-                .RegistrationMaterialId);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationMaterial.RegistrationId });
     }
@@ -510,28 +423,22 @@ public class RegistrationsController(
         return File(content, contentType, filename);
     }
 
-    private async Task CreateQueryRegistrationSession<T>(RegulatorTaskStatus taskStatus, T entity,
-        JourneySession session, string returnPagePath)
+    private async Task CreateQueryRegistrationSession<T>(T entity, JourneySession session, string returnPagePath, RegulatorTaskType taskName)
     {
-        if (taskStatus == RegulatorTaskStatus.Queried)
-        {
-            var queryRegistrationSession = mapper.Map<QueryRegistrationSession>(entity);
-            queryRegistrationSession.PagePath = returnPagePath;
-            session.ReprocessorExporterSession.QueryRegistrationSession = queryRegistrationSession;
-            await SaveSession(session);
-        }
+        var queryRegistrationSession = mapper.Map<QueryRegistrationSession>(entity);
+        queryRegistrationSession.PagePath = returnPagePath;
+        queryRegistrationSession.TaskName = taskName;
+        session.ReprocessorExporterSession.QueryRegistrationSession = queryRegistrationSession;
+        await SaveSession(session);
     }
 
-    private async Task CreateQueryMaterialSession<T>(RegulatorTaskStatus taskStatus, T entity, JourneySession session,
-        string returnPagePath)
+    private async Task CreateQueryMaterialSession<T>(T entity, JourneySession session, string returnPagePath, RegulatorTaskType taskName)
     {
-        if (taskStatus == RegulatorTaskStatus.Queried)
-        {
-            var queryMaterialSession = mapper.Map<QueryMaterialSession>(entity);
-            queryMaterialSession.PagePath = returnPagePath;
-            session.ReprocessorExporterSession.QueryMaterialSession = queryMaterialSession;
-            await SaveSession(session);
-        }
+        var queryMaterialSession = mapper.Map<QueryMaterialSession>(entity);
+        queryMaterialSession.PagePath = returnPagePath;
+        queryMaterialSession.TaskName = taskName;
+        session.ReprocessorExporterSession.QueryMaterialSession = queryMaterialSession;
+        await SaveSession(session);
     }
 
     private static string GetRegistrationMethodPath(string pagePath, Guid registrationId) =>

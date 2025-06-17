@@ -2,11 +2,9 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
-public class RegistrationMaterialDetail
+public class RegistrationMaterialDetail : RegistrationSectionBase
 {
     public Guid Id { get; init; }
-
-    public Guid RegistrationId { get; init; }
 
     public required string MaterialName { get; init; }
 

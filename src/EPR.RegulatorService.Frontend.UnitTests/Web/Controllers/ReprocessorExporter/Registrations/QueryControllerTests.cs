@@ -26,10 +26,13 @@ public class QueryControllerTests : RegistrationControllerTestBase
         
         _journeySession.ReprocessorExporterSession.QueryMaterialSession = new QueryMaterialSession
         {
+            RegistrationId = Guid.NewGuid(),
             OrganisationName = "TestOrg",
             RegistrationMaterialId = Guid.NewGuid(),
             RegulatorApplicationTaskStatusId = Guid.NewGuid(),
-            PagePath = PagePath.FeesDue
+            PagePath = PagePath.FeesDue,
+            TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs,
+            TaskStatus = RegulatorTaskStatus.NotStarted
         };
 
         var configurationMock = CreateConfigurationMock();
@@ -304,10 +307,13 @@ public class QueryControllerTests : RegistrationControllerTestBase
     private QueryMaterialSession CreateQueryMaterialSession() =>
         new()
         {
+            RegistrationId = Guid.NewGuid(),
             OrganisationName = "TestOrg",
             RegistrationMaterialId = Guid.NewGuid(),
             RegulatorApplicationTaskStatusId = Guid.NewGuid(),
-            PagePath = PagePath.FeesDue
+            PagePath = PagePath.FeesDue,
+            TaskName = RegulatorTaskType.CheckRegistrationStatus,
+            TaskStatus = RegulatorTaskStatus.NotStarted
         };
 
     private QueryRegistrationSession CreateQueryRegistrationSession() =>
@@ -316,6 +322,8 @@ public class QueryControllerTests : RegistrationControllerTestBase
             OrganisationName = "TestOrg",
             RegistrationId = Guid.NewGuid(),
             RegulatorRegistrationTaskStatusId = Guid.NewGuid(),
-            PagePath = PagePath.FeesDue
+            PagePath = PagePath.FeesDue,
+            TaskName = RegulatorTaskType.CheckRegistrationStatus,
+            TaskStatus = RegulatorTaskStatus.NotStarted
         };
 }

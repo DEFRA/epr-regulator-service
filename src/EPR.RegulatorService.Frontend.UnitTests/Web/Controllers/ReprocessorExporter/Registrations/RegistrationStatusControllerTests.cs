@@ -242,10 +242,13 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
 
         _mapperMock.Setup(m => m.Map<QueryMaterialSession>(registrationSession)).Returns(new QueryMaterialSession
         {
+            RegistrationId = registrationSession.RegistrationId,
             OrganisationName = "TEST",
             RegulatorApplicationTaskStatusId = Guid.NewGuid(),
             RegistrationMaterialId = registrationSession.RegistrationMaterialId,
-            PagePath = PagePath.FeesDue
+            PagePath = PagePath.FeesDue,
+            TaskStatus = RegulatorTaskStatus.NotStarted,
+            TaskName = RegulatorTaskType.CheckRegistrationStatus
         });
 
         // Act
@@ -609,10 +612,13 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
             .Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationStatusSession>()))
             .Returns(new QueryMaterialSession
             {
+                RegistrationId = Guid.NewGuid(),
                 OrganisationName = "Test",
                 RegulatorApplicationTaskStatusId = Guid.NewGuid(),
                 RegistrationMaterialId = Guid.NewGuid(),
-                PagePath = PagePath.FeesDue
+                PagePath = PagePath.FeesDue,
+                TaskStatus = RegulatorTaskStatus.NotStarted,
+                TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs
             });
 
         // Act
