@@ -747,7 +747,7 @@ public class AccreditationStatusControllerTests
             .Returns(It.IsAny<Task<AccreditationBusinessPlanDto>>);
 
         // Act
-        var result = await _controller.AccreditationBusinessPlan(_accreditationId, 2025);
+        var result = await _controller.CompleteAccreditationBusinessPlan(_accreditationId);
 
         // Assert
         Assert.IsNotNull(result);       
@@ -813,12 +813,34 @@ public class AccreditationStatusControllerTests
         };
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        var dto = new AccreditationBusinessPlanDto {
+            AccreditationId = _accreditationId,
+            BusinessCollectionsNotes = string.Empty,
+            BusinessCollectionsPercentage = 0.00M,
+            CommunicationsNotes = string.Empty,
+            CommunicationsPercentage = 0.20M,
+            InfrastructureNotes = "Infrastructure notes testing",
+            InfrastructurePercentage = 0.30M,
+            MaterialName = "Plastic",
+            NewMarketsNotes = "New Market Testing notes",
+            NewMarketsPercentage = 0.40M,
+            NewUsersRecycledPackagingWasteNotes = string.Empty,
+            NewUsersRecycledPackagingWastePercentage = 0.25M,
+            NotCoveredOtherCategoriesNotes = string.Empty,
+            NotCoveredOtherCategoriesPercentage = 5.00M,
+            OrganisationName = "",
+            RecycledWasteNotes = "No recycled waste notes at this time",
+            RecycledWastePercentage = 10.00M,
+            SiteAddress = "To Be Confirmed",
+            TaskStatus = "Reviewed",
+            QueryNotes = null
+        };
 
-        _mockReprocessorExporterService.Setup(x => x.GetAccreditionBusinessPlanByIdAsync(_accreditationId))
-            .Returns(It.IsAny<Task<AccreditationBusinessPlanDto>>);
+        _mockReprocessorExporterService.Setup(x => x.GetAccreditionBusinessPlanByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(dto);
 
         // Act
-        var result = await _controller.AccreditationBusinessPlan(_accreditationId, 2025);
+        var result = await _controller.CompleteAccreditationBusinessPlan(_accreditationId);
 
         var redirectResult = result as RedirectToActionResult;
 
