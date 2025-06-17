@@ -3,6 +3,7 @@ using AutoMapper;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
 
 namespace EPR.RegulatorService.Frontend.Web.Mappings;
@@ -33,7 +34,7 @@ public class AccreditationStatusMappingProfile : Profile
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.FeeAmount))
             .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.ApplicationReferenceNumber));
 
-        CreateMap<AccreditationBusinessPlanDto, AccreditationDetailsViewModel>();
+        CreateMap<AccreditationBusinessPlanDto, AccreditationBusinessPlanViewModel>();
     }
 
     private static string MapPrnTonnageType(PrnTonnageType prnTonnageType) =>
