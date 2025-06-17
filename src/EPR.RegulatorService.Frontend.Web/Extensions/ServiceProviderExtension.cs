@@ -186,8 +186,7 @@ public static class ServiceProviderExtension
     private static void RegisterFluentValidation(IServiceCollection services)
     {
         services.AddFluentValidationAutoValidation()
-                .AddValidatorsFromAssemblyContaining<IdRequestValidator>()
-                .AddValidatorsFromAssemblyContaining<PaymentDateViewModelValidator>();
+            .AddValidatorsFromAssemblyContaining<IdRequestValidator>();
     }
 
     private static void RegisterAutoMapper(IServiceCollection services)

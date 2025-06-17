@@ -272,14 +272,14 @@ public class AccreditationStatusController(
 
     [HttpGet]
     [Route(PagePath.AccreditationBusinessPlan)]
-    public async Task<IActionResult> AccreditationBusinessPlan(Guid accreditationid)
+    public async Task<IActionResult> AccreditationBusinessPlan(Guid accreditationId)
     {
         var session = await GetSession();
         SetBackLinkInfos(session, PagePath.AccreditationBusinessPlan);
 
         await SaveSessionAndJourney(session, PagePath.QueryAccreditationTask);
 
-        var accreditationBusinessPlan = await reprocessorExporterService.GetAccreditionBusinessPlanByIdAsync(accreditationid);
+        var accreditationBusinessPlan = await reprocessorExporterService.GetAccreditionBusinessPlanByIdAsync(accreditationId);
         var accreditationBusinessPlanViewModel = mapper.Map<AccreditationBusinessPlanViewModel>(accreditationBusinessPlan);
 
         return View(GetAccreditationStatusView(nameof(AccreditationBusinessPlan)), accreditationBusinessPlanViewModel);
