@@ -1,0 +1,109 @@
+
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter
+@using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations
+@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
+
+@model AccreditationBusinessPlanViewModel
+
+<div class="govuk-width-container">   
+
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+
+        <!-- OVERVIEW AND CONTACTS -->
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full govuk-!-margin-top-2">
+                <h1 class="govuk-heading-l">
+                    <span class="govuk-caption-l">@Model.MaterialName</span>
+                    Business plan
+                </h1>
+            </div>
+            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+                <form asp-action="AccreditationBusinessPlan" asp-controller="AccreditationStatus" method="post">
+
+                  <dl class="govuk-summary-list">
+                      <table class="govuk-table">
+
+                          <tbody class="govuk-table__body">
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">New reprocessing infrastructure and  maintaining existing infrastructure</th>
+                                  <td class="govuk-table__cell">@Model.InfrastructurePercentage</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">More detail: infrastructure</th>
+                                  <td class="govuk-table__cell">@Model.InfrastructureNotes</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">Price support for buying packaging waste or selling recycled packaging waste</th>
+                                  <td class="govuk-table__cell">@Model.RecycledWastePercentage</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">More detail: price support </th>
+                                  <td class="govuk-table__cell">@Model.RecycledWasteNotes</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">Support for business collections</th>
+                                  <td class="govuk-table__cell">@Model.BusinessCollectionsPercentage</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">More detail: support for business collections</th>
+                                  <td class="govuk-table__cell">@Model.BusinessCollectionsNotes</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">Communications, including information campaigns</th>
+                                  <td class="govuk-table__cell">@Model.CommunicationsPercentage</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">More detail: communications</th>
+                                  <td class="govuk-table__cell">@Model.CommunicationsNotes</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">Developing new markets for materials or goods made from recycling packaging waste</th>
+                                  <td class="govuk-table__cell">@Model.NewMarketsPercentage</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">More detail: developing new markets</th>
+                                  <td class="govuk-table__cell">@Model.NewMarketsNotes</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">Developing new uses for recycled waste</th>
+                                  <td class="govuk-table__cell">@Model.NewUsersRecycledPackagingWastePercentage</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">More detail: developing new uses</th>
+                                    <td class="govuk-table__cell">@Model.NewUsersRecycledPackagingWasteNotes</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">Activities or investment not covered by other categories</th>
+                                    <td class="govuk-table__cell">@Model.NotCoveredOtherCategoriesPercentage</td>
+                              </tr>
+                              <tr class="govuk-table__row">
+                                  <th scope="row" class="govuk-table__header">More detail: activities or investment not covered by other categories</th>
+                                  <td class="govuk-table__cell">@Model.NotCoveredOtherCategoriesNotes</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </dl>
+
+                  <br>
+                  <br>
+
+                  <div class="govuk-button-group !-margin-top-6">                      
+                      <button type="submit" class="govuk-button" data-module="govuk-button">
+                          Mark as reviewed
+                      </button>
+
+                        <a asp-controller="AccreditationStatus" asp-action="QueryAccreditationTask" asp-route-accreditationId="@Model.AccreditationId" asp-route-taskName="@RegulatorTaskType.BusinessPlan" class="govuk-link govuk-button govuk-button--secondary">
+                            Query business plan
+                      </a>
+                  </div>
+               </form>
+            </div>
+
+
+        </div><!--End of Contenet area-->
+        <!--START-->
+
+    </main>
+
+</div>
