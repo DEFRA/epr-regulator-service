@@ -279,7 +279,7 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        await CreateQueryRegistrationSession(new RegistrationWasteLicences(), session, PagePath.WasteLicences, RegulatorTaskType.WasteLicensesPermitsAndExemptions);
+        await CreateQueryRegistrationSession(new RegistrationWasteLicences { RegistrationId = registrationId}, session, PagePath.WasteLicences, RegulatorTaskType.WasteLicensesPermitsAndExemptions);
 
         return View(GetRegistrationsView(nameof(WasteLicences)), registrationId);
     }
@@ -312,7 +312,11 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        await CreateQueryRegistrationSession(new RegistrationBusinessAddress(), session, PagePath.BusinessAddress, RegulatorTaskType.BusinessAddress);
+        await CreateQueryRegistrationSession(
+            new RegistrationBusinessAddress { RegistrationId = registrationId },
+            session,
+            PagePath.BusinessAddress,
+            RegulatorTaskType.BusinessAddress);
 
         return View(GetRegistrationsView(nameof(BusinessAddress)), registrationId);
     }
@@ -345,7 +349,15 @@ public class RegistrationsController(
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        await CreateQueryMaterialSession(new RegistrationMaterialDetail { MaterialName = "Plastic" }, session, PagePath.MaterialDetails, RegulatorTaskType.MaterialDetailsAndContact);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
+
+        await CreateQueryMaterialSession(
+            new RegistrationMaterialDetail
+            {
+                Id = registrationMaterial.Id,
+                MaterialName = registrationMaterial.MaterialName,
+                RegistrationId = registrationMaterial.RegistrationId
+            }, session, PagePath.MaterialDetails, RegulatorTaskType.MaterialDetailsAndContact);
 
         return View(GetRegistrationsView(nameof(MaterialDetails)), registrationMaterialId);
     }
@@ -376,12 +388,21 @@ public class RegistrationsController(
 
         var session = await GetSession();
 
-        string pagePath =
-            GetRegistrationMaterialMethodPath(PagePath.OverseasReprocessorInterim, registrationMaterialId);
+        string pagePath = GetRegistrationMaterialMethodPath(PagePath.OverseasReprocessorInterim, registrationMaterialId);
         await SaveSessionAndJourney(session, pagePath);
         SetBackLinkInfos(session, pagePath);
 
-        await CreateQueryMaterialSession(new OverseasReprocessorInterimSites(), session, PagePath.OverseasReprocessorInterim, RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails);
+        var registrationMaterial = await reprocessorExporterService.GetRegistrationMaterialByIdAsync(registrationMaterialId);
+
+        await CreateQueryMaterialSession(
+            new OverseasReprocessorInterimSites
+            {
+                RegistrationId = registrationMaterial.RegistrationId,
+                RegistrationMaterialId = registrationMaterial.Id
+            },
+            session,
+            PagePath.OverseasReprocessorInterim,
+            RegulatorTaskType.OverseasReprocessorAndInterimSiteDetails);
 
         return View(GetRegistrationsView(nameof(OverseasReprocessorInterim)), registrationMaterialId);
     }

@@ -2,4 +2,5 @@ namespace EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registra
 
 public class OverseasReprocessorInterimSites : RegistrationSectionBase
 {
+    public Guid RegistrationMaterialId { get; set; }
 }

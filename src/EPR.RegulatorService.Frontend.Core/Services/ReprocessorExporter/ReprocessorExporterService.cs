@@ -394,8 +394,13 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)
+    public async Task AddMaterialQueryNoteAsync(Guid? regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest)
     {
+        if (regulatorApplicationTaskStatusId == null)
+        {
+            throw new ArgumentNullException("regulatorApplicationTaskStatusId cannot be null");
+        }
+
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.AddMaterialQueryNote);
@@ -406,8 +411,13 @@ public class ReprocessorExporterService(
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest)
+    public async Task AddRegistrationQueryNoteAsync(Guid? regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest)
     {
+        if (regulatorRegistrationTaskStatusId == null)
+        {
+            throw new ArgumentNullException("regulatorRegistrationTaskStatusId cannot be null");
+        }
+
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.AddRegistrationQueryNote);

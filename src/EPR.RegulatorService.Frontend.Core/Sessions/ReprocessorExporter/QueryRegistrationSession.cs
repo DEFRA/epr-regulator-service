@@ -6,7 +6,7 @@ public class QueryRegistrationSession
 {
     public string? OrganisationName { get; init; }
     public string? SiteAddress { get; init; }
-    public required Guid RegulatorRegistrationTaskStatusId { get; init; }
+    public required Guid? RegulatorRegistrationTaskStatusId { get; init; }
     public required Guid RegistrationId { get; init; }
     public required RegulatorTaskStatus TaskStatus { get; init; }
     public required RegulatorTaskType TaskName { get; set; }

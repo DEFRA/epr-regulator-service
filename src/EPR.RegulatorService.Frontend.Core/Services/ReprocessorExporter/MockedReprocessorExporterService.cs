@@ -725,7 +725,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         }
     }
 
-    public Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
+    public Task AddMaterialQueryNoteAsync(Guid? regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
 
-    public Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
+    public Task AddRegistrationQueryNoteAsync(Guid? regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
 }

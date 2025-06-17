@@ -24,8 +24,8 @@ public interface IReprocessorExporterService
     Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request);
 
     Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null);
-    Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest);
-    Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest);
+    Task AddMaterialQueryNoteAsync(Guid? regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest);
+    Task AddRegistrationQueryNoteAsync(Guid? regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest);
     Task<AccreditationMaterialPaymentFees> GetPaymentFeesByAccreditationIdAsync(Guid id);
     Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment);
     Task MarkAccreditationAsDulyMadeAsync(Guid accreditationId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest);
