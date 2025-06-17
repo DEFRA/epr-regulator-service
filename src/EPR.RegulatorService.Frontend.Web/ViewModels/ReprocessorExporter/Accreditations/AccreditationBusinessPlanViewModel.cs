@@ -1,5 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
+using System.Diagnostics.CodeAnalysis;
+
+[ExcludeFromCodeCoverage]
 public class AccreditationBusinessPlanViewModel
 {
     public Guid AccreditationId { get; set; }
