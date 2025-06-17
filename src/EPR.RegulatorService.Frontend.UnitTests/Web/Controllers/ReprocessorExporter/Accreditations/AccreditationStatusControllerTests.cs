@@ -824,6 +824,27 @@ public class AccreditationStatusControllerTests
         redirectResult.Should().BeOfType<RedirectToActionResult>();       
     }
 
+
+    [TestMethod]
+    public async Task AccreditationBusinessPlan_Should_ReturnView()
+    {
+        // Arrange
+        var journeySession = CreateJourneySession(_registrationId, _accreditationId);
+        journeySession.RegulatorSession.Journey.Add(PagePath.AccreditationBusinessPlan);
+
+        int year = _year;
+
+        InitialiseAccreditationStatusSessionIfNotExists(journeySession, _accreditationId, year);
+
+        // Act
+        var result = await _controller.AccreditationBusinessPlan(_accreditationId, year);
+
+        var viewResult = result as ViewResult;
+
+        // Assert
+        viewResult.Should().BeOfType<ViewResult>();
+    }
+
     private static JourneySession CreateJourneySession(Guid registrationId, Guid accreditationId) =>
     new JourneySession
     {
@@ -858,4 +879,24 @@ public class AccreditationStatusControllerTests
             ApplicationReferenceNumber = "123456789",
             Regulator = "Regulator"
         };
+
+    private static void InitialiseAccreditationStatusSessionIfNotExists(JourneySession session, Guid accreditationId, int year)
+    {
+        if (session.ReprocessorExporterSession.AccreditationStatusSession != null &&
+            session.ReprocessorExporterSession.AccreditationStatusSession!.AccreditationId == accreditationId &&
+            session.ReprocessorExporterSession.AccreditationStatusSession!.Year == year)
+        {
+            return;
+        }
+
+        var accreditationStatusSession = new AccreditationStatusSession
+        {
+            AccreditationId = accreditationId,
+            Year = year,
+            OrganisationName = null!,
+            MaterialName = null!
+        };
+
+        session.ReprocessorExporterSession.AccreditationStatusSession = accreditationStatusSession;
+    }
 }
