@@ -50,6 +50,7 @@
 
     <ItemGroup>
       <Folder Include="Services\" />
+      <Folder Include="Web\Validators\ReprocessorExporter\" />
       <Folder Include="Web\ViewModels\ReprocessorExporter\" />
     </ItemGroup>
 

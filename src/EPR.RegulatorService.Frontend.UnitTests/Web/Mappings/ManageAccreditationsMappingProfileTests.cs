@@ -105,7 +105,7 @@ public class ManageAccreditationsMappingProfileTests
         var prnTask = new AccreditationTask
         {
             Id = Guid.NewGuid(),
-            TaskName = "PRNTonnage", // Matches mapping enum logic
+            TaskName = RegulatorTaskType.PRNTonnage.ToString(), // Matches mapping enum logic
             Status = "Not Started",
             Year = 2026
         };
@@ -113,7 +113,7 @@ public class ManageAccreditationsMappingProfileTests
         var businessPlanTask = new AccreditationTask
         {
             Id = Guid.NewGuid(),
-            TaskName = "BusinessPlan", // Matches mapping enum logic
+            TaskName = RegulatorTaskType.BusinessPlan.ToString(), // Matches mapping enum logic
             Status = "Approved",
             Year = 2026
         };
@@ -121,7 +121,7 @@ public class ManageAccreditationsMappingProfileTests
         var samplingTask = new AccreditationTask
         {
             Id = Guid.NewGuid(),
-            TaskName = "SamplingAndInspectionPlan", // Matches mapping enum logic
+            TaskName = RegulatorTaskType.SamplingAndInspectionPlan.ToString(), // Matches mapping enum logic
             Status = "Queried",
             Year = 2026
         };
@@ -129,8 +129,24 @@ public class ManageAccreditationsMappingProfileTests
         var dulyMadeTask = new AccreditationTask
         {
             Id = Guid.NewGuid(),
-            TaskName = "DulyMade", // Matches mapping enum logic
+            TaskName = RegulatorTaskType.DulyMade.ToString(), // Matches mapping enum logic
             Status = "Completed",
+            Year = 2026
+        };
+
+        var overseasReprocessingSites = new AccreditationTask
+        {
+            Id = Guid.NewGuid(),
+            TaskName = RegulatorTaskType.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandards.ToString(), // Matches mapping enum logic
+            Status = "Completed",
+            Year = 2026
+        };
+
+        var pernTask = new AccreditationTask
+        {
+            Id = Guid.NewGuid(),
+            TaskName = RegulatorTaskType.PERNsTonnageAndAuthorityToIssuePERNs.ToString(), // Matches mapping enum logic
+            Status = "Not Started",
             Year = 2026
         };
 
@@ -141,7 +157,7 @@ public class ManageAccreditationsMappingProfileTests
             Status = ApplicationStatus.Granted.ToString(), // Matching enum string
             DeterminationDate = DateTime.Today,
             AccreditationYear = 2026,
-            Tasks = new List<AccreditationTask> { prnTask, businessPlanTask, samplingTask, dulyMadeTask }
+            Tasks = new List<AccreditationTask> { prnTask, businessPlanTask, samplingTask, dulyMadeTask, overseasReprocessingSites, pernTask }
         };
 
         // Act
@@ -171,6 +187,14 @@ public class ManageAccreditationsMappingProfileTests
             viewModel.CheckAccreditationStatusTask.Should().NotBeNull();
             viewModel.CheckAccreditationStatusTask!.StatusText.Should().Be("Duly Made");
             viewModel.CheckAccreditationStatusTask.StatusCssClass.Should().Be("govuk-tag--blue");
+
+            viewModel.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask.Should().NotBeNull();
+            viewModel.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask!.StatusText.Should().Be("Reviewed");
+            viewModel.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask.StatusCssClass.Should().Be("govuk-tag--blue");
+
+            viewModel.PERNsTonnageAndAuthorityToIssuePERNsTask.Should().NotBeNull();
+            viewModel.PERNsTonnageAndAuthorityToIssuePERNsTask!.StatusText.Should().Be("Not started yet");
+            viewModel.PERNsTonnageAndAuthorityToIssuePERNsTask.StatusCssClass.Should().Be("govuk-tag--grey");
 
             viewModel.ShouldDisplay.Should().BeTrue();
         }

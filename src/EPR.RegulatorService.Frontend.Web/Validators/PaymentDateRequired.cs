@@ -8,7 +8,7 @@ public class PaymentDateRequiredAttribute : ValidationAttribute
 {    
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        if (value is not PaymentDateViewModel model ||
+        if (value is not IPaymentDateViewModel model ||
             model.Day == null ||
             model.Month == null ||
             model.Year == null)

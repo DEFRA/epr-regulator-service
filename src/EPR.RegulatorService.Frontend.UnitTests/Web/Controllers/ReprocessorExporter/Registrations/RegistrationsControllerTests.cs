@@ -249,6 +249,131 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     }
 
     [TestMethod]
+    public async Task WasteCarrierDetails_WhenSessionIsNull_ShouldThrowException()
+    {
+        // Arrange
+        Guid registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
+
+        // Arrange
+        _sessionManagerMock
+            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync((JourneySession)null!); // Simulating a null session
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        {
+            await _controller.WasteCarrierDetails(registrationId);
+        });
+    }
+
+    [TestMethod]
+    public async Task WasteCarrierDetails_ReturnView()
+    {
+        // Arrange
+        Guid registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.WasteCarrierDetails);
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        var wasteCarrierDetails = new WasteCarrierDetails { RegistrationId = registrationId, OrganisationName = "Test Org", SiteAddress = "Test Site address" };
+        _reprocessorExporterServiceMock.Setup(s => s.GetWasteCarrierDetailsByRegistrationIdAsync(registrationId)).ReturnsAsync(wasteCarrierDetails);
+
+        var expectedViewModel = new WasteCarrierDetailsViewModel
+        {
+            RegistrationId = registrationId, OrganisationName = "Test Org", SiteAddress = "SiteAddress1"
+        };
+
+        _mapperMock.Setup(m => m.Map<WasteCarrierDetailsViewModel>(wasteCarrierDetails)).Returns(expectedViewModel);
+
+        // Act
+        var result = await _controller.WasteCarrierDetails(registrationId);
+
+        // Assert
+        result.Should().BeOfType<ViewResult>();
+
+        var viewResult = result as ViewResult;
+        viewResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            viewResult!.ViewData.Keys.Should().Contain(BackLinkViewDataKey);
+            viewResult.Model.Should().BeOfType<WasteCarrierDetailsViewModel>();
+            var viewModel = (WasteCarrierDetailsViewModel)viewResult.Model;
+            viewModel.Should().Be(expectedViewModel);
+        }
+    }
+
+    [TestMethod]
+    public async Task WasteCarrierDetails_WhenTaskIsQueried_ShouldCreateQueryRegistrationSession()
+    {
+        // Arrange
+        Guid registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
+        JourneySession journeySession = new JourneySession();
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        var wasteCarrierDetails = new WasteCarrierDetails
+        {
+            RegistrationId = registrationId,
+            OrganisationName = "Test Org",
+            SiteAddress = "Test Site address",
+            TaskStatus = RegulatorTaskStatus.Queried,
+            RegulatorRegistrationTaskStatusId = Guid.NewGuid()
+        };
+        _reprocessorExporterServiceMock.Setup(s => s.GetWasteCarrierDetailsByRegistrationIdAsync(registrationId)).ReturnsAsync(wasteCarrierDetails);
+
+        _mapperMock.Setup(m => m.Map<QueryRegistrationSession>(wasteCarrierDetails)).Returns(new QueryRegistrationSession
+        {
+            OrganisationName = wasteCarrierDetails.OrganisationName,
+            RegistrationId = wasteCarrierDetails.RegistrationId,
+            RegulatorRegistrationTaskStatusId = wasteCarrierDetails.RegulatorRegistrationTaskStatusId!.Value,
+            PagePath = string.Empty
+        });
+
+        // Act
+        await _controller.WasteCarrierDetails(registrationId);
+
+        // Assert
+        journeySession.ReprocessorExporterSession.QueryMaterialSession.Should().BeNull();
+        journeySession.ReprocessorExporterSession.QueryRegistrationSession.Should().NotBeNull();
+
+        var queryRegistrationSession = journeySession.ReprocessorExporterSession.QueryRegistrationSession;
+        queryRegistrationSession!.PagePath.Should().Be(PagePath.WasteCarrierDetails);
+        queryRegistrationSession.OrganisationName.Should().Be(wasteCarrierDetails.OrganisationName);
+        queryRegistrationSession.RegulatorRegistrationTaskStatusId.Should().Be(wasteCarrierDetails.RegulatorRegistrationTaskStatusId.Value);
+        queryRegistrationSession.RegistrationId.Should().Be(wasteCarrierDetails.RegistrationId);
+    }
+
+    [TestMethod]
+    public async Task CompleteWasteCarrierDetails_WhenTaskComplete_RedirectToManageRegistrations()
+    {
+        // Arrange
+        Guid registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
+        JourneySession journeySession = new JourneySession();
+        journeySession.RegulatorSession.Journey.Add(PagePath.WasteCarrierDetails);
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        _reprocessorExporterServiceMock.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.CompleteWasteCarrierDetails(registrationId);
+
+        // Assert
+        result.Should().BeOfType<RedirectToActionResult>();
+
+        var redirectToActionResult = result as RedirectToActionResult;
+        redirectToActionResult.Should().NotBeNull();
+
+        using (new AssertionScope())
+        {
+            redirectToActionResult.ActionName.Should().Be("Index");
+            redirectToActionResult.ControllerName.Should().Be("ManageRegistrations");
+            redirectToActionResult.RouteValues.Should().ContainKey("id");
+            redirectToActionResult.RouteValues["id"].Should().Be(registrationId);
+        }
+    }
+
+    [TestMethod]
     public async Task AuthorisedMaterials_WhenSessionIsNull_ShouldThrowException()
     {
         // Arrange
@@ -548,6 +673,11 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        _reprocessorExporterServiceMock
+            .Setup(s => s.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId))
+            .ReturnsAsync(
+                new RegistrationMaterialSamplingPlan { OrganisationName = "Test Org", MaterialName = "Plastic" });
 
         _reprocessorExporterServiceMock
             .Setup(s => s.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId))
