@@ -786,31 +786,7 @@ public class AccreditationStatusControllerTests
 
         queryNotes.Add(queryNote1);
         queryNotes.Add(queryNote2);
-        queryNotes.Add(queryNote3);
-
-        var viewModel = new AccreditationBusinessPlanViewModel
-        {
-            AccreditationId = _accreditationId,
-            BusinessCollectionsNotes = string.Empty,
-            BusinessCollectionsPercentage = 0.00M,
-            CommunicationsNotes = string.Empty,
-            CommunicationsPercentage = 0.20M,
-            InfrastructureNotes = "Infrastructure notes testing",
-            InfrastructurePercentage = 0.30M,
-            MaterialName = "Plastic",
-            NewMarketsNotes = "New Market Testing notes",
-            NewMarketsPercentage = 0.40M,
-            NewUsersRecycledPackagingWasteNotes = string.Empty,
-            NewUsersRecycledPackagingWastePercentage = 0.25M,
-            NotCoveredOtherCategoriesNotes = string.Empty,
-            NotCoveredOtherCategoriesPercentage = 5.00M,
-            OrganisationName = "",
-            RecycledWasteNotes = "No recycled waste notes at this time",
-            RecycledWastePercentage = 10.00M,
-            SiteAddress = "To Be Confirmed",
-            TaskStatus = "Reviewed",
-            QueryNotes = queryNotes
-        };
+        queryNotes.Add(queryNote3);       
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
         var dto = new AccreditationBusinessPlanDto {
