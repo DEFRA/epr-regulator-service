@@ -316,7 +316,33 @@ public class ReprocessorExporterServiceTests
     //    // Assert
     //    result.Should().NotBeNull();
     //    result.Should().BeEquivalentTo(expectedWasteCarrier);
-    //}
+    //}    
+
+    [TestMethod]
+    public async Task GetWasteCarrierByRegistrationIdAsync_WhenSuccess_ReturnsWasteCarrierDetails()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
+        var expectedWasteCarrier = CreateWasteCarrierDetails();
+        string expectedPath = GetWasteCarrierDetailsByRegistrationId
+            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{id}", registrationMaterialId.ToString());
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(JsonSerializer.Serialize(expectedWasteCarrier, _jsonSerializerOptions))
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act
+        var result = await _service.GetWasteCarrierDetailsByRegistrationIdAsync(registrationMaterialId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(expectedWasteCarrier);
+    }
 
     [TestMethod]
     public async Task GetWasteCarrierByRegistrationMaterialId_WhenResponseCodeIsNotSuccess_ShouldThrowException()
@@ -725,8 +751,7 @@ public class ReprocessorExporterServiceTests
             responseBytes.Should().BeEquivalentTo(expectedContent);
             result.Content.Headers.ContentType?.MediaType.Should().Be(contentType);
         }
-    }
-
+    }    
 
     [TestMethod]
     public async Task GetRegistrationByIdWithAccreditationsAsync_WhenNoYearProvided_ReturnsAllAccreditations()
@@ -1492,4 +1517,15 @@ public class ReprocessorExporterServiceTests
 
         return accreditationBusinessPlanDto;
     }
+
+    private static WasteCarrierDetails CreateWasteCarrierDetails() =>
+        new()
+        {
+            RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
+            OrganisationName = "Test Org",
+            SiteAddress = "23, Ruby St, London, E12 3SE",
+            WasteCarrierBrokerDealerNumber = "WCB123456789",
+            RegulatorRegistrationTaskStatusId = Guid.NewGuid(),
+            TaskStatus = RegulatorTaskStatus.Queried
+        };
 }
