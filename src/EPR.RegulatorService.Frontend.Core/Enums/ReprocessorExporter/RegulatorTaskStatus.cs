@@ -6,6 +6,5 @@ public enum RegulatorTaskStatus
     Started,
     Completed,
     CannotStartYet,
-    Queried,
-    Reviewed
+    Queried
 }

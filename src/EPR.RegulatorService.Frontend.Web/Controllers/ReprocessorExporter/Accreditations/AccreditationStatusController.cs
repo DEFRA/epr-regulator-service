@@ -296,7 +296,7 @@ public class AccreditationStatusController(
         {
             TaskName = RegulatorTaskType.BusinessPlan.ToString(),
             AccreditationId = accreditationBusinessPlanViewModel.AccreditationId,
-            Status = RegulatorTaskStatus.Reviewed.ToString(),
+            Status = RegulatorTaskStatus.Completed.ToString(),
             Comments = string.Empty
         };
 

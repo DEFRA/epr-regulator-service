@@ -44,7 +44,7 @@
         {
             <li class="app-task-list__item">
                 <span class="app-task-list__task-name">
-                    <a asp-controller="AccreditationStatusController" asp-action="AccreditationBusinessPlan" asp-route-accreditationid="@Model.Id">Business plan</a>
+                    <a asp-controller="AccreditationStatus" asp-action="AccreditationBusinessPlan" asp-route-accreditationid="@Model.Id">Business plan</a>
                 </span>
                 <strong class="govuk-tag @Model.Accreditation.BusinessPlanTask.StatusCssClass app-task-list__tag">
                     @Model.Accreditation.BusinessPlanTask.StatusText

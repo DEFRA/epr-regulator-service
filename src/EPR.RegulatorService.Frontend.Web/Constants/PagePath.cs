@@ -85,7 +85,7 @@ public static class PagePath
     public const string AddMaterialQueryNote = "add-material-note";
     public const string RegistrationApplicationStatus = "registration-application-status";
     public const string QueryAccreditationTask = "query-accreditation-task";
-    public const string AccreditationBusinessPlan = "accreditaion-business-plan";
+    public const string AccreditationBusinessPlan = "accreditation-business-plan";
 
     // Complete tasks paths
     public const string CompleteQueryRegistrationTask = "query-registration-task-complete";
