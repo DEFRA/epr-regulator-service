@@ -14,6 +14,7 @@ public interface IReprocessorExporterService
     Task<RegistrationMaterialReprocessingIO> GetReprocessingIOByRegistrationMaterialIdAsync(Guid registrationMaterialId);
     Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(Guid registrationMaterialId);
     Task<RegistrationMaterialPaymentFees> GetPaymentFeesByRegistrationMaterialIdAsync(Guid registrationMaterialId);
+    Task<WasteCarrierDetails> GetWasteCarrierDetailsByRegistrationIdAsync(Guid registrationId);
 
     Task MarkAsDulyMadeAsync(Guid registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest);
     Task SubmitOfflinePaymentAsync(OfflinePaymentRequest offlinePayment);
@@ -29,4 +30,5 @@ public interface IReprocessorExporterService
     Task SubmitAccreditationOfflinePaymentAsync(AccreditationOfflinePaymentRequest offlinePayment);
     Task MarkAccreditationAsDulyMadeAsync(Guid accreditationId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest);
     Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest);
+    Task<AccreditationSamplingPlan> GetSamplingPlanByAccreditationIdAsync(Guid accreditationId);
 }
