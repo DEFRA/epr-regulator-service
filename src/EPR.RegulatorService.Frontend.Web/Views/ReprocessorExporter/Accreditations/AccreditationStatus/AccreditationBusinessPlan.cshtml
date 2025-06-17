@@ -80,6 +80,7 @@
                               <tr class="govuk-table__row">
                                   <th scope="row" class="govuk-table__header">More detail: activities or investment not covered by other categories</th>
                                   <td class="govuk-table__cell">@Model.NotCoveredOtherCategoriesNotes</td>
+                                  
                               </tr>
                           </tbody>
                       </table>
@@ -93,9 +94,7 @@
                           Mark as reviewed
                       </button>
 
-                        <a asp-controller="AccreditationStatus" asp-action="QueryAccreditationTask" asp-route-accreditationId="@Model.AccreditationId" asp-route-taskName="@RegulatorTaskType.BusinessPlan" class="govuk-link govuk-button govuk-button--secondary">
-                            Query business plan
-                      </a>
+                      <a href="@Url.Action("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = Model.AccreditationId, taskName = RegulatorTaskType.BusinessPlan })">Business Plan</a>
                   </div>
                </form>
             </div>
