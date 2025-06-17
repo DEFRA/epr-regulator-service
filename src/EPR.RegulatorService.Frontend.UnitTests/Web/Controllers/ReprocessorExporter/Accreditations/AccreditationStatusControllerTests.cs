@@ -747,7 +747,7 @@ public class AccreditationStatusControllerTests
             .Returns(It.IsAny<Task<AccreditationBusinessPlanDto>>);
 
         // Act
-        var result = await _controller.AccreditationBusinessPlan(viewModel);
+        var result = await _controller.AccreditationBusinessPlan(_accreditationId, 2025);
 
         // Assert
         Assert.IsNotNull(result);       
@@ -818,7 +818,7 @@ public class AccreditationStatusControllerTests
             .Returns(It.IsAny<Task<AccreditationBusinessPlanDto>>);
 
         // Act
-        var result = await _controller.AccreditationBusinessPlan(viewModel);
+        var result = await _controller.AccreditationBusinessPlan(_accreditationId, 2025);
 
         var redirectResult = result as RedirectToActionResult;
 

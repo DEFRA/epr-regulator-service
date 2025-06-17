@@ -19,7 +19,7 @@
                 </h1>
             </div>
             <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
-                <form asp-action="AccreditationBusinessPlan" asp-controller="AccreditationStatus" method="post">
+                <form asp-controller="AccreditationStatus">
 
                   <dl class="govuk-summary-list">
                       <table class="govuk-table">
@@ -89,12 +89,12 @@
                   <br>
                   <br>
 
-                  <div class="govuk-button-group !-margin-top-6">                      
-                      <button type="submit" class="govuk-button" data-module="govuk-button">
+                  <div class="govuk-button-group !-margin-top-6">
+                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="AccreditationStatus" asp-action="CompleteAccreditationBusinessPlan" asp-route-accreditationId="@Model.AccreditationId">
                           Mark as reviewed
                       </button>
 
-                      <a href="@Url.Action("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = Model.AccreditationId, taskName = RegulatorTaskType.BusinessPlan })">Business Plan</a>
+                      <a  class="govuk-button govuk-button--secondary"  href="@Url.Action("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = Model.AccreditationId, taskName = RegulatorTaskType.BusinessPlan })">Query business plan</a>
                   </div>
                </form>
             </div>

@@ -272,10 +272,11 @@ public class AccreditationStatusController(
 
     [HttpGet]
     [Route(PagePath.AccreditationBusinessPlan)]
-    public async Task<IActionResult> AccreditationBusinessPlan(Guid accreditationId)
+    public async Task<IActionResult> AccreditationBusinessPlan(Guid accreditationId, int year)
     {
         var session = await GetSession();
         SetBackLinkInfos(session, PagePath.AccreditationBusinessPlan);
+        InitialiseAccreditationStatusSessionIfNotExists(session, accreditationId, year);
 
         await SaveSessionAndJourney(session, PagePath.QueryAccreditationTask);
 
@@ -288,14 +289,14 @@ public class AccreditationStatusController(
 
     [HttpPost]
     [Route(PagePath.AccreditationBusinessPlan)]
-    public async Task<IActionResult> AccreditationBusinessPlan(AccreditationBusinessPlanViewModel accreditationBusinessPlanViewModel)
+    public async Task<IActionResult> CompleteAccreditationBusinessPlan(Guid accreditationId)
     {
         var session = await GetSession();
 
         var updateAccreditationTaskStatusRequest = new UpdateAccreditationTaskStatusRequest
         {
             TaskName = RegulatorTaskType.BusinessPlan.ToString(),
-            AccreditationId = accreditationBusinessPlanViewModel.AccreditationId,
+            AccreditationId = accreditationId,
             Status = RegulatorTaskStatus.Completed.ToString(),
             Comments = string.Empty
         };
@@ -308,6 +309,26 @@ public class AccreditationStatusController(
             year = session.ReprocessorExporterSession.AccreditationStatusSession.Year
         });
 
+    }
+
+    private static void InitialiseAccreditationStatusSessionIfNotExists(JourneySession session, Guid accreditationId, int year)
+    {
+        if (session.ReprocessorExporterSession.AccreditationStatusSession != null &&
+            session.ReprocessorExporterSession.AccreditationStatusSession!.AccreditationId == accreditationId &&
+            session.ReprocessorExporterSession.AccreditationStatusSession!.Year == year)
+        {
+            return;
+        }
+
+        var accreditationStatusSession = new AccreditationStatusSession
+        {
+            AccreditationId = accreditationId,
+            Year = year,
+            OrganisationName = null!,
+            MaterialName = null!
+        };
+
+        session.ReprocessorExporterSession.AccreditationStatusSession = accreditationStatusSession;
     }
 
     private AccreditationMarkAsDulyMadeRequest CreateDulyMadeRequest(AccreditationStatusSession accreditationStatusSession)
