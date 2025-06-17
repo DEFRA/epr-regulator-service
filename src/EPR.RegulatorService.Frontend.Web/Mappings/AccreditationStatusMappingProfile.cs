@@ -32,6 +32,8 @@ public class AccreditationStatusMappingProfile : Profile
         CreateMap<AccreditationStatusSession, AccreditationOfflinePaymentRequest>()
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.FeeAmount))
             .ForMember(dest => dest.PaymentReference, opt => opt.MapFrom(src => src.ApplicationReferenceNumber));
+
+        CreateMap<AccreditationBusinessPlanDto, AccreditationDetailsViewModel>();
     }
 
     private static string MapPrnTonnageType(PrnTonnageType prnTonnageType) =>
