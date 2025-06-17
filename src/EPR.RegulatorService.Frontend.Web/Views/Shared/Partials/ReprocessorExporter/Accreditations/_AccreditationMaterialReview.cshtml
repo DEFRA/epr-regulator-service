@@ -59,23 +59,12 @@
 					</li>
 				}
 			}
-
-        @if (material.Accreditation.BusinessPlanTask != null)
-        {
-            <li class="app-task-list__item">
-                <span class="app-task-list__task-name">
-                    <a asp-controller="AccreditationStatus" asp-action="AccreditationBusinessPlan" asp-route-accreditationId="@Model.Id">Business plan</a>
-                </span>
-                    <strong class="govuk-tag @material.Accreditation.BusinessPlanTask.StatusCssClass app-task-list__tag">
-                        @material.Accreditation.BusinessPlanTask.StatusText
-                </strong>
-            </li>
-        }
+       
 			@if (material.Accreditation.BusinessPlanTask != null)
 			{
 				<li class="app-task-list__item">
 					<span class="app-task-list__task-name">
-						<a href="#">Business plan</a>
+                        <a href="@Url.ActionLink("AccreditationBusinessPlan", "AccreditationStatus", new { accreditationId = material.Accreditation.Id } )">Business plan</a>
 					</span>
 					<strong class="govuk-tag @material.Accreditation.BusinessPlanTask.StatusCssClass app-task-list__tag">
 						@material.Accreditation.BusinessPlanTask.StatusText
