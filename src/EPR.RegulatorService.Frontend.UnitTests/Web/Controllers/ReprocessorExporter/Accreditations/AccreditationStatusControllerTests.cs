@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
@@ -879,6 +881,7 @@ public class AccreditationStatusControllerTests
             ApplicationReferenceNumber = "123456789",
             Regulator = "Regulator"
         };
+
 
     private static void InitialiseAccreditationStatusSessionIfNotExists(JourneySession session, Guid accreditationId, int year)
     {
