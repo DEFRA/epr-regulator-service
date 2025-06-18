@@ -17,5 +17,8 @@ public class QueryNoteMappingProfile : Profile
         CreateMap<QueryRegistrationSession, AddQueryNoteViewModel>()
             .ForMember(dest => dest.Note, opt => opt.Ignore())
             .ForMember(dest => dest.FormAction, opt => opt.Ignore());
+        CreateMap<QueryAccreditationSession, AddQueryNoteViewModel>()
+            .ForMember(dest => dest.Note, opt => opt.Ignore())
+            .ForMember(dest => dest.FormAction, opt => opt.Ignore());
     }
 }

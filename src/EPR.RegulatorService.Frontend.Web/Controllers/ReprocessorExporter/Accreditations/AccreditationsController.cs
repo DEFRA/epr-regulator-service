@@ -20,6 +20,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using ViewModels.ReprocessorExporter.Accreditations;
+using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
@@ -52,6 +53,9 @@ public class AccreditationsController(ISessionManager<JourneySession> sessionMan
             Year = year,
             AccreditationSamplingPlan = samplingPlan
         };
+
+        // The values for QueryAccreditationSession need to be returned as part of the API response (including Org Name and Site Address)
+        await CreateQueryAccreditationSession(session, RegulatorTaskType.SamplingAndInspectionPlan, accreditationId, session.ReprocessorExporterSession.RegistrationId, year);
 
         return View(GetAccreditationsView(nameof(SamplingInspection)), model);
     }
@@ -118,4 +122,18 @@ public class AccreditationsController(ISessionManager<JourneySession> sessionMan
 
     private static string GetSamplingInspectionPagePath(string pagePath, Guid accreditationId, int year) => $"{pagePath}?accreditationId={accreditationId}&year={year}";
     protected static string GetAccreditationsView(string viewName) => $"~/Views/ReprocessorExporter/Accreditations/{viewName}.cshtml";
+
+    private async Task CreateQueryAccreditationSession(JourneySession session, RegulatorTaskType taskName, Guid accreditationId, Guid registrationId, int year)
+    {
+        var queryAccreditationSession = new QueryAccreditationSession
+        {
+            AccreditationId = accreditationId,
+            TaskName = taskName,
+            RegistrationId = registrationId,
+            Year = year
+        };
+        
+        session.ReprocessorExporterSession.QueryAccreditationSession = queryAccreditationSession;
+        await SaveSession(session);
+    }
 }

@@ -3,19 +3,15 @@ using AutoMapper;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
-using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Accreditations;
-using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using FluentAssertions.Execution;
 
@@ -31,7 +27,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
 [TestClass]
 public class AccreditationStatusControllerTests
 {
-    private const string BackLinkViewDataKey = "BackLinkToDisplay";
     private const int DeterminationWeeks = 12;
 
     private AccreditationStatusController _controller;
@@ -548,138 +543,6 @@ public class AccreditationStatusControllerTests
         }
     }
 
-    [TestMethod]
-    public async Task QueryAccreditationTask_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
-    {
-        // Arrange
-        var mockHeaders = new Mock<IHeaderDictionary>();
-        var mockRequest = new Mock<HttpRequest>();
-
-        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
-        mockHeaders.Setup(h => h.Referer).Returns((string?)null);
-
-
-        // Set the mock Request to the HttpContext
-        mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
-        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
-
-        // Act
-        var result = await _controller.QueryAccreditationTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.DulyMade);
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-
-        AssertBackLink(result as ViewResult, "/accreditations/" + PagePath.Home);
-    }
-
-    [TestMethod]
-    public async Task QueryAccreditationTask_WhenHeadersIsMissing_ShouldSetHomeBackLink()
-    {
-        // Arrange
-        var mockRequest = new Mock<HttpRequest>();
-        mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
-
-        _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
-
-        // Act
-        var result = await _controller.QueryAccreditationTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.SiteAddressAndContactDetails);
-
-        // Assert
-        result.Should().BeOfType<ViewResult>();
-
-        AssertBackLink(result as ViewResult, "/accreditations/" + PagePath.Home);
-    }
-
-    [TestMethod]
-    public async Task QueryAccreditationTask_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
-    {
-        // Arrange
-        JourneySession journeySession = new JourneySession();
-        journeySession.RegulatorSession.Journey.Add(PagePath.ManageRegistrations);
-
-        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
-
-        // Act
-        var result = await _controller.QueryAccreditationTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.SiteAddressAndContactDetails);
-
-        // Assert
-        using (new AssertionScope())
-        {
-            var viewResult = (ViewResult)result;
-
-            AssertBackLink(viewResult, PagePath.ManageRegistrations);
-        }
-    }
-
-    [TestMethod]
-    public async Task QueryAccreditationTask_WhenSessionIsNull_ShouldThrowException()
-    {
-        // Arrange
-        _sessionManagerMock
-            .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
-            .ReturnsAsync((JourneySession)null!);
-
-        // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
-        {
-            await _controller.QueryAccreditationTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.SiteAddressAndContactDetails);
-        });
-    }
-
-    [TestMethod]
-    public async Task QueryAccreditationTask_WhenTaskComplete_ShouldRedirectToManageRegistrations()
-    {
-        // Arrange
-        var journeySession = CreateJourneySession(_registrationId, _accreditationId);
-        journeySession.RegulatorSession.Journey.Add(PagePath.QueryMaterialTask);
-
-        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
-        _mockReprocessorExporterService.Setup(x => x.UpdateRegulatorAccreditationTaskStatusAsync(It.IsAny<UpdateAccreditationTaskStatusRequest>()))
-            .Returns(Task.CompletedTask);
-
-        // Act
-        var result = await _controller.QueryAccreditationTask(new QueryAccreditationTaskViewModel { Comments = "", TaskName = RegulatorTaskType.DulyMade, AccreditationId = _accreditationId });
-
-        // Assert
-        result.Should().BeOfType<RedirectToActionResult>();
-
-        var redirectToActionResult = result as RedirectToActionResult;
-        redirectToActionResult.Should().NotBeNull();
-
-        using (new AssertionScope())
-        {
-            redirectToActionResult.ActionName.Should().Be("Index");
-            redirectToActionResult.ControllerName.Should().Be("ManageAccreditations");
-            redirectToActionResult.RouteValues.Should().ContainKey("id");
-            redirectToActionResult.RouteValues["id"].Should().Be(_registrationId);
-            redirectToActionResult.RouteValues.Should().ContainKey("year");
-            redirectToActionResult.RouteValues["year"].Should().Be(_year);
-        }
-    }
-
-    [TestMethod]
-    public async Task QueryAccreditationTask_InvalidModelState_ReturnsViewWithViewModel()
-    {
-        // Arrange
-        var viewModel = new QueryAccreditationTaskViewModel
-        {
-            AccreditationId = Guid.NewGuid(),
-            TaskName = RegulatorTaskType.CheckRegistrationStatus
-        };
-
-        // Simulate invalid model state
-        _controller.ModelState.AddModelError("Comments", "Required");
-
-        // Act
-        var result = await _controller.QueryAccreditationTask(viewModel);
-
-        // Assert
-        var viewResult = result as ViewResult;
-        viewResult.Should().NotBeNull();
-        viewResult!.ViewName.Should().Be("~/Views/ReprocessorExporter/Accreditations/AccreditationStatus/QueryAccreditationTask.cshtml");
-        viewResult.Model.Should().Be(viewModel);
-    }
-
     private static JourneySession CreateJourneySession(Guid registrationId, Guid accreditationId) =>
     new JourneySession
     {
@@ -696,13 +559,6 @@ public class AccreditationStatusControllerTests
             }
         }
     };
-
-    private static void AssertBackLink(ViewResult viewResult, string expectedBackLink)
-    {
-        var hasBackLinkKey = viewResult.ViewData.TryGetValue(BackLinkViewDataKey, out var gotBackLinkObject);
-        hasBackLinkKey.Should().BeTrue();
-        (gotBackLinkObject as string)?.Should().Be(expectedBackLink);
-    }
 
     private static AccreditationMaterialPaymentFees CreateAccreditationPaymentFees(Guid accreditationId) =>
         new()

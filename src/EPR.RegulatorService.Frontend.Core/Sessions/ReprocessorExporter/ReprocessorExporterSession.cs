@@ -7,6 +7,6 @@ public class ReprocessorExporterSession
     public RegistrationStatusSession? RegistrationStatusSession { get; set; }
     public QueryMaterialSession? QueryMaterialSession { get; set; }
     public QueryRegistrationSession? QueryRegistrationSession { get; set; }
-
+    public QueryAccreditationSession? QueryAccreditationSession { get; set; }
     public AccreditationStatusSession? AccreditationStatusSession { get; set; }
 }

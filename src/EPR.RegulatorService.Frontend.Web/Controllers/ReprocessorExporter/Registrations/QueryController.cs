@@ -26,9 +26,7 @@ public class QueryController (
     IConfiguration configuration)
     : ReprocessorExporterBaseController(sessionManager, configuration)
 {
-    private const string RegistrationNoteFormAction = "AddRegistrationQueryNote";
-    private const string MaterialNoteFormAction = "AddMaterialQueryNote";
-    private const string AddQueryNoteView = "~/Views/ReprocessorExporter/Registrations/Query/AddQueryNote.cshtml";
+    private const string AddQueryNoteView = "~/Views/ReprocessorExporter/AddQueryNote.cshtml";
 
     [HttpGet]
     [Route(PagePath.AddRegistrationQueryNote)]
@@ -42,7 +40,7 @@ public class QueryController (
         SetBackLinkInfos(session, PagePath.AddRegistrationQueryNote);
 
         var viewModel = mapper.Map<AddQueryNoteViewModel>(queryRegistrationSession);
-        viewModel.FormAction = RegistrationNoteFormAction;
+        viewModel.FormAction = nameof(AddRegistrationQueryNote);
 
         return View(AddQueryNoteView, viewModel);
     }
@@ -59,7 +57,7 @@ public class QueryController (
         {
             SetBackLinkInfos(session, PagePath.AddMaterialQueryNote);
             mapper.Map(queryRegistrationSession, viewModel);
-            viewModel.FormAction = RegistrationNoteFormAction;
+            viewModel.FormAction = nameof(AddRegistrationQueryNote);
             return View(AddQueryNoteView, viewModel);
         }
 
@@ -170,7 +168,7 @@ public class QueryController (
         SetBackLinkInfos(session, PagePath.AddMaterialQueryNote);
         
         var viewModel = mapper.Map<AddQueryNoteViewModel>(queryMaterialSession);
-        viewModel.FormAction = MaterialNoteFormAction;
+        viewModel.FormAction = nameof(AddMaterialQueryNote);
         
         return View(AddQueryNoteView, viewModel);
     }
@@ -187,7 +185,7 @@ public class QueryController (
         {
             SetBackLinkInfos(session, PagePath.AddMaterialQueryNote);
             mapper.Map(queryMaterialSession, viewModel);
-            viewModel.FormAction = MaterialNoteFormAction;
+            viewModel.FormAction = nameof(AddMaterialQueryNote);
 
             return View(AddQueryNoteView, viewModel);
         }

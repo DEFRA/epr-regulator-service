@@ -88,13 +88,16 @@ public class AccreditationStatusController(
         }
 
         accreditationStatusSession.FullPaymentMade = viewModel.FullPaymentMade;
-
         await SaveSession(session);
 
-        return accreditationStatusSession.FullPaymentMade == true
-          ? RedirectToAction("PaymentMethod", "AccreditationStatus")
-          : RedirectToAction("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = accreditationStatusSession.AccreditationId, taskName = RegulatorTaskType.DulyMade });
+        if (accreditationStatusSession.FullPaymentMade == true)
+        {
+            return RedirectToAction("PaymentMethod", "AccreditationStatus");
+        }
 
+        await CreateQueryAccreditationSession(session, accreditationStatusSession);
+
+        return RedirectToAction("QueryAccreditationTask", "Query");
     }
 
     [HttpGet]
@@ -221,53 +224,6 @@ public class AccreditationStatusController(
         return RedirectToAction("Index", "ManageAccreditations", new { id = session.ReprocessorExporterSession.RegistrationId, year = accreditationStatusSession.Year });
     }
 
-    [HttpGet]
-    [Route(PagePath.QueryAccreditationTask)]
-    public async Task<IActionResult> QueryAccreditationTask(Guid accreditationId, RegulatorTaskType taskName)
-    {
-        var session = await GetSession();
-
-        await SaveSessionAndJourney(session, PagePath.QueryAccreditationTask);
-        SetBackLinkInfos(session, PagePath.QueryAccreditationTask);
-
-        var queryAccreditationTaskViewModel = new QueryAccreditationTaskViewModel
-        {
-            AccreditationId = accreditationId,
-            TaskName = taskName
-        };
-
-        return View(GetAccreditationStatusView(nameof(QueryAccreditationTask)), queryAccreditationTaskViewModel);
-    }
-
-    [HttpPost]
-    [Route(PagePath.QueryAccreditationTask)]
-    public async Task<IActionResult> QueryAccreditationTask(QueryAccreditationTaskViewModel queryAccreditationTaskViewModel)
-    {
-        var session = await GetSession();
-
-        if (!ModelState.IsValid)
-        {
-            SetBackLinkInfos(session, PagePath.QueryMaterialTask);
-            return View(GetAccreditationStatusView(nameof(QueryAccreditationTask)), queryAccreditationTaskViewModel);
-        }
-
-        var updateAccreditationTaskStatusRequest = new UpdateAccreditationTaskStatusRequest
-        {
-            TaskName = queryAccreditationTaskViewModel.TaskName.ToString(),
-            AccreditationId = queryAccreditationTaskViewModel.AccreditationId,
-            Status = RegulatorTaskStatus.Queried.ToString(),
-            Comments = queryAccreditationTaskViewModel.Comments
-        };
-
-        await reprocessorExporterService.UpdateRegulatorAccreditationTaskStatusAsync(updateAccreditationTaskStatusRequest);
-
-        return RedirectToAction("Index", "ManageAccreditations", new
-        {
-            id = session.ReprocessorExporterSession.RegistrationId,
-            year = session.ReprocessorExporterSession.AccreditationStatusSession.Year
-        });
-    }
-
     private AccreditationMarkAsDulyMadeRequest CreateDulyMadeRequest(AccreditationStatusSession accreditationStatusSession)
     {
         var dulyMadeDate = CalculateDulyMadeDate(accreditationStatusSession.SubmittedDate, accreditationStatusSession.PaymentDate);
@@ -327,4 +283,15 @@ public class AccreditationStatusController(
     }
 
     protected static string GetAccreditationStatusView(string viewName) => $"~/Views/ReprocessorExporter/Accreditations/AccreditationStatus/{viewName}.cshtml";
+
+    private async Task CreateQueryAccreditationSession(JourneySession session, AccreditationStatusSession accreditationStatusSession)
+    {
+        var queryAccreditationSession = mapper.Map<QueryAccreditationSession>(accreditationStatusSession);
+        queryAccreditationSession.RegistrationId = session.ReprocessorExporterSession.RegistrationId;
+        queryAccreditationSession.TaskName = RegulatorTaskType.DulyMade;
+
+        session.ReprocessorExporterSession.QueryAccreditationSession = queryAccreditationSession;
+
+        await SaveSession(session);
+    }
 }
