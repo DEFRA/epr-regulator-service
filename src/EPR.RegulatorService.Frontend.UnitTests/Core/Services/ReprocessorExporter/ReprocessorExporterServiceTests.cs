@@ -1464,7 +1464,7 @@ public class ReprocessorExporterServiceTests
             Regulator = "GB-ENG"
         };
 
-    private async Task<AccreditationBusinessPlanDto> CreateAccreditationBusinessPlan(Guid id)
+    private static async Task<AccreditationBusinessPlanDto> CreateAccreditationBusinessPlan(Guid id)
     {
         var queryNotes = new List<QueryNoteResponseDto>();
 
