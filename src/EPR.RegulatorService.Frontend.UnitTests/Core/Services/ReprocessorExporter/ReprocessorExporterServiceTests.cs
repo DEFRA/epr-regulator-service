@@ -20,6 +20,8 @@ using Moq.Protected;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
 
+using System.Globalization;
+
 using Frontend.Core.Enums;
 
 [TestClass]
@@ -1284,7 +1286,7 @@ public class ReprocessorExporterServiceTests
         var accreditationId = Guid.NewGuid();
         var expectedAccreditationBusinessPlan = CreateAccreditationBusinessPlan(accreditationId);
         string expectedPath = GetAccreditationBusinessPlanById
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", accreditationId.ToString());
 
         var response = new HttpResponseMessage
@@ -1300,7 +1302,9 @@ public class ReprocessorExporterServiceTests
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        Assert.IsNotNull(result);        
+        Assert.IsNotNull(result);
+
+        response.Dispose();
     }
 
     [TestMethod]

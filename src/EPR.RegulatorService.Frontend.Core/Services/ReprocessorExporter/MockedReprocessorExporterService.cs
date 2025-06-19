@@ -730,7 +730,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     public Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
     public Task<AccreditationBusinessPlanDto> GetAccreditionBusinessPlanByIdAsync(Guid id) => CreateAccreditationBusinessPlan(id);   
 
-    private async Task<AccreditationBusinessPlanDto> CreateAccreditationBusinessPlan(Guid id)
+    private static async Task<AccreditationBusinessPlanDto> CreateAccreditationBusinessPlan(Guid id)
     {
         var queryNotes = new List<QueryNoteResponseDto>();
 
