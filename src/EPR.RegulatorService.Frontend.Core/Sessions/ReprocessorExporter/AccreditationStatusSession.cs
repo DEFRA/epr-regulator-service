@@ -1,7 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
 namespace EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 
+[ExcludeFromCodeCoverage]
 public class AccreditationStatusSession
 {
     public Guid RegistrationId { get; set; }

@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
+using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -680,6 +683,170 @@ public class AccreditationStatusControllerTests
         viewResult.Model.Should().Be(viewModel);
     }
 
+
+    [TestMethod]
+    public async Task AccreditationBusinessPlan_Should_ReturnResult()
+    {
+        // Arrange
+        var journeySession = CreateJourneySession(_registrationId, _accreditationId);
+        journeySession.RegulatorSession.Journey.Add(PagePath.AccreditationBusinessPlan);
+
+        var queryNotes = new List<QueryNote>();
+        
+
+        var queryNote1 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "First Note"
+        };
+
+        var queryNote2 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        var queryNote3 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        queryNotes.Add(queryNote1);
+        queryNotes.Add(queryNote2);
+        queryNotes.Add(queryNote3);
+
+        var viewModel = new AccreditationBusinessPlanViewModel
+        {
+            AccreditationId = _accreditationId,
+            BusinessCollectionsNotes = string.Empty,
+            BusinessCollectionsPercentage = 0.00M,
+            CommunicationsNotes = string.Empty,
+            CommunicationsPercentage = 0.20M,
+            InfrastructureNotes = "Infrastructure notes testing",
+            InfrastructurePercentage = 0.30M,
+            MaterialName = "Plastic",
+            NewMarketsNotes = "New Market Testing notes",
+            NewMarketsPercentage = 0.40M,
+            NewUsersRecycledPackagingWasteNotes = string.Empty,
+            NewUsersRecycledPackagingWastePercentage = 0.25M,
+            NotCoveredOtherCategoriesNotes = string.Empty,
+            NotCoveredOtherCategoriesPercentage = 5.00M,
+            OrganisationName = "",
+            RecycledWasteNotes = "No recycled waste notes at this time",
+            RecycledWastePercentage = 10.00M,
+            SiteAddress = "To Be Confirmed",
+            TaskStatus = "Reviewed",
+            QueryNotes = queryNotes           
+        };
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+       
+        _mockReprocessorExporterService.Setup(x => x.GetAccreditionBusinessPlanByIdAsync(_accreditationId))
+            .Returns(It.IsAny<Task<AccreditationBusinessPlanDto>>);
+
+        // Act
+        var result = await _controller.CompleteAccreditationBusinessPlan(_accreditationId);
+
+        // Assert
+        Assert.IsNotNull(result);       
+    }
+
+    [TestMethod]
+    public async Task AccreditationBusinessPlan_Post_Should_Be_RedirectToActionResult()
+    {
+        // Arrange
+        var journeySession = CreateJourneySession(_registrationId, _accreditationId);
+        journeySession.RegulatorSession.Journey.Add(PagePath.AccreditationBusinessPlan);
+
+        var queryNotes = new List<QueryNote>();
+
+
+        var queryNote1 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "First Note"
+        };
+
+        var queryNote2 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        var queryNote3 = new QueryNote
+        {
+            CreatedBy = _accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        queryNotes.Add(queryNote1);
+        queryNotes.Add(queryNote2);
+        queryNotes.Add(queryNote3);       
+
+        _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+        var dto = new AccreditationBusinessPlanDto {
+            AccreditationId = _accreditationId,
+            BusinessCollectionsNotes = string.Empty,
+            BusinessCollectionsPercentage = 0.00M,
+            CommunicationsNotes = string.Empty,
+            CommunicationsPercentage = 0.20M,
+            InfrastructureNotes = "Infrastructure notes testing",
+            InfrastructurePercentage = 0.30M,
+            MaterialName = "Plastic",
+            NewMarketsNotes = "New Market Testing notes",
+            NewMarketsPercentage = 0.40M,
+            NewUsersRecycledPackagingWasteNotes = string.Empty,
+            NewUsersRecycledPackagingWastePercentage = 0.25M,
+            NotCoveredOtherCategoriesNotes = string.Empty,
+            NotCoveredOtherCategoriesPercentage = 5.00M,
+            OrganisationName = "",
+            RecycledWasteNotes = "No recycled waste notes at this time",
+            RecycledWastePercentage = 10.00M,
+            SiteAddress = "To Be Confirmed",
+            TaskStatus = "Reviewed",
+            QueryNotes = null
+        };
+
+        _mockReprocessorExporterService.Setup(x => x.GetAccreditionBusinessPlanByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(dto);
+
+        // Act
+        var result = await _controller.CompleteAccreditationBusinessPlan(_accreditationId);
+
+        var redirectResult = result as RedirectToActionResult;
+
+        // Assert
+        redirectResult.Should().BeOfType<RedirectToActionResult>();       
+    }
+
+
+    [TestMethod]
+    public async Task AccreditationBusinessPlan_Should_ReturnView()
+    {
+        // Arrange
+        var journeySession = CreateJourneySession(_registrationId, _accreditationId);
+        journeySession.RegulatorSession.Journey.Add(PagePath.AccreditationBusinessPlan);
+
+        int year = _year;
+
+        InitialiseAccreditationStatusSessionIfNotExists(journeySession, _accreditationId, year);
+
+        // Act
+        var result = await _controller.AccreditationBusinessPlan(_accreditationId, year);
+
+        var viewResult = result as ViewResult;
+
+        // Assert
+        viewResult.Should().BeOfType<ViewResult>();
+    }
+
     private static JourneySession CreateJourneySession(Guid registrationId, Guid accreditationId) =>
     new JourneySession
     {
@@ -714,4 +881,25 @@ public class AccreditationStatusControllerTests
             ApplicationReferenceNumber = "123456789",
             Regulator = "Regulator"
         };
+
+
+    private static void InitialiseAccreditationStatusSessionIfNotExists(JourneySession session, Guid accreditationId, int year)
+    {
+        if (session.ReprocessorExporterSession.AccreditationStatusSession != null &&
+            session.ReprocessorExporterSession.AccreditationStatusSession!.AccreditationId == accreditationId &&
+            session.ReprocessorExporterSession.AccreditationStatusSession!.Year == year)
+        {
+            return;
+        }
+
+        var accreditationStatusSession = new AccreditationStatusSession
+        {
+            AccreditationId = accreditationId,
+            Year = year,
+            OrganisationName = null!,
+            MaterialName = null!
+        };
+
+        session.ReprocessorExporterSession.AccreditationStatusSession = accreditationStatusSession;
+    }
 }
