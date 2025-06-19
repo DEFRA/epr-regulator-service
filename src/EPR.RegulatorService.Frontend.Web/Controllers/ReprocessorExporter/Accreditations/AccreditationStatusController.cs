@@ -32,7 +32,7 @@ public class AccreditationStatusController(
     ISessionManager<JourneySession> sessionManager,
     IConfiguration configuration,
     IOptions<ReprocessorExporterConfig> reprocessorExporterConfig)
-    : ReprocessorExporterBaseController(sessionManager, configuration)
+    : AccreditationBaseController(sessionManager, configuration)
 {
     [HttpGet]
     [Route(PagePath.FeesDue)]

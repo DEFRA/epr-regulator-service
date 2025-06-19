@@ -25,7 +25,7 @@ public class ManageAccreditationsController(
     IMapper mapper,
     IValidator<IdAndYearRequest> validator,
     ISessionManager<JourneySession> sessionManager,
-    IConfiguration configuration) : ReprocessorExporterBaseController(sessionManager, configuration)
+    IConfiguration configuration) : AccreditationBaseController(sessionManager, configuration)
 {
     private readonly IReprocessorExporterService _reprocessorExporterService = reprocessorExporterService ?? throw new ArgumentNullException(nameof(reprocessorExporterService));
     private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

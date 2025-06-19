@@ -42,26 +42,5 @@ public abstract class ReprocessorExporterBaseController(
         SetBackLinkAriaLabel();
     }
 
-    protected static void InitialiseAccreditationStatusSessionIfNotExists(JourneySession session, Guid accreditationId, int year)
-    {
-        if (session.ReprocessorExporterSession.AccreditationStatusSession != null &&
-            session.ReprocessorExporterSession.AccreditationStatusSession!.AccreditationId == accreditationId &&
-            session.ReprocessorExporterSession.AccreditationStatusSession!.Year == year)
-        {
-            return;
-        }
-
-        var accreditationStatusSession = new AccreditationStatusSession
-        {
-            AccreditationId = accreditationId,
-            Year = year,
-            OrganisationName = null!,
-            MaterialName = null!
-        };
-
-        session.ReprocessorExporterSession.AccreditationStatusSession = accreditationStatusSession;
-    }
-
-
     protected static string GetRegistrationsView(string viewName) => $"~/Views/ReprocessorExporter/Registrations/{viewName}.cshtml";
 }

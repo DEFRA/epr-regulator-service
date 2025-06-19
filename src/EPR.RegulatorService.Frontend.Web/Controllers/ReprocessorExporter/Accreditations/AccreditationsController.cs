@@ -29,7 +29,7 @@ public class AccreditationsController(ISessionManager<JourneySession> sessionMan
                                     IConfiguration configuration,
                                     IMapper mapper,
                                     IValidator<IdRequest> idRequestValidator
-                                    ) : ReprocessorExporterBaseController(sessionManager, configuration)
+                                    ) : AccreditationBaseController(sessionManager, configuration)
 {
     [HttpGet]
     [Route(PagePath.SamplingInspection)]
