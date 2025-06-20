@@ -1,15 +1,13 @@
 namespace EPR.RegulatorService.Frontend.Core.Services.ManageRegistrationSubmissions.Interfaces
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
 
-    using EPR.RegulatorService.Frontend.Core.Models.ManageRegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Core.DTOs;
 
     public interface IManageRegistrationSubmissionsService
     {
-        public Task<RegistrationSubmissionsModel> GetRegistrationSubmissionsAsync(int? pageNumber);
+        public Task<RegistrationSubmissionsDto> GetRegistrationSubmissionsAsync(int? pageNumber);
+
+        public Task<RegistrationSubmissionDetailsDto> GetRegistrationSubmissionDetailsAsync(Guid submissionId);
     }
 }

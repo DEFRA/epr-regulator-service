@@ -1,19 +1,15 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 {
-    using AutoMapper;
-
     using EPR.RegulatorService.Frontend.Core.Services.ManageRegistrationSubmissions.Interfaces;
     using EPR.RegulatorService.Frontend.Web.Constants;
-    using EPR.RegulatorService.Frontend.Web.ViewModels.ManageRegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissions;
 
     using Microsoft.AspNetCore.Mvc;
 
     public class ManageRegistrationSubmissionsController(
-        IManageRegistrationSubmissionsService manageRegistrationSubmissionsService,
-        IMapper mapper) : Controller
+        IManageRegistrationSubmissionsService manageRegistrationSubmissionsService) : Controller
     {
         private readonly IManageRegistrationSubmissionsService _manageRegistrationSubmissionsService = manageRegistrationSubmissionsService;
-        private readonly IMapper _mapper = mapper;
 
         [HttpGet]
         [Consumes("application/json")]
@@ -22,9 +18,21 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ManageRegistrationSubmissions(int? pageNumber)
         {
-            var registrationSubmissionsFacadeResponse = _manageRegistrationSubmissionsService.GetRegistrationSubmissionsAsync(pageNumber);
+            var registrationSubmissionsFacadeResponse = await _manageRegistrationSubmissionsService.GetRegistrationSubmissionsAsync(pageNumber);
 
-            var viewModel = _mapper.Map<RegistrationSubmissionsViewModel>(registrationSubmissionsFacadeResponse);
+            var viewModel = RegistrationSubmissionsViewModelMapper.MapToViewModel(registrationSubmissionsFacadeResponse);
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        [Route(PagePath.RegistrationSubmissionDetailsNew + "/{submissionId:guid}")]
+        public async Task<IActionResult> RegistrationSubmissionDetailsNew(Guid submissionId)
+        {
+            var registrationSubmissionDetailsFacadeResponse = await _manageRegistrationSubmissionsService.GetRegistrationSubmissionDetailsAsync(submissionId);
+
+            var viewModel = RegistrationSubmissionDetailsModelMapper.MapToViewModel(registrationSubmissionDetailsFacadeResponse);
+
             return View(viewModel);
         }
     }

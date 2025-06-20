@@ -1,6 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 
 using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Core.Services.ManageRegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Services.ManageRegistrationSubmissions.Interfaces;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
 using Microsoft.Extensions.Configuration;
@@ -38,6 +40,8 @@ public static class ServiceProviderExtension
         services.AddHttpClient<IPaymentFacadeService, PaymentFacadeService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("PaymentFacadeApi:TimeoutSeconds")));
 
         services.AddScoped<ISubmissionFilterConfigService, SubmissionFilterConfigService>();
+
+        services.AddHttpClient<IManageRegistrationSubmissionsService, ManageRegistrationSubmissionsService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("FacadeAPI:TimeoutSeconds")));
 
         return services;
     }

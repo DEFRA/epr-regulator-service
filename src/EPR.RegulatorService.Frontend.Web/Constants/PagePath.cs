@@ -87,6 +87,7 @@ public static class PagePath
     public const string QueryAccreditationTask = "query-accreditation-task";
     public const string WasteCarrierDetails = "waste-carrier";
     public const string ManageRegistrationSubmissions= "manage-registration-submissions-new";
+    public const string RegistrationSubmissionDetailsNew = "registration-submission-details-new";
 
     // Complete tasks paths
     public const string CompleteQueryRegistrationTask = "query-registration-task-complete";
