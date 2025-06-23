@@ -56,9 +56,6 @@ public class ReprocessorExporterServiceTests
     private const string UpdateAccreditationTaskStatus = "v{apiVersion}/regulatorAccreditationTaskStatus";
     private const string GetAccreditationBusinessPlanById = "v{apiVersion}/accreditations/{id}/businessPlan";
 
-
-
-
     private const string GetSamplingPlanByAccreditationIdPath = "v{apiVersion}/accreditations/{id}/samplingPlan";
     private ReprocessorExporterService _service; // System under test
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
@@ -294,32 +291,6 @@ public class ReprocessorExporterServiceTests
             _service.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId));
     }
 
-    //[TestMethod]
-    //public async Task GetWasteCarrierByRegistrationIdAsync_WhenSuccess_ReturnsWasteCarrierDetails()
-    //{
-    //    // Arrange
-    //    var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
-    //    var expectedWasteCarrier = CreateWasteCarrierDetails();
-    //    string expectedPath = GetWasteCarrierDetailsByRegistrationId
-    //        .Replace("{apiVersion}", ApiVersion.ToString())
-    //        .Replace("{id}", registrationMaterialId.ToString());
-
-    //    var response = new HttpResponseMessage
-    //    {
-    //        StatusCode = HttpStatusCode.OK,
-    //        Content = new StringContent(JsonSerializer.Serialize(expectedWasteCarrier, _jsonSerializerOptions))
-    //    };
-
-    //    SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
-
-    //    // Act
-    //    var result = await _service.GetWasteCarrierDetailsByRegistrationIdAsync(registrationMaterialId);
-
-    //    // Assert
-    //    result.Should().NotBeNull();
-    //    result.Should().BeEquivalentTo(expectedWasteCarrier);
-    //}    
-
     [TestMethod]
     public async Task GetWasteCarrierByRegistrationIdAsync_WhenSuccess_ReturnsWasteCarrierDetails()
     {
@@ -375,7 +346,8 @@ public class ReprocessorExporterServiceTests
             .Replace("{id}", registrationMaterialId.ToString());
         var request = new RegistrationMaterialOutcomeRequest
         {
-            Status = ApplicationStatus.Granted, Comments = "Test comment"
+            Status = ApplicationStatus.Granted,
+            Comments = "Test comment"
         };
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
@@ -448,7 +420,8 @@ public class ReprocessorExporterServiceTests
 
         var request = new MarkAsDulyMadeRequest()
         {
-            DeterminationDate = DateTime.Now, DulyMadeDate = DateTime.Now.AddDays(-7)
+            DeterminationDate = DateTime.Now,
+            DulyMadeDate = DateTime.Now.AddDays(-7)
         };
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
@@ -753,7 +726,7 @@ public class ReprocessorExporterServiceTests
             responseBytes.Should().BeEquivalentTo(expectedContent);
             result.Content.Headers.ContentType?.MediaType.Should().Be(contentType);
         }
-    }    
+    }
 
     [TestMethod]
     public async Task GetRegistrationByIdWithAccreditationsAsync_WhenNoYearProvided_ReturnsAllAccreditations()

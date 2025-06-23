@@ -1,6 +1,6 @@
-namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
-
 using System.Diagnostics.CodeAnalysis;
+
+namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
 [ExcludeFromCodeCoverage]
 public class AccreditationBusinessPlanViewModel
