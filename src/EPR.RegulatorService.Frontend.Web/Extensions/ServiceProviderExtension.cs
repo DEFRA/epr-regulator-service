@@ -2,10 +2,12 @@ using System.Diagnostics.CodeAnalysis;
 
 using EPR.Common.Authorization.Extensions;
 using EPR.RegulatorService.Frontend.Core.Configs;
+using EPR.RegulatorService.Frontend.Core.Http.ManageRegistrationSubmissions.Interfaces;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Cookies;
+using EPR.RegulatorService.Frontend.Web.Http.ManageRegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.Middleware;
 using EPR.RegulatorService.Frontend.Web.Sessions;
@@ -36,7 +38,7 @@ public static class ServiceProviderExtension
         ConfigureAuthentication(services, configuration);
         ConfigureAuthorization(services, configuration);
         ConfigureSession(services, configuration);
-        RegisterServices(services);
+        RegisterServices(services, configuration);
         RegisterFluentValidation(services);
         RegisterAutoMapper(services);
 
@@ -90,11 +92,12 @@ public static class ServiceProviderExtension
         services.Configure<ReprocessorExporterConfig>(configuration.GetSection(ReprocessorExporterConfig.ConfigSection));
     }
 
-    private static void RegisterServices(IServiceCollection services)
+    private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<ICookieService, CookieService>();
         services.AddScoped<ISessionManager<JourneySession>, JourneySessionManager>();
         services.AddTransient<UserDataCheckerMiddleware>();
+        services.AddHttpClient<IManageRegistrationSubmissionsApiClient, ManageRegistrationSubmissionsApiClient>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("FacadeAPI:TimeoutSeconds")));
     }
 
     private static void SetTempDataCookieOptions(IServiceCollection services, IConfiguration configuration)

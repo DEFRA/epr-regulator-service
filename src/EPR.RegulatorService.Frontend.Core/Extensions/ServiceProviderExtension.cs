@@ -41,7 +41,7 @@ public static class ServiceProviderExtension
 
         services.AddScoped<ISubmissionFilterConfigService, SubmissionFilterConfigService>();
 
-        services.AddHttpClient<IManageRegistrationSubmissionsService, ManageRegistrationSubmissionsService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("FacadeAPI:TimeoutSeconds")));
+        services.AddScoped<IManageRegistrationSubmissionsService, ManageRegistrationSubmissionsService>();
 
         return services;
     }
