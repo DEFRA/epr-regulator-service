@@ -30,6 +30,8 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.Faca
 
         public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
 
+        public DateTime? ResubmissionDecisionDate { get; set; }
+
         public DateTime? StatusPendingDate { get; set; }
 
         public int NationId { get; set; }
