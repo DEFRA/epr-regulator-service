@@ -6,6 +6,7 @@
 @using (Html.BeginForm("RegistrationSubmissions", "RegistrationSubmissions", FormMethod.Post))
 {
     @Html.HiddenFor(r => r.NationId)
+    @Html.HiddenFor(r => r.Show2026RelevantYearFilter)
     <div class="epr-filter-panel">
         <div class="govuk-width-container">
             <div class="govuk-grid-row">
