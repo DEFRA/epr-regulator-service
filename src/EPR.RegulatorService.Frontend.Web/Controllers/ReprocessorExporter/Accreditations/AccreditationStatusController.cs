@@ -275,7 +275,7 @@ public class AccreditationStatusController(
     public async Task<IActionResult> AccreditationBusinessPlan(Guid accreditationId, int year)
     {
         var session = await GetSession();
-        SetBackLinkInfos(session, PagePath.AccreditationBusinessPlan);
+        SetBackLinkInfos(session, $"{PagePath.ManageAccreditations}?id={accreditationId}&year={year}");
         InitialiseAccreditationStatusSessionIfNotExists(session, accreditationId, year);
 
         await SaveSessionAndJourney(session, PagePath.QueryAccreditationTask);
