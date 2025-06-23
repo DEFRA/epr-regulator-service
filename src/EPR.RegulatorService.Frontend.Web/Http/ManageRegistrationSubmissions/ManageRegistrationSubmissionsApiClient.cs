@@ -54,7 +54,7 @@ namespace EPR.RegulatorService.Frontend.Web.Http.ManageRegistrationSubmissions
                 string content = await response.Content.ReadAsStringAsync();
                 var dto = JsonSerializer.Deserialize<RegistrationSubmissionDetailsDto>(content, _jsonSerializerOptions);
 
-                return dto is null ? throw new InvalidOperationException($"Could not deserialize submission details for ID {submissionId}") : dto;
+                return dto is null ? throw new JsonException($"Could not deserialize submission details for ID {submissionId}") : dto;
             }
             catch (RegistrationSubmissionNotFoundException)
             {

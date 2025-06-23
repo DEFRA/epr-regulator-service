@@ -1,7 +1,5 @@
-namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
+namespace EPR.RegulatorService.Frontend.Web.Controllers.ManageRegistrationSubmissions
 {
-    using System.Net;
-
     using EPR.RegulatorService.Frontend.Core.Exceptions.ManageRegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Services.ManageRegistrationSubmissions.Interfaces;
     using EPR.RegulatorService.Frontend.Web.Constants;
