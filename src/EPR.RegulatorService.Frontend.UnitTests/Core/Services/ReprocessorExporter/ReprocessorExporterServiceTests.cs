@@ -20,6 +20,8 @@ using Moq.Protected;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
 
+using System.Globalization;
+
 using Frontend.Core.Enums;
 
 [TestClass]
@@ -52,6 +54,8 @@ public class ReprocessorExporterServiceTests
     private const string SubmitOfflinePaymentPath = "v{apiVersion}/registrationMaterials/offlinePayment";
     private const string GetRegistrationByIdWithAccreditations = "v{apiVersion}/registrations/{id}/accreditations";
     private const string UpdateAccreditationTaskStatus = "v{apiVersion}/regulatorAccreditationTaskStatus";
+    private const string GetAccreditationBusinessPlanById = "v{apiVersion}/accreditations/{id}/businessPlan";
+
     private const string GetSamplingPlanByAccreditationIdPath = "v{apiVersion}/accreditations/{id}/samplingPlan";
     private ReprocessorExporterService _service; // System under test
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
@@ -100,8 +104,8 @@ public class ReprocessorExporterServiceTests
                 { "SubmitOfflinePayment", SubmitOfflinePaymentPath },
                 { "GetRegistrationByIdWithAccreditations", GetRegistrationByIdWithAccreditations },
                 { "UpdateAccreditationTaskStatus", UpdateAccreditationTaskStatus },
-                { "GetSamplingPlanByAccreditationId", GetSamplingPlanByAccreditationIdPath }
-
+                { "GetSamplingPlanByAccreditationId", GetSamplingPlanByAccreditationIdPath },
+                { "GetAccreditationBusinessPlanById", GetAccreditationBusinessPlanById }
             }
         };
 
@@ -342,7 +346,8 @@ public class ReprocessorExporterServiceTests
             .Replace("{id}", registrationMaterialId.ToString());
         var request = new RegistrationMaterialOutcomeRequest
         {
-            Status = ApplicationStatus.Granted, Comments = "Test comment"
+            Status = ApplicationStatus.Granted,
+            Comments = "Test comment"
         };
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
@@ -415,7 +420,8 @@ public class ReprocessorExporterServiceTests
 
         var request = new MarkAsDulyMadeRequest()
         {
-            DeterminationDate = DateTime.Now, DulyMadeDate = DateTime.Now.AddDays(-7)
+            DeterminationDate = DateTime.Now,
+            DulyMadeDate = DateTime.Now.AddDays(-7)
         };
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
@@ -721,7 +727,6 @@ public class ReprocessorExporterServiceTests
             result.Content.Headers.ContentType?.MediaType.Should().Be(contentType);
         }
     }
-
 
     [TestMethod]
     public async Task GetRegistrationByIdWithAccreditationsAsync_WhenNoYearProvided_ReturnsAllAccreditations()
@@ -1246,6 +1251,35 @@ public class ReprocessorExporterServiceTests
             _service.AddMaterialQueryNoteAsync(materialTaskId, request));
     }
 
+
+    [TestMethod]
+    public async Task GetAccreditationBusinessPlanByIdAsync_ReturnsOK()
+    {
+        // Arrange
+        var accreditationId = Guid.NewGuid();
+        var expectedAccreditationBusinessPlan = CreateAccreditationBusinessPlan(accreditationId);
+        string expectedPath = GetAccreditationBusinessPlanById
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
+            .Replace("{id}", accreditationId.ToString());
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(JsonSerializer.Serialize(expectedAccreditationBusinessPlan, _jsonSerializerOptions))
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act
+        var result = await _service.GetAccreditionBusinessPlanByIdAsync(accreditationId);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.IsNotNull(result);
+
+        response.Dispose();
+    }
+
     [TestMethod]
     public async Task AddRegistrationQueryNote_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
@@ -1402,6 +1436,64 @@ public class ReprocessorExporterServiceTests
             SubmittedDate = DateTime.Now.AddDays(-7),
             Regulator = "GB-ENG"
         };
+
+    private static async Task<AccreditationBusinessPlanDto> CreateAccreditationBusinessPlan(Guid id)
+    {
+        var queryNotes = new List<QueryNoteResponseDto>();
+
+        var accreditationId = id;
+
+        var queryNote1 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "First Note"
+        };
+
+        var queryNote2 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        var queryNote3 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        queryNotes.Add(queryNote1);
+        queryNotes.Add(queryNote2);
+        queryNotes.Add(queryNote3);
+
+        var accreditationBusinessPlanDto = new AccreditationBusinessPlanDto
+        {
+            AccreditationId = accreditationId,
+            BusinessCollectionsNotes = string.Empty,
+            BusinessCollectionsPercentage = 0.00M,
+            CommunicationsNotes = string.Empty,
+            CommunicationsPercentage = 0.20M,
+            InfrastructureNotes = "Infrastructure notes testing",
+            InfrastructurePercentage = 0.30M,
+            MaterialName = "Plastic",
+            NewMarketsNotes = "New Market Testing notes",
+            NewMarketsPercentage = 0.40M,
+            NewUsersRecycledPackagingWasteNotes = string.Empty,
+            NewUsersRecycledPackagingWastePercentage = 0.25M,
+            NotCoveredOtherCategoriesNotes = string.Empty,
+            NotCoveredOtherCategoriesPercentage = 5.00M,
+            OrganisationName = "",
+            RecycledWasteNotes = "No recycled waste notes at this time",
+            RecycledWastePercentage = 10.00M,
+            SiteAddress = "To Be Confirmed",
+            TaskStatus = "Reviewed",
+            QueryNotes = queryNotes
+        };
+
+        return accreditationBusinessPlanDto;
+    }
 
     private static WasteCarrierDetails CreateWasteCarrierDetails() =>
         new()

@@ -29,7 +29,7 @@ public class AccreditationsController(ISessionManager<JourneySession> sessionMan
                                     IConfiguration configuration,
                                     IMapper mapper,
                                     IValidator<IdRequest> idRequestValidator
-                                    ) : ReprocessorExporterBaseController(sessionManager, configuration)
+                                    ) : AccreditationBaseController(sessionManager, configuration)
 {
     [HttpGet]
     [Route(PagePath.SamplingInspection)]
@@ -94,27 +94,7 @@ public class AccreditationsController(ISessionManager<JourneySession> sessionMan
         var contentType = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
 
         return File(content, contentType, filename);
-    }
-
-    private static void InitialiseAccreditationStatusSessionIfNotExists(JourneySession session, Guid accreditationId, int year)
-    {
-        if (session.ReprocessorExporterSession.AccreditationStatusSession != null &&
-            session.ReprocessorExporterSession.AccreditationStatusSession!.AccreditationId == accreditationId &&
-            session.ReprocessorExporterSession.AccreditationStatusSession!.Year == year)
-        {
-            return;
-        }
-
-        var accreditationStatusSession = new AccreditationStatusSession
-        {
-            AccreditationId = accreditationId,
-            Year = year,
-            OrganisationName = null!,
-            MaterialName = null!
-        };
-
-        session.ReprocessorExporterSession.AccreditationStatusSession = accreditationStatusSession;
-    }
+    }    
 
     private static string GetSamplingInspectionPagePath(string pagePath, Guid accreditationId, int year) => $"{pagePath}?accreditationId={accreditationId}&year={year}";
     protected static string GetAccreditationsView(string viewName) => $"~/Views/ReprocessorExporter/Accreditations/{viewName}.cshtml";

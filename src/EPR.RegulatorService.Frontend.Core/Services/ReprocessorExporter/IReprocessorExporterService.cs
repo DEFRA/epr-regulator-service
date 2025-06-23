@@ -31,4 +31,5 @@ public interface IReprocessorExporterService
     Task MarkAccreditationAsDulyMadeAsync(Guid accreditationId, AccreditationMarkAsDulyMadeRequest dulyMadeRequest);
     Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest);
     Task<AccreditationSamplingPlan> GetSamplingPlanByAccreditationIdAsync(Guid accreditationId);
+    Task<AccreditationBusinessPlanDto> GetAccreditionBusinessPlanByIdAsync(Guid id);
 }
