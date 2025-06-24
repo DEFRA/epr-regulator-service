@@ -70,6 +70,12 @@
     <EmbeddedResource Update="Resources\Views\Error\ServiceNotAvailable.en.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\RegistrationSubmissionDetailsNew.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\RegistrationSubmissionDetailsNew.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\RegistrationSubmissions\ConfirmRegistrationRefusal.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -508,5 +514,8 @@
   <ItemGroup>
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
     <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewComponents\ManageRegistrationSubmissions\" />
   </ItemGroup>
 </Project>

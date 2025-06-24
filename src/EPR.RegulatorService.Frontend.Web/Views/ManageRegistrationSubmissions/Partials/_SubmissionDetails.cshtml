@@ -1,0 +1,145 @@
+@using EPR.RegulatorService.Frontend.Core.Extensions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ManageRegistrationSubmissions
+@using System.Globalization
+@model RegistrationSubmissionDetailsViewModel
+
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
+        <h2 class="govuk-summary-card__title govuk-!-padding-top-4">@Localizer["SubmissionDetails.Title"]</h2>
+        <div>
+            <div class="govuk-!-padding-top-4 govuk-summary-list__actions">
+                <govuk-tag status="@(Model.SubmissionStatus)" content="@SharedLocalizer[Model.SubmissionStatus.GetDescription()]" />
+                <p class="govuk-!-padding-top-1 govuk-body-s">
+                    @* @(Model.SubmissionDetails.DisplayAppropriateSubmissionDate()) This is to be done in the mapping class*@
+                    22 October 2025 09:30:05
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="govuk-summary-card__content" style="padding-bottom: 0px;">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+
+            @if (!Model.IsResubmission)
+            {
+                <div class="govuk-summary-list__row">
+                    <dd class="govuk-summary-list__value">
+                        <strong>@Localizer["SubmissionDetails.TimeAndDateOfSubmission"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value">
+                        @(Model.SubmissionDetails.TimeAndDateOfSubmission.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture))
+                    </dd>
+                </div>
+            }
+
+            @if (Model.ResubmissionStatus != null)
+            {
+                <div class="govuk-summary-list__row">
+                    <dd class="govuk-summary-list__value">
+                        <govuk-tag
+                          status="@(Model.ResubmissionStatus)"
+                          content="@SharedLocalizer[Model.ResubmissionStatus.GetDescription()]"
+                          useLightColour=true
+                          useResubmissionPrefix=true/>
+                    </dd>
+                    @if (Model.ResubmissionStatus == EPR.RegulatorService.Frontend.Core.Enums.RegistrationSubmissionStatus.Pending)
+                    {
+                        <dd class="govuk-summary-list__value">
+                            @(Model.SubmissionDetails.TimeAndDateOfResubmission?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture))
+                        </dd>
+                    } else
+                    {
+                        <dd class="govuk-summary-list__value">
+                            @(Model.SubmissionDetails.LatestDecisionDate?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture))
+                        </dd>
+                    }
+                </div>
+            }
+
+            @if (!Model.IsResubmission)
+            {
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>@Localizer["SubmissionDetails.SubmittedOnTime"]</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @(Model.SubmissionDetails.IsSubmittedOnTime ? @SharedLocalizer["Yes"] : @SharedLocalizer["No"])
+                </dd>
+            </div>
+            }
+
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>@Localizer["SubmissionDetails.SubmittedBy"]</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @(Model.SubmissionDetails.SubmittedBy)
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>@Localizer["SubmissionDetails.AccountRole"]</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @SharedLocalizer[Model.SubmissionDetails.AccountRole]
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>@Localizer["SubmissionDetails.Telephone"]</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @(Model.SubmissionDetails.Telephone)
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>@Localizer["SubmissionDetails.Email"]</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @(Model.SubmissionDetails.Email)
+                </dd>
+            </div>
+
+            <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">
+                    <strong>@Localizer["SubmissionDetails.DeclaredBy"]</strong>
+                </dd>
+                <dd class="govuk-summary-list__value">
+                    @(Model.SubmissionDetails.DeclaredBy)
+                </dd>
+            </div>
+
+            @foreach (var file in Model.SubmissionDetails.Files)
+            {
+                if (!string.IsNullOrWhiteSpace(file.DownloadType))
+                {
+                <div class="govuk-summary-list__row">
+                    <dd class="govuk-summary-list__value">
+                        <strong>@Localizer[file.Label]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value">
+                        @file.FileName
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                            @Html.ActionLink(SharedLocalizer["Link.Download"],
+                                "RegistrationSubmissionsFileDownload",
+                                "RegistrationSubmissions",
+                                new
+                                {
+                                    downloadType = file.DownloadType,
+                                    submissionId = Model.SubmissionId
+                                },
+                                new {
+                                  @class = "govuk-link--no-visited-state"
+                                }
+                            )
+                    </dd>
+                </div>
+                }
+            }
+        </dl>
+    </div>
+</div>

@@ -8,6 +8,8 @@
 @{
     ViewData["Title"] = Localizer["RegistrationSubmissionDetails.PageTitle"];
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
+    // var panelTitles = ReferenceNumberPanelHelper.GetPanelTitle(Model).Split('|');
+    // var panelContents = ReferenceNumberPanelHelper.GetPanelContent(Model).Split("\n");
 }
 
 <div class="govuk-width-container">
@@ -33,6 +35,21 @@
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.OrganisationIdTitle"]</h3>
                     <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.OrganisationIdSubTitle"] @Model.OrganisationReference</p>
                 </div>
+
+                @* @if (Model.SubmissionDetails.SubmissionStatus == EPR.RegulatorService.Frontend.Core.Enums.RegistrationSubmissionStatus.Granted && Model.IsResubmission)
+                {
+                    <status-panel heading="@Localizer[panelTitles[0]].Value,@Localizer[panelTitles[1]].Value"
+                                  content="@panelContents[0],@panelContents[1]"
+                                  status="@SharedLocalizer[Model.Status.ToString()]">
+                    </status-panel>
+                }
+                else
+                {
+                    <status-panel heading="@Localizer[ReferenceNumberPanelHelper.GetPanelTitle(Model)].Value"
+                                  content="@ReferenceNumberPanelHelper.GetPanelContent(Model)"
+                                  status="@SharedLocalizer[Model.Status.ToString()]">
+                    </status-panel>
+                } *@
 
                 <div class="govuk-!-margin-bottom-4">
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.RegisteredAddress"]</h3>
@@ -64,6 +81,8 @@
                         <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
                     </p>
                 </div>
+
+                @await Html.PartialAsync("Partials/_SubmissionDetails", Model)
 
             </div>
             <div class="govuk-grid-column-full">

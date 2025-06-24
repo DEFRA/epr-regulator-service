@@ -4052,7 +4052,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     FileId = fileId,
                     BlobName = blobName,
                     FileName = fileName,
-                    Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company
+                    Type = FileType.company
                 }
             ]
                 }
@@ -4113,11 +4113,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        [DataRow(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company, FileDownloadTypes.OrganisationDetails)]
-        [DataRow(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands, FileDownloadTypes.BrandDetails)]
-        [DataRow(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership, FileDownloadTypes.PartnershipDetails)]
+        [DataRow(FileType.company, FileDownloadTypes.OrganisationDetails)]
+        [DataRow(FileType.brands, FileDownloadTypes.BrandDetails)]
+        [DataRow(FileType.partnership, FileDownloadTypes.PartnershipDetails)]
         public async Task FileDownloadInProgress_ShouldReturnFileStreamResult_WhenFacadeReturnsSuccess(
-            RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType fileType,
+            FileType fileType,
             string fileDownloadTypes)
         {
             // Arrange

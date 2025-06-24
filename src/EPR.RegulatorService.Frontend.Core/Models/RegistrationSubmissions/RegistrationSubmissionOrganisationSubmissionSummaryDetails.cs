@@ -6,7 +6,7 @@ using EPR.RegulatorService.Frontend.Core.Enums;
 
 public class RegistrationSubmissionOrganisationSubmissionSummaryDetails
 {
-    public enum FileType { company, brands, partnership }
+    //public enum FileType { company, brands, partnership }
     public class FileDetails
     {
         [JsonConverter(typeof(JsonStringEnumConverter))]
