@@ -728,4 +728,63 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     public Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
 
     public Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
+    public Task<AccreditationBusinessPlanDto> GetAccreditionBusinessPlanByIdAsync(Guid id) => CreateAccreditationBusinessPlan(id);   
+
+    private static async Task<AccreditationBusinessPlanDto> CreateAccreditationBusinessPlan(Guid id)
+    {
+        var queryNotes = new List<QueryNoteResponseDto>();
+
+        var accreditationId = id;
+
+        var queryNote1 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "First Note"
+        };
+
+        var queryNote2 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        var queryNote3 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        queryNotes.Add(queryNote1);
+        queryNotes.Add(queryNote2);
+        queryNotes.Add(queryNote3);
+
+        var accreditationBusinessPlanDto = new AccreditationBusinessPlanDto
+        {
+            AccreditationId = accreditationId,
+            BusinessCollectionsNotes = string.Empty,
+            BusinessCollectionsPercentage = 0.00M,
+            CommunicationsNotes = string.Empty,
+            CommunicationsPercentage = 0.20M,
+            InfrastructureNotes = "Infrastructure notes testing",
+            InfrastructurePercentage = 0.30M,
+            MaterialName = "Plastic",
+            NewMarketsNotes = "New Market Testing notes",
+            NewMarketsPercentage = 0.40M,
+            NewUsersRecycledPackagingWasteNotes = string.Empty,
+            NewUsersRecycledPackagingWastePercentage = 0.25M,
+            NotCoveredOtherCategoriesNotes = string.Empty,
+            NotCoveredOtherCategoriesPercentage = 5.00M,
+            OrganisationName = "",
+            RecycledWasteNotes = "No recycled waste notes at this time",
+            RecycledWastePercentage = 10.00M,
+            SiteAddress = "To Be Confirmed",
+            TaskStatus = "Reviewed",
+            QueryNotes = queryNotes
+        };
+
+        return accreditationBusinessPlanDto;
+    }
 }

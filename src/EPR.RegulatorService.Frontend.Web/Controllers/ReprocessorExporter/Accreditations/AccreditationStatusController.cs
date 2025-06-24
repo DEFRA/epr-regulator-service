@@ -1,3 +1,5 @@
+using AspNetCoreGeneratedDocument;
+
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
@@ -12,7 +14,7 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
-
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 using FluentValidation;
 
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +32,7 @@ public class AccreditationStatusController(
     ISessionManager<JourneySession> sessionManager,
     IConfiguration configuration,
     IOptions<ReprocessorExporterConfig> reprocessorExporterConfig)
-    : ReprocessorExporterBaseController(sessionManager, configuration)
+    : AccreditationBaseController(sessionManager, configuration)
 {
     [HttpGet]
     [Route(PagePath.FeesDue)]
@@ -267,6 +269,48 @@ public class AccreditationStatusController(
             year = session.ReprocessorExporterSession.AccreditationStatusSession.Year
         });
     }
+
+    [HttpGet]
+    [Route(PagePath.AccreditationBusinessPlan)]
+    public async Task<IActionResult> AccreditationBusinessPlan(Guid accreditationId, int year)
+    {
+        var session = await GetSession();
+        SetBackLinkInfos(session, PagePath.AccreditationBusinessPlan);
+        InitialiseAccreditationStatusSessionIfNotExists(session, accreditationId, year);
+
+        await SaveSessionAndJourney(session, PagePath.QueryAccreditationTask);
+
+        var accreditationBusinessPlan = await reprocessorExporterService.GetAccreditionBusinessPlanByIdAsync(accreditationId);
+        var accreditationBusinessPlanViewModel = mapper.Map<AccreditationBusinessPlanViewModel>(accreditationBusinessPlan);
+
+        return View(GetAccreditationStatusView(nameof(AccreditationBusinessPlan)), accreditationBusinessPlanViewModel);
+    }
+
+
+    [HttpPost]
+    [Route(PagePath.AccreditationBusinessPlan)]
+    public async Task<IActionResult> CompleteAccreditationBusinessPlan(Guid accreditationId)
+    {
+        var session = await GetSession();
+
+        var updateAccreditationTaskStatusRequest = new UpdateAccreditationTaskStatusRequest
+        {
+            TaskName = RegulatorTaskType.BusinessPlan.ToString(),
+            AccreditationId = accreditationId,
+            Status = RegulatorTaskStatus.Completed.ToString(),
+            Comments = string.Empty
+        };
+
+        await reprocessorExporterService.UpdateRegulatorAccreditationTaskStatusAsync(updateAccreditationTaskStatusRequest);
+
+        return RedirectToAction("Index", "ManageAccreditations", new
+        {
+            id = session.ReprocessorExporterSession.RegistrationId,
+            year = session.ReprocessorExporterSession.AccreditationStatusSession.Year
+        });
+
+    }
+    
 
     private AccreditationMarkAsDulyMadeRequest CreateDulyMadeRequest(AccreditationStatusSession accreditationStatusSession)
     {
