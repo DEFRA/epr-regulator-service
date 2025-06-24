@@ -2,15 +2,18 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ManageRegistrationSubmis
 {
     using EPR.RegulatorService.Frontend.Core.Exceptions.ManageRegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Services.ManageRegistrationSubmissions.Interfaces;
+    using EPR.RegulatorService.Frontend.Web.Configs;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.Logging.ManageRegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissions;
 
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
 
     public class ManageRegistrationSubmissionsController(
         IManageRegistrationSubmissionsService manageRegistrationSubmissionsService,
-        ILogger<ManageRegistrationSubmissionsController> logger) : Controller
+        ILogger<ManageRegistrationSubmissionsController> logger,
+        IOptions<ExternalUrlsOptions> externalUrlsOptions) : Controller
     {
         [HttpGet]
         [Consumes("application/json")]
@@ -42,6 +45,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ManageRegistrationSubmis
             {
                 var registrationSubmissionDetailsFacadeResponse = await manageRegistrationSubmissionsService.GetRegistrationSubmissionDetailsAsync(submissionId);
                 var viewModel = RegistrationSubmissionDetailsModelMapper.MapToViewModel(registrationSubmissionDetailsFacadeResponse);
+                viewModel.PowerBiLogin = externalUrlsOptions.Value.PowerBiLogin;
                 return View(viewModel);
             }
             catch (RegistrationSubmissionNotFoundException)
