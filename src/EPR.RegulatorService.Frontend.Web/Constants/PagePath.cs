@@ -86,6 +86,7 @@ public static class PagePath
     public const string RegistrationApplicationStatus = "registration-application-status";
     public const string QueryAccreditationTask = "query-accreditation-task";
     public const string WasteCarrierDetails = "waste-carrier";
+    public const string AccreditationBusinessPlan = "accreditation-business-plan";
     public const string ManageRegistrationSubmissions= "manage-registration-submissions-new";
     public const string RegistrationSubmissionDetailsNew = "registration-submission-details-new";
 
