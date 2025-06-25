@@ -1,5 +1,9 @@
 namespace EPR.RegulatorService.Frontend.Core.DTOs
 {
+    using System.Text.Json.Serialization;
+
+    using EPR.RegulatorService.Frontend.Core.Enums;
+
     public class SubmissionDetailsDto
     {
         public bool SubmittedOnTime { get; set; }
@@ -16,15 +20,23 @@ namespace EPR.RegulatorService.Frontend.Core.DTOs
 
         public List<FileDetailsDto> Files { get; set; } = [];
 
-        public string Status { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public RegistrationSubmissionStatus Status { get; set; }
 
-        public DateTime DecisionDate { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
 
-        public DateTime ResubmissionDecisionDate { get; set; }
+        public DateTime? DecisionDate { get; set; }
 
-        public DateTime StatusPendingDate { get; set; }
+        public DateTime? ResubmissionDecisionDate { get; set; }
+
+        [JsonPropertyName("statusPendingDate")]
+        public DateTime? StatusPendingDate { get; set; }
 
         public DateTime TimeAndDateOfSubmission { get; set; }
+
+        [JsonPropertyName("resubmissionDate")]
+        public DateTime? TimeAndDateOfResubmission { get; set; }
 
         public string SubmissionPeriod { get; set; }
 
@@ -32,11 +44,7 @@ namespace EPR.RegulatorService.Frontend.Core.DTOs
 
         public string SubmittedBy { get; set; }
 
-        public string ResubmissionStatus { get; set; }
-
-        public DateTime RegistrationDate { get; set; }
-
-        public DateTime TimeAndDateOfResubmission { get; set; }
+        public DateTime? RegistrationDate { get; set; }
 
         public bool IsResubmission { get; set; }
 

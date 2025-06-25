@@ -32,7 +32,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
 
             _testFileDetailsCompany = new SubmissionDetailsViewModel.FileDetails
             {
-                Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company,
+                Type = FileType.company,
                 FileName = "TestFile.pdf",
                 FileId = _testFileId,
                 BlobName = "test/blob/name"
@@ -40,7 +40,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
 
             _testDomainFileDetailsCompany = new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails
             {
-                Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company,
+                Type = FileType.company,
                 FileName = "TestFile.pdf",
                 FileId = _testFileId,
                 BlobName = "test/blob/name"
@@ -48,7 +48,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
 
             _testFileDetailsPartnership = new SubmissionDetailsViewModel.FileDetails
             {
-                Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership,
+                Type = FileType.partnership,
                 FileName = "TestFile.pdf",
                 FileId = _testFileId,
                 BlobName = "test/blob/name"
@@ -56,7 +56,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
 
             _testDomainFileDetailsPartnership = new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails
             {
-                Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership,
+                Type = FileType.partnership,
                 FileName = "TestFile.pdf",
                 FileId = _testFileId,
                 BlobName = "test/blob/name"
@@ -64,7 +64,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
 
             _testFileDetailsBrands = new SubmissionDetailsViewModel.FileDetails
             {
-                Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands,
+                Type = FileType.brands,
                 FileName = "TestFile.pdf",
                 FileId = _testFileId,
                 BlobName = "test/blob/name"
@@ -72,7 +72,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
 
             _testDomainFileDetailsBrands = new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails
             {
-                Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands,
+                Type = FileType.brands,
                 FileName = "TestFile.pdf",
                 FileId = _testFileId,
                 BlobName = "test/blob/name"

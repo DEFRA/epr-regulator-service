@@ -2,11 +2,13 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.ManageRegistrationSubmiss
 {
     public class SubmissionDetailsViewModel
     {
-        public DateTime TimeAndDateOfSubmission { get; set; }
+        public string TimeAndDateOfSubmission { get; set; }
 
-        public DateTime? TimeAndDateOfResubmission { get; set; }
+        public string TimeAndDateOfResubmission { get; set; }
 
-        public DateTime? LatestDecisionDate { get; set; }
+        public string LatestDecisionDate { get; set; }
+
+        public string ResubmissionDecisionDate { get; set; }
 
         public bool IsSubmittedOnTime { get; set; }
 

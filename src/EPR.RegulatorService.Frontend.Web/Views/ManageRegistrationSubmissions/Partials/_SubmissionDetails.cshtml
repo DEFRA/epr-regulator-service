@@ -10,8 +10,7 @@
             <div class="govuk-!-padding-top-4 govuk-summary-list__actions">
                 <govuk-tag status="@(Model.SubmissionStatus)" content="@SharedLocalizer[Model.SubmissionStatus.GetDescription()]" />
                 <p class="govuk-!-padding-top-1 govuk-body-s">
-                    @* @(Model.SubmissionDetails.DisplayAppropriateSubmissionDate()) This is to be done in the mapping class*@
-                    22 October 2025 09:30:05
+                    @Model.SubmissionDetails.TimeAndDateOfSubmission
                 </p>
             </div>
         </div>
@@ -26,7 +25,7 @@
                         <strong>@Localizer["SubmissionDetails.TimeAndDateOfSubmission"]</strong>
                     </dd>
                     <dd class="govuk-summary-list__value">
-                        @(Model.SubmissionDetails.TimeAndDateOfSubmission.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture))
+                        @Model.SubmissionDetails.TimeAndDateOfSubmission
                     </dd>
                 </div>
             }
@@ -44,12 +43,12 @@
                     @if (Model.ResubmissionStatus == EPR.RegulatorService.Frontend.Core.Enums.RegistrationSubmissionStatus.Pending)
                     {
                         <dd class="govuk-summary-list__value">
-                            @(Model.SubmissionDetails.TimeAndDateOfResubmission?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture))
+                            @Model.SubmissionDetails.TimeAndDateOfResubmission
                         </dd>
                     } else
                     {
                         <dd class="govuk-summary-list__value">
-                            @(Model.SubmissionDetails.LatestDecisionDate?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture))
+                            @((Model.SubmissionDetails.ResubmissionDecisionDate ?? Model.SubmissionDetails.LatestDecisionDate))
                         </dd>
                     }
                 </div>
@@ -124,7 +123,7 @@
                         @file.FileName
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                            @Html.ActionLink(SharedLocalizer["Link.Download"],
+                            @Html.ActionLink(SharedLocalizer["Link.Download"], @*This needs to be implemented in the new controller*@
                                 "RegistrationSubmissionsFileDownload",
                                 "RegistrationSubmissions",
                                 new
