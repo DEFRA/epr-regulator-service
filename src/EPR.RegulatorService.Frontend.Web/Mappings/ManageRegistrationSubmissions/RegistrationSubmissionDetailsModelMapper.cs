@@ -19,7 +19,7 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
             OrganisationName = dto.OrganisationName,
             OrganisationType = dto.OrganisationType,
             SubmissionStatus = dto.SubmissionStatus,
-            ResubmissionStatus = dto.ResubmissionStatus,
+            ResubmissionStatus = dto.SubmissionDetails.ResubmissionStatus,
 
             NationId = dto.NationId,
             NationCode = dto.NationCode,
@@ -47,7 +47,7 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
             TimeAndDateOfSubmission = dto.TimeAndDateOfSubmission.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
             TimeAndDateOfResubmission = dto.TimeAndDateOfResubmission?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
             ResubmissionDecisionDate = dto.ResubmissionDecisionDate?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
-            LatestDecisionDate = dto.DecisionDate?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+            LatestDecisionDate = DisplayAppropriateSubmissionDate(dto),
             SubmittedBy = dto.SubmittedBy,
             AccountRole = dto.AccountRole,
             Telephone = dto.Telephone,
