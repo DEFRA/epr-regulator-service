@@ -20,7 +20,9 @@ public class ManageRegistrationsMappingProfile : Profile
             .ForMember(dest => dest.BusinessAddressTask,
             opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.BusinessAddress)))
             .ForMember(dest => dest.ExporterWasteLicensesTask,
-            opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions)));
+            opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions)))
+            .ForMember(dest => dest.ReprocessorWasteCarrierTask,
+        opt => opt.MapFrom(src => src.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteCarrierBrokerDealerNumber)));
 
         CreateMap<RegistrationMaterialSummary, ManageRegistrationMaterialViewModel>()
             .ForMember(dest => dest.StatusCssClass,
