@@ -1,0 +1,7 @@
+@using EPR.RegulatorService.Frontend.Web.Helpers.ManageRegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ManageRegistrationSubmissions
+
+<submission-reference-number-panel heading="@Localizer[SubmissionReferenceNumberPanelHelper.GetPanelTitle(Model)].Value"
+                                   content="@SubmissionReferenceNumberPanelHelper.GetPanelContent(Model)"
+                                   status="@SharedLocalizer[Model.SubmissionStatus.ToString()]">
+</submission-reference-number-panel>
