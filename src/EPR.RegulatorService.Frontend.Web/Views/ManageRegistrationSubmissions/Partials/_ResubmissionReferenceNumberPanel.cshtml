@@ -1,5 +1,9 @@
-@* <status-panel heading="@Localizer[panelTitles[0]].Value,@Localizer[panelTitles[1]].Value"
-              content="@panelContents[0],@panelContents[1]"
-              status="@SharedLocalizer[Model.ResubmissionStatus.ToString()]">
-</status-panel>
- *@
+@using EPR.RegulatorService.Frontend.Web.Helpers.ManageRegistrationSubmissions
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ManageRegistrationSubmissions
+
+<resubmission-reference-number-panel producerRegistrationReference="@Localizer[ResubmissionReferenceNumbersPanelHelper.GetProducerRegistrationReferencePanelTitle(Model)].Value"
+                                     producerRegistrationReferenceContent="@ResubmissionReferenceNumbersPanelHelper.GetProducerRegistrationReferencePanelContent(Model)"
+                                     applicationReference="@Localizer[ResubmissionReferenceNumbersPanelHelper.GetApplicationReferencePanelTitle(Model)].Value"
+                                     applicationReferenceContent="@ResubmissionReferenceNumbersPanelHelper.GetApplicationReferencePanelContent(Model)"
+                                     status="@SharedLocalizer[Model.SubmissionStatus.ToString()]">
+</resubmission-reference-number-panel>

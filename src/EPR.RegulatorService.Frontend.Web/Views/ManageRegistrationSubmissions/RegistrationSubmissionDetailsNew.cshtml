@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
 @using EPR.RegulatorService.Frontend.Core.Extensions
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.Helpers.ManageRegistrationSubmissions
@@ -8,8 +9,6 @@
 @{
     ViewData["Title"] = Localizer["RegistrationSubmissionDetails.PageTitle"];
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
-    // var panelTitles = ReferenceNumberPanelHelper.GetPanelTitle(Model).Split('|');
-    // var panelContents = ReferenceNumberPanelHelper.GetPanelContent(Model).Split("\n");
 }
 
 <div class="govuk-width-container">
@@ -36,17 +35,9 @@
                     <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.OrganisationIdSubTitle"] @Model.OrganisationReference</p>
                 </div>
 
-                @if (Model.SubmissionStatus == EPR.RegulatorService.Frontend.Core.Enums.RegistrationSubmissionStatus.Granted && Model.IsResubmission)
+                @if (Model.SubmissionStatus == RegistrationSubmissionStatus.Granted && Model.IsResubmission)
                 {
-                    @* <status-panel heading="@Localizer["RegistrationSubmissionDetails.RegistrationReferenceNumber"],
-                                           @Localizer["RegistrationSubmissionDetails.ApplicationReferenceNumber"]"
-                                  content="@panelContents[0],@panelContents[1]"
-                                  status="@SharedLocalizer[Model.ResubmissionStatus.ToString()]">
-                    </status-panel>
-
                     @await Html.PartialAsync("Partials/_ResubmissionReferenceNumberPanel", Model)
-
-                    *@
                 }
                 else
                 {
