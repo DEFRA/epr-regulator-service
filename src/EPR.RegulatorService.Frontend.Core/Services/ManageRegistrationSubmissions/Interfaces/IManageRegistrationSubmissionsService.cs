@@ -2,7 +2,7 @@ namespace EPR.RegulatorService.Frontend.Core.Services.ManageRegistrationSubmissi
 {
     using System.Threading.Tasks;
 
-    using EPR.RegulatorService.Frontend.Core.DTOs;
+    using EPR.RegulatorService.Frontend.Core.DTOs.ManageRegistrationSubmissions;
 
     public interface IManageRegistrationSubmissionsService
     {

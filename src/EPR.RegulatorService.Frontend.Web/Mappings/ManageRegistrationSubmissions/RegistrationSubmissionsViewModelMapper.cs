@@ -1,6 +1,6 @@
 namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissions
 {
-    using EPR.RegulatorService.Frontend.Core.DTOs;
+    using EPR.RegulatorService.Frontend.Core.DTOs.ManageRegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Web.ViewModels.ManageRegistrationSubmissions;
 
     public static class RegistrationSubmissionsViewModelMapper

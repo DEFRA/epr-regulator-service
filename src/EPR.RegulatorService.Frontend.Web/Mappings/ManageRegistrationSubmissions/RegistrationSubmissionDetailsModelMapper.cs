@@ -3,7 +3,7 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
     using System.Collections.Generic;
     using System.Globalization;
 
-    using EPR.RegulatorService.Frontend.Core.DTOs;
+    using EPR.RegulatorService.Frontend.Core.DTOs.ManageRegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.ManageRegistrationSubmissions;

@@ -1,4 +1,4 @@
-namespace EPR.RegulatorService.Frontend.Core.DTOs
+namespace EPR.RegulatorService.Frontend.Core.DTOs.ManageRegistrationSubmissions
 {
     using System.Text.Json.Serialization;
 
@@ -16,7 +16,7 @@ namespace EPR.RegulatorService.Frontend.Core.DTOs
 
         public string Email { get; set; }
 
-        public string DeclaredBy {  get; set; }
+        public string DeclaredBy { get; set; }
 
         public List<FileDetailsDto> Files { get; set; } = [];
 

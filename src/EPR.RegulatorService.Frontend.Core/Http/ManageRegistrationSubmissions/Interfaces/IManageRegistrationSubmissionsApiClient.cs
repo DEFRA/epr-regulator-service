@@ -3,7 +3,7 @@ namespace EPR.RegulatorService.Frontend.Core.Http.ManageRegistrationSubmissions.
     using System;
     using System.Threading.Tasks;
 
-    using EPR.RegulatorService.Frontend.Core.DTOs;
+    using EPR.RegulatorService.Frontend.Core.DTOs.ManageRegistrationSubmissions;
 
     public interface IManageRegistrationSubmissionsApiClient
     {

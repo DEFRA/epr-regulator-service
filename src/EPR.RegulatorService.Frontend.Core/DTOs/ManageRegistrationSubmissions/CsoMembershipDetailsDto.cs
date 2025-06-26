@@ -1,4 +1,4 @@
-namespace EPR.RegulatorService.Frontend.Core.DTOs
+namespace EPR.RegulatorService.Frontend.Core.DTOs.ManageRegistrationSubmissions
 {
     using System;
 
