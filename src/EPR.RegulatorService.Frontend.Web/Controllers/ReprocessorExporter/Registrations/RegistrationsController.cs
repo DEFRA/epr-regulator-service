@@ -106,7 +106,44 @@ public class RegistrationsController(
 
         return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
     }
+    
+    [HttpGet]
+    [Route(PagePath.WasteCarrierDetails)]
+    public async Task<IActionResult> WasteCarrierDetails(Guid registrationId)
+    {
+        await idRequestValidator.ValidateAndThrowAsync(new IdRequest { Id = registrationId });
 
+        var session = await GetSession();
+        string pagePath = GetRegistrationMethodPath(PagePath.WasteCarrierDetails, registrationId);
+        await SaveSessionAndJourney(session, pagePath);
+        SetBackLinkInfos(session, pagePath);
+
+        var wasteCarrierDetails = await reprocessorExporterService.GetWasteCarrierDetailsByRegistrationIdAsync(registrationId);
+
+        await CreateQueryRegistrationSession(wasteCarrierDetails.TaskStatus, wasteCarrierDetails, session, PagePath.WasteCarrierDetails);
+
+        var viewModel = mapper.Map<WasteCarrierDetailsViewModel>(wasteCarrierDetails);
+
+        return View(GetRegistrationsView(nameof(WasteCarrierDetails)), viewModel);
+    }
+
+    [HttpPost]
+    [Route(PagePath.WasteCarrierDetails)]
+    public async Task<IActionResult> CompleteWasteCarrierDetails(Guid registrationId)
+    {
+        var updateRegistrationTaskStatusRequest = new UpdateRegistrationTaskStatusRequest
+        {
+            TaskName = RegulatorTaskType.WasteCarrierBrokerDealerNumber.ToString(),
+            RegistrationId = registrationId,
+            Status = RegulatorTaskStatus.Completed.ToString(),
+        };
+
+        await reprocessorExporterService.UpdateRegulatorRegistrationTaskStatusAsync(
+            updateRegistrationTaskStatusRequest);
+
+        return RedirectToAction("Index", "ManageRegistrations", new { id = registrationId });
+    }
+    
     [HttpGet]
     [Route(PagePath.MaterialWasteLicences)]
     public async Task<IActionResult> MaterialWasteLicences(Guid registrationMaterialId)

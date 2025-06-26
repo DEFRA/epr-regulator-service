@@ -1,0 +1,59 @@
+@using EPR.RegulatorService.Frontend.Core.Enums
+@using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations
+
+@{
+    ViewData["Title"] = "Sampling and inspection plan";
+}
+@model AccreditationSamplingInspectionViewModel;
+
+<div class="govuk-width-container ">
+    <main class="govuk-main-wrapper govuk-!-padding-top-4" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-2">
+                <h1 aria-describedby="tableDesc" class="govuk-heading-l">
+                    <span class="govuk-caption-l">@Model.AccreditationSamplingPlan.MaterialName</span>
+                    Sampling and inspection plan
+                </h1>
+
+                <form asp-controller="Accreditations">
+                    <table aria-describedby="tableDesc" class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header">Uploaded file</th>
+                                <th class="govuk-table__header">Date uploaded</th>
+                                <th class="govuk-table__header">Uploaded by</th>
+                            </tr>
+
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var file in Model.AccreditationSamplingPlan.Files.OrderByDescending(f => f.Filename).ThenByDescending(f => f.DateUploaded))
+                            {
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">
+                                        <a href="@Url.Action("DownloadSamplingAndInspectionFile", "Accreditations", new { fileId = file.FileId, filename = file.Filename})" class="govuk-link">
+                                            @file.Filename
+                                        </a>
+                                    </td>
+                                    <td class="govuk-table__cell">@file.DateUploaded?.ToString("d MMMM yyyy, h:mmtt").ToLower()</td>
+                                    <td class="govuk-table__cell">@file.UpdatedBy</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <br>
+                    <div class="govuk-button-group !-margin-top-6">
+
+                        <button type="submit" class="govuk-button" data-module="govuk-button" asp-controller="Accreditations" asp-action="CompleteSamplingInspection" asp-route-accreditationId="@Model.AccreditationId" asp-route-year="@Model.Year">
+                            Mark as reviewed
+                        </button>
+
+                        <a class="govuk-button govuk-button--secondary" href="@Url.Action("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = Model.AccreditationId, taskName = RegulatorTaskType.SamplingAndInspectionPlan })">
+                            Query the sampling and inspection plan
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
