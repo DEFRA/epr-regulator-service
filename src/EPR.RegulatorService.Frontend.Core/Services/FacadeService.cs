@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Web;
 
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -21,6 +22,7 @@ using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
@@ -454,18 +456,37 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        int lateFeeCutOffDay = _registrationSubmissionsConfig.LateFeeCutOffDay;
+        //int lateFeeCutOffDay = _registrationSubmissionsConfig.LateFeeCutOffDay;
+        //int lateFeeCutOffMonth = _registrationSubmissionsConfig.LateFeeCutOffMonth;
+        //var query = HttpUtility.ParseQueryString(string.Empty);
+        //query["lateFeeCutOffDay_2025"] = _registrationSubmissionsConfig.LateFeeCutOffDay_2025.ToString();
+        //query["lateFeeCutOffMonth_2025"] = _registrationSubmissionsConfig.LateFeeCutOffMonth_2025.ToString();
+        //query["lateFeeCutOffDay_CS"] = _registrationSubmissionsConfig.LateFeeCutOffDay_CS.ToString();
+        //query["lateFeeCutOffMonth_CS"] = _registrationSubmissionsConfig.LateFeeCutOffMonth_CS.ToString();
+        //query["lateFeeCutOffDay_SP"] = _registrationSubmissionsConfig.LateFeeCutOffDay_SP.ToString();
+        //query["lateFeeCutOffMonth_SP"] = _registrationSubmissionsConfig.LateFeeCutOffMonth_SP.ToString();
+        //query["lateFeeCutOffDay_LP"] = _registrationSubmissionsConfig.LateFeeCutOffDay_LP.ToString();
+        //query["lateFeeCutOffMonth_LP"] = _registrationSubmissionsConfig.LateFeeCutOffMonth_LP.ToString();
 
-        int lateFeeCutOffMonth = _registrationSubmissionsConfig.LateFeeCutOffMonth;
+        var queryParams = new Dictionary<string, string>()
+        {
+            { "lateFeeCutOffDay_2025", _registrationSubmissionsConfig.LateFeeCutOffDay_2025.ToString() },
+            { "lateFeeCutOffMonth_2025", _registrationSubmissionsConfig.LateFeeCutOffMonth_2025.ToString() },
+            { "lateFeeCutOffDay_CS", _registrationSubmissionsConfig.LateFeeCutOffDay_CS.ToString() },
+            { "lateFeeCutOffMonth_CS", _registrationSubmissionsConfig.LateFeeCutOffMonth_CS.ToString() },
+            { "lateFeeCutOffDay_SP", _registrationSubmissionsConfig.LateFeeCutOffDay_SP.ToString() },
+            { "lateFeeCutOffMonth_SP", _registrationSubmissionsConfig.LateFeeCutOffMonth_SP.ToString() },
+            { "lateFeeCutOffDay_LP", _registrationSubmissionsConfig.LateFeeCutOffDay_LP.ToString() },
+            { "lateFeeCutOffMonth_LP", _registrationSubmissionsConfig.LateFeeCutOffMonth_LP.ToString() }
+        };
 
         string path = string.Format(
             CultureInfo.InvariantCulture,
             _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath],
-            submissionId,
-            lateFeeCutOffDay,
-            lateFeeCutOffMonth);
+            submissionId);
 
-        var response = await _httpClient.GetAsync(path);
+        string urlWithParams = QueryHelpers.AddQueryString(path, queryParams);
+        var response = await _httpClient.GetAsync(urlWithParams);
 
         response.EnsureSuccessStatusCode();
 
