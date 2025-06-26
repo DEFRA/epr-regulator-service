@@ -1,0 +1,20 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ManageRegistrationSubmissions
+@model RegistrationSubmissionDetailsViewModel
+
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
+        <h2 class="govuk-summary-card__title ">@Localizer["RegistrationSubmissionDetails.ProducerTitle"]</h2>
+    </div>
+    <div class="govuk-summary-card__content" style="padding:30px;">
+        @if (string.IsNullOrEmpty(Model.ProducerComments))
+        {
+            <p class=" govuk-body" style="margin:0px;">
+                @Localizer["RegistrationSubmissionDetails.NoComments"]
+            </p>
+        }
+        else
+        {
+            <p class=" govuk-body" style="margin:0px;">@Html.Raw(Model.ProducerComments)</p>
+        }
+    </div>
+</div>

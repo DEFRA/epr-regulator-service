@@ -77,6 +77,10 @@
 
                 @await Html.PartialAsync("Partials/_SubmissionDetails", Model)
 
+                @await Html.PartialAsync("Partials/_ProducerComment", Model)
+
+                @await Html.PartialAsync("Partials/_RegulatorComment", Model)
+
             </div>
             <div class="govuk-grid-column-full">
                 <a href="@ViewBag.BackLinkToDisplay" class="govuk-link govuk-link--no-visited-state">

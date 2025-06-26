@@ -47,7 +47,7 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
             TimeAndDateOfSubmission = dto.TimeAndDateOfSubmission.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
             TimeAndDateOfResubmission = dto.TimeAndDateOfResubmission?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
             ResubmissionDecisionDate = dto.ResubmissionDecisionDate?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
-            LatestDecisionDate = DisplayAppropriateSubmissionDate(dto),
+            LatestDecisionDate = MapAppropriateDate(dto),
             SubmittedBy = dto.SubmittedBy,
             AccountRole = dto.AccountRole,
             Telephone = dto.Telephone,
@@ -56,7 +56,7 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
             Files = MapFiles(dto.Files)
         };
 
-        public static string DisplayAppropriateSubmissionDate(SubmissionDetailsDto dto)
+        public static string MapAppropriateDate(SubmissionDetailsDto dto)
         {
             const string format = "dd MMMM yyyy HH:mm:ss";
 
