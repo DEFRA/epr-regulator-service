@@ -5,12 +5,17 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
 
     using EPR.RegulatorService.Frontend.Core.DTOs.ManageRegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Enums;
+    using EPR.RegulatorService.Frontend.Web.Configs;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.ManageRegistrationSubmissions;
 
+    using Microsoft.Extensions.Options;
+
     public static class RegistrationSubmissionDetailsModelMapper
     {
-        public static RegistrationSubmissionDetailsViewModel MapToViewModel(RegistrationSubmissionDetailsDto dto) => new()
+        public static RegistrationSubmissionDetailsViewModel MapToViewModel(
+            RegistrationSubmissionDetailsDto dto,
+            IOptions<ExternalUrlsOptions> externalUrlsOptions) => new()
         {
             SubmissionId = dto.SubmissionId,
             OrganisationId = dto.OrganisationId,
@@ -28,6 +33,7 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
             ApplicationReferenceNumber = dto.ApplicationReferenceNumber,
             ProducerRegistrationNumber = dto.RegistrationReferenceNumber,
             CompaniesHouseNumber = dto.CompaniesHouseNumber,
+            PowerBiLogin = externalUrlsOptions.Value.PowerBiLogin,
 
             BuildingName = dto.BuildingName,
             SubBuildingName = dto.SubBuildingName,

@@ -44,8 +44,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.ManageRegistrationSubmis
             try
             {
                 var registrationSubmissionDetailsFacadeResponse = await manageRegistrationSubmissionsService.GetRegistrationSubmissionDetailsAsync(submissionId);
-                var viewModel = RegistrationSubmissionDetailsModelMapper.MapToViewModel(registrationSubmissionDetailsFacadeResponse);
-                viewModel.PowerBiLogin = externalUrlsOptions.Value.PowerBiLogin;
+                var viewModel = RegistrationSubmissionDetailsModelMapper.MapToViewModel(registrationSubmissionDetailsFacadeResponse, externalUrlsOptions);
                 return View(viewModel);
             }
             catch (RegistrationSubmissionNotFoundException)
