@@ -1,0 +1,17 @@
+@using EPR.RegulatorService.Frontend.Web.ViewModels.ManageRegistrationSubmissions
+@model RegistrationSubmissionDetailsViewModel
+
+<div class="govuk-!-margin-bottom-4">
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.CompaniesHouseNumber"]</h3>
+    @if (!string.IsNullOrEmpty(Model.CompaniesHouseNumber))
+    {
+        <p class="govuk-body govuk-!-margin-bottom-0">@Model.CompaniesHouseNumber</p>
+        <companies-house-link gov-value="@Model.CompaniesHouseNumber" class="govuk-body govuk-link--no-visited-state">
+            @Localizer["RegistrationSubmissionDetails.CompaniesHouseRegister"]
+        </companies-house-link>
+    }
+    else
+    {
+        <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.NotListed"]</p>
+    }
+</div>

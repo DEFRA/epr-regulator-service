@@ -44,36 +44,9 @@
                     @await Html.PartialAsync("Partials/_SubmissionReferenceNumberPanel", Model)
                 }
 
-                <div class="govuk-!-margin-bottom-4">
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.RegisteredAddress"]</h3>
-                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.BuildingNumber @Model.BuildingName</p>
-                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.Street</p>
-                    <p class="govuk-body govuk-!-margin-bottom-0">@Model.County</p>
-                    <p class="govuk-body">@Model.Postcode</p>
-                </div>
+                @await Html.PartialAsync("Partials/_Address", Model)
 
-                <div class="govuk-!-margin-bottom-4">
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.CompaniesHouseNumber"]</h3>
-                    @if (!string.IsNullOrEmpty(Model.CompaniesHouseNumber))
-                    {
-                        <p class="govuk-body govuk-!-margin-bottom-0">@Model.CompaniesHouseNumber</p>
-                        <companies-house-link gov-value="@Model.CompaniesHouseNumber" class="govuk-body govuk-link--no-visited-state">
-                            @Localizer["RegistrationSubmissionDetails.CompaniesHouseRegister"]
-                        </companies-house-link>
-                    }
-                    else
-                    {
-                        <p class="govuk-body">@Localizer["RegistrationSubmissionDetails.NotListed"]</p>
-                    }
-                </div>
-
-                <div class="govuk-!-margin-bottom-4">
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["RegistrationSubmissionDetails.PowerBiTitle"]</h3>
-                    <p class="govuk-body">
-                        @Localizer["RegistrationSubmissionDetails.PowerBiSubTitle"]
-                        <a href="@Model.PowerBiLogin" target="_blank" class="govuk-link govuk-link--no-visited-state">@SharedLocalizer["Link.LogIntoPowerBI"]</a>.
-                    </p>
-                </div>
+                @await Html.PartialAsync("Partials/_CompaniesHouse", Model)
 
                 @await Html.PartialAsync("Partials/_SubmissionDetails", Model)
 
