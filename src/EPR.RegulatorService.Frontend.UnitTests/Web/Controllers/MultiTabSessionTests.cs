@@ -31,7 +31,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             int hashCode3 = RegulatorSubmissionSession.GetSubmissionHashCode(testSubmission3);
             int hashCode4 = RegulatorSubmissionSession.GetSubmissionHashCode(testSubmission4);
 
-            _organisationSubmissions = new Dictionary<int, Submission>
+           _organisationSubmissions = new Dictionary<int, Submission>
             {
 
                 {hashCode1,testSubmission1 },

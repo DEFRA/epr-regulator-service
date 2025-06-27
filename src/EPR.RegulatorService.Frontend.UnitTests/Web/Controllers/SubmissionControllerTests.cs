@@ -17,6 +17,9 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using System.Text.Json;
+using System;
+
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
     [TestClass]
@@ -665,6 +668,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submission = _fixture.Create<Submission>();
             submission.PomBlobName = null;
+
             var session = SetSession(submission);
 
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(session);
@@ -781,6 +785,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
+
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId
