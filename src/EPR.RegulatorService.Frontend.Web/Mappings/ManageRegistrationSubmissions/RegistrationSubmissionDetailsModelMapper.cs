@@ -13,6 +13,9 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
 
     public static class RegistrationSubmissionDetailsModelMapper
     {
+        const string FullDateFormat = "dd MMMM yyyy HH:mm:ss";
+        const string ShortDateFormat = "dd MMMM yyyy";
+
         public static RegistrationSubmissionDetailsViewModel MapToViewModel(
             RegistrationSubmissionDetailsDto dto,
             IOptions<ExternalUrlsOptions> externalUrlsOptions) => new()
@@ -50,9 +53,9 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
 
         private static SubmissionDetailsViewModel MapSubmissionDetails(SubmissionDetailsDto dto) => new()
         {
-            TimeAndDateOfSubmission = dto.TimeAndDateOfSubmission.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
-            TimeAndDateOfResubmission = dto.TimeAndDateOfResubmission?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
-            ResubmissionDecisionDate = dto.ResubmissionDecisionDate?.ToString("dd MMMM yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+            TimeAndDateOfSubmission = FormatDate(dto.TimeAndDateOfSubmission),
+            TimeAndDateOfResubmission = FormatNullableDate(dto.TimeAndDateOfResubmission),
+            ResubmissionDecisionDate = FormatNullableDate(dto.ResubmissionDecisionDate),
             LatestDecisionDate = MapAppropriateDate(dto),
             SubmittedBy = dto.SubmittedBy,
             AccountRole = dto.AccountRole,
@@ -64,9 +67,6 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
 
         private static string MapAppropriateDate(SubmissionDetailsDto dto)
         {
-            const string fullFormat = "dd MMMM yyyy HH:mm:ss";
-            const string shortFormat = "dd MMMM yyyy";
-
             var selectedDate = dto.Status switch
             {
                 RegistrationSubmissionStatus.Granted => dto.RegistrationDate,
@@ -82,9 +82,13 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
             var fallbackDate = dto.TimeAndDateOfSubmission;
             var finalDate = selectedDate ?? fallbackDate;
 
-            string format = dto.Status == RegistrationSubmissionStatus.Cancelled ? shortFormat : fullFormat;
+            string format = dto.Status == RegistrationSubmissionStatus.Cancelled ? ShortDateFormat : FullDateFormat;
             return finalDate.ToString(format, CultureInfo.InvariantCulture);
         }
+
+        private static string FormatDate(DateTime date) => date.ToString(FullDateFormat, CultureInfo.InvariantCulture);
+
+        private static string? FormatNullableDate(DateTime? date) => date?.ToString(FullDateFormat, CultureInfo.InvariantCulture);
 
         private static List<FileDetailsViewModel> MapFiles(List<FileDetailsDto> files)
         {
