@@ -70,6 +70,12 @@
     <EmbeddedResource Update="Resources\Views\Error\ServiceNotAvailable.en.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_RegistrationSubmissionActionButtons.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_RegistrationSubmissionActionButtons.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_RegulatorComment.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
