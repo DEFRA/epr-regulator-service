@@ -36,7 +36,6 @@ namespace EPR.RegulatorService.Frontend.Core.DTOs.ManageRegistrationSubmissions
         public DateTime? RegulatorResubmissionDecisionDate { get; set; }
         public DateTime? RegulatorDecisionDate { get; set; }
         public DateTime? ProducerCommentDate { get; set; }
-        public Guid? RegulatorUserId { get; set; }
         public bool IsOnlineMarketPlace { get; set; }
         public int NumberOfSubsidiaries { get; set; }
         public int NumberOfOnlineSubsidiaries { get; set; }

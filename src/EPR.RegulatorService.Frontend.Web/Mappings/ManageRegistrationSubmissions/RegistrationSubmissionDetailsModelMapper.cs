@@ -62,7 +62,7 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
             Files = MapFiles(dto.Files)
         };
 
-        public static string MapAppropriateDate(SubmissionDetailsDto dto)
+        private static string MapAppropriateDate(SubmissionDetailsDto dto)
         {
             const string format = "dd MMMM yyyy HH:mm:ss";
 
