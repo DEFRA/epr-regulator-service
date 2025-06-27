@@ -32,7 +32,7 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
-        _sut = new PackagingProducerPaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object,_paymentFacadeServiceMock.Object, _loggerMock.Object);
+        _sut = new PackagingProducerPaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object);
     }
 
     [TestMethod]
@@ -116,7 +116,7 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         model.PreviousPaymentsReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(95.00M);
         model.ReferenceNumber.Should().Be(_submissionDetailsViewModel.ReferenceNumber);
-       
+
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(
             It.IsAny<PackagingProducerPaymentRequest>()), Times.AtMostOnce);
     }

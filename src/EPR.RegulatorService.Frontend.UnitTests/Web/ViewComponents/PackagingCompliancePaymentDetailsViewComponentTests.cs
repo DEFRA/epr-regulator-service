@@ -141,7 +141,7 @@ public class PackagingCompliancePaymentDetailsViewComponentTests : ViewComponent
     }
 
     [TestMethod]
-    public async Task WhenpPoducerPaidInExcessOfTheAmountRequiredThenOutstandingPaymentShouldShowZero()
+    public async Task WhenPaidInExcessOfTheAmountRequiredThenOutstandingPaymentShouldShowZero()
     {
         // Arrange
         _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsForResubmissionAsync(
@@ -154,7 +154,7 @@ public class PackagingCompliancePaymentDetailsViewComponentTests : ViewComponent
         });
 
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
-        _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions { ShowZeroFeeForTotalOutstanding = true});
+        _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions { ShowZeroFeeForTotalOutstanding = true });
         _sut = new PackagingCompliancePaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object);
 
         // Act

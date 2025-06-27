@@ -28,6 +28,8 @@ using Microsoft.FeatureManagement.Mvc;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
+using EPR.RegulatorService.Frontend.Core.Enums;
+using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 
