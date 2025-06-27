@@ -70,6 +70,12 @@
     <EmbeddedResource Update="Resources\Views\Error\ServiceNotAvailable.en.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_ResubmissionReferenceNumberPanel.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_ResubmissionReferenceNumberPanel.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_SubmissionReferenceNumberPanel.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

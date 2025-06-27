@@ -5,11 +5,11 @@ namespace EPR.RegulatorService.Frontend.Web.Helpers.ManageRegistrationSubmission
     public static class ResubmissionReferenceNumbersPanelHelper
     {
         public static string GetProducerRegistrationReferencePanelTitle(RegistrationSubmissionDetailsViewModel model) => !string.IsNullOrWhiteSpace(model.ProducerRegistrationNumber)
-                ? "RegistrationSubmissionDetails.RegistrationReferenceNumber"
+                ? "ProducerRegistrationNumber"
                 : string.Empty;
 
         public static string GetApplicationReferencePanelTitle(RegistrationSubmissionDetailsViewModel model) => !string.IsNullOrWhiteSpace(model.ApplicationReferenceNumber)
-                ? "RegistrationSubmissionDetails.ApplicationReferenceNumber"
+                ? "ApplicationReferenceNumber"
                 : string.Empty;
 
         public static string GetProducerRegistrationReferencePanelContent(RegistrationSubmissionDetailsViewModel model) => !string.IsNullOrWhiteSpace(model.ProducerRegistrationNumber)
