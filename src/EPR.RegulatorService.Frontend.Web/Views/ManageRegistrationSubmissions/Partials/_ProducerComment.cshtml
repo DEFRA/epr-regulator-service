@@ -3,13 +3,13 @@
 
 <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper" style="align-items: center;">
-        <h2 class="govuk-summary-card__title ">@Localizer["RegistrationSubmissionDetails.ProducerTitle"]</h2>
+        <h2 class="govuk-summary-card__title ">@Localizer["ProducerCommentSectionTitle"]</h2>
     </div>
     <div class="govuk-summary-card__content" style="padding:30px;">
         @if (string.IsNullOrEmpty(Model.ProducerComments))
         {
             <p class=" govuk-body" style="margin:0px;">
-                @Localizer["RegistrationSubmissionDetails.NoComments"]
+                @Localizer["NoComments"]
             </p>
         }
         else

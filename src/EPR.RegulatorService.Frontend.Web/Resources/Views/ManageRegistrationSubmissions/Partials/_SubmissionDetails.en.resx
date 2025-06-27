@@ -120,11 +120,20 @@
   <data name="SubmissionDetails.AccountRole" xml:space="preserve">
     <value>Account role</value>
   </data>
+  <data name="SubmissionDetails.BrandDetails" xml:space="preserve">
+    <value>Brand details</value>
+  </data>
   <data name="SubmissionDetails.DeclaredBy" xml:space="preserve">
     <value>Declared by</value>
   </data>
   <data name="SubmissionDetails.Email" xml:space="preserve">
     <value>Email</value>
+  </data>
+  <data name="SubmissionDetails.OrganisationDetails" xml:space="preserve">
+    <value>Organisation details</value>
+  </data>
+  <data name="SubmissionDetails.PartnerDetails" xml:space="preserve">
+    <value>Partner details</value>
   </data>
   <data name="SubmissionDetails.SubmittedBy" xml:space="preserve">
     <value>Submitted by</value>
