@@ -117,13 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CompaniesHouseNumber" xml:space="preserve">
-    <value>Rhif Tŷ'r Cwmnïau</value>
+  <data name="SubmissionDetails.AccountRole" xml:space="preserve">
+    <value>Rôl yn y cyfrif</value>
   </data>
-  <data name="CompaniesHouseRegister" xml:space="preserve">
-    <value>Gweld cofrestr Tŷ'r Cwmnïau</value>
+  <data name="SubmissionDetails.DeclaredBy" xml:space="preserve">
+    <value>Wedi'i ddatgan gan</value>
   </data>
-  <data name="NotListed" xml:space="preserve">
-    <value>Heb ei restru</value>
+  <data name="SubmissionDetails.Email" xml:space="preserve">
+    <value>Ebost</value>
+  </data>
+  <data name="SubmissionDetails.SubmittedBy" xml:space="preserve">
+    <value>Wedi'i gyflwyno gan</value>
+  </data>
+  <data name="SubmissionDetails.SubmittedOnTime" xml:space="preserve">
+    <value>Wedi'i gyflwyno'n brydlon</value>
+  </data>
+  <data name="SubmissionDetails.Telephone" xml:space="preserve">
+    <value>Ffôn</value>
+  </data>
+  <data name="SubmissionDetails.TimeAndDateOfSubmission" xml:space="preserve">
+    <value>Amser a dyddiad y cyflwyniad</value>
+  </data>
+  <data name="SubmissionDetails.Title" xml:space="preserve">
+    <value>Manylion y cyflwyniad</value>
   </data>
 </root>

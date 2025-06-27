@@ -117,13 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CompaniesHouseNumber" xml:space="preserve">
-    <value>Rhif Tŷ'r Cwmnïau</value>
+  <data name="SubmissionDetails.AccountRole" xml:space="preserve">
+    <value>Account role</value>
   </data>
-  <data name="CompaniesHouseRegister" xml:space="preserve">
-    <value>Gweld cofrestr Tŷ'r Cwmnïau</value>
+  <data name="SubmissionDetails.DeclaredBy" xml:space="preserve">
+    <value>Declared by</value>
   </data>
-  <data name="NotListed" xml:space="preserve">
-    <value>Heb ei restru</value>
+  <data name="SubmissionDetails.Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="SubmissionDetails.SubmittedBy" xml:space="preserve">
+    <value>Submitted by</value>
+  </data>
+  <data name="SubmissionDetails.SubmittedOnTime" xml:space="preserve">
+    <value>Submitted on time</value>
+  </data>
+  <data name="SubmissionDetails.Telephone" xml:space="preserve">
+    <value>Telephone</value>
+  </data>
+  <data name="SubmissionDetails.TimeAndDateOfSubmission" xml:space="preserve">
+    <value>Time and date of submission</value>
+  </data>
+  <data name="SubmissionDetails.Title" xml:space="preserve">
+    <value>Submission details</value>
   </data>
 </root>

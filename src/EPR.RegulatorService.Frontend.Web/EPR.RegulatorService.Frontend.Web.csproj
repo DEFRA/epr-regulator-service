@@ -70,6 +70,18 @@
     <EmbeddedResource Update="Resources\Views\Error\ServiceNotAvailable.en.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_SubmissionDetails.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_SubmissionDetails.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_CompaniesHouse.cy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_CompaniesHouse.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\ManageRegistrationSubmissions\Partials\_Address.cy.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
