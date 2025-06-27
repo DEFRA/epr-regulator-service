@@ -64,9 +64,10 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
 
         private static string MapAppropriateDate(SubmissionDetailsDto dto)
         {
-            const string format = "dd MMMM yyyy HH:mm:ss";
+            const string fullFormat = "dd MMMM yyyy HH:mm:ss";
+            const string shortFormat = "dd MMMM yyyy";
 
-            var targetDate = dto.Status switch
+            var selectedDate = dto.Status switch
             {
                 RegistrationSubmissionStatus.Granted => dto.RegistrationDate,
                 RegistrationSubmissionStatus.Refused or
@@ -75,10 +76,14 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
                 RegistrationSubmissionStatus.Accepted or
                 RegistrationSubmissionStatus.Rejected => dto.DecisionDate,
                 RegistrationSubmissionStatus.Cancelled => dto.StatusPendingDate ?? dto.DecisionDate,
-                _ => dto.TimeAndDateOfSubmission,
-            } ?? dto.TimeAndDateOfSubmission;
+                _ => null
+            };
 
-            return targetDate.ToString(dto.Status switch { RegistrationSubmissionStatus.Cancelled => "dd MMMM yyyy", _ => format }, CultureInfo.InvariantCulture);
+            var fallbackDate = dto.TimeAndDateOfSubmission;
+            var finalDate = selectedDate ?? fallbackDate;
+
+            string format = dto.Status == RegistrationSubmissionStatus.Cancelled ? shortFormat : fullFormat;
+            return finalDate.ToString(format, CultureInfo.InvariantCulture);
         }
 
         private static List<FileDetailsViewModel> MapFiles(List<FileDetailsDto> files)
