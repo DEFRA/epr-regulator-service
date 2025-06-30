@@ -133,6 +133,23 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         });
     }
 
+    public Task<WasteCarrierDetails> GetWasteCarrierDetailsByRegistrationIdAsync(Guid registrationId)
+    {
+        var registration = _registrations.Single(r => r.Id == registrationId);
+
+        var task = registration.Tasks.SingleOrDefault(t => t.TaskName == RegulatorTaskType.WasteCarrierBrokerDealerNumber);
+
+        return Task.FromResult(new WasteCarrierDetails
+        {
+            RegistrationId = registration.Id,
+            OrganisationName = registration.OrganisationName,
+            SiteAddress = registration.SiteAddress,
+            WasteCarrierBrokerDealerNumber = "WCB123456789",
+            TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted,
+            RegulatorRegistrationTaskStatusId = task?.Id
+        });
+    }
+
     public Task MarkAsDulyMadeAsync(Guid registrationMaterialId, MarkAsDulyMadeRequest dulyMadeRequest)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
@@ -389,7 +406,8 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             return
             [
                 new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SiteAddressAndContactDetails },
-                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite }
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.MaterialsAuthorisedOnSite },
+                new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.WasteCarrierBrokerDealerNumber }
             ];
         }
 
@@ -451,8 +469,30 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             new RegistrationTask { Id = Guid.NewGuid(), Status = RegulatorTaskStatus.NotStarted, TaskName = RegulatorTaskType.SamplingAndInspectionPlan }
         ];
     }
-
     public async Task<HttpResponseMessage> DownloadSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
+    
+    public Task<AccreditationSamplingPlan> GetSamplingPlanByAccreditationIdAsync(Guid accreditationId)
+    {
+        return Task.FromResult(new AccreditationSamplingPlan
+        {
+            MaterialName = "Plastic",
+            Files =
+            [
+                new AccreditationSamplingPlanFile
+                {
+                    Filename = "File0002-01-0.pdf",
+                    FileUploadType = "PDF",
+                    FileUploadStatus = "Completed",
+                    FileId = "123",
+                    UpdatedBy = "5d780e2d-5b43-4a45-92ac-7e2889582083",
+                    DateUploaded = DateTime.UtcNow
+                }
+
+            ]
+        });
+    }
+
+    public async Task<HttpResponseMessage> DownloadAccreditationSamplingInspectionFile(FileDownloadRequest request) => throw new NotImplementedException();
 
     public Task<Registration> GetRegistrationByIdWithAccreditationsAsync(Guid id, int? year = null)
     {
@@ -688,4 +728,63 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     public Task AddMaterialQueryNoteAsync(Guid regulatorApplicationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
 
     public Task AddRegistrationQueryNoteAsync(Guid regulatorRegistrationTaskStatusId, AddNoteRequest addNoteRequest) => Task.CompletedTask;
+    public Task<AccreditationBusinessPlanDto> GetAccreditionBusinessPlanByIdAsync(Guid id) => CreateAccreditationBusinessPlan(id);   
+
+    private static async Task<AccreditationBusinessPlanDto> CreateAccreditationBusinessPlan(Guid id)
+    {
+        var queryNotes = new List<QueryNoteResponseDto>();
+
+        var accreditationId = id;
+
+        var queryNote1 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "First Note"
+        };
+
+        var queryNote2 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        var queryNote3 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        queryNotes.Add(queryNote1);
+        queryNotes.Add(queryNote2);
+        queryNotes.Add(queryNote3);
+
+        var accreditationBusinessPlanDto = new AccreditationBusinessPlanDto
+        {
+            AccreditationId = accreditationId,
+            BusinessCollectionsNotes = string.Empty,
+            BusinessCollectionsPercentage = 0.00M,
+            CommunicationsNotes = string.Empty,
+            CommunicationsPercentage = 0.20M,
+            InfrastructureNotes = "Infrastructure notes testing",
+            InfrastructurePercentage = 0.30M,
+            MaterialName = "Plastic",
+            NewMarketsNotes = "New Market Testing notes",
+            NewMarketsPercentage = 0.40M,
+            NewUsersRecycledPackagingWasteNotes = string.Empty,
+            NewUsersRecycledPackagingWastePercentage = 0.25M,
+            NotCoveredOtherCategoriesNotes = string.Empty,
+            NotCoveredOtherCategoriesPercentage = 5.00M,
+            OrganisationName = "",
+            RecycledWasteNotes = "No recycled waste notes at this time",
+            RecycledWastePercentage = 10.00M,
+            SiteAddress = "To Be Confirmed",
+            TaskStatus = "Reviewed",
+            QueryNotes = queryNotes
+        };
+
+        return accreditationBusinessPlanDto;
+    }
 }

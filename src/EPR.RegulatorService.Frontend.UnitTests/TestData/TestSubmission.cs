@@ -29,6 +29,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.TestData
                 PomBlobName = "A blob name",
                 PomFileName = "A Pom File.csv"
             };
+
         public static Submission GetTestSubmission(string prefix) =>
             new()
             {

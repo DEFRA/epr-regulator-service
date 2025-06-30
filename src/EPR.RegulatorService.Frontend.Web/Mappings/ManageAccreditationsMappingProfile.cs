@@ -42,12 +42,16 @@ public class ManageAccreditationsMappingProfile : Profile
             .ForMember(dest => dest.BusinessPlanTask, opt => opt.Ignore())
             .ForMember(dest => dest.SamplingAndInspectionPlanTask, opt => opt.Ignore())
             .ForMember(dest => dest.CheckAccreditationStatusTask, opt => opt.Ignore())
+            .ForMember(dest => dest.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask, opt => opt.Ignore())
+            .ForMember(dest => dest.PERNsTonnageAndAuthorityToIssuePERNsTask, opt => opt.Ignore())
             .AfterMap((src, dest) =>
             {
                 dest.PRNTonnageTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.PRNTonnage);
                 dest.BusinessPlanTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.BusinessPlan);
                 dest.SamplingAndInspectionPlanTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.SamplingAndInspectionPlan);
                 dest.CheckAccreditationStatusTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.DulyMade);
+                dest.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandards);
+                dest.PERNsTonnageAndAuthorityToIssuePERNsTask = MapAccreditationTask(src.Tasks, RegulatorTaskType.PERNsTonnageAndAuthorityToIssuePERNs);
             });
 
 

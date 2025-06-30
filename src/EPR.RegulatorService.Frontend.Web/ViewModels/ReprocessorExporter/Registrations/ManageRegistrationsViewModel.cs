@@ -8,7 +8,7 @@ public class ManageRegistrationsViewModel
 
     public required string OrganisationName { get; init; }
 
-    public string? SiteAddress { get; init; } // Only for reprocessors
+    public string? SiteAddress { get; init; }
 
     public ApplicationOrganisationType ApplicationOrganisationType { get; init; }
 
@@ -23,4 +23,6 @@ public class ManageRegistrationsViewModel
     public RegistrationTaskViewModel? BusinessAddressTask { get; set; }
 
     public RegistrationTaskViewModel? ExporterWasteLicensesTask { get; set; }
+
+    public RegistrationTaskViewModel? ReprocessorWasteCarrierTask { get; set; }
 }

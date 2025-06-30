@@ -20,20 +20,23 @@ using Moq.Protected;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
 
+using System.Globalization;
+
+using Frontend.Core.Enums;
+
 [TestClass]
 public class ReprocessorExporterServiceTests
 {
     private const string BaseUrl = "https://example.com/";
     private const int ApiVersion = 1;
     private const string AddMaterialQueryNote = "v{apiVersion}/regulatorApplicationTaskStatus/{id}/queryNote";
+    private const string AddRegistrationQueryNote = "v{apiVersion}/regulatorRegistrationTaskStatus/{id}/queryNote";
     private const string GetRegistrationByIdPath = "v{apiVersion}/registrations/{id}";
     private const string GetRegistrationMaterialByIdPath = "v{apiVersion}/registrationMaterials/{id}";
     private const string GetSiteAddressByRegistrationIdPath = "v{apiVersion}/registrations/{id}/siteAddress";
     private const string GetAuthorisedMaterialsByRegistrationId = "v{apiVersion}/registrations/{id}/authorisedMaterial";
-
-    private const string GetWasteLicenceByRegistrationMaterialId =
-        "v{apiVersion}/registrationMaterials/{id}/wasteLicences";
-
+    private const string GetWasteCarrierDetailsByRegistrationId = "v{apiVersion}/registrations/{id}/wasteCarrier";
+    private const string GetWasteLicenceByRegistrationMaterialId = "v{apiVersion}/registrationMaterials/{id}/wasteLicences";
     private const string UpdateRegistrationMaterialOutcome = "v{apiVersion}/registrationMaterials/{id}/outcome";
     private const string UpdateRegistrationTaskStatus = "v{apiVersion}/regulatorRegistrationTaskStatus";
     private const string UpdateApplicationTaskStatus = "v{apiVersion}/regulatorApplicationTaskStatus";
@@ -51,11 +54,10 @@ public class ReprocessorExporterServiceTests
     private const string SubmitOfflinePaymentPath = "v{apiVersion}/registrationMaterials/offlinePayment";
     private const string GetRegistrationByIdWithAccreditations = "v{apiVersion}/registrations/{id}/accreditations";
     private const string UpdateAccreditationTaskStatus = "v{apiVersion}/regulatorAccreditationTaskStatus";
+    private const string GetAccreditationBusinessPlanById = "v{apiVersion}/accreditations/{id}/businessPlan";
 
-    
-
+    private const string GetSamplingPlanByAccreditationIdPath = "v{apiVersion}/accreditations/{id}/samplingPlan";
     private ReprocessorExporterService _service; // System under test
-
     private Mock<HttpMessageHandler> _httpMessageHandlerMock;
     private Mock<IOptions<ReprocessorExporterFacadeApiConfig>> _optionsMock;
     private HttpClient _httpClient;
@@ -85,10 +87,12 @@ public class ReprocessorExporterServiceTests
             Endpoints = new Dictionary<string, string>
             {
                 { "AddMaterialQueryNote", AddMaterialQueryNote },
+                { "AddRegistrationQueryNote", AddRegistrationQueryNote },
                 { "GetRegistrationById", GetRegistrationByIdPath },
                 { "GetRegistrationMaterialById", GetRegistrationMaterialByIdPath },
                 { "GetSiteAddressByRegistrationId", GetSiteAddressByRegistrationIdPath },
                 { "GetAuthorisedMaterialsByRegistrationId", GetAuthorisedMaterialsByRegistrationId },
+                { "GetWasteCarrierDetailsByRegistrationId", GetWasteCarrierDetailsByRegistrationId },
                 { "GetWasteLicenceByRegistrationMaterialId", GetWasteLicenceByRegistrationMaterialId },
                 { "UpdateRegistrationMaterialOutcome", UpdateRegistrationMaterialOutcome },
                 { "UpdateRegistrationTaskStatus", UpdateRegistrationTaskStatus },
@@ -100,6 +104,8 @@ public class ReprocessorExporterServiceTests
                 { "SubmitOfflinePayment", SubmitOfflinePaymentPath },
                 { "GetRegistrationByIdWithAccreditations", GetRegistrationByIdWithAccreditations },
                 { "UpdateAccreditationTaskStatus", UpdateAccreditationTaskStatus },
+                { "GetSamplingPlanByAccreditationId", GetSamplingPlanByAccreditationIdPath },
+                { "GetAccreditationBusinessPlanById", GetAccreditationBusinessPlanById }
             }
         };
 
@@ -286,6 +292,51 @@ public class ReprocessorExporterServiceTests
     }
 
     [TestMethod]
+    public async Task GetWasteCarrierByRegistrationIdAsync_WhenSuccess_ReturnsWasteCarrierDetails()
+    {
+        // Arrange
+        var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
+        var expectedWasteCarrier = CreateWasteCarrierDetails();
+        string expectedPath = GetWasteCarrierDetailsByRegistrationId
+            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{id}", registrationMaterialId.ToString());
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(JsonSerializer.Serialize(expectedWasteCarrier, _jsonSerializerOptions))
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act
+        var result = await _service.GetWasteCarrierDetailsByRegistrationIdAsync(registrationMaterialId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(expectedWasteCarrier);
+    }
+
+    [TestMethod]
+    public async Task GetWasteCarrierByRegistrationMaterialId_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+    {
+        // Arrange
+        var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+        string expectedPath = GetWasteCarrierDetailsByRegistrationId
+            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{id}", registrationId.ToString());
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetWasteCarrierDetailsByRegistrationIdAsync(registrationId));
+    }
+
+
+    [TestMethod]
     public async Task UpdateRegistrationMaterialOutcome_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
@@ -295,7 +346,8 @@ public class ReprocessorExporterServiceTests
             .Replace("{id}", registrationMaterialId.ToString());
         var request = new RegistrationMaterialOutcomeRequest
         {
-            Status = ApplicationStatus.Granted, Comments = "Test comment"
+            Status = ApplicationStatus.Granted,
+            Comments = "Test comment"
         };
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
@@ -368,7 +420,8 @@ public class ReprocessorExporterServiceTests
 
         var request = new MarkAsDulyMadeRequest()
         {
-            DeterminationDate = DateTime.Now, DulyMadeDate = DateTime.Now.AddDays(-7)
+            DeterminationDate = DateTime.Now,
+            DulyMadeDate = DateTime.Now.AddDays(-7)
         };
 
         var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
@@ -629,6 +682,50 @@ public class ReprocessorExporterServiceTests
 
         // Act & Assert
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => _service.DownloadSamplingInspectionFile(request));
+    }
+
+    [TestMethod]
+    public async Task DownloadSamplingAndInspectionFileAsync_WithAccreditationSubmissionType_callsAccreditationEndpoint()
+    {
+        // Arrange
+        var fileId = Guid.NewGuid();
+        const string filename = "test-document.pdf";
+        var request = new FileDownloadRequest { FileId = fileId, FileName = filename, SubmissionType = SubmissionType.Accreditation };
+
+        var expectedContent = Encoding.UTF8.GetBytes("Accreditation Sampling & Inspection PDF file content");
+        const string contentType = "application/octet-stream";
+
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new ByteArrayContent(expectedContent)
+        };
+        httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+
+        _optionsMock.Object.Value.Endpoints.Add("DownloadAccreditationSamplingInspectionFile", "v{apiVersion}/accreditations/file-download");
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Post &&
+                    req.RequestUri != null &&
+                    req.RequestUri.ToString().EndsWith("/accreditations/file-download")),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(httpResponseMessage);
+
+        // Act
+        var result = await _service.DownloadSamplingInspectionFile(request);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        var responseBytes = await result.Content.ReadAsByteArrayAsync();
+        using (new AssertionScope())
+        {
+            responseBytes.Should().BeEquivalentTo(expectedContent);
+            result.Content.Headers.ContentType?.MediaType.Should().Be(contentType);
+        }
     }
 
     [TestMethod]
@@ -1076,7 +1173,66 @@ public class ReprocessorExporterServiceTests
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorAccreditationTaskStatusAsync(request));
     }
+    [TestMethod]
+    public async Task GetSamplingPlanByAccreditationIdAsync_WhenSuccessResponse_ReturnsSamplingPlan()
+    {
+        // Arrange
+        var accreditationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
 
+        var expectedSamplingPlan = new AccreditationSamplingPlan
+        {
+            MaterialName = "Plastic",
+            Files = new List<AccreditationSamplingPlanFile>
+            {
+                new AccreditationSamplingPlanFile
+                {
+                    Filename = $"FileName.pdf",
+                    FileUploadType = "",
+                    FileUploadStatus = "",
+                    DateUploaded = DateTime.UtcNow,
+                    UpdatedBy = "Test User",
+                    FileId = Guid.NewGuid().ToString()
+                }
+            }
+        };
+
+        string expectedPath = GetSamplingPlanByAccreditationIdPath.Replace("{apiVersion}", ApiVersion.ToString())
+                                                                .Replace("{id}", accreditationId.ToString());
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(JsonSerializer.Serialize(expectedSamplingPlan, _jsonSerializerOptions))
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act
+        var result = await _service.GetSamplingPlanByAccreditationIdAsync(accreditationId);
+
+        // Assert
+        Assert.IsNotNull(result);
+    }
+
+    [TestMethod]
+    public async Task GetSamplingPlanByAccreditationIdAsync_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+    {
+        // Arrange
+        var accreditationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+
+        string expectedPath = GetSamplingPlanByAccreditationIdPath.Replace("{apiVersion}", ApiVersion.ToString())
+                                                                .Replace("{id}", accreditationId.ToString());
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.GetSamplingPlanByAccreditationIdAsync(accreditationId));
+    }
+
+    [TestMethod]
     public async Task AddMaterialQueryNote_WhenResponseCodeIsNotSuccess_ShouldThrowException()
     {
         // Arrange
@@ -1093,6 +1249,54 @@ public class ReprocessorExporterServiceTests
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
             _service.AddMaterialQueryNoteAsync(materialTaskId, request));
+    }
+
+
+    [TestMethod]
+    public async Task GetAccreditationBusinessPlanByIdAsync_ReturnsOK()
+    {
+        // Arrange
+        var accreditationId = Guid.NewGuid();
+        var expectedAccreditationBusinessPlan = CreateAccreditationBusinessPlan(accreditationId);
+        string expectedPath = GetAccreditationBusinessPlanById
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
+            .Replace("{id}", accreditationId.ToString());
+
+        var response = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent(JsonSerializer.Serialize(expectedAccreditationBusinessPlan, _jsonSerializerOptions))
+        };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+
+        // Act
+        var result = await _service.GetAccreditionBusinessPlanByIdAsync(accreditationId);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.IsNotNull(result);
+
+        response.Dispose();
+    }
+
+    [TestMethod]
+    public async Task AddRegistrationQueryNote_WhenResponseCodeIsNotSuccess_ShouldThrowException()
+    {
+        // Arrange
+        var registrationTaskId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
+        string expectedPath = AddRegistrationQueryNote
+            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{id}", registrationTaskId.ToString());
+        var request = new AddNoteRequest { Note = "Test note", };
+
+        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+
+        // Act/Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+            _service.AddRegistrationQueryNoteAsync(registrationTaskId, request));
     }
 
     private void SetupHttpMessageExpectations(HttpMethod method, string path,
@@ -1219,7 +1423,7 @@ public class ReprocessorExporterServiceTests
     }
 
     private static RegistrationMaterialPaymentFees CreateRegistrationMaterialPaymentFees() =>
-        new RegistrationMaterialPaymentFees
+        new()
         {
             RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
             OrganisationName = "Test Org",
@@ -1231,5 +1435,74 @@ public class ReprocessorExporterServiceTests
             ApplicationReferenceNumber = "ABC123456",
             SubmittedDate = DateTime.Now.AddDays(-7),
             Regulator = "GB-ENG"
+        };
+
+    private static async Task<AccreditationBusinessPlanDto> CreateAccreditationBusinessPlan(Guid id)
+    {
+        var queryNotes = new List<QueryNoteResponseDto>();
+
+        var accreditationId = id;
+
+        var queryNote1 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "First Note"
+        };
+
+        var queryNote2 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        var queryNote3 = new QueryNoteResponseDto
+        {
+            CreatedBy = accreditationId,
+            CreatedDate = DateTime.Now,
+            Notes = "Second Note"
+        };
+
+        queryNotes.Add(queryNote1);
+        queryNotes.Add(queryNote2);
+        queryNotes.Add(queryNote3);
+
+        var accreditationBusinessPlanDto = new AccreditationBusinessPlanDto
+        {
+            AccreditationId = accreditationId,
+            BusinessCollectionsNotes = string.Empty,
+            BusinessCollectionsPercentage = 0.00M,
+            CommunicationsNotes = string.Empty,
+            CommunicationsPercentage = 0.20M,
+            InfrastructureNotes = "Infrastructure notes testing",
+            InfrastructurePercentage = 0.30M,
+            MaterialName = "Plastic",
+            NewMarketsNotes = "New Market Testing notes",
+            NewMarketsPercentage = 0.40M,
+            NewUsersRecycledPackagingWasteNotes = string.Empty,
+            NewUsersRecycledPackagingWastePercentage = 0.25M,
+            NotCoveredOtherCategoriesNotes = string.Empty,
+            NotCoveredOtherCategoriesPercentage = 5.00M,
+            OrganisationName = "",
+            RecycledWasteNotes = "No recycled waste notes at this time",
+            RecycledWastePercentage = 10.00M,
+            SiteAddress = "To Be Confirmed",
+            TaskStatus = "Reviewed",
+            QueryNotes = queryNotes
+        };
+
+        return accreditationBusinessPlanDto;
+    }
+
+    private static WasteCarrierDetails CreateWasteCarrierDetails() =>
+        new()
+        {
+            RegistrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"),
+            OrganisationName = "Test Org",
+            SiteAddress = "23, Ruby St, London, E12 3SE",
+            WasteCarrierBrokerDealerNumber = "WCB123456789",
+            RegulatorRegistrationTaskStatusId = Guid.NewGuid(),
+            TaskStatus = RegulatorTaskStatus.Queried
         };
 }
