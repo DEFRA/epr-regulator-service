@@ -446,7 +446,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 RelevantYears = "2025, 2026",
                 PageNumber = expectedPageNumber,
                 PageSize = 500,
-                Statuses = "Pending"
+                Statuses = "Pending",
+                Show2026RelevantYearFilter = true
             };
 
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
@@ -508,6 +509,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Show2026RelevantYearFilter.Should().BeTrue();
         }
 
         [TestMethod]
