@@ -63,6 +63,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             var selectedRegistrations = regulatorRegSubSession.SelectedRegistrations.TryGetValue(submissionId.Value, out var value2)
                                             ? value2 : null;
             var sessionModelWhichMustMatchSession = orgDetailsChangeHistory ?? selectedRegistrations;
+
             if (sessionModelWhichMustMatchSession is null)
             {
                 return false;
@@ -82,7 +83,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             var submission = await facadeMethod(submissionId);
             if (submission is not null)
             {
+                _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
                 _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations[submission.SubmissionId] = submission;
+                SaveSession(_currentSession);
             }
 
             return submission;
@@ -236,9 +239,24 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             if (status == EndpointResponseStatus.Success)
             {
                 existingModel.RegulatorComments = regulatorDecisionRequest.Comments;
-                existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
-                existingModel.SubmissionDetails.Status = existingModel.Status;
-                existingModel.SubmissionDetails.LatestDecisionDate = DateTime.UtcNow;
+                if (existingModel.IsResubmission && "Granted Refused".Contains(regulatorDecisionRequest.Status))
+                {
+                    existingModel.ResubmissionStatus = regulatorDecisionRequest.Status switch
+                    {
+                        "Granted" => RegistrationSubmissionStatus.Accepted,
+                        "Refused" => RegistrationSubmissionStatus.Rejected,
+                        _ => existingModel.ResubmissionStatus
+                    };
+                    existingModel.SubmissionDetails.ResubmissionStatus = existingModel.ResubmissionStatus;
+                    existingModel.SubmissionDetails.ResubmissionDecisionDate = DateTime.UtcNow;
+                }
+                else
+                {
+                    existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
+                    existingModel.SubmissionDetails.Status = existingModel.Status;
+                    existingModel.SubmissionDetails.LatestDecisionDate = DateTime.UtcNow;
+                    existingModel.SubmissionDetails.StatusPendingDate = regulatorDecisionRequest.Status == "Cancelled" ? regulatorDecisionRequest.DecisionDate : null;
+                }
 
                 if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
                 {
@@ -273,7 +291,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 IsWelsh = existingModel.NationId == 4,
                 Status = status.ToString(),
                 IsResubmission = existingModel.IsResubmission,
-                FileId = existingModel.IsResubmission ? existingModel.ResubmissionFileId : null
+                FileId = status switch
+                {
+                    RegistrationSubmissionStatus.Cancelled => null,
+                    _ => existingModel.IsResubmission ? existingModel.ResubmissionFileId : null
+                }
             };
 
             if (request.IsResubmission)

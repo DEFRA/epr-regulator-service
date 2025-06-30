@@ -126,11 +126,11 @@ public partial class RegistrationSubmissionsController(
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-            if ( !GetOrRejectProvidedSubmissionId(submissionId.Value, out var model))
+            if (!GetOrRejectProvidedSubmissionId(submissionId.Value, out var model))
             {
                 model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
             }
-            
+
             if (model is null)
             {
                 return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
