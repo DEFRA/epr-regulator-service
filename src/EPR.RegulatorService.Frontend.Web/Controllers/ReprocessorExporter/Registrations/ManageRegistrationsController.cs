@@ -1,48 +1,68 @@
-using AutoMapper;
-
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Core.Sessions;
-using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
-using EPR.RegulatorService.Frontend.Web.Sessions;
+using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
-using FluentValidation;
-
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 
 [FeatureGate(FeatureFlags.ReprocessorExporter)]
 [Route($"{PagePath.ReprocessorExporterRegistrations}/{PagePath.ManageRegistrations}")]
-public class ManageRegistrationsController(IReprocessorExporterService reprocessorExporterService,
-    IMapper mapper,
-    IValidator<IdRequest> validator,
-    ISessionManager<JourneySession> sessionManager,
-    IConfiguration configuration) : ReprocessorExporterBaseController(sessionManager, configuration)
+public class ManageRegistrationsController : Controller
 {
-    private readonly IReprocessorExporterService _reprocessorExporterService = reprocessorExporterService ?? throw new ArgumentNullException(nameof(reprocessorExporterService));
-    private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    private readonly IValidator<IdRequest> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+    private readonly IReprocessorExporterService _registrationService;
+    private readonly ILogger<ManageRegistrationsController> _logger;
+
+    public ManageRegistrationsController(IReprocessorExporterService registrationService, ILogger<ManageRegistrationsController> logger)
+    {
+        _registrationService = registrationService;
+        _logger = logger;
+    }
 
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] Guid id)
+    [ProducesResponseType(StatusCodes.Status200OK)]  // When the view loads successfully
+    [ProducesResponseType(StatusCodes.Status302Found)] // When redirecting to the error page
+    public IActionResult Index([FromQuery] int id)
     {
-        await _validator.ValidateAndThrowAsync(new IdRequest { Id = id });
+        try
+        {
+            // Validate ID
+            if (id <= 0)
+            {
+                _logger.LogError("Invalid ID received in query string: {Id}", id);
+                return RedirectToAction(PagePath.Error, "Error");
+            }
 
-        var registration = await _reprocessorExporterService.GetRegistrationByIdAsync(id);
+            var registration = _registrationService.GetRegistrationById(id);
 
-        ViewBag.BackLinkToDisplay = "";
+            if (registration == null)
+            {
+                _logger.LogError("No registration found for ID: {Id}", id);
+                return RedirectToAction(PagePath.Error, "Error");
+            }
 
-        var model = _mapper.Map<ManageRegistrationsViewModel>(registration);
+            ViewBag.BackLinkToDisplay = "";
 
-        var session = await GetSession();
-        session.ReprocessorExporterSession = new ReprocessorExporterSession();
+            var model = new ManageRegistrationsViewModel
+            {
+                Id = registration.Id,
+                OrganisationName = registration.OrganisationName,
+                SiteAddress = registration.SiteAddress,
+                ApplicationOrganisationType = registration.OrganisationType,
+                Regulator = registration.Regulator
+            };
 
-        await SaveSessionAndJourney(session, $"{PagePath.ManageRegistrations}?id={id}");
-
-        return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations.cshtml", model);
+            return View("~/Views/ReprocessorExporter/Registrations/ManageRegistrations.cshtml", model);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception occurred while processing ManageRegistrations request for ID: {Id}", id);
+            return RedirectToAction(PagePath.Error, "Error");
+        }
     }
 }
