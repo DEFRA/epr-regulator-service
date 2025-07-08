@@ -6,6 +6,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Cookies;
+using EPR.RegulatorService.Frontend.Web.Mappers;
 using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.Middleware;
 using EPR.RegulatorService.Frontend.Web.Sessions;

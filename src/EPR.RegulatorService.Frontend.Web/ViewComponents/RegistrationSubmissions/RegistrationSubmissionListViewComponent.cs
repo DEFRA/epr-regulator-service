@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents;
 
+using Mappers;
+
 public class RegistrationSubmissionListViewComponent(IFacadeService facadeService) : ViewComponent
 {
     [ExcludeFromCodeCoverage]
@@ -17,7 +19,7 @@ public class RegistrationSubmissionListViewComponent(IFacadeService facadeServic
     {
         var pagedOrganisationRegistrations = await facadeService.GetRegistrationSubmissions(request.RegistrationsFilterModel);
 
-        request.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(x => (RegistrationSubmissionDetailsViewModel)x);
+        request.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails);
         request.PaginationNavigationModel = new PaginationNavigationModel
         {
             CurrentPage = pagedOrganisationRegistrations.currentPage,
