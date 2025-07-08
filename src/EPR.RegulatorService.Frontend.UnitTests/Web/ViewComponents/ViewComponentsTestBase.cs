@@ -1,12 +1,15 @@
+using System.Security.Claims;
+
+using EPR.Common.Authorization.Models;
+using EPR.RegulatorService.Frontend.Core.Services;
+using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.Web.Mappers;
+using EPR.RegulatorService.Frontend.Web.Sessions;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using System.Security.Claims;
-using EPR.Common.Authorization.Models;
-using EPR.RegulatorService.Frontend.Core.Services;
-using EPR.RegulatorService.Frontend.Web.Sessions;
-using EPR.RegulatorService.Frontend.Core.Sessions;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents;
 

@@ -456,18 +456,6 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        //int lateFeeCutOffDay = _registrationSubmissionsConfig.LateFeeCutOffDay;
-        //int lateFeeCutOffMonth = _registrationSubmissionsConfig.LateFeeCutOffMonth;
-        //var query = HttpUtility.ParseQueryString(string.Empty);
-        //query["lateFeeCutOffDay_2025"] = _registrationSubmissionsConfig.LateFeeCutOffDay_2025.ToString();
-        //query["lateFeeCutOffMonth_2025"] = _registrationSubmissionsConfig.LateFeeCutOffMonth_2025.ToString();
-        //query["lateFeeCutOffDay_CS"] = _registrationSubmissionsConfig.LateFeeCutOffDay_CS.ToString();
-        //query["lateFeeCutOffMonth_CS"] = _registrationSubmissionsConfig.LateFeeCutOffMonth_CS.ToString();
-        //query["lateFeeCutOffDay_SP"] = _registrationSubmissionsConfig.LateFeeCutOffDay_SP.ToString();
-        //query["lateFeeCutOffMonth_SP"] = _registrationSubmissionsConfig.LateFeeCutOffMonth_SP.ToString();
-        //query["lateFeeCutOffDay_LP"] = _registrationSubmissionsConfig.LateFeeCutOffDay_LP.ToString();
-        //query["lateFeeCutOffMonth_LP"] = _registrationSubmissionsConfig.LateFeeCutOffMonth_LP.ToString();
-
         var queryParams = new Dictionary<string, string>()
         {
             { "lateFeeCutOffDay_2025", _registrationSubmissionsConfig.LateFeeCutOffDay_2025.ToString() },

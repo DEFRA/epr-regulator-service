@@ -9,6 +9,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Web.Configs;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Web.Mappers;
     using EPR.RegulatorService.Frontend.Web.Sessions;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
@@ -127,7 +128,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             (gotBackLinkObject as string)?.Should().Be(expectedBackLink);
         }
 
-        protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(
+        protected static RegistrationSubmissionDetailsViewModel? GenerateTestSubmissionDetailsViewModel(
             Guid organisationId,
             int nationId = 3,
             string nationCode = "Sco") => new RegistrationSubmissionDetailsViewModel

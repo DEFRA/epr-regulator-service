@@ -25,17 +25,18 @@ using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 
+using Mappers;
+
 [FeatureGate(FeatureFlags.ManageRegistrationSubmissions)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 public partial class RegistrationSubmissionsController(
-                IFacadeService facade,
-                IPaymentFacadeService paymentFacade,
-                ISessionManager<JourneySession> sessionManager,
-                ILogger<RegistrationSubmissionsController> logger,
-                IConfiguration configuration,
-                IOptions<ExternalUrlsOptions> externalUrlsOptions,
-                IOptions<RegistrationSubmissionsConfig> registrationSubmissionsConfig
-             ) : Controller
+    IFacadeService facade,
+    IPaymentFacadeService paymentFacade,
+    ISessionManager<JourneySession> sessionManager,
+    ILogger<RegistrationSubmissionsController> logger,
+    IConfiguration configuration,
+    IOptions<ExternalUrlsOptions> externalUrlsOptions,
+    IOptions<RegistrationSubmissionsConfig> registrationSubmissionsConfig) : Controller
 {
     private readonly string _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
     private readonly ExternalUrlsOptions _externalUrlsOptions = externalUrlsOptions.Value;
@@ -128,7 +129,8 @@ public partial class RegistrationSubmissionsController(
 
             if ( !GetOrRejectProvidedSubmissionId(submissionId.Value, out var model))
             {
-                model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+                var registrationSubmissionOrganisationDetails = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+                model = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(registrationSubmissionOrganisationDetails);
             }
             
             if (model is null)
@@ -480,7 +482,8 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        RegistrationSubmissionDetailsViewModel regSubmissionDetails = await FetchFromSessionOrFacadeAsync(model.SubmissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        var registrationSubmissionOrganisationDetails = await FetchFromSessionOrFacadeAsync(model.SubmissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        RegistrationSubmissionDetailsViewModel regSubmissionDetails = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(registrationSubmissionOrganisationDetails);
         if (regSubmissionDetails is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");

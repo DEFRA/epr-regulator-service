@@ -5,6 +5,8 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
+using Frontend.Web.Mappers;
+
 [TestClass]
 public class RegistrationSubmissionDetailsViewModelTests
 {
@@ -33,8 +35,8 @@ public class RegistrationSubmissionDetailsViewModelTests
             Postcode = "TC1234",
         };
 
-        // Act
-        RegistrationSubmissionDetailsViewModel viewModel = details;
+            // Act
+        RegistrationSubmissionDetailsViewModel? viewModel = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(details);
 
         // Assert
         Assert.AreEqual(details.OrganisationId, viewModel.OrganisationId);
@@ -137,9 +139,8 @@ public class RegistrationSubmissionDetailsViewModelTests
             Country = "Test Country",
             Postcode = "TC1234"
         };
-
         // Act
-        RegistrationSubmissionDetailsViewModel viewModel = details;
+        RegistrationSubmissionDetailsViewModel? viewModel = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(details);
 
         // Assert
         Assert.AreEqual(string.Empty, viewModel.ReferenceNumber);

@@ -9,6 +9,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
+    using EPR.RegulatorService.Frontend.Web.Mappers;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
     using Microsoft.AspNetCore.Mvc;
@@ -68,7 +69,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 return false;
             }
 
-            viewModel = sessionModelWhichMustMatchSession;
+            viewModel = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(sessionModelWhichMustMatchSession);
             return true;
         }
 
@@ -242,11 +243,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
                 if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
                 {
-                    _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory[existingModel.SubmissionId] = existingModel;
+                    _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory[existingModel.SubmissionId] = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(existingModel);
                 }
                 else
                 {
-                    _currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(existingModel.SubmissionId, existingModel);
+                    _currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(existingModel.SubmissionId, RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(existingModel));
                 }
                 await SaveSession(_currentSession);
             }
