@@ -1582,7 +1582,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 _mockLogger.Object);
 
             // Act
-            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large);
 
             // Assert
             Assert.IsNull(result);
@@ -1806,7 +1806,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                });
 
             // Act
-            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large);
 
             // Assert
             Assert.IsNotNull(result);
@@ -1831,7 +1831,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Act
             // EnsureSuccessStatusCode will throw HttpRequestException
-            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large);
 
             // Assert handled by ExpectedException
         }
@@ -1856,7 +1856,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Act
             // ConvertCommonDataToFE should throw a JsonException due to malformed JSON
-            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large);
 
             // Assert handled by ExpectedException
         }
