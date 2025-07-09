@@ -74,14 +74,14 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return true;
         }
 
-        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
+        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, RegistrationSubmissionOrganisationType organisationType, Func<Guid, RegistrationSubmissionOrganisationType, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
         {
             if (_currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration))
             {
                 return selectedRegistration;
             }
 
-            var submission = await facadeMethod(submissionId);
+            var submission = await facadeMethod(submissionId, organisationType);
             if (submission is not null)
             {
                 _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);

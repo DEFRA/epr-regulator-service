@@ -438,7 +438,7 @@ public partial class MockedFacadeService(IOptions<PaginationConfig> options) : I
         return response;
     }
 
-    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
+    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId, RegistrationSubmissionOrganisationType organisationType)
     {
         RegistrationSubmissionOrganisationDetails objRet = null;
 

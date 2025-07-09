@@ -452,7 +452,7 @@ public class FacadeService : IFacadeService
         }
     }
 
-    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
+    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId, RegistrationSubmissionOrganisationType organisationType)
     {
         await PrepareAuthenticatedClient();
 
@@ -471,7 +471,8 @@ public class FacadeService : IFacadeService
         string path = string.Format(
             CultureInfo.InvariantCulture,
             _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath],
-            submissionId);
+            submissionId,
+            organisationType);
 
         string urlWithParams = QueryHelpers.AddQueryString(path, queryParams);
         var response = await _httpClient.GetAsync(urlWithParams);
