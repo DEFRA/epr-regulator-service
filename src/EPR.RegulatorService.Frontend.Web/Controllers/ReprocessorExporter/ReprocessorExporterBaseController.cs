@@ -1,6 +1,7 @@
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
+using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter;

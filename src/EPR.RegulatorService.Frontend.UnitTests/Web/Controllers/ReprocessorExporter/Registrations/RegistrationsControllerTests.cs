@@ -1142,8 +1142,8 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
 
         _mapperMock.Setup(m => m.Map<QueryMaterialSession>(wasteLicences)).Returns(new QueryMaterialSession
         {
-            RegistrationId = wasteLicences.RegistrationId,
             OrganisationName = wasteLicences.OrganisationName,
+            RegistrationId = Guid.NewGuid(),
             RegistrationMaterialId = wasteLicences.RegistrationMaterialId,
             RegulatorApplicationTaskStatusId = wasteLicences.RegulatorApplicationTaskStatusId!.Value,
             PagePath = string.Empty,

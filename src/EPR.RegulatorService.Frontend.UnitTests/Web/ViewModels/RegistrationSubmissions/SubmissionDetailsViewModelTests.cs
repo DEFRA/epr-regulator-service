@@ -236,7 +236,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             string result = viewModel.DisplayAppropriateSubmissionDate();
 
             // Assert
-            Assert.AreEqual("01 December 2023", result);
+            Assert.AreEqual("01 December 2023 14:30:00", result);
         }
 
         [TestMethod]

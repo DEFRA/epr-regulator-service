@@ -47,7 +47,8 @@ public class ReprocessorExporterService(
         MarkAccreditationAsDulyMade,
         UpdateAccreditationTaskStatus,
         GetSamplingPlanByAccreditationId,
-        DownloadAccreditationSamplingInspectionFile
+        DownloadAccreditationSamplingInspectionFile,       
+        GetAccreditationBusinessPlanById
     }
 
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -290,6 +291,21 @@ public class ReprocessorExporterService(
 
         return registration;
     }
+
+    public async Task<AccreditationBusinessPlanDto> GetAccreditionBusinessPlanByIdAsync(Guid id)
+    {
+        await PrepareAuthenticatedClient();
+
+        string pathTemplate = GetVersionedEndpoint(Endpoints.GetAccreditationBusinessPlanById);
+        string path = pathTemplate.Replace("{id}", id.ToString());
+
+        var response = await httpClient.GetAsync(path);
+
+        var accreditationBusinessPlan = await GetEntityFromResponse<AccreditationBusinessPlanDto>(response);
+
+        return accreditationBusinessPlan;
+    }
+
 
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
     {

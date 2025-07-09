@@ -30,7 +30,7 @@ public class AccreditationStatusController(
     ISessionManager<JourneySession> sessionManager,
     IConfiguration configuration,
     IOptions<ReprocessorExporterConfig> reprocessorExporterConfig)
-    : ReprocessorExporterBaseController(sessionManager, configuration)
+    : AccreditationBaseController(sessionManager, configuration)
 {
     [HttpGet]
     [Route(PagePath.FeesDue)]
@@ -88,16 +88,13 @@ public class AccreditationStatusController(
         }
 
         accreditationStatusSession.FullPaymentMade = viewModel.FullPaymentMade;
+
         await SaveSession(session);
 
-        if (accreditationStatusSession.FullPaymentMade == true)
-        {
-            return RedirectToAction("PaymentMethod", "AccreditationStatus");
-        }
+        return accreditationStatusSession.FullPaymentMade == true
+          ? RedirectToAction("PaymentMethod", "AccreditationStatus")
+          : RedirectToAction("QueryAccreditationTask", "AccreditationStatus", new { accreditationId = accreditationStatusSession.AccreditationId, taskName = RegulatorTaskType.DulyMade });
 
-        await CreateQueryAccreditationSession(session, accreditationStatusSession);
-
-        return RedirectToAction("QueryAccreditationTask", "Query");
     }
 
     [HttpGet]
@@ -224,6 +221,48 @@ public class AccreditationStatusController(
         return RedirectToAction("Index", "ManageAccreditations", new { id = session.ReprocessorExporterSession.RegistrationId, year = accreditationStatusSession.Year });
     }
 
+    [HttpGet]
+    [Route(PagePath.AccreditationBusinessPlan)]
+    public async Task<IActionResult> AccreditationBusinessPlan(Guid accreditationId, int year)
+    {
+        var session = await GetSession();
+        SetBackLinkInfos(session, PagePath.AccreditationBusinessPlan);
+        InitialiseAccreditationStatusSessionIfNotExists(session, accreditationId, year);
+
+        await SaveSessionAndJourney(session, PagePath.QueryAccreditationTask);
+
+        var accreditationBusinessPlan = await reprocessorExporterService.GetAccreditionBusinessPlanByIdAsync(accreditationId);
+        var accreditationBusinessPlanViewModel = mapper.Map<AccreditationBusinessPlanViewModel>(accreditationBusinessPlan);
+
+        return View(GetAccreditationStatusView(nameof(AccreditationBusinessPlan)), accreditationBusinessPlanViewModel);
+    }
+
+
+    [HttpPost]
+    [Route(PagePath.AccreditationBusinessPlan)]
+    public async Task<IActionResult> CompleteAccreditationBusinessPlan(Guid accreditationId)
+    {
+        var session = await GetSession();
+
+        var updateAccreditationTaskStatusRequest = new UpdateAccreditationTaskStatusRequest
+        {
+            TaskName = RegulatorTaskType.BusinessPlan.ToString(),
+            AccreditationId = accreditationId,
+            Status = RegulatorTaskStatus.Completed.ToString(),
+            Comments = string.Empty
+        };
+
+        await reprocessorExporterService.UpdateRegulatorAccreditationTaskStatusAsync(updateAccreditationTaskStatusRequest);
+
+        return RedirectToAction("Index", "ManageAccreditations", new
+        {
+            id = session.ReprocessorExporterSession.RegistrationId,
+            year = session.ReprocessorExporterSession.AccreditationStatusSession.Year
+        });
+
+    }
+
+
     private AccreditationMarkAsDulyMadeRequest CreateDulyMadeRequest(AccreditationStatusSession accreditationStatusSession)
     {
         var dulyMadeDate = CalculateDulyMadeDate(accreditationStatusSession.SubmittedDate, accreditationStatusSession.PaymentDate);
@@ -283,15 +322,4 @@ public class AccreditationStatusController(
     }
 
     protected static string GetAccreditationStatusView(string viewName) => $"~/Views/ReprocessorExporter/Accreditations/AccreditationStatus/{viewName}.cshtml";
-
-    private async Task CreateQueryAccreditationSession(JourneySession session, AccreditationStatusSession accreditationStatusSession)
-    {
-        var queryAccreditationSession = mapper.Map<QueryAccreditationSession>(accreditationStatusSession);
-        queryAccreditationSession.RegistrationId = session.ReprocessorExporterSession.RegistrationId;
-        queryAccreditationSession.TaskName = RegulatorTaskType.DulyMade;
-
-        session.ReprocessorExporterSession.QueryAccreditationSession = queryAccreditationSession;
-
-        await SaveSession(session);
-    }
 }

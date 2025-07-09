@@ -30,7 +30,7 @@ public class AccreditationsController(ISessionManager<JourneySession> sessionMan
                                     IConfiguration configuration,
                                     IMapper mapper,
                                     IValidator<IdRequest> idRequestValidator
-                                    ) : ReprocessorExporterBaseController(sessionManager, configuration)
+                                    ) : AccreditationBaseController(sessionManager, configuration)
 {
     [HttpGet]
     [Route(PagePath.SamplingInspection)]
@@ -98,7 +98,7 @@ public class AccreditationsController(ISessionManager<JourneySession> sessionMan
         var contentType = response.Content.Headers.ContentType?.MediaType ?? "application/octet-stream";
 
         return File(content, contentType, filename);
-    }
+    }    
 
     private static void InitialiseAccreditationStatusSessionIfNotExists(JourneySession session, Guid accreditationId, int year)
     {
