@@ -234,6 +234,9 @@ public class AccreditationStatusController(
         var accreditationBusinessPlan = await reprocessorExporterService.GetAccreditionBusinessPlanByIdAsync(accreditationId);
         var accreditationBusinessPlanViewModel = mapper.Map<AccreditationBusinessPlanViewModel>(accreditationBusinessPlan);
 
+        // The values for QueryAccreditationSession need to be returned as part of the API response (including Org Name and Site Address)
+        await CreateQueryAccreditationSession(session, RegulatorTaskType.BusinessPlan, accreditationId, session.ReprocessorExporterSession.RegistrationId, year);
+
         return View(GetAccreditationStatusView(nameof(AccreditationBusinessPlan)), accreditationBusinessPlanViewModel);
     }
 
@@ -322,4 +325,18 @@ public class AccreditationStatusController(
     }
 
     protected static string GetAccreditationStatusView(string viewName) => $"~/Views/ReprocessorExporter/Accreditations/AccreditationStatus/{viewName}.cshtml";
+
+    private async Task CreateQueryAccreditationSession(JourneySession session, RegulatorTaskType taskName, Guid accreditationId, Guid registrationId, int year)
+    {
+        var queryAccreditationSession = new QueryAccreditationSession
+        {
+            AccreditationId = accreditationId,
+            TaskName = taskName,
+            RegistrationId = registrationId,
+            Year = year
+        };
+
+        session.ReprocessorExporterSession.QueryAccreditationSession = queryAccreditationSession;
+        await SaveSession(session);
+    }
 }

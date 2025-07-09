@@ -76,7 +76,7 @@ public class QueryController (
     {
         if (session.ReprocessorExporterSession.QueryAccreditationSession == null)
         {
-            throw new SessionException("QueryRegistrationSession does not exist");
+            throw new SessionException("QueryAccreditationSession does not exist");
         }
 
         return session.ReprocessorExporterSession.QueryAccreditationSession;

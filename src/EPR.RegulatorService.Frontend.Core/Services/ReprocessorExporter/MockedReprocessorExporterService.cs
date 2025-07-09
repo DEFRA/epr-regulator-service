@@ -676,23 +676,32 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
     public async Task UpdateRegulatorAccreditationTaskStatusAsync(UpdateAccreditationTaskStatusRequest updateAccreditationTaskStatusRequest)
     {
-        _registrationAccreditations ??= await GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("839544fd-9b08-4823-9277-5615072a6803"), 2025);
+        _registrationAccreditations = await GetRegistrationByIdWithAccreditationsAsync(Guid.Parse("839544fd-9b08-4823-9277-5615072a6803"), 2025);
         var accreditation = _registrationAccreditations.Materials
             .SelectMany(m => m.Accreditations)
             .FirstOrDefault(a => a.Id == updateAccreditationTaskStatusRequest.AccreditationId);
 
-        var newTask = new AccreditationTask
+        var task = accreditation?.Tasks.FirstOrDefault(t => t.TaskName == updateAccreditationTaskStatusRequest.TaskName);
+
+        if (task == null)
         {
-            Id = Guid.NewGuid(),
-            TaskId = 4,
-            TaskName = "Check accreditation status",
-            Status = updateAccreditationTaskStatusRequest.Status,
-            Year = 2025
-        };
+            var newTask = new AccreditationTask
+            {
+                Id = Guid.NewGuid(),
+                TaskId = 4,
+                TaskName = updateAccreditationTaskStatusRequest.TaskName,
+                Status = updateAccreditationTaskStatusRequest.Status,
+                Year = 2025
+            };
 
-        accreditation?.Tasks.Add(newTask);
+            accreditation?.Tasks.Add(newTask);
+        }
+        else
+        {
+            task.Status = updateAccreditationTaskStatusRequest.Status;
+        }
     }
-
+    
     private static void ApplySingleYearAccreditationFilter(Registration registration, int year)
     {
         bool hasAtLeastOneAccreditation = false;
