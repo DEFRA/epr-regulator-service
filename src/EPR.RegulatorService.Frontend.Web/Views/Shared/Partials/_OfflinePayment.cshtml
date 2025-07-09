@@ -7,7 +7,7 @@
     var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), SharedLocalizer);
 }
 
-@using (Html.BeginRouteForm("SubmitPaymentInfo", new { submissionId = ViewBag.OrganisationId }, FormMethod.Post))
+@using (Html.BeginRouteForm("SubmitPaymentInfo", new { submissionId = ViewBag.OrganisationId, organisationType = ViewBag.OrganisationType }, FormMethod.Post))
 {
     @Html.HiddenFor(x => x.SubmissionHash)
     <div class="govuk-!-width-one-half govuk-form-group @(errorsViewModel.HasErrorKey(nameof(Model.OfflinePayment)) ? " govuk-form-group--error" : "")">

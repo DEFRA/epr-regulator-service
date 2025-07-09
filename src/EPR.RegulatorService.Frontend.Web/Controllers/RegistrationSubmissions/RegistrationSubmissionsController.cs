@@ -141,6 +141,7 @@ public partial class RegistrationSubmissionsController(
             GeneratePowerBILink(model);
             SetBackLink(PagePath.RegistrationSubmissionsRoute);
             ViewBag.SubmissionId = model.SubmissionId;
+            ViewBag.OrganisationType = model.OrganisationType;
 
             await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
@@ -190,7 +191,7 @@ public partial class RegistrationSubmissionsController(
             PagePath.RegistrationSubmissionsRoute,
             PagePath.RegistrationSubmissionsRoute);
 
-        return Redirect(Url.RouteUrl("ConfirmOfflinePaymentSubmission", new { submissionId }));
+        return Redirect(Url.RouteUrl("ConfirmOfflinePaymentSubmission", new { submissionId, organisationType }));
     }
 
     [HttpGet]
