@@ -159,6 +159,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             LegalDocumentAddress = "LegalDocumentAddress1", Location = "Location1", SiteAddress = "SiteAddress1", SiteGridReference = "SiteGridReference1"
         });
 
+        _mapperMock.Setup(m => m.Map<QueryRegistrationSession>(It.IsAny<SiteDetails>()))
+            .Returns(CreateQueryRegistrationSession());
+
         // Act
         var result = await _controller.UkSiteDetails(registrationId);
 
@@ -290,6 +293,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         };
 
         _mapperMock.Setup(m => m.Map<WasteCarrierDetailsViewModel>(wasteCarrierDetails)).Returns(expectedViewModel);
+
+        _mapperMock.Setup(m => m.Map<QueryRegistrationSession>(It.IsAny<WasteCarrierDetails>()))
+            .Returns(CreateQueryRegistrationSession());
 
         // Act
         var result = await _controller.WasteCarrierDetails(registrationId);
@@ -618,6 +624,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync(
                 new RegistrationMaterialSamplingPlan { OrganisationName = "Test Org", MaterialName = "Plastic" });
 
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationMaterialSamplingPlan>()))
+            .Returns(CreateQueryMaterialSession());
+
         // Act
         var result = await _controller.SamplingInspection(registrationMaterialId);
 
@@ -659,6 +668,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
                     }
                 }
             });
+
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationMaterialSamplingPlan>()))
+            .Returns(CreateQueryMaterialSession());
 
         // Act
         var result = await _controller.SamplingInspection(registrationMaterialId);
@@ -712,6 +724,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync(
                 new RegistrationMaterialSamplingPlan { OrganisationName = "Test Org", MaterialName = "Plastic" });
 
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationMaterialSamplingPlan>()))
+            .Returns(CreateQueryMaterialSession());
+
         // Act
         var result = await _controller.SamplingInspection(registrationMaterialId);
 
@@ -736,6 +751,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync(
                 new RegistrationMaterialSamplingPlan { OrganisationName = "Test Org", MaterialName = "Plastic" });
 
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationMaterialSamplingPlan>()))
+            .Returns(CreateQueryMaterialSession());
+
         // Act
         var result = await _controller.SamplingInspection(registrationMaterialId);
 
@@ -755,6 +773,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         
         _reprocessorExporterServiceMock.Setup(x => x.GetRegistrationMaterialByIdAsync(registrationMaterialId))
             .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = _registrationIdUrlValue, MaterialName = "Plastic" });
+
         _reprocessorExporterServiceMock.Setup(x => x.UpdateRegulatorRegistrationTaskStatusAsync(It.IsAny<UpdateRegistrationTaskStatusRequest>()))
             .Returns(Task.CompletedTask);
 
@@ -780,13 +799,20 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     public async Task OverseasReprocessorInterim_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
         // Arrange
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
+        _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationMaterialByIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = _registrationIdUrlValue, MaterialName = "Plastic" });
+
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<OverseasReprocessorInterimSites>()))
+            .Returns(CreateQueryMaterialSession());
+
         // Act
-        var result = await _controller.OverseasReprocessorInterim(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
+        var result = await _controller.OverseasReprocessorInterim(registrationMaterialId);
 
         // Assert
         using (new AssertionScope())
@@ -816,6 +842,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     public async Task OverseasReprocessorInterim_WhenRefererHeaderIsMissing_ShouldSetHomeBackLink()
     {
         // Arrange
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         var mockHeaders = new Mock<IHeaderDictionary>();
         mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
         mockHeaders.Setup(h => h.Referer).Returns((string?)null);
@@ -825,8 +852,14 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
 
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
+        _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationMaterialByIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = _registrationIdUrlValue, MaterialName = "Plastic" });
+
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<OverseasReprocessorInterimSites>()))
+            .Returns(CreateQueryMaterialSession());
+
         // Act
-        var result = await _controller.OverseasReprocessorInterim(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
+        var result = await _controller.OverseasReprocessorInterim(registrationMaterialId);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -838,13 +871,20 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     public async Task OverseasReprocessorInterim_WhenHeadersIsMissing_ShouldSetHomeBackLink()
     {
         // Arrange
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         var mockRequest = new Mock<HttpRequest>();
         mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
 
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
+        _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationMaterialByIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = _registrationIdUrlValue, MaterialName = "Plastic" });
+
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<OverseasReprocessorInterimSites>()))
+            .Returns(CreateQueryMaterialSession());
+        
         // Act
-        var result = await _controller.OverseasReprocessorInterim(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
+        var result = await _controller.OverseasReprocessorInterim(registrationMaterialId);
 
         // Assert
         result.Should().BeOfType<ViewResult>();
@@ -892,6 +932,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
+        _mapperMock.Setup(m => m.Map<QueryRegistrationSession>(It.IsAny<RegistrationWasteLicences>()))
+            .Returns(CreateQueryRegistrationSession());
+
         // Act
         var result = await _controller.WasteLicences(_registrationIdUrlValue);
 
@@ -932,6 +975,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
 
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
+        _mapperMock.Setup(m => m.Map<QueryRegistrationSession>(It.IsAny<RegistrationWasteLicences>()))
+            .Returns(CreateQueryRegistrationSession());
+
         // Act
         var result = await _controller.WasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
 
@@ -949,6 +995,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         mockRequest.Setup(r => r.Headers).Returns((IHeaderDictionary)null);
 
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
+
+        _mapperMock.Setup(m => m.Map<QueryRegistrationSession>(It.IsAny<RegistrationWasteLicences>()))
+            .Returns(CreateQueryRegistrationSession());
 
         // Act
         var result = await _controller.WasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
@@ -999,10 +1048,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
         _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationMaterialByIdAsync(registrationMaterialId))
-            .ReturnsAsync(new RegistrationMaterialDetail
-            {
-                Id = registrationMaterialId, RegistrationId = _registrationIdUrlValue, MaterialName = "Plastic"
-            });
+            .ReturnsAsync(new RegistrationMaterialDetail { Id = registrationMaterialId, RegistrationId = _registrationIdUrlValue, MaterialName = "Plastic" });
 
         _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationMaterialDetail>()))
             .Returns(CreateQueryMaterialSession());
@@ -1090,6 +1136,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         _reprocessorExporterServiceMock.Setup(m => m.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId))
             .ReturnsAsync(wasteLicences);
 
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationMaterialWasteLicence>()))
+            .Returns(CreateQueryMaterialSession());
+
         // Act
         var result = await _controller.MaterialWasteLicences(registrationMaterialId);
 
@@ -1134,6 +1183,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
 
         _mapperMock.Setup(m => m.Map<MaterialWasteLicencesViewModel>(wasteLicences))
             .Returns(expectedViewModel);
+
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationMaterialWasteLicence>()))
+            .Returns(CreateQueryMaterialSession());
 
         // Act
         var result = await _controller.MaterialWasteLicences(registrationMaterialId);
