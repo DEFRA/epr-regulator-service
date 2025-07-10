@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
+using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 
 using FluentValidation;
@@ -64,6 +65,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
+
+        _mapperMock.Setup(m => m.Map<QueryRegistrationSession>(It.IsAny<RegistrationBusinessAddress>()))
+            .Returns(CreateQueryRegistrationSession());
 
         // Act
         var result = await _controller.BusinessAddress(_registrationIdUrlValue);
@@ -413,6 +417,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
 
         _httpContextMock.Setup(c => c.Request).Returns(mockRequest.Object);
 
+        _mapperMock.Setup(m => m.Map<QueryRegistrationSession>(It.IsAny<RegistrationAuthorisedMaterials>()))
+            .Returns(CreateQueryRegistrationSession());
+
         // Act
         var result = await _controller.AuthorisedMaterials(registrationMaterialId);
 
@@ -479,6 +486,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
                 TotalInputs = 100
             });
 
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationMaterialReprocessingIO>()))
+            .Returns(CreateQueryMaterialSession());
+
         // Act
         var result = await _controller.InputsAndOutputs(registrationMaterialId);
 
@@ -523,7 +533,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         journeySession.RegulatorSession.Journey.Add(expectedPreviousPage);
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
-
+        
         var registrationMaterialReprocessing = new RegistrationMaterialReprocessingIO
         {
             OrganisationName = "Test Organisation",
@@ -541,6 +551,9 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
 
         _reprocessorExporterServiceMock.Setup(m => m.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId))
             .ReturnsAsync(registrationMaterialReprocessing);
+
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(registrationMaterialReprocessing))
+            .Returns(CreateQueryMaterialSession);
 
         // Act
         var result = await _controller.InputsAndOutputs(registrationMaterialId);
@@ -979,13 +992,23 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     public async Task MaterialDetails_WhenSessionContainsJourney_ShouldSetBackLinkToPreviousPage()
     {
         // Arrange
+        var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         JourneySession journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageRegistrationUrl);
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
 
+        _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationMaterialByIdAsync(registrationMaterialId))
+            .ReturnsAsync(new RegistrationMaterialDetail
+            {
+                Id = registrationMaterialId, RegistrationId = _registrationIdUrlValue, MaterialName = "Plastic"
+            });
+
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationMaterialDetail>()))
+            .Returns(CreateQueryMaterialSession());
+
         // Act
-        var result = await _controller.MaterialDetails(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
+        var result = await _controller.MaterialDetails(registrationMaterialId);
 
         // Assert
         using (new AssertionScope())
@@ -1330,4 +1353,25 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         };
         return wasteLicences;
     }
+
+    private static QueryMaterialSession CreateQueryMaterialSession() =>
+        new()
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegulatorApplicationTaskStatusId = Guid.NewGuid(),
+            RegistrationMaterialId = Guid.NewGuid(),
+            PagePath = PagePath.InputsAndOutputs,
+            TaskStatus = RegulatorTaskStatus.NotStarted,
+            TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs
+        };
+
+    private static QueryRegistrationSession CreateQueryRegistrationSession() =>
+        new()
+        {
+            RegistrationId = Guid.NewGuid(),
+            PagePath = PagePath.InputsAndOutputs,
+            RegulatorRegistrationTaskStatusId = Guid.NewGuid(),
+            TaskStatus = RegulatorTaskStatus.NotStarted,
+            TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs
+        };
 }
