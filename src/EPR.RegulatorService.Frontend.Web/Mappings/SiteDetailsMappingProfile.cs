@@ -15,6 +15,7 @@ public class SiteDetailsMappingProfile : Profile
             .ForMember(dest => dest.LegalDocumentAddress, opt => opt.MapFrom(src => (src.LegalCorrespondenceAddress)));
 
         CreateMap<SiteDetails, QueryRegistrationSession>()
-            .ForMember(dest => dest.PagePath, opt => opt.Ignore());
+            .ForMember(dest => dest.PagePath, opt => opt.Ignore())
+            .ForMember(dest => dest.TaskName, opt => opt.Ignore());
     }
 }

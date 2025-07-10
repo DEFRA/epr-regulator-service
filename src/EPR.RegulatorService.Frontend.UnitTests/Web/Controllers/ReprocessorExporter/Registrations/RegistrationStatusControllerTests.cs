@@ -217,6 +217,9 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
                 m.Map<PaymentCheckViewModel>(_journeySession.ReprocessorExporterSession.RegistrationStatusSession))
             .Returns(viewModel);
 
+        _mapperMock.Setup(m => m.Map<QueryMaterialSession>(It.IsAny<RegistrationStatusSession>()))
+            .Returns(CreateQueryMaterialSession());
+
         // Act
         var response = await _registrationStatusController.PaymentCheck(viewModel);
 
@@ -227,7 +230,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
 
             var redirectResult = (RedirectToActionResult)response;
             redirectResult.ActionName.Should().Be("QueryMaterialTask");
-            redirectResult.ControllerName.Should().Be("Registrations");
+            redirectResult.ControllerName.Should().Be("Query");
         }
     }
 

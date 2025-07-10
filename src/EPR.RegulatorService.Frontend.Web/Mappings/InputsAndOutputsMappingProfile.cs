@@ -9,6 +9,7 @@ public class InputsAndOutputsMappingProfile : Profile
     public InputsAndOutputsMappingProfile()
     {
         CreateMap<RegistrationMaterialReprocessingIO, QueryMaterialSession>()
-            .ForMember(dest => dest.PagePath, opt => opt.Ignore());
+            .ForMember(dest => dest.PagePath, opt => opt.Ignore())
+            .ForMember(dest => dest.TaskName, opt => opt.Ignore());
     }
 }

@@ -10,6 +10,7 @@ public class SamplingAndInspectionMappingProfile : Profile
     public SamplingAndInspectionMappingProfile()
     {
         CreateMap<RegistrationMaterialSamplingPlan, QueryMaterialSession>()
-            .ForMember(dest => dest.PagePath, opt =>opt.Ignore());
+            .ForMember(dest => dest.PagePath, opt =>opt.Ignore())
+            .ForMember(dest => dest.TaskName, opt => opt.Ignore());
     }
 }

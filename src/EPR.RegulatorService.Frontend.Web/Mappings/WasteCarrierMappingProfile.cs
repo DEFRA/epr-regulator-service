@@ -12,6 +12,7 @@ public class WasteCarrierMappingProfile : Profile
         CreateMap<WasteCarrierDetails, WasteCarrierDetailsViewModel>();
 
         CreateMap<WasteCarrierDetails, QueryRegistrationSession>()
-            .ForMember(dest => dest.PagePath, opt => opt.Ignore());
+            .ForMember(dest => dest.PagePath, opt => opt.Ignore())
+            .ForMember(dest => dest.TaskName, opt => opt.Ignore());
     }
 }

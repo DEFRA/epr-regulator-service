@@ -1,5 +1,6 @@
 using AutoMapper;
 
+using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
@@ -56,4 +57,25 @@ public abstract class RegistrationControllerTestBase
             .Setup(m => m.GetSessionAsync(It.IsAny<ISession>()))
             .ReturnsAsync(_journeySession);
     }
+
+    protected static QueryMaterialSession CreateQueryMaterialSession() =>
+        new()
+        {
+            RegistrationId = Guid.NewGuid(),
+            RegulatorApplicationTaskStatusId = Guid.NewGuid(),
+            RegistrationMaterialId = Guid.NewGuid(),
+            PagePath = PagePath.InputsAndOutputs,
+            TaskStatus = RegulatorTaskStatus.NotStarted,
+            TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs
+        };
+
+    protected static QueryRegistrationSession CreateQueryRegistrationSession() =>
+        new()
+        {
+            RegistrationId = Guid.NewGuid(),
+            PagePath = PagePath.InputsAndOutputs,
+            RegulatorRegistrationTaskStatusId = Guid.NewGuid(),
+            TaskStatus = RegulatorTaskStatus.NotStarted,
+            TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs
+        };
 }

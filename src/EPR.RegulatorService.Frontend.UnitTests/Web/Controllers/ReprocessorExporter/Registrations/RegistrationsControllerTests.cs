@@ -1405,25 +1405,4 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         };
         return wasteLicences;
     }
-
-    private static QueryMaterialSession CreateQueryMaterialSession() =>
-        new()
-        {
-            RegistrationId = Guid.NewGuid(),
-            RegulatorApplicationTaskStatusId = Guid.NewGuid(),
-            RegistrationMaterialId = Guid.NewGuid(),
-            PagePath = PagePath.InputsAndOutputs,
-            TaskStatus = RegulatorTaskStatus.NotStarted,
-            TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs
-        };
-
-    private static QueryRegistrationSession CreateQueryRegistrationSession() =>
-        new()
-        {
-            RegistrationId = Guid.NewGuid(),
-            PagePath = PagePath.InputsAndOutputs,
-            RegulatorRegistrationTaskStatusId = Guid.NewGuid(),
-            TaskStatus = RegulatorTaskStatus.NotStarted,
-            TaskName = RegulatorTaskType.ReprocessingInputsAndOutputs
-        };
 }

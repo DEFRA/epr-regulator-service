@@ -10,7 +10,8 @@ public class QueryNoteMappingProfile : Profile
     public QueryNoteMappingProfile()
     {
         CreateMap<RegistrationStatusSession, QueryMaterialSession>()
-            .ForMember(dest => dest.PagePath, opt => opt.Ignore());
+            .ForMember(dest => dest.PagePath, opt => opt.Ignore())
+            .ForMember(dest => dest.TaskName, opt => opt.Ignore());
         CreateMap<QueryMaterialSession, AddQueryNoteViewModel>()
             .ForMember(dest => dest.Note, opt => opt.Ignore())
             .ForMember(dest => dest.FormAction, opt => opt.Ignore());
@@ -19,6 +20,7 @@ public class QueryNoteMappingProfile : Profile
             .ForMember(dest => dest.FormAction, opt => opt.Ignore());
         CreateMap<QueryAccreditationSession, AddQueryNoteViewModel>()
             .ForMember(dest => dest.Note, opt => opt.Ignore())
-            .ForMember(dest => dest.FormAction, opt => opt.Ignore());
+            .ForMember(dest => dest.FormAction, opt => opt.Ignore())
+            .ForMember(dest => dest.TaskStatus, opt => opt.Ignore());
     }
 }
