@@ -205,7 +205,7 @@ public partial class RegistrationSubmissionsController(
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}");
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}/{existingModel.OrganisationType}");
 
         var model = new GrantRegistrationSubmissionViewModel
         {
@@ -299,7 +299,6 @@ public partial class RegistrationSubmissionsController(
 
         if (!ModelState.IsValid)
         {
-            //TODO
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId, existingModel.OrganisationType }), false);
             ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(QueryRegistrationSubmission), model);
@@ -319,7 +318,7 @@ public partial class RegistrationSubmissionsController(
                 : RedirectToRoute("ServiceNotAvailable",
                 new
                 {
-                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}/{existingModel.OrganisationType}"
                 });
         }
         catch (Exception ex)
@@ -333,7 +332,7 @@ public partial class RegistrationSubmissionsController(
                 "ServiceNotAvailable",
                 new
                 {
-                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}/{existingModel.OrganisationType}"
                 });
         }
     }
@@ -348,7 +347,7 @@ public partial class RegistrationSubmissionsController(
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
-        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{submissionId}/{existingModel.OrganisationType}");
 
         var model = new RejectRegistrationSubmissionViewModel
         {
@@ -374,7 +373,6 @@ public partial class RegistrationSubmissionsController(
 
         if (!ModelState.IsValid)
         {
-            //TODO
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId, existingModel.OrganisationType }), false);
             ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(RejectRegistrationSubmission), model);
@@ -413,7 +411,7 @@ public partial class RegistrationSubmissionsController(
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
 
-        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
+        SetBackLink($"{PagePath.RegistrationSubmissionDetails}/{submissionId}/{existingModel.OrganisationType}");
 
         var model = new CancelRegistrationSubmissionViewModel
         {
@@ -438,7 +436,6 @@ public partial class RegistrationSubmissionsController(
 
         if (!ModelState.IsValid)
         {
-            //TODO
             SetBackLink(Url.RouteUrl("SubmissionDetails", new { model.SubmissionId, existingModel.OrganisationType }), false);
             ViewBag.BackToAllSubmissionsUrl = Url.Action("RegistrationSubmissions");
             return View(nameof(CancelRegistrationSubmission), model);
@@ -696,14 +693,14 @@ public partial class RegistrationSubmissionsController(
         var fileDownloadModel = CreateFileDownloadRequest(_currentSession, submission);
         if (fileDownloadModel == null)
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId });
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId, organisationType });
         }
 
         var response = await _facadeService.GetFileDownload(fileDownloadModel);
 
         if (response.StatusCode == HttpStatusCode.Forbidden)
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning), new { submissionId });
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning), new { submissionId, organisationType });
         }
         else if (response.IsSuccessStatusCode)
         {
@@ -716,7 +713,7 @@ public partial class RegistrationSubmissionsController(
         }
         else
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId });
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId, organisationType });
         }
     }
 
