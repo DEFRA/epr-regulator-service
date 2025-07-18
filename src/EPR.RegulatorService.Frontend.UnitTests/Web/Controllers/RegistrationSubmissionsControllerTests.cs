@@ -766,7 +766,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Check that the back link contains a valid GUID at the end
             string[] segments = backLink.Split('/');
-            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+            Assert.IsTrue(Guid.TryParse(segments[3], out _), "Back link should contain a valid GUID.");
         }
 
         [TestMethod]
@@ -1440,7 +1440,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual("ServiceNotAvailable", result.RouteName);
 
             // Assert route values
-            string expectedUrl = $"{PagePath.RegistrationSubmissionDetails}/{submissionId}";
+            var organisationType = RegistrationSubmissionOrganisationType.large;
+            string expectedUrl = $"{PagePath.RegistrationSubmissionDetails}/{submissionId}/{organisationType}";
             Assert.IsTrue(result.RouteValues.TryGetValue("backLink", out object backLink));
             Assert.AreEqual(expectedUrl, backLink);
 
@@ -1485,9 +1486,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var result = await _controller.QueryRegistrationSubmission(model) as RedirectToRouteResult;
 
             // Assert - Redirects to ServiceNotAvailable when an exception occurs
+            var organisationType = RegistrationSubmissionOrganisationType.large;
             Assert.IsNotNull(result);
             Assert.AreEqual("ServiceNotAvailable", result.RouteName);
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}/{organisationType}", result.RouteValues["backLink"]);
 
             // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
@@ -1524,7 +1526,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual("ServiceNotAvailable", result.RouteName);
 
             // Verify the back link in the route values is set correctly
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
+            var organisationType = RegistrationSubmissionOrganisationType.large;
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}/{organisationType}", result.RouteValues["backLink"]);
 
             // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
@@ -1645,7 +1648,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Extract the GUID part using indexing and check for validity
             string[] segments = backLink.Split('/');
             Assert.IsNotNull(segments, "The back link should contain URL segments.");
-            Assert.IsTrue(Guid.TryParse(segments[^1], out _), "Back link should contain a valid GUID.");
+            Assert.IsTrue(Guid.TryParse(segments[3], out _), "Back link should contain a valid GUID.");
         }
 
         #endregion GET
