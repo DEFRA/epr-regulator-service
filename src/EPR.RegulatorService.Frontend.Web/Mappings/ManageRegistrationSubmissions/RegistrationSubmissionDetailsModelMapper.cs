@@ -54,6 +54,7 @@ namespace EPR.RegulatorService.Frontend.Web.Mappings.ManageRegistrationSubmissio
         private static SubmissionDetailsViewModel MapSubmissionDetails(SubmissionDetailsDto dto) => new()
         {
             TimeAndDateOfSubmission = FormatDate(dto.TimeAndDateOfSubmission),
+            IsSubmittedOnTime = dto.SubmittedOnTime,
             TimeAndDateOfResubmission = FormatNullableDate(dto.TimeAndDateOfResubmission),
             ResubmissionDecisionDate = FormatNullableDate(dto.ResubmissionDecisionDate),
             LatestDecisionDate = MapAppropriateDate(dto),
