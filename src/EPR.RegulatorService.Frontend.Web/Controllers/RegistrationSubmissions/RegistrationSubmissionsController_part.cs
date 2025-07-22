@@ -74,6 +74,32 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             return true;
         }
 
+        private async Task<RegistrationSubmissionDetailsViewModel?> GetSubmissionDetailsOrRedirect(Guid? submissionId)
+        {
+            if (submissionId == null)
+            {
+                return null;
+            }
+
+            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+            if (GetOrRejectProvidedSubmissionId(submissionId.Value, out var model))
+            {
+                return model;
+            }
+
+            if (!_currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes.TryGetValue(
+                    submissionId.Value, out var organisationType))
+            {
+                return null;
+            }
+
+            var registrationSubmissionOrganisationDetails = await FetchFromSessionOrFacadeAsync(
+                submissionId.Value, organisationType, _facadeService.GetRegistrationSubmissionDetails);
+
+            return RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(registrationSubmissionOrganisationDetails);
+        }
+
         private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, RegistrationSubmissionOrganisationType organisationType, Func<Guid, RegistrationSubmissionOrganisationType, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
         {
             if (_currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration))

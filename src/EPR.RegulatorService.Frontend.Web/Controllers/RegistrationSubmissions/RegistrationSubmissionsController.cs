@@ -23,6 +23,7 @@ using Microsoft.FeatureManagement.Mvc;
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
+
 using Mappers;
 
 using ViewModels.Shared;
@@ -152,19 +153,7 @@ public partial class RegistrationSubmissionsController(
     {
         try
         {
-            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-            if (!GetOrRejectProvidedSubmissionId(submissionId.Value, out var model))
-            {
-                if (!_currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes.TryGetValue(
-                        submissionId.Value, out RegistrationSubmissionOrganisationType organisationType))
-                {
-                    return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-                }
-
-                var registrationSubmissionOrganisationDetails = await FetchFromSessionOrFacadeAsync(submissionId.Value, organisationType, _facadeService.GetRegistrationSubmissionDetails);
-                model = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(registrationSubmissionOrganisationDetails);
-            }
+            var model = await GetSubmissionDetailsOrRedirect(submissionId);
 
             if (model is null)
             {
@@ -201,18 +190,7 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel,
         [FromRoute] Guid? submissionId)
     {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        if (!GetOrRejectProvidedSubmissionId(submissionId.Value, out var model))
-        {
-            if (!_currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes.TryGetValue(
-                    submissionId.Value, out RegistrationSubmissionOrganisationType organisationType))
-            {
-                return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-            }
-            var registrationSubmissionOrganisationDetails = await FetchFromSessionOrFacadeAsync(submissionId.Value, organisationType, _facadeService.GetRegistrationSubmissionDetails);
-            model = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(registrationSubmissionOrganisationDetails);
-
-        }
+        var model = await GetSubmissionDetailsOrRedirect(submissionId);
         if (model is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
@@ -497,18 +475,8 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.ConfirmOfflinePaymentSubmission + "/{submissionId:guid}", Name = "ConfirmOfflinePaymentSubmission")]
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(Guid? submissionId)
     {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        if (!GetOrRejectProvidedSubmissionId(submissionId.Value, out var model))
-        {
-            if (!_currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes.TryGetValue(
-                    submissionId.Value, out RegistrationSubmissionOrganisationType organisationType))
-            {
-                return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-            }
-            var registrationSubmissionOrganisationDetails = await FetchFromSessionOrFacadeAsync(submissionId.Value, organisationType, _facadeService.GetRegistrationSubmissionDetails);
-            model = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(registrationSubmissionOrganisationDetails);
+        var model = await GetSubmissionDetailsOrRedirect(submissionId);
 
-        }
         if (model is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
@@ -535,15 +503,9 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.ConfirmOfflinePaymentSubmission + "/{submissionId:guid}", Name = "ConfirmOfflinePaymentSubmission")]
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
     {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        RegistrationSubmissionDetailsViewModel? regSubmissionDetails = null;
-        if (!_currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes.TryGetValue(
-                model.SubmissionId.Value, out RegistrationSubmissionOrganisationType organisationType))
-        {
-            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-        }
-        var registrationSubmissionOrganisationDetails = await FetchFromSessionOrFacadeAsync(model.SubmissionId.Value, organisationType, _facadeService.GetRegistrationSubmissionDetails);
-        regSubmissionDetails = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(registrationSubmissionOrganisationDetails);
+
+        var regSubmissionDetails = await GetSubmissionDetailsOrRedirect(model.SubmissionId.Value);
+
 
         if (regSubmissionDetails is null)
         {
