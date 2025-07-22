@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 using System.Security.Claims;
 using System.Text.Json;
@@ -29,6 +30,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
         private Mock<IConfiguration> _configurationMock = null!;
         private Mock<ISessionManager<JourneySession>> _sessionManagerMock = null!;
         private UserDataCheckerMiddleware _systemUnderTest;
+        protected Mock<ILogger<UserDataCheckerMiddleware>> _loggerMock = null!;
 
         [TestInitialize]
         public void Setup()
@@ -63,6 +65,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             _facadeServiceMock = new Mock<IFacadeService>();
 
             _configurationMock = new Mock<IConfiguration>();
+            _loggerMock = new Mock<ILogger<UserDataCheckerMiddleware>>();
 
             var configurationSectionMock = new Mock<IConfigurationSection>();
             configurationSectionMock.Setup(section => section.Value).Returns("/admin/health");
@@ -76,7 +79,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             _systemUnderTest = new UserDataCheckerMiddleware(
                 _facadeServiceMock.Object,
                 _sessionManagerMock.Object,
-                _configurationMock.Object
+                _configurationMock.Object,
+                _loggerMock.Object
             );
         }
 

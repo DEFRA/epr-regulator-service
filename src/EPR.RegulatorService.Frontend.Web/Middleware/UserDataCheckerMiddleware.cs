@@ -21,14 +21,17 @@ namespace EPR.RegulatorService.Frontend.Web.Middleware
         private readonly IFacadeService _facadeService;
         private readonly IConfiguration _configuration;
         private readonly ISessionManager<JourneySession> _sessionManager;
+        private readonly ILogger<UserDataCheckerMiddleware> _logger;
 
         public UserDataCheckerMiddleware(IFacadeService facadeService,
             ISessionManager<JourneySession> sessionManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogger<UserDataCheckerMiddleware> logger)
         {
             _facadeService = facadeService;
             _configuration = configuration;
             _sessionManager = sessionManager;
+            _logger = logger;
         }
 
         private static bool IsRegistrationRequest(HttpRequest request) =>
@@ -36,6 +39,8 @@ namespace EPR.RegulatorService.Frontend.Web.Middleware
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
+            _logger.LogInformation("Request path is {Path}", context.Request.Path);
+
             if (context.Request.Path != _configuration.GetValue<string>(ConfigKeys.HealthCheckPath) && context.User.Identity is { IsAuthenticated: true } && context.User.TryGetUserData() is null)
             {
                 if (IsRegistrationRequest(context.Request))
