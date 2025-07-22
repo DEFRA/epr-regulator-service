@@ -22,36 +22,6 @@ public class SubmissionDetailsViewModel
         public string FileName { get; set; }
         public Guid? FileId { get; set; }
         public string? BlobName { get; set; }
-
-        public static implicit operator FileDetails(RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails otherFile) => otherFile is null ? null : new FileDetails
-        {
-            Type = otherFile.Type,
-            DownloadType = otherFile.Type switch
-            {
-                FileType.company => FileDownloadTypes.OrganisationDetails,
-                FileType.partnership => FileDownloadTypes.PartnershipDetails,
-                FileType.brands => FileDownloadTypes.BrandDetails,
-                _ => ""
-            },
-            Label = otherFile.Type switch
-            {
-                FileType.company => "SubmissionDetails.OrganisationDetails",
-                FileType.partnership => "SubmissionDetails.PartnerDetails",
-                FileType.brands => "SubmissionDetails.BrandDetails",
-                _ => ""
-            },
-            FileName = otherFile.FileName,
-            FileId = otherFile.FileId,
-            BlobName = otherFile.BlobName
-        };
-
-        public static implicit operator RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails(FileDetails otherFile) => otherFile is null ? null : new()
-        {
-            Type = otherFile.Type,
-            FileName = otherFile.FileName,
-            FileId = otherFile.FileId,
-            BlobName = otherFile.BlobName
-        };
     }
 
     public RegistrationSubmissionStatus Status { get; set; }
@@ -100,74 +70,6 @@ public class SubmissionDetailsViewModel
         } ?? TimeAndDateOfSubmission;
 
         return targetDate.ToString(Status switch { RegistrationSubmissionStatus.Cancelled when StatusPendingDate.HasValue => "dd MMMM yyyy", _ => format }, CultureInfo.InvariantCulture);
-    }
-
-    public static implicit operator RegistrationSubmissionOrganisationSubmissionSummaryDetails(SubmissionDetailsViewModel details)
-    {
-        if (details is null)
-        {
-            return null;
-        }
-
-        var result = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
-        {
-            AccountRoleId = details.AccountRoleId,
-            Telephone = details.Telephone,
-            Email = details.Email,
-            DeclaredBy = details.DeclaredBy,
-            SubmittedBy = details.SubmittedBy,
-            DecisionDate = details.LatestDecisionDate,
-            ResubmissionDecisionDate = details.ResubmissionDecisionDate,
-            Status = details.Status,
-            ResubmissionStatus = details.ResubmissionStatus,
-            SubmittedOnTime = details.SubmittedOnTime,
-            StatusPendingDate = details.StatusPendingDate,
-            TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
-            TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,
-            RegistrationDate = details.RegistrationDate,
-            IsResubmission = details.IsResubmission,
-            ResubmissionFileId = details.ResubmissionFileId
-        };
-
-        if (details.Files != null)
-        {
-            result.Files = details.Files
-                .Select(file => (RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails)file)
-                .ToList();
-        }
-
-        return result;
-    }
-
-
-    public static implicit operator SubmissionDetailsViewModel(RegistrationSubmissionOrganisationSubmissionSummaryDetails details)
-    {
-        if (details is null)
-        {
-            return null;
-        }
-
-        return new()
-        {
-            AccountRoleId = details.AccountRoleId,
-            AccountRole = GetAccountRole(details.AccountRoleId),
-            Telephone = details.Telephone,
-            Email = details.Email,
-            DeclaredBy = details.DeclaredBy,
-            SubmittedBy = details.SubmittedBy,
-            LatestDecisionDate = details.DecisionDate,
-            ResubmissionDecisionDate = details.ResubmissionDecisionDate,
-            Status = details.Status,
-            ResubmissionStatus = details.ResubmissionStatus,
-            StatusPendingDate = details.StatusPendingDate,
-            SubmittedOnTime = details.SubmittedOnTime,
-            TimeAndDateOfSubmission = details.TimeAndDateOfSubmission,
-            TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,
-            RegistrationDate = details.RegistrationDate,
-            Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList(),
-            IsResubmission = details.IsResubmission,
-            ResubmissionFileId = details.ResubmissionFileId
-        };
     }
 
     private static ServiceRole? GetAccountRole(int? serviceRoleId)

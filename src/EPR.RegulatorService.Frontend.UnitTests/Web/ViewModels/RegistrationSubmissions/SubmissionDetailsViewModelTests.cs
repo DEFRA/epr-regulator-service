@@ -5,6 +5,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
+    using Frontend.Web.Mappers;
+
     [TestClass]
     public class SubmissionDetailsViewModelTests
     {
@@ -83,7 +85,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
         public void FileDetails_ImplicitOperator_ToViewModel_ShouldMapCorrectlyCompany()
         {
             // Act
-            SubmissionDetailsViewModel.FileDetails result = _testDomainFileDetailsCompany;
+            SubmissionDetailsViewModel.FileDetails result = SubmissionDetailsMapper.FromRegistrationFileDetails(_testDomainFileDetailsCompany);
 
             // Assert
             Assert.IsNotNull(result);
@@ -99,7 +101,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
         public void FileDetails_ImplicitOperator_ToViewModel_ShouldMapCorrectlyPartnership()
         {
             // Act
-            SubmissionDetailsViewModel.FileDetails result = _testDomainFileDetailsPartnership;
+            SubmissionDetailsViewModel.FileDetails result = SubmissionDetailsMapper.FromRegistrationFileDetails(_testDomainFileDetailsPartnership);
 
             // Assert
             Assert.IsNotNull(result);
@@ -115,7 +117,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
         public void FileDetails_ImplicitOperator_ToViewModel_ShouldMapCorrectlyBrands()
         {
             // Act
-            SubmissionDetailsViewModel.FileDetails result = _testDomainFileDetailsBrands;
+            SubmissionDetailsViewModel.FileDetails result = SubmissionDetailsMapper.FromRegistrationFileDetails(_testDomainFileDetailsBrands);
 
             // Assert
             Assert.IsNotNull(result);
@@ -131,7 +133,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
         public void FileDetails_ImplicitOperator_FromViewModel_ShouldMapCorrectly()
         {
             // Act
-            RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails result = _testFileDetailsCompany;
+            RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails result = SubmissionDetailsMapper.ToRegistrationFileDetails(_testFileDetailsCompany);
 
             // Assert
             Assert.IsNotNull(result);
@@ -276,7 +278,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             };
 
             // Act
-            RegistrationSubmissionOrganisationSubmissionSummaryDetails result = viewModel;
+            RegistrationSubmissionOrganisationSubmissionSummaryDetails result = SubmissionDetailsMapper.ToRegistrationSubmissionDetails(viewModel);
 
             // Assert
             Assert.IsNotNull(result);
@@ -300,7 +302,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
             var viewModel = (SubmissionDetailsViewModel)null;
 
             // Act
-            RegistrationSubmissionOrganisationSubmissionSummaryDetails result = viewModel;
+            RegistrationSubmissionOrganisationSubmissionSummaryDetails result = SubmissionDetailsMapper.ToRegistrationSubmissionDetails(viewModel);
 
             // Assert
             Assert.IsNull(result);

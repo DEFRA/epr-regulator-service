@@ -41,7 +41,7 @@ namespace EPR.RegulatorService.Frontend.Web.Mappers
                     Country = details.Country,
                     PostCode = details.Postcode
                 },
-                SubmissionDetails = details.SubmissionDetails,
+                SubmissionDetails = SubmissionDetailsMapper.FromRegistrationSubmissionDetails(details.SubmissionDetails),
                 RejectReason = details.RejectReason,
                 CancellationReason = details.CancellationReason,
                 ProducerDetails = details.ProducerDetails,
@@ -80,7 +80,7 @@ namespace EPR.RegulatorService.Frontend.Web.Mappers
                 Town = viewModel.BusinessAddress?.Town,
                 County = viewModel.BusinessAddress?.County,
                 Postcode = viewModel.BusinessAddress?.PostCode,
-                SubmissionDetails = viewModel.SubmissionDetails,
+                SubmissionDetails = SubmissionDetailsMapper.ToRegistrationSubmissionDetails(viewModel.SubmissionDetails),
                 NationCode = viewModel.NationCode,
                 NationId = viewModel.NationId,
                 RejectReason = viewModel.RejectReason,
