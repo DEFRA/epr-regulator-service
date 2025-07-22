@@ -2060,6 +2060,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var registrationSubmissionDetailsViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             var expectedViewModel = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(registrationSubmissionDetailsViewModel);
 
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations =
+                new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> { { submissionId, expectedViewModel } };
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(expectedViewModel);
 
             // Act
