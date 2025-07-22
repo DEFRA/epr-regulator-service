@@ -116,6 +116,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             if (selectedSubmission is not null)
             {
                 _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.Add(selectedSubmission.SubmissionId, selectedSubmission);
+                _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+                {
+                    {
+                        selectedSubmission.SubmissionId,
+                        RegistrationSubmissionOrganisationType.small
+                    }
+                };
             }
 
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))

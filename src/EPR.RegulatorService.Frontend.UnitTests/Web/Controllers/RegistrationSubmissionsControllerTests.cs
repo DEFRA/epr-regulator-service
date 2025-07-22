@@ -2205,6 +2205,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
             var exception = new Exception("General exception");
 
+            // Setup the session object for the SelectedOrganisationTypes
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+            {
+                {
+                    submissionId,
+                    RegistrationSubmissionOrganisationType.small
+                }
+            };
+
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).Throws(exception);
 
             // Act
@@ -2223,6 +2232,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var httpRequestException = new HttpRequestException("Not Found", null, HttpStatusCode.NotFound);
+
+            // Setup the session object for the SelectedOrganisationTypes
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+            {
+                {
+                    submissionId,
+                    RegistrationSubmissionOrganisationType.small
+                }
+            };
 
             // Setup the _facadeServiceMock to throw the HttpRequestException
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ThrowsAsync(httpRequestException);
@@ -2254,6 +2272,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
             var httpRequestException = new HttpRequestException("Error", null, HttpStatusCode.InternalServerError); // Non-NotFound status code
+
+            // Setup the session object for the SelectedOrganisationTypes
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+            {
+                {
+                    submissionId,
+                    RegistrationSubmissionOrganisationType.small
+                }
+            };
 
             // Setup the _facadeServiceMock to throw the HttpRequestException
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ThrowsAsync(httpRequestException);
@@ -2616,7 +2643,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionDetails = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(registrationSubmissionDetailsViewModel);
             _controller.TempData["OfflinePaymentAmount"] = "200.45";
 
-            SetupJourneySession(null, submissionDetails);
             _paymentFacadeServiceMock.Setup(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
 
             var model = new ConfirmOfflinePaymentSubmissionViewModel
