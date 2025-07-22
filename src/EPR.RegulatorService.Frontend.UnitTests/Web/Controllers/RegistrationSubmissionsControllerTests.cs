@@ -62,6 +62,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(_journeySession);
 
+            var sampleOrganisationDetails = SampleOrganisationDetails();
+
+            MockPageOrganisationRegistrations(sampleOrganisationDetails, out var pagedOrganisationRegistrations, 3, 61, 20);
+
             // Act
             var result = await _controller.RegistrationSubmissions(1);
 
@@ -1961,6 +1965,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var registrationSubmissionDetailsViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             var expectedViewModel = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(registrationSubmissionDetailsViewModel);
 
+            // Setup the session object for the SelectedOrganisationTypes
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+            {
+                {
+                    submissionId,
+                    RegistrationSubmissionOrganisationType.small
+                }
+            };
+
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(expectedViewModel);
 
             // Act
@@ -1969,6 +1982,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ViewResult));
+
+            _facadeServiceMock.Verify(m => m.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>()), Times.AtMostOnce);
         }
 
         [TestMethod]
