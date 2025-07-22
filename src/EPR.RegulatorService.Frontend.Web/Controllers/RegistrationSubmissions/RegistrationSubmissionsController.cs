@@ -80,25 +80,30 @@ public partial class RegistrationSubmissionsController(
 
             var pagedOrganisationRegistrations = await _facadeService.GetRegistrationSubmissions(viewModel.ListViewModel.RegistrationsFilterModel);
 
-            viewModel.ListViewModel.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails);
-
-            viewModel.ListViewModel.PaginationNavigationModel = new PaginationNavigationModel
+            if (pagedOrganisationRegistrations?.items?.Count > 0)
             {
-                CurrentPage = pagedOrganisationRegistrations.currentPage,
-                PageCount = pagedOrganisationRegistrations.TotalPages,
-                ControllerName = "RegistrationSubmissions",
-                ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
-            };
 
-            if ((viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
-                 viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > 1) || viewModel.ListViewModel.PaginationNavigationModel.CurrentPage < 1)
-            {
-                viewModel.ListViewModel.PaginationNavigationModel.CurrentPage = 1;
+                viewModel.ListViewModel.PagedRegistrationSubmissions =
+                    pagedOrganisationRegistrations.items.Select(RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails);
+
+                viewModel.ListViewModel.PaginationNavigationModel = new PaginationNavigationModel
+                {
+                    CurrentPage = pagedOrganisationRegistrations.currentPage,
+                    PageCount = pagedOrganisationRegistrations.TotalPages,
+                    ControllerName = "RegistrationSubmissions",
+                    ActionName = nameof(RegistrationSubmissions)
+                };
+
+                if ((viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
+                     viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > 1) || viewModel.ListViewModel.PaginationNavigationModel.CurrentPage < 1)
+                {
+                    viewModel.ListViewModel.PaginationNavigationModel.CurrentPage = 1;
+                }
+
+                // cache selected organisation types for the session
+                _currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = viewModel.ListViewModel.PagedRegistrationSubmissions
+                    .ToDictionary(x => x.SubmissionId, x => x.OrganisationType);
             }
-
-            // cache selected organisation types for the session
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = viewModel.ListViewModel.PagedRegistrationSubmissions
-                .ToDictionary(x => x.SubmissionId, x => x.OrganisationType);
 
             await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
