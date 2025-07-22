@@ -6,7 +6,6 @@ using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -24,9 +23,6 @@ using Microsoft.FeatureManagement.Mvc;
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
-
-using System.Reflection;
-
 using Mappers;
 
 using ViewModels.Shared;

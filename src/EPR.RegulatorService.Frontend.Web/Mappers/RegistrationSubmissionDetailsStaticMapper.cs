@@ -8,10 +8,9 @@ namespace EPR.RegulatorService.Frontend.Web.Mappers
     {
         public static RegistrationSubmissionDetailsViewModel? MapFromOrganisationDetails(RegistrationSubmissionOrganisationDetails? details)
         {
-            if (details is null)
-                return null;
-
-            return new RegistrationSubmissionDetailsViewModel
+            return details is null
+                ? null
+                : new RegistrationSubmissionDetailsViewModel
             {
                 SubmissionId = details.SubmissionId,
                 OrganisationId = details.OrganisationId,
@@ -53,10 +52,9 @@ namespace EPR.RegulatorService.Frontend.Web.Mappers
 
         public static RegistrationSubmissionOrganisationDetails? MapToOrganisationDetails(RegistrationSubmissionDetailsViewModel? viewModel)
         {
-            if (viewModel is null)
-                return null;
-
-            return new RegistrationSubmissionOrganisationDetails
+            return viewModel is null
+                ? null
+                : new RegistrationSubmissionOrganisationDetails
             {
                 SubmissionId = viewModel.SubmissionId,
                 OrganisationId = viewModel.OrganisationId,

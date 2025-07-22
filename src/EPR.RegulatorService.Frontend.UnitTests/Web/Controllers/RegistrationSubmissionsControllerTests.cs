@@ -4152,7 +4152,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region FileDownloadInProgress
 
         [TestMethod]
-        public async Task FileDownloadInProgress_Should_LogAndRedirectToPageNotFound_SubmissionIsNull()
+        public async Task FileDownloadInProgress_Should_LogAndRedirectToPageNotFound_When_SubmissionIsNull()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -4161,13 +4161,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedRedirectAction = nameof(RegistrationSubmissionsController.PageNotFound);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
             {
-                SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
-                    { submissionId, detailsModel }
+                SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>()
+                {
+                    {submissionId, RegistrationSubmissionOrganisationType.large}
                 }
-                //SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>()
-                //{
-                //    {submissionId, RegistrationSubmissionOrganisationType.large}
-                //}
             };
 
             // Act
