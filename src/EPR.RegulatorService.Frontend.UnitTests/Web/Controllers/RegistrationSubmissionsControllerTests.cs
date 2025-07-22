@@ -1996,6 +1996,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
 
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes =
+                new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+                {
+                    { submissionId, RegistrationSubmissionOrganisationType.compliance }
+                };
+
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId);
 
@@ -2005,6 +2011,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirect = result as RedirectToActionResult;
             redirect.ActionName.Should().Be(PagePath.PageNotFound);
         }
+      
 
         [TestMethod]
         public async Task RegistrationSubmissionDetails_ReturnsCorrectViewModel_ForValidSubmissionId()
@@ -2652,6 +2659,29 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
             Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
         }
+
+        //[TestMethod]
+        //public async Task ConfirmOfflinePaymentSubmission_ReturnsPageNotFound_When_Receiving_InValid_SubmissionId()
+        //{
+        //    // Arrange
+        //    var submissionId = Guid.NewGuid();
+
+        //    _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes =
+        //        new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+        //        {
+        //            { submissionId, RegistrationSubmissionOrganisationType.compliance }
+        //        };
+
+        //    // Act
+        //    var result = await _controller.RegistrationSubmissionDetails(submissionId);
+
+        //    // Assert
+        //    Assert.IsNotNull(result);
+        //    Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+        //    var redirect = result as RedirectToActionResult;
+        //    redirect.ActionName.Should().Be(PagePath.PageNotFound);
+        //}
+
 
         [TestMethod]
         public async Task ConfirmOfflinePaymentSubmission_Logs_And_RedirectsTo_ServiceNotAvailable_When_PaymentFacade_Fails()
