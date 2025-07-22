@@ -87,6 +87,44 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel_And_Then_SetCurrentpage_One()
+            {
+            // Arrange
+            var expectedViewModel = new RegistrationSubmissionsViewModel
+            {
+                AgencyName = "Environment Agency (EA)"
+            };
+
+            // Ensure the Organisation has a valid NationId
+            _journeySession.UserData.Organisations.Add(new Organisation
+            {
+                NationId = 2
+            });
+
+            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+                .ReturnsAsync(_journeySession);
+
+            var sampleOrganisationDetails = SampleOrganisationDetails();
+
+            MockPageOrganisationRegistrations(sampleOrganisationDetails, out var pagedOrganisationRegistrations, 3, 2, 20);
+
+            // Act
+            var result = await _controller.RegistrationSubmissions(1);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<ViewResult>();
+
+            var viewResult = result as ViewResult;
+            viewResult.Should().NotBeNull();
+            Assert.IsInstanceOfType(expectedViewModel, viewResult!.Model.GetType());
+
+            var resultModel = viewResult!.Model as RegistrationSubmissionsViewModel;
+            resultModel.Should().NotBeNull();
+            resultModel!.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(1);
+        }
+
+        [TestMethod]
         [DataRow(0, "")]
         [DataRow(1, "Environment Agency (EA)")]
         [DataRow(2, "Northern Ireland Environment Agency (NIEA)")]
@@ -2753,6 +2791,37 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
             Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
         }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_When_SubmissionDetailsIsNull()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var model = new ConfirmOfflinePaymentSubmissionViewModel { SubmissionId = submissionId };
+            var submissionDetails = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(null);
+
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes =
+            new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+            {
+               { submissionId, RegistrationSubmissionOrganisationType.compliance }
+            };
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(submissionDetails);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
 
 
         [TestMethod]
