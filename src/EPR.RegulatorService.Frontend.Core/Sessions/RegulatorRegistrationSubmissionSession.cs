@@ -1,3 +1,4 @@
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 namespace EPR.RegulatorService.Frontend.Core.Sessions
@@ -9,7 +10,7 @@ namespace EPR.RegulatorService.Frontend.Core.Sessions
         public List<string> Journey { get; set; } = [];
 
         public IDictionary<Guid, RegistrationSubmissionOrganisationDetails> SelectedRegistrations { get; set; } = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>();
-
+        public IDictionary<Guid, RegistrationSubmissionOrganisationType> SelectedOrganisationTypes { get; set; } = new Dictionary<Guid, RegistrationSubmissionOrganisationType>();
         public int? CurrentPageNumber { get; set; }
 
         public RegistrationSubmissionsFilterModel LatestFilterChoices { get; set; }

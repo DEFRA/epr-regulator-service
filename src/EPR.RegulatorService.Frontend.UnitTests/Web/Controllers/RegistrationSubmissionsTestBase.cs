@@ -109,7 +109,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 {
                     LatestFilterChoices = filtersModel,
                     CurrentPageNumber = currentPageNumber,
-                    SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>()
+                    SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>(),
+                    SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>()
                 }
             };
             if (selectedSubmission is not null)

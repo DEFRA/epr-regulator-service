@@ -8,6 +8,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Core.Services;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
@@ -15,6 +16,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
+    using Frontend.Core.Models.Pagination;
     using Frontend.Web.Mappers;
 
     using Microsoft.AspNetCore.Http;
@@ -140,6 +142,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(_journeySession);
 
+            var sampleOrganisationDetails = SampleOrganisationDetails();
+
+            MockPageOrganisationRegistrations(sampleOrganisationDetails, out var pagedOrganisationRegistrations, 3, 61, 20);
+
             // Act
             var result = await _controller.RegistrationSubmissions(1);
 
@@ -170,6 +176,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(_journeySession);
 
+            var sampleOrganisationDetails = SampleOrganisationDetails();
+
+            MockPageOrganisationRegistrations(sampleOrganisationDetails, out var pagedOrganisationRegistrations, 3, 61, 20);
+
             // Act
             var result = await _controller.RegistrationSubmissions(null);
 
@@ -182,11 +192,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var resultModel = viewResult!.Model as RegistrationSubmissionsViewModel;
             resultModel.Should().NotBeNull();
-            resultModel!.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(2);
+            resultModel!.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(3);
         }
 
         [TestMethod]
-        public async Task RegistrationsSubmissions_ReturnsModel_WithPageNumber_1_When_Supplied_Null()
+        public async Task RegistrationsSubmissions_ReturnsModel_WithPageNumber_1_When_SuppliedWith_NullPageNumber()
         {
             // Arrange
             _journeySession.UserData.Organisations.Add(new Organisation
@@ -197,6 +207,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(_journeySession);
 
+            var sampleOrganisationDetails = SampleOrganisationDetails();
+
+            MockPageOrganisationRegistrations(sampleOrganisationDetails, out var pagedOrganisationRegistrations, 1, 1, 20);
             // Act
             var result = await _controller.RegistrationSubmissions(null);
 
@@ -225,6 +238,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(_journeySession);
 
+
+            var sampleOrganisationDetails = SampleOrganisationDetails();
+
+            MockPageOrganisationRegistrations(sampleOrganisationDetails, out var pagedOrganisationRegistrations, 3, 61, 20);
+
             // Act
             var result = await _controller.RegistrationSubmissions(3);
 
@@ -239,6 +257,42 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             resultModel.Should().NotBeNull();
             resultModel!.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(3);
             _journeySession.RegulatorRegistrationSubmissionSession.CurrentPageNumber.Should().Be(3);
+        }
+
+        private static RegistrationSubmissionOrganisationDetails SampleOrganisationDetails() =>
+            new()
+            {
+                SubmissionId = Guid.NewGuid(),
+                OrganisationId = Guid.NewGuid(),
+                OrganisationReference = "ORG123",
+                OrganisationName = "Sample Organisation",
+                OrganisationType = RegistrationSubmissionOrganisationType.large,
+                SubmissionStatus = RegistrationSubmissionStatus.Granted,
+                ResubmissionStatus = null,
+                SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails
+                {
+                    Status = RegistrationSubmissionStatus.Granted,
+                    ResubmissionStatus = null
+                },
+                PaymentDetails = null,
+                SubmissionPeriod = "2024-Q1",
+            };
+
+        private void MockPageOrganisationRegistrations(RegistrationSubmissionOrganisationDetails sampleOrganisationDetails,
+            out PaginatedList<RegistrationSubmissionOrganisationDetails> pagedOrganisationRegistrations, int currentPage, int totalItems, int pageSize)
+        {
+            pagedOrganisationRegistrations = new PaginatedList<RegistrationSubmissionOrganisationDetails>
+            {
+                items = new List<RegistrationSubmissionOrganisationDetails> { sampleOrganisationDetails },
+                currentPage = currentPage,
+                totalItems = totalItems,
+                pageSize = pageSize
+                
+            };
+
+            _facadeServiceMock
+                .Setup(s => s.GetRegistrationSubmissions(It.IsAny<RegistrationSubmissionsFilterModel>()))
+                .ReturnsAsync(pagedOrganisationRegistrations);
         }
 
         #endregion Initialisation and Basic Session state
@@ -895,7 +949,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             Assert.IsNotNull(result);
             result.RouteName.Should().Be("ServiceNotAvailable");
-            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{submissionId}/{organisationType}");
+            result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
             _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
         }
 
@@ -930,7 +984,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual("ServiceNotAvailable", result.RouteName);
 
             // Verify the back link in the route values is set correctly
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}/{organisationType}", result.RouteValues["backLink"]);
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
 
             // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
@@ -1440,8 +1494,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual("ServiceNotAvailable", result.RouteName);
 
             // Assert route values
-            var organisationType = RegistrationSubmissionOrganisationType.large;
-            string expectedUrl = $"{PagePath.RegistrationSubmissionDetails}/{submissionId}/{organisationType}";
+            string expectedUrl = $"{PagePath.RegistrationSubmissionDetails}/{submissionId}";
             Assert.IsTrue(result.RouteValues.TryGetValue("backLink", out object backLink));
             Assert.AreEqual(expectedUrl, backLink);
 
@@ -1486,10 +1539,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var result = await _controller.QueryRegistrationSubmission(model) as RedirectToRouteResult;
 
             // Assert - Redirects to ServiceNotAvailable when an exception occurs
-            var organisationType = RegistrationSubmissionOrganisationType.large;
             Assert.IsNotNull(result);
             Assert.AreEqual("ServiceNotAvailable", result.RouteName);
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}/{organisationType}", result.RouteValues["backLink"]);
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
 
             // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
@@ -1526,8 +1578,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual("ServiceNotAvailable", result.RouteName);
 
             // Verify the back link in the route values is set correctly
-            var organisationType = RegistrationSubmissionOrganisationType.large;
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}/{organisationType}", result.RouteValues["backLink"]);
+            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
 
             // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
@@ -1913,7 +1964,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(expectedViewModel);
 
             // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -1927,7 +1978,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var submissionId = Guid.NewGuid();
 
             // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -1944,11 +1995,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedViewName = nameof(_controller.RegistrationSubmissionDetails);
             var registrationSubmissionDetailsViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             var expectedViewModel = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(registrationSubmissionDetailsViewModel);
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations =
+                new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> { { submissionId, expectedViewModel } };
 
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(expectedViewModel);
 
             // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large) as ViewResult;
+            var result = await _controller.RegistrationSubmissionDetails(submissionId) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -1967,11 +2020,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             // Assert SubmissionDetailsViewModel properties
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Status, model.SubmissionDetails.Status);
-            //Assert.AreEqual(expectedViewModel.SubmissionDetails.LatestDecisionDate, model.SubmissionDetails.LatestDecisionDate);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.TimeAndDateOfSubmission, model.SubmissionDetails.TimeAndDateOfSubmission);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.SubmittedOnTime, model.SubmissionDetails.SubmittedOnTime);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.SubmittedBy, model.SubmissionDetails.SubmittedBy);
-            //Assert.AreEqual(expectedViewModel.SubmissionDetails.AccountRole, model.SubmissionDetails.AccountRole);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Telephone, model.SubmissionDetails.Telephone);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Email, model.SubmissionDetails.Email);
             Assert.AreEqual(expectedViewModel.SubmissionDetails.DeclaredBy, model.SubmissionDetails.DeclaredBy);
@@ -1990,7 +2041,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.BuildingNumber, model.BusinessAddress.BuildingNumber);
             Assert.AreEqual(expectedViewModel.Street, model.BusinessAddress.Street);
             Assert.AreEqual(expectedViewModel.County, model.BusinessAddress.County);
-            //Assert.AreEqual(expectedViewModel.BusinessAddress.PostCode, model.BusinessAddress.PostCode);
+            Assert.AreEqual(expectedViewModel.Postcode, model.BusinessAddress.PostCode);
 
             Assert.AreEqual(expectedViewModel.CompaniesHouseNumber, model.CompaniesHouseNumber);
             //Assert.AreEqual(expectedViewModel.RegisteredNation, model.RegisteredNation);
@@ -2012,7 +2063,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(expectedViewModel);
 
             // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large) as ViewResult;
+            var result = await _controller.RegistrationSubmissionDetails(submissionId) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -2032,7 +2083,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(expectedViewModel);
 
             // Act
-            var result = await _controller.RegistrationSubmissionDetails(null,RegistrationSubmissionOrganisationType.large) as ViewResult;
+            var result = await _controller.RegistrationSubmissionDetails(null) as ViewResult;
 
             // Assert
             Assert.IsNull(result);
@@ -2051,7 +2102,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(detailsModel);
 
             // Act
-            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -2075,7 +2126,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _controller.ModelState.AddModelError("OfflinePayment", "The field is required.");
 
             // Act
-            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId);
             var viewResult = result as ViewResult;
 
             // Assert
@@ -2099,7 +2150,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _controller.ModelState.AddModelError("OfflinePayment", "The field is required.");
 
             // Act
-            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.SubmitOfflinePayment(model, detailsModel.OrganisationId);
             var viewResult = result as ViewResult;
 
             // Assert
@@ -2117,7 +2168,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(default(RegistrationSubmissionDetailsViewModel)));
 
             // Act
-            var result = await _controller.SubmitOfflinePayment(model, submissionId,RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.SubmitOfflinePayment(model, submissionId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -2136,7 +2187,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).Throws(exception);
 
             // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -2155,7 +2206,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).Throws(exception);
 
             // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
 
             // Assert
             Assert.IsNotNull(result);
@@ -2175,7 +2226,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ThrowsAsync(httpRequestException);
 
             // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
 
             // Assert
             // Verify that the logger was called with the expected error message
@@ -2206,7 +2257,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ThrowsAsync(httpRequestException);
 
             // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.RegistrationSubmissionDetails(submissionId);
 
             // Assert
             // Check the redirection to "Error"
@@ -2266,7 +2317,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, null); // No valid session with matching submission Id
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(invalidSubmissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.ConfirmOfflinePaymentSubmission(invalidSubmissionId);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
@@ -2292,7 +2343,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, submissionDetails);
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
@@ -2318,7 +2369,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedBackLink = "/expected/backlink/url";
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -2343,7 +2394,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, submissionDetails);
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -2381,7 +2432,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, submissionDetails);
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(model, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model);
 
             // Assert
             Assert.IsNotNull(result);
@@ -2419,7 +2470,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, submissionDetails);
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(model, RegistrationSubmissionOrganisationType.large) as RedirectToRouteResult;
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -2452,7 +2503,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(model, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model);
 
             // Assert
             Assert.IsNotNull(result);
@@ -2489,7 +2540,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, submissionDetails);
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(model, RegistrationSubmissionOrganisationType.large) as ViewResult;
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should be a ViewResult when ModelState is invalid.");
@@ -2520,7 +2571,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(model, RegistrationSubmissionOrganisationType.large) as RedirectToRouteResult;
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -2541,7 +2592,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(default(RegistrationSubmissionDetailsViewModel)));
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(model, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model);
 
             // Assert
             Assert.IsNotNull(result);
@@ -2577,7 +2628,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, submissionDetails);
 
             // Act
-            var result = await _controller.ConfirmOfflinePaymentSubmission(model, RegistrationSubmissionOrganisationType.large) as RedirectToRouteResult;
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -4008,7 +4059,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, null);
 
             // Act
-            var result = await _controller.RegistrationSubmissionsFileDownload(downloadType, Guid.NewGuid(), RegistrationSubmissionOrganisationType.large) as RedirectToActionResult;
+            var result = await _controller.RegistrationSubmissionsFileDownload(downloadType, Guid.NewGuid()) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
@@ -4036,7 +4087,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             SetupJourneySession(null, null);
 
             // Act
-            var result = await _controller.RegistrationSubmissionsFileDownload(downloadType, Guid.NewGuid(), RegistrationSubmissionOrganisationType.large) as RedirectToActionResult;
+            var result = await _controller.RegistrationSubmissionsFileDownload(downloadType, Guid.NewGuid()) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
@@ -4064,12 +4115,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
             {
                 SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
-                    { Guid.NewGuid(), detailsModel }
+                    { submissionId, detailsModel }
                 }
+                //SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>()
+                //{
+                //    {submissionId, RegistrationSubmissionOrganisationType.large}
+                //}
             };
 
             // Act
-            var result = await _controller.FileDownloadInProgress(submissionId, RegistrationSubmissionOrganisationType.large) as RedirectToActionResult;
+            var result = await _controller.FileDownloadInProgress(submissionId) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
@@ -4097,11 +4152,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
                     { submissionId, detailsModel }
+                },
+                SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>()
+                {
+                    {submissionId, RegistrationSubmissionOrganisationType.large}
                 }
             };
 
             // Act
-            var result = await _controller.FileDownloadInProgress(submissionId, RegistrationSubmissionOrganisationType.large) as RedirectToActionResult;
+            var result = await _controller.FileDownloadInProgress(submissionId) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
@@ -4152,7 +4211,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>
                     { { submissionId, registration } },
-                FileDownloadRequestType = FileDownloadTypes.OrganisationDetails
+                FileDownloadRequestType = FileDownloadTypes.OrganisationDetails,
+                SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>()
+                {
+                    { submissionId, RegistrationSubmissionOrganisationType.large }
+                }
             };
 
             // Mock the CreateFileDownloadRequest method
@@ -4187,7 +4250,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(response);
 
             // Act
-            var result = await _controller.FileDownloadInProgress(submissionId, RegistrationSubmissionOrganisationType.large) as RedirectToActionResult;
+            var result = await _controller.FileDownloadInProgress(submissionId) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null");
@@ -4240,7 +4303,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             {
                 SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>
                     { { submissionId, registration } },
-                FileDownloadRequestType = fileDownloadTypes
+                FileDownloadRequestType = fileDownloadTypes,
+                SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>()
+                {
+                    { submissionId, RegistrationSubmissionOrganisationType.large }
+                }
             };
 
             // Mock the CreateFileDownloadRequest method
@@ -4276,7 +4343,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(response);
 
             // Act
-            var result = await _controller.FileDownloadInProgress(submissionId, RegistrationSubmissionOrganisationType.large) as FileStreamResult;
+            var result = await _controller.FileDownloadInProgress(submissionId) as FileStreamResult;
 
             // Assert
             Assert.IsNotNull(result, "Result should not be null.");
@@ -4312,7 +4379,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
 
             // Act
-            var result = await _controller.SubmissionDetailsFileDownload(submissionId, RegistrationSubmissionOrganisationType.large);
+            var result = await _controller.SubmissionDetailsFileDownload(submissionId);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult), "The result should be a ViewResult.");
