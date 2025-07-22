@@ -114,6 +114,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(_journeySession);
 
+            var sampleOrganisationDetails = SampleOrganisationDetails();
+
+            MockPageOrganisationRegistrations(sampleOrganisationDetails, out var pagedOrganisationRegistrations, 3, 61, 20);
+
             // Act
             var result = await _controller.RegistrationSubmissions(1);
 
