@@ -6,7 +6,6 @@ using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -24,9 +23,6 @@ using Microsoft.FeatureManagement.Mvc;
 using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
-
-using System.Reflection;
-
 using Mappers;
 
 using ViewModels.Shared;
@@ -80,25 +76,30 @@ public partial class RegistrationSubmissionsController(
 
             var pagedOrganisationRegistrations = await _facadeService.GetRegistrationSubmissions(viewModel.ListViewModel.RegistrationsFilterModel);
 
-            viewModel.ListViewModel.PagedRegistrationSubmissions = pagedOrganisationRegistrations.items.Select(RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails);
-
-            viewModel.ListViewModel.PaginationNavigationModel = new PaginationNavigationModel
+            if (pagedOrganisationRegistrations?.items?.Count > 0)
             {
-                CurrentPage = pagedOrganisationRegistrations.currentPage,
-                PageCount = pagedOrganisationRegistrations.TotalPages,
-                ControllerName = "RegistrationSubmissions",
-                ActionName = nameof(RegistrationSubmissionsController.RegistrationSubmissions)
-            };
 
-            if ((viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
-                 viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > 1) || viewModel.ListViewModel.PaginationNavigationModel.CurrentPage < 1)
-            {
-                viewModel.ListViewModel.PaginationNavigationModel.CurrentPage = 1;
+                viewModel.ListViewModel.PagedRegistrationSubmissions =
+                    pagedOrganisationRegistrations.items.Select(RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails);
+
+                viewModel.ListViewModel.PaginationNavigationModel = new PaginationNavigationModel
+                {
+                    CurrentPage = pagedOrganisationRegistrations.currentPage,
+                    PageCount = pagedOrganisationRegistrations.TotalPages,
+                    ControllerName = "RegistrationSubmissions",
+                    ActionName = nameof(RegistrationSubmissions)
+                };
+
+                if ((viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
+                     viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > 1) || viewModel.ListViewModel.PaginationNavigationModel.CurrentPage < 1)
+                {
+                    viewModel.ListViewModel.PaginationNavigationModel.CurrentPage = 1;
+                }
+
+                // cache selected organisation types for the session
+                _currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = viewModel.ListViewModel.PagedRegistrationSubmissions
+                    .ToDictionary(x => x.SubmissionId, x => x.OrganisationType);
             }
-
-            // cache selected organisation types for the session
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = viewModel.ListViewModel.PagedRegistrationSubmissions
-                .ToDictionary(x => x.SubmissionId, x => x.OrganisationType);
 
             await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 

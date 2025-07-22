@@ -1996,6 +1996,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             var submissionId = Guid.NewGuid();
 
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes =
+                new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+                {
+                    { submissionId, RegistrationSubmissionOrganisationType.compliance }
+                };
+
             // Act
             var result = await _controller.RegistrationSubmissionDetails(submissionId);
 
@@ -2005,6 +2011,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var redirect = result as RedirectToActionResult;
             redirect.ActionName.Should().Be(PagePath.PageNotFound);
         }
+      
 
         [TestMethod]
         public async Task RegistrationSubmissionDetails_ReturnsCorrectViewModel_ForValidSubmissionId()
@@ -2181,10 +2188,35 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task SubmitOfflinePayment_Post_RedirectsToPageNotFound_When_No_OrganisationType_In_Session()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var model = GenerateValidPaymentDetailsViewModel();
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(default(RegistrationSubmissionDetailsViewModel)));
+
+            // Act
+            var result = await _controller.SubmitOfflinePayment(model, submissionId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            result.Should().BeOfType(typeof(RedirectToActionResult));
+            var redirect = result as RedirectToActionResult;
+            redirect.ActionName.Should().Be(PagePath.PageNotFound);
+        }
+
+        [TestMethod]
         public async Task SubmitOfflinePayment_Post_RedirectsToPageNotFound_When_No_Details_In_Session()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
+
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes =
+            new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+            {
+                { submissionId, RegistrationSubmissionOrganisationType.compliance }
+            };
+
             var model = GenerateValidPaymentDetailsViewModel();
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(default(RegistrationSubmissionDetailsViewModel)));
 
@@ -2389,6 +2421,47 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var registrationSubmissionDetailsViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
             var submissionDetails = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(registrationSubmissionDetailsViewModel);
             SetupJourneySession(null, submissionDetails);
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirectResult = result as RedirectToActionResult;
+            Assert.AreEqual("PageNotFound", redirectResult.ActionName);
+            Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
+        }
+
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_When_OrganisationType_IsNull_In_Session()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirectResult = result as RedirectToActionResult;
+            Assert.AreEqual("PageNotFound", redirectResult.ActionName);
+            Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_When_SubmissionDetails_Is_Null()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var submissionDetails = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(null);
+            SetupJourneySession(null, submissionDetails);
+
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes =
+            new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+            {
+                { submissionId, RegistrationSubmissionOrganisationType.large }
+            };
 
             // Act
             var result = await _controller.ConfirmOfflinePaymentSubmission(submissionId);
@@ -2633,10 +2706,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_WhenSubmissionIdIsNull()
         {
             // Arrange
-            var model = new ConfirmOfflinePaymentSubmissionViewModel { SubmissionId = Guid.NewGuid() };
-            var registrationSubmissionDetailsViewModel = GenerateTestSubmissionDetailsViewModel(Guid.NewGuid());
-            var submissionDetails = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(registrationSubmissionDetailsViewModel);
-            SetupJourneySession(null, submissionDetails);
+            var submissionId = Guid.NewGuid();
+            var model = new ConfirmOfflinePaymentSubmissionViewModel { SubmissionId = submissionId };
+
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes =
+            new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+            {
+               { submissionId, RegistrationSubmissionOrganisationType.compliance }
+            };
+
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(default(RegistrationSubmissionDetailsViewModel)));
 
             // Act
@@ -2652,6 +2730,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
             Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
         }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_RedirectsToPageNotFound_When_OrganisationTypeIsNull_InSession()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var model = new ConfirmOfflinePaymentSubmissionViewModel { SubmissionId = submissionId };
+
+            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>(), It.IsAny<RegistrationSubmissionOrganisationType>())).ReturnsAsync(RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(default(RegistrationSubmissionDetailsViewModel)));
+
+            // Act
+            var result = await _controller.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            // Veryify the correct redirect
+            Assert.AreEqual("RegistrationSubmissions", redirectToActionResult.ControllerName);
+            Assert.AreEqual("PageNotFound", redirectToActionResult.ActionName);
+        }
+
 
         [TestMethod]
         public async Task ConfirmOfflinePaymentSubmission_Logs_And_RedirectsTo_ServiceNotAvailable_When_PaymentFacade_Fails()
@@ -4152,7 +4254,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         #region FileDownloadInProgress
 
         [TestMethod]
-        public async Task FileDownloadInProgress_Should_LogAndRedirectToPageNotFound_SubmissionIsNull()
+        public async Task FileDownloadInProgress_Should_LogAndRedirectToPageNotFound_When_SubmissionIsNull()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -4161,13 +4263,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             string expectedRedirectAction = nameof(RegistrationSubmissionsController.PageNotFound);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
             {
-                SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
-                    { submissionId, detailsModel }
+                SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>()
+                {
+                    {submissionId, RegistrationSubmissionOrganisationType.large}
                 }
-                //SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>()
-                //{
-                //    {submissionId, RegistrationSubmissionOrganisationType.large}
-                //}
             };
 
             // Act
@@ -4184,6 +4283,31 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                             It.IsAny<Exception>(),
                             It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                         Times.Once);
+            _facadeServiceMock.Verify(m => m.GetFileDownload(It.IsAny<FileDownloadRequest>()), Times.Never);
+        }
+
+
+        [TestMethod]
+        public async Task FileDownloadInProgress_Should_LogAndRedirectToPageNotFound_When_OrganisationTypeIsNull_InSession()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(null);
+            string expectedRedirectAction = nameof(RegistrationSubmissionsController.PageNotFound);
+
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
+            {
+                SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
+                    { submissionId, detailsModel }
+                }
+            };
+
+            // Act
+            var result = await _controller.FileDownloadInProgress(submissionId) as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(result, "Result should not be null");
+            Assert.AreEqual(expectedRedirectAction, result.ActionName, "Action name should match");
             _facadeServiceMock.Verify(m => m.GetFileDownload(It.IsAny<FileDownloadRequest>()), Times.Never);
         }
 
