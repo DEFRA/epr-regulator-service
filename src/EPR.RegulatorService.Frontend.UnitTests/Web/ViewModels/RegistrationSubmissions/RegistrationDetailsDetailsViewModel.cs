@@ -150,4 +150,27 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.IsNull(viewModel.BusinessAddress.BuildingNumber);
         Assert.AreEqual("Test Street", viewModel.BusinessAddress.Street);
     }
+
+
+    [TestMethod]
+    public void MapFromOrganisationDetails_ReturnsNull_When_InputIsNull()
+    {
+        // Arrange
+        // Act
+        var viewModel = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(null);
+
+        // Assert
+        viewModel.Should().BeNull();
+    }
+
+    [TestMethod]
+    public void MapToOrganisationDetails_ReturnsNull_When_InputIsNull()
+    {
+        // Arrange
+        // Act
+        var submissionDetails = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(null);
+
+        // Assert
+        submissionDetails.Should().BeNull();
+    }
 }
