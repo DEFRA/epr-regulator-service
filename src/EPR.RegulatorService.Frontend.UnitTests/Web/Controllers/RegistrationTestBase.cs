@@ -25,6 +25,7 @@ public abstract class RegistrationTestBase
 {
     protected const string ModelErrorKey = "Error";
     private const string BackLinkViewDataKey = "BackLinkToDisplay";
+    private static readonly new int[] _orgYears = [2023, 2024];
 
     protected RegistrationsController _sut = null!;
     protected Mock<HttpContext> _httpContextMock = null!;
@@ -58,7 +59,7 @@ public abstract class RegistrationTestBase
 
         _submissionFiltersMock.Setup(mock => mock.Value).Returns(new SubmissionFiltersConfig
         {
-            OrgYears = new int[] { 2023, 2024 },
+            OrgYears = _orgYears,
             OrgPeriods = new string[] { "January to June 2023", "July to December 2023", "January to June 2024", "July to December 2024" }
         });
 
