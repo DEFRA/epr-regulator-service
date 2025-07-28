@@ -1,5 +1,5 @@
 @using EPR.RegulatorService.Frontend.Core.Enums
-@model (Guid SubmissionId, RegistrationSubmissionOrganisationType OrganisationType)
+@model Guid
 @{
     ViewData["Title"] = Localizer["OrganisationDetailsFileDownload.Title"];
     var downloadCompleted = TempData["DownloadCompleted"] != null && (bool)TempData["DownloadCompleted"];
@@ -19,7 +19,7 @@
                 </div>
                 @if (!downloadCompleted)
                 {
-                    <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "RegistrationSubmissions", new { submissionId = Model.SubmissionId})" />
+                    <meta http-equiv="refresh" content="0; url=@Url.Action("FileDownloadInProgress", "RegistrationSubmissions", new { submissionId = Model })" />
                 }                    
               </div>
           </div>      
