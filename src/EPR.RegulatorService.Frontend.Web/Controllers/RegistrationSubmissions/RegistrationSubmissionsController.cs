@@ -163,7 +163,6 @@ public partial class RegistrationSubmissionsController(
             GeneratePowerBILink(model);
             SetBackLink(PagePath.RegistrationSubmissionsRoute);
             ViewBag.SubmissionId = model.SubmissionId;
-            ViewBag.OrganisationType = model.OrganisationType;
 
             await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
