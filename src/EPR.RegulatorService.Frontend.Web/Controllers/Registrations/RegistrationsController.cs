@@ -1,6 +1,7 @@
 using System.Text.Json;
 
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Extensions;
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -30,20 +31,20 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         private const string DeclaredByComplianceScheme = "Not required (compliance scheme)";
         private readonly ISessionManager<JourneySession> _sessionManager;
         private readonly string _pathBase;
-        private readonly SubmissionFiltersOptions _submissionFiltersOptions;
+        private readonly SubmissionFiltersConfig _submissionFiltersConfig;
         private readonly ExternalUrlsOptions _externalUrlsOptions;
         private readonly IFacadeService _facadeService;
 
         public RegistrationsController(
             ISessionManager<JourneySession> sessionManager,
             IConfiguration configuration,
-            IOptions<SubmissionFiltersOptions> submissionFiltersOptions,
+            IOptions<SubmissionFiltersConfig> submissionFiltersConfig,
             IOptions<ExternalUrlsOptions> externalUrlsOptions,
             IFacadeService facadeService)
         {
             _sessionManager = sessionManager;
             _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
-            _submissionFiltersOptions = submissionFiltersOptions.Value;
+            _submissionFiltersConfig = submissionFiltersConfig.Value;
             _externalUrlsOptions = externalUrlsOptions.Value;
             _facadeService = facadeService;
         }
@@ -62,11 +63,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
             bool? export = null)
         {
             registrationFiltersModel.SearchSubmissionYears = registrationFiltersModel.SearchSubmissionYears
-                ?.Where(x => _submissionFiltersOptions.Years.Contains(x))
+                ?.Where(x => _submissionFiltersConfig.OrgYears.Contains(x))
                 .ToArray();
 
             registrationFiltersModel.SearchSubmissionPeriods = registrationFiltersModel.SearchSubmissionPeriods
-                ?.Where(x => _submissionFiltersOptions.OrgPeriods.Contains(x))
+                ?.Where(x => _submissionFiltersConfig.OrgPeriods.Contains(x))
                 .ToArray();
 
             if (export == true)
@@ -119,8 +120,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 RejectRegistrationResult = rejectRegistrationResult,
                 AcceptRegistrationResult = acceptRegistrationResult,
                 OrganisationName = organisationName,
-                SubmissionYears = _submissionFiltersOptions.Years,
-                SubmissionPeriods = _submissionFiltersOptions.OrgPeriods
+                SubmissionYears = _submissionFiltersConfig.OrgYears,
+                SubmissionPeriods = _submissionFiltersConfig.OrgPeriods
             };
 
             await SaveSessionAndJourney(session, PagePath.Registrations, PagePath.Registrations);
