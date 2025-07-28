@@ -9,6 +9,8 @@ namespace EPR.RegulatorService.Frontend.Core.Configs
 
         public int[] Years { get; set; }
 
+        public int[] OrgYears { get; set; }
+
         public string[] PomPeriods { get; set; }
 
         public string[] OrgPeriods { get; set; }

@@ -15,6 +15,8 @@ using System.Security.Claims;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
+using EPR.RegulatorService.Frontend.Core.Configs;
+
 using Frontend.Core.Models.Registrations;
 
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -30,7 +32,7 @@ public abstract class RegistrationTestBase
     protected Mock<ISessionManager<JourneySession>> _sessionManagerMock = null!;
     protected Mock<IFacadeService> _facadeServiceMock = null!;
     protected JourneySession JourneySessionMock { get; set; }
-    protected Mock<IOptions<SubmissionFiltersOptions>> _submissionFiltersMock = null!;
+    protected Mock<IOptions<SubmissionFiltersConfig>> _submissionFiltersMock = null!;
     protected Mock<IOptions<ExternalUrlsOptions>> _urlsOptionMock = null!;
     protected Mock<IConfiguration> _configurationMock = null!;
     private const string PowerBiLogin = "https://app.powerbi.com/";
@@ -40,7 +42,7 @@ public abstract class RegistrationTestBase
         _httpContextMock = new Mock<HttpContext>();
         _userMock = new Mock<ClaimsPrincipal>();
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
-        _submissionFiltersMock = new Mock<IOptions<SubmissionFiltersOptions>>();
+        _submissionFiltersMock = new Mock<IOptions<SubmissionFiltersConfig>>();
         _urlsOptionMock = new Mock<IOptions<ExternalUrlsOptions>>();
         _facadeServiceMock = new Mock<IFacadeService>();
         _configurationMock = new Mock<IConfiguration>();
@@ -54,9 +56,9 @@ public abstract class RegistrationTestBase
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>()))
             .Returns(Task.FromResult(new JourneySession()));
 
-        _submissionFiltersMock.Setup(mock => mock.Value).Returns(new SubmissionFiltersOptions
+        _submissionFiltersMock.Setup(mock => mock.Value).Returns(new SubmissionFiltersConfig
         {
-            Years = new int[] { 2023, 2024 },
+            OrgYears = new int[] { 2023, 2024 },
             OrgPeriods = new string[] { "January to June 2023", "July to December 2023", "January to June 2024", "July to December 2024" }
         });
 
