@@ -1,5 +1,6 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
+    using EPR.RegulatorService.Frontend.Core.Configs;
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
@@ -8,6 +9,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Web.Configs;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
+    using EPR.RegulatorService.Frontend.Web.Mappers;
     using EPR.RegulatorService.Frontend.Web.Sessions;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
@@ -29,7 +31,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         protected RegistrationSubmissionsController _controller = null!;
         protected Mock<HttpContext> _mockHttpContext = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _mockUrlsOptions = null!;
-        protected Mock<IOptions<RegistrationSubmissionsOptions>> _mockRegistrationSubmissionOptions = null!;
+        protected Mock<IOptions<RegistrationSubmissionsConfig>> _mockRegistrationSubmissionsConfig = null!;
         protected Mock<IConfiguration> _mockConfiguration = null!;
         protected Mock<ISessionManager<JourneySession>> _mockSessionManager = null!;
         protected JourneySession _journeySession;
@@ -40,7 +42,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             _mockHttpContext = new Mock<HttpContext>();
             _mockUrlsOptions = new Mock<IOptions<ExternalUrlsOptions>>();
-            _mockRegistrationSubmissionOptions = new Mock<IOptions<RegistrationSubmissionsOptions>>();
+            _mockRegistrationSubmissionsConfig = new Mock<IOptions<RegistrationSubmissionsConfig>>();
             _mockConfiguration = new Mock<IConfiguration>();
             _loggerMock = new Mock<ILogger<RegistrationSubmissionsController>>();
             _facadeServiceMock = new Mock<IFacadeService>();
@@ -61,9 +63,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     PowerBiLogin = PowerBiLogin
                 });
 
-            _mockRegistrationSubmissionOptions.Setup(mockRegistrationSubmissionOptions =>
-                mockRegistrationSubmissionOptions.Value)
-                .Returns(new RegistrationSubmissionsOptions
+            _mockRegistrationSubmissionsConfig.Setup(mockRegistrationSubmissionsConfig =>
+                mockRegistrationSubmissionsConfig.Value)
+                .Returns(new RegistrationSubmissionsConfig
                 {
                     Show2026RelevantYearFilter = show2026RelevantYearFilter.Value
                 });
@@ -82,7 +84,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _loggerMock.Object,
                 _mockConfiguration.Object,
                 _mockUrlsOptions.Object,
-                _mockRegistrationSubmissionOptions.Object)
+                _mockRegistrationSubmissionsConfig.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -107,12 +109,20 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 {
                     LatestFilterChoices = filtersModel,
                     CurrentPageNumber = currentPageNumber,
-                    SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>()
+                    SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails>(),
+                    SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>()
                 }
             };
             if (selectedSubmission is not null)
             {
                 _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.Add(selectedSubmission.SubmissionId, selectedSubmission);
+                _journeySession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = new Dictionary<Guid, RegistrationSubmissionOrganisationType>
+                {
+                    {
+                        selectedSubmission.SubmissionId,
+                        RegistrationSubmissionOrganisationType.small
+                    }
+                };
             }
 
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
@@ -126,7 +136,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             (gotBackLinkObject as string)?.Should().Be(expectedBackLink);
         }
 
-        protected static RegistrationSubmissionDetailsViewModel GenerateTestSubmissionDetailsViewModel(
+        protected static RegistrationSubmissionDetailsViewModel? GenerateTestSubmissionDetailsViewModel(
             Guid organisationId,
             int nationId = 3,
             string nationCode = "Sco") => new RegistrationSubmissionDetailsViewModel

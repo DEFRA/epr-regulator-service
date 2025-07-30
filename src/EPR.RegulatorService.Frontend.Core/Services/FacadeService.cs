@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Web;
 
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -21,6 +22,7 @@ using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
@@ -55,6 +57,7 @@ public class FacadeService : IFacadeService
     private readonly ITokenAcquisition _tokenAcquisition;
     private readonly PaginationConfig _paginationConfig;
     private readonly FacadeApiConfig _facadeApiConfig;
+    private readonly RegistrationSubmissionsConfig _registrationSubmissionsConfig;
     private readonly ILogger<FacadeService> _logger;
 
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
@@ -73,12 +76,14 @@ public class FacadeService : IFacadeService
         ITokenAcquisition tokenAcquisition,
         IOptions<PaginationConfig> paginationOptions,
         IOptions<FacadeApiConfig> facadeApiOptions,
+        IOptions<RegistrationSubmissionsConfig> registrationSubmissionsConfig,
         ILogger<FacadeService> logger)
     {
         _httpClient = httpClient;
         _tokenAcquisition = tokenAcquisition;
         _paginationConfig = paginationOptions.Value;
         _facadeApiConfig = facadeApiOptions.Value;
+        _registrationSubmissionsConfig = registrationSubmissionsConfig.Value;
         _scopes = [_facadeApiConfig.DownstreamScope];
         _logger = logger;
     }
@@ -447,19 +452,36 @@ public class FacadeService : IFacadeService
         }
     }
 
-    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId)
+    public async Task<RegistrationSubmissionOrganisationDetails> GetRegistrationSubmissionDetails(Guid submissionId, RegistrationSubmissionOrganisationType organisationType)
     {
         await PrepareAuthenticatedClient();
 
-        string path = _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath].Replace("{0}", submissionId.ToString());
+        var queryParams = new Dictionary<string, string>()
+        {
+            { "lateFeeCutOffDay_2025", _registrationSubmissionsConfig.LateFeeCutOffDay_2025.ToString() },
+            { "lateFeeCutOffMonth_2025", _registrationSubmissionsConfig.LateFeeCutOffMonth_2025.ToString() },
+            { "lateFeeCutOffDay_CS", _registrationSubmissionsConfig.LateFeeCutOffDay_CS.ToString() },
+            { "lateFeeCutOffMonth_CS", _registrationSubmissionsConfig.LateFeeCutOffMonth_CS.ToString() },
+            { "lateFeeCutOffDay_SP", _registrationSubmissionsConfig.LateFeeCutOffDay_SP.ToString() },
+            { "lateFeeCutOffMonth_SP", _registrationSubmissionsConfig.LateFeeCutOffMonth_SP.ToString() },
+            { "lateFeeCutOffDay_LP", _registrationSubmissionsConfig.LateFeeCutOffDay_LP.ToString() },
+            { "lateFeeCutOffMonth_LP", _registrationSubmissionsConfig.LateFeeCutOffMonth_LP.ToString() }
+        };
 
-        var response = await _httpClient.GetAsync(path);
+        string path = string.Format(
+            CultureInfo.InvariantCulture,
+            _facadeApiConfig.Endpoints[GetOrganisationRegistrationSubmissionDetailsPath],
+            submissionId,
+            organisationType);
+
+        string urlWithParams = QueryHelpers.AddQueryString(path, queryParams);
+        var response = await _httpClient.GetAsync(urlWithParams);
 
         response.EnsureSuccessStatusCode();
 
         string content = await response.Content.ReadAsStringAsync();
 
-        RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFE(content);
+        var result = ConvertCommonDataToFE(content);
 
         return result;
     }

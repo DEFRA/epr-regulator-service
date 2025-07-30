@@ -2,10 +2,10 @@ using System.Globalization;
 using System.Net;
 
 using EPR.Common.Authorization.Constants;
+using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -24,21 +24,24 @@ using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 
+using Mappers;
+
+using ViewModels.Shared;
+
 [FeatureGate(FeatureFlags.ManageRegistrationSubmissions)]
 [Authorize(Policy = PolicyConstants.RegulatorBasicPolicy)]
 public partial class RegistrationSubmissionsController(
-                IFacadeService facade,
-                IPaymentFacadeService paymentFacade,
-                ISessionManager<JourneySession> sessionManager,
-                ILogger<RegistrationSubmissionsController> logger,
-                IConfiguration configuration,
-                IOptions<ExternalUrlsOptions> externalUrlsOptions,
-                IOptions<RegistrationSubmissionsOptions> registrationSubmissionOptions
-             ) : Controller
+    IFacadeService facade,
+    IPaymentFacadeService paymentFacade,
+    ISessionManager<JourneySession> sessionManager,
+    ILogger<RegistrationSubmissionsController> logger,
+    IConfiguration configuration,
+    IOptions<ExternalUrlsOptions> externalUrlsOptions,
+    IOptions<RegistrationSubmissionsConfig> registrationSubmissionsConfig) : Controller
 {
     private readonly string _pathBase = configuration.GetValue<string>(ConfigKeys.PathBase);
     private readonly ExternalUrlsOptions _externalUrlsOptions = externalUrlsOptions.Value;
-    private readonly RegistrationSubmissionsOptions _registrationSubmissionOptions = registrationSubmissionOptions.Value;
+    private readonly RegistrationSubmissionsConfig _registrationSubmissionsConfig = registrationSubmissionsConfig.Value;
     private readonly ISessionManager<JourneySession> _sessionManager = sessionManager;
     private readonly IFacadeService _facadeService = facade;
     private readonly IPaymentFacadeService _paymentFacadeService = paymentFacade;
@@ -71,6 +74,33 @@ public partial class RegistrationSubmissionsController(
             var viewModel = InitialiseOrCreateViewModel(
                 _currentSession.RegulatorRegistrationSubmissionSession,
                 nationId);
+
+            var pagedOrganisationRegistrations = await _facadeService.GetRegistrationSubmissions(viewModel.ListViewModel.RegistrationsFilterModel);
+
+            if (pagedOrganisationRegistrations?.items?.Count > 0)
+            {
+
+                viewModel.ListViewModel.PagedRegistrationSubmissions =
+                    pagedOrganisationRegistrations.items.Select(RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails);
+
+                viewModel.ListViewModel.PaginationNavigationModel = new PaginationNavigationModel
+                {
+                    CurrentPage = pagedOrganisationRegistrations.currentPage,
+                    PageCount = pagedOrganisationRegistrations.TotalPages,
+                    ControllerName = "RegistrationSubmissions",
+                    ActionName = nameof(RegistrationSubmissions)
+                };
+
+                if ((viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > pagedOrganisationRegistrations.TotalPages &&
+                     viewModel.ListViewModel.PaginationNavigationModel.CurrentPage > 1) || viewModel.ListViewModel.PaginationNavigationModel.CurrentPage < 1)
+                {
+                    viewModel.ListViewModel.PaginationNavigationModel.CurrentPage = 1;
+                }
+
+                // cache selected organisation types for the session
+                _currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes = viewModel.ListViewModel.PagedRegistrationSubmissions
+                    .ToDictionary(x => x.SubmissionId, x => x.OrganisationType);
+            }
 
             await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
@@ -123,12 +153,7 @@ public partial class RegistrationSubmissionsController(
     {
         try
         {
-            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-            if (!GetOrRejectProvidedSubmissionId(submissionId.Value, out var model))
-            {
-                model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
-            }
+            var model = await GetSubmissionDetailsOrRedirect(submissionId);
 
             if (model is null)
             {
@@ -161,11 +186,10 @@ public partial class RegistrationSubmissionsController(
 
     [HttpPost]
     [Route(PagePath.RegistrationSubmissionDetails + "/{submissionId:guid}", Name = "SubmitPaymentInfo")]
-    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel, [FromRoute] Guid? submissionId)
+    public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel,
+        [FromRoute] Guid? submissionId)
     {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
-
+        var model = await GetSubmissionDetailsOrRedirect(submissionId);
         if (model is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
@@ -187,7 +211,7 @@ public partial class RegistrationSubmissionsController(
             PagePath.RegistrationSubmissionsRoute,
             PagePath.RegistrationSubmissionsRoute);
 
-        return Redirect(Url.RouteUrl("ConfirmOfflinePaymentSubmission", new { submissionId }));
+        return Redirect(Url.RouteUrl("ConfirmOfflinePaymentSubmission", new { submissionId, model.OrganisationType }));
     }
 
     [HttpGet]
@@ -239,7 +263,7 @@ public partial class RegistrationSubmissionsController(
 
         try
         {
-            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Granted);
+            var regulatorDecisionRequest = GetDecisionRequest(existingModel, RegistrationSubmissionStatus.Granted);
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
             // this will force a reload of the item in SubmissionDetails
@@ -450,8 +474,8 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.ConfirmOfflinePaymentSubmission + "/{submissionId:guid}", Name = "ConfirmOfflinePaymentSubmission")]
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(Guid? submissionId)
     {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        var model = await GetSubmissionDetailsOrRedirect(submissionId);
+
         if (model is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
@@ -478,8 +502,10 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.ConfirmOfflinePaymentSubmission + "/{submissionId:guid}", Name = "ConfirmOfflinePaymentSubmission")]
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
     {
-        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        RegistrationSubmissionDetailsViewModel regSubmissionDetails = await FetchFromSessionOrFacadeAsync(model.SubmissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+
+        var regSubmissionDetails = await GetSubmissionDetailsOrRedirect(model.SubmissionId.Value);
+
+
         if (regSubmissionDetails is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
@@ -654,7 +680,8 @@ public partial class RegistrationSubmissionsController(
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionsFileDownload)]
-    public async Task<IActionResult> RegistrationSubmissionsFileDownload(string downloadType, [FromQuery] Guid submissionId)
+    public async Task<IActionResult> RegistrationSubmissionsFileDownload(string downloadType,
+        [FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
@@ -677,7 +704,14 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> FileDownloadInProgress([FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var submission = await FetchFromSessionOrFacadeAsync(submissionId, _facadeService.GetRegistrationSubmissionDetails);
+        RegistrationSubmissionOrganisationDetails submission = null;
+        if (!_currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes.TryGetValue(
+                submissionId, out RegistrationSubmissionOrganisationType organisationType))
+        {
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
+        }
+
+        submission = await FetchFromSessionOrFacadeAsync(submissionId, organisationType, _facadeService.GetRegistrationSubmissionDetails);
         if (submission is null)
         {
             _logControllerError.Invoke(logger, $"{submissionId} - submission not found - {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", default);
@@ -687,14 +721,14 @@ public partial class RegistrationSubmissionsController(
         var fileDownloadModel = CreateFileDownloadRequest(_currentSession, submission);
         if (fileDownloadModel == null)
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId });
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId, organisationType });
         }
 
         var response = await _facadeService.GetFileDownload(fileDownloadModel);
 
         if (response.StatusCode == HttpStatusCode.Forbidden)
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning), new { submissionId });
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning), new { submissionId, organisationType });
         }
         else if (response.IsSuccessStatusCode)
         {
@@ -707,23 +741,23 @@ public partial class RegistrationSubmissionsController(
         }
         else
         {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId });
+            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId, organisationType });
         }
     }
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionFileDownloadFailed)]
-    public async Task<IActionResult> RegistrationSubmissionFileDownloadFailed([FromQuery] Guid submissionId)
+    public async Task<IActionResult> RegistrationSubmissionFileDownloadFailed([FromQuery] Guid submissionId, [FromQuery] RegistrationSubmissionOrganisationType organisationType)
     {
-        var model = new OrganisationDetailsFileDownloadViewModel(true, false, submissionId);
+        var model = new OrganisationDetailsFileDownloadViewModel(true, false, organisationType, submissionId);
         return View("RegistrationSubmissionFileDownloadFailed", model);
     }
 
     [HttpGet]
     [Route(PagePath.RegistrationSubmissionFileDownloadSecurityWarning)]
-    public async Task<IActionResult> RegistrationSubmissionFileDownloadSecurityWarning([FromQuery] Guid submissionId)
+    public async Task<IActionResult> RegistrationSubmissionFileDownloadSecurityWarning([FromQuery] Guid submissionId, [FromQuery] RegistrationSubmissionOrganisationType organisationType)
     {
-        var model = new OrganisationDetailsFileDownloadViewModel(true, true, submissionId);
+        var model = new OrganisationDetailsFileDownloadViewModel(true, true, organisationType, submissionId);
         return View("RegistrationSubmissionFileDownloadFailed", model);
     }
 

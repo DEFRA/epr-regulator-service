@@ -5,6 +5,8 @@ using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
+using Frontend.Web.Mappers;
+
 [TestClass]
 public class RegistrationSubmissionDetailsViewModelTests
 {
@@ -33,8 +35,8 @@ public class RegistrationSubmissionDetailsViewModelTests
             Postcode = "TC1234",
         };
 
-        // Act
-        RegistrationSubmissionDetailsViewModel viewModel = details;
+            // Act
+        RegistrationSubmissionDetailsViewModel? viewModel = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(details);
 
         // Assert
         Assert.AreEqual(details.OrganisationId, viewModel.OrganisationId);
@@ -137,9 +139,8 @@ public class RegistrationSubmissionDetailsViewModelTests
             Country = "Test Country",
             Postcode = "TC1234"
         };
-
         // Act
-        RegistrationSubmissionDetailsViewModel viewModel = details;
+        RegistrationSubmissionDetailsViewModel? viewModel = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(details);
 
         // Assert
         Assert.AreEqual(string.Empty, viewModel.ReferenceNumber);
@@ -148,5 +149,28 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.IsNull(viewModel.BusinessAddress.SubBuildingName);
         Assert.IsNull(viewModel.BusinessAddress.BuildingNumber);
         Assert.AreEqual("Test Street", viewModel.BusinessAddress.Street);
+    }
+
+
+    [TestMethod]
+    public void MapFromOrganisationDetails_ReturnsNull_When_InputIsNull()
+    {
+        // Arrange
+        // Act
+        var viewModel = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(null);
+
+        // Assert
+        viewModel.Should().BeNull();
+    }
+
+    [TestMethod]
+    public void MapToOrganisationDetails_ReturnsNull_When_InputIsNull()
+    {
+        // Arrange
+        // Act
+        var submissionDetails = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(null);
+
+        // Assert
+        submissionDetails.Should().BeNull();
     }
 }

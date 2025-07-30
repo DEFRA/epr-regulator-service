@@ -6,6 +6,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Cookies;
+using EPR.RegulatorService.Frontend.Web.Mappers;
 using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.Middleware;
 using EPR.RegulatorService.Frontend.Web.Sessions;
@@ -86,7 +87,7 @@ public static class ServiceProviderExtension
         services.Configure<PaymentDetailsOptions>(configuration.GetSection(PaymentDetailsOptions.ConfigSection));
         services.Configure<ReprocessorExporterFacadeApiConfig>(configuration.GetSection(ReprocessorExporterFacadeApiConfig.ConfigSection));
         services.Configure<PackagingDataSubmissionsConfig>(configuration.GetSection(PackagingDataSubmissionsConfig.ConfigSection));
-        services.Configure<RegistrationSubmissionsOptions>(configuration.GetSection(RegistrationSubmissionsOptions.ConfigSection));
+        services.Configure<RegistrationSubmissionsConfig>(configuration.GetSection(RegistrationSubmissionsConfig.ConfigSection));
         services.Configure<ReprocessorExporterConfig>(configuration.GetSection(ReprocessorExporterConfig.ConfigSection));
     }
 

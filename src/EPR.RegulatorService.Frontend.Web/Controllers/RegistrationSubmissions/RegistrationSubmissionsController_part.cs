@@ -9,6 +9,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
+    using EPR.RegulatorService.Frontend.Web.Mappers;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
     using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 PageNumber = 1,
                 PageSize = 20,
                 NationId = nationId,
-                Show2026RelevantYearFilter = _registrationSubmissionOptions.Show2026RelevantYearFilter
+                Show2026RelevantYearFilter = _registrationSubmissionsConfig.Show2026RelevantYearFilter
             };
             existingSessionFilters.PageNumber = session.CurrentPageNumber;
 
@@ -69,18 +70,44 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 return false;
             }
 
-            viewModel = sessionModelWhichMustMatchSession;
+            viewModel = RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(sessionModelWhichMustMatchSession);
             return true;
         }
 
-        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, Func<Guid, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
+        private async Task<RegistrationSubmissionDetailsViewModel?> GetSubmissionDetailsOrRedirect(Guid? submissionId)
+        {
+            if (submissionId == null)
+            {
+                return null;
+            }
+
+            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+            if (GetOrRejectProvidedSubmissionId(submissionId.Value, out var model))
+            {
+                return model;
+            }
+
+            if (!_currentSession.RegulatorRegistrationSubmissionSession.SelectedOrganisationTypes.TryGetValue(
+                    submissionId.Value, out var organisationType))
+            {
+                return null;
+            }
+
+            var registrationSubmissionOrganisationDetails = await FetchFromSessionOrFacadeAsync(
+                submissionId.Value, organisationType, _facadeService.GetRegistrationSubmissionDetails);
+
+            return RegistrationSubmissionDetailsStaticMapper.MapFromOrganisationDetails(registrationSubmissionOrganisationDetails);
+        }
+
+        private async Task<RegistrationSubmissionOrganisationDetails> FetchFromSessionOrFacadeAsync(Guid submissionId, RegistrationSubmissionOrganisationType organisationType, Func<Guid, RegistrationSubmissionOrganisationType, Task<RegistrationSubmissionOrganisationDetails>> facadeMethod)
         {
             if (_currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration))
             {
                 return selectedRegistration;
             }
 
-            var submission = await facadeMethod(submissionId);
+            var submission = await facadeMethod(submissionId, organisationType);
             if (submission is not null)
             {
                 _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
@@ -260,11 +287,11 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
                 if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
                 {
-                    _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory[existingModel.SubmissionId] = existingModel;
+                    _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory[existingModel.SubmissionId] = RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(existingModel);
                 }
                 else
                 {
-                    _currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(existingModel.SubmissionId, existingModel);
+                    _currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(existingModel.SubmissionId, RegistrationSubmissionDetailsStaticMapper.MapToOrganisationDetails(existingModel));
                 }
                 await SaveSession(_currentSession);
             }

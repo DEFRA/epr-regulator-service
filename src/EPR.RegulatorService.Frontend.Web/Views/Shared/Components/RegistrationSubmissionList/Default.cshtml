@@ -87,7 +87,7 @@
                         <span class="responsive-table__heading" aria-hidden="true">
                             @Localizer["Table.Header.ResubmissionStatus"]
                         </span>
-                        @if (organisation.IsResubmission && organisation.ResubmissionStatus != null)
+                        @if (organisation.IsResubmission && organisation.ResubmissionStatus is not RegistrationSubmissionStatus.None)
                         {
                             <govuk-tag status="@organisation.ResubmissionStatus"
                                        content="@SharedLocalizer[organisation.ResubmissionStatus.GetDescription()]"
