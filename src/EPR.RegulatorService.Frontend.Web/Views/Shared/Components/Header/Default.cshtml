@@ -36,12 +36,12 @@
         @SharedLocalizer["Application.Title"]
       </a>
 
-      <nav class="govuk-header__navigation" aria-label="Menu">
+			<nav class="govuk-header__navigation" aria-label="Menu">
         <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-expanded="false" hidden="">
           Menu
         </button>
 
-        <ul class="govuk-header__navigation-list">
+        <ul id="navigation" class="govuk-header__navigation-list">
           <li class="govuk-header__navigation-item">
             @if (User.Identity?.IsAuthenticated == true)
             {
