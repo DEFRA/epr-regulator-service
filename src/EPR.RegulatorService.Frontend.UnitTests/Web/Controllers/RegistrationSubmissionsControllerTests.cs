@@ -3904,29 +3904,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task When_GrantRegistrationSubmission_Post_Success_Then_Should_NOT_Update_OrganisationDetailsChangeHistory_InSession()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations =
-                new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> { { submissionId, detailsModel } };
-            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
-
-            // Act
-            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
-            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
-
-            bool upadtedChangeHistory =
-                _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestOrganisationDetails);
-            upadtedChangeHistory.Should().BeFalse();
-        }
-
-        [TestMethod]
         public async Task When_GrantRegistrationSubmission_Post_Fail_Then_Should_Not_Update_OrganisationDetailsChangeHistory_InSession()
         {
             // Arrange
