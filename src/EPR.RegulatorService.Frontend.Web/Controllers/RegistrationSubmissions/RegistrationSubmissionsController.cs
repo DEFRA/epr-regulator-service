@@ -242,8 +242,12 @@ public partial class RegistrationSubmissionsController(
             var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Granted);
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
-            // this will force a reload of the item in SubmissionDetails
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.Remove(existingModel.SubmissionId);
+            if (status == EndpointResponseStatus.Success && _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(existingModel.SubmissionId, out var selectedRegistration))
+            {
+                selectedRegistration.SubmissionStatus = RegistrationSubmissionStatus.Granted;
+            }
+
+            await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
 
             SaveSession(_currentSession);
 
