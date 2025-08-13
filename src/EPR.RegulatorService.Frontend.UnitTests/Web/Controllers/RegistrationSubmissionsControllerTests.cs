@@ -995,6 +995,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             Assert.IsNotNull(selectedRegistration);
             Assert.AreEqual(RegistrationSubmissionStatus.Granted, selectedRegistration.SubmissionStatus);
+            Assert.AreEqual(RegistrationSubmissionStatus.Granted, selectedRegistration.SubmissionDetails.Status);
+            Assert.IsNotNull(selectedRegistration.SubmissionDetails.RegistrationDate);
             Assert.IsTrue(isSessionHoldsSubmissionId);
             result.RouteName.Should().Be("SubmissionDetails");
             result.RouteValues.First().Value.Should().Be(submissionId);
@@ -1030,6 +1032,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             Assert.IsNotNull(organisationDetailsChangeHistory_Submission);
             Assert.AreEqual(RegistrationSubmissionStatus.Granted, organisationDetailsChangeHistory_Submission.SubmissionStatus);
+            Assert.AreEqual(RegistrationSubmissionStatus.Granted, organisationDetailsChangeHistory_Submission.SubmissionDetails.Status);
+            Assert.IsNotNull(organisationDetailsChangeHistory_Submission.SubmissionDetails.RegistrationDate);
             result.RouteName.Should().Be("SubmissionDetails");
             result.RouteValues.First().Value.Should().Be(submissionId);
             _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
@@ -1067,6 +1071,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.IsNotNull(result);
             Assert.IsNotNull(selectedRegistration);
             Assert.AreEqual(RegistrationSubmissionStatus.Queried, selectedRegistration.SubmissionStatus);
+            Assert.AreEqual(RegistrationSubmissionStatus.Queried, selectedRegistration.SubmissionDetails.Status);
+            Assert.IsNull(selectedRegistration.SubmissionDetails.RegistrationDate);
             Assert.IsNull(organisationDetailsChangeHistory_Submission);
             Assert.IsTrue(isSessionHoldsSubmissionId);
             result.RouteName.Should().Be("ServiceNotAvailable");

@@ -245,6 +245,9 @@ public partial class RegistrationSubmissionsController(
             if (status == EndpointResponseStatus.Success && _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(existingModel.SubmissionId, out var selectedRegistration))
             {
                 selectedRegistration.SubmissionStatus = RegistrationSubmissionStatus.Granted;
+                selectedRegistration.SubmissionDetails.Status = RegistrationSubmissionStatus.Granted;
+                selectedRegistration.RegistrationDate = DateTime.UtcNow;
+                selectedRegistration.SubmissionDetails.RegistrationDate = DateTime.UtcNow;
             }
 
             await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
