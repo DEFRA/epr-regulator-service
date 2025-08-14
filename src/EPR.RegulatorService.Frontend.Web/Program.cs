@@ -77,6 +77,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
+app.MapHealthChecks(
+    builder.Configuration.GetValue<string>("HealthCheckPath"),
+    HealthCheckOptionBuilder.Build()).AllowAnonymous();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<UserDataCheckerMiddleware>();
@@ -89,9 +92,7 @@ app.MapControllerRoute(
     pattern: "{controller}/{action}",
     defaults: new { controller = "Applications", action = "Applications" });
 
-app.MapHealthChecks(
-    builder.Configuration.GetValue<string>("HealthCheckPath"),
-    HealthCheckOptionBuilder.Build()).AllowAnonymous();
+
 
 app.MapRazorPages();
 
