@@ -119,7 +119,7 @@ public partial class SubmissionsController : Controller
 
     [HttpPost]
     [Route(PagePath.Submissions)]
-    public async Task<IActionResult> Submissions(SubmissionsRequestViewModel viewModel, string? filterType = null, string? jsonSubmission = null, bool? export = null)
+    public async Task<IActionResult> Submissions(SubmissionsRequestViewModel viewModel, string? filterType = null, [FromForm] string? jsonSubmission = null, bool? export = null)
     {
         SubmissionFiltersModel submissionFiltersModel = new SubmissionFiltersModel()
         {

@@ -35,17 +35,18 @@
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
                         <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Organisation"]</span>
 
-                    @using (Html.BeginForm("Submissions", "Submissions", new { jsonSubmission = JsonSerializer.Serialize(submission) }, FormMethod.Post))
-                    {
-                        <button class="govuk-link link-button-active" type="submit">
-                            @submission.OrganisationName
-                        </button>
-                        <br />
-                        @(submission.OrganisationType == OrganisationType.DirectProducer
-                        || submission.OrganisationType.Equals("DirectProducer")
-                            ? SharedLocalizer["OrganisationType.DirectProducer"]
-                            : SharedLocalizer["OrganisationType.ComplianceScheme"])
-                    }
+                        @using (Html.BeginForm("Submissions", "Submissions", FormMethod.Post))
+                        {
+                            <input type="hidden" name="jsonSubmission" value="@JsonSerializer.Serialize(submission)" />
+                            <button class="govuk-link link-button-active" type="submit">
+                                @submission.OrganisationName
+                            </button>
+                            <br />
+                            @(submission.OrganisationType == OrganisationType.DirectProducer
+                                            || submission.OrganisationType.Equals("DirectProducer")
+                                            ? SharedLocalizer["OrganisationType.DirectProducer"]
+                                            : SharedLocalizer["OrganisationType.ComplianceScheme"])
+                                }
 
                     </td>
                     <td role="gridcell" class="govuk-table__cell vertical-middle-align">
@@ -77,7 +78,9 @@
                                 {
                                     foreach (var actualSubmissionPeriod in submission.ActualSubmissionPeriod.Split(','))
                                     {
-                                        @actualSubmissionPeriod<br>
+                                        @actualSubmissionPeriod
+                    
+                                        <br>
                                     }
                                 }
                                 else
@@ -110,9 +113,8 @@
         </tbody>
     </table>
     @await Html.PartialAsync("Partials/_PaginationNavigation", Model.PaginationNavigationModel)
-} else
+}
+else
 {
     <p class="govuk-body govuk-!-text-align-centre govuk-!-static-margin-9">@Localizer["Body.NoResultsFound"]</p>
 }
-
-
