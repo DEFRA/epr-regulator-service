@@ -77,11 +77,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapHealthChecks(
     builder.Configuration.GetValue<string>("HealthCheckPath"),
     HealthCheckOptionBuilder.Build()).AllowAnonymous();
-app.UseAuthentication();
-app.UseAuthorization();
+
 app.UseMiddleware<UserDataCheckerMiddleware>();
 app.UseRequestLocalization();
 app.UseMiddleware<JourneyAccessCheckerMiddleware>();
