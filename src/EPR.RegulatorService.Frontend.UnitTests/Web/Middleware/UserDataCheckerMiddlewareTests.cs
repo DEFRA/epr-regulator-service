@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Net;
+using Microsoft.AspNetCore.Builder.Extensions;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
 {
@@ -176,6 +177,58 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             _sessionManagerMock.Verify(x => x.SaveSessionAsync(It.IsAny<ISession>(), It.IsAny<JourneySession>()), Times.Once);
 
             httpResponseMessage.Dispose();
+        }
+        
+        [TestMethod]
+        public async Task Should_Call_Next_When_HealthCheckPath_Matches()
+        {
+            // Arrange
+          
+            var healthPath = new Mock<IConfigurationSection>();
+            healthPath.Setup(s => s.Value).Returns("/health");
+           
+            _configurationMock
+               .Setup(c => c.GetSection("HealthCheckPath"))
+               .Returns(healthPath.Object);
+
+            _httpRequestMock.Setup(r => r.Path)
+                .Returns(new PathString("/health/status"));
+            _httpContextMock.Setup(c => c.Request).Returns(_httpRequestMock.Object);
+
+            var requestDelegateMock = new Mock<RequestDelegate>();
+            requestDelegateMock
+                .Setup(rd => rd(It.IsAny<HttpContext>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            // Act
+            await _systemUnderTest.InvokeAsync(_httpContextMock.Object, requestDelegateMock.Object);
+
+            // Assert
+            requestDelegateMock.Verify(rd => rd(It.IsAny<HttpContext>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task Should_Not_Call_Next_When_HealthCheckPath_Is_Empty()
+        {
+            // Arrange
+            var healthPath = new Mock<IConfigurationSection>();
+            healthPath.Setup(s => s.Value).Returns(string.Empty); // empty path
+
+            _configurationMock
+               .Setup(c => c.GetSection("HealthCheckPath"))
+               .Returns(healthPath.Object);
+
+            // Ensure HttpContext has a valid user to avoid nulls
+            _httpRequestMock.Setup(r => r.Path).Returns(new PathString("/health/status"));
+            _httpContextMock.Setup(x => x.Request).Returns(_httpRequestMock.Object);
+            _httpContextMock.Setup(x => x.User!.Identity!.IsAuthenticated).Returns(false);
+
+            // Act
+            await _systemUnderTest.InvokeAsync(_httpContextMock.Object, _requestDelegateMock.Object);
+
+            // Assert
+            _requestDelegateMock.Verify(x => x(_httpContextMock.Object), Times.Once);
         }
 
         private void SetupControllerName(string controllerName)
