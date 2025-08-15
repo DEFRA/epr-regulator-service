@@ -23,7 +23,7 @@ public class JourneyAccessCheckerMiddleware
         HttpContext httpContext,
         ISessionManager<JourneySession> sessionManager)
     {
-        var healthCheckPath = _configuration.GetValue<string>("HealthCheckPath");
+        var healthCheckPath = _configuration.GetValue<string>("HealthCheckPath") ?? string.Empty;
         if (!string.IsNullOrWhiteSpace(healthCheckPath) &&
             httpContext.Request.Path.StartsWithSegments(healthCheckPath, StringComparison.OrdinalIgnoreCase))
         {
