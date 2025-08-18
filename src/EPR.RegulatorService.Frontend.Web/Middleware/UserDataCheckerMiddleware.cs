@@ -45,7 +45,7 @@ namespace EPR.RegulatorService.Frontend.Web.Middleware
                 return;
             }
 
-            if (context.User?.Identity is { IsAuthenticated: true } && context.User?.TryGetUserData() is null)
+            if (context.User.Identity is { IsAuthenticated: true } && context.User.TryGetUserData() is null)
             {
                 if (IsRegistrationRequest(context.Request))
                 {

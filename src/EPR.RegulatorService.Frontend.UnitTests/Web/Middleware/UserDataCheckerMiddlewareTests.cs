@@ -230,6 +230,47 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             // Assert
             _requestDelegateMock.Verify(x => x(_httpContextMock.Object), Times.Once);
         }
+        [TestMethod]
+        public async Task Should_Redirect_When_GetUserAccountDetails_Fails()
+        {
+            // Arrange
+            var failureResponse = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
+
+            _facadeServiceMock
+                .Setup(s => s.GetUserAccountDetails())
+                .ReturnsAsync(failureResponse);
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
+            {
+        new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+        new Claim(ClaimTypes.Name, "Test User")
+    }, "mock"));
+
+            _httpContextMock.Setup(c => c.User).Returns(user);
+
+            // ✅ Give Response so Redirect() works
+            var defaultContext = new DefaultHttpContext();
+            defaultContext.Response.Body = new MemoryStream(); // needed so Response isn’t null
+            _httpContextMock.Setup(c => c.Response).Returns(defaultContext.Response);
+
+            // Need a valid session
+            var sessionMock = new Mock<ISession>();
+            _httpContextMock.Setup(c => c.Session).Returns(sessionMock.Object);
+            _httpRequestMock.Setup(x => x.Path).Returns("/home");
+            _httpContextMock.Setup(c => c.Request).Returns(_httpRequestMock.Object);
+
+            var pathBaseSection = new Mock<IConfigurationSection>();
+            pathBaseSection.Setup(s => s.Value).Returns("/home");
+            _configurationMock.Setup(c => c.GetSection("PATH_BASE")).Returns(pathBaseSection.Object);
+
+            // Act
+            await _systemUnderTest.InvokeAsync(_httpContextMock.Object, _requestDelegateMock.Object);
+
+            // Assert
+             Assert.AreEqual(StatusCodes.Status302Found, defaultContext.Response.StatusCode);
+            _requestDelegateMock.Verify(rd => rd(It.IsAny<HttpContext>()), Times.Never);
+        }
+
 
         private void SetupControllerName(string controllerName)
         {
