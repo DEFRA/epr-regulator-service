@@ -80,21 +80,20 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHealthChecks(
-    builder.Configuration.GetValue<string>("HealthCheckPath"),
-    HealthCheckOptionBuilder.Build()).AllowAnonymous();
+
 
 app.UseMiddleware<UserDataCheckerMiddleware>();
 app.UseRequestLocalization();
 app.UseMiddleware<JourneyAccessCheckerMiddleware>();
 app.UseMiddleware<AnalyticsCookieMiddleware>();
+app.MapHealthChecks(
+    builder.Configuration.GetValue<string>("HealthCheckPath"),
+    HealthCheckOptionBuilder.Build()).AllowAnonymous();
 
 app.MapControllerRoute(
     name: "Default",
-    pattern: "{controller}/{action}",
+    pattern: "{controller}/{action}/{id?}",
     defaults: new { controller = "Applications", action = "Applications" });
-
-
 
 app.MapRazorPages();
 
