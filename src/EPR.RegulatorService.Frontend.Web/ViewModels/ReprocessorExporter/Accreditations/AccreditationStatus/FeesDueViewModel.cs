@@ -1,7 +1,5 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
 
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-
 public class FeesDueViewModel : AccreditationStatusViewModelBase
 {
     public string ApplicationReferenceNumber { get; init; }

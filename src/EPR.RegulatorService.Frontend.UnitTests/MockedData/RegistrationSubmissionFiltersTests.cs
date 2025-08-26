@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.MockedData.Filters;
@@ -139,10 +136,10 @@ public class RegistrationSubmissionFiltersTests
     [DataRow(44)]
     public void FilterByRelevantYear_ReturnsOnlyThatYear(int byIndex)
     {
-        string expectedYear = _abstractRegistrations.ToArray()[byIndex].RelevantYear.ToString();
+        string expectedYear = _abstractRegistrations.ToArray()[byIndex].RelevantYear.ToString(CultureInfo.CurrentCulture);
         var expectedResult = _abstractRegistrations.Where(x => expectedYear.Contains(x.RelevantYear.ToString(CultureInfo.InvariantCulture)));
 
-        var result = _abstractRegistrations.FilterByRelevantYear(expectedYear.ToString());
+        var result = _abstractRegistrations.FilterByRelevantYear(expectedYear);
         result.Should().BeEquivalentTo(expectedResult);
     }
 
@@ -166,7 +163,7 @@ public class RegistrationSubmissionFiltersTests
             OrganisationName = expectedName,
             OrganisationType = expectedSize.ToString(),
             Statuses = expectedStatus.ToString(),
-            RelevantYears = expectedYear.ToString()
+            RelevantYears = expectedYear.ToString(CultureInfo.CurrentCulture)
         };
 
         var result = _abstractRegistrations.Filter(filter).ToList();

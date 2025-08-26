@@ -1,8 +1,6 @@
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
 
-using FluentAssertions;
-
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Sessions;
 
 [TestClass]

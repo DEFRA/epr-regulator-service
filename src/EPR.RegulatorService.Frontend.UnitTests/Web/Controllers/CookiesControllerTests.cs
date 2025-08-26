@@ -2,8 +2,6 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.Cookies;
 using EPR.RegulatorService.Frontend.Web.Cookies;
-using EPR.RegulatorService.Frontend.Web.Extensions;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Cookies;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -131,12 +129,7 @@ public class CookiesControllerTests
 
         // Assert
         Assert.IsInstanceOfType(result, typeof(LocalRedirectResult));
-        var redirectResult = (LocalRedirectResult)result;
+        var redirectResult = result;
         Assert.AreEqual(localUrl, redirectResult.Url);
-    }
-
-    private object ViewBagValue(ViewResult viewResult, string key)
-    {
-        return viewResult.ViewData[key];
     }
 }

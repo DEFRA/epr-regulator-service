@@ -1,13 +1,7 @@
-using System;
-
 using EPR.RegulatorService.Frontend.Web.Validations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
-using FluentAssertions;
-
 using FluentValidation.TestHelper;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Validations;
 

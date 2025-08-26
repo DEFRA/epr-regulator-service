@@ -1,4 +1,3 @@
-using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -1706,7 +1705,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                .Setup<Task<HttpResponseMessage>>("SendAsync",
                   ItExpr.IsAny<HttpRequestMessage>(),
                   ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+               .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             // Act
             var result = await _facadeService.GetRegistrationSubmissions(filter);
@@ -1730,7 +1729,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                .Setup<Task<HttpResponseMessage>>("SendAsync",
                   ItExpr.IsAny<HttpRequestMessage>(),
                   ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadRequest));
+               .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.BadRequest));
 
             // Act
             var result = await _facadeService.GetRegistrationSubmissions(filter);
@@ -1760,7 +1759,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                .Setup<Task<HttpResponseMessage>>("SendAsync",
                   ItExpr.IsAny<HttpRequestMessage>(),
                   ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+               .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.OK)
                {
                    Content = new StringContent(json, Encoding.UTF8, "application/json")
                });
@@ -1770,7 +1769,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("TEST", ((RegistrationSubmissionOrganisationDetails)result).ApplicationReferenceNumber);
+            Assert.AreEqual("TEST", result.ApplicationReferenceNumber);
         }
 
         [TestMethod]
@@ -1784,14 +1783,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                .Setup<Task<HttpResponseMessage>>("SendAsync",
                   ItExpr.IsAny<HttpRequestMessage>(),
                   ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+               .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.OK)
                {
                    Content = new StringContent("", Encoding.UTF8, "application/json")
                });
 
             // Act
             // EnsureSuccessStatusCode will throw HttpRequestException
-            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+            await _facadeService.GetRegistrationSubmissionDetails(submissionId);
 
             // Assert handled by ExpectedException
         }
@@ -1809,14 +1808,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                .Setup<Task<HttpResponseMessage>>("SendAsync",
                   ItExpr.IsAny<HttpRequestMessage>(),
                   ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+               .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.OK)
                {
                    Content = new StringContent(malformedJson, Encoding.UTF8, "application/json")
                });
 
             // Act
             // ConvertCommonDataToFE should throw a JsonException due to malformed JSON
-            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
+            await _facadeService.GetRegistrationSubmissionDetails(submissionId);
 
             // Assert handled by ExpectedException
         }
@@ -1836,7 +1835,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 ""pageSize"": 10
             }";
 
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
             var result = await FacadeService.ReadRequiredJsonContent(content);
@@ -1856,11 +1855,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Arrange
             // Missing a closing brace or quotes to simulate malformed JSON
             var json = @"{ ""items"": [ { ""Field"": ""Value"" } ";
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
             // This should throw an InvalidDataException due to the catch block
-            var result = await FacadeService.ReadRequiredJsonContent(content);
+            await FacadeService.ReadRequiredJsonContent(content);
 
             // Assert handled by ExpectedException
         }
@@ -1871,11 +1870,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         {
             // Arrange
             var json = ""; // empty string
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
             // Empty JSON won't deserialize properly and should raise the exception
-            var result = await FacadeService.ReadRequiredJsonContent(content);
+            await FacadeService.ReadRequiredJsonContent(content);
 
             // Assert handled by ExpectedException
         }
@@ -1886,7 +1885,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Arrange
             // This is valid JSON but doesn't match the expected structure (e.g., missing required fields)
             var json = @"{ ""notItems"": [ { ""Field"": ""Value"" } ] }";
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
             var result = await FacadeService.ReadRequiredJsonContent(content);

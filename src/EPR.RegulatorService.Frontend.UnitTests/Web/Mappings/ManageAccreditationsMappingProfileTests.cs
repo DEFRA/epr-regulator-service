@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 using AutoMapper;
@@ -10,10 +7,7 @@ using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registration
 using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
-using FluentAssertions;
 using FluentAssertions.Execution;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 

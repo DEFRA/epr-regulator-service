@@ -11,7 +11,7 @@ public class EnumExtensionMethods
     {
         string expectedDescription = "OPTION 111";
 
-        string actualDescription = TestEnum.Option1.GetDescription();
+        string actualDescription = Test.Option1.GetDescription();
 
         actualDescription.Should().Be(expectedDescription);
     }
@@ -21,7 +21,7 @@ public class EnumExtensionMethods
     {
         string expectedDescription = "Option2";
 
-        string actualDescription = TestEnum.Option2.GetDescription();
+        string actualDescription = Test.Option2.GetDescription();
 
         actualDescription.Should().Be(expectedDescription);
     }

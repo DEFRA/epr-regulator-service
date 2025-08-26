@@ -220,7 +220,6 @@ public class AccreditationsControllerTests
     {
         // Arrange
         var accreditationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
-        const int year = 2025;
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageAccreditationUrl);
 

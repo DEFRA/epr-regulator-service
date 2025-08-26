@@ -2,9 +2,6 @@ using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Web.Helpers;
-
 public class AccreditationDetailsViewModel
 {
     public Guid Id { get; set; }

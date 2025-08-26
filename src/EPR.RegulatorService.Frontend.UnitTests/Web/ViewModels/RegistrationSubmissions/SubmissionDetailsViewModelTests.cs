@@ -15,8 +15,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
         private DateTime _statusPendingDate;
 
         private SubmissionDetailsViewModel.FileDetails _testFileDetailsCompany;
-        private SubmissionDetailsViewModel.FileDetails _testFileDetailsPartnership;
-        private SubmissionDetailsViewModel.FileDetails _testFileDetailsBrands;
         private RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails _testDomainFileDetailsCompany;
         private RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails _testDomainFileDetailsPartnership;
         private RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails _testDomainFileDetailsBrands;
@@ -46,25 +44,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
                 BlobName = "test/blob/name"
             };
 
-            _testFileDetailsPartnership = new SubmissionDetailsViewModel.FileDetails
-            {
-                Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership,
-                FileName = "TestFile.pdf",
-                FileId = _testFileId,
-                BlobName = "test/blob/name"
-            };
-
             _testDomainFileDetailsPartnership = new RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileDetails
             {
                 Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership,
-                FileName = "TestFile.pdf",
-                FileId = _testFileId,
-                BlobName = "test/blob/name"
-            };
-
-            _testFileDetailsBrands = new SubmissionDetailsViewModel.FileDetails
-            {
-                Type = RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands,
                 FileName = "TestFile.pdf",
                 FileId = _testFileId,
                 BlobName = "test/blob/name"

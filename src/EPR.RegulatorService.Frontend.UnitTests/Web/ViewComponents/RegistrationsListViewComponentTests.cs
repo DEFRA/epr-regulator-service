@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 {
-    using System.Reflection;
     using EPR.RegulatorService.FronRegistrationSubmissionCommenttend.Web.ViewModels.RegistrationSubmissions;
 
     using Frontend.Core.Enums;

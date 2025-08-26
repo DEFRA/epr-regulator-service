@@ -317,7 +317,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
         var viewModel = new PaymentMethodViewModel
         {
             ApplicationType = ApplicationOrganisationType.Reprocessor,
-            PaymentMethod = PaymentMethodType.AllTypes.First()
+            PaymentMethod = PaymentMethodType.AllTypes[0]
         };
 
         _mapperMock.Setup(m =>
@@ -338,7 +338,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
         var viewModel = new PaymentMethodViewModel
         {
             ApplicationType = ApplicationOrganisationType.Reprocessor,
-            PaymentMethod = PaymentMethodType.AllTypes.First()
+            PaymentMethod = PaymentMethodType.AllTypes[0]
         };
 
         _mapperMock.Setup(m =>
@@ -430,7 +430,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
         await _registrationStatusController.PaymentDate(viewModel);
 
         // Assert
-        _registrationStatusSession.PaymentDate.Should().Be(new DateTime(viewModel.Year.Value, viewModel.Month.Value, viewModel.Day.Value));
+        _registrationStatusSession.PaymentDate.Should().Be(new DateTime(viewModel.Year.Value, viewModel.Month.Value, viewModel.Day.Value, 00, 00, 00, DateTimeKind.Utc));
     }
 
     [TestMethod]

@@ -1,15 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Core.Services
 {
-    using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using EPR.RegulatorService.Frontend.Core.Models;
-
-    using Microsoft.Extensions.ObjectPool;
 
     [ExcludeFromCodeCoverage]
     public static partial class RegistrationSubmissionTestData

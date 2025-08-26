@@ -1,5 +1,3 @@
-using AspNetCoreGeneratedDocument;
-
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
@@ -14,7 +12,7 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+
 using FluentValidation;
 
 using Microsoft.AspNetCore.Mvc;
