@@ -65,7 +65,7 @@ public static class RegistrationSubmissionsFilters
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterBySubmissionStatus(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? submissionStatus)
     {
-        if (!string.IsNullOrEmpty(submissionStatus) && string.Equals(submissionStatus, "none", StringComparison.CurrentCultureIgnoreCase))
+        if (!string.IsNullOrEmpty(submissionStatus) && !string.Equals(submissionStatus, "none", StringComparison.CurrentCultureIgnoreCase))
         {
             queryable = from q in queryable
                         where submissionStatus.Contains(q.SubmissionStatus.ToString())
@@ -77,7 +77,7 @@ public static class RegistrationSubmissionsFilters
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByReSubmissionStatus(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? resubmissionStatus)
     {
-        if (!string.IsNullOrEmpty(resubmissionStatus) && string.Equals(resubmissionStatus, "none", StringComparison.CurrentCultureIgnoreCase))
+        if (!string.IsNullOrEmpty(resubmissionStatus) && !string.Equals(resubmissionStatus, "none", StringComparison.CurrentCultureIgnoreCase))
         {
             queryable = from q in queryable
                         where resubmissionStatus.Contains(q.ResubmissionStatus.ToString())

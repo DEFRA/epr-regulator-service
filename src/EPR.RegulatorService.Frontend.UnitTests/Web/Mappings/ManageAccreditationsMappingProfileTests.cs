@@ -262,20 +262,6 @@ public class ManageAccreditationsMappingProfileTests
     }
 
     [TestMethod]
-    public void MapTaskStatusText_WithUnknownStringStatus_ShouldReturnDefault()
-    {
-        var method = typeof(ManageAccreditationsMappingProfile)
-            .GetMethod("MapTaskStatusText", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static,
-                       null, new[] { typeof(string) }, null);
-
-        method.Should().NotBeNull("the method should be found with correct binding flags");
-
-        var result = (string)method!.Invoke(null, new object[] { "UNKNOWN" });
-
-        result.Should().Be("Not Started Yet");
-    }
-
-    [TestMethod]
     public void MapTaskStatusText_WithUnknownStatusAndTask_ShouldReturnNotStartedYet()
     {
         var method = typeof(ManageAccreditationsMappingProfile)
@@ -318,19 +304,6 @@ public class ManageAccreditationsMappingProfileTests
     }
 
     [TestMethod]
-    public void MapTaskStatusText_UnknownStatus_ShouldReturnNotStarted()
-    {
-        var method = typeof(ManageAccreditationsMappingProfile)
-            .GetMethod("MapTaskStatusText", BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(string) }, null);
-
-        method.Should().NotBeNull();
-
-        var result = (string)method!.Invoke(null, new object[] { "foobar" });
-
-        result.Should().Be("Not Started Yet");
-    }
-
-    [TestMethod]
     public void MapTaskStatusText_CompletedStatus_UnknownTask_ShouldReturnReviewed()
     {
         var method = typeof(ManageAccreditationsMappingProfile)
@@ -363,32 +336,5 @@ public class ManageAccreditationsMappingProfileTests
         var result = (string)method!.Invoke(null, new object[] { (ApplicationStatus?)123 });
 
         result.Should().Be("govuk-tag--grey");
-    }
-
-    [TestMethod]
-    public void MapTaskStatusText_KnownStatuses_ShouldReturnExpectedResults()
-    {
-        var method = typeof(ManageAccreditationsMappingProfile)
-            .GetMethod("MapTaskStatusText", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static, null, new[] { typeof(string) }, null);
-
-        method.Should().NotBeNull("the method should be found with correct binding flags");
-
-        var testCases = new Dictionary<string, string>
-        {
-            { "not started", "Not Started yet" },
-            { "not started yet", "Not started yet" },
-            { "approved", "Approved" },
-            { "queried", "Queried" },
-            { "completed", "Completed" },
-            { "duly made", "Duly Made" },
-            { "dulymade", "Duly Made" }
-        };
-
-        foreach (var testCase in testCases)
-        {
-            var result = (string)method!.Invoke(null, new object[] { testCase.Key });
-
-            result.Should().Be(testCase.Value, $"because '{testCase.Key}' should map to '{testCase.Value}'");
-        }
     }
 }

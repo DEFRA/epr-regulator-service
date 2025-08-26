@@ -12,7 +12,7 @@ public class RegistrationSubmissionStatusConverter : JsonConverter<RegistrationS
     {
         string value = reader.GetString();
         var values = Enum.GetValues(typeof(RegistrationSubmissionStatus)).OfType<RegistrationSubmissionStatus>().ToList();
-        if (string.IsNullOrEmpty(value) && !Enum.IsDefined(typeof(RegistrationSubmissionStatus), value!))
+        if (string.IsNullOrEmpty(value) || !Enum.TryParse(typeof(RegistrationSubmissionStatus), value!, true, out _))
         {
             throw new JsonException($"Value '{value}' is not valid for {nameof(OrganisationType)}.");
         }

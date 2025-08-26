@@ -478,11 +478,13 @@ public class ReprocessorExporterServiceTests
     {
         // Arrange
         var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
-        string expectedPath = GetRegistrationByIdPath
+        string expectedPath = GetReprocessingIOByRegistrationMaterialIdPath
             .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationId.ToString());
 
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
+        var responseFactory = () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, responseFactory);
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -1053,6 +1055,8 @@ public class ReprocessorExporterServiceTests
             DulyMadeDate = DateTime.UtcNow.AddDays(-5)
         };
 
+        _optionsMock.Object.Value.Endpoints.Add("MarkAccreditationAsDulyMade", "v{apiVersion}/accreditationMaterials/{id}/markAsDulyMade");
+
         HttpRequestMessage? capturedRequest = null;
 
         _httpMessageHandlerMock
@@ -1082,6 +1086,8 @@ public class ReprocessorExporterServiceTests
             DeterminationDate = DateTime.UtcNow,
             DulyMadeDate = DateTime.UtcNow.AddDays(-2)
         };
+
+        _optionsMock.Object.Value.Endpoints.Add("MarkAccreditationAsDulyMade", "v{apiVersion}/accreditationMaterials/{id}/markAsDulyMade");
 
         HttpRequestMessage? capturedRequest = null;
 
@@ -1245,7 +1251,7 @@ public class ReprocessorExporterServiceTests
                 ItExpr.Is<HttpRequestMessage>(req =>
                     req.Method == method && req.RequestUri == new Uri($"{BaseUrl}{path}")),
                 ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(responseMessage);
+            .ReturnsAsync(responseMessage.Invoke);
 
     private static Registration CreateRegistration() =>
         new()
