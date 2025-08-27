@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -16,6 +16,11 @@
   <PropertyGroup> 
     <!-- SonarCloud does not recognise file-scoped namespaces in current version. -->
     <NoWarn>S3903</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SonarQubeSetting>sonar.issue.ignore.allfile=1</SonarQubeSetting>
+    <SonarQubeSetting>sonar.issue.ignore.allfile.1.ruleKey=Web:MetaRefreshCheck</SonarQubeSetting>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'EPR.RegulatorService.Frontend' " />
@@ -458,12 +463,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <SonarQubeSetting Include="sonar.issue.ignore.multicriteria">
-      <Value>e1</Value>
-    </SonarQubeSetting>
-    <SonarQubeSetting Include="sonar.issue.ignore.multicriteria.e1.ruleKey">
-      <Value>Web:MetaRefreshCheck</Value>
-    </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.coverage.exclusions">
       <Value>
         **/SubmissionListRequest.cs,
