@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -463,10 +463,6 @@
     </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.issue.ignore.multicriteria.e1.ruleKey">
       <Value>Web:MetaRefreshCheck</Value>
-    </SonarQubeSetting>
-    <SonarQubeSetting Include="sonar.issue.ignore.multicriteria.e1.resourceKey">
-      <Value>**/*.cshtml</Value>
-      <!-- or a specific file like Views/Home/Index.cshtml -->
     </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.coverage.exclusions">
       <Value>
