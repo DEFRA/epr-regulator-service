@@ -63,7 +63,9 @@ public static class AbstractSubmissionFilters
     {
         if (submissionYears?.Length >0)
         {
+#pragma warning disable CA1846
             query = query.Where(x => submissionYears.Contains(int.Parse(x.SubmissionPeriod.Substring(x.SubmissionPeriod.Length - 4), CultureInfo.CurrentCulture)));
+#pragma warning restore CA1846
         }
 
         return query;

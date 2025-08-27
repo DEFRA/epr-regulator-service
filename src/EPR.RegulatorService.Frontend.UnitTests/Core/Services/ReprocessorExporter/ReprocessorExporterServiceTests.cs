@@ -1217,7 +1217,7 @@ public class ReprocessorExporterServiceTests
         // Assert
         responseFactory.Invoke().StatusCode.Should().Be(HttpStatusCode.OK);
         Assert.IsNotNull(result);
-        responseFactory.Invoke().Dispose();
+        responseFactory().Dispose();
     }
 
     [TestMethod]

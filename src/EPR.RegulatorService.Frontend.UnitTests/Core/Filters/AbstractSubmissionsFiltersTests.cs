@@ -209,7 +209,9 @@ public class AbstractSubmissionFiltersTests
         var submissionYears = new[] { 2023 };
 
         var expectedSubmissions = _abstractSubmissions.Where(
+#pragma warning disable CA1846
             x => submissionYears.Contains(int.Parse(x.SubmissionPeriod.Substring(x.SubmissionPeriod.Length - 4), CultureInfo.CurrentCulture)));
+#pragma warning restore CA1846
 
         var result = _abstractSubmissions.FilterBySubmissionYears(submissionYears);
 
