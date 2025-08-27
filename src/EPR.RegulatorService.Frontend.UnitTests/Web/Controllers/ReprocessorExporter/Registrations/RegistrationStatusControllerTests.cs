@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
+using System.Globalization;
+
 using OfflinePaymentRequest = Frontend.Core.Models.ReprocessorExporter.Registrations.OfflinePaymentRequest;
 
 [TestClass]
@@ -525,8 +527,8 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
     public async Task RegistrationApplicationStatus_WhenCalledAfterDulyMade_ShouldReturnApplicationStatusView(string? determinationDateString, string? dulyMadeDateString, int expectedDeterminationWeeks)
     {
         // Arrange
-        DateTime? determinationDateTime = determinationDateString == null ? null : DateTime.Parse(determinationDateString);
-        DateTime? dulyMadeDateTime = dulyMadeDateString == null ? null : DateTime.Parse(dulyMadeDateString);
+        DateTime? determinationDateTime = determinationDateString == null ? null : DateTime.Parse(determinationDateString, CultureInfo.CurrentCulture);
+        DateTime? dulyMadeDateTime = dulyMadeDateString == null ? null : DateTime.Parse(dulyMadeDateString, CultureInfo.CurrentCulture);
 
         var registrationPaymentFees = CreateRegistrationPaymentFees(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"), determinationDateTime, dulyMadeDateTime);
         var expectedViewModel = new PaymentReviewViewModel

@@ -1,22 +1,12 @@
-using System.Net;
-using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
 using FluentAssertions.Execution;
-
-using Microsoft.Extensions.Options;
-using Microsoft.Identity.Web;
-
-using Moq.Protected;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
 
@@ -1227,6 +1217,7 @@ public class ReprocessorExporterServiceTests
         // Assert
         responseFactory.Invoke().StatusCode.Should().Be(HttpStatusCode.OK);
         Assert.IsNotNull(result);
+        responseFactory.Invoke().Dispose();
     }
 
     [TestMethod]

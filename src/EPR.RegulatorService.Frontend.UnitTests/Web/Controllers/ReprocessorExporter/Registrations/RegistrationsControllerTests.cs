@@ -41,7 +41,6 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         var mockHeaders = new Mock<IHeaderDictionary>();
 
         // Set up the Referer header to return a sample URL (or null for different tests)
-        mockHeaders.Setup(h => h["Referer"]).Returns("http://previous-page.com");
         mockHeaders.Setup(h => h.Referer).Returns("http://previous-page.com");
 
         // Set the mock Request to the HttpContext
@@ -395,7 +394,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
 
         var mockHeaders = new Mock<IHeaderDictionary>();
-        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null); // Simulating missing Referer header
+        mockHeaders.Setup(h => h.Referer).Returns((string?)null); // Simulating missing Referer header
 
         var mockRequest = new Mock<HttpRequest>();
         mockRequest.Setup(r => r.Headers).Returns(mockHeaders.Object);
@@ -765,7 +764,6 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         // Arrange
         var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         var mockHeaders = new Mock<IHeaderDictionary>();
-        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
         mockHeaders.Setup(h => h.Referer).Returns((string?)null);
 
         var mockRequest = new Mock<HttpRequest>();
@@ -847,7 +845,6 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     {
         // Arrange
         var mockHeaders = new Mock<IHeaderDictionary>();
-        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
         mockHeaders.Setup(h => h.Referer).Returns((string?)null);
 
         var mockRequest = new Mock<HttpRequest>();
@@ -959,7 +956,6 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     {
         // Arrange
         var mockHeaders = new Mock<IHeaderDictionary>();
-        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
         mockHeaders.Setup(h => h.Referer).Returns((string?)null);
 
         var mockRequest = new Mock<HttpRequest>();
@@ -1030,7 +1026,6 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     {
         // Arrange
         var mockHeaders = new Mock<IHeaderDictionary>();
-        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
         mockHeaders.Setup(h => h.Referer).Returns((string?)null);
 
         var mockRequest = new Mock<HttpRequest>();
@@ -1142,7 +1137,6 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
     {
         // Arrange
         var mockHeaders = new Mock<IHeaderDictionary>();
-        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
         mockHeaders.Setup(h => h.Referer).Returns((string?)null);
 
         var mockRequest = new Mock<HttpRequest>();
@@ -1532,6 +1526,8 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
         _reprocessorExporterServiceMock.Verify(service =>
             service.DownloadSamplingInspectionFile(It.Is<FileDownloadRequest>(r =>
                 r.FileId == fileId && r.FileName == filename)), Times.Once);
+
+        httpResponseMessage.Dispose();
     }
 
     private static void AssertBackLink(ViewResult viewResult, string expectedBackLink)

@@ -53,7 +53,6 @@ public class AccreditationsControllerTests
         var mockHeaders = new Mock<IHeaderDictionary>();
 
         // Set up the Referer header to return a sample URL (or null for different tests)
-        mockHeaders.Setup(h => h["Referer"]).Returns("http://previous-page.com");
         mockHeaders.Setup(h => h.Referer).Returns("http://previous-page.com");
 
         // Set the mock Request to the HttpContext
@@ -168,7 +167,6 @@ public class AccreditationsControllerTests
         var accreditationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         const int year = 2025;
         var mockHeaders = new Mock<IHeaderDictionary>();
-        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
         mockHeaders.Setup(h => h.Referer).Returns((string?)null);
 
         var mockRequest = new Mock<HttpRequest>();

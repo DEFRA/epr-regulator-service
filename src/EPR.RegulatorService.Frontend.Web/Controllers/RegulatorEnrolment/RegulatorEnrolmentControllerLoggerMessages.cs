@@ -1,3 +1,5 @@
+namespace EPR.RegulatorService.Frontend.Web.Controllers.RegulatorEnrolment;
+
 public static partial class RegulatorEnrolmentControllerLoggerMessages
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "Invited token was not provided in URL for user with id {Id}")]
