@@ -1203,21 +1203,20 @@ public class ReprocessorExporterServiceTests
             .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", accreditationId.ToString());
 
-        var responseFactory = () => new HttpResponseMessage
+        var response = new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedAccreditationBusinessPlan, _jsonSerializerOptions))
         };
 
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, responseFactory);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => response);
 
         // Act
         var result = await _service.GetAccreditionBusinessPlanByIdAsync(accreditationId);
 
         // Assert
-        responseFactory.Invoke().StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
         Assert.IsNotNull(result);
-        responseFactory().Dispose();
     }
 
     [TestMethod]
