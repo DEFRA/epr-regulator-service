@@ -458,6 +458,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <SonarQubeSetting Include="sonar.issue.ignore.multicriteria">
+      <Value>e1</Value>
+    </SonarQubeSetting>
+    <SonarQubeSetting Include="sonar.issue.ignore.multicriteria.e1.ruleKey">
+      <Value>Web:MetaRefreshCheck</Value>
+    </SonarQubeSetting>
+    <SonarQubeSetting Include="sonar.issue.ignore.multicriteria.e1.resourceKey">
+      <Value>**/*.cshtml</Value>
+      <!-- or a specific file like Views/Home/Index.cshtml -->
+    </SonarQubeSetting>
     <SonarQubeSetting Include="sonar.coverage.exclusions">
       <Value>
         **/SubmissionListRequest.cs,
