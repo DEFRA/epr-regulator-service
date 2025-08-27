@@ -92,7 +92,7 @@ app.MapHealthChecks(
 
 app.MapControllerRoute(
     name: "Default",
-    pattern: "{controller}/{action}/{id?}",
+    pattern: "{controller}/{action}",
     defaults: new { controller = "Applications", action = "Applications" });
 
 app.MapRazorPages();
