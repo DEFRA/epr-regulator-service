@@ -1,4 +1,3 @@
-using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -12,10 +11,10 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 using FluentAssertions.Execution;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
+
+using OfflinePaymentRequest = Frontend.Core.Models.ReprocessorExporter.Registrations.OfflinePaymentRequest;
 
 [TestClass]
 public class RegistrationStatusControllerTests : RegistrationControllerTestBase

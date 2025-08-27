@@ -1,11 +1,11 @@
 using EPR.RegulatorService.Frontend.Web.ViewComponents;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
-using EPR.RegulatorService.Frontend.Core.Models;
-using EPR.RegulatorService.Frontend.Core.MockedData;
-using EPR.RegulatorService.Frontend.Web.Constants;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents
 {
+    using ServiceRole = Frontend.Web.Constants.ServiceRole;
+    using User = Frontend.Core.Models.User;
+
     [TestClass]
     public class EnrolmentRequestDetailsTests : ViewComponentsTestBase
     {

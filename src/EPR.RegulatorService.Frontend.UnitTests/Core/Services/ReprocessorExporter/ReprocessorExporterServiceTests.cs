@@ -24,6 +24,9 @@ using System.Globalization;
 
 using Frontend.Core.Enums;
 
+using OfflinePaymentRequest = Frontend.Core.Models.ReprocessorExporter.Registrations.OfflinePaymentRequest;
+using Registration = Frontend.Core.Models.ReprocessorExporter.Registrations.Registration;
+
 [TestClass]
 public class ReprocessorExporterServiceTests
 {

@@ -19,6 +19,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers;
 
 using Microsoft.Extensions.Configuration;
 
+using Organisation = Common.Authorization.Models.Organisation;
 using ServiceRole = Frontend.Core.Enums.ServiceRole;
 
 [TestClass]

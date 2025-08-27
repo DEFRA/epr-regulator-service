@@ -26,7 +26,6 @@ using ViewModels.ReprocessorExporter.Accreditations;
 public class AccreditationsController(ISessionManager<JourneySession> sessionManager,
                                     IReprocessorExporterService reprocessorExporterService,
                                     IConfiguration configuration,
-                                    IMapper mapper,
                                     IValidator<IdRequest> idRequestValidator
                                     ) : AccreditationBaseController(sessionManager, configuration)
 {

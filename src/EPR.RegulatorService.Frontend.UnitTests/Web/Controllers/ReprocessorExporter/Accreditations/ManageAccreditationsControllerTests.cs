@@ -1,7 +1,6 @@
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Constants;
@@ -15,10 +14,11 @@ using FluentValidation;
 using FluentValidation.Results;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Accreditations;
+
+using Registration = Frontend.Core.Models.ReprocessorExporter.Registrations.Registration;
 
 [TestClass]
 public class ManageAccreditationsControllerTests

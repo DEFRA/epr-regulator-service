@@ -175,7 +175,7 @@ public class AccreditationStatusController(
         }
 
         accreditationStatusSession.PaymentDate =
-            new DateTime(viewModel.Year!.Value, viewModel.Month!.Value, viewModel.Day!.Value);
+            new DateTime(viewModel.Year!.Value, viewModel.Month!.Value, viewModel.Day!.Value, 0, 0, 0, 0, DateTimeKind.Utc);
 
         await SaveSession(session);
 
@@ -359,7 +359,7 @@ public class AccreditationStatusController(
         return session.ReprocessorExporterSession.AccreditationStatusSession;
     }
 
-    private IActionResult HandleInvalidModelState<T>(JourneySession session, string pagePath, AccreditationStatusSession accreditationStatusSession, T viewModel, string viewName)
+    private ViewResult HandleInvalidModelState<T>(JourneySession session, string pagePath, AccreditationStatusSession accreditationStatusSession, T viewModel, string viewName)
     {
         SetBackLinkInfos(session, pagePath);
 

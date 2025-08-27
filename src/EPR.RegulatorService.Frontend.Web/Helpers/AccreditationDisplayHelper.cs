@@ -2,6 +2,8 @@ namespace EPR.RegulatorService.Frontend.Web.Helpers
 {
     using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 
+    using ViewModels.ReprocessorExporter.Accreditations;
+
     public static class AccreditationDisplayHelper
     {
         private static readonly HashSet<ApplicationStatus> InactiveStatuses = new()

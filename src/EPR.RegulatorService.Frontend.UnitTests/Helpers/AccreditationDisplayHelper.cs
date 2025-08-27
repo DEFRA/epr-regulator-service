@@ -3,6 +3,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Helpers;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Helpers;
 
+using Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
+
 [TestClass]
 public class AccreditationDisplayHelperTests
 {

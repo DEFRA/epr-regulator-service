@@ -1,93 +1,15 @@
-using System.Net;
-using System.Text;
-using System.Text.Json;
-
-using EPR.RegulatorService.Frontend.Core.Configs;
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.MockedData;
-using EPR.RegulatorService.Frontend.Core.Models;
-using EPR.RegulatorService.Frontend.Core.Models.CompanyDetails;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
-using EPR.RegulatorService.Frontend.Core.Models.Pagination;
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-using EPR.RegulatorService.Frontend.Core.Services;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.Identity.Web;
-
-using Moq.Protected;
-
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 {
     [TestClass]
-    public class FacadeServiceTests
+    public class FacadeServiceTests : FacadeServiceTestBase
     {
         private const string TestOrgName = "Test org name";
         private const string ApprovedPerson = "ApprovedPerson";
         private const string DelegatedPerson = "DelegatedPerson";
-        private Mock<HttpMessageHandler> _mockHandler;
-        private Mock<ILogger<FacadeService>> _mockLogger;
-        private Mock<ITokenAcquisition> _tokenAcquisitionMock;
-        private HttpClient _httpClient;
-        private IOptions<PaginationConfig> _paginationConfig;
-        private IOptions<FacadeApiConfig> _facadeApiConfig;
-        private FacadeService _facadeService;
-        private Fixture _fixture;
-
+        
         private readonly Guid _organisationId = Guid.NewGuid();
         private readonly Guid _connExternalId = Guid.NewGuid();
         private readonly Guid _promotedPersonExternalId = Guid.NewGuid();
-
-        private const int PAGE_SIZE = 10;
-
-        [TestInitialize]
-        public void Setup()
-        {
-            _mockHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
-            _mockLogger = new Mock<ILogger<FacadeService>>();
-            _tokenAcquisitionMock = new Mock<ITokenAcquisition>();
-            _httpClient = new HttpClient(_mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
-            _paginationConfig = Options.Create(new PaginationConfig { PageSize = PAGE_SIZE });
-            _facadeApiConfig = Options.Create(new FacadeApiConfig
-            {
-                Endpoints = new Dictionary<string, string>
-                {
-                    ["PendingApplications"] = "http://testurl.com",
-                    ["UpdateEnrolment"] = "http://testurl.com",
-                    ["OrganisationEnrolmentsPath"] = "organisations/{0}/pending-applications",
-                    ["OrganisationTransferNationPath"] = "accounts/transfer-nation",
-                    ["SendEnrolmentUpdatedEmails"] = "regulators/accounts/govNotification",
-                    ["EnrolInvitedUser"] = "accounts-management/enrol-invited-user",
-                    ["UserAccounts"] = "user-accounts",
-                    ["OrganisationDetails"] = "organisations/organisation-details?externalId={0}",
-                    ["GetOrganisationUsersByOrganisationExternalIdPath"] = "organisations/users-by-organisation-external-id?externalId={0}",
-                    ["PomSubmissions"] = "http://testurl.com/PomSubmissions",
-                    ["RegistrationSubmissions"] = "http://testurl.com/RegistrationSubmissions",
-                    ["OrganisationsSearchPath"] = "organisations/search-organisations?currentPage={0}&pageSize={1}&searchTerm={2}",
-                    ["PomSubmissionDecision"] = "http://testurl.com",
-                    ["OrganisationsRemoveApprovedUser"] = "organisations/remove-approved-users?connExternalId={0}&organisationId={1}&promotedPersonExternalId={2}",
-                    ["AddRemoveApprovedUser"] = "/accounts-management/add-remove-approved-users",
-                    ["RegistrationSubmissionDecisionPath"] = "http://testurl.com",
-                    ["FileDownload"] = "https://api.example.com/file/download",
-                    ["OrganisationRegistrationSubmissions"] = "registrations/get-organisations&currentPage={0}&pageSize={1}",
-                    ["OrganisationRegistrationSubmissionDecisionPath"] = "organisation-registration-submission-decision",
-                    ["GetOrganisationRegistrationSubmissionDetailsPath"] = "registrations-submission-details/submissionId/{0}",
-                    ["GetOrganisationRegistrationSubmissionsPath"] = "organisation-registration-submissions",
-                    ["SubmitRegistrationFeePaymentPath"] = "organisation-registration-fee-payment",
-                    ["PackagingDataResubmissionFeePaymentPath"] = "organisation-packaging-data-resubmission-fee-payment",
-                    ["GetPomResubmissionPaycalParameters"] = "pom/get-resubmission-paycal-parameters",
-                },
-                DownstreamScope = "api://default"
-            });
-
-            _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
-            _fixture = new Fixture();
-        }
 
         [TestMethod]
         public async Task GetTestMessageAsync_ShouldReturnTestMessage_WhenStatusCodeIsOk()

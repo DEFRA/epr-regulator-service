@@ -54,5 +54,10 @@
       <Folder Include="Web\ViewModels\ReprocessorExporter\" />
     </ItemGroup>
 
+  <ItemGroup>
+    <SonarQubeSetting Include="sonar.issue.ignore.multicriteria.e1.ruleKey">
+      <Value>external_roslyn:CA1506</Value>
+    </SonarQubeSetting>
+  </ItemGroup>
 
 </Project>

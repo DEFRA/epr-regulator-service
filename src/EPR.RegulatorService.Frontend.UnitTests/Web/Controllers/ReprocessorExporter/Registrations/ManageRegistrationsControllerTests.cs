@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
 
+using Registration = Frontend.Core.Models.ReprocessorExporter.Registrations.Registration;
+
 [TestClass]
 public class ManageRegistrationsControllerTests : RegistrationControllerTestBase
 {
