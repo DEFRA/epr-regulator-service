@@ -15,11 +15,12 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.0.1" />
-    <PackageReference Include="EPR.Common.Authorization" Version="1.0.19-rc.1033651" />
+    <PackageReference Include="EPR.Common.Authorization" Version="1.0.19-rc.1033787" />
     <PackageReference Include="libphonenumber-csharp" Version="8.13.44" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Graph" Version="5.85.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="3.1.0" />
   </ItemGroup>
 
