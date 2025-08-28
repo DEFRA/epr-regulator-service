@@ -1,7 +1,6 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSubmissions
 {
     using System;
-    using System.Collections.Generic;
 
     using EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.Shared.Helpers;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;

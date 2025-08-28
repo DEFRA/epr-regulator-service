@@ -18,6 +18,11 @@
     <NoWarn>S3903</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <SonarQubeSetting>sonar.issue.ignore.allfile=1</SonarQubeSetting>
+    <SonarQubeSetting>sonar.issue.ignore.allfile.1.ruleKey=Web:MetaRefreshCheck</SonarQubeSetting>
+  </PropertyGroup>
+
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'EPR.RegulatorService.Frontend' " />
 
   <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">

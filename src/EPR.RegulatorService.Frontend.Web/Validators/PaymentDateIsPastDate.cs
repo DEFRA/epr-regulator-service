@@ -4,6 +4,8 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 
 namespace EPR.RegulatorService.Frontend.Web.Validators;
 
+using System.Globalization;
+
 public class PaymentDateIsPastDateAttribute : ValidationAttribute
 {    
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
@@ -19,7 +21,7 @@ public class PaymentDateIsPastDateAttribute : ValidationAttribute
     private static bool IsPastDate(IPaymentDateViewModel model)
     {
         bool isValidDate = DateOnly.TryParse($"{model.Year.Value:D4}-{model.Month.Value:D2}-{model.Day.Value:D2}",
-            out var parsedDate);
+            CultureInfo.CurrentCulture, out var parsedDate);
 
         if (!isValidDate)
         {

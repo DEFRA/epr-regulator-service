@@ -4,8 +4,6 @@ using System.Net;
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -16,11 +14,8 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
-
-using ServiceRole = EPR.RegulatorService.Frontend.Core.Enums.ServiceRole;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
 

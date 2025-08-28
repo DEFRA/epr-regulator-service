@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 using Microsoft.Extensions.Configuration;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.FeatureManagement;

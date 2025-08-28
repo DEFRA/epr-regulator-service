@@ -54,5 +54,8 @@
       <Folder Include="Web\ViewModels\ReprocessorExporter\" />
     </ItemGroup>
 
+  <PropertyGroup>
+    <NoWarn>CA1506</NoWarn>
+  </PropertyGroup>
 
 </Project>

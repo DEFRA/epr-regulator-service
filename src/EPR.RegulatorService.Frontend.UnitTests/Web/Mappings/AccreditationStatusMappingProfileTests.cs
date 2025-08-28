@@ -36,7 +36,7 @@ public class AccreditationStatusMappingProfileTests
             MaterialName = "Glass",
             OrganisationName = "Eco Recycling Ltd",
             SiteAddress = "456 Sustainable Way",
-            SubmittedDate = new DateTime(2025, 4, 15),
+            SubmittedDate = new DateTime(2025, 4, 15, 00, 00, 00, DateTimeKind.Utc),
             ApplicationType = ApplicationOrganisationType.Reprocessor,
             Regulator = "Environment Agency"
         };
@@ -107,7 +107,7 @@ public class AccreditationStatusMappingProfileTests
     {
         // Arrange
         var session = CreateSession();
-        session.PaymentDate = new DateTime(2025, 5, 30);
+        session.PaymentDate = new DateTime(2025, 5, 30, 00, 00, 00, DateTimeKind.Utc);
 
         // Act
         var result = _mapper.Map<PaymentDateViewModel>(session);
@@ -179,11 +179,11 @@ public class AccreditationStatusMappingProfileTests
             FeeAmount = 150.50m,
             FullPaymentMade = true,
             PaymentMethod = PaymentMethodType.CreditOrDebitCard,
-            PaymentDate = new DateTime(2025, 5, 30),
+            PaymentDate = new DateTime(2025, 5, 30, 00, 00, 00, DateTimeKind.Utc),
             MaterialName = "Glass",
             OrganisationName = "Recycling Co.",
             SiteAddress = "123 Green Road, Eco Town",
-            SubmittedDate = new DateTime(2025, 5, 1)
+            SubmittedDate = new DateTime(2025, 5, 1, 00, 00, 00, DateTimeKind.Utc)
         };
     }
 }

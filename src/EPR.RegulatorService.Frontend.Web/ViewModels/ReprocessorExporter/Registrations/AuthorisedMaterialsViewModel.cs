@@ -1,5 +1,3 @@
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;

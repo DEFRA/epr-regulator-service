@@ -28,7 +28,7 @@ public abstract class RegistrationControllerTestBase
         _httpContextMock = new Mock<HttpContext>();
     }
 
-    protected Mock<IConfiguration> CreateConfigurationMock()
+    public static Mock<IConfiguration> CreateConfigurationMock()
     {
         var configurationSectionMock = new Mock<IConfigurationSection>();
         

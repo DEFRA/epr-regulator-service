@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Configs;

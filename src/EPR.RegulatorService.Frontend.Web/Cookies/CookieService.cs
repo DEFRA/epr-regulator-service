@@ -2,6 +2,7 @@ using EPR.RegulatorService.Frontend.Web.Configs;
 using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Web.Cookies;
+
 public class CookieService : ICookieService
 {
     private readonly ILogger<CookieService> _logger;
@@ -60,7 +61,7 @@ public class CookieService : ICookieService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error setting cookie acceptance to '{S}'", accept.ToString());
+            _logger.SettingCookieAcceptanceException(accept);
             throw;
         }
     }
@@ -78,7 +79,7 @@ public class CookieService : ICookieService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error reading cookie acceptance");
+            _logger.ReadCookieAcceptanceException();
             throw;
         }
 

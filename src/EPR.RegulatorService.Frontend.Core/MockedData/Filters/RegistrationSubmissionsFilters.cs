@@ -2,6 +2,7 @@ namespace EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
@@ -64,7 +65,7 @@ public static class RegistrationSubmissionsFilters
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterBySubmissionStatus(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? submissionStatus)
     {
-        if (!string.IsNullOrEmpty(submissionStatus) && submissionStatus.ToLower() != "none")
+        if (!string.IsNullOrEmpty(submissionStatus) && !string.Equals(submissionStatus, "none", StringComparison.CurrentCultureIgnoreCase))
         {
             queryable = from q in queryable
                         where submissionStatus.Contains(q.SubmissionStatus.ToString())
@@ -76,7 +77,7 @@ public static class RegistrationSubmissionsFilters
 
     public static IQueryable<RegistrationSubmissionOrganisationDetails> FilterByReSubmissionStatus(this IQueryable<RegistrationSubmissionOrganisationDetails> queryable, string? resubmissionStatus)
     {
-        if (!string.IsNullOrEmpty(resubmissionStatus) && resubmissionStatus.ToLower() != "none")
+        if (!string.IsNullOrEmpty(resubmissionStatus) && !string.Equals(resubmissionStatus, "none", StringComparison.CurrentCultureIgnoreCase))
         {
             queryable = from q in queryable
                         where resubmissionStatus.Contains(q.ResubmissionStatus.ToString())
@@ -91,7 +92,7 @@ public static class RegistrationSubmissionsFilters
         if (!string.IsNullOrEmpty(relevantYear))
         {
             queryable = from q in queryable
-                        where relevantYear.Contains(q.RelevantYear.ToString())
+                        where relevantYear.Contains(q.RelevantYear.ToString(CultureInfo.CurrentCulture))
                         select q;
         }
 

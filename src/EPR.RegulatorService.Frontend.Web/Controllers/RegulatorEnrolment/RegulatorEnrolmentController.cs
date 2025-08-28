@@ -39,7 +39,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegulatorEnrolment
 
             if (string.IsNullOrEmpty(token))
             {
-                _logger.LogError("Invited token was not provided in URL for user with id {SessionUserDataId}", session.UserData.Id);
+                _logger.InvitedTokenWasNotProvided(session.UserData.Id);
 
                 return RedirectToAction(PagePath.Error, "Error");
             }
@@ -79,19 +79,19 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegulatorEnrolment
 
                 if (result == EndpointResponseStatus.Success)
                 {
-                    _logger.LogInformation("Enrol invited user service for id: {UserId} is successful", request.UserId);
+                    _logger.EnrolmentForInvitedUserSuccessful(request.UserId);
 
                     session.UserData.FirstName = request.FirstName;
                     session.UserData.LastName = request.LastName;
 
                     await ClaimsExtensions.UpdateUserDataClaimsAndSignInAsync(HttpContext, session.UserData);
 
-                    _logger.LogInformation("User data in session for id: {UserId} is updated successfully", request.UserId);
+                    _logger.UserDataUpdated(request.UserId);
 
                     return RedirectToAction(PagePath.LandingPage, "Home");
                 }
 
-                _logger.LogError("Enrol invited user service for email: {UserId} failed", request.UserId);
+                _logger.EnrolmentForInvitedUserFailed(request.UserId);
 
                 ModelState.AddModelError("Error", "Unable to enrol invited user");
             }

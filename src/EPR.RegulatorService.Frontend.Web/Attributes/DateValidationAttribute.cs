@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
