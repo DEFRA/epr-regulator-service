@@ -446,7 +446,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 RelevantYears = "2025, 2026",
                 PageNumber = expectedPageNumber,
                 PageSize = 500,
-                Statuses = "Pending"
+                Statuses = "Pending",
+                Show2026RelevantYearFilter = true
             };
 
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
@@ -508,6 +509,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
             model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
             model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterModel.Show2026RelevantYearFilter.Should().BeTrue();
         }
 
         [TestMethod]
@@ -968,7 +970,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [DataRow(2, "NI")]
         [DataRow(3, "Sco")]
         [DataRow(4, "Wal")]
-        public async Task On_GrantRegistrationSubmission_Update_Session_To_Remove_SubmissionDetails(int nationId, string nationCode)
+        public async Task On_GrantRegistrationSubmission_Update_Session_SelectedRegistrations_With_Updated_SubmissionDetails(int nationId, string nationCode)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -991,10 +993,84 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
 
             Assert.IsNotNull(result);
-            Assert.IsNull(selectedRegistration);
-            Assert.IsFalse(isSessionHoldsSubmissionId);
+            Assert.IsNotNull(selectedRegistration);
+            Assert.AreEqual(RegistrationSubmissionStatus.Granted, selectedRegistration.SubmissionStatus);
+            Assert.IsTrue(isSessionHoldsSubmissionId);
             result.RouteName.Should().Be("SubmissionDetails");
             result.RouteValues.First().Value.Should().Be(submissionId);
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+        }
+
+        [TestMethod]
+        [DataRow(1, "Eng")]
+        [DataRow(2, "NI")]
+        [DataRow(3, "Sco")]
+        [DataRow(4, "Wal")]
+        public async Task On_GrantRegistrationSubmission_Update_Session_OrganisationDetailsChangeHistory_With_Updated_SubmissionDetails(int nationId, string nationCode)
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, nationId, nationCode);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
+            {
+                SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
+                    { submissionId, detailsModel }
+                }
+            }
+            ;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+
+            // Assert
+            _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var organisationDetailsChangeHistory_Submission);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(organisationDetailsChangeHistory_Submission);
+            Assert.AreEqual(RegistrationSubmissionStatus.Granted, organisationDetailsChangeHistory_Submission.SubmissionStatus);
+            result.RouteName.Should().Be("SubmissionDetails");
+            result.RouteValues.First().Value.Should().Be(submissionId);
+            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
+        }
+
+        [TestMethod]
+        [DataRow(1, "Eng")]
+        [DataRow(2, "NI")]
+        [DataRow(3, "Sco")]
+        [DataRow(4, "Wal")]
+        public async Task On_GrantRegistrationSubmission_Update_Session_Failed_To_Remove_SubmissionDetails(int nationId, string nationCode)
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, nationId, nationCode);
+            _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
+            {
+                SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
+                    { submissionId, detailsModel }
+                }
+            }
+            ;
+            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
+
+            // Act
+            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
+            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
+
+            // Assert
+            bool isSessionHoldsSubmissionId =
+                _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
+
+            _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var organisationDetailsChangeHistory_Submission);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(selectedRegistration);
+            Assert.AreEqual(RegistrationSubmissionStatus.Queried, selectedRegistration.SubmissionStatus);
+            Assert.IsNull(organisationDetailsChangeHistory_Submission);
+            Assert.IsTrue(isSessionHoldsSubmissionId);
+            result.RouteName.Should().Be("ServiceNotAvailable");
+            result.RouteValues.First().Value.Should().Be("registration-submission-details/" + submissionId);
             _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
         }
 
@@ -3855,29 +3931,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             upadtedChangeHistory.Should().BeFalse();
             latestOrganisationDetails.Should().BeNull();
-        }
-
-        [TestMethod]
-        public async Task When_GrantRegistrationSubmission_Post_Success_Then_Should_NOT_Update_OrganisationDetailsChangeHistory_InSession()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations =
-                new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> { { submissionId, detailsModel } };
-            _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
-
-            // Act
-            var result = await _controller.GrantRegistrationSubmission(new GrantRegistrationSubmissionViewModel
-            { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
-
-            bool upadtedChangeHistory =
-                _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var latestOrganisationDetails);
-            upadtedChangeHistory.Should().BeFalse();
         }
 
         [TestMethod]
