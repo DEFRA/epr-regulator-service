@@ -1,7 +1,5 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Accreditations;
 
-using AutoMapper;
-
 using Core.Enums;
 
 using FluentValidation;
@@ -27,7 +25,6 @@ using ViewModels.ReprocessorExporter.Accreditations;
 public class AccreditationsController(ISessionManager<JourneySession> sessionManager,
                                     IReprocessorExporterService reprocessorExporterService,
                                     IConfiguration configuration,
-                                    IMapper mapper,
                                     IValidator<IdRequest> idRequestValidator
                                     ) : AccreditationBaseController(sessionManager, configuration)
 {
