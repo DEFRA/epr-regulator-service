@@ -98,7 +98,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             {
                 if (organisationId == null)
                 {
-                    _logger.LogError("Organisation id was null.");
+                    _logger.OrganisationIdNull();
                     return RedirectToAction(PagePath.Error, "Error");
                 }
 
@@ -466,7 +466,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error accepting application for: {AcceptedUserEmail} in organisation {OrganisationId}", acceptedUserEmail, organisationDetails.OrganisationId);
+                _logger.ApplicationAcceptanceError(acceptedUserEmail, organisationDetails.OrganisationId);
             }
 
             ModelState.AddModelError("Update failed", "Update failed");

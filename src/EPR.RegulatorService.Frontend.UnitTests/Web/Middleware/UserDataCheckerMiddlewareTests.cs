@@ -1,7 +1,5 @@
 using EPR.Common.Authorization.Models;
-using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Core.Sessions;
-using EPR.RegulatorService.Frontend.Core.Models;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.Middleware;
@@ -12,11 +10,10 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Configuration;
 
 using System.Security.Claims;
-using System.Text.Json;
-using System.Net;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
 {
+    using Organisation = Common.Authorization.Models.Organisation;
 
     [TestClass]
     public class UserDataCheckerMiddlewareTests

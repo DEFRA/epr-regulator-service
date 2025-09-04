@@ -321,7 +321,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             switch (session.RegulatorRegistrationSubmissionSession.FileDownloadRequestType)
             {
                 case FileDownloadTypes.OrganisationDetails:
-                    var orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company);
+                    var orgFile = registration.SubmissionDetails.Files.Find(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.company);
                     if (null != orgFile)
                     {
                         fileDownloadModel.FileId = orgFile.FileId;
@@ -330,7 +330,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                     }
                     break;
                 case FileDownloadTypes.BrandDetails:
-                    orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands);
+                    orgFile = registration.SubmissionDetails.Files.Find(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.brands);
                     if (null != orgFile)
                     {
                         fileDownloadModel.FileId = orgFile.FileId;
@@ -339,7 +339,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                     }
                     break;
                 case FileDownloadTypes.PartnershipDetails:
-                    orgFile = registration.SubmissionDetails.Files.FirstOrDefault(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership);
+                    orgFile = registration.SubmissionDetails.Files.Find(static x => x.Type == RegistrationSubmissionOrganisationSubmissionSummaryDetails.FileType.partnership);
                     if (null != orgFile)
                     {
                         fileDownloadModel.FileId = orgFile.FileId;

@@ -1,5 +1,3 @@
-using AspNetCoreGeneratedDocument;
-
 using AutoMapper;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
@@ -14,7 +12,7 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
+
 using FluentValidation;
 
 using Microsoft.AspNetCore.Mvc;
@@ -177,7 +175,7 @@ public class AccreditationStatusController(
         }
 
         accreditationStatusSession.PaymentDate =
-            new DateTime(viewModel.Year!.Value, viewModel.Month!.Value, viewModel.Day!.Value);
+            new DateTime(viewModel.Year!.Value, viewModel.Month!.Value, viewModel.Day!.Value, 0, 0, 0, 0, DateTimeKind.Utc);
 
         await SaveSession(session);
 
@@ -361,7 +359,7 @@ public class AccreditationStatusController(
         return session.ReprocessorExporterSession.AccreditationStatusSession;
     }
 
-    private IActionResult HandleInvalidModelState<T>(JourneySession session, string pagePath, AccreditationStatusSession accreditationStatusSession, T viewModel, string viewName)
+    private ViewResult HandleInvalidModelState<T>(JourneySession session, string pagePath, AccreditationStatusSession accreditationStatusSession, T viewModel, string viewName)
     {
         SetBackLinkInfos(session, pagePath);
 

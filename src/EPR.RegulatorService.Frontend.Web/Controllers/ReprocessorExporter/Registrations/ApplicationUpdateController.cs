@@ -180,7 +180,7 @@ public class ApplicationUpdateController(
         return session.ReprocessorExporterSession.ApplicationUpdateSession;
     }
 
-    private IActionResult HandleInvalidModelState<T>(JourneySession session, string pagePath, ApplicationUpdateSession applicationUpdateSession, T viewModel, string viewName)
+    private ViewResult HandleInvalidModelState<T>(JourneySession session, string pagePath, ApplicationUpdateSession applicationUpdateSession, T viewModel, string viewName)
     {
         SetBackLinkInfos(session, pagePath);
 

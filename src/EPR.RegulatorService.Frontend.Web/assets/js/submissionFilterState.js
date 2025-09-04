@@ -1,42 +1,46 @@
 'use strict';
 
 document.addEventListener("DOMContentLoaded", () => {
-    const submissionYearsWrapElement = document.querySelector('.submission-years');
-    const submissionYearElements = document.querySelectorAll('.submission-years input');
-    const submissionPeriodElements = document.querySelectorAll('.submission-periods input');
+  const submissionYearsWrapElement = document.querySelector('.submission-years');
+  const submissionYearElements = document.querySelectorAll('.submission-years input');
+  const submissionPeriodElements = document.querySelectorAll('.submission-periods input');
 
-    const updateFilterState = () => {
-        const yearsState = {};
-        let allYearsUnchecked = true;
+  const getYearsState = () => {
+    const state = {};
+    let allUnchecked = true;
 
-        for (const yearElement of submissionYearElements) {
-            yearsState[yearElement.value] = yearElement.checked;
+    submissionYearElements.forEach(yearElement => {
+      const checked = yearElement.checked;
+      state[yearElement.value] = checked;
+      if (checked) allUnchecked = false;
+    });
 
-            allYearsUnchecked = allYearsUnchecked && !yearElement.checked;
-        }
+    return { state, allUnchecked };
+  };
 
-        if (allYearsUnchecked) {
-            for (const periodElement of submissionPeriodElements) {
-                periodElement.disabled = false;
-            }
-        } else {
-            for (const periodElement of submissionPeriodElements) {
-                const year = periodElement.value.slice(-4);
+  const setPeriodElementsState = (yearsState, allUnchecked) => {
+    submissionPeriodElements.forEach(periodElement => {
+      if (allUnchecked) {
+        periodElement.disabled = false;
+      } else {
+        const year = periodElement.value.slice(-4);
+        periodElement.disabled = !yearsState[year];
+      }
+    });
+  };
 
-                periodElement.disabled = !yearsState[year];
-            }
-        }
-    };
+  const updateFilterState = () => {
+    const { state, allUnchecked } = getYearsState();
+    setPeriodElementsState(state, allUnchecked);
+  };
 
-    updateFilterState();
+  updateFilterState();
 
-    if (submissionYearsWrapElement !== null) {
-        submissionYearsWrapElement.addEventListener('click', (event) => {
-            if (event.target.nodeName !== 'INPUT') {
-                return;
-            }
-
-            updateFilterState();
-        });
-    }
+  if (submissionYearsWrapElement) {
+    submissionYearsWrapElement.addEventListener('click', (event) => {
+      if (event.target.nodeName === 'INPUT') {
+        updateFilterState();
+      }
+    });
+  }
 });

@@ -1,15 +1,12 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
     using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-    using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.UnitTests.TestData;
     using EPR.RegulatorService.Frontend.Web.Constants;
-    using EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
     using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
     [TestClass]
     public class MultiTabSessionTests : SubmissionsTestBase

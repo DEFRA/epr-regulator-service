@@ -15,6 +15,8 @@ using Microsoft.Identity.Web;
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
+using System.Globalization;
+
 using Enums;
 
 public class ReprocessorExporterService(
@@ -89,12 +91,12 @@ public class ReprocessorExporterService(
         return siteDetails;
     }
 
-    public async Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(Guid id)
+    public async Task<RegistrationMaterialDetail> GetRegistrationMaterialByIdAsync(Guid registrationMaterialId)
     {
         await PrepareAuthenticatedClient();
 
         string pathTemplate = GetVersionedEndpoint(Endpoints.GetRegistrationMaterialById);
-        string path = pathTemplate.Replace("{id}", id.ToString());
+        string path = pathTemplate.Replace("{id}", registrationMaterialId.ToString());
 
         var response = await httpClient.GetAsync(path);
 
@@ -462,7 +464,7 @@ public class ReprocessorExporterService(
 
     private string GetVersionedEndpoint(Endpoints endpointName)
     {
-        string version = reprocessorExporterFacadeConfig.Value.ApiVersion.ToString();
+        string version = reprocessorExporterFacadeConfig.Value.ApiVersion.ToString(CultureInfo.CurrentCulture);
         string pathTemplate = reprocessorExporterFacadeConfig.Value.Endpoints[endpointName.ToString()].Replace("{apiVersion}", version);
 
         return pathTemplate;

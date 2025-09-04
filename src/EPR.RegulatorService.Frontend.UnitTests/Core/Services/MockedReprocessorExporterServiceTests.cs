@@ -28,7 +28,7 @@ public class MockedReprocessorExporterServiceTests
 
         using (new AssertionScope())
         {
-            result!.Id.Should().Be(id);
+            result.Id.Should().Be(id);
             result.OrganisationType.Should().Be(ApplicationOrganisationType.Reprocessor);
             result.OrganisationName.Should().Be("MOCK Green Ltd");
             result.SiteAddress.Should().Be("23 Ruby St, London, E12 3SE");
@@ -50,7 +50,7 @@ public class MockedReprocessorExporterServiceTests
 
         using (new AssertionScope())
         {
-            result!.Id.Should().Be(id);
+            result.Id.Should().Be(id);
             result.OrganisationType.Should().Be(ApplicationOrganisationType.Exporter);
             result.OrganisationName.Should().Be("MOCK Blue Exports Ltd");
             result.SiteAddress.Should().Be("N/A"); // Exporters have no site address
@@ -77,7 +77,7 @@ public class MockedReprocessorExporterServiceTests
         var result = await _service.GetRegistrationByIdWithAccreditationsAsync(
             Guid.Parse("839544fd-9b08-4823-9277-5615072a6803"), 2025);
 
-        var material = result.Materials.FirstOrDefault(m => m.MaterialName == "Plastic");
+        var material = result.Materials.Find(m => m.MaterialName == "Plastic");
 
         using (new AssertionScope())
         {
@@ -93,7 +93,7 @@ public class MockedReprocessorExporterServiceTests
         var result = await _service.GetRegistrationByIdWithAccreditationsAsync(
             Guid.Parse("11dec0d4-b0db-44a6-84f3-3de06e46262c"), 2025);
 
-        var material = result.Materials.FirstOrDefault(m => m.MaterialName == "Steel");
+        var material = result.Materials.Find(m => m.MaterialName == "Steel");
 
         using (new AssertionScope())
         {
@@ -129,7 +129,7 @@ public class MockedReprocessorExporterServiceTests
         var result = await _service.GetRegistrationByIdWithAccreditationsAsync(
             Guid.Parse("45678901-dddd-eeee-ffff-444444444444"), 2026);
 
-        var material = result.Materials.FirstOrDefault(m => m.MaterialName == "Paper");
+        var material = result.Materials.Find(m => m.MaterialName == "Paper");
 
         using (new AssertionScope())
         {

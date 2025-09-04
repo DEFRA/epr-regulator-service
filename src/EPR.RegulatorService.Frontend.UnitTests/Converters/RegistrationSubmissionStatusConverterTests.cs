@@ -1,4 +1,3 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EPR.RegulatorService.Frontend.Core.Enums;
 using System.Text.Json;
 using System.Text;

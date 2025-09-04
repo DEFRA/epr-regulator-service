@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
+    using ServiceRole = Frontend.Web.Constants.ServiceRole;
+
     [TestClass]
     public class EnrolmentRequestsTests : ApplicationsTestBase
     {

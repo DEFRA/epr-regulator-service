@@ -61,8 +61,9 @@ public abstract class SubmissionsTestBase
 
         _submissionFiltersMock.Setup(mock => mock.Value).Returns(new SubmissionFiltersConfig
         {
-            Years = new int[] { 2023, 2024 },
-            PomPeriods = new string[] { "January to June 2023", "July to December 2023", "January to June 2024", "July to December 2024" }
+            Years = [2023, 2024],
+            PomPeriods = ["January to June 2023", "July to December 2023", "January to June 2024", "July to December 2024"
+            ]
         });
 
         _urlsOptionMock.Setup(mock => mock.Value).Returns(new ExternalUrlsOptions

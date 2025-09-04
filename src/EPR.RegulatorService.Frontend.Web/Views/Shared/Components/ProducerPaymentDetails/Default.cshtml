@@ -1,14 +1,11 @@
 @using EPR.RegulatorService.Frontend.Core.Enums
-@using EPR.RegulatorService.Frontend.Core.Extensions
 @using EPR.RegulatorService.Frontend.Web.Configs
 @using EPR.RegulatorService.Frontend.Web.Extensions
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
-@using System.Globalization
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 
 @model ProducerPaymentDetailsViewModel
 @{
-	var errorsViewModel = new ErrorsViewModel(ViewData.ModelState.ToErrorDictionary(), Localizer);
 	bool enableWaiveFeeButton = Model is not null && Model.Status == RegistrationSubmissionStatus.Granted && Model.ResubmissionStatus == RegistrationSubmissionStatus.Accepted && Model.TotalOutstanding > 0;
 }
 <div class="govuk-summary-card">

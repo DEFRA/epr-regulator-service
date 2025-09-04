@@ -1,28 +1,21 @@
-using System.Net;
-using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
 using FluentAssertions.Execution;
 
-using Microsoft.Extensions.Options;
-using Microsoft.Identity.Web;
-
-using Moq.Protected;
-
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
 
 using System.Globalization;
 
 using Frontend.Core.Enums;
+
+using OfflinePaymentRequest = Frontend.Core.Models.ReprocessorExporter.Registrations.OfflinePaymentRequest;
+using Registration = Frontend.Core.Models.ReprocessorExporter.Registrations.Registration;
 
 [TestClass]
 public class ReprocessorExporterServiceTests
@@ -119,10 +112,10 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var expectedRegistration = CreateRegistration();
         string expectedPath = GetRegistrationByIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", expectedRegistration.Id.ToString());
 
-        var response = new HttpResponseMessage
+        var response = () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedRegistration, _jsonSerializerOptions))
@@ -144,12 +137,10 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetRegistrationByIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationId.ToString());
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -162,16 +153,14 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var expectedSiteDetails = CreateSiteDetails();
         string expectedPath = GetSiteAddressByRegistrationIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", expectedSiteDetails.RegistrationId.ToString());
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedSiteDetails, _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        });
 
         // Act
         var result = await _service.GetSiteDetailsByRegistrationIdAsync(expectedSiteDetails.RegistrationId);
@@ -190,12 +179,10 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetSiteAddressByRegistrationIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationId.ToString());
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -209,17 +196,15 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var expectedRegistrationMaterial = CreateRegistrationMaterial();
         string expectedPath = GetRegistrationMaterialByIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", expectedRegistrationMaterial.Id.ToString());
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedRegistrationMaterial,
                 _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        });
 
         // Act
         var result = await _service.GetRegistrationMaterialByIdAsync(expectedRegistrationMaterial.Id);
@@ -235,12 +220,10 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetRegistrationMaterialByIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationMaterialId.ToString());
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -254,16 +237,14 @@ public class ReprocessorExporterServiceTests
         var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var expectedWasteLicence = CreateRegistrationWasteLicence();
         string expectedPath = GetWasteLicenceByRegistrationMaterialId
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationMaterialId.ToString());
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedWasteLicence, _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        });
 
         // Act
         var result = await _service.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId);
@@ -279,12 +260,10 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetWasteLicenceByRegistrationMaterialId
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationMaterialId.ToString());
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -298,16 +277,14 @@ public class ReprocessorExporterServiceTests
         var registrationMaterialId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var expectedWasteCarrier = CreateWasteCarrierDetails();
         string expectedPath = GetWasteCarrierDetailsByRegistrationId
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationMaterialId.ToString());
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedWasteCarrier, _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        });
 
         // Act
         var result = await _service.GetWasteCarrierDetailsByRegistrationIdAsync(registrationMaterialId);
@@ -323,12 +300,10 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetWasteCarrierDetailsByRegistrationId
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationId.ToString());
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -342,7 +317,7 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = UpdateRegistrationMaterialOutcome
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationMaterialId.ToString());
         var request = new RegistrationMaterialOutcomeRequest
         {
@@ -350,9 +325,7 @@ public class ReprocessorExporterServiceTests
             Comments = "Test comment"
         };
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
-
-        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -366,17 +339,15 @@ public class ReprocessorExporterServiceTests
         var registrationId = Guid.Parse("9D16DEF0-D828-4800-83FB-2B60907F4163");
         var expectedAuthorisedMaterials = CreateRegistrationAuthorisedMaterials(registrationId);
         string expectedPath = GetAuthorisedMaterialsByRegistrationId
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationId.ToString());
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedAuthorisedMaterials,
                 _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        });
 
         // Act
         var result = await _service.GetAuthorisedMaterialsByRegistrationIdAsync(registrationId);
@@ -392,17 +363,15 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = UpdateRegistrationTaskStatus
-            .Replace("{apiVersion}", ApiVersion.ToString());
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture));
         var request = new UpdateRegistrationTaskStatusRequest
         {
-            TaskName = RegulatorTaskType.SiteAddressAndContactDetails.ToString(),
+            TaskName = nameof(RegulatorTaskType.SiteAddressAndContactDetails),
             RegistrationId = registrationId,
-            Status = RegulatorTaskStatus.Completed.ToString()
+            Status = nameof(RegulatorTaskStatus.Completed)
         };
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
-
-        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -415,7 +384,7 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = MarkAsDulyMadePath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationMaterialId.ToString());
 
         var request = new MarkAsDulyMadeRequest()
@@ -424,9 +393,7 @@ public class ReprocessorExporterServiceTests
             DulyMadeDate = DateTime.Now.AddDays(-7)
         };
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
-
-        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -438,7 +405,7 @@ public class ReprocessorExporterServiceTests
     {
         // Arrange
         string expectedPath = SubmitOfflinePaymentPath
-            .Replace("{apiVersion}", ApiVersion.ToString());
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture));
 
         var request = new OfflinePaymentRequest
         {
@@ -449,9 +416,7 @@ public class ReprocessorExporterServiceTests
             Regulator = "Environment Agency (EA)"
         };
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
-
-        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.SubmitOfflinePaymentAsync(request));
@@ -463,7 +428,7 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = UpdateApplicationTaskStatus
-            .Replace("{apiVersion}", ApiVersion.ToString());
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture));
         var request = new UpdateMaterialTaskStatusRequest()
         {
             TaskName = RegulatorTaskType.WasteLicensesPermitsAndExemptions.ToString(),
@@ -471,9 +436,7 @@ public class ReprocessorExporterServiceTests
             Status = RegulatorTaskStatus.Completed.ToString()
         };
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
-
-        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -485,18 +448,16 @@ public class ReprocessorExporterServiceTests
     {
         // Arrange
         var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
-        var expectedReprocessingIO = CreateReprocessingIO(registrationMaterialId);
+        var expectedReprocessingInputsAndOutputs = CreateReprocessingInputsAndOutputs(registrationMaterialId);
         string expectedPath = GetReprocessingIOByRegistrationMaterialIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationMaterialId.ToString());
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
-            Content = new StringContent(JsonSerializer.Serialize(expectedReprocessingIO, _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+            Content = new StringContent(JsonSerializer.Serialize(expectedReprocessingInputsAndOutputs, _jsonSerializerOptions))
+        });
 
         // Act
         var result = await _service.GetReprocessingIOByRegistrationMaterialIdAsync(registrationMaterialId);
@@ -510,17 +471,17 @@ public class ReprocessorExporterServiceTests
     {
         // Arrange
         var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
-        string expectedPath = GetRegistrationByIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+        string expectedPath = GetReprocessingIOByRegistrationMaterialIdPath
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationId.ToString());
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+        var responseFactory = () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
 
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, responseFactory);
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
-            _service.GetRegistrationByIdAsync(registrationId));
+            _service.GetReprocessingIOByRegistrationMaterialIdAsync(registrationId));
     }
 
     [TestMethod]
@@ -530,16 +491,14 @@ public class ReprocessorExporterServiceTests
         var registrationMaterialId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         var expectedSamplingPlan = CreateSamplingPlan();
         string expectedPath = GetSamplingPlanByRegistrationMaterialIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationMaterialId.ToString());
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedSamplingPlan, _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        });
 
         // Act
         var result = await _service.GetSamplingPlanByRegistrationMaterialIdAsync(registrationMaterialId);
@@ -554,12 +513,10 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetSamplingPlanByRegistrationMaterialIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationId.ToString());
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -573,17 +530,15 @@ public class ReprocessorExporterServiceTests
         var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         var expectedRegistrationPaymentFees = CreateRegistrationMaterialPaymentFees();
         string expectedPath = GetPaymentFeesByRegistrationMaterialIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationMaterialId.ToString());
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedRegistrationPaymentFees,
                 _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        });
 
         // Act
         var result = await _service.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId);
@@ -599,12 +554,10 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationMaterialId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = GetPaymentFeesByRegistrationMaterialIdPath
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationMaterialId.ToString());
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -619,14 +572,18 @@ public class ReprocessorExporterServiceTests
         const string filename = "test-document.pdf";
         var request = new FileDownloadRequest { FileId = fileId, FileName = filename };
 
-        var expectedContent = Encoding.UTF8.GetBytes("Sample PDF content");
+        var expectedContent = "Sample PDF content"u8.ToArray();
         const string contentType = "application/octet-stream";
 
-        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        var httpResponseMessageFactory = () =>
         {
-            Content = new ByteArrayContent(expectedContent)
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(expectedContent)
+            };
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+            return httpResponseMessage;
         };
-        httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
 
         _optionsMock.Object.Value.Endpoints.Add("DownloadSamplingInspectionFile",
             "v{apiVersion}/registrations/file-download");
@@ -640,7 +597,7 @@ public class ReprocessorExporterServiceTests
                     req.RequestUri != null &&
                     req.RequestUri.ToString().EndsWith("/registrations/file-download")),
                 ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(httpResponseMessage);
+            .ReturnsAsync(httpResponseMessageFactory);
 
         // Act
         var result = await _service.DownloadSamplingInspectionFile(request);
@@ -667,8 +624,6 @@ public class ReprocessorExporterServiceTests
         _optionsMock.Object.Value.Endpoints.Add("DownloadSamplingInspectionFile",
             "v{apiVersion}/registrations/file-download");
 
-        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.NotFound); // Simulate failure
-
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -678,7 +633,7 @@ public class ReprocessorExporterServiceTests
                     req.RequestUri != null &&
                     req.RequestUri.ToString().EndsWith("/registrations/file-download")),
                 ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(httpResponseMessage);
+            .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.NotFound));
 
         // Act & Assert
         await Assert.ThrowsExceptionAsync<NotFoundException>(() => _service.DownloadSamplingInspectionFile(request));
@@ -695,11 +650,15 @@ public class ReprocessorExporterServiceTests
         var expectedContent = Encoding.UTF8.GetBytes("Accreditation Sampling & Inspection PDF file content");
         const string contentType = "application/octet-stream";
 
-        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+        var httpResponseMessageFactory = () =>
         {
-            Content = new ByteArrayContent(expectedContent)
+            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(expectedContent)
+            };
+            httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+            return httpResponseMessage;
         };
-        httpResponseMessage.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
 
         _optionsMock.Object.Value.Endpoints.Add("DownloadAccreditationSamplingInspectionFile", "v{apiVersion}/accreditations/file-download");
 
@@ -712,7 +671,7 @@ public class ReprocessorExporterServiceTests
                     req.RequestUri != null &&
                     req.RequestUri.ToString().EndsWith("/accreditations/file-download")),
                 ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(httpResponseMessage);
+            .ReturnsAsync(httpResponseMessageFactory);
 
         // Act
         var result = await _service.DownloadSamplingInspectionFile(request);
@@ -753,7 +712,7 @@ public class ReprocessorExporterServiceTests
         };
 
         SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations",
-            new HttpResponseMessage
+            () => new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
@@ -798,7 +757,7 @@ public class ReprocessorExporterServiceTests
         };
 
         SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
-            new HttpResponseMessage
+            () => new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
@@ -842,7 +801,7 @@ public class ReprocessorExporterServiceTests
         };
 
         SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
-            new HttpResponseMessage
+            () => new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
@@ -890,7 +849,7 @@ public class ReprocessorExporterServiceTests
         };
 
         SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
-            new HttpResponseMessage
+            () => new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
@@ -933,7 +892,7 @@ public class ReprocessorExporterServiceTests
         };
 
         SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
-            new HttpResponseMessage
+            () => new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
@@ -950,7 +909,7 @@ public class ReprocessorExporterServiceTests
         const int year = 2025;
 
         SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
-            new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
+            () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
             _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year));
@@ -978,13 +937,11 @@ public class ReprocessorExporterServiceTests
 
         _optionsMock.Object.Value.Endpoints.Add("GetPaymentFeesByAccreditationId", "v{apiVersion}/accreditations/{id}/paymentFees");
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedFees, _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        });
 
         // Act
         var result = await _service.GetPaymentFeesByAccreditationIdAsync(accreditationId);
@@ -1001,11 +958,9 @@ public class ReprocessorExporterServiceTests
         var accreditationId = Guid.NewGuid();
         var expectedPath = $"v{ApiVersion}/accreditations/{accreditationId}/paymentFees";
 
-        var response = new HttpResponseMessage(HttpStatusCode.NotFound);
-
         _optionsMock.Object.Value.Endpoints.Add("GetPaymentFeesByAccreditationId", "v{apiVersion}/accreditations/{id}/paymentFees");
 
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage(HttpStatusCode.NotFound));
 
         // Act & Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -1028,14 +983,13 @@ public class ReprocessorExporterServiceTests
         const string expectedPath = "v1/accreditationMaterials/offlinePayment";
         _optionsMock.Object.Value.Endpoints.Add("SubmitAccreditationOfflinePayment", expectedPath);
 
-        var response = new HttpResponseMessage(HttpStatusCode.OK);
         HttpRequestMessage? capturedRequest = null;
 
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
             .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequest = req)
-            .ReturnsAsync(response);
+            .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.OK));
 
         // Act
         await _service.SubmitAccreditationOfflinePaymentAsync(request);
@@ -1064,14 +1018,13 @@ public class ReprocessorExporterServiceTests
         const string expectedPath = "v1/accreditationMaterials/offlinePayment";
         _optionsMock.Object.Value.Endpoints.Add("SubmitAccreditationOfflinePayment", expectedPath);
 
-        var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
         HttpRequestMessage? capturedRequest = null;
 
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
             .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequest = req)
-            .ReturnsAsync(response);
+            .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
         // Act & Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -1095,17 +1048,15 @@ public class ReprocessorExporterServiceTests
             DulyMadeDate = DateTime.UtcNow.AddDays(-5)
         };
 
-        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationId}/markAsDulyMade";
         _optionsMock.Object.Value.Endpoints.Add("MarkAccreditationAsDulyMade", "v{apiVersion}/accreditationMaterials/{id}/markAsDulyMade");
 
-        var response = new HttpResponseMessage(HttpStatusCode.OK);
         HttpRequestMessage? capturedRequest = null;
 
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
             .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequest = req)
-            .ReturnsAsync(response);
+            .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.OK));
 
         // Act
         await _service.MarkAccreditationAsDulyMadeAsync(accreditationId, request);
@@ -1129,17 +1080,15 @@ public class ReprocessorExporterServiceTests
             DulyMadeDate = DateTime.UtcNow.AddDays(-2)
         };
 
-        var expectedPath = $"v{ApiVersion}/accreditationMaterials/{accreditationId}/markAsDulyMade";
         _optionsMock.Object.Value.Endpoints.Add("MarkAccreditationAsDulyMade", "v{apiVersion}/accreditationMaterials/{id}/markAsDulyMade");
 
-        var response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
         HttpRequestMessage? capturedRequest = null;
 
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
             .Callback<HttpRequestMessage, CancellationToken>((req, _) => capturedRequest = req)
-            .ReturnsAsync(response);
+            .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
         // Act & Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -1158,7 +1107,7 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var accreditationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = UpdateAccreditationTaskStatus
-            .Replace("{apiVersion}", ApiVersion.ToString());
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture));
         var request = new UpdateAccreditationTaskStatusRequest
         {
             TaskName = RegulatorTaskType.DulyMade.ToString(),
@@ -1166,9 +1115,7 @@ public class ReprocessorExporterServiceTests
             Status = RegulatorTaskStatus.Completed.ToString()
         };
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
-
-        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorAccreditationTaskStatusAsync(request));
@@ -1196,16 +1143,14 @@ public class ReprocessorExporterServiceTests
             }
         };
 
-        string expectedPath = GetSamplingPlanByAccreditationIdPath.Replace("{apiVersion}", ApiVersion.ToString())
+        string expectedPath = GetSamplingPlanByAccreditationIdPath.Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
                                                                 .Replace("{id}", accreditationId.ToString());
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedSamplingPlan, _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        });
 
         // Act
         var result = await _service.GetSamplingPlanByAccreditationIdAsync(accreditationId);
@@ -1220,12 +1165,10 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var accreditationId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
 
-        string expectedPath = GetSamplingPlanByAccreditationIdPath.Replace("{apiVersion}", ApiVersion.ToString())
+        string expectedPath = GetSamplingPlanByAccreditationIdPath.Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
                                                                 .Replace("{id}", accreditationId.ToString());
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -1238,13 +1181,11 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var materialTaskId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = AddMaterialQueryNote
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", materialTaskId.ToString());
         var request = new AddNoteRequest() { Note = "Test note", };
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
-
-        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -1262,22 +1203,18 @@ public class ReprocessorExporterServiceTests
             .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", accreditationId.ToString());
 
-        var response = new HttpResponseMessage
+        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage
         {
             StatusCode = HttpStatusCode.OK,
             Content = new StringContent(JsonSerializer.Serialize(expectedAccreditationBusinessPlan, _jsonSerializerOptions))
-        };
-
-        SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, response);
+        });
 
         // Act
         var result = await _service.GetAccreditionBusinessPlanByIdAsync(accreditationId);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
         Assert.IsNotNull(result);
-
-        response.Dispose();
+       
     }
 
     [TestMethod]
@@ -1286,13 +1223,11 @@ public class ReprocessorExporterServiceTests
         // Arrange
         var registrationTaskId = Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21");
         string expectedPath = AddRegistrationQueryNote
-            .Replace("{apiVersion}", ApiVersion.ToString())
+            .Replace("{apiVersion}", ApiVersion.ToString(CultureInfo.CurrentCulture))
             .Replace("{id}", registrationTaskId.ToString());
         var request = new AddNoteRequest { Note = "Test note", };
 
-        var response = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
-
-        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, response);
+        SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
@@ -1300,14 +1235,14 @@ public class ReprocessorExporterServiceTests
     }
 
     private void SetupHttpMessageExpectations(HttpMethod method, string path,
-        HttpResponseMessage responseMessage) =>
+        Func<HttpResponseMessage> responseMessage) =>
         _httpMessageHandlerMock.Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
                 ItExpr.Is<HttpRequestMessage>(req =>
                     req.Method == method && req.RequestUri == new Uri($"{BaseUrl}{path}")),
                 ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(responseMessage);
+            .ReturnsAsync(responseMessage.Invoke);
 
     private static Registration CreateRegistration() =>
         new()
@@ -1319,7 +1254,7 @@ public class ReprocessorExporterServiceTests
             Regulator = "Environment Agency (EA)"
         };
 
-    private static RegistrationMaterialReprocessingIO CreateReprocessingIO(Guid registrationMaterialId) =>
+    private static RegistrationMaterialReprocessingIO CreateReprocessingInputsAndOutputs(Guid registrationMaterialId) =>
         new()
         {
             RegistrationId = Guid.NewGuid(),

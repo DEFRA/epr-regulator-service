@@ -1,7 +1,4 @@
-using System;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Models;

@@ -1,5 +1,5 @@
 using AutoMapper;
-using System;
+
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -202,7 +202,7 @@ public class RegistrationStatusController(
         }
 
         registrationStatusSession.PaymentDate =
-            new DateTime(viewModel.Year!.Value, viewModel.Month!.Value, viewModel.Day!.Value);
+            new DateTime(viewModel.Year!.Value, viewModel.Month!.Value, viewModel.Day!.Value, 0, 0, 0, 0, DateTimeKind.Utc);
 
         await SaveSession(session);
 
@@ -323,7 +323,7 @@ public class RegistrationStatusController(
         return session.ReprocessorExporterSession.RegistrationStatusSession;
     }
 
-    private IActionResult HandleInvalidModelState<T>(JourneySession session, string pagePath, RegistrationStatusSession registrationStatusSession, T viewModel, string viewName)
+    private ViewResult HandleInvalidModelState<T>(JourneySession session, string pagePath, RegistrationStatusSession registrationStatusSession, T viewModel, string viewName)
     {
         SetBackLinkInfos(session, pagePath);
 

@@ -32,21 +32,25 @@
                             @organisation.Value.OrganisationName
                         </a>
                         <br />
-                        @if (await FeatureManager.IsEnabledAsync(FeatureFlags.ShowComplianceSchemeMembership))
-                        {
-                            @(organisation.Value.IsComplianceScheme
-                                ? Localizer["OrgType.ComplianceScheme"]
-                                : organisation.Value.OrganisationType.Contains("InDirectProducer")
-                                ? Localizer["OrgType.MemberOfScheme", organisation.Value.MemberOfComplianceSchemeName]
-                                : Localizer["OrgType.DirectProducer"])
-                        }
-                        else
-                        {
-                            @(organisation.Value.IsComplianceScheme
-                                ? Localizer["OrgType.ComplianceScheme"]
-                                : organisation.Value.OrganisationType.Contains("InDirectProducer")
-                                ? Localizer["OrgType.InDirectProducer"]
-                                : Localizer["OrgType.DirectProducer"])
+                        @{
+                          var isComplianceScheme = organisation.Value.IsComplianceScheme;
+                          var isIndirectProducer = organisation.Value.OrganisationType.Contains("InDirectProducer");
+                          var showMembership = await FeatureManager.IsEnabledAsync(FeatureFlags.ShowComplianceSchemeMembership);
+
+                          if (isComplianceScheme)
+                          {
+                            @Localizer["OrgType.ComplianceScheme"]
+                          }
+                          else if (isIndirectProducer)
+                          {
+                            @(showMembership
+                              ? Localizer["OrgType.MemberOfScheme", organisation.Value.MemberOfComplianceSchemeName]
+                              : Localizer["OrgType.InDirectProducer"])
+                          }
+                          else
+                          {
+                            @Localizer["OrgType.DirectProducer"]
+                          }
                         }
                 </td>
                 <td role="gridcell" class="govuk-table__cell vertical-middle-align">

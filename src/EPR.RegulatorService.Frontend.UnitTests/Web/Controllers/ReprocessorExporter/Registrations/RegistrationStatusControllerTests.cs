@@ -1,4 +1,3 @@
-using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
@@ -12,10 +11,12 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 using FluentAssertions.Execution;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
+
+using System.Globalization;
+
+using OfflinePaymentRequest = Frontend.Core.Models.ReprocessorExporter.Registrations.OfflinePaymentRequest;
 
 [TestClass]
 public class RegistrationStatusControllerTests : RegistrationControllerTestBase
@@ -317,7 +318,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
         var viewModel = new PaymentMethodViewModel
         {
             ApplicationType = ApplicationOrganisationType.Reprocessor,
-            PaymentMethod = PaymentMethodType.AllTypes.First()
+            PaymentMethod = PaymentMethodType.AllTypes[0]
         };
 
         _mapperMock.Setup(m =>
@@ -338,7 +339,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
         var viewModel = new PaymentMethodViewModel
         {
             ApplicationType = ApplicationOrganisationType.Reprocessor,
-            PaymentMethod = PaymentMethodType.AllTypes.First()
+            PaymentMethod = PaymentMethodType.AllTypes[0]
         };
 
         _mapperMock.Setup(m =>
@@ -430,7 +431,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
         await _registrationStatusController.PaymentDate(viewModel);
 
         // Assert
-        _registrationStatusSession.PaymentDate.Should().Be(new DateTime(viewModel.Year.Value, viewModel.Month.Value, viewModel.Day.Value));
+        _registrationStatusSession.PaymentDate.Should().Be(new DateTime(viewModel.Year.Value, viewModel.Month.Value, viewModel.Day.Value, 00, 00, 00, DateTimeKind.Utc));
     }
 
     [TestMethod]
@@ -526,8 +527,8 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
     public async Task RegistrationApplicationStatus_WhenCalledAfterDulyMade_ShouldReturnApplicationStatusView(string? determinationDateString, string? dulyMadeDateString, int expectedDeterminationWeeks)
     {
         // Arrange
-        DateTime? determinationDateTime = determinationDateString == null ? null : DateTime.Parse(determinationDateString);
-        DateTime? dulyMadeDateTime = dulyMadeDateString == null ? null : DateTime.Parse(dulyMadeDateString);
+        DateTime? determinationDateTime = determinationDateString == null ? null : DateTime.Parse(determinationDateString, CultureInfo.CurrentCulture);
+        DateTime? dulyMadeDateTime = dulyMadeDateString == null ? null : DateTime.Parse(dulyMadeDateString, CultureInfo.CurrentCulture);
 
         var registrationPaymentFees = CreateRegistrationPaymentFees(Guid.Parse("F267151B-07F0-43CE-BB5B-37671609EB21"), determinationDateTime, dulyMadeDateTime);
         var expectedViewModel = new PaymentReviewViewModel

@@ -1,6 +1,6 @@
 @model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.ManageAccreditationsViewModel
 
-@if (Model.Materials.Any(m => m.ShouldDisplay))
+@if (Model.Materials.Exists(m => m.ShouldDisplay))
 {
     <h2 class="govuk-heading-m">Check accreditations are duly made and assign officer</h2>
     <ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">

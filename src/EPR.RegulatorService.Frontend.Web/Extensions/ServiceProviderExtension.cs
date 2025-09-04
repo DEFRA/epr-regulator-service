@@ -57,11 +57,11 @@ public static class ServiceProviderExtension
             {
                 if (exception is RedisConnectionException)
                 {
-                    buildLogger.LogError(exception, "L2 Cache Failure Redis connection exception: {Message}", exception.Message);
+                    buildLogger.RedisConnectionException(exception.Message);
                     return true;
                 }
 
-                buildLogger.LogError(exception, "L2 Cache Failure: {Message}", exception.Message);
+                buildLogger.RedisCacheFailure(exception.Message);
                 return false;
             };
         });
