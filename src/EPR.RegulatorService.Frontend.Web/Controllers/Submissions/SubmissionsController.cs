@@ -356,7 +356,7 @@ public partial class SubmissionsController : Controller
                 OrganisationName = organisationName,
                 OrganisationNumber = submission.OrganisationReference,
                 IsResubmissionRequired = false,
-                SubmissionPeriod = submission.SubmissionPeriod
+                SubmissionPeriod = submission.ActualSubmissionPeriod
 
             };
             var result = await _facadeService.SubmitPoMDecision(request);

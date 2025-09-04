@@ -1,7 +1,5 @@
 namespace EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Accreditations;
 
-using AutoMapper;
-
 using Core.Enums;
 
 using FluentValidation;
