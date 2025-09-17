@@ -3,8 +3,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
 using System.Net;
 using System.Text;
 
-using AutoMapper;
-
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
@@ -32,7 +30,6 @@ public class AccreditationsControllerTests
     private AccreditationsController _controller;
     private Mock<ISessionManager<JourneySession>> _sessionManagerMock;
     private Mock<IConfiguration> _configurationMock;
-    private Mock<IMapper> _mapperMock;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IReprocessorExporterService> _reprocessorExporterServiceMock;
     private JourneySession _journeySession;
@@ -49,7 +46,6 @@ public class AccreditationsControllerTests
         _httpContextMock = new Mock<HttpContext>();
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         _configurationMock = new Mock<IConfiguration>();
-        _mapperMock = new Mock<IMapper>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
         var mockRequest = new Mock<HttpRequest>();
         var mockHeaders = new Mock<IHeaderDictionary>();
@@ -80,7 +76,7 @@ public class AccreditationsControllerTests
 
         var validatorMock = new Mock<IValidator<IdRequest>>();
 
-        _controller = new AccreditationsController(_sessionManagerMock.Object, _reprocessorExporterServiceMock.Object, _configurationMock.Object, _mapperMock.Object, validatorMock.Object);
+        _controller = new AccreditationsController(_sessionManagerMock.Object, _reprocessorExporterServiceMock.Object, _configurationMock.Object, validatorMock.Object);
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
 
