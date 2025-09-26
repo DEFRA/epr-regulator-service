@@ -1,8 +1,6 @@
-using System;
 using System.Text;
 using System.Text.Json;
 
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
 using EPR.RegulatorService.Frontend.Web.Sessions;

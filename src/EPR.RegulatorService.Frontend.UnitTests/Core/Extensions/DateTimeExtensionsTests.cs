@@ -2,6 +2,8 @@ using EPR.RegulatorService.Frontend.Web.Extensions;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Extensions;
 
+using System.Globalization;
+
 [TestClass]
 public class DateTimeExtensionsTests
 {
@@ -21,10 +23,10 @@ public class DateTimeExtensionsTests
     public void ToDisplayDate_WhenDateIsSet_ShouldReturnDateStringInExpectedFormat(string dateString, string expectedValue)
     {
         // Arrange
-        var dateTime = DateTime.Parse(dateString);
+        var dateTime = DateTime.Parse(dateString, CultureInfo.CurrentCulture);
 
         // Act
-        string result = DateTimeExtensions.ToDisplayDate(dateTime);
+        string result = dateTime.ToDisplayDate();
 
         // Assert
         result.Should().Be(expectedValue);
@@ -46,10 +48,10 @@ public class DateTimeExtensionsTests
     public void ToDisplayDateAndTime_WhenDateIsSet_ShouldReturnDateStringInExpectedFormat(string dateString, string expectedValue)
     {
         // Arrange
-        var dateTime = DateTime.Parse(dateString);
+        var dateTime = DateTime.Parse(dateString, CultureInfo.CurrentCulture);
 
         // Act
-        string result = DateTimeExtensions.ToDisplayDateAndTime(dateTime);
+        string result = dateTime.ToDisplayDateAndTime();
 
         // Assert
         result.Should().Be(expectedValue);

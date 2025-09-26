@@ -4,6 +4,8 @@ using EPR.RegulatorService.Frontend.Core.Models;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Filters;
 
+using System.Globalization;
+
 [TestClass]
 public class AbstractSubmissionFiltersTests
 {
@@ -207,7 +209,9 @@ public class AbstractSubmissionFiltersTests
         var submissionYears = new[] { 2023 };
 
         var expectedSubmissions = _abstractSubmissions.Where(
-            x => submissionYears.Contains(int.Parse(x.SubmissionPeriod.Substring(x.SubmissionPeriod.Length - 4))));
+#pragma warning disable CA1846
+            x => submissionYears.Contains(int.Parse(x.SubmissionPeriod.Substring(x.SubmissionPeriod.Length - 4), CultureInfo.CurrentCulture)));
+#pragma warning restore CA1846
 
         var result = _abstractSubmissions.FilterBySubmissionYears(submissionYears);
 

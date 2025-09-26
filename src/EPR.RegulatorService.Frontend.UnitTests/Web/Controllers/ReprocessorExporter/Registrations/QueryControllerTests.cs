@@ -1,4 +1,3 @@
-using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -8,7 +7,6 @@ using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registra
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.Query;
 
 using FluentAssertions.Execution;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
@@ -301,7 +299,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
         }
     }
 
-    private QueryMaterialSession CreateQueryMaterialSession() =>
+    private static QueryMaterialSession CreateQueryMaterialSession() =>
         new()
         {
             OrganisationName = "TestOrg",
@@ -310,7 +308,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
             PagePath = PagePath.FeesDue
         };
 
-    private QueryRegistrationSession CreateQueryRegistrationSession() =>
+    private static QueryRegistrationSession CreateQueryRegistrationSession() =>
         new()
         {
             OrganisationName = "TestOrg",

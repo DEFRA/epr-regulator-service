@@ -2,7 +2,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
 {
     using System.Globalization;
 
-    using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Extensions;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
     using EPR.RegulatorService.Frontend.Core.Models;
@@ -12,7 +11,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
     using EPR.RegulatorService.Frontend.Web.Helpers;
 
     using Microsoft.AspNetCore.Mvc;
-    using System.Reflection;
 
     public partial class SubmissionsController
     {

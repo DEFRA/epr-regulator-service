@@ -8,6 +8,8 @@ using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registration
 
 namespace EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
+using System.Globalization;
+
 /// <summary>
 /// This service provides mock registration data for testing purposes.
 /// It follows a simple convention:
@@ -28,7 +30,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             throw new NotFoundException("Mocked exception for testing purposes.");
         }
 
-        var registration = _registrations.FirstOrDefault(r => r.Id == id);
+        var registration = _registrations.Find(r => r.Id == id);
 
         return Task.FromResult(registration);
     }
@@ -110,7 +112,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
 
         var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
 
-        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus);
+        var task = registrationMaterial.Tasks.Find(t => t.TaskName == RegulatorTaskType.CheckRegistrationStatus);
 
         return Task.FromResult(new RegistrationMaterialPaymentFees
         {
@@ -270,9 +272,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
         var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
-        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.ReprocessingInputsAndOutputs);
+        var task = registrationMaterial.Tasks.Find(t => t.TaskName == RegulatorTaskType.ReprocessingInputsAndOutputs);
         
-        var registrationMaterialReprocessingIO = new RegistrationMaterialReprocessingIO
+        var registrationMaterialReprocessingInputsAndOutputs = new RegistrationMaterialReprocessingIO
         {
             OrganisationName = registration.OrganisationName,
             RegistrationId = registration.Id,
@@ -292,14 +294,14 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             TaskStatus = task?.Status ?? RegulatorTaskStatus.NotStarted
         };
 
-        return Task.FromResult(registrationMaterialReprocessingIO);
+        return Task.FromResult(registrationMaterialReprocessingInputsAndOutputs);
     }
 
     public Task<RegistrationMaterialSamplingPlan> GetSamplingPlanByRegistrationMaterialIdAsync(Guid registrationMaterialId)
     {
         var registrationMaterial = _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
         var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
-        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.SamplingAndInspectionPlan);
+        var task = registrationMaterial.Tasks.Find(t => t.TaskName == RegulatorTaskType.SamplingAndInspectionPlan);
 
         var registrationMaterialSamplingPlan = new RegistrationMaterialSamplingPlan
         {
@@ -331,7 +333,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         var registrationMaterial =
             _registrations.SelectMany(r => r.Materials).First(rm => rm.Id == registrationMaterialId);
         var registration = _registrations.Single(r => r.Id == registrationMaterial.RegistrationId);
-        var task = registrationMaterial.Tasks.FirstOrDefault(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions);
+        var task = registrationMaterial.Tasks.Find(t => t.TaskName == RegulatorTaskType.WasteLicensesPermitsAndExemptions);
 
         var registrationMaterialWasteLicence = new RegistrationMaterialWasteLicence
         {
@@ -370,7 +372,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 SiteAddress = "23 Ruby St, London, E12 3SE",
                 OrganisationType = organisationType,
                 Regulator = "Environment Agency (EA)",
-                Tasks = CreateRegistrationTasks(registrationId, organisationType),
+                Tasks = CreateRegistrationTasks(organisationType),
                 Materials =
                 [
                     CreateRegistrationMaterial(registrationId, "Plastic", organisationType, "222019EFGF"),
@@ -391,7 +393,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             SiteAddress = "N/A",
             OrganisationType = organisationType,
             Regulator = "Environment Agency (EA)",
-            Tasks = CreateRegistrationTasks(registrationId, organisationType),
+            Tasks = CreateRegistrationTasks(organisationType),
             Materials =
             [
                 CreateRegistrationMaterial(registrationId, "Plastic", organisationType, "111019EFGF")
@@ -399,7 +401,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
         };
     }
 
-    private static List<RegistrationTask> CreateRegistrationTasks(Guid registrationId, ApplicationOrganisationType organisationType)
+    private static List<RegistrationTask> CreateRegistrationTasks(ApplicationOrganisationType organisationType)
     {
         if (organisationType == ApplicationOrganisationType.Reprocessor)
         {
@@ -514,7 +516,7 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
     private static Registration GetMockedAccreditationRegistration(Guid id)
     {
         var registrations = GetAllMockedRegistrations();
-        return registrations.FirstOrDefault(r => r.Id == id);
+        return registrations.Find(r => r.Id == id);
     }
 
     private static List<Registration> GetAllMockedRegistrations()
@@ -592,9 +594,11 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
                 Accreditations = accreditations.Select(x =>
                     CreateAccreditation(
                         guid: x.id,
-                        reference: $"MOCK-{x.year}-{material.ToUpper()}",
+                        reference: $"MOCK-{x.year}-{material.ToUpper(CultureInfo.CurrentCulture)}",
                         status: x.status,
+#pragma warning disable S6562
                         date: new DateTime(x.year, 6, 1),
+#pragma warning restore S6562
                         year: x.year)).ToList()
             }
         },
@@ -659,7 +663,9 @@ public class MockedReprocessorExporterService : IReprocessorExporterService
             SiteAddress = "23 Ruby Street, London, E12 3SE",
             ApplicationReferenceNumber = "MOCK-REF-2025",
             MaterialName = "Plastic",
+#pragma warning disable S6562
             SubmittedDate = new DateTime(2025, 5, 15),
+#pragma warning restore S6562
             FeeAmount = 2921.00m,
             Regulator = "EA",
             PrnTonnage = PrnTonnageType.Upto5000Tonnes,

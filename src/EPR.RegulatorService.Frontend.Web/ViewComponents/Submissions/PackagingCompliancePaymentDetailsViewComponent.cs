@@ -1,10 +1,7 @@
-using System.Threading.Tasks;
-
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Helpers;
-using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Microsoft.AspNetCore.Mvc;

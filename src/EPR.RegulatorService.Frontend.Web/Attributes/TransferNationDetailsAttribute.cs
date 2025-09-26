@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EPR.RegulatorService.Frontend.Web.Attributes
 {
+    using System.Globalization;
+
     using Core.Models;
 
     [AttributeUsage(AttributeTargets.Property)]
@@ -46,7 +48,7 @@ namespace EPR.RegulatorService.Frontend.Web.Attributes
                     continue;
                 }
 
-                var errorLink = agencyIndex.ToString().ToLower(System.Globalization.CultureInfo.InvariantCulture) + "-notes";
+                var errorLink = agencyIndex.Value.ToString(CultureInfo.InvariantCulture).ToLower(CultureInfo.InvariantCulture) + "-notes";
                 if (string.IsNullOrEmpty(transferNote.Notes))
                 {
                     return new ValidationResult(_requiredErrorMessage, new []{ errorLink });

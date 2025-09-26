@@ -2,9 +2,6 @@ using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using Microsoft.AspNetCore.Http;
 
-using System.Text;
-using System.Text.Json;
-
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Sessions;
 
 [TestClass]
@@ -20,7 +17,7 @@ public class RegulatorSessionManagerTests
     private byte[] _sessionBytes;
 
     private Mock<ISession> _sessionMock;
-    private ISessionManager<RegulatorSession> _sessionManager;
+    private RegulatorSessionManager _sessionManager;
 
     [TestInitialize]
     public void Setup()

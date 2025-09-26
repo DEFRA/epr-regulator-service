@@ -1,4 +1,4 @@
-﻿namespace EPR.RegulatorService.Frontend.Core.Converters;
+namespace EPR.RegulatorService.Frontend.Core.Converters;
 
 using System;
 using System.Text.Json;
@@ -11,16 +11,13 @@ public class RegistrationSubmissionStatusConverter : JsonConverter<RegistrationS
     public override RegistrationSubmissionStatus Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         string value = reader.GetString();
-
-        foreach (RegistrationSubmissionStatus type in Enum.GetValues(typeof(RegistrationSubmissionStatus)))
+        var values = Enum.GetValues(typeof(RegistrationSubmissionStatus)).OfType<RegistrationSubmissionStatus>().ToList();
+        if (string.IsNullOrEmpty(value) || !Enum.TryParse(typeof(RegistrationSubmissionStatus), value!, true, out _))
         {
-            if (type.ToString().Equals(value, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return type;
-            }
+            throw new JsonException($"Value '{value}' is not valid for {nameof(OrganisationType)}.");
         }
 
-        throw new JsonException($"Value '{value}' is not valid for {nameof(OrganisationType)}.");
+        return values.Single(o => o.ToString().Equals(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
     public override void Write(Utf8JsonWriter writer, RegistrationSubmissionStatus value, JsonSerializerOptions options)

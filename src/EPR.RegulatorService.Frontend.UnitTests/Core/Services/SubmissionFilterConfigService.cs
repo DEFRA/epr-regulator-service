@@ -1,7 +1,6 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 {
     using EPR.RegulatorService.Frontend.Core.Configs;
-    using EPR.RegulatorService.Frontend.Core.Services;
 
     using FluentAssertions;
 

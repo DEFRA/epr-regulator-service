@@ -20,11 +20,21 @@
         <div class="govuk-!-margin-bottom-4">
           <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Subheading.OrganisationType"]</h3>
           <p id="regulatorOrganisationType" class="govuk-body">
-            @(Model.IsComplianceScheme
-              ? Localizer["Text.ComplianceScheme"]
-              : Model.OrganisationType.Contains("InDirectProducer")
-                ? Localizer["Text.IndirectProducer"]
-                : Localizer["Text.DirectProducer"])
+
+            @if (Model.IsComplianceScheme)
+            {
+              @Localizer["Text.ComplianceScheme"]
+              return;
+            }
+
+            @if (Model.OrganisationType.Contains("InDirectProducer"))
+            {
+              @Localizer["Text.IndirectProducer"]
+            }
+            else
+            {
+              @Localizer["Text.DirectProducer"]
+            }
           </p>
 
         </div>

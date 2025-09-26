@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-using System;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
