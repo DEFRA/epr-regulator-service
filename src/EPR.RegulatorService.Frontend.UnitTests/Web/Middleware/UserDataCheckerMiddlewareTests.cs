@@ -64,6 +64,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
 
             SetupControllerName("UserDataControllerName");
 
+            var sectionMock = new Mock<IConfigurationSection>();
+            sectionMock.Setup(s => s.Value).Returns("/health");
+
+            _configurationMock
+                .Setup(c => c.GetSection("HealthCheckPath"))
+                .Returns(sectionMock.Object);
+
             _systemUnderTest = new UserDataCheckerMiddleware(
                 _facadeServiceMock.Object,
                 _sessionManagerMock.Object,
@@ -166,6 +173,48 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             httpResponseMessage.Dispose();
         }
 
+        [DataTestMethod]
+        [DataRow("/health", "/health/status")]   // configured path matches -> middleware should short-circuit to next
+        [DataRow("", "/health/status")]          // empty configured path -> middleware proceeds, still calls next
+        public async Task GivenInvokeAsync_HealthCheckVariants_ShouldCallNext(string configuredHealthPath, string requestPath)
+        {
+            SetHealthCheckPath(configuredHealthPath);
+            SetRequestPath(requestPath);
+
+            var next = CreateVerifiableNext();
+
+            await _systemUnderTest.InvokeAsync(_httpContextMock.Object, next.Object);
+
+            next.Verify(rd => rd(It.IsAny<HttpContext>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GivenInvokeAsync_WhenGetUserAccountDetailsFails_ShouldRedirect()
+        {
+            // Arrange: ensure facade fails
+            var failureResponse = SetupFacadeFail(System.Net.HttpStatusCode.InternalServerError);
+
+            // IMPORTANT: override the user from Setup() so they're authenticated but WITHOUT UserData
+            var identity = new ClaimsIdentity(authenticationType: "mock");
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()));
+            identity.AddClaim(new Claim(ClaimTypes.Name, "Test User"));
+            var authedNoUserData = new ClaimsPrincipal(identity);
+            _httpContextMock.Setup(c => c.User).Returns(authedNoUserData);
+
+            var httpCtx = EnsureWritableResponse();
+            SetRequestPath("/home");
+            SetPathBase("/home");
+
+            // Act
+            await _systemUnderTest.InvokeAsync(_httpContextMock.Object, _requestDelegateMock.Object);
+
+            // Assert
+            Assert.AreEqual(StatusCodes.Status302Found, httpCtx.Response.StatusCode);
+            _requestDelegateMock.Verify(rd => rd(It.IsAny<HttpContext>()), Times.Never);
+
+            failureResponse.Dispose();
+        }
+
         private void SetupControllerName(string controllerName)
         {
             var controllerActionDescriptor = new ControllerActionDescriptor { ControllerName = controllerName };
@@ -173,6 +222,48 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             var metadata = new List<object> { controllerActionDescriptor };
 
             _httpContextMock.Setup(x => x.Features.Get<IEndpointFeature>()!.Endpoint).Returns(new Endpoint(_ => Task.CompletedTask, new EndpointMetadataCollection(metadata), "EndpointName"));
+        }
+
+        private void SetHealthCheckPath(string value)
+        {
+            var section = new Mock<IConfigurationSection>();
+            section.Setup(s => s.Value).Returns(value);
+            _configurationMock.Setup(c => c.GetSection("HealthCheckPath")).Returns(section.Object);
+        }
+
+        private void SetPathBase(string value)
+        {
+            var section = new Mock<IConfigurationSection>();
+            section.Setup(s => s.Value).Returns(value);
+            _configurationMock.Setup(c => c.GetSection("PATH_BASE")).Returns(section.Object);
+        }
+
+        private void SetRequestPath(string path)
+        {
+            _httpRequestMock.Setup(r => r.Path).Returns(new PathString(path));
+            _httpContextMock.Setup(c => c.Request).Returns(_httpRequestMock.Object);
+        }
+
+        private Mock<RequestDelegate> CreateVerifiableNext()
+        {
+            var next = new Mock<RequestDelegate>();
+            next.Setup(rd => rd(It.IsAny<HttpContext>())).Returns(Task.CompletedTask).Verifiable();
+            return next;
+        }
+
+        private DefaultHttpContext EnsureWritableResponse()
+        {
+            var ctx = new DefaultHttpContext();
+            ctx.Response.Body = new MemoryStream(); // needed so Redirect() can write
+            _httpContextMock.Setup(c => c.Response).Returns(ctx.Response);
+            return ctx;
+        }
+
+        private HttpResponseMessage SetupFacadeFail(System.Net.HttpStatusCode code)
+        {
+            var response = new HttpResponseMessage(code);
+            _facadeServiceMock.Setup(s => s.GetUserAccountDetails()).ReturnsAsync(response);
+            return response;
         }
     }
 }
