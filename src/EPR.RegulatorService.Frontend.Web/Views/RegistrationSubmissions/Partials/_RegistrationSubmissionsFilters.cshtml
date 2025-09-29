@@ -1,4 +1,3 @@
-@using EPR.RegulatorService.Frontend.Web.ViewModels.Shared;
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
 @model RegistrationSubmissionsFilterViewModel
@@ -48,16 +47,16 @@
                                 <legend>
                                     <span class="govuk-label govuk-label--m">@Localizer["SubTitle.OrganisationType"].Value</span>
                                 </legend>
-                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                                    <div class="epr-filter-panel-checkbox-layout">
-                                        <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+								<div class="govuk-grid-row govuk-checkboxes" data-module="govuk-checkboxes">
+									<div class="govuk-grid-column-one-third epr-filter-panel-checkbox">
+                                        <div class="govuk-checkboxes__item">
                                             @Html.CheckBoxFor(x => x.IsOrganisationComplianceChecked,
                                                      new { id = "is-organisation-compliance-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-organisation-compliance-checked-label" })
                                             @Html.LabelFor(x => x.IsOrganisationComplianceChecked, Localizer["Checkbox.OrganisationType.Compliance"].Value,
                                                      new { id = "is-organisation-compliance-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-organisation-compliance-checked-check" })
                                         </div>
                                     </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsOrganisationLargeChecked,
                                                      new { id = "is-organisation-large-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-organisation-large-checked-label" })
@@ -65,7 +64,7 @@
                                                      new { id = "is-organisation-large-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-organisation-large-checked-check" })
                                         </div>
                                     </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsOrganisationSmallChecked,
                                                      new { id = "is-organisation-small-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-organisation-small-checked-label" })
@@ -82,8 +81,8 @@
                                 <legend>
                                     <span class="govuk-label govuk-label--m">@Localizer["SubTitle.SubmissionStatus"].Value</span>
                                 </legend>
-                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                                    <div class="epr-filter-panel-checkbox-layout">
+                                <div class="govuk-grid-row govuk-checkboxes" data-module="govuk-checkboxes">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsStatusPendingChecked,
                                                      new { id = "is-status-pending-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-status-pending-checked-label" })
@@ -91,7 +90,7 @@
                                                      new { id = "is-status-pending-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-status-pending-checked-check" })
                                         </div>
                                     </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsStatusGrantedChecked,
                                                      new { id = "is-status-granted-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-status-granted-checked-label" })
@@ -99,7 +98,7 @@
                                                      new { id = "is-status-granted-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-status-granted-checked-check" })
                                         </div>
                                     </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsStatusRefusedChecked,
                                                      new { id = "is-status-refused-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-status-refused-checked-label" })
@@ -107,7 +106,7 @@
                                                      new { id = "is-status-refused-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-status-refused-checked-check" })
                                         </div>
                                     </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsStatusQueriedChecked,
                                                      new { id = "is-status-queried-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-status-queried-checked-label" })
@@ -115,7 +114,7 @@
                                                      new { id = "is-status-queried-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-status-queried-checked-check" })
                                         </div>
                                     </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsStatusCancelledChecked,
                                                      new { id = "is-status-cancelled-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-status-cancelled-checked-label" })
@@ -131,8 +130,8 @@
                                 <legend>
                                     <span class="govuk-label govuk-label--m">Resubmission status</span>
                                 </legend>
-                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                                    <div class="epr-filter-panel-checkbox-layout">
+                                <div class="govuk-grid-row govuk-checkboxes" data-module="govuk-checkboxes">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsResubmissionPendingRegistrationChecked,
                                                      new { id = "is-pending-resubmission-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-pending-resubmission-type-checked-label" })
@@ -140,7 +139,7 @@
                                                      new { id = "is-pending-resubmission-type-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-pending-resubmission-type-checked-check" })
                                         </div>
                                     </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsResubmissionAcceptedRegistrationChecked,
                                                      new { id = "is-accepted-resubmission-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-accepted-sreubmission-type-checked-label" })
@@ -148,7 +147,7 @@
                                                      new { id = "is-accepted-resubmission-type-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-accepted-resubmission-type-checked-check" })
                                         </div>
                                     </div>
-                                    <div class="epr-filter-panel-checkbox-layout">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.IsResubmissionRejectedRegistrationChecked,
                                                      new { id = "is-rejected-resubmission-type-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-rejected-resubmission-type-checked-label" })
@@ -164,8 +163,8 @@
                                 <legend>
                                     <span class="govuk-label govuk-label--m">@Localizer["SubTitle.RelevantYear"].Value</span>
                                 </legend>
-                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                                    <div class="epr-filter-panel-checkbox-layout">
+                                <div class="govuk-grid-row govuk-checkboxes" data-module="govuk-checkboxes">
+									<div class="govuk-grid-column-one-third">
                                         <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                             @Html.CheckBoxFor(x => x.Is2025Checked,
                                                      new { id = "is-year-2025-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-year-2025-checked-label" })
@@ -175,7 +174,7 @@
                                     </div>
                                     @if (Model.Show2026RelevantYearFilter)
                                     {
-                                      <div class="epr-filter-panel-checkbox-layout">
+										<div class="govuk-grid-column-one-third">
                                           <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
                                               @Html.CheckBoxFor(x => x.Is2026Checked,
                                                         new { id = "is-year-2026-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-year-2026-checked-label" })

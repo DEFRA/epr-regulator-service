@@ -1,6 +1,5 @@
 namespace EPR.RegulatorService.Frontend.Core.Services
 {
-    using System;
     using System.Globalization;
 
     using EPR.RegulatorService.Frontend.Core.Configs;

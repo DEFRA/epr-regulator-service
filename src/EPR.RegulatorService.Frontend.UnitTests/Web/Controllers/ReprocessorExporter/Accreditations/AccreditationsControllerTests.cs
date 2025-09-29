@@ -3,8 +3,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExp
 using System.Net;
 using System.Text;
 
-using AutoMapper;
-
 using EPR.RegulatorService.Frontend.Core.Exceptions;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
@@ -32,7 +30,6 @@ public class AccreditationsControllerTests
     private AccreditationsController _controller;
     private Mock<ISessionManager<JourneySession>> _sessionManagerMock;
     private Mock<IConfiguration> _configurationMock;
-    private Mock<IMapper> _mapperMock;
     private Mock<HttpContext> _httpContextMock = null!;
     private Mock<IReprocessorExporterService> _reprocessorExporterServiceMock;
     private JourneySession _journeySession;
@@ -49,13 +46,11 @@ public class AccreditationsControllerTests
         _httpContextMock = new Mock<HttpContext>();
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         _configurationMock = new Mock<IConfiguration>();
-        _mapperMock = new Mock<IMapper>();
         var configurationSectionMock = new Mock<IConfigurationSection>();
         var mockRequest = new Mock<HttpRequest>();
         var mockHeaders = new Mock<IHeaderDictionary>();
 
         // Set up the Referer header to return a sample URL (or null for different tests)
-        mockHeaders.Setup(h => h["Referer"]).Returns("http://previous-page.com");
         mockHeaders.Setup(h => h.Referer).Returns("http://previous-page.com");
 
         // Set the mock Request to the HttpContext
@@ -80,7 +75,7 @@ public class AccreditationsControllerTests
 
         var validatorMock = new Mock<IValidator<IdRequest>>();
 
-        _controller = new AccreditationsController(_sessionManagerMock.Object, _reprocessorExporterServiceMock.Object, _configurationMock.Object, _mapperMock.Object, validatorMock.Object);
+        _controller = new AccreditationsController(_sessionManagerMock.Object, _reprocessorExporterServiceMock.Object, _configurationMock.Object, validatorMock.Object);
         _controller.ControllerContext.HttpContext = _httpContextMock.Object;
     }
 
@@ -170,7 +165,6 @@ public class AccreditationsControllerTests
         var accreditationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
         const int year = 2025;
         var mockHeaders = new Mock<IHeaderDictionary>();
-        mockHeaders.Setup(h => h["Referer"]).Returns((string?)null);
         mockHeaders.Setup(h => h.Referer).Returns((string?)null);
 
         var mockRequest = new Mock<HttpRequest>();
@@ -220,7 +214,6 @@ public class AccreditationsControllerTests
     {
         // Arrange
         var accreditationId = Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC");
-        const int year = 2025;
         var journeySession = new JourneySession();
         journeySession.RegulatorSession.Journey.Add(_manageAccreditationUrl);
 

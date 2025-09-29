@@ -60,7 +60,7 @@ public abstract class RegistrationTestBase
         _submissionFiltersMock.Setup(mock => mock.Value).Returns(new SubmissionFiltersConfig
         {
             OrgYears = _orgYears,
-            OrgPeriods = new string[] { "January to June 2023", "July to December 2023", "January to June 2024", "July to December 2024" }
+            OrgPeriods = ["January to June 2023", "July to December 2023", "January to June 2024", "July to December 2024"]
         });
 
         _urlsOptionMock.Setup(mock => mock.Value).Returns(new ExternalUrlsOptions { PowerBiLogin = PowerBiLogin });

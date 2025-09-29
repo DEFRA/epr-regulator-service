@@ -10,6 +10,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
     using AutoFixture;
 
+    using RegulatorDecision = Frontend.Web.Constants.RegulatorDecision;
+    using ServiceRole = Frontend.Web.Constants.ServiceRole;
+    using User = Frontend.Core.Models.User;
+
     [TestClass]
     public class ApplicationsControllerTests : ApplicationsTestBase
     {

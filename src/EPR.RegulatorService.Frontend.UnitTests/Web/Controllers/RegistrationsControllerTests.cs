@@ -130,7 +130,7 @@ public class RegistrationsControllerTests : RegistrationTestBase
         registrationFiltersModelFromSession.IsPendingRegistrationChecked.Should().BeTrue();
         registrationFiltersModelFromSession.IsAcceptedRegistrationChecked.Should().BeTrue();
         registrationFiltersModelFromSession.IsRejectedRegistrationChecked.Should().BeTrue();
-        registrationFiltersModelFromSession.SearchSubmissionYears.Should().BeEquivalentTo(new[] { 2023 });
+        registrationFiltersModelFromSession.SearchSubmissionYears.Should().BeEquivalentTo([2023]);
         registrationFiltersModelFromSession.SearchSubmissionPeriods.Should().BeEquivalentTo("January to June 2023");
     }
 

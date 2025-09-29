@@ -1,5 +1,4 @@
 @using EPR.RegulatorService.Frontend.Core.Enums
-@using EPR.RegulatorService.Frontend.Web.Constants
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using EPR.RegulatorService.Frontend.Web.Extensions
@@ -78,7 +77,6 @@
                 <a asp-action="AcceptSubmission"
                    asp-controller="Submissions"
                    asp-route-submissionHash="@Model.SubmissionHash"
-                   name="journeyType"
                    class="govuk-button"
                    data-module="govuk-button"
                    id="journeyType"
@@ -88,7 +86,6 @@
                 <a asp-action="RejectSubmission"
                    asp-controller="Submissions"
                    asp-route-submissionHash="@Model.SubmissionHash"
-                   name="journeyType"
                    class="govuk-button govuk-button--secondary govuk-button--warning"
                    data-module="govuk-button"
                    id="journeyType"

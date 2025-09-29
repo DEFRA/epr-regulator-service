@@ -1,4 +1,3 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace EPR.RegulatorService.Frontend.Web.TagHelpers.Tests

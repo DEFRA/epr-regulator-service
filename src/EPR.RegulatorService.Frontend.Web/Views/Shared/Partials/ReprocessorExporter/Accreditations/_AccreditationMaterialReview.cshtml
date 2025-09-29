@@ -2,106 +2,103 @@
 @using EPR.RegulatorService.Frontend.Web.Helpers
 @model EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.ManageAccreditationsViewModel
 
-@foreach (var material in Model.Materials)
+@foreach (var material in Model.Materials.Where(o => AccreditationDisplayHelper.ShouldDisplayMaterial(o.RegistrationStatusRaw, o.Accreditation)))
 {
-	@if (AccreditationDisplayHelper.ShouldDisplayMaterial(material.RegistrationStatusRaw, material.Accreditation))
-	{
-		<h2 class="govuk-heading-m govuk-!-margin-top-6">
-			Review @(material.MaterialName) accreditation
-		</h2>
+	<h2 class="govuk-heading-m govuk-!-margin-top-6">
+		Review @(material.MaterialName) accreditation
+	</h2>
 
-		<p class="govuk-body">
-			Year: @material.Accreditation!.AccreditationYear<br />
-			Submitted by: Anna Faris (Site administrator)<br />
-			Contact person: Freda Pinto (Site manager)<br />
-			Telephone number and email: 02087651236
-			<a href="mailto:freda.pinto@greenltd.com" class="govuk-link govuk-link--no-visited-state">freda.pinto@greenltd.com</a>
-		</p>
+	<p class="govuk-body">
+		Year: @material.Accreditation!.AccreditationYear<br />
+		Submitted by: Anna Faris (Site administrator)<br />
+		Contact person: Freda Pinto (Site manager)<br />
+		Telephone number and email: 02087651236
+		<a href="mailto:freda.pinto@greenltd.com" class="govuk-link govuk-link--no-visited-state">freda.pinto@greenltd.com</a>
+	</p>
 
-		<p class="govuk-body">
-			<strong>Determination date:</strong>
-			@if (material.Accreditation.DeterminationDate != null)
-			{
-				@material.Accreditation.DeterminationDate.Value.ToString("d MMM yyyy")
-			}
-			else
-			{
-				<span>Not set yet</span>
-			}
-		</p>
+	<p class="govuk-body">
+		<strong>Determination date:</strong>
+		@if (material.Accreditation.DeterminationDate != null)
+		{
+			@material.Accreditation.DeterminationDate.Value.ToString("d MMM yyyy")
+		}
+		else
+		{
+			<span>Not set yet</span>
+		}
+	</p>
 
-		<ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
-			@if (Model.ApplicationType == ApplicationOrganisationType.Reprocessor.ToString())
+	<ul class="app-task-list__items govuk-!-padding-left-0 govuk-!-margin-bottom-6">
+		@if (Model.ApplicationType == ApplicationOrganisationType.Reprocessor.ToString())
+		{
+			@if (material.Accreditation.PRNTonnageTask != null)
 			{
-				@if (material.Accreditation.PRNTonnageTask != null)
-				{
-					<li class="app-task-list__item">
-						<span class="app-task-list__task-name">
-							<a href="#">PRN tonnage and authority to issue PRNs</a>
-						</span>
-						<strong class="govuk-tag @material.Accreditation.PRNTonnageTask.StatusCssClass app-task-list__tag">
-							@material.Accreditation.PRNTonnageTask.StatusText
-						</strong>
-					</li>
-				}
+				<li class="app-task-list__item">
+					<span class="app-task-list__task-name">
+						<a href="#">PRN tonnage and authority to issue PRNs</a>
+					</span>
+					<strong class="govuk-tag @material.Accreditation.PRNTonnageTask.StatusCssClass app-task-list__tag">
+						@material.Accreditation.PRNTonnageTask.StatusText
+					</strong>
+				</li>
 			}
-			else
+		}
+		else
+		{
+			@if (material.Accreditation.PERNsTonnageAndAuthorityToIssuePERNsTask != null)
 			{
-				@if (material.Accreditation.PERNsTonnageAndAuthorityToIssuePERNsTask != null)
-				{
-					<li class="app-task-list__item">
-						<span class="app-task-list__task-name">
-							<a href="#">PERN tonnage and authority to issue PERNs</a>
-						</span>
-						<strong class="govuk-tag @material.Accreditation.PERNsTonnageAndAuthorityToIssuePERNsTask.StatusCssClass app-task-list__tag">
-							@material.Accreditation.PERNsTonnageAndAuthorityToIssuePERNsTask.StatusText
-						</strong>
-					</li>
-				}
+				<li class="app-task-list__item">
+					<span class="app-task-list__task-name">
+						<a href="#">PERN tonnage and authority to issue PERNs</a>
+					</span>
+					<strong class="govuk-tag @material.Accreditation.PERNsTonnageAndAuthorityToIssuePERNsTask.StatusCssClass app-task-list__tag">
+						@material.Accreditation.PERNsTonnageAndAuthorityToIssuePERNsTask.StatusText
+					</strong>
+				</li>
 			}
+		}
        
-			@if (material.Accreditation.BusinessPlanTask != null)
-			{
-				<li class="app-task-list__item">
-					<span class="app-task-list__task-name">
-                        <a href="@Url.ActionLink("AccreditationBusinessPlan", "AccreditationStatus", new { accreditationId = material.Accreditation.Id, year = @material.Accreditation!.AccreditationYear } )">Business plan</a>
-					</span>
-					<strong class="govuk-tag @material.Accreditation.BusinessPlanTask.StatusCssClass app-task-list__tag">
-						@material.Accreditation.BusinessPlanTask.StatusText
-					</strong>
-				</li>
-			}
-
-		@if (material.Accreditation.SamplingAndInspectionPlanTask != null)
-        {
-          <li class="app-task-list__item">
-            <span class="app-task-list__task-name">
-                        <a href="@Url.ActionLink("SamplingInspection", "Accreditations", new { accreditationId = @material.Accreditation.Id, year = @material.Accreditation!.AccreditationYear })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state">Sampling and inspection plan</a>
-            </span>
-                    <strong class="govuk-tag @material.Accreditation.SamplingAndInspectionPlanTask.StatusCssClass app-task-list__tag">
-                      @material.Accreditation.SamplingAndInspectionPlanTask.StatusText
-            </strong>
-          </li>
-			}
-
-			@if (Model.ApplicationType == ApplicationOrganisationType.Exporter.ToString())
-			{
-				<li class="app-task-list__item">
-					<span class="app-task-list__task-name">
-						<a href="#">Overseas reprocessing sites and Evidence of<br />broadly equivalent standards</a>
-					</span>
-					<strong class="govuk-tag @material.Accreditation.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask.StatusCssClass app-task-list__tag">
-						@material.Accreditation.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask.StatusText
-					</strong>
-				</li>
-			}
-
+		@if (material.Accreditation.BusinessPlanTask != null)
+		{
 			<li class="app-task-list__item">
 				<span class="app-task-list__task-name">
-					<a href="#">Update accreditation status</a>
+                       <a href="@Url.ActionLink("AccreditationBusinessPlan", "AccreditationStatus", new { accreditationId = material.Accreditation.Id,year = @material.Accreditation!.AccreditationYear } )">Business plan</a>
 				</span>
-				<strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started yet</strong>
+				<strong class="govuk-tag @material.Accreditation.BusinessPlanTask.StatusCssClass app-task-list__tag">
+					@material.Accreditation.BusinessPlanTask.StatusText
+				</strong>
 			</li>
-		</ul>
-	}
+		}
+
+	@if (material.Accreditation.SamplingAndInspectionPlanTask != null)
+       {
+         <li class="app-task-list__item">
+           <span class="app-task-list__task-name">
+                       <a href="@Url.ActionLink("SamplingInspection", "Accreditations", new { accreditationId = @material.Accreditation.Id, year =@material.Accreditation!.AccreditationYear })" aria-describedby="#" class="govuk-link govuk-link--no-visited-state">Samplingand inspection plan</a>
+           </span>
+                   <strong class="govuk-tag @material.Accreditation.SamplingAndInspectionPlanTask.StatusCssClass app-task-list__tag">
+                     @material.Accreditation.SamplingAndInspectionPlanTask.StatusText
+           </strong>
+         </li>
+		}
+
+		@if (Model.ApplicationType == ApplicationOrganisationType.Exporter.ToString())
+		{
+			<li class="app-task-list__item">
+				<span class="app-task-list__task-name">
+					<a href="#">Overseas reprocessing sites and Evidence of<br />broadly equivalent standards</a>
+				</span>
+				<strong class="govuk-tag @material.Accreditation.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask.StatusCssClass-app-task-list__tag">
+					@material.Accreditation.OverseasReprocessingSitesAndEvidenceOfBroadlyEquivalentStandardsTask.StatusText
+				</strong>
+			</li>
+		}
+
+		<li class="app-task-list__item">
+			<span class="app-task-list__task-name">
+				<a href="#">Update accreditation status</a>
+			</span>
+			<strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started yet</strong>
+		</li>
+	</ul>
 }

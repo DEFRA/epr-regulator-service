@@ -2,7 +2,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents;
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading.Tasks;
 using EPR.RegulatorService.Frontend.Core.Models.Pagination;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;

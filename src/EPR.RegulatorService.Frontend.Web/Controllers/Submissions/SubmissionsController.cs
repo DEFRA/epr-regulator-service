@@ -1,14 +1,10 @@
 using System.Globalization;
-using System.Linq;
 using System.Text.Json;
 
 using EPR.Common.Authorization.Constants;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Services;
@@ -25,11 +21,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
 
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
-
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
-using EPR.RegulatorService.Frontend.Core.Enums;
-using EPR.RegulatorService.Frontend.Core.Models.FileDownload;
 
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions;
 
@@ -364,7 +356,7 @@ public partial class SubmissionsController : Controller
                 OrganisationName = organisationName,
                 OrganisationNumber = submission.OrganisationReference,
                 IsResubmissionRequired = false,
-                SubmissionPeriod = submission.SubmissionPeriod
+                SubmissionPeriod = submission.ActualSubmissionPeriod
 
             };
             var result = await _facadeService.SubmitPoMDecision(request);

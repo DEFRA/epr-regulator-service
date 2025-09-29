@@ -3,6 +3,8 @@ using  EPR.RegulatorService.Frontend.Core.Models;
 
 namespace EPR.RegulatorService.Frontend.Core.MockedData.Filters;
 
+using System.Globalization;
+
 public static class AbstractSubmissionFilters
 {
     public static IQueryable<AbstractSubmission> FilterByOrganisationNameAndOrganisationReference(this IQueryable<AbstractSubmission> query,
@@ -61,7 +63,9 @@ public static class AbstractSubmissionFilters
     {
         if (submissionYears?.Length >0)
         {
-            query = query.Where(x => submissionYears.Contains(int.Parse(x.SubmissionPeriod.Substring(x.SubmissionPeriod.Length - 4))));
+#pragma warning disable CA1846
+            query = query.Where(x => submissionYears.Contains(int.Parse(x.SubmissionPeriod.Substring(x.SubmissionPeriod.Length - 4), CultureInfo.CurrentCulture)));
+#pragma warning restore CA1846
         }
 
         return query;

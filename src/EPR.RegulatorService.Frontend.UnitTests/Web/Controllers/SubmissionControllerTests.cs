@@ -1,5 +1,3 @@
-using System;
-using System.Net;
 using System.Text.Json;
 
 using EPR.RegulatorService.Frontend.Core.Models;
@@ -16,9 +14,6 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-using System.Text.Json;
-using System;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {

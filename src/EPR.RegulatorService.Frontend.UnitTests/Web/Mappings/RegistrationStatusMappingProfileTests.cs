@@ -8,6 +8,8 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrat
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 
+using OfflinePaymentRequest = Frontend.Core.Models.ReprocessorExporter.Registrations.OfflinePaymentRequest;
+
 [TestClass]
 public class RegistrationStatusMappingProfileTests
 {

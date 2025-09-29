@@ -9,6 +9,8 @@ using FluentAssertions.Execution;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 
+using Registration = Frontend.Core.Models.ReprocessorExporter.Registrations.Registration;
+
 [TestClass]
 public class ManageRegistrationsMappingProfileTests
 {

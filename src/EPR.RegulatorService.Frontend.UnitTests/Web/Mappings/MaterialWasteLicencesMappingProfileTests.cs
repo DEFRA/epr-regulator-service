@@ -1,6 +1,5 @@
 using AutoMapper;
 
-using EPR.RegulatorService.Frontend.Core.Models.Registrations;
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.Constants.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Mappings;

@@ -1,7 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Web.Helpers
 {
     using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
-    using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
+
+    using ViewModels.ReprocessorExporter.Accreditations;
 
     public static class AccreditationDisplayHelper
     {

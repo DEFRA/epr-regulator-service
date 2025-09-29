@@ -1,6 +1,5 @@
 namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 

@@ -1,10 +1,9 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Helpers;
 
-using System;
-
 using EPR.RegulatorService.Frontend.Core.Enums.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Helpers;
-using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
+
+using Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
 [TestClass]
 public class AccreditationDisplayHelperTests

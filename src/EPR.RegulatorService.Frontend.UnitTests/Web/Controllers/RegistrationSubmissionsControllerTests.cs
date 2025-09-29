@@ -11,7 +11,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using EPR.RegulatorService.Frontend.Core.Sessions;
     using EPR.RegulatorService.Frontend.Web.Constants;
     using EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions;
-    using EPR.RegulatorService.Frontend.Web.Sessions;
     using EPR.RegulatorService.Frontend.Web.ViewModels.Registrations;
     using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
@@ -20,8 +19,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.Extensions.Logging;
-
-    using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
     [TestClass]
     public class RegistrationSubmissionsControllerTests : RegistrationSubmissionsTestBase
