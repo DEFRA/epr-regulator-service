@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -17,9 +17,19 @@
     </ItemGroup>
 
     <ItemGroup>
+        <!--
+        FluentAssertion -> pinned to version 6.12.0 as version 7 has breaking changes which,
+        as of 30/09/2025 we are not addressing just yet and version 8 is paid.
+        -->
+        <PackageReference Include="FluentAssertions" Version="6.12.0" />
+
+        <!--Pinned versions for transitive dependencies-->
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+        <PackageReference Include="System.Text.Json" Version="8.0.6" />
+
         <PackageReference Include="AutoFixture.AutoMoq" Version="4.18.1" />
         <PackageReference Include="ILogger.Moq" Version="1.1.10" />
-        <PackageReference Include="FluentAssertions" Version="6.12.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
         <PackageReference Include="MSTest.TestAdapter" Version="3.5.2" />
         <PackageReference Include="MSTest.TestFramework" Version="3.5.2" />

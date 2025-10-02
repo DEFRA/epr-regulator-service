@@ -14,11 +14,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--Pinned versions for transitive dependencies-->
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.6" />
+
     <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="EPR.Common.Authorization" Version="1.0.17" />
     <PackageReference Include="libphonenumber-csharp" Version="8.13.44" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="3.1.0" />
   </ItemGroup>
