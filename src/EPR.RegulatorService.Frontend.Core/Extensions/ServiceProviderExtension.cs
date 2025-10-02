@@ -21,7 +21,16 @@ public static class ServiceProviderExtension
         }
         else
         {
-            services.AddHttpClient<IFacadeService, FacadeService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("FacadeAPI:TimeoutSeconds")));
+            services.AddHttpClient<IFacadeService, FacadeService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("FacadeAPI:TimeoutSeconds")))
+                 .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+                 {
+                     PooledConnectionLifetime = TimeSpan.FromMinutes(5), // optional, configurable
+                     SslOptions = new System.Net.Security.SslClientAuthenticationOptions
+                     {
+                         EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12
+                             | System.Security.Authentication.SslProtocols.Tls13
+                     }
+                 });
         }
 
         bool useMockDataForRegistrationFacade = configuration.GetValue<bool>("ReprocessorExporterFacadeApi:UseMockData");
@@ -32,10 +41,28 @@ public static class ServiceProviderExtension
         }
         else
         {
-            services.AddHttpClient<IReprocessorExporterService, ReprocessorExporterService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("FacadeAPI:TimeoutSeconds")));
+            services.AddHttpClient<IReprocessorExporterService, ReprocessorExporterService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("FacadeAPI:TimeoutSeconds")))
+                    .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+                    {
+                        PooledConnectionLifetime = TimeSpan.FromMinutes(5), // optional, configurable
+                        SslOptions = new System.Net.Security.SslClientAuthenticationOptions
+                        {
+                            EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12
+                                | System.Security.Authentication.SslProtocols.Tls13
+                        }
+                    });
         }
 
-        services.AddHttpClient<IPaymentFacadeService, PaymentFacadeService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("PaymentFacadeApi:TimeoutSeconds")));
+        services.AddHttpClient<IPaymentFacadeService, PaymentFacadeService>(c => c.Timeout = TimeSpan.FromSeconds(configuration.GetValue<int>("PaymentFacadeApi:TimeoutSeconds")))
+                .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+                {
+                    PooledConnectionLifetime = TimeSpan.FromMinutes(5), // optional, configurable
+                    SslOptions = new System.Net.Security.SslClientAuthenticationOptions
+                    {
+                        EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12
+                            | System.Security.Authentication.SslProtocols.Tls13
+                    }
+                });
 
         services.AddScoped<ISubmissionFilterConfigService, SubmissionFilterConfigService>();
 
