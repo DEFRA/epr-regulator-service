@@ -19,6 +19,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Mvc;
 
 using RegulatorDecision = EPR.RegulatorService.Frontend.Core.Enums.RegulatorDecision;
@@ -189,7 +190,9 @@ public partial class SubmissionsController : Controller
 
     [HttpGet]
     [Route(PagePath.SubmissionDetails)]
-    public async Task<IActionResult> SubmissionDetails([FromQuery] int submissionHash)
+    public async Task<IActionResult> SubmissionDetails(
+        [FromQuery] int submissionHash,
+        [FromServices] IFeatureManager featureManager)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
         var model = GetSubmissionDetailsViewModel(session, submissionHash);
@@ -210,8 +213,16 @@ public partial class SubmissionsController : Controller
                     = model.NationCode = payCalParameters.NationCode;
                 sessionSubmission.ReferenceNumber
                     = model.ReferenceNumber = payCalParameters.Reference;
-                sessionSubmission.MemberCount
-                    = model.MemberCount = payCalParameters.MemberCount ?? 0;
+                if (await featureManager.IsEnabledAsync(FeatureFlags.IncludeSubsidiariesInFeeCalculationsForRegulators))
+                {
+                    sessionSubmission.MemberCount
+                        = model.MemberCount = payCalParameters.MemberCount ?? 1;
+                }
+                else
+                {
+                    sessionSubmission.MemberCount
+                        = model.MemberCount = payCalParameters.MemberCount ?? 0;
+                }
                 model.ReferenceFieldNotAvailable = payCalParameters.ReferenceFieldNotAvailable;
                 model.ReferenceNotAvailable = payCalParameters.ReferenceNotAvailable;
                 model.SubmittedDate = payCalParameters.ResubmissionDate ?? model.SubmittedDate;
