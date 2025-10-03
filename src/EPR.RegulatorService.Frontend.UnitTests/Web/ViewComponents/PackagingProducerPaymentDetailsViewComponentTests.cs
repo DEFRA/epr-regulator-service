@@ -7,6 +7,7 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents;
 
@@ -18,6 +19,7 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
     private readonly Mock<IPaymentFacadeService> _paymentFacadeServiceMock = new();
     private readonly Mock<ILogger<PackagingProducerPaymentDetailsViewComponent>> _loggerMock = new();
     private readonly Mock<IOptions<PaymentDetailsOptions>> _paymentDetailsOptionsMock = new();
+    private readonly Mock<IFeatureManager> _mockFeatureManager = new();
 
     [TestInitialize]
     public void TestInitialize()
@@ -29,7 +31,15 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
-        _sut = new PackagingProducerPaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object);
+        _mockFeatureManager.Setup(fm =>
+                fm.IsEnabledAsync(FeatureFlags.IncludeSubsidiariesInFeeCalculationsForRegulators))
+            .ReturnsAsync(false);
+
+        _sut = new PackagingProducerPaymentDetailsViewComponent(
+            _paymentDetailsOptionsMock.Object,
+            _paymentFacadeServiceMock.Object,
+            _mockFeatureManager.Object,
+            _loggerMock.Object);
     }
 
     [TestMethod]
@@ -119,7 +129,7 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
     }
 
     [TestMethod]
-    public async Task WhenpPoducerPaidInExcessOfTheAmountRequiredThenOutstandingPaymentShouldShowZero()
+    public async Task WhenProducerPaidInExcessOfTheAmountRequiredThenOutstandingPaymentShouldShowZero()
     {
         // Arrange
         _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsForResubmissionAsync(
@@ -132,7 +142,11 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         });
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions { ShowZeroFeeForTotalOutstanding = true });
-        _sut = new PackagingProducerPaymentDetailsViewComponent(_paymentDetailsOptionsMock.Object, _paymentFacadeServiceMock.Object, _loggerMock.Object);
+        _sut = new PackagingProducerPaymentDetailsViewComponent(
+            _paymentDetailsOptionsMock.Object,
+            _paymentFacadeServiceMock.Object,
+            _mockFeatureManager.Object,
+            _loggerMock.Object);
 
         // Act
         var result = await _sut.InvokeAsync(_submissionDetailsViewModel);
