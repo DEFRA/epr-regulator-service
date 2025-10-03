@@ -1,11 +1,9 @@
 using EPR.RegulatorService.Frontend.Core.Sessions;
-using EPR.RegulatorService.Frontend.Web.Constants;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
+using EPR.RegulatorService.Frontend.Web.Constants;
+using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
+
+using Microsoft.AspNetCore.Http;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
