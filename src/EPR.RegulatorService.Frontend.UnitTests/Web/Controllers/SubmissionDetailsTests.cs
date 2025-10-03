@@ -1,23 +1,17 @@
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.UnitTests.TestData;
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
-    using Frontend.Web.Configs;
-
     [TestClass]
     public class SubmissionDetailsTests : SubmissionsTestBase
     {
         private const string ViewName = "SubmissionDetails";
         private int _hashCode;
-        private Mock<IFeatureManager> _mockFeatureManager;
 
         [TestInitialize]
         public void Setup()
@@ -41,12 +35,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = testSubmission;
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(JourneySessionMock);
-
-            _mockFeatureManager = new Mock<IFeatureManager>();
-
-            _mockFeatureManager.Setup(fm =>
-                    fm.IsEnabledAsync(FeatureFlags.IncludeSubsidiariesInFeeCalculationsForRegulators))
-                .ReturnsAsync(false);
         }
 
         [TestMethod]
@@ -63,7 +51,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 });
 
             // Act
-            var result = await _systemUnderTest.SubmissionDetails(_hashCode, _mockFeatureManager.Object) as ViewResult;
+            var result = await _systemUnderTest.SubmissionDetails(_hashCode) as ViewResult;
 
             // Assert
             result.Should().NotBeNull();
@@ -104,7 +92,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 });
 
             // Act
-            var result = await _systemUnderTest.SubmissionDetails(_hashCode, _mockFeatureManager.Object) as ViewResult;
+            var result = await _systemUnderTest.SubmissionDetails(_hashCode) as ViewResult;
 
             // Assert
             result.Should().NotBeNull();

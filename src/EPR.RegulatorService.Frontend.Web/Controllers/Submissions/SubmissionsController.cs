@@ -190,9 +190,7 @@ public partial class SubmissionsController : Controller
 
     [HttpGet]
     [Route(PagePath.SubmissionDetails)]
-    public async Task<IActionResult> SubmissionDetails(
-        [FromQuery] int submissionHash,
-        [FromServices] IFeatureManager featureManager)
+    public async Task<IActionResult> SubmissionDetails([FromQuery] int submissionHash)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
         var model = GetSubmissionDetailsViewModel(session, submissionHash);
@@ -213,19 +211,8 @@ public partial class SubmissionsController : Controller
                     = model.NationCode = payCalParameters.NationCode;
                 sessionSubmission.ReferenceNumber
                     = model.ReferenceNumber = payCalParameters.Reference;
-                // this will affect cs too
-                if (await featureManager.IsEnabledAsync(FeatureFlags.IncludeSubsidiariesInFeeCalculationsForRegulators))
-                {
-                    // what if feature flag enabled and no MemberCount?
-                    sessionSubmission.MemberCount
-                        = model.MemberCount = payCalParameters.MemberCount ?? 1;
-                }
-                else
-                {
-                    // why in session?
-                    sessionSubmission.MemberCount
-                        = model.MemberCount = 1; //payCalParameters.MemberCount ?? 0;
-                }
+                sessionSubmission.MemberCount
+                    = model.MemberCount = payCalParameters.MemberCount ?? 0;
                 model.ReferenceFieldNotAvailable = payCalParameters.ReferenceFieldNotAvailable;
                 model.ReferenceNotAvailable = payCalParameters.ReferenceNotAvailable;
                 model.SubmittedDate = payCalParameters.ResubmissionDate ?? model.SubmittedDate;
