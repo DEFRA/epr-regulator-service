@@ -1,5 +1,5 @@
 $govuk-assets-path: '/regulators/';
-@import 'index';
+@import "../../node_modules/govuk-frontend/govuk/all";
 
 // Components
 $narrow-media-width: 40.0625em;
