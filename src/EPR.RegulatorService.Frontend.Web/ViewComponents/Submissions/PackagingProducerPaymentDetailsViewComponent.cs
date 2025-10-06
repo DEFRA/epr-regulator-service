@@ -39,11 +39,6 @@ public class PackagingProducerPaymentDetailsViewComponent(
                 return View(default(PackagingProducerPaymentDetailsViewModel));
             }
 
-            //todo: check feature flag. 1 by default, else from paycalc params
-
-            //todo: check viewModel.MemberCount gets set
-            //todo: what if feature flag enabled and no MemberCount (which would come through as 0 i think)? throw for safety? check with Pritam
-
             int memberCount =
                 await featureManager.IsEnabledAsync(FeatureFlags.IncludeSubsidiariesInFeeCalculationsForRegulators)
                     ? viewModel.MemberCount
