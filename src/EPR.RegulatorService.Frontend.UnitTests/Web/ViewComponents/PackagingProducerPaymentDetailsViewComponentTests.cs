@@ -1,12 +1,8 @@
-using EPR.RegulatorService.Frontend.Core.Models.Submissions;
-using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.ViewComponents.Submissions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewComponents;
@@ -192,5 +188,55 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
                     exception,
                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_WhenFeatureFlagDisabled_PassesMemberCountAsOne()
+    {
+        // Arrange
+        _submissionDetailsViewModel.MemberCount = 25; // should be ignored when flag disabled
+        _paymentFacadeServiceMock
+            .Setup(s => s.GetProducerPaymentDetailsForResubmissionAsync(It.IsAny<PackagingProducerPaymentRequest>()))
+            .ReturnsAsync(new PackagingProducerPaymentResponse
+            {
+                ResubmissionFee = 0,
+                PreviousPaymentsReceived = 0,
+                TotalOutstanding = 0
+            });
+
+        // Act
+        await _sut.InvokeAsync(_submissionDetailsViewModel);
+
+        // Assert
+        _paymentFacadeServiceMock.Verify(s =>
+            s.GetProducerPaymentDetailsForResubmissionAsync(
+                It.Is<PackagingProducerPaymentRequest>(r => r.MemberCount == 1)), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_WhenFeatureFlagEnabled_Passes_ViewModel_MemberCount()
+    {
+        // Arrange
+        _submissionDetailsViewModel.MemberCount = 37;
+        _mockFeatureManager.Setup(fm =>
+                fm.IsEnabledAsync(FeatureFlags.IncludeSubsidiariesInFeeCalculationsForRegulators))
+            .ReturnsAsync(true);
+
+        _paymentFacadeServiceMock
+            .Setup(s => s.GetProducerPaymentDetailsForResubmissionAsync(It.IsAny<PackagingProducerPaymentRequest>()))
+            .ReturnsAsync(new PackagingProducerPaymentResponse
+            {
+                ResubmissionFee = 0,
+                PreviousPaymentsReceived = 0,
+                TotalOutstanding = 0
+            });
+
+        // Act
+        await _sut.InvokeAsync(_submissionDetailsViewModel);
+
+        // Assert
+        _paymentFacadeServiceMock.Verify(s =>
+            s.GetProducerPaymentDetailsForResubmissionAsync(
+                It.Is<PackagingProducerPaymentRequest>(r => r.MemberCount == 37)), Times.Once);
     }
 }
