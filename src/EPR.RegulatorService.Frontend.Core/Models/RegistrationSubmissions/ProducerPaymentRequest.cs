@@ -8,6 +8,8 @@ public class ProducerPaymentRequest
 
     public int NumberOfSubsidiaries { get; set; }
 
+    public int NoOfLateSubsidiaries { get; set; }
+
     public bool IsLateFeeApplicable { get; set; }
 
     public bool IsProducerOnlineMarketplace { get; set; }

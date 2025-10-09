@@ -8,6 +8,8 @@ public class ProducerDetailsDto
 
     public int NoOfSubsidiaries { get; set; }
 
+    public int NoOfLateSubsidiaries { get; set; }
+
     public bool IsLateFeeApplicable { get; set; }
 
     public bool IsProducerOnlineMarketplace { get; set; }
