@@ -9,6 +9,7 @@ public class CsoMembershipDetailsDto
     public bool IsOnlineMarketPlace { get; set; }
     public bool IsLateFeeApplicable { get; set; }
     public int NumberOfSubsidiaries { get; set; }
+    public int NumberOfLateSubsidiaries { get; set; }
 
     [JsonPropertyName("NumberOfSubsidiariesOnlineMarketPlace")]
     public int NoOfSubsidiariesOnlineMarketplace { get; set; }
@@ -23,6 +24,7 @@ public class CsoMembershipDetailsDto
         IsOnlineMarketplace = dto.IsOnlineMarketPlace,
         IsLateFeeApplicable = dto.IsLateFeeApplicable,
         NoOfSubsidiariesOnlineMarketplace = dto.NoOfSubsidiariesOnlineMarketplace,
-        NumberOfSubsidiaries = dto.NumberOfSubsidiaries
+        NumberOfSubsidiaries = dto.NumberOfSubsidiaries,
+        NumberOfLateSubsidiaries = dto.NumberOfLateSubsidiaries
     };
 }

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 public class CompliancePaymentRequest
@@ -11,6 +13,7 @@ public class CompliancePaymentRequest
     public IEnumerable<ComplianceSchemeMemberRequest> ComplianceSchemeMembers { get; set; }    
 }
 
+[ExcludeFromCodeCoverage]
 public class ComplianceSchemeMemberRequest
 {
     public required string MemberId { get; set; }
@@ -22,6 +25,8 @@ public class ComplianceSchemeMemberRequest
     public bool IsLateFeeApplicable { get; set; }
 
     public int NumberOfSubsidiaries { get; set; }
+
+    public int NumberOfLateSubsidiaries { get; set; }
 
     public int NoOfSubsidiariesOnlineMarketplace { get; set; }
 }
