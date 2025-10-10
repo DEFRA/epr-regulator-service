@@ -1,5 +1,5 @@
 $govuk-assets-path: '/regulators/';
-@import 'index';
+@import "../../node_modules/govuk-frontend/govuk/all";
 
 // Components
 $narrow-media-width: 40.0625em;
@@ -8,15 +8,6 @@ $narrow-media-width: 40.0625em;
 @import './components/info_panel.scss';
 @import './components/language_toggle';
 @import './components/ordered_list';
-
-.govuk-tag{
-    max-width: inherit !important;
-}
-
-.govuk-checkboxes__input:checked + .govuk-checkboxes__label::before,
-.govuk-checkboxes__input + .govuk-checkboxes__label::before {
-  background-color: #fff;
-}
 
 .link-button-destructive {
   font-size: 1.1875rem;
@@ -369,6 +360,11 @@ button.epr-filter-panel-control {
 a.epr-filter-panel-control {
   margin: 0 0 20px 15px;
   line-height: 40px;
+}
+
+.epr-filter-panel-checkbox {
+  display: inline-block;
+  background: white;
 }
 
 .epr-filter-panel-checkboxes-label {
