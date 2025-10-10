@@ -7,4 +7,6 @@ public class PackagingProducerPaymentRequest
     public required string Regulator { get; set; }
 
     public required DateTime ResubmissionDate { get; set; }
+
+    public required int MemberCount { get; set; }
 }
