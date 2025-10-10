@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 
+[ExcludeFromCodeCoverage]
 public class ProducerDetailsDto
 {
     public string ProducerType { get; set; }

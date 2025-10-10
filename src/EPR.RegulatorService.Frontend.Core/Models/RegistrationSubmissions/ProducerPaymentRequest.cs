@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
+[ExcludeFromCodeCoverage]
 public class ProducerPaymentRequest
 {
     public required string ApplicationReferenceNumber { get; set; }
