@@ -11,7 +11,7 @@ public class ProducerDetailsDto
 
     public int NoOfSubsidiaries { get; set; }
 
-    public int NoOfLateSubsidiaries { get; set; }
+    public int NumberOfLateSubsidiaries { get; set; }
 
     public bool IsLateFeeApplicable { get; set; }
 
