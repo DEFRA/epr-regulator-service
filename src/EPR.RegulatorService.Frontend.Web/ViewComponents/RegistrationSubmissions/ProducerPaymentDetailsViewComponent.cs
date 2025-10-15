@@ -28,7 +28,7 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 ApplicationReferenceNumber = viewModel.ReferenceNumber,
                 NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
-                NumberOfLateSubsidiaries = viewModel.ProducerDetails.NumberOfLateSubsidiaries,
+                NumberOfLateSubsidiaries = viewModel.ProducerDetails.IsLateFeeApplicable ? 0 : viewModel.ProducerDetails.NumberOfLateSubsidiaries,
                 IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
                 IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
                 ProducerType = viewModel.ProducerDetails.ProducerType,
