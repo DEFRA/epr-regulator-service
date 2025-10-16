@@ -120,7 +120,10 @@
   <data name="PackagingProducerPaymentDetails.ResubmissionFee" xml:space="preserve">
     <value>Packaging data resubmission fee</value>
   </data>
-  <data name="PackagingProducerPaymentDetails.ResubmissionFeeDescription" xml:space="preserve">
+  <data name="PackagingProducerPaymentDetails.ResubmissionFeeDescription1" xml:space="preserve">
+    <value>Resubmitting a report for 1 member</value>
+  </data>
+  <data name="PackagingProducerPaymentDetails.ResubmissionFeeDescription2" xml:space="preserve">
     <value>Resubmitting a report for {0} members</value>
   </data>
 </root>

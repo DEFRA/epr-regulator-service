@@ -37,7 +37,14 @@
                         <strong>@Localizer["PackagingProducerPaymentDetails.ResubmissionFee"]</strong>
                     </dd>
                     <dd class="govuk-summary-list__value" style="width: 410px;">
-                        @Localizer["PackagingProducerPaymentDetails.ResubmissionFeeDescription", Model.MemberCount]
+						          @if (Model.MemberCount == 1)
+                      {
+							          @Localizer["PackagingProducerPaymentDetails.ResubmissionFeeDescription1"]
+                      }
+                      else
+                      {
+							          @Localizer["PackagingProducerPaymentDetails.ResubmissionFeeDescription2", Model.MemberCount]
+                      }
                     </dd>
                     <payment-amount amount="@Model.ResubmissionFee"></payment-amount>
                 </div>
