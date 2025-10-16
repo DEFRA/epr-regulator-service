@@ -23,7 +23,8 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         _submissionDetailsViewModel = new SubmissionDetailsViewModel
         {
             ReferenceNumber = "SomeGuid",
-            NationCode = "gb-eng"
+            NationCode = "gb-eng",
+            MemberCount = 3
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
@@ -119,6 +120,7 @@ public class PackagingProducerPaymentDetailsViewComponentTests : ViewComponentsT
         model.PreviousPaymentsReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(95.00M);
         model.ReferenceNumber.Should().Be(_submissionDetailsViewModel.ReferenceNumber);
+        model.MemberCount.Should().Be(_submissionDetailsViewModel.MemberCount);
 
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsForResubmissionAsync(
             It.IsAny<PackagingProducerPaymentRequest>()), Times.AtMostOnce);
