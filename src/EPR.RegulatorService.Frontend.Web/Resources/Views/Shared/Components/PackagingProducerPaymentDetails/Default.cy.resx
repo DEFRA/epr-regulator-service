@@ -121,6 +121,6 @@
     <value>Ffi ailgyflwyno data pecynwaith</value>
   </data>
   <data name="PackagingProducerPaymentDetails.ResubmissionFeeDescription" xml:space="preserve">
-    <value>Ailgyflwyniad data pecynwaith</value>
+    <value>Ailgyflwyno adroddiad ar gyfer {0} o aelodau</value>
   </data>
 </root>
