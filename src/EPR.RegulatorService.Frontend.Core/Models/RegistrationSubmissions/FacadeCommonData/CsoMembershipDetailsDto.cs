@@ -24,6 +24,7 @@ public class CsoMembershipDetailsDto
         IsOnlineMarketplace = dto.IsOnlineMarketPlace,
         IsLateFeeApplicable = dto.IsLateFeeApplicable,
         NoOfSubsidiariesOnlineMarketplace = dto.NoOfSubsidiariesOnlineMarketplace,
-        NumberOfSubsidiaries = dto.NumberOfSubsidiaries
+        NumberOfSubsidiaries = dto.NumberOfSubsidiaries,
+        NumberOfLateSubsidiaries = dto.NumberOfLateSubsidiaries
     };
 }
