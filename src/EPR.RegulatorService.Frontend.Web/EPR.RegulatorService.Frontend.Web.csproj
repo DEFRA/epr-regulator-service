@@ -48,10 +48,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!--
+    AutoMapper -> pinned to version 14 as version 15 has breaking changes and more importantly requires a paid licence.
+    FluentValidation -> pinned to version 11.11.0 as version 12 has breaking changes which as of 30/09/2025 we are not addressing just yet.
+    FluentValidation.AspNetCore -> pinned to version 11.3.0 as version 12 has breaking changes which as of 30/09/2025 we are not addressing just yet.
+    -->
+
+    <!--Pinning versions for transitive dependencies-->
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.6" />
+
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.8" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.8" />
