@@ -25,6 +25,6 @@ public class CsoMembershipDetailsDto
         IsLateFeeApplicable = dto.IsLateFeeApplicable,
         NoOfSubsidiariesOnlineMarketplace = dto.NoOfSubsidiariesOnlineMarketplace,
         NumberOfSubsidiaries = dto.NumberOfSubsidiaries,
-        NumberOfLateSubsidiaries = dto.NumberOfLateSubsidiaries
+        NumberOfLateSubsidiaries = dto.IsLateFeeApplicable ? 0 : dto.NumberOfLateSubsidiaries
     };
 }
