@@ -16,6 +16,13 @@ $ dotnet --version
 8.0
 ```
 
+NodeJs
+
+```sh
+nodejs --version
+24.5.0
+```
+
 #### epr-packaging-common
 
 In order to restore and build the source code for this project, access to the `epr-packaging-common` package store will need to have been setup.
