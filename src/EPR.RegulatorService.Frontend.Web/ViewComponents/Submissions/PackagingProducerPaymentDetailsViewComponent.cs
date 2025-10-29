@@ -65,7 +65,8 @@ public class PackagingProducerPaymentDetailsViewComponent(
                 ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
                 TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
                 ReferenceNumber = viewModel.ReferenceNumber,
-                NationCode = viewModel.NationCode
+                NationCode = viewModel.NationCode,
+                MemberCount = viewModel.MemberCount
             };
 
             return View(packagingProducerPaymentDetailsViewModel);
