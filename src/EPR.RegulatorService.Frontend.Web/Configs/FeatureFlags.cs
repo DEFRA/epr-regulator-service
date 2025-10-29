@@ -27,4 +27,6 @@ public static class FeatureFlags
 
     public const string ShowFeesWaiveButton = "ShowFeesWaiveButton";
     public const string ShowComplianceSchemeMembership = "ShowComplianceSchemeMembership";
+
+    public const string IncludeSubsidiariesInFeeCalculationsForRegulators = "IncludeSubsidiariesInFeeCalculationsForRegulators";
 }

@@ -7,10 +7,15 @@ using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents.Submissions;
 
-public class PackagingProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions> options, IPaymentFacadeService paymentFacadeService, ILogger<PackagingProducerPaymentDetailsViewComponent> logger) : ViewComponent
+public class PackagingProducerPaymentDetailsViewComponent(
+    IOptions<PaymentDetailsOptions> options,
+    IPaymentFacadeService paymentFacadeService,
+    IFeatureManager featureManager,
+    ILogger<PackagingProducerPaymentDetailsViewComponent> logger) : ViewComponent
 {
     private static readonly Action<ILogger, string, Exception?> _logViewComponentError =
         LoggerMessage.Define<string>(
@@ -34,11 +39,17 @@ public class PackagingProducerPaymentDetailsViewComponent(IOptions<PaymentDetail
                 return View(default(PackagingProducerPaymentDetailsViewModel));
             }
 
+            int memberCount =
+                await featureManager.IsEnabledAsync(FeatureFlags.IncludeSubsidiariesInFeeCalculationsForRegulators)
+                    ? viewModel.MemberCount
+                    : 1;
+
             var producerPaymentResponse = await paymentFacadeService
                 .GetProducerPaymentDetailsForResubmissionAsync(new PackagingProducerPaymentRequest
                 {
                     ReferenceNumber = viewModel.ReferenceNumber,
                     Regulator = viewModel.NationCode,
+                    MemberCount = memberCount,
                     ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format
                 });
 
