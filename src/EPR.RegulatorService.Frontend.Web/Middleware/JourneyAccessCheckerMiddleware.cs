@@ -3,22 +3,34 @@ using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Core.Sessions;
 using EPR.RegulatorService.Frontend.Web.Controllers.Attributes;
 using Microsoft.AspNetCore.Http.Features;
+using static System.Net.Mime.MediaTypeNames;
+using System.Configuration;
 
 namespace EPR.RegulatorService.Frontend.Web.Middleware;
 
 public class JourneyAccessCheckerMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly IConfiguration _configuration;
 
-    public JourneyAccessCheckerMiddleware(RequestDelegate next)
+    public JourneyAccessCheckerMiddleware(RequestDelegate next, IConfiguration configuration)
     {
         _next = next;
+        _configuration = configuration;
     }
 
     public async Task Invoke(
         HttpContext httpContext,
         ISessionManager<JourneySession> sessionManager)
     {
+        var healthCheckPath = _configuration.GetValue<string>("HealthCheckPath") ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(healthCheckPath) &&
+            httpContext.Request.Path.StartsWithSegments(healthCheckPath, StringComparison.OrdinalIgnoreCase))
+        {
+            await _next(httpContext);
+            return;
+        }
+
         var endpoint = httpContext.Features.Get<IEndpointFeature>()?.Endpoint;
         var attribute = endpoint?.Metadata.GetMetadata<JourneyAccessAttribute>();
 
