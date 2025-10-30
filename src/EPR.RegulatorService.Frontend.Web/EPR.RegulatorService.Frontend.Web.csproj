@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -519,6 +519,9 @@
       <Value>
         **/RegistrationDetailsViewModel.cs, Views/**/*.cshtml
       </Value>
+    </SonarQubeSetting>
+    <SonarQubeSetting Include="sonar.exclusions">
+      <Value>**/Views/SearchManageApprovers/RegulatorCompanyDetail.cshtml</Value>
     </SonarQubeSetting>
   </ItemGroup>
   <ItemGroup>
