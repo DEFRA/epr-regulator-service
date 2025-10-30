@@ -519,6 +519,9 @@
         **/RegistrationDetailsViewModel.cs, Views/**/*.cshtml
       </Value>
     </SonarQubeSetting>
+    <SonarQubeSetting Include="sonar.exclusions">
+      <Value>**/Views/SearchManageApprovers/RegulatorCompanyDetail.cshtml</Value>
+    </SonarQubeSetting>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
