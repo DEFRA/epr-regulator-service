@@ -239,24 +239,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             if (status == EndpointResponseStatus.Success)
             {
                 existingModel.RegulatorComments = regulatorDecisionRequest.Comments;
-                if (existingModel.IsResubmission && "Granted Refused".Contains(regulatorDecisionRequest.Status))
-                {
-                    existingModel.ResubmissionStatus = regulatorDecisionRequest.Status switch
-                    {
-                        "Granted" => RegistrationSubmissionStatus.Accepted,
-                        "Refused" => RegistrationSubmissionStatus.Rejected,
-                        _ => existingModel.ResubmissionStatus
-                    };
-                    existingModel.SubmissionDetails.ResubmissionStatus = existingModel.ResubmissionStatus;
-                    existingModel.SubmissionDetails.ResubmissionDecisionDate = DateTime.UtcNow;
-                }
-                else
-                {
-                    existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
-                    existingModel.SubmissionDetails.Status = existingModel.Status;
-                    existingModel.SubmissionDetails.LatestDecisionDate = DateTime.UtcNow;
-                    existingModel.SubmissionDetails.StatusPendingDate = regulatorDecisionRequest.Status == "Cancelled" ? regulatorDecisionRequest.DecisionDate : null;
-                }
+                UpdateRegistrationSubmissionDetailsViewModel(existingModel, regulatorDecisionRequest);
 
                 if (_currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(existingModel.SubmissionId, out _))
                 {
@@ -267,6 +250,28 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                     _currentSession!.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Add(existingModel.SubmissionId, existingModel);
                 }
                 await SaveSession(_currentSession);
+            }
+        }
+
+        private static void UpdateRegistrationSubmissionDetailsViewModel(RegistrationSubmissionDetailsViewModel existingModel, RegulatorDecisionRequest regulatorDecisionRequest)
+        {
+            if (existingModel.IsResubmission && "Granted Refused".Contains(regulatorDecisionRequest.Status))
+            {
+                existingModel.ResubmissionStatus = regulatorDecisionRequest.Status switch
+                {
+                    "Granted" => RegistrationSubmissionStatus.Accepted,
+                    "Refused" => RegistrationSubmissionStatus.Rejected,
+                    _ => existingModel.ResubmissionStatus
+                };
+                existingModel.SubmissionDetails.ResubmissionStatus = existingModel.ResubmissionStatus;
+                existingModel.SubmissionDetails.ResubmissionDecisionDate = DateTime.UtcNow;
+            }
+            else
+            {
+                existingModel.Status = Enum.Parse<RegistrationSubmissionStatus>(regulatorDecisionRequest.Status, true);
+                existingModel.SubmissionDetails.Status = existingModel.Status;
+                existingModel.SubmissionDetails.LatestDecisionDate = DateTime.UtcNow;
+                existingModel.SubmissionDetails.StatusPendingDate = regulatorDecisionRequest.Status == "Cancelled" ? regulatorDecisionRequest.DecisionDate : null;
             }
         }
 

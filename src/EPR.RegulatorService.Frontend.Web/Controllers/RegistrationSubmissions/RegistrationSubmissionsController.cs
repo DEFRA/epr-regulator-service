@@ -237,12 +237,8 @@ public partial class RegistrationSubmissionsController(
             var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Granted);
             var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
-            if (status == EndpointResponseStatus.Success && _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(existingModel.SubmissionId, out var selectedRegistration))
-            {
-                selectedRegistration.SubmissionStatus = RegistrationSubmissionStatus.Granted;
-            }
-
-            await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
+            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.Remove(existingModel.SubmissionId);
+            _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Remove(existingModel.SubmissionId);
 
             SaveSession(_currentSession);
 
