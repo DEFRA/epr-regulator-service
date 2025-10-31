@@ -967,7 +967,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [DataRow(2, "NI")]
         [DataRow(3, "Sco")]
         [DataRow(4, "Wal")]
-        public async Task On_GrantRegistrationSubmission_Update_Session_SelectedRegistrations_With_Updated_SubmissionDetails(int nationId, string nationCode)
+        public async Task On_GrantRegistrationSubmission_Update_Session_SelectedRegistrations_To_Remove_SubmissionDetails(int nationId, string nationCode)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -990,9 +990,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var selectedRegistration);
 
             Assert.IsNotNull(result);
-            Assert.IsNotNull(selectedRegistration);
-            Assert.AreEqual(RegistrationSubmissionStatus.Granted, selectedRegistration.SubmissionStatus);
-            Assert.IsTrue(isSessionHoldsSubmissionId);
+            Assert.IsNull(selectedRegistration);
+            Assert.IsFalse(isSessionHoldsSubmissionId);
             result.RouteName.Should().Be("SubmissionDetails");
             result.RouteValues.First().Value.Should().Be(submissionId);
             _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
@@ -1003,18 +1002,22 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [DataRow(2, "NI")]
         [DataRow(3, "Sco")]
         [DataRow(4, "Wal")]
-        public async Task On_GrantRegistrationSubmission_Update_Session_OrganisationDetailsChangeHistory_With_Updated_SubmissionDetails(int nationId, string nationCode)
+        public async Task On_GrantRegistrationSubmission_Update_Session_OrganisationDetailsChangeHistory_To_Remove_SubmissionDetails(int nationId, string nationCode)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, nationId, nationCode);
+            var updateSubmissionDetailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, nationId, nationCode);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
             {
                 SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
                     { submissionId, detailsModel }
-                }
-            }
-            ;
+                },
+                OrganisationDetailsChangeHistory = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
+                    { submissionId, updateSubmissionDetailsModel }
+                },
+            };
+
             _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Success);
 
             // Act
@@ -1022,11 +1025,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             { SubmissionId = submissionId, IsGrantRegistrationConfirmed = true }) as RedirectToRouteResult;
 
             // Assert
+            _journeySession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.TryGetValue(submissionId, out var submissionOrganisationDetails);
             _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var organisationDetailsChangeHistory_Submission);
 
             Assert.IsNotNull(result);
-            Assert.IsNotNull(organisationDetailsChangeHistory_Submission);
-            Assert.AreEqual(RegistrationSubmissionStatus.Granted, organisationDetailsChangeHistory_Submission.SubmissionStatus);
+            Assert.IsNull(organisationDetailsChangeHistory_Submission);
+            Assert.IsNull(submissionOrganisationDetails);
             result.RouteName.Should().Be("SubmissionDetails");
             result.RouteValues.First().Value.Should().Be(submissionId);
             _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
@@ -1037,18 +1041,22 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [DataRow(2, "NI")]
         [DataRow(3, "Sco")]
         [DataRow(4, "Wal")]
-        public async Task On_GrantRegistrationSubmission_Update_Session_Failed_To_Remove_SubmissionDetails(int nationId, string nationCode)
+        public async Task On_GrantRegistrationSubmission_Fails_Update_Session_To_Remove_SubmissionDetails(int nationId, string nationCode)
         {
             // Arrange
             var submissionId = Guid.NewGuid();
             var detailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, nationId, nationCode);
+            var updateSubmissionDetailsModel = GenerateTestSubmissionDetailsViewModel(submissionId, nationId, nationCode);
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
             {
                 SelectedRegistrations = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
                     { submissionId, detailsModel }
-                }
-            }
-            ;
+                },
+                OrganisationDetailsChangeHistory = new Dictionary<Guid, RegistrationSubmissionOrganisationDetails> {
+                    { submissionId, updateSubmissionDetailsModel }
+                },
+            };
+            
             _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
 
             // Act
@@ -1062,10 +1070,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             _journeySession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.TryGetValue(submissionId, out var organisationDetailsChangeHistory_Submission);
 
             Assert.IsNotNull(result);
-            Assert.IsNotNull(selectedRegistration);
-            Assert.AreEqual(RegistrationSubmissionStatus.Queried, selectedRegistration.SubmissionStatus);
+            Assert.IsNull(selectedRegistration);
             Assert.IsNull(organisationDetailsChangeHistory_Submission);
-            Assert.IsTrue(isSessionHoldsSubmissionId);
+            Assert.IsFalse(isSessionHoldsSubmissionId);
             result.RouteName.Should().Be("ServiceNotAvailable");
             result.RouteValues.First().Value.Should().Be("registration-submission-details/" + submissionId);
             _facadeServiceMock.Verify(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.AtMostOnce);
