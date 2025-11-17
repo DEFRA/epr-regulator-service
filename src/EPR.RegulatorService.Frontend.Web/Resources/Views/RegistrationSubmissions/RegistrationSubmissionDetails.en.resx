@@ -142,7 +142,7 @@
     <value>Organisation ID</value>
   </data>
   <data name="RegistrationSubmissionDetails.OrganisationType" xml:space="preserve">
-    <value>Organisation type</value>
+    <value>Registration Type</value>
   </data>
   <data name="RegistrationSubmissionDetails.PageTitle" xml:space="preserve">
     <value>Registration submission details</value>
