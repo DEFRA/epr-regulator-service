@@ -28,7 +28,7 @@
     <value>Ebost</value>
   </data>
   <data name="Summary.RejectionMessage" xml:space="preserve">
-    <value>WIf you reject the approved person, the organisation will not be able to submit data.</value>
+    <value>WIf you reject the approved person, the organisation will not be able to submit data.&lt;br /&gt;It could also result in the deletion of an entire organisation if the request is coming from a CSO with Compliance Schemes in different Nations.&lt;br /&gt;Before Rejecting, please check with regulators in all impacted Nations so that they are aware of this application.</value>
   </data>
   <data name="Summary.TransferComments" xml:space="preserve">
     <value>Sylwadau ar Drosglwyddo</value>
