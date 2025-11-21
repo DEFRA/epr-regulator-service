@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 public class CompliancePaymentRequest
@@ -11,6 +13,7 @@ public class CompliancePaymentRequest
     public IEnumerable<ComplianceSchemeMemberRequest> ComplianceSchemeMembers { get; set; }    
 }
 
+[ExcludeFromCodeCoverage]
 public class ComplianceSchemeMemberRequest
 {
     public required string MemberId { get; set; }

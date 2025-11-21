@@ -163,6 +163,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 IsProducerOnlineMarketplace = response.IsOnlineMarketPlace,
                 NoOfSubsidiaries = response.NumberOfSubsidiaries,
                 NoOfSubsidiariesOnlineMarketPlace = response.NumberOfOnlineSubsidiaries,
+                NumberOfLateSubsidiaries = response.NumberOfLateSubsidiaries,
                 ProducerType = response.OrganisationSize
             }
         };
