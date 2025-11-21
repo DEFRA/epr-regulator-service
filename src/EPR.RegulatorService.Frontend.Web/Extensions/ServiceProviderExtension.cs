@@ -103,6 +103,10 @@ public static class ServiceProviderExtension
         {
             options.Cookie.Name = configuration.GetValue<string>("CookieOptions:TempDataCookie");
             options.Cookie.Path = configuration.GetValue<string>("PATH_BASE");
+
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.Cookie.SameSite = SameSiteMode.Strict;
         });
     }
 
