@@ -127,7 +127,7 @@
     <value>Organisation ID or Reference number</value>
   </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
-    <value>Organisation Type</value>
+    <value>Registration type</value>
   </data>
   <data name="SubTitle.SubmissionStatus" xml:space="preserve">
     <value>Submission status</value>

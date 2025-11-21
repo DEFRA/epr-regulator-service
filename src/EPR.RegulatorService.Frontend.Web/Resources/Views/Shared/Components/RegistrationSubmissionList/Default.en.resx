@@ -130,7 +130,7 @@
     <value>Organisation ID and reference number</value>
   </data>
   <data name="Table.Header.Company" xml:space="preserve">
-    <value>Organisation</value>
+    <value>Registration</value>
   </data>
   <data name="Table.Header.ApplicationDate" xml:space="preserve">
     <value>Submission date and time</value>
