@@ -1,51 +1,34 @@
 # EPR Regulator Service
 
-## Introduction 
-The Regulator Service contains the front end for the regulator portal. This is the main regulator service for EPR with functionality to be added here pertaining to any regulatory activities. 
+## Introduction
 
-## Getting Started
+This Regulator Service contains the front end for the regulator portal. This is the main regulator service for [Extended producer responsibility for packaging](https://www.gov.uk/government/collections/extended-producer-responsibility-for-packaging) (EPR).
+
+The application serves as the primary regulatory portal for government regulators across England, Wales, Scotland, and Northern Ireland to oversee organization registrations, packaging data submissions, and user account management within the EPR ecosystem.
+
+This application supports regulatory officials with different access levels (admin and basic) who need to:
+
+- Review and approve/reject organization applications and enrolments
+- Manage packaging data submissions (POM submissions)
+- Oversee registration submissions and compliance
+- Administer approved persons and delegated users
+- Handle reprocessor/exporter registrations and accreditations
+- Generate reports and download submission data
+
+## Development
 
 ### Prerequisites
 
-#### Required software
+- Dotnet SDK v8.0
+- NodeJs v24
 
-- Dotnet SDK 8.0
+### NuGet dependencies
 
-```sh
-$ dotnet --version
-8.0
-```
+This project depends on private nuget feed with a packaged version of [epr-common](https://github.com/DEFRA/epr-common). If you have access to the private feed then you can use [The Azure Artifacts Credential Provider](https://github.com/microsoft/artifacts-credprovider). If you don't have access to the private feed you can clone epr-common and update the references to point to that.
 
-NodeJs
+### Redis
 
-```sh
-nodejs --version
-24.5.0
-```
-
-#### epr-packaging-common
-
-In order to restore and build the source code for this project, access to the `epr-packaging-common` package store will need to have been setup.
-
-- Login to Azure DevOps
-- Navigate to [Personal Access Tokens](https://dev.azure.com/defragovuk/_usersSettings/tokens)
-- Create a new token
-    - Enable the `Packaging (Read)` scope
-
-Add the following to your `src/Nuget.Config`
-
-```xml
-<packageSourceCredentials>
-  <epr-packaging-common>
-    <add key="Username" value="<email address>" />
-    <add key="ClearTextPassword" value="<personal access token>" />
-  </epr-packaging-common>
-</packageSourceCredentials>
-```
-
-#### Redis
-
-The regulator service requires Redis, the recommended way of runnig Redis is to run it via Docker.
+The regulator service requires Redis, the recommended way of running Redis is to run it via Docker.
 
 ```sh
 $ docker run -d --name epr-producers- -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
@@ -55,17 +38,18 @@ $ docker run -d --name epr-producers- -p 6379:6379 -p 8001:8001 redis/redis-stac
 
 > When using the regulator facade and backend microservice, Redis will already be running, and a PAT will already have been issued for the `epr-packaging-common` package store so some steps can be skipped.
 
-#### Recommended software
+### Backing services
 
-It is recommended that the following repositories have been setup and are running
-- [backend-account-microservice](https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_git/backend-account-microservice)
-- [epr_regulator_service_facade](https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_git/epr_regulator_service_facade)
+This service depends on running copies of the following services, with URLs configured in user-secrets:
 
-> It is possible to run this project with a mocked facade, so the backend and facade project may not be required.
+- [epr-regulator-service-facade](https://github.com/DEFRA/epr-regulator-service-facade)
+- [epr-payment-facade](https://github.com/DEFRA/epr-payment-facade)
 
 ### Configuration
 
-In order to run the Epr Regulator Service, some configuration will need to be set in `src/EPR.RegulatorService.Frontend.Web/appsettings.development.json`. Configuration properties will be separated by `.` in this documentation.
+In order to run the Epr Regulator Service, some configuration will need to be set in user-secrets. Configuration properties will be separated by `.` in this documentation.
+
+Internal developers can set appropriate user-secrets by using the private [epr-tools-environment-variables](https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_git/epr-tools-environment-variables?path=%2F&version=GBbigtool-vibe&_a=contents) project.
 
 #### B2C Client 
 `AzureAdB2C.ClientSecret` will need to be set for the `ClientId` being used.
@@ -88,11 +72,9 @@ If the `frontend-accountmanagement-microservice` is also running locally, `Landi
 
 #### .NET CLI
 
-- Open the `src` directory `cd src/`
-- Ensure `src/NuGet.config` has been setup correctly for `epr-packaging-common`
-- Restore dependencies with `dotnet restore`
-- Build the project with `dotnet build`
-- Run the Regulator frontend with `dotnet run`
+- Run the Regulator frontend with `dotnet run --project src/EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj`
+- Navigate to https://localhost:7154/regulators/ (note the root url `/` does not work)
+- You will need a valid login that is available in both Azure B2C and the configured backend account service.
 
 ### Running unit tests
 
@@ -116,12 +98,6 @@ A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    51, Skipped:     0, Total:    51, Duration: 800 ms - EPR.RegulatorService.Frontend.UnitTests.dll (net6.0)
 ```
-
-## TODO
-
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Latest releases
-2.	API references
 
 ## Contributing to this project
 Please read the [contribution guidelines](CONTRIBUTING.md) before submitting a pull request.
