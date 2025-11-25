@@ -9,6 +9,51 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPR.RegulatorService.Fronte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPR.RegulatorService.Frontend.UnitTests", "EPR.RegulatorService.Frontend.UnitTests\EPR.RegulatorService.Frontend.UnitTests.csproj", "{4B38E54D-26F9-4C21-8859-ED5691DAEB13}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{3B602B5A-BE5F-499A-937A-7038258B2E7D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+		Dockerfile = Dockerfile
+		NuGet.Config = NuGet.Config
+		SonarAnalyzer.ruleset = SonarAnalyzer.ruleset
+		../README.md = ../README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pipelines", "pipelines", "{9E27FC4A-3A20-4D62-93D9-8067AA3DE035}"
+	ProjectSection(SolutionItems) = preProject
+		../pipelines\deployment-pipeline.yaml = ../pipelines\deployment-pipeline.yaml
+		../pipelines\ci_pipeline.yaml = ../pipelines\ci_pipeline.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vars", "vars", "{001FA203-F7EF-400E-B048-51A39B50C1D4}"
+	ProjectSection(SolutionItems) = preProject
+		../pipelines\vars\DEV9-development.yaml = ../pipelines\vars\DEV9-development.yaml
+		../pipelines\vars\DEV12-development.yaml = ../pipelines\vars\DEV12-development.yaml
+		../pipelines\vars\DEV11-development.yaml = ../pipelines\vars\DEV11-development.yaml
+		../pipelines\vars\preprod.yaml = ../pipelines\vars\preprod.yaml
+		../pipelines\vars\DEV6-development.yaml = ../pipelines\vars\DEV6-development.yaml
+		../pipelines\vars\DEV3-development.yaml = ../pipelines\vars\DEV3-development.yaml
+		../pipelines\vars\DEV8-development.yaml = ../pipelines\vars\DEV8-development.yaml
+		../pipelines\vars\DEV1-development.yaml = ../pipelines\vars\DEV1-development.yaml
+		../pipelines\vars\DEV16-development.yaml = ../pipelines\vars\DEV16-development.yaml
+		../pipelines\vars\DEV15.yaml = ../pipelines\vars\DEV15.yaml
+		../pipelines\vars\DEV10-development.yaml = ../pipelines\vars\DEV10-development.yaml
+		../pipelines\vars\DEV2-development.yaml = ../pipelines\vars\DEV2-development.yaml
+		../pipelines\vars\tst.yaml = ../pipelines\vars\tst.yaml
+		../pipelines\vars\DEV5-development.yaml = ../pipelines\vars\DEV5-development.yaml
+		../pipelines\vars\DEV7-development.yaml = ../pipelines\vars\DEV7-development.yaml
+		../pipelines\vars\prod.yaml = ../pipelines\vars\prod.yaml
+		../pipelines\vars\DEV14-development.yaml = ../pipelines\vars\DEV14-development.yaml
+		../pipelines\vars\preprod2.yaml = ../pipelines\vars\preprod2.yaml
+		../pipelines\vars\DEV13-development.yaml = ../pipelines\vars\DEV13-development.yaml
+		../pipelines\vars\DEV4-development.yaml = ../pipelines\vars\DEV4-development.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{1EF30474-B3B6-4EED-89F2-401985C9197D}"
+	ProjectSection(SolutionItems) = preProject
+		../pipelines\templates\docker.yaml = ../pipelines\templates\docker.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +75,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9E27FC4A-3A20-4D62-93D9-8067AA3DE035} = {3B602B5A-BE5F-499A-937A-7038258B2E7D}
+		{001FA203-F7EF-400E-B048-51A39B50C1D4} = {9E27FC4A-3A20-4D62-93D9-8067AA3DE035}
+		{1EF30474-B3B6-4EED-89F2-401985C9197D} = {9E27FC4A-3A20-4D62-93D9-8067AA3DE035}
 	EndGlobalSection
 EndGlobal
