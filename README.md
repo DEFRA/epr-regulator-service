@@ -8,7 +8,7 @@ The application serves as the primary regulatory portal for government regulator
 
 This application supports regulatory officials with different access levels (admin and basic) who need to:
 
-- Review and approve/reject organization applications and enrolments
+- Review and approve/reject organisation applications and enrolments
 - Manage packaging data submissions (POM submissions)
 - Oversee registration submissions and compliance
 - Administer approved persons and delegated users
