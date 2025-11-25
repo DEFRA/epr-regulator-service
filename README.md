@@ -47,7 +47,7 @@ This service depends on running copies of the following services, with URLs conf
 
 ### Configuration
 
-In order to run the Epr Regulator Service, some configuration will need to be set in user-secrets. Configuration properties will be separated by `.` in this documentation.
+In order to run the EPR Regulator Service, some configuration will need to be set in user-secrets. Configuration properties will be separated by `.` in this documentation.
 
 Internal developers can set appropriate user-secrets by using the private [epr-tools-environment-variables](https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_git/epr-tools-environment-variables?path=%2F&version=GBbigtool-vibe&_a=contents) project.
 
