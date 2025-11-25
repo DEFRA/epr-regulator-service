@@ -4,7 +4,7 @@
 
 This Regulator Service contains the front end for the regulator portal. This is the main regulator service for [Extended producer responsibility for packaging](https://www.gov.uk/government/collections/extended-producer-responsibility-for-packaging) (EPR).
 
-The application serves as the primary regulatory portal for government regulators across England, Wales, Scotland, and Northern Ireland to oversee organization registrations, packaging data submissions, and user account management within the EPR ecosystem.
+The application serves as the primary regulatory portal for government regulators across England, Wales, Scotland, and Northern Ireland to oversee organisation registrations, packaging data submissions, and user account management within the EPR ecosystem.
 
 This application supports regulatory officials with different access levels (admin and basic) who need to:
 
