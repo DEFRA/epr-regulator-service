@@ -14,7 +14,7 @@ public class BackLinkQuerystringAppenderMiddleware(RequestDelegate next)
         if (feature != null)
         {
             httpContext.Request.QueryString = new QueryString(
-                httpContext.Request.QueryString + $"&backLink={feature.OriginalPath}{feature.OriginalQueryString}"
+                httpContext.Request.QueryString + $"&backLink={feature.OriginalPathBase}{feature.OriginalPath}{feature.OriginalQueryString}"
             );
         }
 
