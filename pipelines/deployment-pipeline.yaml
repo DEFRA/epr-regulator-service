@@ -104,4 +104,5 @@ extends:
       targetEnvironment: 'development'
     ${{ else }}:
       targetEnvironment: '$(env)'
+    resourceGroupName: $(resourceGroupName)
 

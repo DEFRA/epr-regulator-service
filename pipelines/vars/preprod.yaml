@@ -4,3 +4,4 @@ variables:
   acr.azureContainerRegistryName: 'prerwdinfac1401'
   acr.repositoryName: 'eprregulatorfrontendregistry'
   serviceName: 'prerwdwebwa1411'
+  resourceGroupName: 'prerwdwebrg1401'

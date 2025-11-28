@@ -4,3 +4,4 @@ variables:
   acr.azureContainerRegistryName: 'tstrwdinfac1401'
   acr.repositoryName: 'eprregulatorfrontendregistry'
   serviceName: 'tstrwdwebwa1411'
+  resourceGroupName: 'tstrwdwebrg1401'
