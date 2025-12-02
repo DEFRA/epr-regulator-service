@@ -24,14 +24,21 @@ public class CompliancePaymentDetailsViewComponent(IOptions<PaymentDetailsOption
     {
         try
         {
+            var complianceSchemeMembers = viewModel.CSOMembershipDetails.Select(x => (ComplianceSchemeMemberRequest)x).ToList();
+
+            // TODO temp criteria to waive registration fee for all "small member" compliance schemes (SMAL-204)
+            bool allMembersAreSmall = complianceSchemeMembers.Any() &&
+                                     complianceSchemeMembers.TrueForAll(m => m.MemberType.Equals("Small", StringComparison.OrdinalIgnoreCase));
+
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(new CompliancePaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ReferenceNumber,
                 Regulator = viewModel.NationCode,
-                ComplianceSchemeMembers = viewModel.CSOMembershipDetails.Select(x => (ComplianceSchemeMemberRequest)x),
+                ComplianceSchemeMembers = complianceSchemeMembers,
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                 ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.Value
-                : viewModel.SubmissionDetails.TimeAndDateOfSubmission)
+                : viewModel.SubmissionDetails.TimeAndDateOfSubmission),
+                IncludeRegistrationFee = !allMembersAreSmall
             });
 
             if (compliancePaymentResponse is null)
