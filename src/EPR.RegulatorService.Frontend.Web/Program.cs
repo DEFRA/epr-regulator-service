@@ -72,7 +72,7 @@ app.UseForwardedHeaders();
 
 app.UseMiddleware<SecurityHeaderMiddleware>();
 app.UseCookiePolicy();
-app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}&backLink={1}");
+app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
