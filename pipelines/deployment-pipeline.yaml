@@ -98,8 +98,10 @@ extends:
       imageTag: ${{ parameters.imageTag }}
     azureSubscription: $(azureSubscription)
     acrName: $(acr.azureContainerRegistryName)
-    registryName: $(acr.repositoryNQ
+    registryName: $(acr.repositoryName)
+    serviceName: $(serviceName)
     ${{ if or( eq(parameters.envToDeploy, 'development'), eq(parameters.envToDeploy, 'qa-dev4') )}}:
       targetEnvironment: 'development'
     ${{ else }}:
       targetEnvironment: '$(env)'
+
