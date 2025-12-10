@@ -165,4 +165,16 @@
   <data name="Checkbox.Year-2026" xml:space="preserve">
     <value>2026</value>
   </data>
+  <data name="Checkbox.OrganisationType.DirectProducer" xml:space="preserve">
+    <value>Direct Producer [Welsh]</value>
+  </data>
+  <data name="Checkbox.OrganisationSize.Large" xml:space="preserve">
+    <value>Large [Welsh]</value>
+  </data>
+  <data name="Checkbox.OrganisationSize.Small" xml:space="preserve">
+    <value>Small [Welsh]</value>
+  </data>
+  <data name="SubTitle.OrganisationSize" xml:space="preserve">
+    <value>Producer Size [Welsh]</value>
+  </data>
 </root>
