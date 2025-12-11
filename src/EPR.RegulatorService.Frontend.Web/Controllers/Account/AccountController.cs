@@ -110,9 +110,5 @@ public class AccountController : Controller
         return Challenge(properties, scheme);
     }
 
-    public IActionResult AccessDenied(string? returnUrl)
-    {
-        ViewBag.BackLinkToDisplay = returnUrl;
-        return View();
-    }
+    public IActionResult AccessDenied() => View();
 }
