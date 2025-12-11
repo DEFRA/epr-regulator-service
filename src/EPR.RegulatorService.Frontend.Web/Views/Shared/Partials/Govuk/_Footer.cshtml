@@ -1,12 +1,15 @@
 @using EPR.RegulatorService.Frontend.Web.Configs;
+@using Microsoft.Extensions.Options
 @using Microsoft.FeatureManagement
 
 @inject IFeatureManager _featureManager
+@inject IOptions<ExternalUrlsOptions> _externalUrls;
+
 @model string
 
 @{
 	bool showFooter = await _featureManager.IsEnabledAsync(FeatureFlags.ShowYourFeedbackFooter);
-	var email = "eprcustomerservice@defra.gov.uk";
+	var email = _externalUrls.Value.SupportEmail;
 	var privacyLink = "https://www.gov.uk/guidance/extended-producer-responsibility-for-packaging-privacy-policy";
 	var accessibilityLink = "https://www.gov.uk/guidance/extended-producer-responsibility-for-packaging-accessibility-statement";
 
