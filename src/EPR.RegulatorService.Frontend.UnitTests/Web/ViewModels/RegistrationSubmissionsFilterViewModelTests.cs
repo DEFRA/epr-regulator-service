@@ -13,6 +13,7 @@ public class RegistrationSubmissionsFilterTests
         var viewModel = new RegistrationSubmissionsFilterViewModel
         {
             IsOrganisationComplianceChecked = true,
+            IsDirectProducerChecked = true,
             IsOrganisationSmallChecked = true,
             IsOrganisationLargeChecked = true,
             IsStatusCancelledChecked = true,
@@ -31,6 +32,7 @@ public class RegistrationSubmissionsFilterTests
 
         // Assert
         Assert.IsFalse(viewModel.IsOrganisationComplianceChecked, "IsOrganisationComplianceChecked should be false");
+        Assert.IsFalse(viewModel.IsDirectProducerChecked, "IsDirectProducerChecked should be false");
         Assert.IsFalse(viewModel.IsOrganisationSmallChecked, "IsOrganisationSmallChecked should be false");
         Assert.IsFalse(viewModel.IsOrganisationLargeChecked, "IsOrganisationLargeChecked should be false");
         Assert.IsFalse(viewModel.IsStatusCancelledChecked, "IsStatusCancelledChecked should be false");
@@ -50,6 +52,7 @@ public class RegistrationSubmissionsFilterTests
         var viewModel = new RegistrationSubmissionsFilterViewModel
         {
             IsOrganisationComplianceChecked = true,
+            IsDirectProducerChecked = false,
             IsOrganisationSmallChecked = true,
             IsOrganisationLargeChecked = false, // Only two flags set
             PageNumber = 2,
@@ -62,6 +65,30 @@ public class RegistrationSubmissionsFilterTests
 
         // Assert
         Assert.AreEqual("compliance small", model.OrganisationType);
+        Assert.AreEqual(2, model.PageNumber);
+        Assert.AreEqual("2025, 2026", model.RelevantYears);
+    }
+
+    [TestMethod]
+    public void ViewModelToModel_DirectProducerTypeFlags_ShouldMapCorrectly()
+    {
+        // Arrange
+        var viewModel = new RegistrationSubmissionsFilterViewModel
+        {
+            IsOrganisationComplianceChecked = false,
+            IsDirectProducerChecked = true,
+            IsOrganisationSmallChecked = false,
+            IsOrganisationLargeChecked = false,
+            PageNumber = 2,
+            Is2025Checked = true,
+            Is2026Checked = true
+        };
+
+        // Act
+        RegistrationSubmissionsFilterModel model = viewModel;
+
+        // Assert
+        Assert.AreEqual("direct", model.OrganisationType);
         Assert.AreEqual(2, model.PageNumber);
         Assert.AreEqual("2025, 2026", model.RelevantYears);
     }
@@ -96,6 +123,7 @@ public class RegistrationSubmissionsFilterTests
             OrganisationName = string.Empty,
             OrganisationRef = null,
             IsOrganisationComplianceChecked = false,
+            IsDirectProducerChecked = false,
             IsOrganisationSmallChecked = false,
             IsOrganisationLargeChecked = false,
             PageNumber = 1
@@ -116,8 +144,7 @@ public class RegistrationSubmissionsFilterTests
         // Arrange
         var model = new RegistrationSubmissionsFilterModel
         {
-            OrganisationType = "compliance small",
-            RelevantYears = "2025"
+            OrganisationType = "compliance small", RelevantYears = "2025"
         };
 
         // Act
@@ -125,6 +152,7 @@ public class RegistrationSubmissionsFilterTests
 
         // Assert
         Assert.IsTrue(viewModel.IsOrganisationComplianceChecked);
+        Assert.IsFalse(viewModel.IsDirectProducerChecked);
         Assert.IsTrue(viewModel.IsOrganisationSmallChecked);
         Assert.IsFalse(viewModel.IsOrganisationLargeChecked);
         Assert.IsTrue(viewModel.Is2025Checked);
@@ -135,10 +163,7 @@ public class RegistrationSubmissionsFilterTests
     public void ModelToViewModel_MultipleSubmissionStatusValues_ShouldSetCorrectFlags()
     {
         // Arrange
-        var model = new RegistrationSubmissionsFilterModel
-        {
-            Statuses = "granted refused queried cancelled"
-        };
+        var model = new RegistrationSubmissionsFilterModel { Statuses = "granted refused queried cancelled" };
 
         // Act
         RegistrationSubmissionsFilterViewModel viewModel = model;
@@ -158,10 +183,7 @@ public class RegistrationSubmissionsFilterTests
         // Arrange
         var model = new RegistrationSubmissionsFilterModel
         {
-            OrganisationName = null,
-            OrganisationType = string.Empty,
-            Statuses = null,
-            PageNumber = null
+            OrganisationName = null, OrganisationType = string.Empty, Statuses = null, PageNumber = null
         };
 
         // Act
@@ -179,10 +201,7 @@ public class RegistrationSubmissionsFilterTests
     public void ModelToViewModel_PartialSubmissionStatusValues_ShouldSetCorrectFlags()
     {
         // Arrange
-        var model = new RegistrationSubmissionsFilterModel
-        {
-            Statuses = "granted pending"
-        };
+        var model = new RegistrationSubmissionsFilterModel { Statuses = "granted pending" };
 
         // Act
         RegistrationSubmissionsFilterViewModel viewModel = model;
