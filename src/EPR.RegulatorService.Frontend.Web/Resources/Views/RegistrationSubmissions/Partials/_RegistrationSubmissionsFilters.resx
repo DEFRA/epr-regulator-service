@@ -168,4 +168,16 @@
   <data name="Checkbox.Year-2025" xml:space="preserve">
     <value />
   </data>
+  <data name="Checkbox.OrganisationType.DirectProducer" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Checkbox.OrganisationSize.Large" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Checkbox.OrganisationSize.Small" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubTitle.OrganisationSize" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -124,7 +124,7 @@
     <value>Organisation name</value>
   </data>
   <data name="SubTitle.OrganisationReference" xml:space="preserve">
-    <value>Organisation ID or Reference number</value>
+    <value>Organisation ID or reference number</value>
   </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
     <value>Registration type</value>
@@ -136,7 +136,7 @@
     <value>Relevant year</value>
   </data>
   <data name="Checkbox.OrganisationType.Compliance" xml:space="preserve">
-    <value>Compliance Scheme</value>
+    <value>Compliance scheme</value>
   </data>
   <data name="Checkbox.OrganisationType.LargeProducer" xml:space="preserve">
     <value>Large producer</value>
@@ -161,6 +161,18 @@
   </data>
   <data name="Checkbox.Year-2025" xml:space="preserve">
     <value>2025</value>
+  </data>
+  <data name="Checkbox.OrganisationType.DirectProducer" xml:space="preserve">
+    <value>Direct producer</value>
+  </data>
+  <data name="Checkbox.OrganisationSize.Large" xml:space="preserve">
+    <value>Large</value>
+  </data>
+  <data name="Checkbox.OrganisationSize.Small" xml:space="preserve">
+    <value>Small</value>
+  </data>
+  <data name="SubTitle.OrganisationSize" xml:space="preserve">
+    <value>Producer size</value>
   </data>
   <data name="Checkbox.Year-2026" xml:space="preserve">
     <value>2026</value>
