@@ -7,6 +7,8 @@ public class ExternalUrlsOptions
 {
     public const string ConfigSection = "ExternalUrls";
 
+    public string SupportEmail { get; set; }
+
     public string GovUkHome { get; set; }
 
     public string PrivacyDefrasPersonalInformationCharter { get; set; }
