@@ -17,10 +17,4 @@
   <data name="AccessDenied.StillHavingIssues" xml:space="preserve">
     <value>If you're still having issues, get help from our customer service team.</value>
   </data>
-  <data name="AccessDenied.IncorrectWebAddressPasted" xml:space="preserve">
-    <value>If you pasted the web address, check you copied the entire address.</value>
-  </data>
-  <data name="AccessDenied.IncorrectWebAddressTyped" xml:space="preserve">
-    <value>If you typed the web address, check it is correct.</value>
-  </data>
 </root>
