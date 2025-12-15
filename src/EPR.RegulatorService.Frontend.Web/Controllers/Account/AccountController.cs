@@ -110,4 +110,5 @@ public class AccountController : Controller
         return Challenge(properties, scheme);
     }
 
+    public IActionResult AccessDenied() => View();
 }
