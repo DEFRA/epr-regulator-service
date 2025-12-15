@@ -14,7 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddFeatureManagement().UseDisabledFeaturesHandler(new RedirectDisabledFeatureHandler());
 
-
 builder.Services
     .RegisterCoreComponents(builder.Configuration)
     .RegisterWebComponents(builder.Configuration)
@@ -45,6 +44,10 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 builder.Services
     .AddApplicationInsightsTelemetry()
     .AddHealthChecks();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddApplicationInsights();
 
 builder.Services.AddHsts(options =>
 {

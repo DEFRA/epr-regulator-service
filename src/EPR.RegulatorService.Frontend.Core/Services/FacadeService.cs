@@ -402,7 +402,7 @@ public class FacadeService : IFacadeService
 
         string path = _facadeApiConfig.Endpoints[GetOrganisationRegistationSubmissionsPath];
 
-        using var scope = _logger.BeginScope(new Dictionary<string, object> { ["Filters"] = filters });
+        using var scope = _logger.BeginScope(filters.ToDictionary());
 
         _logger.LogInformation("Retrieving Registration Submissions from facade API with path: {FacadePath}", path);
 
