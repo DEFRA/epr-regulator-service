@@ -402,33 +402,41 @@ public class FacadeService : IFacadeService
 
         string path = _facadeApiConfig.Endpoints[GetOrganisationRegistationSubmissionsPath];
 
-        HttpResponseMessage response = await _httpClient.PostAsJsonAsync(path, filters);
+        using var scope = _logger.BeginScope(new Dictionary<string, object> { ["Filters"] = filters });
+
+        _logger.LogInformation("Retrieving Registration Submissions from facade API with path: {FacadePath}", path);
+
+        var response = await _httpClient.PostAsJsonAsync(path, filters);
 
         if (response.IsSuccessStatusCode)
         {
             var commonData = await ReadRequiredJsonContent(response.Content);
-            var responseData = commonData.items.Select(x => (RegistrationSubmissionOrganisationDetails)x).ToList();
+            var detailsList = commonData.items
+                .Select(summaryResponse => (RegistrationSubmissionOrganisationDetails)summaryResponse).ToList();
+
+            _logger.LogInformation(
+                "Successfully retrieved {SubmissionCount} registration submissions from facade API out of a total of {SubmissionCountTotal}",
+                commonData.items.Count,
+                commonData.totalItems);
 
             return new PaginatedList<RegistrationSubmissionOrganisationDetails>
             {
-                items = responseData,
+                items = detailsList,
                 currentPage = commonData.currentPage,
                 totalItems = commonData.totalItems,
                 pageSize = commonData.pageSize
             };
         }
-        else
-        {
-            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
-            {
-                items = [],
-                currentPage = 1,
-                totalItems = 0,
-                pageSize = 20
-            };
-        }
 
-        return null;
+        _logger.LogWarning("Unsuccessful status code: {StatusCode} returned from call to retrieve registration submissions", response.StatusCode);
+
+        return new PaginatedList<RegistrationSubmissionOrganisationDetails>
+        {
+            items = [],
+            currentPage = 1,
+            totalItems = 0,
+            pageSize = 20
+        };
     }
 
     public static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
