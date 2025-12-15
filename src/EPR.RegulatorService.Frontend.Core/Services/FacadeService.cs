@@ -22,6 +22,7 @@ using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
+
 namespace EPR.RegulatorService.Frontend.Core.Services;
 
 public class FacadeService : IFacadeService
@@ -102,9 +103,10 @@ public class FacadeService : IFacadeService
 
         var query = new Dictionary<string, string>
         {
-            ["currentPage"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture),
-            ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["currentPage"] = currentPage.ToString(CultureInfo.InvariantCulture),
+            ["pageSize"] = _paginationConfig.PageSize.ToString(CultureInfo.InvariantCulture),
         };
+
         if (!string.IsNullOrEmpty(organisationName))
         {
             query["organisationName"] = organisationName;
@@ -214,8 +216,8 @@ public class FacadeService : IFacadeService
 
         var query = new Dictionary<string, string>
         {
-            ["pageNumber"] = currentPage.ToString(System.Globalization.CultureInfo.InvariantCulture),
-            ["pageSize"] = _paginationConfig.PageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["pageNumber"] = currentPage.ToString(CultureInfo.InvariantCulture),
+            ["pageSize"] = _paginationConfig.PageSize.ToString(CultureInfo.InvariantCulture),
         };
         if (!string.IsNullOrEmpty(organisationName))
         {
@@ -321,7 +323,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        string path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[OrganisationsSearchPath], currentPage, _paginationConfig.PageSize, searchTerm);
+        string path = string.Format(CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[OrganisationsSearchPath], currentPage, _paginationConfig.PageSize, searchTerm);
         var response = await _httpClient.GetAsync(path);
 
         response.EnsureSuccessStatusCode();
@@ -332,7 +334,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        string path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[GetOrganisationUsersByOrganisationExternalIdPath], externalId);
+        string path = string.Format(CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[GetOrganisationUsersByOrganisationExternalIdPath], externalId);
 
         var response = await _httpClient.GetAsync(path);
 
@@ -344,7 +346,7 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
 
-        string path = string.Format(System.Globalization.CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath],
+        string path = string.Format(CultureInfo.InvariantCulture, _facadeApiConfig.Endpoints[OrganisationsRemoveApprovedUserPath],
             request.RemovedConnectionExternalId, request.OrganisationId, request.PromotedPersonExternalId);
 
         var response = await _httpClient.PostAsJsonAsync(path, request);
@@ -380,7 +382,7 @@ public class FacadeService : IFacadeService
 
         var response = await _httpClient.PostAsJsonAsync(path, request);
 
-        return await Task.FromResult<HttpResponseMessage>(response);
+        return await Task.FromResult(response);
     }
 
     private async Task PrepareAuthenticatedClient()
