@@ -6,7 +6,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         private const string TestOrgName = "Test org name";
         private const string ApprovedPerson = "ApprovedPerson";
         private const string DelegatedPerson = "DelegatedPerson";
-        
+
         private readonly Guid _organisationId = Guid.NewGuid();
         private readonly Guid _connExternalId = Guid.NewGuid();
         private readonly Guid _promotedPersonExternalId = Guid.NewGuid();
@@ -1614,54 +1614,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             Assert.AreEqual(2, result.currentPage);
             Assert.AreEqual(50, result.totalItems);
             Assert.AreEqual(10, result.pageSize);
-        }
-
-        [TestMethod]
-        public async Task GetRegistrationSubmissions_Failure_ReturnsDefaultPaginatedList()
-        {
-            // Arrange
-            var filter = new RegistrationSubmissionsFilterModel();
-
-            _mockHandler
-               .Protected()
-               .Setup<Task<HttpResponseMessage>>("SendAsync",
-                  ItExpr.IsAny<HttpRequestMessage>(),
-                  ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
-
-            // Act
-            var result = await _facadeService.GetRegistrationSubmissions(filter);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.totalItems);
-            Assert.AreEqual(1, result.currentPage);
-            Assert.AreEqual(20, result.pageSize); // default page size in failure case
-            Assert.AreEqual(0, result.items.Count);
-        }
-
-        [TestMethod]
-        public async Task GetRegistrationSubmissions_ClientErrorStatusCode_ReturnsDefaultPaginatedList()
-        {
-            // Arrange
-            var filter = new RegistrationSubmissionsFilterModel();
-
-            _mockHandler
-               .Protected()
-               .Setup<Task<HttpResponseMessage>>("SendAsync",
-                  ItExpr.IsAny<HttpRequestMessage>(),
-                  ItExpr.IsAny<CancellationToken>())
-               .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.BadRequest));
-
-            // Act
-            var result = await _facadeService.GetRegistrationSubmissions(filter);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.totalItems);
-            Assert.AreEqual(1, result.currentPage);
-            Assert.AreEqual(20, result.pageSize);
-            Assert.AreEqual(0, result.items.Count);
         }
 
         [TestMethod]

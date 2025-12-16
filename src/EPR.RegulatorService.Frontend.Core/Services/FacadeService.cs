@@ -408,34 +408,22 @@ public class FacadeService : IFacadeService
 
         var response = await _httpClient.PostAsJsonAsync(path, filters);
 
-        if (response.IsSuccessStatusCode)
-        {
-            var commonData = await ReadRequiredJsonContent(response.Content);
-            var detailsList = commonData.items
-                .Select(summaryResponse => (RegistrationSubmissionOrganisationDetails)summaryResponse).ToList();
+        response.EnsureSuccessStatusCode();
+        var commonData = await ReadRequiredJsonContent(response.Content);
+        var detailsList = commonData.items
+            .Select(summaryResponse => (RegistrationSubmissionOrganisationDetails)summaryResponse).ToList();
 
-            _logger.LogInformation(
-                "Successfully retrieved {SubmissionCount} registration submissions from facade API out of a total of {SubmissionCountTotal}",
-                commonData.items.Count,
-                commonData.totalItems);
-
-            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
-            {
-                items = detailsList,
-                currentPage = commonData.currentPage,
-                totalItems = commonData.totalItems,
-                pageSize = commonData.pageSize
-            };
-        }
-
-        _logger.LogWarning("Unsuccessful status code: {StatusCode} returned from call to retrieve registration submissions", response.StatusCode);
+        _logger.LogInformation(
+            "Successfully retrieved {SubmissionCount} registration submissions from facade API out of a total of {SubmissionCountTotal}",
+            commonData.items.Count,
+            commonData.totalItems);
 
         return new PaginatedList<RegistrationSubmissionOrganisationDetails>
         {
-            items = [],
-            currentPage = 1,
-            totalItems = 0,
-            pageSize = 20
+            items = detailsList,
+            currentPage = commonData.currentPage,
+            totalItems = commonData.totalItems,
+            pageSize = commonData.pageSize
         };
     }
 
