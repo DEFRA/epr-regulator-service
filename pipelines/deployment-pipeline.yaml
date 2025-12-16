@@ -76,11 +76,11 @@ variables:
     - template: pipelines/image-tags/${{ parameters.teamName }}-${{ parameters.envToDeploy }}.yaml@ReleaseTags
 # Config Variables reference
   - ${{ if eq(parameters.envToDeploy, 'development') }}:
-    - template: templates/env-specific-config.yaml@ReleaseTags
+    - template: pipelines/templates/env-specific-config.yaml@ReleaseTags
       parameters:
         teamName: ${{ parameters.teamName }}
   - ${{ if ne(parameters.envToDeploy, 'development') }}:
-    - template: templates/env-specific-config.yaml@ReleaseTags
+    - template: pipelines/templates/env-specific-config.yaml@ReleaseTags
       parameters:
         teamName: ${{ parameters.envToDeploy }}
 
