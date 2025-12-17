@@ -1617,6 +1617,40 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        public async Task GetRegistrationSubmissions_Failure_ThrowsHttpRequestException()
+        {
+            // Arrange
+            var filter = new RegistrationSubmissionsFilterModel();
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
+
+            // Act
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _facadeService.GetRegistrationSubmissions(filter));
+        }
+
+        [TestMethod]
+        public async Task GetRegistrationSubmissions_ClientErrorStatusCode_ThrowsHttpRequestException()
+        {
+            // Arrange
+            var filter = new RegistrationSubmissionsFilterModel();
+
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>("SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.BadRequest));
+
+            // Act
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _facadeService.GetRegistrationSubmissions(filter));
+        }
+
+        [TestMethod]
         public async Task GetRegistrationSubmissionDetails_Success_ReturnsObject()
         {
             // Arrange
