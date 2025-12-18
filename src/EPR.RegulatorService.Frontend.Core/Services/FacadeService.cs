@@ -402,13 +402,11 @@ public class FacadeService : IFacadeService
 
         string path = _facadeApiConfig.Endpoints[GetOrganisationRegistationSubmissionsPath];
 
-        using var scope = _logger.BeginScope(filters.ToDictionary());
-
-        _logger.LogInformation("Retrieving Registration Submissions from facade API with path: {FacadePath}", path);
+        _logger.LogInformation("Retrieving Registration Submissions from facade API with filters: {@Filters} and path: {FacadePath}", filters, path);
 
         var response = await _httpClient.PostAsJsonAsync(path, filters);
-
         response.EnsureSuccessStatusCode();
+
         var commonData = await ReadRequiredJsonContent(response.Content);
         var detailsList = commonData.items
             .Select(summaryResponse => (RegistrationSubmissionOrganisationDetails)summaryResponse).ToList();
@@ -455,12 +453,12 @@ public class FacadeService : IFacadeService
 
         string content = await response.Content.ReadAsStringAsync();
 
-        RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFE(content);
+        RegistrationSubmissionOrganisationDetailsResponse result = ConvertCommonDataToFrontEnd(content);
 
         return result;
     }
 
-    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFE(string content)
+    private static RegistrationSubmissionOrganisationDetailsResponse ConvertCommonDataToFrontEnd(string content)
     {
         try
         {
