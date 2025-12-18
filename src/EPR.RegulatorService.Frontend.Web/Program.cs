@@ -11,6 +11,10 @@ using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging
+    .AddConsole()
+    .AddApplicationInsights();
+
 builder.Services
     .AddFeatureManagement().UseDisabledFeaturesHandler(new RedirectDisabledFeatureHandler());
 
@@ -44,10 +48,6 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 builder.Services
     .AddApplicationInsightsTelemetry()
     .AddHealthChecks();
-
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Logging.AddApplicationInsights();
 
 builder.Services.AddHsts(options =>
 {
