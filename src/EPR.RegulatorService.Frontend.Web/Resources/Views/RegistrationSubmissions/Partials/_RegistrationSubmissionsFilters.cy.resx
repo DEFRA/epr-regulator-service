@@ -162,6 +162,18 @@
   <data name="Checkbox.Year-2025" xml:space="preserve">
     <value>2025</value>
   </data>
+  <data name="Checkbox.OrganisationType.DirectProducer" xml:space="preserve">
+    <value>Cynhyrchydd uniongyrchol</value>
+  </data>
+  <data name="Checkbox.OrganisationSize.Large" xml:space="preserve">
+    <value>Mawr</value>
+  </data>
+  <data name="Checkbox.OrganisationSize.Small" xml:space="preserve">
+    <value>Bach</value>
+  </data>
+  <data name="SubTitle.OrganisationSize" xml:space="preserve">
+    <value>Maint y cynhyrchydd</value>
+  </data>
   <data name="Checkbox.Year-2026" xml:space="preserve">
     <value>2026</value>
   </data>
