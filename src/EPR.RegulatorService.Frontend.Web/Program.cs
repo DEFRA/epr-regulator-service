@@ -11,9 +11,12 @@ using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging
+    .AddConsole()
+    .AddApplicationInsights();
+
 builder.Services
     .AddFeatureManagement().UseDisabledFeaturesHandler(new RedirectDisabledFeatureHandler());
-
 
 builder.Services
     .RegisterCoreComponents(builder.Configuration)
