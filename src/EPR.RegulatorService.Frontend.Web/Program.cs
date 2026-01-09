@@ -17,6 +17,7 @@ builder.Logging.ClearProviders();
 builder.Host.UseSerilog((context, _, config) =>
 {
     config.ReadFrom.Configuration(context.Configuration);
+    config.Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName);
 });
 
 builder.Services
