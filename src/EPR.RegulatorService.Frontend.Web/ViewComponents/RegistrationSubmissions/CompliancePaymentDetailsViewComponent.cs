@@ -1,3 +1,4 @@
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Configs;
@@ -11,8 +12,10 @@ using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 
-public class CompliancePaymentDetailsViewComponent(IOptions<PaymentDetailsOptions> options,
-    IPaymentFacadeService paymentFacadeService, ILogger<CompliancePaymentDetailsViewComponent> logger) : ViewComponent
+public class CompliancePaymentDetailsViewComponent(
+    IOptions<PaymentDetailsOptions> options,
+    IPaymentFacadeService paymentFacadeService,
+    ILogger<CompliancePaymentDetailsViewComponent> logger) : ViewComponent
 {
     private static readonly Action<ILogger, string, Exception?> _logViewComponentError =
         LoggerMessage.Define<string>(
@@ -24,22 +27,26 @@ public class CompliancePaymentDetailsViewComponent(IOptions<PaymentDetailsOption
     {
         try
         {
-            var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(new CompliancePaymentRequest
-            {
-                ApplicationReferenceNumber = viewModel.ReferenceNumber,
-                Regulator = viewModel.NationCode,
-                ComplianceSchemeMembers = viewModel.CSOMembershipDetails.Select(x => (ComplianceSchemeMemberRequest)x),
-                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
-                ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.Value
-                : viewModel.SubmissionDetails.TimeAndDateOfSubmission)
-            });
+            var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(
+                new CompliancePaymentRequest
+                {
+                    ApplicationReferenceNumber = viewModel.ReferenceNumber,
+                    Regulator = viewModel.NationCode,
+                    ComplianceSchemeMembers =
+                        viewModel.CSOMembershipDetails.Select(x => (ComplianceSchemeMemberRequest)x),
+                    SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
+                        ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.GetValueOrDefault()
+                        : viewModel.SubmissionDetails.TimeAndDateOfSubmission),
+                    IncludeRegistrationFee =
+                        viewModel.RegistrationJourneyType != RegistrationJourneyType.CsoSmallProducer
+                });
 
             if (compliancePaymentResponse is null)
             {
                 return View(default(CompliancePaymentDetailsViewModel));
             }
 
-            (var largeProducers, var smallProducers) = compliancePaymentResponse.ComplianceSchemeMembers
+            var (largeProducers, smallProducers) = compliancePaymentResponse.ComplianceSchemeMembers
                 .GetIndividualProducers(viewModel.CSOMembershipDetails);
             var lateProducers = compliancePaymentResponse.ComplianceSchemeMembers.GetLateProducers();
             var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.GetOnlineMarketPlaces();
@@ -49,8 +56,11 @@ public class CompliancePaymentDetailsViewComponent(IOptions<PaymentDetailsOption
             {
                 ApplicationFee = ConvertToPoundsFromPence(compliancePaymentResponse.ApplicationProcessingFee),
                 SubTotal = ConvertToPoundsFromPence(compliancePaymentResponse.TotalChargeableItems),
-                PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
-                TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(compliancePaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
+                PreviousPaymentReceived =
+                    ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
+                TotalOutstanding =
+                    ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(
+                        compliancePaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
                 SchemeMemberCount = compliancePaymentResponse.ComplianceSchemeMembers.Count,
                 LargeProducerCount = largeProducers.Count,
                 LargeProducerFee = ConvertToPoundsFromPence(largeProducers.GetFees()),
@@ -63,7 +73,7 @@ public class CompliancePaymentDetailsViewComponent(IOptions<PaymentDetailsOption
                 SubsidiariesCompanyCount = viewModel.CSOMembershipDetails.Sum(r => r.NumberOfSubsidiaries),
                 SubsidiariesCompanyFee = ConvertToPoundsFromPence(subsidiariesCompanies.Sum()),
                 ResubmissionStatus = viewModel.ResubmissionStatus,
-                Status = viewModel.Status,
+                Status = viewModel.Status
             };
 
             return View(compliancePaymentDetailsViewModel);
@@ -72,7 +82,8 @@ public class CompliancePaymentDetailsViewComponent(IOptions<PaymentDetailsOption
         {
             _logViewComponentError.Invoke(logger,
                 $"Unable to retrieve the compliance scheme payment details for " +
-                $"{viewModel.SubmissionId} in {nameof(CompliancePaymentDetailsViewComponent)}.{nameof(InvokeAsync)}", ex);
+                $"{viewModel.SubmissionId} in {nameof(CompliancePaymentDetailsViewComponent)}.{nameof(InvokeAsync)}",
+                ex);
 
             return View(default(CompliancePaymentDetailsViewModel));
         }
