@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 using System.Security.Claims;
 
@@ -74,7 +76,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             _systemUnderTest = new UserDataCheckerMiddleware(
                 _facadeServiceMock.Object,
                 _sessionManagerMock.Object,
-                _configurationMock.Object
+                _configurationMock.Object,
+                NullLogger<UserDataCheckerMiddleware>.Instance
             );
         }
 

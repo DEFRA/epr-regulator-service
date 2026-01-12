@@ -51,8 +51,8 @@ public partial class RegistrationSubmissionsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RegistrationSubmissions(int? pageNumber)
     {
-        try
-        {
+        // try
+        // {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
 
             int nationId = _currentSession.UserData.Organisations[0].NationId ?? 0;
@@ -70,12 +70,12 @@ public partial class RegistrationSubmissionsController(
             await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
             return View(viewModel);
-        }
-        catch (Exception ex)
-        {
-            _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
-            return RedirectToAction(PagePath.Error, "Error");
-        }
+        // }
+        // catch (Exception ex)
+        // {
+            // _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
+            // return RedirectToAction(PagePath.Error, "Error");
+        // }
     }
 
     [HttpPost]

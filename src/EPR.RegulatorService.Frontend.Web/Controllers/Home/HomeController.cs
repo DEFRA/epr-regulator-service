@@ -61,6 +61,7 @@ public class HomeController : RegulatorSessionBaseController
         if (session.UserData.Organisations == null
             || session.UserData.Organisations.Count == 0)
         {
+            throw new Exception("user orgs missing");
             return RedirectToAction(PagePath.Error, "Error");
         }
 

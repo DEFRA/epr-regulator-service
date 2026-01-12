@@ -59,6 +59,7 @@ public class JourneyAccessCheckerMiddleware
 
             if (!string.IsNullOrEmpty(pageToRedirect))
             {
+                throw new Exception("hit redirect middleware");
                 httpContext.Response.Redirect($"{httpContext.Request.PathBase}/{pageToRedirect}");
                 return;
             }

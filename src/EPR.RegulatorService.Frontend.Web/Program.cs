@@ -66,15 +66,16 @@ var app = builder.Build();
 
 app.UsePathBase(builder.Configuration.GetValue<string>("PATH_BASE"));
 
-if (app.Environment.IsDevelopment())
-{
+// DISABLE ERROR HIDING - TEMP CODE NOT TO BE MERGED
+// if (app.Environment.IsDevelopment())
+// {
     IdentityModelEventSource.ShowPII = true;
     app.UseDeveloperExceptionPage();
-}
-else
-{
-    app.UseExceptionHandler("/error");
-}
+// }
+// else
+// {
+    // app.UseExceptionHandler("/error");
+// }
 
 app.UseForwardedHeaders();
 
@@ -82,7 +83,7 @@ app.UseStaticFiles();
 app.UseSerilogRequestLogging(); // after `UseStaticFiles()` to prevent logging of requests to css/js/png etc.
 app.UseMiddleware<SecurityHeaderMiddleware>();
 app.UseCookiePolicy();
-app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
+// app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSession();

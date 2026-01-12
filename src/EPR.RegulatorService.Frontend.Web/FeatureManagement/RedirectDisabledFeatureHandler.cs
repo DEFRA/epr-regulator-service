@@ -10,6 +10,7 @@ namespace EPR.RegulatorService.Frontend.Web.FeatureManagement
     {
         public Task HandleDisabledFeatures(IEnumerable<string> features, ActionExecutingContext context)
         {
+            throw new Exception("disabled feature");
             context.Result = new RedirectToActionResult("LandingPage", PagePath.Home,null);
             return Task.CompletedTask;
         }
