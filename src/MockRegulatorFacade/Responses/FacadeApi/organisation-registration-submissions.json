@@ -1,0 +1,31 @@
+{
+  "items": [
+    {
+      "submissionId": "0163A629-7780-445F-B00E-1898546BDF0C",
+      "organisationId": "EE29CFAE-81AB-435F-8759-7285959530DB",
+      "organisationReference": "100000",
+      "organisationName": "Test Company Ltd",
+      "organisationType": "compliance",
+      "applicationReferenceNumber": "REG-2025-001",
+      "registrationReferenceNumber": null,
+      "submissionDate": "2025-01-10T09:30:00Z",
+      "registrationYear": 2025,
+      "nationId": 1,
+      "submissionStatus": "Pending",
+      "resubmissionStatus": null,
+      "statusPendingDate": "2025-01-10T09:30:00Z",
+      "isResubmission": false,
+      "resubmissionFileId": null,
+      "resubmissionDate": null,
+      "registrationDate": null,
+      "regulatorDecisionDate": null,
+      "resubmissionDecisionDate": null,
+      "regulatorCommentDate": null,
+      "producerCommentDate": null,
+      "regulatorUserId": null
+    }
+  ],
+  "currentPage": 1,
+  "pageSize": 20,
+  "totalItems": 1
+}
