@@ -1,0 +1,22 @@
+{
+  "user": {
+    "id": "62309b0e-535d-4f96-9a3b-9c759a3944f3",
+    "firstName": "Test",
+    "lastName": "User",
+    "email": "test.user@example.com",
+    "roleInOrganisation": "Admin",
+    "enrolmentStatus": "Approved",
+    "serviceRole": "Regulator Basic",
+    "service": "RegulatorService",
+    "serviceRoleId": 5,
+    "organisations": [
+      {
+        "id": "C7646CAE-EB96-48AC-9427-0120199BE6EE",
+        "name": "Environment Agency",
+        "organisationRole": "Regulator",
+        "organisationType": "Regulators",
+        "nationId": 1
+      }
+    ]
+  }
+}
