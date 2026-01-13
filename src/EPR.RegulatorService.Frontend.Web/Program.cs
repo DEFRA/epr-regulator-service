@@ -78,8 +78,8 @@ else
 
 app.UseForwardedHeaders();
 
-app.UseStaticFiles();           // <----------------------------------┐
-app.UseSerilogRequestLogging(); // Add request logging after the StaticFiles middleware to prevent logging of requests to css/js/png etc.
+app.UseStaticFiles();
+app.UseSerilogRequestLogging(); // after `UseStaticFiles()` to prevent logging of requests to css/js/png etc.
 app.UseMiddleware<SecurityHeaderMiddleware>();
 app.UseCookiePolicy();
 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
