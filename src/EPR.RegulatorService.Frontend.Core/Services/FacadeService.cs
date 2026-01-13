@@ -398,7 +398,7 @@ public class FacadeService : IFacadeService
 
     public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
     {
-        using (_logger.BeginScope(new Dictionary<string, object>{{"Filters", filters}}))
+        using (_logger.BeginScope("{@Filters}", filters))
         {
             await PrepareAuthenticatedClient();
 
