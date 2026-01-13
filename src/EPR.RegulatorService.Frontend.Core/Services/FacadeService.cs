@@ -398,34 +398,33 @@ public class FacadeService : IFacadeService
 
     public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
     {
-        using (_logger.BeginScope("{@Filters}", filters))
+        using var _ = _logger.BeginScope("{@Filters}", filters);
+
+        await PrepareAuthenticatedClient();
+
+        string path = _facadeApiConfig.Endpoints[GetOrganisationRegistationSubmissionsPath];
+
+        _logger.LogInformation("Retrieving Registration Submissions from facade API path: {FacadePath}", path);
+
+        var response = await _httpClient.PostAsJsonAsync(path, filters);
+        response.EnsureSuccessStatusCode();
+
+        var commonData = await ReadRequiredJsonContent(response.Content);
+        var detailsList = commonData.items
+            .Select(summaryResponse => (RegistrationSubmissionOrganisationDetails)summaryResponse).ToList();
+
+        _logger.LogInformation(
+            "Successfully retrieved {SubmissionCount} registration submissions from facade API out of a total of {SubmissionCountTotal}",
+            commonData.items.Count,
+            commonData.totalItems);
+
+        return new PaginatedList<RegistrationSubmissionOrganisationDetails>
         {
-            await PrepareAuthenticatedClient();
-
-            string path = _facadeApiConfig.Endpoints[GetOrganisationRegistationSubmissionsPath];
-
-            _logger.LogInformation("Retrieving Registration Submissions from facade API path: {FacadePath}", path);
-
-            var response = await _httpClient.PostAsJsonAsync(path, filters);
-            response.EnsureSuccessStatusCode();
-
-            var commonData = await ReadRequiredJsonContent(response.Content);
-            var detailsList = commonData.items
-                .Select(summaryResponse => (RegistrationSubmissionOrganisationDetails)summaryResponse).ToList();
-
-            _logger.LogInformation(
-                "Successfully retrieved {SubmissionCount} registration submissions from facade API out of a total of {SubmissionCountTotal}",
-                commonData.items.Count,
-                commonData.totalItems);
-
-            return new PaginatedList<RegistrationSubmissionOrganisationDetails>
-            {
-                items = detailsList,
-                currentPage = commonData.currentPage,
-                totalItems = commonData.totalItems,
-                pageSize = commonData.pageSize
-            };
-        }
+            items = detailsList,
+            currentPage = commonData.currentPage,
+            totalItems = commonData.totalItems,
+            pageSize = commonData.pageSize
+        };
     }
 
     public static async Task<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>> ReadRequiredJsonContent(HttpContent content)
