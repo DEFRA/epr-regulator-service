@@ -9,11 +9,16 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Logging;
 
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging
-    .AddConsole()
-    .AddApplicationInsights();
+builder.Logging.ClearProviders();
+builder.Host.UseSerilog((context, _, config) =>
+{
+    config.ReadFrom.Configuration(context.Configuration);
+    config.Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName);
+});
 
 builder.Services
     .AddFeatureManagement().UseDisabledFeaturesHandler(new RedirectDisabledFeatureHandler());
@@ -73,11 +78,12 @@ else
 
 app.UseForwardedHeaders();
 
+app.UseStaticFiles();
+app.UseSerilogRequestLogging(); // after `UseStaticFiles()` to prevent logging of requests to css/js/png etc.
 app.UseMiddleware<SecurityHeaderMiddleware>();
 app.UseCookiePolicy();
 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
