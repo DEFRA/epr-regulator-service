@@ -79,7 +79,22 @@ else
 app.UseForwardedHeaders();
 
 app.UseStaticFiles();
-app.UseSerilogRequestLogging(); // after `UseStaticFiles()` to prevent logging of requests to css/js/png etc.
+// after `UseStaticFiles()` to prevent logging of requests to css/js/png etc.
+app.UseSerilogRequestLogging(options =>
+{
+    options.EnrichDiagnosticContext = (context, httpContext) =>
+    {
+        var request = httpContext.Request;
+
+        context.Set("Path", request.Path.Value);
+        context.Set("Method", request.Method);
+        context.Set("ClientIP", httpContext.Connection.RemoteIpAddress?.ToString());
+        context.Set("XForwardedFor", request.Headers["X-Forwarded-For"].ToString());
+        context.Set("UserAgent", request.Headers.UserAgent.ToString());
+        context.Set("XAzureHealthProbe", request.Headers["X-Azure-Health-Probe"].ToString());
+        context.Set("RequestId", httpContext.TraceIdentifier);
+    };
+});
 app.UseMiddleware<SecurityHeaderMiddleware>();
 app.UseCookiePolicy();
 app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
