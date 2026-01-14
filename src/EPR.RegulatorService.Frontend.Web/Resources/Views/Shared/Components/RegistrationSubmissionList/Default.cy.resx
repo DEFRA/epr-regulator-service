@@ -130,7 +130,7 @@
     <value>[Welsh]Organisation ID and reference number</value>
   </data>
   <data name="Table.Header.Company" xml:space="preserve">
-    <value>Sefydliad</value>
+    <value>Sefydliad a math cofrestru</value>
   </data>
   <data name="Table.Header.ApplicationDate" xml:space="preserve">
     <value>Dyddiad ac amser y cyflwyniad</value>
