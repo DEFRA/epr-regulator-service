@@ -78,6 +78,8 @@ If the `frontend-accountmanagement-microservice` is also running locally, `Landi
 
 ### Running unit tests
 
+See also the [Integration Tests](src/IntegrationTests/README.md)
+
 #### Jetbrains Rider
 
 Either open the `Unit Tests` tab and run all unit tests with the `Run All Tests` button, or navigate to `Tests -> Run All Tests For Solution`
