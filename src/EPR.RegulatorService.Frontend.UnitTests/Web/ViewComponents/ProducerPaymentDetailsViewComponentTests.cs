@@ -56,11 +56,11 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
-    [DataRow("large", "Large", false)]
-    [DataRow("small", "Small", false)]
-    [DataRow("large", "Large", true)]
-    [DataRow("small", "Small", true)]
-    public async Task InvokeAsync_Returns_CorrectView_With_Model(string organisationSize, string expectedProducerSize, bool isResubmission)
+    [DataRow("large", "Large", false, true, 0)]
+    [DataRow("small", "Small", false, false, 1)]
+    [DataRow("large", "Large", true, true, 0)]
+    [DataRow("small", "Small", true, false, 3)]
+    public async Task InvokeAsync_Returns_CorrectView_With_Model(string organisationSize, string expectedProducerSize, bool isResubmission, bool isLateFeeApplicable, int numOfLateSubsidiaries)
     {
         // Arrange
         _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(
@@ -76,7 +76,9 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             TotalOutstanding = 500.00M,
             SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
                 { OnlineMarketPlaceSubsidiariesCount = 1, SubsidiaryOnlineMarketPlaceFee = 200.00M }
-        });
+        }).Callback<ProducerPaymentRequest>(m => {
+            m.NumberOfLateSubsidiaries.Should().Be(numOfLateSubsidiaries);
+            });
         _registrationSumissionDetailsViewModel.ProducerDetails.ProducerType = organisationSize;
         _registrationSumissionDetailsViewModel.IsResubmission = isResubmission;
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
@@ -84,6 +86,8 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
             TimeAndDateOfResubmission = DateTime.UtcNow
         };
+        _registrationSumissionDetailsViewModel.ProducerDetails.IsLateFeeApplicable = isLateFeeApplicable;
+        _registrationSumissionDetailsViewModel.ProducerDetails.NumberOfLateSubsidiaries = numOfLateSubsidiaries;
 
         // Act
         var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
