@@ -8,7 +8,8 @@ public class CompliancePaymentRequest
 
     public DateTime SubmissionDate { get; set; }
 
-    public IEnumerable<ComplianceSchemeMemberRequest> ComplianceSchemeMembers { get; set; }    
+    public IEnumerable<ComplianceSchemeMemberRequest> ComplianceSchemeMembers { get; set; }
+    public bool IncludeRegistrationFee { get; set; } = true;
 }
 
 public class ComplianceSchemeMemberRequest
