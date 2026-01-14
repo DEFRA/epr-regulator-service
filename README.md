@@ -45,6 +45,14 @@ This service depends on running copies of the following services, with URLs conf
 - [epr-regulator-service-facade](https://github.com/DEFRA/epr-regulator-service-facade)
 - [epr-payment-facade](https://github.com/DEFRA/epr-payment-facade)
 
+The urls for these are configurable. Set the urls for dev azure in user-secrets as below.
+
+To override the url to use locally run facade service(s) use the alternate [launchProfile](src/EPR.RegulatorService.Frontend.Web/Properties/launchSettings.json) which can be selected from the IDE menu or with dotnet run as follows:
+
+```sh
+dotnet run --launchProfile "local-facade" --project src/EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj
+```
+
 ### Configuration
 
 In order to run the EPR Regulator Service, some configuration will need to be set in user-secrets. Configuration properties will be separated by `.` in this documentation.
