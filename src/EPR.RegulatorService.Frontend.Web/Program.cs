@@ -18,6 +18,15 @@ builder.Host.UseSerilog((context, _, config) =>
 {
     config.ReadFrom.Configuration(context.Configuration);
     config.Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName);
+    ////config.Filter.ByExcluding(logEvent =>
+    ////{
+    ////    if (logEvent.Properties.TryGetValue("Headers.XArrLogId", out var value))
+    ////    {
+    ////        return !string.IsNullOrWhiteSpace(value.ToString());
+    ////    }
+
+    ////    return false;
+    ////});
 });
 
 builder.Services
@@ -88,12 +97,15 @@ app.UseSerilogRequestLogging(options =>
 
         context.Set("ClientIP", httpContext.Connection.RemoteIpAddress?.ToString());
         context.Set("RequestId", httpContext.TraceIdentifier);
-        context.Set("RequestHeaders", request.Headers, true);
-        context.Set("XAzureHealthProbe", request.Headers["X-Azure-Health-Probe"].ToString());
-        context.Set("XForwardedFor", request.Headers["X-Forwarded-For"].ToString());
         context.Set("Method", request.Method);
         context.Set("Path", request.Path.Value);
-        context.Set("UserAgent", request.Headers.UserAgent.ToString());
+        context.Set("Headers", new
+        {
+            UserAgent = request.Headers.UserAgent.ToString(),
+            XArrLogId = request.Headers["X-ARR-LOG-ID"].ToString(),
+            XAzureHealthProbe = request.Headers["X-Azure-Health-Probe"].ToString(),
+            XForwardedFor = request.Headers["X-Forwarded-For"].ToString()
+        }, destructureObjects: true);
     };
 });
 app.UseMiddleware<SecurityHeaderMiddleware>();
