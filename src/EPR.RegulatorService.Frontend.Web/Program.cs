@@ -86,13 +86,14 @@ app.UseSerilogRequestLogging(options =>
     {
         var request = httpContext.Request;
 
-        context.Set("Path", request.Path.Value);
-        context.Set("Method", request.Method);
         context.Set("ClientIP", httpContext.Connection.RemoteIpAddress?.ToString());
-        context.Set("XForwardedFor", request.Headers["X-Forwarded-For"].ToString());
-        context.Set("UserAgent", request.Headers.UserAgent.ToString());
-        context.Set("XAzureHealthProbe", request.Headers["X-Azure-Health-Probe"].ToString());
         context.Set("RequestId", httpContext.TraceIdentifier);
+        context.Set("RequestHeaders", request.Headers, true);
+        context.Set("XAzureHealthProbe", request.Headers["X-Azure-Health-Probe"].ToString());
+        context.Set("XForwardedFor", request.Headers["X-Forwarded-For"].ToString());
+        context.Set("Method", request.Method);
+        context.Set("Path", request.Path.Value);
+        context.Set("UserAgent", request.Headers.UserAgent.ToString());
     };
 });
 app.UseMiddleware<SecurityHeaderMiddleware>();
