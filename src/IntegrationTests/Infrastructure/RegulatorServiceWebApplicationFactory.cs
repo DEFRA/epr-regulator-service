@@ -29,7 +29,6 @@ public class RegulatorServiceWebApplicationFactory : WebApplicationFactory<Progr
         Environment.SetEnvironmentVariable("FacadeApi__BaseUrl", _facadeServer.Url!);
         Environment.SetEnvironmentVariable("EprAuthorizationConfig__FacadeBaseUrl", _facadeServer.Url!);
         Environment.SetEnvironmentVariable("UseLocalSession", "true");
-        Environment.SetEnvironmentVariable("FeatureManagement__ManageRegistrationSubmissions", "true");
 
         builder.ConfigureTestServices(services =>
         {
