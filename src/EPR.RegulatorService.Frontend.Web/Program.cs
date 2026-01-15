@@ -73,6 +73,17 @@ builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
 var app = builder.Build();
 
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/" && context.Request.PathBase == PathString.Empty)
+    {
+        context.Response.StatusCode = StatusCodes.Status204NoContent;
+        return;
+    }
+
+    await next();
+});
+
 app.UsePathBase(builder.Configuration.GetValue<string>("PATH_BASE"));
 
 if (app.Environment.IsDevelopment())
@@ -99,13 +110,10 @@ app.UseSerilogRequestLogging(options =>
         context.Set("RequestId", httpContext.TraceIdentifier);
         context.Set("Method", request.Method);
         context.Set("Path", request.Path.Value);
-        context.Set("Headers", new
-        {
-            UserAgent = request.Headers.UserAgent.ToString(),
-            XArrLogId = request.Headers["X-ARR-LOG-ID"].ToString(),
-            XAzureHealthProbe = request.Headers["X-Azure-Health-Probe"].ToString(),
-            XForwardedFor = request.Headers["X-Forwarded-For"].ToString()
-        }, destructureObjects: true);
+        context.Set("UserAgent", request.Headers.UserAgent.ToString());
+        context.Set("XArrLogId", request.Headers["X-ARR-LOG-ID"].ToString());
+        context.Set("XAzureHealthProbe", request.Headers["X-Azure-Health-Probe"].ToString());
+        context.Set("XForwardedFor", request.Headers["X-Forwarded-For"].ToString());
     };
 });
 app.UseMiddleware<SecurityHeaderMiddleware>();
