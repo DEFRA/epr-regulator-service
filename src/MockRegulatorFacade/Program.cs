@@ -7,9 +7,9 @@ public static class Program
 {
     private static void Main()
     {
-        Console.WriteLine("MockRegulatorFacade starting on http://localhost:9092");
-
-        MockRegulatorFacadeServer.Start(port: 9092);
+        const int port = 7253;
+        Console.WriteLine($"MockRegulatorFacade starting on http://localhost:{port}");
+        MockRegulatorFacadeServer.Start(port: port);
 
         Console.WriteLine("Press any key to stop.");
         Console.ReadKey();
