@@ -13,7 +13,10 @@ public static class MockRegulatorFacadeServer
 {
     public static WireMockServer Start(int? port = null)
     {
-        var settings = new WireMockServerSettings();
+        var settings = new WireMockServerSettings
+        {
+            UseSSL = true
+        };
         if (port.HasValue)
         {
             settings.Port = port.Value;
