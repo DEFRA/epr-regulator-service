@@ -11,7 +11,7 @@ public static class FacadeApi
     {
         server.Given(Request.Create()
                 .UsingGet()
-                .WithPath("/user-accounts"))
+                .WithPath("/api/user-accounts"))
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
@@ -19,7 +19,7 @@ public static class FacadeApi
 
         server.Given(Request.Create()
                 .UsingPost()
-                .WithPath("/organisation-registration-submissions"))
+                .WithPath("/api/organisation-registration-submissions"))
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")

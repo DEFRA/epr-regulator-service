@@ -102,7 +102,7 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
     private void SetupFacadeMockRegistrationSubmissions(object[] data) =>
         FacadeServer.Given(Request.Create()
                 .UsingPost()
-                .WithPath("/organisation-registration-submissions"))
+                .WithPath("/api/organisation-registration-submissions"))
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
