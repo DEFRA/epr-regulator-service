@@ -33,35 +33,13 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
     }
 
     [Fact]
-    public async Task ShowsRegistrationSubmissionFromFacade()
+    public async Task ShowsAllOrganisationTypesFromFacade()
     {
         // Arrange
         SetupFacadeMockRegistrationSubmissions([
-            new
-            {
-                submissionId = "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
-                organisationId = "12345678-1234-1234-1234-123456789012",
-                organisationReference = "ORG-REF-99",
-                organisationName = "Acme Recycling Corp",
-                organisationType = "compliance",
-                applicationReferenceNumber = "REG-2024-XYZ",
-                registrationReferenceNumber = (string?)null,
-                submissionDate = "2024-03-15T14:30:00Z",
-                registrationYear = 2024,
-                nationId = 1,
-                submissionStatus = "Pending",
-                resubmissionStatus = (string?)null,
-                statusPendingDate = "2024-03-16T14:30:00Z",
-                isResubmission = false,
-                resubmissionFileId = (string?)null,
-                resubmissionDate = (string?)null,
-                registrationDate = (string?)null,
-                regulatorDecisionDate = (string?)null,
-                resubmissionDecisionDate = (string?)null,
-                regulatorCommentDate = (string?)null,
-                producerCommentDate = (string?)null,
-                regulatorUserId = (string?)null,
-            },
+            CreateSubmission(orgRef: "100001", orgName: "Compliance Scheme Ltd", orgType: "compliance", submissionDate: "2024-03-10T09:00:00Z"),
+            CreateSubmission(orgRef: "100002", orgName: "Large Producer Corp", orgType: "large", submissionDate: "2024-03-11T10:00:00Z"),
+            CreateSubmission(orgRef: "100003", orgName: "Small Producer Ltd", orgType: "small", submissionDate: "2024-03-12T11:00:00Z"),
         ]);
 
         // Act
@@ -69,21 +47,57 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
 
         // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-        var registrationSubmissionsPage =
-            new ManageRegistrationSubmissionsPageModel(await response.Content.ReadAsStringAsync());
+
+        var registrationSubmissionsPage = new ManageRegistrationSubmissionsPageModel(await response.Content.ReadAsStringAsync());
+
         var tableRows = registrationSubmissionsPage.GetTableRows().ToList();
-        tableRows.Should().HaveCount(1);
+        tableRows.Should().HaveCount(3);
 
         using (new AssertionScope())
         {
-            var firstRow = tableRows[0];
-            firstRow.OrganisationReference.Should().Be("ORG-REF-99");
-            firstRow.OrganisationName.Should().Be("Acme Recycling Corp");
-            firstRow.OrganisationType.Should().Contain("Compliance Scheme");
-            firstRow.ApplicationDate.Should().Contain("15 March 2024");
-            firstRow.Year.Should().Be("2024");
+            tableRows[0].OrganisationName.Should().Be("Compliance Scheme Ltd");
+            tableRows[0].OrganisationType.Should().Contain("Compliance Scheme");
+            tableRows[0].OrganisationReference.Should().Be("100001");
+            tableRows[0].ApplicationDate.Should().Contain("10 March 2024");
+
+            tableRows[1].OrganisationName.Should().Be("Large Producer Corp");
+            tableRows[1].OrganisationType.Should().Contain("Large Producer");
+            tableRows[1].OrganisationReference.Should().Be("100002");
+            tableRows[1].ApplicationDate.Should().Contain("11 March 2024");
+
+            tableRows[2].OrganisationName.Should().Be("Small Producer Ltd");
+            tableRows[2].OrganisationType.Should().Contain("Small Producer");
+            tableRows[2].OrganisationReference.Should().Be("100003");
+            tableRows[2].ApplicationDate.Should().Contain("12 March 2024");
         }
     }
+
+    private static object CreateSubmission(string orgRef, string orgName, string orgType, string submissionDate) =>
+        new
+        {
+            submissionId = Guid.NewGuid().ToString(),
+            organisationId = Guid.NewGuid().ToString(),
+            organisationReference = orgRef,
+            organisationName = orgName,
+            organisationType = orgType,
+            applicationReferenceNumber = $"REG-2024-{orgRef}",
+            registrationReferenceNumber = (string?)null,
+            submissionDate,
+            registrationYear = 2024,
+            nationId = 1,
+            submissionStatus = "Pending",
+            resubmissionStatus = (string?)null,
+            statusPendingDate = submissionDate,
+            isResubmission = false,
+            resubmissionFileId = (string?)null,
+            resubmissionDate = (string?)null,
+            registrationDate = (string?)null,
+            regulatorDecisionDate = (string?)null,
+            resubmissionDecisionDate = (string?)null,
+            regulatorCommentDate = (string?)null,
+            producerCommentDate = (string?)null,
+            regulatorUserId = (string?)null,
+        };
 
     private void SetupFacadeMockRegistrationSubmissions(object[] data) =>
         FacadeServer.Given(Request.Create()
