@@ -73,11 +73,25 @@ builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
 var app = builder.Build();
 
+// Redirect `/` to the homepage
+// Using a client-side redirect so that kudu healthcheck still receives 200-ok instead of 302
 app.Use(async (context, next) =>
 {
+    string redirectTo = $"{builder.Configuration.GetValue<string>("PATH_BASE")}/home";
     if (context.Request.Path == "/" && context.Request.PathBase == PathString.Empty)
     {
-        context.Response.StatusCode = StatusCodes.Status204NoContent;
+        context.Response.StatusCode = StatusCodes.Status200OK;
+        context.Response.ContentType = "text/html";
+        await context.Response.WriteAsync($"""
+            <!DOCTYPE html>
+            <html>
+            <head><title>Redirecting...</title></head>
+            <body>
+                <p>Redirecting to <a href="{redirectTo}">{redirectTo}</a></p>
+                <script>window.location.href = '{redirectTo}';</script>
+            </body>
+            </html>
+            """);
         return;
     }
 
