@@ -46,9 +46,16 @@ public class HomeController : RegulatorSessionBaseController
         return View();
     }
 
+    /// <summary>
+    /// Redirect /home to /
+    /// "home" used to be the index page route, redirect needs to be in place to support bookmarked / documented urls outside our control
+    /// </summary>
+    [HttpGet]
+    [Route("home")]
+    public async Task<IActionResult> Home() => RedirectToActionPermanent(nameof(LandingPage));
+
     [HttpGet]
     [ActionName("LandingPage")]
-    [Route(PagePath.Home)]
     [Route("")]
     public async Task<IActionResult> LandingPage()
     {
