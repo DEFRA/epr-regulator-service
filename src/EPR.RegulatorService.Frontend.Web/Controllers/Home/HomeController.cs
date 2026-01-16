@@ -48,6 +48,7 @@ public class HomeController : RegulatorSessionBaseController
 
     [HttpGet]
     [ActionName("LandingPage")]
+    [Route("")]
     [Route(PagePath.Home)]
     public async Task<IActionResult> LandingPage()
     {
