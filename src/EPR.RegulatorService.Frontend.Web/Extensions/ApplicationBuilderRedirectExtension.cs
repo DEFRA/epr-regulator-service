@@ -1,5 +1,8 @@
 namespace EPR.RegulatorService.Frontend.Web.Extensions;
 
+using System.Diagnostics.CodeAnalysis;
+
+[ExcludeFromCodeCoverage] // SonarQube is not spotting integration test `RootPath_RedirectsToRegulators()` that covers this
 public static class ApplicationBuilderRedirectExtension
 {
     /// <summary>
