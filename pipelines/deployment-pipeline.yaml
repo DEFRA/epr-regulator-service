@@ -5,6 +5,17 @@ appendCommitMessageToRunName: false
 name: 'Deploy code to $(serviceName)'
 
 parameters:
+- name: envToDeploy
+  displayName: 'Target Environment to deploy:    (select "development" for dev 1-14)'
+  default: development
+  type: string
+  values:
+    - development
+    - tst
+    - preprod
+    - preprod2
+    - prod
+    - DEV15
 - name: teamName
   displayName: 'Select a dev environment to deploy to:    (works only with "development" as target env)'
   default: 'DEV1'
@@ -24,19 +35,8 @@ parameters:
     - DEV13
     - DEV14
     - DEV16
-- name: envToDeploy
-  displayName: 'Target Environment to deploy:    (select "development" for dev 1-14)'
-  default: development
-  type: string
-  values:
-    - development
-    - tst
-    - preprod
-    - preprod2
-    - prod
-    - DEV15    
 - name: imageTag
-  displayName: Enter Tag for the Image (Docker tag) or Release name (Git repo tag)
+  displayName: Enter Container Tag to deploy
   default: ''
   type: string
 
