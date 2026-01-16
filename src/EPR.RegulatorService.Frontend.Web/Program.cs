@@ -99,7 +99,7 @@ app.UseMiddleware<AnalyticsCookieMiddleware>();
 app.MapControllerRoute(
     name: "Default",
     pattern: "{controller}/{action}",
-    defaults: new { controller = "Applications", action = "Applications" });
+    defaults: new { controller = "Home", action = "LandingPage" });
 
 app.MapRazorPages();
 
