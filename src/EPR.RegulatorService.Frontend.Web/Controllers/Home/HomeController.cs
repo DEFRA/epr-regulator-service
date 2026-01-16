@@ -49,6 +49,7 @@ public class HomeController : RegulatorSessionBaseController
     [HttpGet]
     [ActionName("LandingPage")]
     [Route(PagePath.Home)]
+    [Route("")]
     public async Task<IActionResult> LandingPage()
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
