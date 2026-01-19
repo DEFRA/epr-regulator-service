@@ -127,7 +127,7 @@
     <value>ID y sefydliad neu rif cyfeirnod</value>
   </data>
   <data name="SubTitle.OrganisationType" xml:space="preserve">
-    <value>Math o sefydliad</value>
+    <value>Math o cofrestru</value>
   </data>
   <data name="SubTitle.SubmissionStatus" xml:space="preserve">
     <value>Statws y cyflwyniad</value>
