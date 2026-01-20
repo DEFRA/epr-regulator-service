@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 using Enums;
 
-internal class RegistrationJourneyTypeConverter : JsonConverter<RegistrationJourneyType>
+public class RegistrationJourneyTypeConverter : JsonConverter<RegistrationJourneyType>
 {
     public override RegistrationJourneyType Read(ref Utf8JsonReader reader, Type typeToConvert,
         JsonSerializerOptions options)
