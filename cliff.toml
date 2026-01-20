@@ -94,4 +94,4 @@ sort_commits = "oldest"
 # Process submodules commits
 recurse_submodules = false
 
-tag_pattern = "[Rr]elease-*"
+tag_pattern = "([Rr]elease-*|v[0-9]+\\.[0-9]+(\\.[0-9]+)?)"
