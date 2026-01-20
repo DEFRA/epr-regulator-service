@@ -67,6 +67,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             ReferenceNumber = details.ApplicationReferenceNumber,
             RegistrationReferenceNumber = details.RegistrationReferenceNumber,
             OrganisationType = details.OrganisationType,
+            RegistrationJourneyType = details.RegistrationJourneyType,
             CompaniesHouseNumber = details.CompaniesHouseNumber,
             RegisteredNation = details.Country, // Assuming RegisteredNation corresponds to the Country
             NationId = details.NationId,
@@ -112,6 +113,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             ApplicationReferenceNumber = details.ReferenceNumber,
             RegistrationReferenceNumber = details.RegistrationReferenceNumber,
             OrganisationType = details.OrganisationType,
+            RegistrationJourneyType = details.RegistrationJourneyType,
             CompaniesHouseNumber = details.CompaniesHouseNumber,
             Country = details.RegisteredNation,
             SubmissionStatus = details.Status,
