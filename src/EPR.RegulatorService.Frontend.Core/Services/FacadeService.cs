@@ -58,7 +58,8 @@ public class FacadeService : IFacadeService
 
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
+        Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
     };
 
     private static readonly Action<ILogger, string, Exception?> _logFacadeServiceError =
