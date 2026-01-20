@@ -120,9 +120,11 @@ public partial class RegistrationSubmissionsController(
         {
             _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-            if (!GetOrRejectProvidedSubmissionId(submissionId.Value, out var model))
+            RegistrationSubmissionDetailsViewModel model;
+            if (!GetOrRejectProvidedSubmissionId(submissionId.Value, out model))
             {
-                model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+                var details = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+                model = details != null ? (RegistrationSubmissionDetailsViewModel)details : null;
             }
 
             if (model is null)
@@ -159,7 +161,8 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> SubmitOfflinePayment([FromForm] PaymentDetailsViewModel paymentDetailsViewModel, [FromRoute] Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        var details = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        RegistrationSubmissionDetailsViewModel model = details != null ? (RegistrationSubmissionDetailsViewModel)details : null;
 
         if (model is null)
         {
@@ -446,7 +449,8 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(Guid? submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        var model = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        var details = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        RegistrationSubmissionDetailsViewModel model = details != null ? (RegistrationSubmissionDetailsViewModel)details : null;
         if (model is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
@@ -474,7 +478,8 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> ConfirmOfflinePaymentSubmission(ConfirmOfflinePaymentSubmissionViewModel model)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-        RegistrationSubmissionDetailsViewModel regSubmissionDetails = await FetchFromSessionOrFacadeAsync(model.SubmissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        var details = await FetchFromSessionOrFacadeAsync(model.SubmissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+        RegistrationSubmissionDetailsViewModel regSubmissionDetails = details != null ? (RegistrationSubmissionDetailsViewModel)details : null;
         if (regSubmissionDetails is null)
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
