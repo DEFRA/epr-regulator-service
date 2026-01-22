@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Registrations.Title" xml:space="preserve">
-    <value>WManage organisation details submissions</value>
+    <value>Rheoli cyflwyniadau manylion sefydliadau</value>
   </data>
   <data name="EnvironmentAgency.Title" xml:space="preserve">
-    <value>WEnvironment Agency</value>
+    <value>Asiantaeth yr Amgylchedd</value>
   </data>
   <data name="Page.Registrations.Subtitle" xml:space="preserve">
-    <value>WThis list shows the current pending submissions and the latest actioned submissions. To view older submissions</value>
+    <value>Mae’r rhestr yma yn dangos y cyflwyniadau presennol sydd ar ddod a’r cyflwyniadau a weithredwyd dros y 6 mis diwethaf. I weld cyflwyniadau hŷn</value>
   </data>
   <data name="Banner.Success.RejectedSubmission" xml:space="preserve">
     <value>WYou have rejected {0}'s organisation details submission.</value>
