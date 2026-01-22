@@ -8,10 +8,11 @@ public abstract class IntegrationTestBase : IAsyncLifetime
     protected HttpClient Client { get; private set; } = null!;
     protected WireMockServer FacadeServer => Factory.FacadeServer;
 
-    public Task InitializeAsync()
+    public virtual Task InitializeAsync()
     {
         Factory = new RegulatorServiceWebApplicationFactory();
         Client = Factory.CreateClient();
+        FacadeServer.ResetMappings(); // Avoid mystery-guest of json based default mappings. Tests should define their own required data explicitly
         return Task.CompletedTask;
     }
 
