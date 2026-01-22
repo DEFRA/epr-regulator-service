@@ -56,14 +56,14 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
-    [DataRow(false)]
-    [DataRow(true)]
-    public async Task InvokeAsync_Returns_CorrectView_With_Model(bool isResubmission)
+    [DataRow(false, true, 0)]
+    [DataRow(true, false, 3)]
+    public async Task InvokeAsync_Returns_CorrectView_With_Model(bool isResubmission, bool isLateFeeApplicable, int numOfLateSubsidiaries)
     {
         // Arrange
         var complianceSchemeMembers = new List<CsoMembershipDetailsDto> {
-            new() { MemberId = "memberid1", MemberType = "large" },
-            new() { MemberId = "memberid2", MemberType = "small" }
+            new() { MemberId = "memberid1", MemberType = "large", IsLateFeeApplicable = isLateFeeApplicable, NumberOfLateSubsidiaries = numOfLateSubsidiaries },
+            new() { MemberId = "memberid2", MemberType = "small", IsLateFeeApplicable = isLateFeeApplicable, NumberOfLateSubsidiaries = numOfLateSubsidiaries }
         };
         _registrationSumissionDetailsViewModel.CSOMembershipDetails = complianceSchemeMembers;
         _registrationSumissionDetailsViewModel.IsResubmission = isResubmission;
@@ -84,6 +84,9 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
                 new() { MemberId = "memberid1", MemberType = "large", MemberFee = 2.00M },
                 new() { MemberId = "memberid2", MemberType = "small", MemberFee = 3.00M }
             ]
+        }).Callback<CompliancePaymentRequest>(m => {
+            m.ComplianceSchemeMembers.First().NumberOfLateSubsidiaries.Should().Be(numOfLateSubsidiaries);
+            m.ComplianceSchemeMembers.Last().NumberOfLateSubsidiaries.Should().Be(numOfLateSubsidiaries);
         });
 
         // Act
