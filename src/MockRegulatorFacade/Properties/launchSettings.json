@@ -4,7 +4,7 @@
     "MockRegulatorFacade": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:7253/user-accounts"
+      "launchUrl": "https://localhost:7253/api/user-accounts"
     }
   }
 }
