@@ -11,9 +11,12 @@ using WireMock.Settings;
 [ExcludeFromCodeCoverage]
 public static class MockRegulatorFacadeServer
 {
-    public static WireMockServer Start(int? port = null)
+    public static WireMockServer Start(int? port = null, bool useSsl = false)
     {
-        var settings = new WireMockServerSettings();
+        var settings = new WireMockServerSettings
+        {
+            UseSSL = useSsl
+        };
         if (port.HasValue)
         {
             settings.Port = port.Value;

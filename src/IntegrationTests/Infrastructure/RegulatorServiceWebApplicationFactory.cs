@@ -14,7 +14,7 @@ using WireMock.Server;
 
 public class RegulatorServiceWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly WireMockServer _facadeServer = MockRegulatorFacade.MockRegulatorFacadeServer.Start();
+    private readonly WireMockServer _facadeServer = MockRegulatorFacade.MockRegulatorFacadeServer.Start(useSsl: true);
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
