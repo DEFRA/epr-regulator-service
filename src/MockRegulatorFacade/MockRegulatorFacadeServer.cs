@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using FacadeApi;
 
+using WireMock.Logging;
 using WireMock.Net.StandAlone;
 using WireMock.Server;
 using WireMock.Settings;
@@ -15,7 +16,8 @@ public static class MockRegulatorFacadeServer
     {
         var settings = new WireMockServerSettings
         {
-            UseSSL = useSsl
+            UseSSL = useSsl,
+            Logger = new WireMockConsoleLogger()
         };
         if (port.HasValue)
         {
