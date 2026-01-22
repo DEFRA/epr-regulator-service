@@ -64,7 +64,9 @@ builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
 var app = builder.Build();
 
-app.UsePathBase(builder.Configuration.GetValue<string>("PATH_BASE"));
+string pathBase = builder.Configuration["PATH_BASE"];
+app.UseAbsoluteRedirect(path: "/", redirectTo: pathBase);
+app.UsePathBase(pathBase);
 
 if (app.Environment.IsDevelopment())
 {

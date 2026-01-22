@@ -14,7 +14,7 @@ using WireMock.Server;
 
 public class RegulatorServiceWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly WireMockServer _facadeServer = MockRegulatorFacade.MockRegulatorFacadeServer.Start();
+    private readonly WireMockServer _facadeServer = MockRegulatorFacade.MockRegulatorFacadeServer.Start(useSsl: true);
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -26,8 +26,8 @@ public class RegulatorServiceWebApplicationFactory : WebApplicationFactory<Progr
             });
         });
 
-        Environment.SetEnvironmentVariable("FacadeApi__BaseUrl", _facadeServer.Url!);
-        Environment.SetEnvironmentVariable("EprAuthorizationConfig__FacadeBaseUrl", _facadeServer.Url!);
+        Environment.SetEnvironmentVariable("FacadeApi__BaseUrl", $"{_facadeServer.Url}/api/");
+        Environment.SetEnvironmentVariable("EprAuthorizationConfig__FacadeBaseUrl", $"{_facadeServer.Url}/api/");
         Environment.SetEnvironmentVariable("UseLocalSession", "true");
 
         builder.ConfigureTestServices(services =>
