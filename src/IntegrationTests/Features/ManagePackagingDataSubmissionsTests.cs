@@ -10,9 +10,20 @@ using WireMock.ResponseBuilders;
 
 public class ManageRegistrationSubmissionsTests : IntegrationTestBase
 {
+    public override Task InitializeAsync()
+    {
+        base.InitializeAsync();
+        SetupUserAccountsMock();
+
+        return Task.CompletedTask;
+    }
+
     [Fact]
     public async Task ShowsCorrectHeadings()
     {
+        // Arrange
+        SetupFacadeMockRegistrationSubmissions([]);
+
         // Act
         var response = await Client.GetAsync("/regulators/manage-registration-submissions");
 
@@ -99,7 +110,8 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
             regulatorUserId = (string?)null,
         };
 
-    private void SetupFacadeMockRegistrationSubmissions(object[] data) =>
+    private void SetupFacadeMockRegistrationSubmissions(object[] data)
+    {
         FacadeServer.Given(Request.Create()
                 .UsingPost()
                 .WithPath("/api/organisation-registration-submissions"))
@@ -112,5 +124,40 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
                     currentPage = 1,
                     pageSize = 20,
                     totalItems = data.Length,
+                })));
+    }
+
+    private void SetupUserAccountsMock() =>
+        FacadeServer.Given(Request.Create()
+                .UsingGet()
+                .WithPath("/api/user-accounts"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBody(JsonSerializer.Serialize(new
+                {
+                    user = new
+                    {
+                        id = "62309b0e-535d-4f96-9a3b-9c759a3944f3",
+                        firstName = "Test",
+                        lastName = "User",
+                        email = "test.user@example.com",
+                        roleInOrganisation = "Admin",
+                        enrolmentStatus = "Approved",
+                        serviceRole = "Regulator Basic",
+                        service = "RegulatorService",
+                        serviceRoleId = 5,
+                        organisations = new[]
+                        {
+                            new
+                            {
+                                id = "C7646CAE-EB96-48AC-9427-0120199BE6EE",
+                                name = "Environment Agency",
+                                organisationRole = "Regulator",
+                                organisationType = "Regulators",
+                                nationId = 1,
+                            },
+                        },
+                    },
                 })));
 }
