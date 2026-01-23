@@ -139,30 +139,30 @@
     <value>WReason for rejection</value>
   </data>
   <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
-    <value>WResubmission required</value>
+    <value>Angen ailgyflwyniad</value>
   </data>
   <data name="SummaryList.Information.Text" xml:space="preserve">
     <value>Chaiff {0} ddim ailgyflwyno nes bod y cyflwyniad yma wedi’i weithredu.</value>
   </data>
   <data name="SummaryList.SubTitle.OrganisationDetails" xml:space="preserve">
-    <value>WOrganisation details</value>
+    <value>Manylion y sefydliad</value>
   </data>
   <data name="SummaryList.SubTitle.DeclaredBy" xml:space="preserve">
-    <value>WDeclared by</value>
+    <value>Wedi'i ddatgan gan</value>
   </data>
   <data name="SummaryList.SubTitle.BrandDetails" xml:space="preserve">
-    <value>WBrand details</value>
+    <value>Manylion y brand</value>
   </data>
   <data name="SummaryList.SubTitle.PartnerDetails" xml:space="preserve">
-    <value>WPartner details</value>
+    <value>Manylion y partneriaid</value>
   </data>
   <data name="SummaryList.FileDownload" xml:space="preserve">
     <value>WThis may take a few minutes. We will refresh the page automatically until it is done.</value>
   </data>
   <data name="SummaryList.FileDownloadWarning" xml:space="preserve">
-    <value>Do not close the page and do not refresh it yourself.</value>
+    <value>Peidiwch â chau'r tudalen a pheidiwch â'i adnewyddu eich hunan.</value>
   </data>
   <data name="SummaryList.SubmissionPeriodSuffix" xml:space="preserve">
-    <value>Wsubmission period</value>
+    <value>cyfnod y cyflwyniad</value>
   </data>
 </root>
