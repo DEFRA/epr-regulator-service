@@ -25,9 +25,9 @@
     <value>WIf you're still having issues, get help from our customer service team.</value>
   </data>
   <data name="PageNotFound.IncorrectWebAddressPasted" xml:space="preserve">
-    <value>WIf you pasted the web address, check you copied the entire address.</value>
+    <value>Os oeddech chi wedi gludo'r cyfeiriad gwe, gwnewch yn siŵr eich bod wedi copïo'r cyfeiriad cyfan.</value>
   </data>
   <data name="PageNotFound.IncorrectWebAddressTyped" xml:space="preserve">
-    <value>WIf you typed the web address, check it is correct.</value>
+    <value>Os oeddech chi wedi teipio'r cyfeiriad gwe, gwnewch yn siŵr ei fod yn gywir.</value>
   </data>
 </root>
