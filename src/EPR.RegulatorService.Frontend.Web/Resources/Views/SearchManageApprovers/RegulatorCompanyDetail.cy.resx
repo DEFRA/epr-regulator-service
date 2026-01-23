@@ -133,7 +133,7 @@
     <value>Heb ei restru</value>
   </data>
   <data name="link.CompaniesHouseRegister" xml:space="preserve">
-    <value>WView on Companies House register</value>
+    <value>Gweld ar gofrestr Tŷ’r Cwmnïau</value>
   </data>
   <data name="TabTitle.Contents" xml:space="preserve">
     <value>WContents</value>
@@ -151,7 +151,7 @@
     <value>Defnyddwyr sylfaenol</value>
   </data>
   <data name="TextAssist.Warning" xml:space="preserve">
-    <value>WWarning</value>
+    <value>Rhybudd</value>
   </data>
   <data name="Text.NoApprovedPerson" xml:space="preserve">
     <value>WThere is currently no approved person for this organisation</value>
@@ -169,15 +169,15 @@
     <value>WNominate new approved person</value>
   </data>
   <data name="Text.ComplianceScheme" xml:space="preserve">
-    <value>WCompliance scheme</value>
+    <value>Cynllun cydymffurfio/value>
   </data>
   <data name="Text.DirectProducer" xml:space="preserve">
-    <value>WDirect producer</value>
+    <value>Cynhyrchydd uniongyrchol</value>
   </data>
   <data name="Text.IndirectProducer" xml:space="preserve">
-    <value>WIndirect producer</value>
+    <value>Cynhyrchydd anuniongyrchol</value>
   </data>
   <data name="Page.Title" xml:space="preserve">
-    <value>WOrganisation Details</value>
+    <value>Manylion y sefydliad</value>
   </data>
 </root>
