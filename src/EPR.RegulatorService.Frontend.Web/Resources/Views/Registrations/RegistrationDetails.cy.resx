@@ -130,19 +130,19 @@
     <value>WGo back to all registrations</value>
   </data>
   <data name="SubTitle.CompaniesHouseNumber" xml:space="preserve">
-    <value>WCompanies House Number</value>
+    <value>Rhif Tŷ'r Cwmnïau</value>
   </data>
   <data name="SubTitle.PowerBI" xml:space="preserve">
-    <value>WPowerBI</value>
+    <value>PowerBI</value>
   </data>
   <data name="SubTitle.PowerBI.Text" xml:space="preserve">
     <value>I weld crynodeb o’r data pecynwaith ac unrhyw gyflwyniadau blaenorol, </value>
   </data>
   <data name="Link.ViewOnCompaniesHouseRegister" xml:space="preserve">
-    <value>WView on Companies House register</value>
+    <value>Gweld ar gofrestr Tŷ’r Cwmnïau</value>
   </data>
   <data name="SubTitle.RegisteredAddress" xml:space="preserve">
-    <value>WRegistered address</value>
+    <value>Cyfeiriad cofrestredig</value>
   </data>
   <data name="SubTitle.HeadOfficeAddress" xml:space="preserve">
     <value>WHead office address</value>
@@ -151,6 +151,6 @@
     <value>I weld crynodeb o fanylion y sefydliad ac unrhyw gyflwyniadau blaenorol,</value>
   </data>
   <data name="RegistrationOrganisationDetails.Title" xml:space="preserve">
-    <value>WManage organisation details submissions</value>
+    <value>Rheoli cyflwyniadau manylion sefydliadau</value>
   </data>
 </root>
