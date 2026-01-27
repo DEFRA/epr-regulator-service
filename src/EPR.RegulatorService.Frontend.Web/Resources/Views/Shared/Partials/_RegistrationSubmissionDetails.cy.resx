@@ -136,7 +136,7 @@
     <value>Ebost</value>
   </data>
   <data name="SummaryList.SubTitle.ReasonForRejection" xml:space="preserve">
-    <value>WReason for rejection</value>
+    <value>Y rheswm dros wrthod</value>
   </data>
   <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
     <value>Angen ailgyflwyniad</value>
@@ -157,7 +157,7 @@
     <value>Manylion y partneriaid</value>
   </data>
   <data name="SummaryList.FileDownload" xml:space="preserve">
-    <value>WThis may take a few minutes. We will refresh the page automatically until it is done.</value>
+    <value>Gallai hyn gymryd ychydig funudau. Byddwn ni'n adnewyddu'r tudalen yn awtomatig nes bod hynny wedi'i wneud.</value>
   </data>
   <data name="SummaryList.FileDownloadWarning" xml:space="preserve">
     <value>Peidiwch â chau'r tudalen a pheidiwch â'i adnewyddu eich hunan.</value>
