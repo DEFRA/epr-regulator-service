@@ -279,6 +279,24 @@
   <data name="RegistrationSubmissionOrganisationType.SmallProducer" xml:space="preserve">
     <value>Small Producer</value>
   </data>
+  <data name="RegistrationJourneyType.NotSpecified" xml:space="preserve">
+    <value>Not specified</value>
+  </data>
+  <data name="RegistrationJourneyType.CsoLegacy" xml:space="preserve">
+    <value>Compliance scheme</value>
+  </data>
+  <data name="RegistrationJourneyType.CsoLargeProducer" xml:space="preserve">
+    <value>Compliance scheme: large producer</value>
+  </data>
+  <data name="RegistrationJourneyType.CsoSmallProducer" xml:space="preserve">
+    <value>Compliance scheme: small producer</value>
+  </data>
+  <data name="RegistrationJourneyType.DirectLargeProducer" xml:space="preserve">
+    <value>Large producer</value>
+  </data>
+  <data name="RegistrationJourneyType.DirectSmallProducer" xml:space="preserve">
+    <value>Small producer</value>
+  </data>
   <data name="RegistrationSubmissionStatus.Cancelled" xml:space="preserve">
     <value>Cancelled</value>
   </data>
