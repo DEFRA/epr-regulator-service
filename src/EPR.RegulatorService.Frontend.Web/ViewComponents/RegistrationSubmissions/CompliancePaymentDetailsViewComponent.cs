@@ -32,8 +32,7 @@ public class CompliancePaymentDetailsViewComponent(
                 {
                     ApplicationReferenceNumber = viewModel.ReferenceNumber,
                     Regulator = viewModel.NationCode,
-                    ComplianceSchemeMembers =
-                        viewModel.CSOMembershipDetails.Select(x => (ComplianceSchemeMemberRequest)x),
+                    ComplianceSchemeMembers = viewModel.CSOMembershipDetails.Select(x => (ComplianceSchemeMemberRequest)x),
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                         ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.GetValueOrDefault()
                         : viewModel.SubmissionDetails.TimeAndDateOfSubmission),

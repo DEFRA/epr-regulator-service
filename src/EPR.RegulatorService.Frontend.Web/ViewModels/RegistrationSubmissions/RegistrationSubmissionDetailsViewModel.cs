@@ -19,6 +19,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
     public string? RegistrationReferenceNumber { get; set; }
 
     public RegistrationSubmissionOrganisationType OrganisationType { get; set; }
+
     public RegistrationJourneyType RegistrationJourneyType { get; set; }
 
     public BusinessAddress BusinessAddress { get; set; }
@@ -78,8 +79,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             RegistrationYear = details.RelevantYear,
             RegulatorComments = details.RegulatorComments,
             ProducerComments = details.ProducerComments,
-            BusinessAddress =
-                new BusinessAddress
+            BusinessAddress = new BusinessAddress
                 {
                     BuildingName = details.BuildingName,
                     SubBuildingName = details.SubBuildingName,
@@ -107,8 +107,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
         {
             SubmissionId = details.SubmissionId,
             OrganisationId = details.OrganisationId,
-            OrganisationReference =
-                details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
+            OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
             OrganisationName = details.OrganisationName,
             ApplicationReferenceNumber = details.ReferenceNumber,
             RegistrationReferenceNumber = details.RegistrationReferenceNumber,
