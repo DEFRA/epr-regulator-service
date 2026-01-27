@@ -20,6 +20,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             ApplicationReferenceNumber = "APPREF123",
             RegistrationReferenceNumber = "REGREF456",
             OrganisationType = RegistrationSubmissionOrganisationType.large,
+            RegistrationJourneyType = RegistrationJourneyType.CsoLegacy,
             CompaniesHouseNumber = "CH123456",
             SubmissionStatus = RegistrationSubmissionStatus.Pending,
             RegistrationDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
@@ -43,6 +44,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.AreEqual(details.ApplicationReferenceNumber, viewModel.ReferenceNumber);
         Assert.AreEqual(details.RegistrationReferenceNumber, viewModel.RegistrationReferenceNumber);
         Assert.AreEqual(details.OrganisationType, viewModel.OrganisationType);
+        Assert.AreEqual(details.RegistrationJourneyType, viewModel.RegistrationJourneyType);
         Assert.AreEqual(details.CompaniesHouseNumber, viewModel.CompaniesHouseNumber);
         Assert.AreEqual(details.Country, viewModel.RegisteredNation);
         Assert.AreEqual(details.SubmissionStatus, viewModel.Status);
@@ -71,6 +73,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             ReferenceNumber = "APP123",
             RegistrationReferenceNumber = "REG123",
             OrganisationType = RegistrationSubmissionOrganisationType.small,
+            RegistrationJourneyType = RegistrationJourneyType.CsoLegacy,
             CompaniesHouseNumber = "CH987654",
             RegisteredNation = "Test Country",
             PowerBiLogin = "testlogin@org.com",
@@ -96,6 +99,7 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.AreEqual("APP123", viewModel.ReferenceNumber);
         Assert.AreEqual("REG123", viewModel.RegistrationReferenceNumber);
         Assert.AreEqual(RegistrationSubmissionOrganisationType.small, viewModel.OrganisationType);
+        Assert.AreEqual(RegistrationJourneyType.CsoLegacy, viewModel.RegistrationJourneyType);
         Assert.AreEqual("CH987654", viewModel.CompaniesHouseNumber);
         Assert.AreEqual("Test Country", viewModel.RegisteredNation);
         Assert.AreEqual("testlogin@org.com", viewModel.PowerBiLogin);
@@ -125,6 +129,7 @@ public class RegistrationSubmissionDetailsViewModelTests
             ApplicationReferenceNumber = string.Empty,
             RegistrationReferenceNumber = string.Empty,
             OrganisationType = RegistrationSubmissionOrganisationType.large,
+            RegistrationJourneyType = RegistrationJourneyType.CsoLegacy,
             CompaniesHouseNumber = "CH123456",
             SubmissionStatus = RegistrationSubmissionStatus.Cancelled,
             SubmissionDate = new DateTime(2023, 5, 10, 0, 0, 0, DateTimeKind.Unspecified),

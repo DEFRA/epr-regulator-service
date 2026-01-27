@@ -2001,6 +2001,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             Assert.AreEqual(expectedViewModel.ReferenceNumber, model.ReferenceNumber);
             Assert.AreEqual(expectedViewModel.RegistrationReferenceNumber, model.RegistrationReferenceNumber);
             Assert.AreEqual(expectedViewModel.OrganisationType, model.OrganisationType);
+            Assert.AreEqual(expectedViewModel.RegistrationJourneyType, model.RegistrationJourneyType);
 
             // Assert SubmissionDetailsViewModel properties
             Assert.AreEqual(expectedViewModel.SubmissionDetails.Status, model.SubmissionDetails.Status);
