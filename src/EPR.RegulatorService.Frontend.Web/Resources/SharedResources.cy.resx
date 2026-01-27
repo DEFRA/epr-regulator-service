@@ -267,6 +267,24 @@
   <data name="RegistrationSubmissionOrganisationType.SmallProducer" xml:space="preserve">
     <value>Cynhyrchydd bach</value>
   </data>
+  <data name="RegistrationJourneyType.NotSpecified" xml:space="preserve">
+    <value>Heb ei nodi</value>
+  </data>
+  <data name="RegistrationJourneyType.CsoLegacy" xml:space="preserve">
+    <value>Cynllun cydymffurfio</value>
+  </data>
+  <data name="RegistrationJourneyType.CsoLargeProducer" xml:space="preserve">
+    <value>Cynllun cydymffurfio: cynhyrchydd mawr</value>
+  </data>
+  <data name="RegistrationJourneyType.CsoSmallProducer" xml:space="preserve">
+    <value>Cynllun cydymffurfio: cynhyrchydd bach</value>
+  </data>
+  <data name="RegistrationJourneyType.DirectLargeProducer" xml:space="preserve">
+    <value>Cynhyrchydd mawr</value>
+  </data>
+  <data name="RegistrationJourneyType.DirectSmallProducer" xml:space="preserve">
+    <value>Cynhyrchydd bach</value>
+  </data>
   <data name="RegistrationSubmissionStatus.Cancelled" xml:space="preserve">
     <value>Wedi'i ganslo</value>
   </data>
