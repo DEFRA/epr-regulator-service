@@ -169,7 +169,7 @@
     <value>Yn ôl i’r hafan</value>
   </data>
   <data name="Custom.GoToHome" xml:space="preserve">
-    <value>WGo to home</value>
+    <value>Ewch i'r cartref</value>
   </data>
   <data name="Link.LogIntoPowerBI" xml:space="preserve">
     <value>mewngofnodwch i Power BI</value>
@@ -253,7 +253,7 @@
     <value>Heb ei restru</value>
   </data>
   <data name="CharacterLimit.NoJavaScript" xml:space="preserve">
-    <value>WYou can enter up to 500 characters</value>
+    <value>Cewch roi hyd at 500 o gymeriadau</value>
   </data>
   <data name="RegistrationSubmissionOrganisationType.ComplianceScheme" xml:space="preserve">
     <value>Cynllun cydymffurfio</value>
