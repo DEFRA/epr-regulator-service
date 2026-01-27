@@ -127,7 +127,7 @@
     <value>ID y sefydliad</value>
   </data>
   <data name="Link.BackToRegistrations" xml:space="preserve">
-    <value>WGo back to all registrations</value>
+    <value>Yn ôl i bob cofrestriad</value>
   </data>
   <data name="SubTitle.CompaniesHouseNumber" xml:space="preserve">
     <value>Rhif Tŷ'r Cwmnïau</value>
@@ -145,7 +145,7 @@
     <value>Cyfeiriad cofrestredig</value>
   </data>
   <data name="SubTitle.HeadOfficeAddress" xml:space="preserve">
-    <value>WHead office address</value>
+    <value>Cyfeiriad y brif swyddfa</value>
   </data>
   <data name="SubTitle.PowerBIOrg.Text" xml:space="preserve">
     <value>I weld crynodeb o fanylion y sefydliad ac unrhyw gyflwyniadau blaenorol,</value>
