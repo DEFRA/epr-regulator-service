@@ -136,7 +136,7 @@
     <value>Gweld ar gofrestr Tŷ’r Cwmnïau</value>
   </data>
   <data name="TabTitle.Contents" xml:space="preserve">
-    <value>WContents</value>
+    <value>Cynnwys</value>
   </data>
   <data name="Tab.ApprovedPerson" xml:space="preserve">
     <value>Person a gymeradwywyd</value>
@@ -154,7 +154,7 @@
     <value>Rhybudd</value>
   </data>
   <data name="Text.NoApprovedPerson" xml:space="preserve">
-    <value>WThere is currently no approved person for this organisation</value>
+    <value>Does dim person a gymeradwywyd ar gyfer y sefydliad yma ar hyn o bryd</value>
   </data>
   <data name="Text.NoDelegatedPersons" xml:space="preserve">
     <value>Does dim personau a ddirprwywyd ar gyfer y sefydliad yma</value>
@@ -166,7 +166,7 @@
     <value>Does dim defnyddwyr sylfaenol ar gyfer y sefydliad yma</value>
   </data>
   <data name="Button.NominateNewApprovedPerson" xml:space="preserve">
-    <value>WNominate new approved person</value>
+    <value>Enwebu person newydd a gymeradwywyd</value>
   </data>
   <data name="Text.ComplianceScheme" xml:space="preserve">
     <value>Cynllun cydymffurfio/value>
