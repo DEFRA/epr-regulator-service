@@ -136,7 +136,7 @@
     <value>Ebost</value>
   </data>
   <data name="SummaryList.SubTitle.ReasonForRejection" xml:space="preserve">
-    <value>WReason for rejection</value>
+    <value>Y rheswm dros wrthod</value>
   </data>
   <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
     <value>Angen ailgyflwyniad</value>
@@ -157,7 +157,7 @@
     <value>Manylion y partneriaid</value>
   </data>
   <data name="SummaryList.SubTitle.PreviousReasonForRejection" xml:space="preserve">
-    <value>WReason for rejection of previous submission</value>
+    <value>Y rheswm dros wrthod y cyflwyniad blaenorol</value>
   </data>
   <data name="SummaryList.ReSubmissionPeriodSuffix" xml:space="preserve">
     <value>cyfnod y cyflwyniad</value>
