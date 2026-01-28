@@ -21,6 +21,28 @@ body = """
     {% endfor %}
 {% endfor %}
 """
+# Footer template rendered once at the end of the changelog.
+footer = """
+{% set ticket_urls = [] -%}
+{% for release in releases -%}
+    {% for commit in release.commits -%}
+        {% for link in commit.links -%}
+            {% if link.href is containing("browse/SMAL-") -%}
+                {% set_global ticket_urls = ticket_urls | concat(with=[link.href]) -%}
+            {% endif -%}
+        {% endfor -%}
+    {% endfor -%}
+{% endfor -%}
+{% set unique_tickets = ticket_urls | unique | sort -%}
+{% if unique_tickets | length > 0 %}
+---
+
+### 🎫 Related Tickets
+{% for url in unique_tickets -%}
+- {{ url }}
+{% endfor -%}
+{% endif -%}
+"""
 # Remove leading and trailing whitespaces from the changelog's body.
 trim = true
 # Render body even when there are no releases to process.
