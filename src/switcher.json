@@ -1,0 +1,19 @@
+{
+  "solution": "Epr.RegulatorService.sln",
+  "solutionFolder": null,
+  "mappings": {
+    "EPR.Common.Authorization": "../../epr-common/src/EPR.Common/EPR.Common.Authorization/EPR.Common.Authorization.csproj"
+  },
+  "restore": [
+    {
+      "name": "EPR.RegulatorService.Frontend.Core",
+      "packages": [
+        {
+          "packageName": "EPR.Common.Authorization",
+          "version": "1.0.22"
+        }
+      ]
+    }
+  ],
+  "removeProjects": false
+}

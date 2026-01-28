@@ -24,7 +24,18 @@ This application supports regulatory officials with different access levels (adm
 
 ### NuGet dependencies
 
-This project depends on private nuget feed with a packaged version of [epr-common](https://github.com/DEFRA/epr-common). If you have access to the private feed then you can use [The Azure Artifacts Credential Provider](https://github.com/microsoft/artifacts-credprovider). If you don't have access to the private feed you can clone epr-common and update the references to point to that.
+This project depends on private nuget feed with a packaged version of [epr-common](https://github.com/DEFRA/epr-common).
+
+If you have access to the private feed then you can use [The Azure Artifacts Credential Provider](https://github.com/microsoft/artifacts-credprovider).
+
+If you don't have access to the private feed you can clone [epr-common](https://github.com/DEFRA/epr-common) and use [DNT](https://github.com/RicoSuter/DNT?tab=readme-ov-file#switch-to-projects) to switch from NuGet package references to local project references:
+
+```sh
+cd src
+dnt switch-to-projects   # switch to local project references
+```
+
+The mappings are defined in [`src/switcher.json`](src/switcher.json).
 
 ### Redis
 
