@@ -138,6 +138,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 RegistrationReferenceNumber = "REF001",
                 ReferenceNumber = "REF002",
                 OrganisationType = RegistrationSubmissionOrganisationType.large,
+                RegistrationJourneyType = RegistrationJourneyType.CsoLegacy,
                 BusinessAddress = new BusinessAddress
                 {
                     BuildingName = string.Empty,

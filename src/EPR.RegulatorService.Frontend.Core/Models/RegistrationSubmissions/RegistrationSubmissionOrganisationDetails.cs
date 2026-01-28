@@ -13,7 +13,7 @@ using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCo
 /// the registrations/get-organisations endpoint
 /// </summary>
 [ExcludeFromCodeCoverage]
-[DebuggerDisplay("{OrganisationName}, {OrganisationReference}, {RelevantYear}, {SubmissionStatus},{OrganisationType}")]
+[DebuggerDisplay($"{{OrganisationName}}, {{OrganisationReference}}, {{RelevantYear}}, {{SubmissionStatus}},{{OrganisationType}},{{RegistrationJourneyType}}")]
 public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<RegistrationSubmissionOrganisationDetails?>
 {
     public Guid SubmissionId { get; set; }
@@ -24,7 +24,8 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionOrganisationType OrganisationType { get; set; }
-
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public RegistrationJourneyType RegistrationJourneyType { get; set; }
     public int NationId { get; set; }
 
     public string NationCode { get; set; }
@@ -87,6 +88,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 OrganisationName = response.OrganisationName,
                 OrganisationReference = response.OrganisationReference,
                 OrganisationType = response.OrganisationType,
+                RegistrationJourneyType = response.RegistrationJourneyType,
                 ApplicationReferenceNumber = response.ApplicationReferenceNumber,
                 RegistrationReferenceNumber = response.RegistrationReferenceNumber,
                 SubmissionDate = response.SubmissionDate,
@@ -126,6 +128,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             OrganisationReference = response.OrganisationReference,
             OrganisationName = response.OrganisationName,
             OrganisationType = response.OrganisationType,
+            RegistrationJourneyType = response.RegistrationJourneyType,
             NationId = response.NationId,
             NationCode = response.NationCode,
             RelevantYear = response.RelevantYear,

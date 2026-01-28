@@ -69,7 +69,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 return false;
             }
 
-            viewModel = sessionModelWhichMustMatchSession;
+            viewModel = (RegistrationSubmissionDetailsViewModel)sessionModelWhichMustMatchSession;
             return true;
         }
 
