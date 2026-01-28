@@ -37,7 +37,6 @@ footer = """
 {% endfor -%}
 {% set unique_tickets = ticket_urls | unique | sort -%}
 {% if unique_tickets | length > 0 %}
----
 
 ## 🎫 Related Tickets
 {% for url in unique_tickets -%}
@@ -99,7 +98,7 @@ commit_parsers = [
     { body = ".*security", group = "<!-- 8 -->🛡️ Security" },
     { message = "^revert", group = "<!-- 9 -->◀️ Revert" },
     # Include non-conventional commits only if they have a JIRA ticket
-    { message = "eaflood\\.atlassian\\.net/browse/[A-Z]+-[0-9]+", group = "<!-- 10 -->💼 Other" },
+    { message = "eaflood\\.atlassian\\.net/browse/[A-Z]+-[0-9]+", group = "<!-- 99 -->📋 Additional changes" },
     # Skip everything else (no semantic prefix and no ticket)
     { message = ".*", skip = true },
 ]
