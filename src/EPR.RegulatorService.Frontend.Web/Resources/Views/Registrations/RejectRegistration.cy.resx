@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="RejectSubmission.Title" xml:space="preserve">
-    <value>WReject Submission</value>
+    <value>Gwrthod y cyflwyniad</value>
   </data>
   <data name="RejectionReason.Title" xml:space="preserve">
-    <value>WWhy are you rejecting this submission?</value>
+    <value>Pam rydych chi'n gwrthod y cyflwyniad yma?</value>
   </data>
   <data name="Description.Title" xml:space="preserve">
-    <value>WWe’ll use this information in an email to the organisation's approved and delegated people. It will also be added to the submission details.</value>
+    <value>Byddwn ni'n defnyddio'r wybodaeth yma mewn neges ebost at y bobl a gymeradwywyd a'r bobl a ddirprwywyd yn y sefydliad. Bydd hefyd yn cael ei hychwanegu at fanylion y cyflwyniad.</value>
   </data>
   <data name="Error.RejectionReason" xml:space="preserve">
-    <value>WWEnter why you’re rejecting this submission</value>
+    <value>Rhowch pam rydych chi'n gwrthod y cyflwyniad yma</value>
   </data>
   <data name="Error.RejectionReasonTooLong" xml:space="preserve">
-    <value>WYour summary must be 500 characters or less</value>
+    <value>Rhaid i'ch crynodeb fod yn 500 neu lai o gymeriadau</value>
   </data>
 </root>

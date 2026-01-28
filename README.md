@@ -50,7 +50,7 @@ The urls for these are configurable. Set the urls for dev azure in user-secrets 
 To override the url to use locally run facade service(s) use the alternate [launchProfile](src/EPR.RegulatorService.Frontend.Web/Properties/launchSettings.json) which can be selected from the IDE menu or with dotnet run as follows:
 
 ```sh
-dotnet run --launchProfile "local-facade" --project src/EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj
+dotnet run --launch-profile "local-facade" --project src/EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj
 ```
 
 ### Configuration

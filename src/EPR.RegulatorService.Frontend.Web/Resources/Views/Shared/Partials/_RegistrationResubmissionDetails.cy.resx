@@ -118,48 +118,48 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SummaryList.Title" xml:space="preserve">
-    <value>WResubmission details</value>
+    <value>Manylion yr Ailgyflwyniad</value>
   </data>
   <data name="SummaryList.SubTitle.TimeAndDateOfSubmission" xml:space="preserve">
-    <value>WTime and date of resubmission</value>
+    <value>Amser a dyddiad ailgyflwyno</value>
   </data>
   <data name="SummaryList.SubTitle.SubmittedBy" xml:space="preserve">
-    <value>WResubmitted by</value>
+    <value>Wedi'i ailgyflwyno gan</value>
   </data>
   <data name="SummaryList.SubTitle.AccountRole" xml:space="preserve">
-    <value>WAccount role</value>
+    <value>Rôl yn y cyfrif</value>
   </data>
   <data name="SummaryList.SubTitle.Telephone" xml:space="preserve">
-    <value>WTelephone</value>
+    <value>Ffôn</value>
   </data>
   <data name="SummaryList.SubTitle.Email" xml:space="preserve">
-    <value>WEmail</value>
+    <value>Ebost</value>
   </data>
   <data name="SummaryList.SubTitle.ReasonForRejection" xml:space="preserve">
-    <value>WReason for rejection</value>
+    <value>Y rheswm dros wrthod</value>
   </data>
   <data name="SummaryList.SubTitle.ResubmissionRequired" xml:space="preserve">
-    <value>WResubmission required</value>
+    <value>Angen ailgyflwyniad</value>
   </data>
   <data name="SummaryList.Information.Text" xml:space="preserve">
-    <value>W{0} cannot resubmit until this submission has been actioned.</value>
+    <value>Chaiff {0} ddim ailgyflwyno nes bod y cyflwyniad yma wedi’i weithredu.</value>
   </data>
   <data name="SummaryList.SubTitle.OrganisationDetails" xml:space="preserve">
-    <value>WOrganisation details</value>
+    <value>Manylion y sefydliad</value>
   </data>
   <data name="SummaryList.SubTitle.DeclaredBy" xml:space="preserve">
-    <value>WDeclared by</value>
+    <value>Wedi'i ddatgan gan</value>
   </data>
   <data name="SummaryList.SubTitle.BrandDetails" xml:space="preserve">
-    <value>WBrand details</value>
+    <value>Manylion y brand</value>
   </data>
   <data name="SummaryList.SubTitle.PartnerDetails" xml:space="preserve">
-    <value>WPartnerDetails</value>
+    <value>Manylion y partneriaid</value>
   </data>
   <data name="SummaryList.SubTitle.PreviousReasonForRejection" xml:space="preserve">
-    <value>WReason for rejection of previous submission</value>
+    <value>Y rheswm dros wrthod y cyflwyniad blaenorol</value>
   </data>
   <data name="SummaryList.ReSubmissionPeriodSuffix" xml:space="preserve">
-    <value>Wsubmission period</value>
+    <value>cyfnod y cyflwyniad</value>
   </data>
 </root>

@@ -133,10 +133,10 @@
     <value>Heb ei restru</value>
   </data>
   <data name="link.CompaniesHouseRegister" xml:space="preserve">
-    <value>WView on Companies House register</value>
+    <value>Gweld ar gofrestr Tŷ’r Cwmnïau</value>
   </data>
   <data name="TabTitle.Contents" xml:space="preserve">
-    <value>WContents</value>
+    <value>Cynnwys</value>
   </data>
   <data name="Tab.ApprovedPerson" xml:space="preserve">
     <value>Person a gymeradwywyd</value>
@@ -151,10 +151,10 @@
     <value>Defnyddwyr sylfaenol</value>
   </data>
   <data name="TextAssist.Warning" xml:space="preserve">
-    <value>WWarning</value>
+    <value>Rhybudd</value>
   </data>
   <data name="Text.NoApprovedPerson" xml:space="preserve">
-    <value>WThere is currently no approved person for this organisation</value>
+    <value>Does dim person a gymeradwywyd ar gyfer y sefydliad yma ar hyn o bryd</value>
   </data>
   <data name="Text.NoDelegatedPersons" xml:space="preserve">
     <value>Does dim personau a ddirprwywyd ar gyfer y sefydliad yma</value>
@@ -166,18 +166,18 @@
     <value>Does dim defnyddwyr sylfaenol ar gyfer y sefydliad yma</value>
   </data>
   <data name="Button.NominateNewApprovedPerson" xml:space="preserve">
-    <value>WNominate new approved person</value>
+    <value>Enwebu person newydd a gymeradwywyd</value>
   </data>
   <data name="Text.ComplianceScheme" xml:space="preserve">
-    <value>WCompliance scheme</value>
+    <value>Cynllun cydymffurfio</value>
   </data>
   <data name="Text.DirectProducer" xml:space="preserve">
-    <value>WDirect producer</value>
+    <value>Cynhyrchydd uniongyrchol</value>
   </data>
   <data name="Text.IndirectProducer" xml:space="preserve">
-    <value>WIndirect producer</value>
+    <value>Cynhyrchydd anuniongyrchol</value>
   </data>
   <data name="Page.Title" xml:space="preserve">
-    <value>WOrganisation Details</value>
+    <value>Manylion y sefydliad</value>
   </data>
 </root>
