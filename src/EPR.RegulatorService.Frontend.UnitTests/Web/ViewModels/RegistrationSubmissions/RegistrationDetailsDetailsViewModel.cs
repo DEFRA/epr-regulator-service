@@ -154,4 +154,60 @@ public class RegistrationSubmissionDetailsViewModelTests
         Assert.IsNull(viewModel.BusinessAddress.BuildingNumber);
         Assert.AreEqual("Test Street", viewModel.BusinessAddress.Street);
     }
+
+    [TestMethod]
+    public void ImplicitOperator_ShouldReturnNull_WhenRegistrationSubmissionOrganisationDetailsIsNull()
+    {
+        // Arrange
+        RegistrationSubmissionOrganisationDetails details = null;
+
+        // Act
+        RegistrationSubmissionDetailsViewModel viewModel = details;
+
+        // Assert
+        Assert.IsNull(viewModel);
+    }
+
+    [TestMethod]
+    public void ImplicitOperator_ShouldReturnNull_WhenRegistrationSubmissionDetailsViewModelIsNull()
+    {
+        // Arrange
+        RegistrationSubmissionDetailsViewModel viewModel = null;
+
+        // Act
+        RegistrationSubmissionOrganisationDetails details = viewModel;
+
+        // Assert
+        Assert.IsNull(details);
+    }
+
+    [TestMethod]
+    public void ImplicitOperator_ShouldHandleNullOrganisationReference()
+    {
+        // Arrange
+        var details = new RegistrationSubmissionOrganisationDetails
+        {
+            OrganisationId = Guid.NewGuid(),
+            OrganisationReference = null,
+            OrganisationName = "Test Organisation",
+            ApplicationReferenceNumber = "APPREF123",
+            RegistrationReferenceNumber = "REGREF456",
+            OrganisationType = RegistrationSubmissionOrganisationType.large,
+            RegistrationJourneyType = RegistrationJourneyType.CsoLegacy,
+            CompaniesHouseNumber = "CH123456",
+            SubmissionStatus = RegistrationSubmissionStatus.Pending,
+            RegistrationDate = new DateTime(2023, 4, 23, 0, 0, 0, DateTimeKind.Unspecified),
+            Street = "Test Street",
+            Town = "Test Town",
+            County = "Test County",
+            Country = "Test Country",
+            Postcode = "TC1234",
+        };
+
+        // Act
+        RegistrationSubmissionDetailsViewModel viewModel = details;
+
+        // Assert
+        Assert.AreEqual(string.Empty, viewModel.OrganisationReference);
+    }
 }

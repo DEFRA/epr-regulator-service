@@ -63,14 +63,16 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
         {
             SubmissionId = details.SubmissionId,
             OrganisationId = details.OrganisationId,
-            OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
+            OrganisationReference = string.IsNullOrEmpty(details.OrganisationReference)
+                ? details.OrganisationReference ?? string.Empty
+                : details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
             OrganisationName = details.OrganisationName,
             ReferenceNumber = details.ApplicationReferenceNumber,
             RegistrationReferenceNumber = details.RegistrationReferenceNumber,
             OrganisationType = details.OrganisationType,
             RegistrationJourneyType = details.RegistrationJourneyType,
             CompaniesHouseNumber = details.CompaniesHouseNumber,
-            RegisteredNation = details.Country, // Assuming RegisteredNation corresponds to the Country
+            RegisteredNation = details.Country,
             NationId = details.NationId,
             NationCode = details.NationCode,
             Status = details.SubmissionStatus,
@@ -107,7 +109,9 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
         {
             SubmissionId = details.SubmissionId,
             OrganisationId = details.OrganisationId,
-            OrganisationReference = details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
+            OrganisationReference = string.IsNullOrEmpty(details.OrganisationReference)
+                ? details.OrganisationReference ?? string.Empty
+                : details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
             OrganisationName = details.OrganisationName,
             ApplicationReferenceNumber = details.ReferenceNumber,
             RegistrationReferenceNumber = details.RegistrationReferenceNumber,
