@@ -76,7 +76,7 @@ public class JourneyAccessCheckerMiddlewareTests
 
     private class TestRoutingFeature : IRoutingFeature
     {
-        public RouteData RouteData { get; set; } = new RouteData();
+        public RouteData? RouteData { get; set; } = new RouteData();
     }
 
     [TestMethod]
