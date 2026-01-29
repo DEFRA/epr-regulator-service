@@ -5,6 +5,7 @@ using AwesomeAssertions.Execution;
 using Infrastructure;
 using PageModels;
 
+[Collection("Sequential")] // Shared mock facade can't be used safely in parallel
 public class ManageRegistrationSubmissionsTests : IntegrationTestBase
 {
     [Fact]
