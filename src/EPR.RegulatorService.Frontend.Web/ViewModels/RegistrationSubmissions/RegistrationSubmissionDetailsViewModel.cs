@@ -56,16 +56,22 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
     public string ResubmissionFileId { get; set; }
 
     // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
-    public static implicit operator
-        RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details) => details is null
-        ? null
-        : new RegistrationSubmissionDetailsViewModel
+    public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details)
+    {
+        if (details is null)
+        {
+            return null;
+        }
+
+        var organisationReference = string.IsNullOrEmpty(details.OrganisationReference)
+            ? details.OrganisationReference ?? string.Empty
+            : details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)];
+
+        return new RegistrationSubmissionDetailsViewModel
         {
             SubmissionId = details.SubmissionId,
             OrganisationId = details.OrganisationId,
-            OrganisationReference = string.IsNullOrEmpty(details.OrganisationReference)
-                ? details.OrganisationReference ?? string.Empty
-                : details.OrganisationReference[..Math.Min(details.OrganisationReference.Length, 10)],
+            OrganisationReference = organisationReference,
             OrganisationName = details.OrganisationName,
             ReferenceNumber = details.ApplicationReferenceNumber,
             RegistrationReferenceNumber = details.RegistrationReferenceNumber,
@@ -100,6 +106,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             IsResubmission = details.IsResubmission,
             ResubmissionFileId = details.ResubmissionFileId
         };
+    }
 
     //Implicit operator from RegistrationSubmissionDetailsViewModel to RegistrationSubmissionOrganisationDetails
     public static implicit operator
