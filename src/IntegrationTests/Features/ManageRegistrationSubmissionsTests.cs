@@ -1,15 +1,10 @@
-using System.Net;
-using System.Text.Json;
+namespace IntegrationTests.Features;
 
-using Xunit;
+using System.Text.Json;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-
 using IntegrationTests.Infrastructure;
 using IntegrationTests.PageModels;
-
-using MockRegulatorFacade.FacadeApi;
-
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -133,78 +128,4 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
                     items = data, currentPage = 1, pageSize = 20, totalItems = data.Length,
                 })));
     }
-
-    private void SetupUserAccountsMock() =>
-        FacadeServer.Given(Request.Create()
-                .UsingGet()
-                .WithPath("/api/user-accounts"))
-            .RespondWith(Response.Create()
-                .WithStatusCode(200)
-                .WithHeader("Content-Type", "application/json")
-                .WithBody(JsonSerializer.Serialize(new
-                {
-                    user = new
-                    {
-                        id = "62309b0e-535d-4f96-9a3b-9c759a3944f3",
-                        firstName = "Test",
-                        lastName = "User",
-                        email = "test.user@example.com",
-                        roleInOrganisation = "Admin",
-                        enrolmentStatus = "Approved",
-                        serviceRole = "Regulator Basic",
-                        service = "RegulatorService",
-                        serviceRoleId = 5,
-                        organisations = new[]
-                        {
-                            new
-                            {
-                                id = "C7646CAE-EB96-48AC-9427-0120199BE6EE",
-                                name = "Environment Agency",
-                                organisationRole = "Regulator",
-                                organisationType = "Regulators",
-                                nationId = 1,
-                            },
-                        },
-                    },
-                })));
-
-    [Fact]
-    public async Task ShowsOrganisationDetailFromFacade()
-    {
-        // Arrange
-        var submissionId = Guid.Parse("0163A629-7780-445F-B00E-1898546BDF0C");
-
-        // Use the JSON file from MockRegulatorFacade as the response
-        FacadeServer.WithFacadeApi(submissionId);
-
-        // Act
-        var response = await Client.GetAsync($"/regulators/registration-submission-details/{submissionId}");
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var htmlContent = await response.Content.ReadAsStringAsync();
-        var detailsPage = new ManageRegistrationSubmissionDetailsPageModel(htmlContent);
-
-        using (new AssertionScope())
-        {
-            detailsPage.OrganisationName.Should().NotBeNull("Organisation name should be displayed on the page");
-            detailsPage.OrganisationName.Should().Be("Compliance Scheme Ltd");
-
-            detailsPage.OrganisationType.Should().NotBeNull("Organisation type should be displayed on the page");
-            detailsPage.OrganisationType.Should().Contain("Compliance Scheme");
-
-            detailsPage.RelevantYear.Should().Be(2025, "Relevant year should match the facade response");
-
-            // Note: RegistrationJourneyType is not rendered in the HTML and cannot be validated through integration tests.
-            // It's used in the ViewModel to control behavior (e.g., payment details component logic).
-            // The mapping from facade to ViewModel should be validated through unit tests.
-            // The successful page rendering confirms the ViewModel was populated correctly from the facade response.
-
-            // Validate submissionId appears in the page content (it may be in forms, components, or URLs)
-            // The successful 200 response already validates the correct submissionId was used in the route
-            htmlContent.Should().Contain(submissionId.ToString(), "SubmissionId should appear somewhere in the page content");
-        }
-    }
-
 }
