@@ -7,15 +7,13 @@ using AngleSharp.Html.Parser;
 /// Page Model for the /regulators/manage-registration-submissions page.
 /// Provides an abstraction over AngleSharp for better test readability and maintainability.
 /// </summary>
-public class ManageRegistrationSubmissionsPageModel
+public class ManageRegistrationSubmissionsPageModel : PageModelBase, IPageModelFactory<ManageRegistrationSubmissionsPageModel>
 {
-    private readonly IHtmlDocument _document;
-
-    public ManageRegistrationSubmissionsPageModel(string html)
+    public ManageRegistrationSubmissionsPageModel(string html) : base(html)
     {
-        var parser = new HtmlParser();
-        _document = parser.ParseDocument(html);
     }
+
+    public static ManageRegistrationSubmissionsPageModel FromContent(string html) => new(html);
 
     public string? AgencyNameCaption => _document
         .QuerySelector("h1.govuk-caption-xl")

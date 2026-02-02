@@ -2,6 +2,8 @@ namespace IntegrationTests.Infrastructure;
 
 using System.Text.Json;
 
+using PageModels;
+
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -59,4 +61,13 @@ public abstract class IntegrationTestBase : IAsyncLifetime
                         },
                     },
                 })));
+
+    protected async Task<TPageModel> GetAsPageModel<TPageModel>(string? requestUri)
+        where TPageModel : PageModelBase, IPageModelFactory<TPageModel>
+    {
+        var response = await Client.GetAsync(requestUri);
+        response.EnsureSuccessStatusCode();
+        var htmlContent = await response.Content.ReadAsStringAsync();
+        return TPageModel.FromContent(htmlContent);
+    }
 }

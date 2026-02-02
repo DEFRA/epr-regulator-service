@@ -26,12 +26,10 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
         SetupFacadeMockRegistrationSubmissions([]);
 
         // Act
-        var response = await Client.GetAsync("/regulators/manage-registration-submissions");
+        var registrationSubmissionsPage = await GetAsPageModel<ManageRegistrationSubmissionsPageModel>(
+            requestUri: "/regulators/manage-registration-submissions");
 
         // Assert
-        response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-        var registrationSubmissionsPage =
-            new ManageRegistrationSubmissionsPageModel(await response.Content.ReadAsStringAsync());
         using (new AssertionScope())
         {
             // Assert on the agency name caption
@@ -58,14 +56,10 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
         ]);
 
         // Act
-        var response = await Client.GetAsync("/regulators/manage-registration-submissions");
+        var registrationSubmissionsPage = await GetAsPageModel<ManageRegistrationSubmissionsPageModel>(
+            requestUri: "/regulators/manage-registration-submissions");
 
         // Assert
-        response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-
-        var registrationSubmissionsPage =
-            new ManageRegistrationSubmissionsPageModel(await response.Content.ReadAsStringAsync());
-
         var tableRows = registrationSubmissionsPage.GetTableRows().ToList();
         tableRows.Should().HaveCount(3);
 

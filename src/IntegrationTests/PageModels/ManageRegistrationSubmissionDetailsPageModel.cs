@@ -12,7 +12,7 @@ using AngleSharp.Html.Parser;
 /// Page Model for the /regulators/registration-submission-details page.
 /// Provides an abstraction over AngleSharp for better test readability and maintainability.
 /// </summary>
-public class ManageRegistrationSubmissionDetailsPageModel
+public class ManageRegistrationSubmissionDetailsPageModel : PageModelBase, IPageModelFactory<ManageRegistrationSubmissionDetailsPageModel>
 {
     private static readonly Regex GuidInQueryStringRegex = new(
         @"(?:\?|&)(?<key>[^=]+)=(?<id>[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12})(?:&|$)",
@@ -26,13 +26,12 @@ public class ManageRegistrationSubmissionDetailsPageModel
         @"\b(20\d{2})\b",
         RegexOptions.Compiled);
 
-    private readonly IHtmlDocument _document;
-
-    public ManageRegistrationSubmissionDetailsPageModel(string html)
+    private ManageRegistrationSubmissionDetailsPageModel(string html) : base(html)
     {
-        var parser = new HtmlParser();
-        _document = parser.ParseDocument(html);
     }
+
+
+    public static ManageRegistrationSubmissionDetailsPageModel FromContent(string html) => new (html);
 
     public string? AgencyNameCaption => (_document
             .QuerySelector("span.govuk-caption-xl")
@@ -199,7 +198,6 @@ public class ManageRegistrationSubmissionDetailsPageModel
 
         return null;
     }
-
 }
 
 public sealed record RegistrationSubmissionDetailsUnderTest
