@@ -8,6 +8,8 @@ using AwesomeAssertions.Execution;
 using IntegrationTests.Infrastructure;
 using IntegrationTests.PageModels;
 
+using MockRegulatorFacade.FacadeApi;
+
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -173,7 +175,7 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
         var submissionId = Guid.Parse("0163A629-7780-445F-B00E-1898546BDF0C");
 
         // Use the JSON file from MockRegulatorFacade as the response
-        SetupFacadeMockOrganisationDetailsFromFile(submissionId);
+        FacadeServer.WithFacadeApi(submissionId);
 
         // Act
         var response = await Client.GetAsync($"/regulators/registration-submission-details/{submissionId}");
@@ -205,15 +207,4 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
         }
     }
 
-    private void SetupFacadeMockOrganisationDetailsFromFile(Guid submissionId)
-    {
-        // Use the JSON file from MockRegulatorFacade - path is relative to the MockRegulatorFacade project
-        FacadeServer.Given(Request.Create()
-                .UsingGet()
-                .WithPath($"/api/organisation-registration-submission-details/{submissionId}"))
-            .RespondWith(Response.Create()
-                .WithStatusCode(200)
-                .WithHeader("Content-Type", "application/json")
-                .WithBodyFromFile("Responses/FacadeApi/organisation-registration-submission-details.json"));
-    }
 }
