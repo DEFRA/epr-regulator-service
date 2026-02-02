@@ -3,8 +3,8 @@ namespace IntegrationTests.Features;
 using System.Text.Json;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Infrastructure;
-using PageModels;
+using IntegrationTests.Infrastructure;
+using IntegrationTests.PageModels;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -26,12 +26,10 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
         SetupFacadeMockRegistrationSubmissions([]);
 
         // Act
-        var response = await Client.GetAsync("/regulators/manage-registration-submissions");
+        var registrationSubmissionsPage = await GetAsPageModel<ManageRegistrationSubmissionsPageModel>(
+            requestUri: "/regulators/manage-registration-submissions");
 
         // Assert
-        response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-        var registrationSubmissionsPage =
-            new ManageRegistrationSubmissionsPageModel(await response.Content.ReadAsStringAsync());
         using (new AssertionScope())
         {
             // Assert on the agency name caption
@@ -49,19 +47,19 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
     {
         // Arrange
         SetupFacadeMockRegistrationSubmissions([
-            CreateSubmission(orgRef: "100001", orgName: "Compliance Scheme Ltd", orgType: "compliance", submissionDate: "2024-03-10T09:00:00Z"),
-            CreateSubmission(orgRef: "100002", orgName: "Large Producer Corp", orgType: "large", submissionDate: "2024-03-11T10:00:00Z"),
-            CreateSubmission(orgRef: "100003", orgName: "Small Producer Ltd", orgType: "small", submissionDate: "2024-03-12T11:00:00Z"),
+            CreateSubmission(orgRef: "100001", orgName: "Compliance Scheme Ltd", orgType: "compliance",
+                submissionDate: "2024-03-10T09:00:00Z"),
+            CreateSubmission(orgRef: "100002", orgName: "Large Producer Corp", orgType: "large",
+                submissionDate: "2024-03-11T10:00:00Z"),
+            CreateSubmission(orgRef: "100003", orgName: "Small Producer Ltd", orgType: "small",
+                submissionDate: "2024-03-12T11:00:00Z"),
         ]);
 
         // Act
-        var response = await Client.GetAsync("/regulators/manage-registration-submissions");
+        var registrationSubmissionsPage = await GetAsPageModel<ManageRegistrationSubmissionsPageModel>(
+            requestUri: "/regulators/manage-registration-submissions");
 
         // Assert
-        response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-
-        var registrationSubmissionsPage = new ManageRegistrationSubmissionsPageModel(await response.Content.ReadAsStringAsync());
-
         var tableRows = registrationSubmissionsPage.GetTableRows().ToList();
         tableRows.Should().HaveCount(3);
 
@@ -121,44 +119,7 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
                 .WithHeader("Content-Type", "application/json")
                 .WithBody(JsonSerializer.Serialize(new
                 {
-                    items = data,
-                    currentPage = 1,
-                    pageSize = 20,
-                    totalItems = data.Length,
+                    items = data, currentPage = 1, pageSize = 20, totalItems = data.Length,
                 })));
     }
-
-    private void SetupUserAccountsMock() =>
-        FacadeServer.Given(Request.Create()
-                .UsingGet()
-                .WithPath("/api/user-accounts"))
-            .RespondWith(Response.Create()
-                .WithStatusCode(200)
-                .WithHeader("Content-Type", "application/json")
-                .WithBody(JsonSerializer.Serialize(new
-                {
-                    user = new
-                    {
-                        id = "62309b0e-535d-4f96-9a3b-9c759a3944f3",
-                        firstName = "Test",
-                        lastName = "User",
-                        email = "test.user@example.com",
-                        roleInOrganisation = "Admin",
-                        enrolmentStatus = "Approved",
-                        serviceRole = "Regulator Basic",
-                        service = "RegulatorService",
-                        serviceRoleId = 5,
-                        organisations = new[]
-                        {
-                            new
-                            {
-                                id = "C7646CAE-EB96-48AC-9427-0120199BE6EE",
-                                name = "Environment Agency",
-                                organisationRole = "Regulator",
-                                organisationType = "Regulators",
-                                nationId = 1,
-                            },
-                        },
-                    },
-                })));
 }

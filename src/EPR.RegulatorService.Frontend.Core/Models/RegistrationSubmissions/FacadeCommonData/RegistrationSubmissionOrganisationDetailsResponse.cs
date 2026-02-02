@@ -3,6 +3,7 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.Faca
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 using EPR.RegulatorService.Frontend.Core.Enums;
 
@@ -13,12 +14,17 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public Guid OrganisationId { get; init; }
     public string OrganisationReference { get; init; }
     public string OrganisationName { get; init; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionOrganisationType OrganisationType { get; init; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public RegistrationJourneyType RegistrationJourneyType { get; set; }
     public int NationId { get; init; }
     public string NationCode { get; set; }
     public int RelevantYear { get; init; }
     public DateTime SubmissionDate { get; init; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionStatus SubmissionStatus { get; init; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public RegistrationSubmissionStatus? ResubmissionStatus { get; init; }
     public DateTime? StatusPendingDate { get; set; }
     public string? RegulatorComments { get; set; } = string.Empty;

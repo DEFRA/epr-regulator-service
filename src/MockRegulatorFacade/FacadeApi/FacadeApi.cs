@@ -1,6 +1,7 @@
 namespace MockRegulatorFacade.FacadeApi;
 
-using System.Diagnostics.CodeAnalysis;
+using System;
+using System.IO;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -24,6 +25,29 @@ public static class FacadeApi
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyFromFile("Responses/FacadeApi/organisation-registration-submissions.json"));
+
+        var registrationSubmissionDetailsPath = "Responses/FacadeApi/RegistrationSubmissionDetails";
+        if (!Directory.Exists(registrationSubmissionDetailsPath))
+        {
+            throw new DirectoryNotFoundException($"Directory not found: {registrationSubmissionDetailsPath}");
+        }
+
+        foreach (var filePath in Directory.GetFiles(registrationSubmissionDetailsPath, "*.json"))
+        {
+            var submissionGuid = Path.GetFileNameWithoutExtension(filePath);
+            if (!Guid.TryParse(submissionGuid, out _))
+            {
+                throw new InvalidOperationException($"File name is not a valid GUID: {filePath}");
+            }
+
+            server.Given(Request.Create()
+                    .UsingGet()
+                    .WithPath($"/api/organisation-registration-submission-details/{submissionGuid}"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyFromFile(filePath));
+        }
 
         return server;
     }
