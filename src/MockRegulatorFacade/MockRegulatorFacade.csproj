@@ -16,7 +16,7 @@
     <None Update="Responses\**\*.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Responses\FacadeApi\organisation-registration-submission-details.json">
+    <None Update="Responses\FacadeApi\RegistrationSubmissionDetails\0163a629-7780-445f-b00e-1898546bdf0c.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
