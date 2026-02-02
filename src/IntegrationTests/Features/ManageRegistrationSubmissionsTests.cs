@@ -1,10 +1,13 @@
-namespace IntegrationTests.Features;
-
+using System.Net;
 using System.Text.Json;
+
+using Xunit;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-using Infrastructure;
-using PageModels;
+
+using IntegrationTests.Infrastructure;
+using IntegrationTests.PageModels;
+
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -49,9 +52,12 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
     {
         // Arrange
         SetupFacadeMockRegistrationSubmissions([
-            CreateSubmission(orgRef: "100001", orgName: "Compliance Scheme Ltd", orgType: "compliance", submissionDate: "2024-03-10T09:00:00Z"),
-            CreateSubmission(orgRef: "100002", orgName: "Large Producer Corp", orgType: "large", submissionDate: "2024-03-11T10:00:00Z"),
-            CreateSubmission(orgRef: "100003", orgName: "Small Producer Ltd", orgType: "small", submissionDate: "2024-03-12T11:00:00Z"),
+            CreateSubmission(orgRef: "100001", orgName: "Compliance Scheme Ltd", orgType: "compliance",
+                submissionDate: "2024-03-10T09:00:00Z"),
+            CreateSubmission(orgRef: "100002", orgName: "Large Producer Corp", orgType: "large",
+                submissionDate: "2024-03-11T10:00:00Z"),
+            CreateSubmission(orgRef: "100003", orgName: "Small Producer Ltd", orgType: "small",
+                submissionDate: "2024-03-12T11:00:00Z"),
         ]);
 
         // Act
@@ -60,7 +66,8 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
         // Assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
 
-        var registrationSubmissionsPage = new ManageRegistrationSubmissionsPageModel(await response.Content.ReadAsStringAsync());
+        var registrationSubmissionsPage =
+            new ManageRegistrationSubmissionsPageModel(await response.Content.ReadAsStringAsync());
 
         var tableRows = registrationSubmissionsPage.GetTableRows().ToList();
         tableRows.Should().HaveCount(3);
@@ -121,10 +128,7 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
                 .WithHeader("Content-Type", "application/json")
                 .WithBody(JsonSerializer.Serialize(new
                 {
-                    items = data,
-                    currentPage = 1,
-                    pageSize = 20,
-                    totalItems = data.Length,
+                    items = data, currentPage = 1, pageSize = 20, totalItems = data.Length,
                 })));
     }
 
@@ -161,4 +165,55 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
                         },
                     },
                 })));
+
+    [Fact]
+    public async Task ShowsOrganisationDetailFromFacade()
+    {
+        // Arrange
+        var submissionId = Guid.Parse("0163A629-7780-445F-B00E-1898546BDF0C");
+
+        // Use the JSON file from MockRegulatorFacade as the response
+        SetupFacadeMockOrganisationDetailsFromFile(submissionId);
+
+        // Act
+        var response = await Client.GetAsync($"/regulators/registration-submission-details/{submissionId}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var htmlContent = await response.Content.ReadAsStringAsync();
+        var detailsPage = new ManageRegistrationSubmissionDetailsPageModel(htmlContent);
+
+        using (new AssertionScope())
+        {
+            detailsPage.OrganisationName.Should().NotBeNull("Organisation name should be displayed on the page");
+            detailsPage.OrganisationName.Should().Be("Compliance Scheme Ltd");
+
+            detailsPage.OrganisationType.Should().NotBeNull("Organisation type should be displayed on the page");
+            detailsPage.OrganisationType.Should().Contain("Compliance Scheme");
+
+            detailsPage.RelevantYear.Should().Be(2025, "Relevant year should match the facade response");
+
+            // Note: RegistrationJourneyType is not rendered in the HTML and cannot be validated through integration tests.
+            // It's used in the ViewModel to control behavior (e.g., payment details component logic).
+            // The mapping from facade to ViewModel should be validated through unit tests.
+            // The successful page rendering confirms the ViewModel was populated correctly from the facade response.
+
+            // Validate submissionId appears in the page content (it may be in forms, components, or URLs)
+            // The successful 200 response already validates the correct submissionId was used in the route
+            htmlContent.Should().Contain(submissionId.ToString(), "SubmissionId should appear somewhere in the page content");
+        }
+    }
+
+    private void SetupFacadeMockOrganisationDetailsFromFile(Guid submissionId)
+    {
+        // Use the JSON file from MockRegulatorFacade - path is relative to the MockRegulatorFacade project
+        FacadeServer.Given(Request.Create()
+                .UsingGet()
+                .WithPath($"/api/organisation-registration-submission-details/{submissionId}"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile("Responses/FacadeApi/organisation-registration-submission-details.json"));
+    }
 }
