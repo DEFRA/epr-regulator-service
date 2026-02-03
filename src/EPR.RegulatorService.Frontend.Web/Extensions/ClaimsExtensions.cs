@@ -21,7 +21,13 @@ namespace EPR.RegulatorService.Frontend.Web.Extensions
 
         public static UserData? TryGetUserData(this ClaimsPrincipal claimsPrincipal)
         {
-            return claimsPrincipal.GetUserData();
+            var userDataClaim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.UserData);
+            if (userDataClaim == null)
+            {
+                return null;
+            }
+
+            return JsonSerializer.Deserialize<UserData>(userDataClaim.Value);
         }
 
         public static UserData GetInvitedUserData(this ClaimsPrincipal claimsPrincipal)
