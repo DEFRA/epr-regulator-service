@@ -106,7 +106,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
-    public async Task InvokeAsync_Logs_Error_And_Returns_CorrectView_With_DefaultModel_When_Service_Throws()
+    public async Task InvokeAsync_Throws_Exception_When_Service_Throws()
     {
         // Arrange
         var complianceSchemeMembers = new List<CsoMembershipDetailsDto> {
@@ -123,22 +123,10 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
             .ThrowsAsync(exception);
 
-        // Act
-        var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<Exception>(async () =>
+            await _sut.InvokeAsync(_registrationSumissionDetailsViewModel));
 
-        // Assert
-        Assert.IsNotNull(result);
-        result.Should().BeOfType<ViewViewComponentResult>();
-        var model = result.ViewData.Model as CompliancePaymentResponse;
-        model.Should().BeNull();
-        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.AtMostOnce);
-        _loggerMock.Verify(logger =>
-               logger.Log(
-                   LogLevel.Error,
-                   It.IsAny<EventId>(),
-                   It.Is<It.IsAnyType>((v, t) => v.ToString().Contains($"Unable to retrieve the compliance scheme payment details for {_registrationSumissionDetailsViewModel.SubmissionId}")),
-                    exception,
-                   It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-               Times.Once);
+        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.Once);
     }
 }

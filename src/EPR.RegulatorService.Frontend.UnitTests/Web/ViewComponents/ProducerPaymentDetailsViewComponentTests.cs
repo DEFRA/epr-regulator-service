@@ -108,7 +108,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
-    public async Task InvokeAsync_Logs_Error_And_Returns_CorrectView_With_DefaultModel_When_Service_Throws()
+    public async Task InvokeAsync_Throws_Exception_When_Service_Throws()
     {
         // Arrange
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
@@ -120,23 +120,11 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             It.IsAny<ProducerPaymentRequest>()))
             .ThrowsAsync(exception);
 
-        // Act
-        var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<Exception>(async () =>
+            await _sut.InvokeAsync(_registrationSumissionDetailsViewModel));
 
-        // Assert
-        Assert.IsNotNull(result);
-        result.Should().BeOfType<ViewViewComponentResult>();
-        var model = result.ViewData.Model as ProducerPaymentResponse;
-        model.Should().BeNull();
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync(
-            It.IsAny<ProducerPaymentRequest>()), Times.AtMostOnce);
-        _loggerMock.Verify(logger =>
-               logger.Log(
-                   LogLevel.Error,
-                   It.IsAny<EventId>(),
-                   It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Unable to retrieve the producer payment details for")),
-                    exception,
-                   It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-               Times.Once);
+            It.IsAny<ProducerPaymentRequest>()), Times.Once);
     }
 }
