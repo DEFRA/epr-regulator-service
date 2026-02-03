@@ -40,19 +40,24 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
             return View(default(ProducerPaymentDetailsViewModel));
         }
 
+        var subsidiariesBreakdown = producerPaymentResponse.SubsidiariesFeeBreakdown;
+        var subsidiaryOmpFee = subsidiariesBreakdown?.SubsidiaryOnlineMarketPlaceFee ?? 0;
+        var producerDetails = viewModel.ProducerDetails;
+        var producerType = producerDetails?.ProducerType ?? "Unknown";
+
         var producerPaymentDetailsViewModel = new ProducerPaymentDetailsViewModel
         {
             ApplicationProcessingFee = ConvertToPoundsFromPence(producerPaymentResponse.ApplicationProcessingFee),
             LateRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.LateRegistrationFee),
             OnlineMarketplaceFee = ConvertToPoundsFromPence(producerPaymentResponse.OnlineMarketplaceFee),
             PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
-            SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
-            SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
+            SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - subsidiaryOmpFee),
+            SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(subsidiaryOmpFee),
             SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
             TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
-            ProducerSize = $"{char.ToUpperInvariant(viewModel.ProducerDetails.ProducerType[0])}{viewModel.ProducerDetails.ProducerType[1..]}",
-            NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
-            NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount,
+            ProducerSize = producerType.Length > 0 ? $"{char.ToUpperInvariant(producerType[0])}{producerType[1..]}" : string.Empty,
+            NumberOfSubsidiaries = producerDetails?.NoOfSubsidiaries ?? 0,
+            NumberOfSubsidiariesBeingOnlineMarketplace = subsidiariesBreakdown?.OnlineMarketPlaceSubsidiariesCount ?? 0,
             ResubmissionStatus = viewModel.ResubmissionStatus,
             Status = viewModel.Status,
         };
