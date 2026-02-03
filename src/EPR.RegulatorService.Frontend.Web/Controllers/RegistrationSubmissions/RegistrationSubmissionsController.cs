@@ -51,31 +51,23 @@ public partial class RegistrationSubmissionsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RegistrationSubmissions(int? pageNumber)
     {
-        try
-        {
-            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
 
-            int nationId = _currentSession.UserData.Organisations[0].NationId ?? 0;
+        int nationId = _currentSession.UserData.Organisations[0].NationId ?? 0;
 
-            InitialiseOrContinuePaging(_currentSession.RegulatorRegistrationSubmissionSession, pageNumber);
+        InitialiseOrContinuePaging(_currentSession.RegulatorRegistrationSubmissionSession, pageNumber);
 
-            ViewBag.PowerBiLogin = _externalUrlsOptions.PowerBiLogin;
+        ViewBag.PowerBiLogin = _externalUrlsOptions.PowerBiLogin;
 
-            SetBacklinkToHome();
+        SetBacklinkToHome();
 
-            var viewModel = InitialiseOrCreateViewModel(
-                _currentSession.RegulatorRegistrationSubmissionSession,
-                nationId);
+        var viewModel = InitialiseOrCreateViewModel(
+            _currentSession.RegulatorRegistrationSubmissionSession,
+            nationId);
 
-            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
+        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
-            return View(viewModel);
-        }
-        catch (Exception ex)
-        {
-            _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
-            return RedirectToAction(PagePath.Error, "Error");
-        }
+        return View(viewModel);
     }
 
     [HttpPost]
@@ -86,28 +78,20 @@ public partial class RegistrationSubmissionsController(
     public async Task<IActionResult> RegistrationSubmissions([FromForm] RegistrationSubmissionsFilterViewModel? filters = null,
                                                              [FromForm] string? filterType = null)
     {
-        try
-        {
-            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-            if (ReturnIfAppropriate(filters, filterType) is IActionResult response)
-            {
-                return response;
-            }
-
-            ClearFilters(_currentSession.RegulatorRegistrationSubmissionSession,
-                               filters,
-                               filterType == FilterActions.ClearFilters);
-            UpdateRegistrationSubmissionFiltersInSession(_currentSession.RegulatorRegistrationSubmissionSession,
-                               filters,
-                               filterType == FilterActions.SubmitFilters);
-            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
-        }
-        catch (Exception ex)
+        if (ReturnIfAppropriate(filters, filterType) is IActionResult response)
         {
-            _logControllerError.Invoke(logger, $"Exception received processing POST to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
-            return RedirectToAction(PagePath.Error, "Error");
+            return response;
         }
+
+        ClearFilters(_currentSession.RegulatorRegistrationSubmissionSession,
+                           filters,
+                           filterType == FilterActions.ClearFilters);
+        UpdateRegistrationSubmissionFiltersInSession(_currentSession.RegulatorRegistrationSubmissionSession,
+                           filters,
+                           filterType == FilterActions.SubmitFilters);
+        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
         return RedirectToAction(PagePath.RegistrationSubmissionsAction);
     }
@@ -116,44 +100,27 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionDetails + "/{submissionId:guid}", Name = "SubmissionDetails")]
     public async Task<IActionResult> RegistrationSubmissionDetails(Guid? submissionId)
     {
-        try
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
+
+        RegistrationSubmissionDetailsViewModel model;
+        if (!GetOrRejectProvidedSubmissionId(submissionId.Value, out model))
         {
-            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
-
-            RegistrationSubmissionDetailsViewModel model;
-            if (!GetOrRejectProvidedSubmissionId(submissionId.Value, out model))
-            {
-                var details = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
-                model = details != null ? (RegistrationSubmissionDetailsViewModel)details : null;
-            }
-
-            if (model is null)
-            {
-                return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-            }
-
-            GeneratePowerBILink(model);
-            SetBackLink(PagePath.RegistrationSubmissionsRoute);
-            ViewBag.SubmissionId = model.SubmissionId;
-
-            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
-
-            return View(nameof(RegistrationSubmissionDetails), model);
+            var details = await FetchFromSessionOrFacadeAsync(submissionId.Value, _facadeService.GetRegistrationSubmissionDetails);
+            model = details != null ? (RegistrationSubmissionDetailsViewModel)details : null;
         }
-        catch (HttpRequestException hex)
+
+        if (model is null)
         {
-            if (hex.StatusCode == HttpStatusCode.NotFound)
-            {
-                _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", hex);
-                return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
-            }
-            return RedirectToAction(PagePath.Error, "Error");
+            return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
-        catch (Exception ex)
-        {
-            _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
-            return RedirectToAction(PagePath.Error, "Error");
-        }
+
+        GeneratePowerBILink(model);
+        SetBackLink(PagePath.RegistrationSubmissionsRoute);
+        ViewBag.SubmissionId = model.SubmissionId;
+
+        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
+
+        return View(nameof(RegistrationSubmissionDetails), model);
     }
 
     [HttpPost]
@@ -235,25 +202,17 @@ public partial class RegistrationSubmissionsController(
             return RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId });
         }
 
-        try
-        {
-            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Granted);
-            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
+        var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Granted);
+        var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
-            _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.Remove(existingModel.SubmissionId);
-            _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Remove(existingModel.SubmissionId);
+        _currentSession.RegulatorRegistrationSubmissionSession.SelectedRegistrations.Remove(existingModel.SubmissionId);
+        _currentSession.RegulatorRegistrationSubmissionSession.OrganisationDetailsChangeHistory.Remove(existingModel.SubmissionId);
 
-            SaveSession(_currentSession);
+        SaveSession(_currentSession);
 
-            return status == Core.Models.EndpointResponseStatus.Success
-                  ? RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId })
-                  : RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
-        }
-        catch (Exception ex)
-        {
-            _logControllerError.Invoke(logger, $"Exception received while granting submission {nameof(RegistrationSubmissionsController)}.{nameof(GrantRegistrationSubmission)}", ex);
-            return RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
-        }
+        return status == Core.Models.EndpointResponseStatus.Success
+              ? RedirectToRoute("SubmissionDetails", new { existingModel.SubmissionId })
+              : RedirectToRoute("ServiceNotAvailable", new { backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}" });
     }
 
     [HttpGet]
@@ -297,37 +256,20 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(QueryRegistrationSubmission), model);
         }
 
-        try
-        {
-            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Queried);
-            regulatorDecisionRequest.Comments = model.Query;
+        var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Queried);
+        regulatorDecisionRequest.Comments = model.Query;
 
-            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
+        var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
-            await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
+        await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
 
-            return status == EndpointResponseStatus.Success
-                ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
-                : RedirectToRoute("ServiceNotAvailable",
-                new
-                {
-                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
-                });
-        }
-        catch (Exception ex)
-        {
-            _logControllerError.Invoke(
-                logger,
-                $"Exception received while querying submission" +
-                $"{nameof(RegistrationSubmissionsController)}.{nameof(QueryRegistrationSubmission)}", ex);
-
-            return RedirectToRoute(
-                "ServiceNotAvailable",
-                new
-                {
-                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
-                });
-        }
+        return status == EndpointResponseStatus.Success
+            ? RedirectToAction(PagePath.RegistrationSubmissionsAction)
+            : RedirectToRoute("ServiceNotAvailable",
+            new
+            {
+                backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+            });
     }
 
     [HttpGet]
@@ -617,39 +559,22 @@ public partial class RegistrationSubmissionsController(
             return View(nameof(CancelDateRegistrationSubmission), model);
         }
 
-        try
-        {
-            var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Cancelled);
+        var regulatorDecisionRequest = GetDecisionRequest(existingModel, Core.Enums.RegistrationSubmissionStatus.Cancelled);
 
-            regulatorDecisionRequest.Comments = existingModel.CancellationReason;
-            regulatorDecisionRequest.DecisionDate = model.CancellationDate;
+        regulatorDecisionRequest.Comments = existingModel.CancellationReason;
+        regulatorDecisionRequest.DecisionDate = model.CancellationDate;
 
-            var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
+        var status = await _facadeService.SubmitRegulatorRegistrationDecisionAsync(regulatorDecisionRequest);
 
-            await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
+        await UpdateOrganisationDetailsChangeHistoryAsync(existingModel, status, regulatorDecisionRequest);
 
-            return status == Core.Models.EndpointResponseStatus.Success
-                ? RedirectToRoute("CancellationConfirmation", new { submissionId = existingModel.SubmissionId })
-                : RedirectToRoute("ServiceNotAvailable",
-                new
-                {
-                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
-                });
-        }
-        catch (Exception ex)
-        {
-            _logControllerError.Invoke(
-                logger,
-                $"Exception received while cancelling submission" +
-                $"{nameof(RegistrationSubmissionsController)}.{nameof(CancelDateRegistrationSubmission)}", ex);
-
-            return RedirectToRoute(
-                "ServiceNotAvailable",
-                new
-                {
-                    backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
-                });
-        }
+        return status == Core.Models.EndpointResponseStatus.Success
+            ? RedirectToRoute("CancellationConfirmation", new { submissionId = existingModel.SubmissionId })
+            : RedirectToRoute("ServiceNotAvailable",
+            new
+            {
+                backLink = $"{PagePath.RegistrationSubmissionDetails}/{existingModel.SubmissionId}"
+            });
     }
 
     [HttpGet]
