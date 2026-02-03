@@ -26,6 +26,14 @@ public static class FacadeApi
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyFromFile("Responses/FacadeApi/organisation-registration-submissions.json"));
 
+        server.Given(Request.Create()
+                .UsingGet()
+                .WithPath("/api/organisations/pending-applications"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile("Responses/FacadeApi/pending-applications.json"));
+
         var registrationSubmissionDetailsPath = "Responses/FacadeApi/RegistrationSubmissionDetails";
         if (!Directory.Exists(registrationSubmissionDetailsPath))
         {
@@ -43,6 +51,29 @@ public static class FacadeApi
             server.Given(Request.Create()
                     .UsingGet()
                     .WithPath($"/api/organisation-registration-submission-details/{submissionGuid}"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyFromFile(filePath));
+        }
+
+        var organisationEnrolmentsPath = "Responses/FacadeApi/OrganisationEnrolments";
+        if (!Directory.Exists(organisationEnrolmentsPath))
+        {
+            throw new DirectoryNotFoundException($"Directory not found: {organisationEnrolmentsPath}");
+        }
+
+        foreach (var filePath in Directory.GetFiles(organisationEnrolmentsPath, "*.json"))
+        {
+            var organisationGuid = Path.GetFileNameWithoutExtension(filePath);
+            if (!Guid.TryParse(organisationGuid, out _))
+            {
+                throw new InvalidOperationException($"File name is not a valid GUID: {filePath}");
+            }
+
+            server.Given(Request.Create()
+                    .UsingGet()
+                    .WithPath($"/api/organisations/{organisationGuid}/pending-applications"))
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")

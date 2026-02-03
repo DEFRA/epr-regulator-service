@@ -1,0 +1,51 @@
+{
+  "organisationId": "74182DED-B3B7-49CB-AF38-3E608039B2F3",
+  "organisationName": "Small Producer Ltd",
+  "organisationType": "CompaniesHouseCompany",
+  "organisationReferenceNumber": "100003",
+  "companiesHouseNumber": "34567890",
+  "isComplianceScheme": false,
+  "nationId": 2,
+  "nationName": "Wales",
+  "businessAddress": {
+    "buildingName": "Small Business Centre",
+    "subBuildingName": "Unit 5",
+    "buildingNumber": "12",
+    "street": "Commerce Street",
+    "town": "Cardiff",
+    "county": "South Glamorgan",
+    "country": "Wales",
+    "postCode": "CF10 1AA"
+  },
+  "users": [
+    {
+      "firstName": "David",
+      "lastName": "Evans",
+      "email": "david.evans@smallproducer.co.uk",
+      "jobTitle": "Managing Director",
+      "telephoneNumber": "029 2012 3456",
+      "isEmployeeOfOrganisation": true,
+      "enrolments": {
+        "serviceRole": "Packaging.ApprovedPerson",
+        "enrolmentStatus": "Pending",
+        "externalId": "E5678901-CDEF-0123-4567-89ABCDEF0123"
+      },
+      "transferComments": null
+    },
+    {
+      "firstName": "Lisa",
+      "lastName": "Thomas",
+      "email": "lisa.thomas@smallproducer.co.uk",
+      "jobTitle": "Compliance Officer",
+      "telephoneNumber": "029 2012 3457",
+      "isEmployeeOfOrganisation": true,
+      "enrolments": {
+        "serviceRole": "Packaging.DelegatedPerson",
+        "enrolmentStatus": "Pending",
+        "externalId": "F6789012-DEF0-1234-5678-9ABCDEF01234"
+      },
+      "transferComments": null
+    }
+  ],
+  "transferDetails": null
+}

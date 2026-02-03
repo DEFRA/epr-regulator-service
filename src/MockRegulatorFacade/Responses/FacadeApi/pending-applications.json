@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "organisationId": "EE29CFAE-81AB-435F-8759-7285959530DB",
+      "organisationName": "Compliance Scheme Ltd",
+      "lastUpdate": "2025-01-10T09:30:00Z",
+      "enrolments": {
+        "hasApprovedPending": true,
+        "hasDelegatePending": false
+      }
+    },
+    {
+      "organisationId": "155812E4-DAD3-4990-859C-281938BC1C80",
+      "organisationName": "Large Producer Corp",
+      "lastUpdate": "2025-01-11T10:30:00Z",
+      "enrolments": {
+        "hasApprovedPending": false,
+        "hasDelegatePending": true
+      }
+    },
+    {
+      "organisationId": "74182DED-B3B7-49CB-AF38-3E608039B2F3",
+      "organisationName": "Small Producer Ltd",
+      "lastUpdate": "2025-01-12T11:30:00Z",
+      "enrolments": {
+        "hasApprovedPending": true,
+        "hasDelegatePending": true
+      }
+    }
+  ],
+  "currentPage": 1,
+  "pageSize": 20,
+  "totalItems": 3
+}
