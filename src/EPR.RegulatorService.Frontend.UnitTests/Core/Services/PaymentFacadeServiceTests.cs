@@ -94,7 +94,7 @@ public class PaymentFacadeServiceTests
     }
 
     [TestMethod]
-    public async Task SubmitOfflinePaymentAsync_Logs_And_ReturnsFail_WhenResponseIsUnsuccessful()
+    public async Task SubmitOfflinePaymentAsync_Throws_On_Error_Response()
     {
         // Arrange
         var request = _fixture.Create<OfflinePaymentRequest>();
@@ -111,12 +111,9 @@ public class PaymentFacadeServiceTests
             })
             .Verifiable();
 
-        // Act
-        var result = await _paymentFacadeService.SubmitOfflinePaymentAsync(request);
-
-        // Assert
-        Assert.AreEqual(EndpointResponseStatus.Fail, result);
-        AssertTest(result, "offline-payments");       
+        // Act & Assert
+        await Assert.ThrowsExceptionAsync<HttpRequestException>(async () =>
+            await _paymentFacadeService.SubmitOfflinePaymentAsync(request));
     }
 
     [TestMethod]

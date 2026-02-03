@@ -363,7 +363,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
         
         [TestMethod]
-        public async Task? Application_Accepted_But_Email_Failed_To_Send_Stay_On_Same_Page()
+        public async Task? Application_Accepted_But_Email_Failed_Throws()
         {
             // Arrange
             var organisationId = _acceptedUserOrganisationId;
@@ -376,7 +376,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
-        
+
             var approvedUser = new User() { Enrolment = new Enrolment() { ServiceRole = ServiceRole.ApprovedPerson } };
             var organisationDetails = new OrganisationEnrolments()
             {
@@ -386,22 +386,19 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             _facadeServiceMock.Setup(x => x.GetOrganisationEnrolments(organisationId))
                 .ReturnsAsync(organisationDetails);
-        
+
+            var exception = new Exception("Failed to send email");
             _facadeServiceMock.Setup(x => x.SendEnrolmentEmails(It.IsAny<EnrolmentDecisionRequest>()))
-                .Throws(new Exception("Failed to send email"));
-        
-            // Act
-            var result = await _systemUnderTest.AcceptApplication(AcceptedUserFirstName, AcceptedUserLastName, AcceptedUserEmail,
-                ServiceRole.ApprovedPerson);
-        
-            // Assert
-            result.Should().BeOfType<ViewResult>();
-            var viewResult = result as ViewResult;
-            viewResult!.ViewName.Should().Be(nameof(ApplicationsController.EnrolmentRequests));
+                .Throws(exception);
+
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _systemUnderTest.AcceptApplication(AcceptedUserFirstName, AcceptedUserLastName, AcceptedUserEmail,
+                    ServiceRole.ApprovedPerson));
         }
         
         [TestMethod]
-        public async Task? Application_Accepted_But_Database_Save_Failed_Stay_On_Same_Page()
+        public async Task? Application_Accepted_But_Database_Save_Failed_Throws()
         {
             // Arrange
             var organisationId = _acceptedUserOrganisationId;
@@ -414,7 +411,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             _sessionManagerMock.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
                 .ReturnsAsync(session);
-        
+
             var approvedUser = new User() { Enrolment = new Enrolment() { ServiceRole = ServiceRole.ApprovedPerson } };
             var organisationDetails = new OrganisationEnrolments()
             {
@@ -424,21 +421,18 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             };
             _facadeServiceMock.Setup(x => x.GetOrganisationEnrolments(organisationId))
                 .ReturnsAsync(organisationDetails);
-        
+
             _facadeServiceMock.Setup(x => x.SendEnrolmentEmails(It.IsAny<EnrolmentDecisionRequest>()))
                 .ReturnsAsync(EndpointResponseStatus.Success);
-        
+
+            var exception = new Exception("Failed to save to DB");
             _facadeServiceMock.Setup(x => x.UpdateEnrolment(It.IsAny<UpdateEnrolment>()))
-                .Throws(new Exception("Failed to save to DB"));
-        
-            // Act
-            var result = await _systemUnderTest.AcceptApplication(AcceptedUserFirstName, AcceptedUserLastName, AcceptedUserEmail,
-                ServiceRole.ApprovedPerson);
-        
-            // Assert
-            result.Should().BeOfType<ViewResult>();
-            var viewResult = result as ViewResult;
-            viewResult!.ViewName.Should().Be(nameof(ApplicationsController.EnrolmentRequests));
+                .Throws(exception);
+
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _systemUnderTest.AcceptApplication(AcceptedUserFirstName, AcceptedUserLastName, AcceptedUserEmail,
+                    ServiceRole.ApprovedPerson));
         }
         
         [TestMethod]
