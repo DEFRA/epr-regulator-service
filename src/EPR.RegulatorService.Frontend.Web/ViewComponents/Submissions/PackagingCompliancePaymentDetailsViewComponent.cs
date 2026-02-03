@@ -20,63 +20,50 @@ public class PackagingCompliancePaymentDetailsViewComponent(IOptions<PaymentDeta
 
     public async Task<ViewViewComponentResult> InvokeAsync(SubmissionDetailsViewModel viewModel)
     {
-        try
+        if (viewModel.MemberCount == 0)
         {
-            if (viewModel.MemberCount == 0)
-            {
-                this.ViewBag.NoMemberCount = true;
-                return View(default(PackagingCompliancePaymentDetailsViewModel));
+            this.ViewBag.NoMemberCount = true;
+            return View(default(PackagingCompliancePaymentDetailsViewModel));
 
-            }
-            if (viewModel.ReferenceFieldNotAvailable)
-            {
-                this.ViewBag.NoReferenceField = this.ViewBag.NoReferenceNumber = true;
-                return View(default(PackagingCompliancePaymentDetailsViewModel));
-            }
-
-            if (viewModel.ReferenceNotAvailable)
-            {
-                this.ViewBag.NoReferenceNumber = true;
-                return View(default(PackagingCompliancePaymentDetailsViewModel));
-            }
-
-            var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsForResubmissionAsync(
-                new PackagingCompliancePaymentRequest
-                {
-                    ReferenceNumber = viewModel.ReferenceNumber,
-                    MemberCount = viewModel.MemberCount,
-                    Regulator = viewModel.NationCode,
-                    ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format                    
-                });
-
-            if (compliancePaymentResponse is null)
-            {
-                return View(default(PackagingCompliancePaymentDetailsViewModel));
-            }
-
-            var compliancePaymentDetailsViewModel = new PackagingCompliancePaymentDetailsViewModel
-            {
-                SubmissionHash = viewModel.SubmissionHash,
-                MemberCount = compliancePaymentResponse.MemberCount,
-                PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
-                ResubmissionFee = ConvertToPoundsFromPence(compliancePaymentResponse.ResubmissionFee),
-                TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(compliancePaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
-                ReferenceNumber = viewModel.ReferenceNumber,
-                NationCode = viewModel.NationCode
-            };
-
-            return View(compliancePaymentDetailsViewModel);
         }
-        catch (Exception ex)
+        if (viewModel.ReferenceFieldNotAvailable)
         {
-            _logViewComponentError.Invoke(logger,
-                $"Unable to retrieve the packaging compliance scheme payment details for " +
-                $"{viewModel.SubmissionId} in {nameof(PackagingCompliancePaymentDetailsViewComponent)}.{nameof(InvokeAsync)}", ex);
-
-            ViewBag.ReferenceNumber = viewModel.ReferenceNumber;
-
+            this.ViewBag.NoReferenceField = this.ViewBag.NoReferenceNumber = true;
             return View(default(PackagingCompliancePaymentDetailsViewModel));
         }
+
+        if (viewModel.ReferenceNotAvailable)
+        {
+            this.ViewBag.NoReferenceNumber = true;
+            return View(default(PackagingCompliancePaymentDetailsViewModel));
+        }
+
+        var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsForResubmissionAsync(
+            new PackagingCompliancePaymentRequest
+            {
+                ReferenceNumber = viewModel.ReferenceNumber,
+                MemberCount = viewModel.MemberCount,
+                Regulator = viewModel.NationCode,
+                ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format
+            });
+
+        if (compliancePaymentResponse is null)
+        {
+            return View(default(PackagingCompliancePaymentDetailsViewModel));
+        }
+
+        var compliancePaymentDetailsViewModel = new PackagingCompliancePaymentDetailsViewModel
+        {
+            SubmissionHash = viewModel.SubmissionHash,
+            MemberCount = compliancePaymentResponse.MemberCount,
+            PreviousPaymentReceived = ConvertToPoundsFromPence(compliancePaymentResponse.PreviousPaymentsReceived),
+            ResubmissionFee = ConvertToPoundsFromPence(compliancePaymentResponse.ResubmissionFee),
+            TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(compliancePaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
+            ReferenceNumber = viewModel.ReferenceNumber,
+            NationCode = viewModel.NationCode
+        };
+
+        return View(compliancePaymentDetailsViewModel);
     }
 
     private static decimal ConvertToPoundsFromPence(decimal amount) => amount / 100;

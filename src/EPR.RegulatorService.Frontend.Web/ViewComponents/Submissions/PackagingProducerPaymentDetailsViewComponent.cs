@@ -25,60 +25,49 @@ public class PackagingProducerPaymentDetailsViewComponent(
 
     public async Task<ViewViewComponentResult> InvokeAsync(SubmissionDetailsViewModel viewModel)
     {
-        try
+        if (viewModel.ReferenceFieldNotAvailable)
         {
-            if (viewModel.ReferenceFieldNotAvailable)
-            {
-                this.ViewBag.NoReferenceField = this.ViewBag.NoReferenceNumber = true;
-                return View(default(PackagingProducerPaymentDetailsViewModel));
-            }
-
-            if (viewModel.ReferenceNotAvailable)
-            {
-                this.ViewBag.NoReferenceNumber = true;
-                return View(default(PackagingProducerPaymentDetailsViewModel));
-            }
-
-            int memberCount =
-                await featureManager.IsEnabledAsync(FeatureFlags.IncludeSubsidiariesInFeeCalculationsForRegulators)
-                    ? viewModel.MemberCount
-                    : 1;
-
-            var producerPaymentResponse = await paymentFacadeService
-                .GetProducerPaymentDetailsForResubmissionAsync(new PackagingProducerPaymentRequest
-                {
-                    ReferenceNumber = viewModel.ReferenceNumber,
-                    Regulator = viewModel.NationCode,
-                    MemberCount = memberCount,
-                    ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format
-                });
-
-            if (producerPaymentResponse is null)
-            {
-                return View(default(PackagingProducerPaymentDetailsViewModel));
-            }
-
-            var packagingProducerPaymentDetailsViewModel = new PackagingProducerPaymentDetailsViewModel
-            {
-                SubmissionHash = viewModel.SubmissionHash,
-                PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
-                ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
-                TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
-                ReferenceNumber = viewModel.ReferenceNumber,
-                NationCode = viewModel.NationCode,
-                MemberCount = viewModel.MemberCount
-            };
-
-            return View(packagingProducerPaymentDetailsViewModel);
-        }
-        catch (Exception ex)
-        {
-            _logViewComponentError.Invoke(logger,
-               $"Unable to retrieve the packaging producer payment details for {viewModel.SubmissionId} in {nameof(PackagingProducerPaymentDetailsViewComponent)}.{nameof(InvokeAsync)}", ex);
-
-            ViewBag.ReferenceNumber = viewModel.ReferenceNumber;
+            this.ViewBag.NoReferenceField = this.ViewBag.NoReferenceNumber = true;
             return View(default(PackagingProducerPaymentDetailsViewModel));
         }
+
+        if (viewModel.ReferenceNotAvailable)
+        {
+            this.ViewBag.NoReferenceNumber = true;
+            return View(default(PackagingProducerPaymentDetailsViewModel));
+        }
+
+        int memberCount =
+            await featureManager.IsEnabledAsync(FeatureFlags.IncludeSubsidiariesInFeeCalculationsForRegulators)
+                ? viewModel.MemberCount
+                : 1;
+
+        var producerPaymentResponse = await paymentFacadeService
+            .GetProducerPaymentDetailsForResubmissionAsync(new PackagingProducerPaymentRequest
+            {
+                ReferenceNumber = viewModel.ReferenceNumber,
+                Regulator = viewModel.NationCode,
+                MemberCount = memberCount,
+                ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format
+            });
+
+        if (producerPaymentResponse is null)
+        {
+            return View(default(PackagingProducerPaymentDetailsViewModel));
+        }
+
+        var packagingProducerPaymentDetailsViewModel = new PackagingProducerPaymentDetailsViewModel
+        {
+            SubmissionHash = viewModel.SubmissionHash,
+            PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
+            ResubmissionFee = ConvertToPoundsFromPence(producerPaymentResponse.ResubmissionFee),
+            TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
+            ReferenceNumber = viewModel.ReferenceNumber,
+            NationCode = viewModel.NationCode,
+            MemberCount = viewModel.MemberCount
+        };
+
+        return View(packagingProducerPaymentDetailsViewModel);
     }
 
     private static decimal ConvertToPoundsFromPence(decimal amount) => amount / 100;

@@ -21,53 +21,43 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
 
     public async Task<ViewViewComponentResult> InvokeAsync(RegistrationSubmissionDetailsViewModel viewModel)
     {
-        try
+        var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
         {
-            var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
-            {
-                ApplicationReferenceNumber = viewModel.ReferenceNumber,
-                NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
-                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
-                IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
-                IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
-                ProducerType = viewModel.ProducerDetails.ProducerType,
-                Regulator = viewModel.NationCode,
-                SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
-                ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.Value
-                : viewModel.SubmissionDetails.TimeAndDateOfSubmission)
-            });
+            ApplicationReferenceNumber = viewModel.ReferenceNumber,
+            NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
+            NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
+            IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
+            IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
+            ProducerType = viewModel.ProducerDetails.ProducerType,
+            Regulator = viewModel.NationCode,
+            SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
+            ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.Value
+            : viewModel.SubmissionDetails.TimeAndDateOfSubmission)
+        });
 
-            if (producerPaymentResponse is null)
-            {
-                return View(default(ProducerPaymentDetailsViewModel));
-            }
-
-            var producerPaymentDetailsViewModel = new ProducerPaymentDetailsViewModel
-            {
-                ApplicationProcessingFee = ConvertToPoundsFromPence(producerPaymentResponse.ApplicationProcessingFee),
-                LateRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.LateRegistrationFee),
-                OnlineMarketplaceFee = ConvertToPoundsFromPence(producerPaymentResponse.OnlineMarketplaceFee),
-                PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
-                SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
-                SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
-                SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
-                TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
-                ProducerSize = $"{char.ToUpperInvariant(viewModel.ProducerDetails.ProducerType[0])}{viewModel.ProducerDetails.ProducerType[1..]}",
-                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
-                NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount,
-                ResubmissionStatus = viewModel.ResubmissionStatus,
-                Status = viewModel.Status,
-            };
-
-            return View(producerPaymentDetailsViewModel);
-        }
-        catch (Exception ex)
+        if (producerPaymentResponse is null)
         {
-            _logViewComponentError.Invoke(logger,
-               $"Unable to retrieve the producer payment details for {viewModel.SubmissionId} in {nameof(ProducerPaymentDetailsViewComponent)}.{nameof(InvokeAsync)}", ex);
-
             return View(default(ProducerPaymentDetailsViewModel));
         }
+
+        var producerPaymentDetailsViewModel = new ProducerPaymentDetailsViewModel
+        {
+            ApplicationProcessingFee = ConvertToPoundsFromPence(producerPaymentResponse.ApplicationProcessingFee),
+            LateRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.LateRegistrationFee),
+            OnlineMarketplaceFee = ConvertToPoundsFromPence(producerPaymentResponse.OnlineMarketplaceFee),
+            PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
+            SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
+            SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
+            SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
+            TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
+            ProducerSize = $"{char.ToUpperInvariant(viewModel.ProducerDetails.ProducerType[0])}{viewModel.ProducerDetails.ProducerType[1..]}",
+            NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
+            NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount,
+            ResubmissionStatus = viewModel.ResubmissionStatus,
+            Status = viewModel.Status,
+        };
+
+        return View(producerPaymentDetailsViewModel);
     }
     private static decimal ConvertToPoundsFromPence(decimal amount) => amount / 100;
 }

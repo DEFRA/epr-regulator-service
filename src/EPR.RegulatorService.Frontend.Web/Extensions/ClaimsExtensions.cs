@@ -21,33 +21,19 @@ namespace EPR.RegulatorService.Frontend.Web.Extensions
 
         public static UserData? TryGetUserData(this ClaimsPrincipal claimsPrincipal)
         {
-            try
-            {
-                return claimsPrincipal.GetUserData();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return claimsPrincipal.GetUserData();
         }
 
         public static UserData GetInvitedUserData(this ClaimsPrincipal claimsPrincipal)
         {
-            try
-            {
-                var idClaim = claimsPrincipal.Claims.Single(claim => claim.Type == ClaimConstants.ObjectId);
-                var emailClaim = claimsPrincipal.Claims.Single(claim => claim.Type == ClaimTypes.Email);
+            var idClaim = claimsPrincipal.Claims.Single(claim => claim.Type == ClaimConstants.ObjectId);
+            var emailClaim = claimsPrincipal.Claims.Single(claim => claim.Type == ClaimTypes.Email);
 
-                return new UserData
-                {
-                    Id = Guid.Parse(idClaim.Value),
-                    Email = emailClaim.Value
-                };
-            }
-            catch (Exception)
+            return new UserData
             {
-                return new UserData();
-            }
+                Id = Guid.Parse(idClaim.Value),
+                Email = emailClaim.Value
+            };
         }
 
         public static async Task UpdateUserDataClaimsAndSignInAsync(HttpContext httpContext, UserData userData)

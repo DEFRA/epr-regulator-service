@@ -418,58 +418,51 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                 delegatedUsers = delegatedUsers.Where(x => x.Email == acceptedUserEmail);
             }
 
-            try
+            var request = new EnrolmentDecisionRequest()
             {
-                var request = new EnrolmentDecisionRequest()
+                OrganisationNumber = organisationDetails.OrganisationReferenceNumber,
+                OrganisationName = organisationDetails.OrganisationName,
+                ApprovedUser = new EmailDetails()
                 {
-                    OrganisationNumber = organisationDetails.OrganisationReferenceNumber,
-                    OrganisationName = organisationDetails.OrganisationName,
-                    ApprovedUser = new EmailDetails()
-                    {
-                        UserFirstName = approvedUser?.FirstName,
-                        UserSurname = approvedUser?.LastName,
-                        Email = approvedUser?.Email
-                    },
-                    DelegatedUsers = delegatedUsers.Select(x => new EmailDetails()
-                    {
-                        UserFirstName = x.FirstName,
-                        UserSurname = x.LastName,
-                        Email = x.Email
-                    }).ToList(),
-                    RejectionComments = String.Empty,
-                    RegulatorRole = serviceRole,
-                    Decision = RegulatorDecision.Approved,
+                    UserFirstName = approvedUser?.FirstName,
+                    UserSurname = approvedUser?.LastName,
+                    Email = approvedUser?.Email
+                },
+                DelegatedUsers = delegatedUsers.Select(x => new EmailDetails()
+                {
+                    UserFirstName = x.FirstName,
+                    UserSurname = x.LastName,
+                    Email = x.Email
+                }).ToList(),
+                RejectionComments = String.Empty,
+                RegulatorRole = serviceRole,
+                Decision = RegulatorDecision.Approved,
+            };
+            var sendEmailResult = await _facadeService.SendEnrolmentEmails(request);
+
+            if (sendEmailResult == EndpointResponseStatus.Success)
+            {
+                var updateEnrolmentRequest = new UpdateEnrolment()
+                {
+                    EnrolmentId = GetEnrolmentId(serviceRole, approvedUser, delegatedUsers, acceptedUserEmail),
+                    EnrolmentStatus = RegulatorDecision.Approved,
+                    Comments = string.Empty
                 };
-                var sendEmailResult = await _facadeService.SendEnrolmentEmails(request);
 
-                if (sendEmailResult == EndpointResponseStatus.Success)
+                var result = await _facadeService.UpdateEnrolment(updateEnrolmentRequest);
+                if (result == EndpointResponseStatus.Success)
                 {
-                    var updateEnrolmentRequest = new UpdateEnrolment()
-                    {
-                        EnrolmentId = GetEnrolmentId(serviceRole, approvedUser, delegatedUsers, acceptedUserEmail),
-                        EnrolmentStatus = RegulatorDecision.Approved,
-                        Comments = string.Empty
-                    };
+                    session.RegulatorSession.OrganisationId = organisationDetails.OrganisationId;
 
-                    var result = await _facadeService.UpdateEnrolment(updateEnrolmentRequest);
-                    if (result == EndpointResponseStatus.Success)
-                    {
-                        session.RegulatorSession.OrganisationId = organisationDetails.OrganisationId;
+                    TempData["AcceptResult"] = EndpointResponseStatus.Success;
+                    TempData["AcceptFirstName"] = acceptedUserFirstName;
+                    TempData["AcceptLastName"] = acceptedUserLastName;
+                    TempData["AcceptedRole"] = serviceRole;
 
-                        TempData["AcceptResult"] = EndpointResponseStatus.Success;
-                        TempData["AcceptFirstName"] = acceptedUserFirstName;
-                        TempData["AcceptLastName"] = acceptedUserLastName;
-                        TempData["AcceptedRole"] = serviceRole;
+                    await SaveSession(session);
 
-                        await SaveSession(session);
-
-                        return RedirectToAction("EnrolmentRequests", "Applications");
-                    }
+                    return RedirectToAction("EnrolmentRequests", "Applications");
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.ApplicationAcceptanceError(acceptedUserEmail, organisationDetails.OrganisationId);
             }
 
             ModelState.AddModelError("Update failed", "Update failed");
