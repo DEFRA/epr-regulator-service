@@ -57,6 +57,29 @@ public static class FacadeApi
                     .WithBodyFromFile(filePath));
         }
 
+        var organisationEnrolmentsPath = "Responses/FacadeApi/OrganisationEnrolments";
+        if (!Directory.Exists(organisationEnrolmentsPath))
+        {
+            throw new DirectoryNotFoundException($"Directory not found: {organisationEnrolmentsPath}");
+        }
+
+        foreach (var filePath in Directory.GetFiles(organisationEnrolmentsPath, "*.json"))
+        {
+            var organisationGuid = Path.GetFileNameWithoutExtension(filePath);
+            if (!Guid.TryParse(organisationGuid, out _))
+            {
+                throw new InvalidOperationException($"File name is not a valid GUID: {filePath}");
+            }
+
+            server.Given(Request.Create()
+                    .UsingGet()
+                    .WithPath($"/api/organisations/{organisationGuid}/pending-applications"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyFromFile(filePath));
+        }
+
         return server;
     }
 }

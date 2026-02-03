@@ -1,0 +1,51 @@
+{
+  "organisationId": "EE29CFAE-81AB-435F-8759-7285959530DB",
+  "organisationName": "Compliance Scheme Ltd",
+  "organisationType": "CompaniesHouseCompany",
+  "organisationReferenceNumber": "100001",
+  "companiesHouseNumber": "12345678",
+  "isComplianceScheme": true,
+  "nationId": 1,
+  "nationName": "England",
+  "businessAddress": {
+    "buildingName": "Compliance House",
+    "subBuildingName": "",
+    "buildingNumber": "10",
+    "street": "High Street",
+    "town": "London",
+    "county": "Greater London",
+    "country": "England",
+    "postCode": "SW1A 1AA"
+  },
+  "users": [
+    {
+      "firstName": "James",
+      "lastName": "Smith",
+      "email": "james.smith@compliancescheme.com",
+      "jobTitle": "Director",
+      "telephoneNumber": "020 7123 4567",
+      "isEmployeeOfOrganisation": true,
+      "enrolments": {
+        "serviceRole": "Packaging.ApprovedPerson",
+        "enrolmentStatus": "Approved",
+        "externalId": "A1234567-89AB-CDEF-0123-456789ABCDEF"
+      },
+      "transferComments": null
+    },
+    {
+      "firstName": "Sarah",
+      "lastName": "Jones",
+      "email": "sarah.jones@compliancescheme.com",
+      "jobTitle": "Compliance Manager",
+      "telephoneNumber": "020 7123 4568",
+      "isEmployeeOfOrganisation": true,
+      "enrolments": {
+        "serviceRole": "Packaging.DelegatedPerson",
+        "enrolmentStatus": "Pending",
+        "externalId": "B2345678-9ABC-DEF0-1234-56789ABCDEF0"
+      },
+      "transferComments": null
+    }
+  ],
+  "transferDetails": null
+}

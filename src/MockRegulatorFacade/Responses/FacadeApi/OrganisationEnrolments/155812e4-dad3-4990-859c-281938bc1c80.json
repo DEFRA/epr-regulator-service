@@ -1,0 +1,51 @@
+{
+  "organisationId": "155812E4-DAD3-4990-859C-281938BC1C80",
+  "organisationName": "Large Producer Corp",
+  "organisationType": "CompaniesHouseCompany",
+  "organisationReferenceNumber": "100002",
+  "companiesHouseNumber": "23456789",
+  "isComplianceScheme": false,
+  "nationId": 1,
+  "nationName": "England",
+  "businessAddress": {
+    "buildingName": "Producer Building",
+    "subBuildingName": "",
+    "buildingNumber": "25",
+    "street": "Industrial Way",
+    "town": "Manchester",
+    "county": "Greater Manchester",
+    "country": "England",
+    "postCode": "M1 2AB"
+  },
+  "users": [
+    {
+      "firstName": "Michael",
+      "lastName": "Brown",
+      "email": "michael.brown@largeproducer.com",
+      "jobTitle": "CEO",
+      "telephoneNumber": "0161 123 4567",
+      "isEmployeeOfOrganisation": true,
+      "enrolments": {
+        "serviceRole": "Packaging.ApprovedPerson",
+        "enrolmentStatus": "Approved",
+        "externalId": "C3456789-ABCD-EF01-2345-6789ABCDEF01"
+      },
+      "transferComments": null
+    },
+    {
+      "firstName": "Emma",
+      "lastName": "Wilson",
+      "email": "emma.wilson@largeproducer.com",
+      "jobTitle": "Operations Manager",
+      "telephoneNumber": "0161 123 4568",
+      "isEmployeeOfOrganisation": true,
+      "enrolments": {
+        "serviceRole": "Packaging.DelegatedPerson",
+        "enrolmentStatus": "Pending",
+        "externalId": "D4567890-BCDE-F012-3456-789ABCDEF012"
+      },
+      "transferComments": null
+    }
+  ],
+  "transferDetails": null
+}
