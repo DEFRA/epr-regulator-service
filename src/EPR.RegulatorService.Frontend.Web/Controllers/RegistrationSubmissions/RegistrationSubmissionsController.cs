@@ -669,6 +669,7 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpGet]
+    [Route("[controller]/" + nameof(FileDownloadInProgress))]
     public async Task<IActionResult> FileDownloadInProgress([FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);

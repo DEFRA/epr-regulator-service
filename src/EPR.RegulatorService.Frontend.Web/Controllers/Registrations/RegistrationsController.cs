@@ -351,6 +351,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
         }
 
         [HttpGet]
+        [Route("[controller]/" + nameof(FileDownloadInProgress))]
         public async Task<IActionResult> FileDownloadInProgress()
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session);

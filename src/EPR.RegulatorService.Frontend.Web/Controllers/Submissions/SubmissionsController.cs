@@ -478,6 +478,7 @@ public partial class SubmissionsController : Controller
 
 
     [HttpGet]
+    [Route("[controller]/" + nameof(FileDownloadInProgress))]
     public async Task<IActionResult> FileDownloadInProgress([FromQuery] int submissionHash)
     {
         var session = await _sessionManager.GetSessionAsync(HttpContext.Session);
