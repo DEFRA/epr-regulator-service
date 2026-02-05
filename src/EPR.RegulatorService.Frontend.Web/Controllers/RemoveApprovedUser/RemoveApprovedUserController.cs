@@ -143,6 +143,8 @@ public class RemoveApprovedUserController : RegulatorSessionBaseController
         return RedirectToAction(PagePath.Error, "Error");
     }
 
+    [HttpGet]
+    [Route("[controller]/" + nameof(NominateOnly))]
     public async Task<IActionResult> NominateOnly(AddRemoveApprovedUserSession addRemoveApprovedUserSession)
     {
         var promotedApprovedUserModel = new RemovedNominatedUserViewModel()
