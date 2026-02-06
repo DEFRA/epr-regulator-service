@@ -20,7 +20,7 @@
                 </div>
                 @if (!downloadCompleted)
                 {
-                    <meta http-equiv="refresh" content="2; url=@Url.Action("FileDownloadInProgress", "Submissions", new {submissionHash = @submissionHash})" />
+                    <meta http-equiv="refresh" content="1; url=@Url.Action("FileDownloadInProgress", "Submissions", new {submissionHash = @submissionHash})" />
                 }
             </div>
         </div>

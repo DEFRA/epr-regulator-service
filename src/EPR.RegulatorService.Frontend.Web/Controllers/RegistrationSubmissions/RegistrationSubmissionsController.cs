@@ -674,6 +674,7 @@ public partial class RegistrationSubmissionsController(
     }
 
     [HttpGet]
+    [Route("[controller]/" + nameof(FileDownloadInProgress))]
     public async Task<IActionResult> FileDownloadInProgress([FromQuery] Guid submissionId)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
@@ -696,19 +697,15 @@ public partial class RegistrationSubmissionsController(
         {
             return RedirectToAction(nameof(RegistrationSubmissionFileDownloadSecurityWarning), new { submissionId });
         }
-        else if (response.IsSuccessStatusCode)
-        {
-            var fileStream = await response.Content.ReadAsStreamAsync();
-            var contentDisposition = response.Content.Headers.ContentDisposition;
-            var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? submission.SubmissionDetails.Files[0].FileName ?? $"{submission.OrganisationReference}_details.csv";
-            TempData["DownloadCompleted"] = true;
 
-            return File(fileStream, "application/octet-stream", fileName);
-        }
-        else
-        {
-            return RedirectToAction(nameof(RegistrationSubmissionFileDownloadFailed), new { submissionId });
-        }
+        response.EnsureSuccessStatusCode();
+        var fileStream = await response.Content.ReadAsStreamAsync();
+        var contentDisposition = response.Content.Headers.ContentDisposition;
+        var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ??
+            submission.SubmissionDetails.Files[0].FileName ?? $"{submission.OrganisationReference}_details.csv";
+        TempData["DownloadCompleted"] = true;
+
+        return File(fileStream, "application/octet-stream", fileName);
     }
 
     [HttpGet]

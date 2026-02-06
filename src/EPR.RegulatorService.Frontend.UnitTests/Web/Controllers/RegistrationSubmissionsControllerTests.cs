@@ -724,13 +724,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewResult = result as RedirectToActionResult;
             Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL
         }
 
         [TestMethod]
         public async Task GrantRegistrationSubmission_ReturnsView_WithCorrectModel()
         {
-            // Arrange 
+            // Arrange
             var submissionId = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
             var mockUrlHelper = CreateUrlHelper(submissionId, locationUrl);
@@ -809,7 +809,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewResult = result as RedirectToActionResult;
             Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL
         }
 
         [TestMethod]
@@ -1056,7 +1056,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     { submissionId, updateSubmissionDetailsModel }
                 },
             };
-            
+
             _facadeServiceMock.Setup(r => r.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>())).ReturnsAsync(EndpointResponseStatus.Fail);
 
             // Act
@@ -1193,13 +1193,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewResult = result as RedirectToActionResult;
             Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL
         }
 
         [TestMethod]
         public async Task QueryRegistrationSubmission_Get_ReturnsView_WithCorrectModel()
         {
-            // Arrange 
+            // Arrange
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
@@ -1306,7 +1306,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewResult = result as RedirectToActionResult;
             Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL
         }
 
         [TestMethod]
@@ -1623,13 +1623,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewResult = result as RedirectToActionResult;
             Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL
         }
 
         [TestMethod]
         public async Task RejectRegistrationSubmission_Get_ReturnsView_WithCorrectModel()
         {
-            // Arrange 
+            // Arrange
             var id = Guid.NewGuid();
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{id}";
 
@@ -1728,7 +1728,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var viewResult = result as RedirectToActionResult;
             Assert.IsNotNull(viewResult, "Result should be of type ViewResult.");
 
-            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL 
+            Assert.AreEqual(PagePath.PageNotFound, viewResult.ActionName); // Ensure the user is redirected to the correct URL
         }
 
         [TestMethod]
@@ -3063,7 +3063,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task ConfirmRegistrationRefusal_Get_ReturnsView_WithCorrectViewModelAndBackLink()
         {
-            // Arrange 
+            // Arrange
             var submissionId = Guid.NewGuid();
             string expectedRejectReason = "Valid reject reason";
             string locationUrl = $"/regulators/{PagePath.RegistrationSubmissionDetails}/{submissionId}";
@@ -4085,7 +4085,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
         [TestMethod]
         [DataRow(HttpStatusCode.Forbidden, nameof(RegistrationSubmissionsController.RegistrationSubmissionFileDownloadSecurityWarning))]
-        [DataRow(HttpStatusCode.BadRequest, nameof(RegistrationSubmissionsController.RegistrationSubmissionFileDownloadFailed))]
         public async Task FileDownloadInProgress_ShouldRedirectCorrectly_WhenFacadeDoesNotReturnSuccess(
             HttpStatusCode httpStatusCode,
             string expectedRedirectAction)

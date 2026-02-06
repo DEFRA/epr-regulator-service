@@ -50,7 +50,12 @@ public class RegulatorServiceWebApplicationFactory : WebApplicationFactory<Progr
 
             services.AddAntiforgery(options =>
             {
-                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.None; // Configure antiforgery to not require HTTPS for testing
+                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.None; // Don't require HTTPS cookies for testing
+            });
+
+            services.Configure<Microsoft.AspNetCore.Builder.SessionOptions>(options =>
+            {
+                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.None; // Don't require HTTPS cookies for testing
             });
         });
     }

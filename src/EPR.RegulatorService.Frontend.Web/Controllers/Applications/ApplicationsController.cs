@@ -392,6 +392,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                 session, nameof(EnrolmentRequests), PagePath.Applications, PagePath.EnrolmentRequests, null);
         }
 
+        [HttpGet]
+        [Route("[controller]/" + nameof(AcceptApplication))]
         public async Task<IActionResult> AcceptApplication(string? acceptedUserFirstName, string? acceptedUserLastName, string? acceptedUserEmail, string? serviceRole)
         {
             var session = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new();

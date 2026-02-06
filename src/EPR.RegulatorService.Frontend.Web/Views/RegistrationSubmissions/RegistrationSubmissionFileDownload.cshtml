@@ -18,7 +18,7 @@
                 </div>
                 @if (!downloadCompleted)
                 {
-                    <meta http-equiv="refresh" content="2; url=@Url.Action("FileDownloadInProgress", "RegistrationSubmissions", new { submissionId = Model })" />
+                    <meta http-equiv="refresh" content="1; url=@Url.Action("FileDownloadInProgress", "RegistrationSubmissions", new { submissionId = Model })" />
                 }
               </div>
           </div>
