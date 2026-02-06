@@ -10,7 +10,7 @@ using PageModels;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
-[Collection("Sequential")] // Shared mock facade can't be used safely in parallel
+[Collection(SequentialCollection.Sequential)]
 public class RegistrationSubmissionDetailsTests : IntegrationTestBase
 {
     public override Task InitializeAsync()
