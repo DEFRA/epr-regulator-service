@@ -43,16 +43,15 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
     }
 
     [Fact]
-    public async Task ShowsAllOrganisationTypesFromFacade()
+    public async Task ShowsAllRegistrationJourneyTypesFromFacade()
     {
         // Arrange
         SetupFacadeMockRegistrationSubmissions([
-            CreateSubmission(orgRef: "100001", orgName: "Compliance Scheme Ltd", orgType: "compliance",
-                submissionDate: "2024-03-10T09:00:00Z"),
-            CreateSubmission(orgRef: "100002", orgName: "Large Producer Corp", orgType: "large",
-                submissionDate: "2024-03-11T10:00:00Z"),
-            CreateSubmission(orgRef: "100003", orgName: "Small Producer Ltd", orgType: "small",
-                submissionDate: "2024-03-12T11:00:00Z"),
+            CreateSubmission(orgRef: "100001", orgName: "Compliance Scheme Ltd", orgType: "compliance", journeyType: "CsoLegacy", submissionDate: "2024-03-10T09:00:00Z"),
+            CreateSubmission(orgRef: "100002", orgName: "Large Producer Corp", orgType: "large", journeyType: "DirectLargeProducer", submissionDate: "2024-03-11T10:00:00Z"),
+            CreateSubmission(orgRef: "100003", orgName: "Small Producer Ltd", orgType: "small", journeyType: "DirectSmallProducer", submissionDate: "2024-03-12T11:00:00Z"),
+            CreateSubmission(orgRef: "100004", orgName: "CSO Large Producer Ltd", orgType: "compliance", journeyType: "CsoLargeProducer", submissionDate: "2024-03-13T12:00:00Z"),
+            CreateSubmission(orgRef: "100005", orgName: "CSO Small Producer Ltd", orgType: "compliance", journeyType: "CsoSmallProducer", submissionDate: "2024-03-14T13:00:00Z"),
         ]);
 
         // Act
@@ -61,28 +60,33 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
 
         // Assert
         var tableRows = registrationSubmissionsPage.GetTableRows().ToList();
-        tableRows.Should().HaveCount(3);
+        tableRows.Should().HaveCount(5);
 
         using (new AssertionScope())
         {
             tableRows[0].OrganisationName.Should().Be("Compliance Scheme Ltd");
-            tableRows[0].OrganisationType.Should().Contain("Compliance Scheme");
+            tableRows[0].OrganisationType.Should().Be("Compliance scheme");
             tableRows[0].OrganisationReference.Should().Be("100001");
-            tableRows[0].ApplicationDate.Should().Contain("10 March 2024");
 
             tableRows[1].OrganisationName.Should().Be("Large Producer Corp");
-            tableRows[1].OrganisationType.Should().Contain("Large Producer");
+            tableRows[1].OrganisationType.Should().Be("Large producer");
             tableRows[1].OrganisationReference.Should().Be("100002");
-            tableRows[1].ApplicationDate.Should().Contain("11 March 2024");
 
             tableRows[2].OrganisationName.Should().Be("Small Producer Ltd");
-            tableRows[2].OrganisationType.Should().Contain("Small Producer");
+            tableRows[2].OrganisationType.Should().Be("Small producer");
             tableRows[2].OrganisationReference.Should().Be("100003");
-            tableRows[2].ApplicationDate.Should().Contain("12 March 2024");
+
+            tableRows[3].OrganisationName.Should().Be("CSO Large Producer Ltd");
+            tableRows[3].OrganisationType.Should().Be("Compliance scheme: large producer");
+            tableRows[3].OrganisationReference.Should().Be("100004");
+
+            tableRows[4].OrganisationName.Should().Be("CSO Small Producer Ltd");
+            tableRows[4].OrganisationType.Should().Be("Compliance scheme: small producer");
+            tableRows[4].OrganisationReference.Should().Be("100005");
         }
     }
 
-    private static object CreateSubmission(string orgRef, string orgName, string orgType, string submissionDate) =>
+    private static object CreateSubmission(string orgRef, string orgName, string orgType, string journeyType, string submissionDate) =>
         new
         {
             submissionId = Guid.NewGuid().ToString(),
@@ -90,6 +94,7 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
             organisationReference = orgRef,
             organisationName = orgName,
             organisationType = orgType,
+            registrationJourneyType = journeyType,
             applicationReferenceNumber = $"REG-2024-{orgRef}",
             registrationReferenceNumber = (string?)null,
             submissionDate,
