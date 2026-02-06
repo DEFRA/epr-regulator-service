@@ -488,67 +488,38 @@ public class FacadeService : IFacadeService
 
     public async Task SubmitRegistrationFeePaymentAsync(FeePaymentRequest request)
     {
-        try
-        {
-            await PrepareAuthenticatedClient();
+        await PrepareAuthenticatedClient();
 
-            string path = _facadeApiConfig.Endpoints[SubmitRegistrationFeePaymentPath];
-            var response = await _httpClient.PostAsJsonAsync(path, request);
-            response.EnsureSuccessStatusCode();
-        }
-        catch (Exception ex)
-        {
-            _logFacadeServiceError.Invoke(_logger, $"Exception occurred while submitting registration fee payment {nameof(FacadeService)}.{nameof(SubmitRegistrationFeePaymentAsync)}", ex);
-        }
+        string path = _facadeApiConfig.Endpoints[SubmitRegistrationFeePaymentPath];
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync(FeePaymentRequest request)
     {
-        try
-        {
-            await PrepareAuthenticatedClient();
+        await PrepareAuthenticatedClient();
 
-            string path = _facadeApiConfig.Endpoints[PackagingDataResubmissionFeePaymentPath];
-            var response = await _httpClient.PostAsJsonAsync(path, request);
-            response.EnsureSuccessStatusCode();
-        }
-        catch (Exception exception)
-        {
-            _logFacadeServiceError.Invoke(
-                _logger,
-                $"Exception occurred while submitting packaging data resubmission fee payment {nameof(FacadeService)}.{nameof(SubmitPackagingDataResubmissionFeePaymentEventAsync)}",
-                exception);
-        }
+        string path = _facadeApiConfig.Endpoints[PackagingDataResubmissionFeePaymentPath];
+        var response = await _httpClient.PostAsJsonAsync(path, request);
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task<PomPayCalParametersResponse> GetPomPayCalParameters(Guid submissionId, Guid? complianceSchemeId)
     {
-        try
+        await PrepareAuthenticatedClient();
+
+        string url = $"{_facadeApiConfig.Endpoints[GetPomResubmissionPaycalParameters]}/{submissionId}";
+        if (complianceSchemeId.HasValue)
         {
-            await PrepareAuthenticatedClient();
-
-            string url = $"{_facadeApiConfig.Endpoints[GetPomResubmissionPaycalParameters]}/{submissionId}";
-            if (complianceSchemeId.HasValue)
-            {
-                url = $"{url}?ComplianceSchemeId={complianceSchemeId}";
-            }
-
-            var response = await _httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-
-            string content = await response.Content.ReadAsStringAsync();
-            var payCalDetailsResponse = JsonSerializer.Deserialize<PomPayCalParametersResponse>(content);
-            return payCalDetailsResponse;
+            url = $"{url}?ComplianceSchemeId={complianceSchemeId}";
         }
-        catch (Exception exception)
-        {
-            _logFacadeServiceError.Invoke(
-                _logger,
-                $"Exception occurred while retrieving pom resubmission pay cal parameters {nameof(FacadeService)}.{nameof(GetPomPayCalParameters)}",
-                exception);
 
-            return default;
-        }
+        var response = await _httpClient.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+
+        string content = await response.Content.ReadAsStringAsync();
+        var payCalDetailsResponse = JsonSerializer.Deserialize<PomPayCalParametersResponse>(content);
+        return payCalDetailsResponse;
     }
 
     private async Task<List<T>> GetAllOrganisationSubmissions<T>(

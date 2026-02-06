@@ -639,59 +639,21 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task PostingTo_RegistrationSubmissions_Return_ErrorPage_When_Exception_Received()
+        public async Task PostingTo_RegistrationSubmissions_Throws_When_Exception_Received()
         {
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(null, null);
-            Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToActionResult>();
-            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
+
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _controller.RegistrationSubmissions(null, null));
         }
 
         [TestMethod]
-        public async Task GettingFrom_RegistrationSubmissions_Return_ErrorPage_When_Exception_Received()
+        public async Task GettingFrom_RegistrationSubmissions_Throws_When_Exception_Received()
         {
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(1);
-            Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToActionResult>();
-            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
-        }
 
-        [TestMethod]
-        public async Task PostTo_RegistrationSubmissions_Logs_Error_When_Exception_Received()
-        {
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(null, null);
-            Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToActionResult>();
-            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
-            _loggerMock.Verify(
-                        x => x.Log(
-                            It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
-                            It.Is<EventId>((eid) => eid == 1001),
-                            It.IsAny<It.IsAnyType>(),
-                            It.Is<Exception>((v, t) => v.ToString().Contains("Test")),
-                            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                        Times.Once);
-        }
-
-        [TestMethod]
-        public async Task GettingFrom_RegistrationSubmissions_Logs_Error_When_Exception_Received()
-        {
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(1);
-            Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToActionResult>();
-            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
-            _loggerMock.Verify(
-                        x => x.Log(
-                            It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
-                            It.IsAny<EventId>(),
-                            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("An error occurred while processing a message: Exception received processing GET to RegistrationSubmissionsController.RegistrationSubmissions")),
-                            It.IsAny<Exception>(),
-                            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                        Times.Once);
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _controller.RegistrationSubmissions(1));
         }
         #endregion Sad Path
 
@@ -886,7 +848,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GrantRegistrationSubmission_Post_Should_RedirectTo_ServiceNotAvailable_When_Facade_Throws()
+        public async Task GrantRegistrationSubmission_Post_Throws_When_Facade_Throws()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -901,34 +863,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var exception = new Exception("Test exception");
 
-            // Set up the mock to throw an exception when SubmitRegulatorRegistrationDecisionAsync is called
             _facadeServiceMock
                 .Setup(service => service.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
                 .ThrowsAsync(exception);
 
-            // Act
-            var result = await _controller.GrantRegistrationSubmission(model) as RedirectToRouteResult;
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _controller.GrantRegistrationSubmission(model));
 
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
-
-            // Verify the back link in the route values is set correctly
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
-
-            // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
-
-            // Verify that _logControllerError was called with correct parameters
-            _loggerMock.Verify(logger =>
-                logger.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while granting submission")),
-                    exception,
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
         }
 
         [TestMethod]
@@ -1502,7 +1446,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task QueryRegistrationSubmission_Post_RedirectsToServiceNotAvailable_OnFacadeServiceException()
+        public async Task QueryRegistrationSubmission_Post_Throws_On_FacadeServiceException()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -1525,28 +1469,23 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 Query = "Valid reason"
             };
 
-            // Set up the facade service to throw an exception
+            var exception = new Exception("Simulated facade exception");
             _facadeServiceMock
                 .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
-                .ThrowsAsync(new Exception("Simulated facade exception"));
+                .ThrowsAsync(exception);
 
             _controller.Url = mockUrlHelper.Object;
 
-            // Act
-            var result = await _controller.QueryRegistrationSubmission(model) as RedirectToRouteResult;
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _controller.QueryRegistrationSubmission(model));
 
-            // Assert - Redirects to ServiceNotAvailable when an exception occurs
-            Assert.IsNotNull(result);
-            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
-
-            // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
 
         [TestMethod]
-        public async Task QueryRegistrationSubmission_Post_LogsErrorAndRedirectsToServiceNotAvailable_OnException()
+        public async Task QueryRegistrationSubmission_Post_Throws_OnException()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -1561,34 +1500,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var exception = new Exception("Test exception");
 
-            // Set up the mock to throw an exception when SubmitRegulatorRegistrationDecisionAsync is called
             _facadeServiceMock
                 .Setup(service => service.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
                 .ThrowsAsync(exception);
 
-            // Act
-            var result = await _controller.QueryRegistrationSubmission(model) as RedirectToRouteResult;
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _controller.QueryRegistrationSubmission(model));
 
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
-
-            // Verify the back link in the route values is set correctly
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
-
-            // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
-
-            // Verify that _logControllerError was called with correct parameters
-            _loggerMock.Verify(logger =>
-                logger.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while querying submission")),
-                    exception,
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
         }
 
         #endregion POST
@@ -2058,22 +1979,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissionDetails_Returns_Null_When_SelectedRegistration_And_SubmissionId_IsNull()
-        {
-            // Arrange
-            var submissionId = Guid.NewGuid();
-            var expectedViewModel = GenerateTestSubmissionDetailsViewModel(submissionId);
-
-            _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ReturnsAsync(expectedViewModel);
-
-            // Act
-            var result = await _controller.RegistrationSubmissionDetails(null) as ViewResult;
-
-            // Assert
-            Assert.IsNull(result);
-        }
-
-        [TestMethod]
         public async Task SubmitOfflinePayment_Post_RedirectsToConfirmOfflinePaymentSubmission_WhenCalled_With_Valid_Model()
         {
             // Arrange
@@ -2159,7 +2064,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissionDetails_ReturnsPageNotFound_When_HttpRequestException_Thrown_With_NotFound_Status()
+        public async Task RegistrationSubmissionDetails_Throws_When_HttpRequestException_Thrown_With_NotFound_Status()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -2167,18 +2072,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Throws(exception);
 
-            // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            var redirect = result as RedirectToActionResult;
-            Assert.AreEqual(PagePath.PageNotFound, redirect.ActionName);
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(async () =>
+                await _controller.RegistrationSubmissionDetails(submissionId));
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissionDetails_ReturnsErrorPage_When_General_Exception_Thrown()
+        public async Task RegistrationSubmissionDetails_Throws_When_General_Exception_Thrown()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -2186,76 +2086,37 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).Throws(exception);
 
-            // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            var redirect = result as RedirectToActionResult;
-            Assert.AreEqual(PagePath.Error, redirect.ActionName);
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _controller.RegistrationSubmissionDetails(submissionId));
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissionDetails_ReturnsPageNotFound_When_HttpRequestException_Thrown_With_NotFound_StatusCode()
+        public async Task RegistrationSubmissionDetails_Throws_When_HttpRequestException_Thrown_With_NotFound_StatusCode()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
             var httpRequestException = new HttpRequestException("Not Found", null, HttpStatusCode.NotFound);
 
-            // Setup the _facadeServiceMock to throw the HttpRequestException
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ThrowsAsync(httpRequestException);
 
-            // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId);
-
-            // Assert
-            // Verify that the logger was called with the expected error message
-            _loggerMock.Verify(logger =>
-                logger.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received processing GET to RegistrationSubmissionsController")),
-                    It.Is<Exception>(ex => ex == httpRequestException),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
-
-            // Check the redirection to "PageNotFound"
-            var redirectResult = result as RedirectToActionResult;
-            Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePath.PageNotFound, redirectResult.ActionName);
-            Assert.AreEqual("RegistrationSubmissions", redirectResult.ControllerName);
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(async () =>
+                await _controller.RegistrationSubmissionDetails(submissionId));
         }
 
         [TestMethod]
-        public async Task RegistrationSubmissionDetails_ReturnsErrorPage_When_HttpRequestException_Thrown_With_NonNotFound_StatusCode()
+        public async Task RegistrationSubmissionDetails_Throws_When_HttpRequestException_Thrown_With_NonNotFound_StatusCode()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            var httpRequestException = new HttpRequestException("Error", null, HttpStatusCode.InternalServerError); // Non-NotFound status code
+            var httpRequestException = new HttpRequestException("Error", null, HttpStatusCode.InternalServerError);
 
-            // Setup the _facadeServiceMock to throw the HttpRequestException
             _facadeServiceMock.Setup(x => x.GetRegistrationSubmissionDetails(It.IsAny<Guid>())).ThrowsAsync(httpRequestException);
 
-            // Act
-            var result = await _controller.RegistrationSubmissionDetails(submissionId);
-
-            // Assert
-            // Check the redirection to "Error"
-            var redirectResult = result as RedirectToActionResult;
-            Assert.IsNotNull(redirectResult);
-            Assert.AreEqual(PagePath.Error, redirectResult.ActionName);
-            Assert.AreEqual("Error", redirectResult.ControllerName);
-
-            // Verify that the logger was called with the expected error message
-            _loggerMock.Verify(logger =>
-                logger.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received processing GET to RegistrationSubmissionsController")),
-                    It.Is<Exception>(ex => ex == httpRequestException),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Never);
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(async () =>
+                await _controller.RegistrationSubmissionDetails(submissionId));
         }
 
         #endregion
@@ -3329,7 +3190,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task ConfirmRegistrationRefusal_Post_RedirectsToServiceNotAvailable_OnFacadeServiceException()
+        public async Task ConfirmRegistrationRefusal_Post_Throws_On_FacadeServiceException()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -3353,22 +3214,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 IsRegistrationRefusalConfirmed = true
             };
 
-            // Set up the facade service to throw an exception
+            var exception = new Exception("Simulated facade exception");
             _facadeServiceMock
                 .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
-                .ThrowsAsync(new Exception("Simulated facade exception"));
+                .ThrowsAsync(exception);
 
             _controller.Url = mockUrlHelper.Object;
 
-            // Act
-            var result = await _controller.ConfirmRegistrationRefusal(model) as RedirectToRouteResult;
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _controller.ConfirmRegistrationRefusal(model));
 
-            // Assert - Redirects to ServiceNotAvailable when an exception occurs
-            Assert.IsNotNull(result);
-            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
-
-            // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
@@ -3694,7 +3550,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task CancelDateRegistrationSubmission_Post_RedirectsToServiceNotAvailable_OnFacadeServiceException()
+        public async Task CancelDateRegistrationSubmission_Post_Throws_On_FacadeServiceException()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -3722,28 +3578,23 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 Year = 2025
             };
 
-            // Set up the facade service to throw an exception
+            var exception = new Exception("Simulated facade exception");
             _facadeServiceMock
                 .Setup(mock => mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
-                .ThrowsAsync(new Exception("Simulated facade exception"));
+                .ThrowsAsync(exception);
 
             _controller.Url = mockUrlHelper.Object;
 
-            // Act
-            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _controller.CancelDateRegistrationSubmission(model));
 
-            // Assert - Redirects to ServiceNotAvailable when an exception occurs
-            Assert.IsNotNull(result);
-            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
-
-            // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
         }
 
         [TestMethod]
-        public async Task CancelDateRegistrationSubmission_Post_LogsErrorAndRedirectsToServiceNotAvailable_OnException()
+        public async Task CancelDateRegistrationSubmission_Post_Throws_OnException()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -3764,34 +3615,16 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var exception = new Exception("Test exception");
 
-            // Set up the mock to throw an exception when SubmitRegulatorRegistrationDecisionAsync is called
             _facadeServiceMock
                 .Setup(service => service.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()))
                 .ThrowsAsync(exception);
 
-            // Act
-            var result = await _controller.CancelDateRegistrationSubmission(model) as RedirectToRouteResult;
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<Exception>(async () =>
+                await _controller.CancelDateRegistrationSubmission(model));
 
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual("ServiceNotAvailable", result.RouteName);
-
-            // Verify the back link in the route values is set correctly
-            Assert.AreEqual($"{PagePath.RegistrationSubmissionDetails}/{submissionId}", result.RouteValues["backLink"]);
-
-            // Verify that the facade service was called the expected number of times
             _facadeServiceMock.Verify(mock =>
                 mock.SubmitRegulatorRegistrationDecisionAsync(It.IsAny<RegulatorDecisionRequest>()), Times.Once);
-
-            // Verify that _logControllerError was called with correct parameters
-            _loggerMock.Verify(logger =>
-                logger.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Exception received while cancelling submission")),
-                    exception,
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
         }
 
         #endregion
