@@ -28,21 +28,46 @@ body = """
 """
 # Footer template rendered once at the end of the changelog.
 footer = """
-{% set ticket_urls = [] -%}
+{% set completed_tickets = [] -%}
+{% set related_tickets = [] -%}
 {% for release in releases -%}
     {% for commit in release.commits -%}
         {% for link in commit.links -%}
             {% if link.href is containing("browse/SMAL-") -%}
-                {% set_global ticket_urls = ticket_urls | concat(with=[link.href]) -%}
+                {% set body_text = commit.body | default(value="") -%}
+                {% set msg_text = commit.message | default(value="") -%}
+                {% set full_text = msg_text ~ " " ~ body_text -%}
+                {% if full_text is containing("Fixes " ~ link.href) or full_text is containing("Closes " ~ link.href) -%}
+                    {% set_global completed_tickets = completed_tickets | concat(with=[link.href]) -%}
+                {% else -%}
+                    {% set_global related_tickets = related_tickets | concat(with=[link.href]) -%}
+                {% endif -%}
             {% endif -%}
         {% endfor -%}
     {% endfor -%}
 {% endfor -%}
-{% set unique_tickets = ticket_urls | unique | sort -%}
-{% if unique_tickets | length > 0 %}
+{% set unique_completed = completed_tickets | unique | sort -%}
+{% set unique_related = related_tickets | unique | sort -%}
+{# Remove completed tickets from related list #}
+{% set filtered_related = [] -%}
+{% for url in unique_related -%}
+    {% if url not in unique_completed -%}
+        {% set_global filtered_related = filtered_related | concat(with=[url]) -%}
+    {% endif -%}
+{% endfor -%}
+{% if unique_completed | length > 0 %}
+
+## ✅ Completed Tickets
+
+{% for url in unique_completed -%}
+- {{ url }}
+{% endfor -%}
+{% endif -%}
+{% if filtered_related | length > 0 %}
 
 ## 🎫 Related Tickets
-{% for url in unique_tickets -%}
+
+{% for url in filtered_related -%}
 - {{ url }}
 {% endfor -%}
 {% endif -%}
