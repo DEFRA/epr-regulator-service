@@ -5,9 +5,27 @@ appendCommitMessageToRunName: false
 name: 'Path-To-Prod epr-regulator-service'
 
 parameters:
+- name: serviceName
+  displayName: 'Select the service to deploy'
+  type: string
+  values:
+    - epr-regulator-service
+
 - name: imageTag
-  displayName: Enter Tag for the Image (Docker tag) or Release name (Git repo tag)
+  displayName: Enter Tag for the Image (Docker tag)
   default: ''
   type: string
 
+resources:
+  repositories:
+    - repository: CommonTemplates
+      name: defra/epr-webapps-code-deploy-templates
+      type: github
+      endpoint: defra
+      ref: main
 
+steps:
+  - template: get-current-dockertag.yaml
+    parameters:
+      azureSubscription: ${{ parameters.azureSubscription }}
+      serviceName: ${{ parameters.serviceName }}
