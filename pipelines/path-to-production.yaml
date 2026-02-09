@@ -4,7 +4,7 @@ pool: DEFRA-COMMON-ubuntu2004-SSV3
 appendCommitMessageToRunName: false
 name: Path-To-Prod epr-regulator-service
 
-variable:
+variables:
   azureSubscription: AZD-RWD-DEV1
 
 parameters:
