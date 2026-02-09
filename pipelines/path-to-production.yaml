@@ -28,7 +28,7 @@ resources:
       ref: main
 
 steps:
-  - template: get-current-dockertag.yaml
+  - template: templates/get-current-dockertag.yaml@CommonTemplates
     parameters:
       azureSubscription: ${{ variables.azureSubscription }}
       serviceName: devrwdwebwa1411
