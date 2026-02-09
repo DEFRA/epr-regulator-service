@@ -2,11 +2,14 @@ trigger: none
 pr: none
 pool: DEFRA-COMMON-ubuntu2004-SSV3
 appendCommitMessageToRunName: false
-name: 'Path-To-Prod epr-regulator-service'
+name: Path-To-Prod epr-regulator-service
+
+variable:
+  azureSubscription: AZD-RWD-DEV1
 
 parameters:
 - name: serviceName
-  displayName: 'Select the service to deploy'
+  displayName: Select the service to deploy
   type: string
   values:
     - epr-regulator-service
