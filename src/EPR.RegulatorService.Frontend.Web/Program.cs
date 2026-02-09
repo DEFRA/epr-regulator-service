@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Logging;
 
+using RoutesList.Gen;
+
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +54,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 builder.Services
     .AddApplicationInsightsTelemetry()
+    .AddRoutesList()
     .AddHealthChecks();
 
 builder.Services.AddHsts(options =>
@@ -100,6 +103,11 @@ app.UseMiddleware<AnalyticsCookieMiddleware>();
 
 app.MapControllers();
 app.MapRazorPages();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseRoutesList();
+}
 
 await app.RunAsync();
 
