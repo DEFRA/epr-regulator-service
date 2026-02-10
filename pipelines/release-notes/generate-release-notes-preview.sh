@@ -9,4 +9,4 @@ export CLIFF_PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "
 export CLIFF_PREVIOUS_SHA_SHORT=$(git rev-parse --short "$CLIFF_PREVIOUS_TAG^{commit}" 2>/dev/null || echo "unknown")
 export CLIFF_PREVIOUS_SHA=$(git rev-parse "$CLIFF_PREVIOUS_TAG^{commit}" 2>/dev/null || echo "unknown")
 
-git-cliff --unreleased --strip header --config cliff.toml | tee release-note-preview.md
+git-cliff --unreleased --strip header --config cliff.toml
