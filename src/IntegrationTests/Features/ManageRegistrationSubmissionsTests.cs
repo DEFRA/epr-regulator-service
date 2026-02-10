@@ -15,15 +15,20 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
     {
         base.InitializeAsync();
         SetupUserAccountsMock();
-
         return Task.CompletedTask;
     }
 
-    [Fact]
-    public async Task ShowsCorrectHeadings()
+    [Theory]
+    [InlineData(null, "Environment Agency (EA)", "Manage registration submissions")]
+    [InlineData("cy", "Environment Agency (EA)", "Rheoli cyflwyniadau cofrestru")] // caption not currently translated - hardcoded in controller
+    public async Task ShowsHardcodedEnvironmentAgencyCaption(
+        string? culture,
+        string expectedCaption,
+        string expectedHeading)
     {
         // Arrange
         SetupFacadeMockRegistrationSubmissions([]);
+        await SetLanguage(culture);
 
         // Act
         var registrationSubmissionsPage = await GetAsPageModel<ManageRegistrationSubmissionsPageModel>(
@@ -32,13 +37,8 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
         // Assert
         using (new AssertionScope())
         {
-            // Assert on the agency name caption
-            registrationSubmissionsPage.AgencyNameCaption.Should().NotBeNull()
-                .And.Contain("Environment Agency");
-
-            // Assert on the page heading
-            registrationSubmissionsPage.PageHeading.Should().NotBeNull()
-                .And.Contain("Manage registration submissions");
+            registrationSubmissionsPage.AgencyNameCaption.Should().Be(expectedCaption);
+            registrationSubmissionsPage.PageHeading.Should().Be(expectedHeading);
         }
     }
 
@@ -114,8 +114,7 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
             regulatorUserId = (string?)null,
         };
 
-    private void SetupFacadeMockRegistrationSubmissions(object[] data)
-    {
+    private void SetupFacadeMockRegistrationSubmissions(object[] data) =>
         FacadeServer.Given(Request.Create()
                 .UsingPost()
                 .WithPath("/api/organisation-registration-submissions"))
@@ -126,5 +125,4 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
                 {
                     items = data, currentPage = 1, pageSize = 20, totalItems = data.Length,
                 })));
-    }
 }
