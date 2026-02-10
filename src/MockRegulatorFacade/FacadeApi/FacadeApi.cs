@@ -34,6 +34,14 @@ public static class FacadeApi
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyFromFile("Responses/FacadeApi/pending-applications.json"));
 
+        server.Given(Request.Create()
+                .UsingGet()
+                .WithPath("/api/pom/get-submissions"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile("Responses/FacadeApi/pom-submissions.json"));
+
         var registrationSubmissionDetailsPath = "Responses/FacadeApi/RegistrationSubmissionDetails";
         if (!Directory.Exists(registrationSubmissionDetailsPath))
         {
