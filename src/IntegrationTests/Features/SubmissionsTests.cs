@@ -13,10 +13,10 @@ using WireMock.ResponseBuilders;
 public class SubmissionsTests : IntegrationTestBase
 {
     [Theory]
-    [InlineData(null, "Environment Agency", 1, "Environment Agency", "Manage packaging data submissions")]
-    [InlineData("cy", "Environment Agency", 1, "Asiantaeth yr Amgylchedd", "Rheoli cyflwyniadau data pecynwaith")]
-    [InlineData(null, "Natural Resources Wales", 4, "Environment Agency", "Manage packaging data submissions")] // caption ignores user's org
-    [InlineData("cy", "Natural Resources Wales", 4, "Asiantaeth yr Amgylchedd", "Rheoli cyflwyniadau data pecynwaith")] // caption ignores user's org
+    [InlineData(null, "Ignored user org name", 1, "Environment Agency", "Manage packaging data submissions")]
+    [InlineData("cy", "Ignored user org name", 1, "Asiantaeth yr Amgylchedd", "Rheoli cyflwyniadau data pecynwaith")]
+    [InlineData(null, "Ignored user org name", 4, "Environment Agency", "Manage packaging data submissions")] // caption ignores user's org
+    [InlineData("cy", "Ignored user org name", 4, "Asiantaeth yr Amgylchedd", "Rheoli cyflwyniadau data pecynwaith")] // caption ignores user's org
     public async Task SubmissionsPage_ShowsHardcodedEnvironmentAgencyCaption(
         string? culture,
         string organisationName,
