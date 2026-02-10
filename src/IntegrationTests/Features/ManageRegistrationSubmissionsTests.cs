@@ -3,6 +3,7 @@ namespace IntegrationTests.Features;
 using System.Text.Json;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
+using IntegrationTests.Builders;
 using IntegrationTests.Infrastructure;
 using IntegrationTests.PageModels;
 using WireMock.RequestBuilders;
@@ -19,14 +20,21 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
     }
 
     [Theory]
-    [InlineData(null, "Environment Agency (EA)", "Manage registration submissions")]
-    [InlineData("cy", "Environment Agency (EA)", "Rheoli cyflwyniadau cofrestru")] // caption not currently translated - hardcoded in controller
+    [InlineData(null, "Environment Agency", 1, "Environment Agency (EA)", "Manage registration submissions")]
+    [InlineData("cy", "Environment Agency", 1, "Environment Agency (EA)", "Rheoli cyflwyniadau cofrestru")] // caption not currently translated - hardcoded in controller
+    [InlineData(null, "Natural Resources Wales", 4, "Natural Resources Wales (NRW)", "Manage registration submissions")] // caption from switch on nationId in controller
+    [InlineData("cy", "Natural Resources Wales", 4, "Natural Resources Wales (NRW)", "Rheoli cyflwyniadau cofrestru")] // caption from switch - not translated
     public async Task ShowsHardcodedEnvironmentAgencyCaption(
         string? culture,
+        string organisationName,
+        int nationId,
         string expectedCaption,
         string expectedHeading)
     {
         // Arrange
+        SetupUserAccountsMock(UserAccountBuilder.Default()
+            .WithOrganisationName(organisationName)
+            .WithNationId(nationId));
         SetupFacadeMockRegistrationSubmissions([]);
         await SetLanguage(culture);
 

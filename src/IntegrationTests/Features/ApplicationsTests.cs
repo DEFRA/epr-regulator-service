@@ -3,6 +3,7 @@ namespace IntegrationTests.Features;
 using System.Text.Json;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
+using IntegrationTests.Builders;
 using IntegrationTests.Infrastructure;
 using IntegrationTests.PageModels;
 using WireMock.RequestBuilders;
@@ -12,15 +13,21 @@ using WireMock.ResponseBuilders;
 public class ApplicationsTests : IntegrationTestBase
 {
     [Theory]
-    [InlineData(null, "Environment Agency", "Applications for approved and delegated people")]
-    [InlineData("cy", "Asiantaeth yr Amgylchedd", "Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd")]
+    [InlineData(null, "Environment Agency", 1, "Environment Agency", "Applications for approved and delegated people")]
+    [InlineData("cy", "Environment Agency", 1, "Asiantaeth yr Amgylchedd", "Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd")]
+    [InlineData(null, "Natural Resources Wales", 4, "Environment Agency", "Applications for approved and delegated people")] // caption ignores user's org
+    [InlineData("cy", "Natural Resources Wales", 4, "Asiantaeth yr Amgylchedd", "Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd")] // caption ignores user's org
     public async Task ApplicationsPage_ShowsHardcodedEnvironmentAgencyCaption(
         string? culture,
+        string organisationName,
+        int nationId,
         string expectedCaption,
         string expectedHeading)
     {
         // Arrange
-        SetupUserAccountsMock();
+        SetupUserAccountsMock(UserAccountBuilder.Default()
+            .WithOrganisationName(organisationName)
+            .WithNationId(nationId));
         SetupFacadeMockPendingApplications([]);
         await SetLanguage(culture);
 
