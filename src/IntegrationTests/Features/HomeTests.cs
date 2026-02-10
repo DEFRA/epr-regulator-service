@@ -11,8 +11,9 @@ public class HomeTests : IntegrationTestBase
 {
     [Theory]
     [InlineData(null, "Environment Agency", 1, "Jane", "Smith")]
+    [InlineData("cy", "Environment Agency", 1, "Jane", "Smith")] // org name is NOT translated - comes from user data
     [InlineData(null, "Natural Resources Wales", 4, "John", "Jones")]
-    [InlineData("cy", "Natural Resources Wales", 4, "Sioned", "Evans")] // note org name is NOT translated currently
+    [InlineData("cy", "Natural Resources Wales", 4, "Sioned", "Evans")] // org name is NOT translated - comes from user data
     public async Task HomePage_ShowsDynamicOrganisationAndPersonName(
         string? culture,
         string organisationName,
