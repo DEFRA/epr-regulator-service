@@ -198,6 +198,18 @@
   <data name="Nation.NorthernIreland" xml:space="preserve">
     <value>Gogledd Iwerddon</value>
   </data>
+  <data name="Regulator.EnvironmentAgency" xml:space="preserve">
+    <value>Asiantaeth yr Amgylchedd</value>
+  </data>
+  <data name="Regulator.NorthernIrelandEnvironmentAgency" xml:space="preserve">
+    <value>Asiantaeth Amgylchedd Gogledd Iwerddon</value>
+  </data>
+  <data name="Regulator.ScottishEnvironmentProtectionAgency" xml:space="preserve">
+    <value>Asiantaeth Diogelu Amgylchedd yr Alban</value>
+  </data>
+  <data name="Regulator.NaturalResourcesWales" xml:space="preserve">
+    <value>Cyfoeth Naturiol Cymru</value>
+  </data>
   <data name="Application.Govuk" xml:space="preserve">
     <value>GOV.UK </value>
   </data>

@@ -186,6 +186,18 @@
   <data name="Nation.Wales" xml:space="preserve">
     <value>Wales</value>
   </data>
+  <data name="Regulator.EnvironmentAgency" xml:space="preserve">
+    <value>Environment Agency</value>
+  </data>
+  <data name="Regulator.NorthernIrelandEnvironmentAgency" xml:space="preserve">
+    <value>Northern Ireland Environment Agency</value>
+  </data>
+  <data name="Regulator.ScottishEnvironmentProtectionAgency" xml:space="preserve">
+    <value>Scottish Environment Protection Agency</value>
+  </data>
+  <data name="Regulator.NaturalResourcesWales" xml:space="preserve">
+    <value>Natural Resources Wales</value>
+  </data>
   <data name="Button.Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>

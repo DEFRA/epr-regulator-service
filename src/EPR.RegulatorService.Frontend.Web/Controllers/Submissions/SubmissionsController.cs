@@ -101,7 +101,8 @@ public partial class SubmissionsController : Controller
             SubmissionPeriods = submissonPeriods,
             AcceptSubmissionResult = submissionResultAccept,
             RejectSubmissionResult = submissionResultReject,
-            OrganisationName = submissionResultOrganisationName
+            OrganisationName = submissionResultOrganisationName,
+            NationId = session.UserData.Organisations?.FirstOrDefault()?.NationId ?? 0
         };
 
         await SaveSessionAndJourney(session, PagePath.Submissions, PagePath.Submissions);

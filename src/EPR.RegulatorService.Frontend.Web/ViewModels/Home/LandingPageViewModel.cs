@@ -19,4 +19,6 @@ public class LandingPageViewModel
     public string ManageApprovedPersonUrl { get; set; }
 
     public string ManageRegistrationSubmissionsUrl { get; set; }
+
+    public int NationId { get; set; }
 }

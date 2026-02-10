@@ -86,8 +86,9 @@ public class HomeController : RegulatorSessionBaseController
             RegistrationsUrl = _landingPageConfig.RegistrationsUrl,
             ManageApprovedPersonUrl = _landingPageConfig.ManageApprovedPersonUrl,
             ManageRegistrationSubmissionsUrl = await _featureManager.IsEnabledAsync(FeatureFlags.ManageRegistrationSubmissions)
-            ? _landingPageConfig.ManageRegistrationSubmissionsUrl
-            : string.Empty
+                ? _landingPageConfig.ManageRegistrationSubmissionsUrl
+                : string.Empty,
+            NationId = session.UserData.Organisations?.FirstOrDefault()?.NationId ?? 0
         };
 
         await SaveSessionAndJourney(session, PagePath.Home);

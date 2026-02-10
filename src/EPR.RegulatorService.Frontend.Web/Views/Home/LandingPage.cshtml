@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Web.Helpers
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Home
 @addTagHelper *, Microsoft.FeatureManagement.AspNetCore
 
@@ -16,7 +17,7 @@
                 </h1>
 
                 <h2 class="govuk-heading-l govuk-!-margin-bottom-2">
-                    @Model.OrganisationName
+                    @SharedLocalizer[RegulatorHelpers.GetRegulatorResourceKey(Model.NationId)]
                 </h2>
 
                 <h3 class="govuk-heading-m govuk-caption-l govuk-!-margin-bottom-2">

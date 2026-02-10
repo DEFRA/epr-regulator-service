@@ -20,4 +20,5 @@ public class SubmissionsViewModel
     public bool IsRejectedSubmissionChecked { get; set; }
     public int[] SearchSubmissionYears { get; set; }
     public string[] SearchSubmissionPeriods { get; set; }
+    public int NationId { get; set; }
 }
