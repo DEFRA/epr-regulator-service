@@ -15,9 +15,9 @@ public class SubmissionsTests : IntegrationTestBase
     [Theory]
     [InlineData(null, "Ignored user org name", 1, "Environment Agency", "Manage packaging data submissions")]
     [InlineData("cy", "Ignored user org name", 1, "Asiantaeth yr Amgylchedd", "Rheoli cyflwyniadau data pecynwaith")]
-    [InlineData(null, "Ignored user org name", 4, "Environment Agency", "Manage packaging data submissions")] // caption ignores user's org
-    [InlineData("cy", "Ignored user org name", 4, "Asiantaeth yr Amgylchedd", "Rheoli cyflwyniadau data pecynwaith")] // caption ignores user's org
-    public async Task SubmissionsPage_ShowsHardcodedEnvironmentAgencyCaption(
+    [InlineData(null, "Ignored user org name", 4, "Natural Resources Wales", "Manage packaging data submissions")]
+    [InlineData("cy", "Ignored user org name", 4, "Cyfoeth Naturiol Cymru", "Rheoli cyflwyniadau data pecynwaith")]
+    public async Task SubmissionsPage_ShowsDynamicOrganisationCaption(
         string? culture,
         string organisationName,
         int nationId,

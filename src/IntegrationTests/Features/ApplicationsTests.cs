@@ -15,13 +15,13 @@ public class ApplicationsTests : IntegrationTestBase
     [Theory]
     [InlineData(null, "Ignored user org name", 1, "Environment Agency", "Applications for approved and delegated people")]
     [InlineData("cy", "Ignored user org name", 1, "Asiantaeth yr Amgylchedd", "Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd")]
-    [InlineData(null, "Ignored user org name", 2, "Environment Agency", "Applications for approved and delegated people")] // caption ignores user's nationId
-    [InlineData("cy", "Ignored user org name", 2, "Asiantaeth yr Amgylchedd", "Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd")]
-    [InlineData(null, "Ignored user org name", 3, "Environment Agency", "Applications for approved and delegated people")] // caption ignores user's nationId
-    [InlineData("cy", "Ignored user org name", 3, "Asiantaeth yr Amgylchedd", "Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd")]
-    [InlineData(null, "Ignored user org name", 4, "Environment Agency", "Applications for approved and delegated people")] // caption ignores user's nationId
-    [InlineData("cy", "Ignored user org name", 4, "Asiantaeth yr Amgylchedd", "Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd")]
-    public async Task ApplicationsPage_ShowsHardcodedEnvironmentAgencyCaption(
+    [InlineData(null, "Ignored user org name", 2, "Northern Ireland Environment Agency", "Applications for approved and delegated people")]
+    [InlineData("cy", "Ignored user org name", 2, "Asiantaeth Amgylchedd Gogledd Iwerddon", "Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd")]
+    [InlineData(null, "Ignored user org name", 3, "Scottish Environment Protection Agency", "Applications for approved and delegated people")]
+    [InlineData("cy", "Ignored user org name", 3, "Asiantaeth Diogelu Amgylchedd yr Alban", "Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd")]
+    [InlineData(null, "Ignored user org name", 4, "Natural Resources Wales", "Applications for approved and delegated people")]
+    [InlineData("cy", "Ignored user org name", 4, "Cyfoeth Naturiol Cymru", "Ceisiadau am bobl a gymeradwywyd a phobl a ddirprwywyd")]
+    public async Task ApplicationsPage_ShowsDynamicOrganisationCaption(
         string? culture,
         string organisationName,
         int nationId,

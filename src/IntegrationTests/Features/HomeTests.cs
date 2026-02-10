@@ -10,24 +10,25 @@ using IntegrationTests.PageModels;
 public class HomeTests : IntegrationTestBase
 {
     [Theory]
-    [InlineData(null, "Environment Agency", 1, "Jane", "Smith")]
-    [InlineData("cy", "Environment Agency", 1, "Jane", "Smith")] // org name is NOT translated - comes from user data
-    [InlineData(null, "Northern Ireland Environment Agency", 2, "Patrick", "Murphy")]
-    [InlineData("cy", "Northern Ireland Environment Agency", 2, "Patrick", "Murphy")]
-    [InlineData(null, "Scottish Environment Protection Agency", 3, "Hamish", "MacLeod")]
-    [InlineData("cy", "Scottish Environment Protection Agency", 3, "Hamish", "MacLeod")]
-    [InlineData(null, "Natural Resources Wales", 4, "John", "Jones")]
-    [InlineData("cy", "Natural Resources Wales", 4, "Sioned", "Evans")] // org name is NOT translated - comes from user data
+    [InlineData(null, 1, "Environment Agency", "Environment Agency", "Jane", "Smith")]
+    [InlineData("cy", 1, "Environment Agency", "Asiantaeth yr Amgylchedd", "Jane", "Smith")]
+    [InlineData(null, 2, "Northern Ireland Environment Agency", "Northern Ireland Environment Agency", "Patrick", "Murphy")]
+    [InlineData("cy", 2, "Northern Ireland Environment Agency", "Asiantaeth Amgylchedd Gogledd Iwerddon", "Patrick", "Murphy")]
+    [InlineData(null, 3, "Scottish Environment Protection Agency", "Scottish Environment Protection Agency", "Hamish", "MacLeod")]
+    [InlineData("cy", 3, "Scottish Environment Protection Agency", "Asiantaeth Diogelu Amgylchedd yr Alban", "Hamish", "MacLeod")]
+    [InlineData(null, 4, "Natural Resources Wales", "Natural Resources Wales", "John", "Jones")]
+    [InlineData("cy", 4, "Natural Resources Wales", "Cyfoeth Naturiol Cymru", "Sioned", "Evans")]
     public async Task HomePage_ShowsDynamicOrganisationAndPersonName(
         string? culture,
-        string organisationName,
         int nationId,
+        string userOrganisationName,
+        string expectedOrganisationName,
         string firstName,
         string lastName)
     {
         // Arrange
         SetupUserAccountsMock(UserAccountBuilder.Default()
-            .WithOrganisationName(organisationName)
+            .WithOrganisationName(userOrganisationName)
             .WithNationId(nationId)
             .WithFirstName(firstName)
             .WithLastName(lastName));
@@ -37,10 +38,10 @@ public class HomeTests : IntegrationTestBase
         var page = await GetAsPageModel<HomePageModel>(
             requestUri: "/regulators/home");
 
-        // Assert - organisation and person name come from account data, not localisation
+        // Assert
         using (new AssertionScope())
         {
-            page.OrganisationName.Should().Be(organisationName);
+            page.OrganisationName.Should().Be(expectedOrganisationName);
             page.PersonName.Should().Be($"{firstName} {lastName}");
         }
     }

@@ -15,9 +15,9 @@ public class RegistrationsTests : IntegrationTestBase
     [Theory]
     [InlineData(null, "Ignored user org name", 1, "Environment Agency", "Manage organisation details submissions")]
     [InlineData("cy", "Ignored user org name", 1, "Asiantaeth yr Amgylchedd", "Rheoli cyflwyniadau manylion sefydliadau")]
-    [InlineData(null, "Ignored user org name", 4, "Environment Agency", "Manage organisation details submissions")] // caption ignores user's org
-    [InlineData("cy", "Ignored user org name", 4, "Asiantaeth yr Amgylchedd", "Rheoli cyflwyniadau manylion sefydliadau")] // caption ignores user's org
-    public async Task RegistrationsPage_ShowsHardcodedEnvironmentAgencyCaption(
+    [InlineData(null, "Ignored user org name", 4, "Natural Resources Wales", "Manage organisation details submissions")]
+    [InlineData("cy", "Ignored user org name", 4, "Cyfoeth Naturiol Cymru", "Rheoli cyflwyniadau manylion sefydliadau")]
+    public async Task RegistrationsPage_ShowsDynamicOrganisationCaption(
         string? culture,
         string organisationName,
         int nationId,

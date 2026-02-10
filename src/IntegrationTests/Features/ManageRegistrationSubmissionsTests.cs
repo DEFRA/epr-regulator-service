@@ -20,11 +20,11 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
     }
 
     [Theory]
-    [InlineData(null, "Ignored user org name", 1, "Environment Agency (EA)", "Manage registration submissions")]
-    [InlineData("cy", "Ignored user org name", 1, "Environment Agency (EA)", "Rheoli cyflwyniadau cofrestru")] // caption not currently translated - hardcoded in controller
-    [InlineData(null, "Ignored user org name", 4, "Natural Resources Wales (NRW)", "Manage registration submissions")] // caption from switch on nationId in controller
-    [InlineData("cy", "Ignored user org name", 4, "Natural Resources Wales (NRW)", "Rheoli cyflwyniadau cofrestru")] // caption from switch - not translated
-    public async Task ShowsHardcodedEnvironmentAgencyCaption(
+    [InlineData(null, "Ignored user org name", 1, "Environment Agency", "Manage registration submissions")]
+    [InlineData("cy", "Ignored user org name", 1, "Asiantaeth yr Amgylchedd", "Rheoli cyflwyniadau cofrestru")]
+    [InlineData(null, "Ignored user org name", 4, "Natural Resources Wales", "Manage registration submissions")]
+    [InlineData("cy", "Ignored user org name", 4, "Cyfoeth Naturiol Cymru", "Rheoli cyflwyniadau cofrestru")]
+    public async Task ShowsDynamicOrganisationCaption(
         string? culture,
         string organisationName,
         int nationId,
