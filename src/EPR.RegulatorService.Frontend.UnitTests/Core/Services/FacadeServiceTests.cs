@@ -1470,27 +1470,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
-        [DataRow(HttpStatusCode.OK, EndpointResponseStatus.Success)]
-        [DataRow(HttpStatusCode.BadRequest, EndpointResponseStatus.Fail)]
-        [DataRow(HttpStatusCode.InternalServerError, EndpointResponseStatus.Fail)]
-        [DataRow(HttpStatusCode.ServiceUnavailable, EndpointResponseStatus.Fail)]
-        public async Task SubmitRegistrationFeePaymentAsync_Returns_Correct_Status_BasedOn_Response(HttpStatusCode statusCode, EndpointResponseStatus expectedStatus)
+        public async Task SubmitRegistrationFeePaymentAsync_Succeeds_On_OK_Response()
         {
             // Arrange
-
-            StringContent stringContent = null;
-
-            if (statusCode == HttpStatusCode.BadRequest)
-            {
-                string jsonRequest = JsonSerializer.Serialize(new ValidationProblemDetails { Status = 400 });
-                stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            }
-            else if (statusCode != HttpStatusCode.OK)
-            {
-                string jsonRequest = JsonSerializer.Serialize(new ProblemDetails { Status = 500 });
-                stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            }
-
             var request = _fixture.Create<FeePaymentRequest>();
             _mockHandler
                 .Protected()
@@ -1501,8 +1483,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 )
                 .ReturnsAsync(() => new HttpResponseMessage
                 {
-                    StatusCode = statusCode,
-                    Content = stringContent
+                    StatusCode = HttpStatusCode.OK
                 })
                 .Verifiable();
 
@@ -1517,34 +1498,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     req.Method == HttpMethod.Post &&
                     req.RequestUri.ToString().Contains("organisation-registration-fee-payment")),
                 ItExpr.IsAny<CancellationToken>());
-
-            stringContent?.Dispose();
         }
 
         [TestMethod]
-        [DataRow(HttpStatusCode.OK, EndpointResponseStatus.Success)]
-        [DataRow(HttpStatusCode.BadRequest, EndpointResponseStatus.Fail)]
-        [DataRow(HttpStatusCode.InternalServerError, EndpointResponseStatus.Fail)]
-        [DataRow(HttpStatusCode.ServiceUnavailable, EndpointResponseStatus.Fail)]
-        public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync_Returns_Correct_Status_BasedOn_Response(
-            HttpStatusCode statusCode,
-            EndpointResponseStatus expectedStatus)
+        [DataRow(HttpStatusCode.BadRequest)]
+        [DataRow(HttpStatusCode.InternalServerError)]
+        [DataRow(HttpStatusCode.ServiceUnavailable)]
+        public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync_Throws_On_Error_Response(HttpStatusCode statusCode)
         {
             // Arrange
-
-            StringContent stringContent = null;
-
-            if (statusCode == HttpStatusCode.BadRequest)
-            {
-                string jsonRequest = JsonSerializer.Serialize(new ValidationProblemDetails { Status = 400 });
-                stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            }
-            else if (statusCode != HttpStatusCode.OK)
-            {
-                string jsonRequest = JsonSerializer.Serialize(new ProblemDetails { Status = 500 });
-                stringContent = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-            }
-
             var request = _fixture.Create<FeePaymentRequest>();
             _mockHandler
                 .Protected()
@@ -1555,8 +1517,30 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 )
                 .ReturnsAsync(() => new HttpResponseMessage
                 {
-                    StatusCode = statusCode,
-                    Content = stringContent
+                    StatusCode = statusCode
+                })
+                .Verifiable();
+
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(async () =>
+                await _facadeService.SubmitPackagingDataResubmissionFeePaymentEventAsync(request));
+        }
+
+        [TestMethod]
+        public async Task SubmitPackagingDataResubmissionFeePaymentEventAsync_Succeeds_On_OK_Response()
+        {
+            // Arrange
+            var request = _fixture.Create<FeePaymentRequest>();
+            _mockHandler
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(() => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK
                 })
                 .Verifiable();
 
@@ -1571,8 +1555,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     req.Method == HttpMethod.Post &&
                     req.RequestUri.ToString().Contains("organisation-packaging-data-resubmission-fee-payment")),
                 ItExpr.IsAny<CancellationToken>());
-
-            stringContent?.Dispose();
         }
 
         [TestMethod]
@@ -1844,7 +1826,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
-        public async Task GetPomPayCalParameters_Should_LogError_Return_Default_Response()
+        public async Task GetPomPayCalParameters_Throws_On_Error_Response()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -1863,18 +1845,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 })
                 .Verifiable();
 
-            // Act
-            var result = await _facadeService.GetPomPayCalParameters(submissionId, csoId);
-
-            // Assert
-            Assert.IsNull(result);
-            _mockHandler.Protected().Verify(
-                "SendAsync",
-                Times.Once(),
-                ItExpr.Is<HttpRequestMessage>(req =>
-                    req.Method == HttpMethod.Get &&
-                    req.RequestUri.ToString().Contains("pom/get-resubmission-paycal-parameters")),
-                ItExpr.IsAny<CancellationToken>());
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(async () =>
+                await _facadeService.GetPomPayCalParameters(submissionId, csoId));
         }
 
         public static class PaginatedListHelper

@@ -49,18 +49,10 @@ public class PaymentFacadeService : IPaymentFacadeService
 
     public async Task<EndpointResponseStatus> SubmitOfflinePaymentAsync(OfflinePaymentRequest request)
     {
-        try
-        {
-            await SetAuthorisationHeaderAsync();
-            var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[SubmitOfflinePaymentPath], request);
-            response.EnsureSuccessStatusCode();
-            return EndpointResponseStatus.Success;
-        }
-        catch (Exception ex)
-        {
-            _logPaymentFacadeServiceError.Invoke(_logger, $"Error occurred while submitting offline payment {nameof(PaymentFacadeService)}.{nameof(SubmitOfflinePaymentAsync)}", ex);
-        }
-        return EndpointResponseStatus.Fail;
+        await SetAuthorisationHeaderAsync();
+        var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[SubmitOfflinePaymentPath], request);
+        response.EnsureSuccessStatusCode();
+        return EndpointResponseStatus.Success;
     }
 
     public async Task<ProducerPaymentResponse?> GetProducerPaymentDetailsAsync(ProducerPaymentRequest request)
