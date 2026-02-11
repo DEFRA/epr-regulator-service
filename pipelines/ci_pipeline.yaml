@@ -43,7 +43,7 @@ resources:
       name: defra/epr-webapps-code-deploy-templates
       type: github
       endpoint: defra
-      ref: main
+      ref: run-integration-tests
 
 extends:
   template: epr-build-pipeline.yaml@CommonTemplates
