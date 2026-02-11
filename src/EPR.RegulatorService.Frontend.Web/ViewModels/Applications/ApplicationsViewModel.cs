@@ -25,4 +25,6 @@ public class ApplicationsViewModel
     public string? RejectedUserName { get; set; }
 
     public string? RejectedServiceRole { get; set; }
+
+    public int NationId { get; set; }
 }

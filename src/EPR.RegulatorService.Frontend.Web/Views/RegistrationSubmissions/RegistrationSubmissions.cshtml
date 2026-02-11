@@ -1,3 +1,4 @@
+@using EPR.RegulatorService.Frontend.Web.Helpers
 @using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
 @model RegistrationSubmissionsViewModel
@@ -11,7 +12,7 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 <h1 class="govuk-caption-xl">
-                    @Model.AgencyName
+                    @SharedLocalizer[RegulatorHelpers.GetRegulatorResourceKey(Model.NationId)]
                 </h1>
                 <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">
                     @Localizer["PageHeading"]

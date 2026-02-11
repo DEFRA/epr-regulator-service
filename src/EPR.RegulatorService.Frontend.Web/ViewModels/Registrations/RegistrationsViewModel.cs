@@ -15,4 +15,5 @@ public class RegistrationsViewModel
     public int[] SubmissionYears { get; set; }
     public string[] SubmissionPeriods { get; set; }
     public RegistrationFiltersModel RegistrationFilters { get; set; }
+    public int NationId { get; set; }
 }

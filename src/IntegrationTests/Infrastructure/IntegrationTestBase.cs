@@ -2,6 +2,7 @@ namespace IntegrationTests.Infrastructure;
 
 using System.Text.Json;
 
+using IntegrationTests.Builders;
 using PageModels;
 
 using WireMock.RequestBuilders;
@@ -29,38 +30,29 @@ public abstract class IntegrationTestBase : IAsyncLifetime
     }
 
     protected void SetupUserAccountsMock() =>
+        SetupUserAccountsMock(UserAccountBuilder.Default());
+
+    protected void SetupUserAccountsMock(UserAccountBuilder builder) =>
         FacadeServer.Given(Request.Create()
                 .UsingGet()
                 .WithPath("/api/user-accounts"))
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
-                .WithBody(JsonSerializer.Serialize(new
-                {
-                    user = new
-                    {
-                        id = "62309b0e-535d-4f96-9a3b-9c759a3944f3",
-                        firstName = "Test",
-                        lastName = "User",
-                        email = "test.user@example.com",
-                        roleInOrganisation = "Admin",
-                        enrolmentStatus = "Approved",
-                        serviceRole = "Regulator Basic",
-                        service = "RegulatorService",
-                        serviceRoleId = 5,
-                        organisations = new[]
-                        {
-                            new
-                            {
-                                id = "C7646CAE-EB96-48AC-9427-0120199BE6EE",
-                                name = "Environment Agency",
-                                organisationRole = "Regulator",
-                                organisationType = "Regulators",
-                                nationId = 1,
-                            },
-                        },
-                    },
-                })));
+                .WithBody(JsonSerializer.Serialize(builder.Build())));
+
+    /// <summary>
+    /// Simulate user clicking english/welsh links at top of page
+    /// </summary>
+    protected async Task SetLanguage(string? culture)
+    {
+        if (culture == null)
+        {
+            return;
+        }
+
+        await Client.GetAsync($"/regulators/culture?culture={culture}&returnUrl=/regulators/home");
+    }
 
     protected async Task<TPageModel> GetAsPageModel<TPageModel>(string? requestUri)
         where TPageModel : PageModelBase, IPageModelFactory<TPageModel>

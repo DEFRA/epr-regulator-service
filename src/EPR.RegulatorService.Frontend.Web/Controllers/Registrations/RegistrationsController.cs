@@ -121,7 +121,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Registrations
                 AcceptRegistrationResult = acceptRegistrationResult,
                 OrganisationName = organisationName,
                 SubmissionYears = _submissionFiltersConfig.OrgYears,
-                SubmissionPeriods = _submissionFiltersConfig.OrgPeriods
+                SubmissionPeriods = _submissionFiltersConfig.OrgPeriods,
+                NationId = session.UserData.Organisations?.FirstOrDefault()?.NationId ?? 0
             };
 
             await SaveSessionAndJourney(session, PagePath.Registrations, PagePath.Registrations);

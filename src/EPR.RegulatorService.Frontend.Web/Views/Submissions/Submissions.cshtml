@@ -1,5 +1,6 @@
 @using EPR.RegulatorService.Frontend.Core.Models
 @using EPR.RegulatorService.Frontend.Web.Extensions
+@using EPR.RegulatorService.Frontend.Web.Helpers
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Shared.GovUK
 @using EPR.RegulatorService.Frontend.Web.ViewModels.Submissions
 
@@ -36,7 +37,7 @@
       <div class="govuk-grid-column-full">
 
         <h1 class="govuk-caption-xl">
-          @Localizer["EnvironmentAgency.Title"]
+          @SharedLocalizer[RegulatorHelpers.GetRegulatorResourceKey(Model.NationId)]
         </h1>
 
         <h2 class="govuk-heading-xl govuk-!-margin-bottom-8">

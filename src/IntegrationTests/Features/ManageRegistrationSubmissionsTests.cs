@@ -3,6 +3,7 @@ namespace IntegrationTests.Features;
 using System.Text.Json;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
+using IntegrationTests.Builders;
 using IntegrationTests.Infrastructure;
 using IntegrationTests.PageModels;
 using WireMock.RequestBuilders;
@@ -15,15 +16,27 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
     {
         base.InitializeAsync();
         SetupUserAccountsMock();
-
         return Task.CompletedTask;
     }
 
-    [Fact]
-    public async Task ShowsCorrectHeadings()
+    [Theory]
+    [InlineData(null, "Ignored user org name", 1, "Environment Agency", "Manage registration submissions")]
+    [InlineData("cy", "Ignored user org name", 1, "Asiantaeth yr Amgylchedd", "Rheoli cyflwyniadau cofrestru")]
+    [InlineData(null, "Ignored user org name", 4, "Natural Resources Wales", "Manage registration submissions")]
+    [InlineData("cy", "Ignored user org name", 4, "Cyfoeth Naturiol Cymru", "Rheoli cyflwyniadau cofrestru")]
+    public async Task ShowsDynamicOrganisationCaption(
+        string? culture,
+        string organisationName,
+        int nationId,
+        string expectedCaption,
+        string expectedHeading)
     {
         // Arrange
+        SetupUserAccountsMock(UserAccountBuilder.Default()
+            .WithOrganisationName(organisationName)
+            .WithNationId(nationId));
         SetupFacadeMockRegistrationSubmissions([]);
+        await SetLanguage(culture);
 
         // Act
         var registrationSubmissionsPage = await GetAsPageModel<ManageRegistrationSubmissionsPageModel>(
@@ -32,13 +45,8 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
         // Assert
         using (new AssertionScope())
         {
-            // Assert on the agency name caption
-            registrationSubmissionsPage.AgencyNameCaption.Should().NotBeNull()
-                .And.Contain("Environment Agency");
-
-            // Assert on the page heading
-            registrationSubmissionsPage.PageHeading.Should().NotBeNull()
-                .And.Contain("Manage registration submissions");
+            registrationSubmissionsPage.AgencyNameCaption.Should().Be(expectedCaption);
+            registrationSubmissionsPage.PageHeading.Should().Be(expectedHeading);
         }
     }
 
@@ -114,8 +122,7 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
             regulatorUserId = (string?)null,
         };
 
-    private void SetupFacadeMockRegistrationSubmissions(object[] data)
-    {
+    private void SetupFacadeMockRegistrationSubmissions(object[] data) =>
         FacadeServer.Given(Request.Create()
                 .UsingPost()
                 .WithPath("/api/organisation-registration-submissions"))
@@ -126,5 +133,4 @@ public class ManageRegistrationSubmissionsTests : IntegrationTestBase
                 {
                     items = data, currentPage = 1, pageSize = 20, totalItems = data.Length,
                 })));
-    }
 }
