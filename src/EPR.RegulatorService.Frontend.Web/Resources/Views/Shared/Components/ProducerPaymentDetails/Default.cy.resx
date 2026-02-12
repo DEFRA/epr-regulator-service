@@ -147,7 +147,7 @@
   <data name="ProducerPaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
     <value>Ffi hwyr</value>
   </data>
-  <data name="ProducerPaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
+  <data name="ProducerPaymentDetails.OnlineMarketplaceFeeDescription" xml:space="preserve">
     <value>Ffi marchnad ar-lein</value>
   </data>
   <data name="ProducerPaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
