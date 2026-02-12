@@ -12,7 +12,7 @@ parameters:
   displayName: Select the service to deploy
   type: string
   values:
-    - epr-regulator-service
+    - DEVRWDWEBWA1411
 
 - name: imageTag
   displayName: Enter Tag for the Image (Docker tag)
@@ -28,7 +28,29 @@ resources:
       ref: main
 
 steps:
-  - template: templates/get-current-dockertag.yaml@CommonTemplates
-    parameters:
-      azureSubscription: ${{ variables.azureSubscription }}
-      serviceName: devrwdwebwa1411
+  # - template: templates/get-current-dockertag.yaml@CommonTemplates
+  #   parameters:
+  #     azureSubscription: ${{ variables.azureSubscription }}
+  #     serviceName: devrwdwebwa1411
+
+  - task: AzureCLI@2
+    displayName: Current Docker Image Tag ${{ parameters.serviceName }}
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscription }}
+      scriptType: pscore
+      scriptLocation: inlineScript
+      inlineScript: |
+        Set-StrictMode -Version 3.0
+
+        $serviceName = "${{ parameters.serviceName }}".ToUpper()
+        $currentImageTag = ""
+
+        if ($serviceName -match "RWDWEBWA") {            
+          $currentImageTag = az webapp list --query "[?name=='$serviceName']" | jq -r '.[].siteConfig.linuxFxVersion'
+        } elseif ($serviceName -match "RWDWEBFA") {
+          $currentImageTag = az functionapp list --query "[?name=='$serviceName']" | jq -r '.[].siteConfig.linuxFxVersion'
+        } else {
+          Write-Error "Unknown Service Type"
+          exit 1
+        }
+        Write-Host "##vso[task.setvariable variable=currentImageTag;]$currentImageTag"
