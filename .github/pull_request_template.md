@@ -19,3 +19,4 @@
 ## Pre-merge checklist
 
 - [ ] Test evidence attached to ticket
+- [ ] Semantic commits to drive [automatic release notes](pipelines/release-notes/README.md)

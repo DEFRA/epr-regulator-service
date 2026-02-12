@@ -17,6 +17,10 @@ This application supports regulatory officials with different access levels (adm
 
 ## Development
 
+### Semantic commits
+
+This repo supports [automatic generation of release notes](pipelines/release-notes/README.md).
+
 ### Prerequisites
 
 - Dotnet SDK v8.0
