@@ -54,5 +54,5 @@ steps:
           exit 1
         }
 
-        Write-Host "Current Image Tag for $serviceName: $currentImageTag"
+        Write-Host ("Current Image Tag for {0}: {1}" -f $serviceName, $currentImageTag)
         Write-Host "##vso[task.setvariable variable=currentImageTag;]$currentImageTag"
