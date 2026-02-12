@@ -12,4 +12,10 @@
     <PackageReference Include="WireMock.Net.StandAlone" Version="1.5.54" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Responses\**\*.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

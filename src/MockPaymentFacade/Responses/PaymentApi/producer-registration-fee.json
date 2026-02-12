@@ -1,0 +1,13 @@
+{
+  "producerRegistrationFee": 165800,
+  "producerOnlineMarketPlaceFee": 0,
+  "producerLateRegistrationFee": 0,
+  "totalFee": 165800,
+  "previousPayment": 0,
+  "outstandingPayment": 165800,
+  "subsidiariesFee": 0,
+  "subsidiariesFeeBreakdown": {
+    "totalSubsidiariesOMPFees": 0,
+    "countOfOMPSubsidiaries": 0
+  }
+}
