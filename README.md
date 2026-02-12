@@ -17,6 +17,11 @@ This application supports regulatory officials with different access levels (adm
 
 ## Development
 
+### Pipelines
+
+- [build](https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_build?definitionId=5593)
+- [deploy](https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_build?definitionId=5595)
+
 ### Semantic commits
 
 This repo supports [automatic generation of release notes](pipelines/release-notes/README.md).
