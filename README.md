@@ -68,6 +68,12 @@ To override the url to use locally run facade service(s) use the alternate [laun
 dotnet run --launch-profile "local-facade" --project src/EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj
 ```
 
+The backing facade apis can be run as:
+
+1. Services on the azure dev environments (private) - urls configured in user secrets with the private [epr-tools-environment app (also private)](https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_git/epr-tools-environment-variables?version=GBux-fixes) or pulled directly from environment config manually.
+2. Locally checked out and run facade code - use the "local-facade" launchProfile to connect to it
+3. Mock facade projects in this sln - use the "local-facade" launchProfile to connect to it as shown above
+
 ### Configuration
 
 In order to run the EPR Regulator Service, some configuration will need to be set in user-secrets. Configuration properties will be separated by `.` in this documentation.
