@@ -53,4 +53,6 @@ steps:
           Write-Error "Unknown Service Type"
           exit 1
         }
+
+        Write-Host "Current Image Tag for $serviceName: $currentImageTag"
         Write-Host "##vso[task.setvariable variable=currentImageTag;]$currentImageTag"
