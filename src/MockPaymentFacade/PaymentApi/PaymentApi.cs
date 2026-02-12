@@ -1,5 +1,9 @@
 namespace MockPaymentFacade.PaymentApi;
 
+using System;
+using System.IO;
+using System.Text.Json;
+using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -17,14 +21,21 @@ public static class PaymentApi
                 .WithHeader("Content-Type", "text/plain")
                 .WithBody("MockPaymentFacade up.\nReady to process API requests."));
 
-        // Compliance scheme registration fee endpoint
-        server.Given(Request.Create()
-                .UsingPost()
-                .WithPath("/compliance-scheme/registration-fee"))
-            .RespondWith(Response.Create()
-                .WithStatusCode(200)
-                .WithHeader("Content-Type", "application/json")
-                .WithBodyFromFile("Responses/PaymentApi/compliance-scheme-registration-fee.json"));
+        // Compliance scheme registration fee endpoints - matched by applicationReferenceNumber in request body
+        foreach (var filePath in Directory.GetFiles("Responses/PaymentApi/ComplianceSchemeRegistrationFee", "*.json"))
+        {
+            server.Given(Request.Create()
+                    .UsingPost()
+                    .WithPath("/compliance-scheme/registration-fee")
+                    .WithBody(new JsonPartialMatcher(JsonSerializer.Serialize(new
+                    {
+                        applicationReferenceNumber = Path.GetFileNameWithoutExtension(filePath),
+                    }))))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyFromFile(filePath));
+        }
 
         // Producer registration fee endpoint
         server.Given(Request.Create()
