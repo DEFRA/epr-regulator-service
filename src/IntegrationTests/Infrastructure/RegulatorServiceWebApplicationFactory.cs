@@ -30,6 +30,7 @@ public class RegulatorServiceWebApplicationFactory : WebApplicationFactory<Progr
 
         Environment.SetEnvironmentVariable("FacadeApi__BaseUrl", $"{_facadeServer.Url}/api/");
         Environment.SetEnvironmentVariable("EprAuthorizationConfig__FacadeBaseUrl", $"{_facadeServer.Url}/api/");
+        Environment.SetEnvironmentVariable("PaymentFacadeApi__BaseUrl", $"{_facadeServer.Url}/");
         Environment.SetEnvironmentVariable("UseLocalSession", "true");
 
         builder.ConfigureTestServices(services =>

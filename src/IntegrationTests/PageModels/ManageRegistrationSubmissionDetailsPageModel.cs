@@ -74,6 +74,79 @@ public class ManageRegistrationSubmissionDetailsPageModel : PageModelBase, IPage
 
     public string? SubmissionStatus => ExtractSubmissionStatusText();
 
+    // Payment details properties
+    public PaymentDetailsUnderTest? PaymentDetails => ExtractPaymentDetails();
+
+    private PaymentDetailsUnderTest? ExtractPaymentDetails()
+    {
+        // Find the payment details summary card by looking for the card title
+        var paymentCard = _document.QuerySelectorAll("div.govuk-summary-card")
+            .FirstOrDefault(card => card.QuerySelector("h2.govuk-summary-card__title")?.TextContent?.Contains("Payment") == true);
+
+        if (paymentCard == null)
+        {
+            return null;
+        }
+
+        // Extract amounts from payment-amount rendered <dd> elements
+        // The tag helper renders amounts as <dd class="govuk-summary-list__actions"> with £X,XXX.XX format
+        var amounts = paymentCard.QuerySelectorAll("dd.govuk-summary-list__actions")
+            .Select(dd => dd.TextContent.Trim())
+            .Where(text => text.StartsWith("£") || text.Contains("£"))
+            .ToList();
+
+        return new PaymentDetailsUnderTest
+        {
+            HasPaymentSection = true,
+            AllAmounts = amounts
+        };
+    }
+
+    public decimal? ApplicationFee => ExtractPaymentAmount("Application fee");
+    public decimal? SubTotal => ExtractPaymentAmount("Sub-total");
+    public decimal? PreviousPaymentReceived => ExtractPaymentAmount("Previous payments");
+    public decimal? TotalOutstanding => ExtractPaymentAmount("Total outstanding");
+
+    private decimal? ExtractPaymentAmount(string label)
+    {
+        var paymentCard = _document.QuerySelectorAll("div.govuk-summary-card")
+            .FirstOrDefault(card => card.QuerySelector("h2.govuk-summary-card__title")?.TextContent?.Contains("Payment") == true);
+
+        if (paymentCard == null)
+        {
+            return null;
+        }
+
+        // Find rows in the payment card
+        var rows = paymentCard.QuerySelectorAll("div.govuk-summary-list__row");
+        foreach (var row in rows)
+        {
+            var labelElement = row.QuerySelector("dd.govuk-summary-list__value strong");
+            if (labelElement?.TextContent?.Contains(label, StringComparison.OrdinalIgnoreCase) == true)
+            {
+                // Get the amount from the actions column (last dd in the row)
+                var amountElement = row.QuerySelector("dd.govuk-summary-list__actions");
+                if (amountElement != null)
+                {
+                    return ParseCurrencyAmount(amountElement.TextContent);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static decimal? ParseCurrencyAmount(string text)
+    {
+        // Remove currency symbol, whitespace, and parse
+        var cleaned = text.Replace("£", "").Replace(",", "").Trim();
+        if (decimal.TryParse(cleaned, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
+        {
+            return amount;
+        }
+        return null;
+    }
+
     private Guid? ExtractSubmissionIdFromAnyLink()
     {
         var hrefs = _document
@@ -209,4 +282,10 @@ public sealed record RegistrationSubmissionDetailsUnderTest
     public int? RelevantYear { get; init; }
     public string? SubmissionDate { get; init; }
     public string? SubmissionStatus { get; init; }
+}
+
+public sealed record PaymentDetailsUnderTest
+{
+    public bool HasPaymentSection { get; init; }
+    public List<string> AllAmounts { get; init; } = new();
 }
