@@ -17,6 +17,11 @@ This application supports regulatory officials with different access levels (adm
 
 ## Development
 
+### Pipelines
+
+- [build](https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_build?definitionId=5593)
+- [deploy](https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_build?definitionId=5595)
+
 ### Semantic commits
 
 This repo supports [automatic generation of release notes](pipelines/release-notes/README.md).
@@ -67,6 +72,12 @@ To override the url to use locally run facade service(s) use the alternate [laun
 ```sh
 dotnet run --launch-profile "local-facade" --project src/EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj
 ```
+
+The backing facade apis can be run as:
+
+1. Services on the azure dev environments (private) - urls configured in user secrets with the private [epr-tools-environment app (also private)](https://dev.azure.com/defragovuk/RWD-CPR-EPR4P-ADO/_git/epr-tools-environment-variables?version=GBux-fixes) or pulled directly from environment config manually.
+2. Locally checked out and run facade code - use the "local-facade" launchProfile to connect to it
+3. Mock facade projects in this sln - use the "local-facade" launchProfile to connect to it as shown above
 
 ### Configuration
 

@@ -26,7 +26,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "FacadeApi:BaseUrl": "https://localhost:7253/api/",
         "EprAuthorizationConfig:FacadeBaseUrl": "https://localhost:7253/api/",
-        "ReprocessorExporterFacadeApi:BaseUrl": "https://localhost:7253/api/"
+        "ReprocessorExporterFacadeApi:BaseUrl": "https://localhost:7253/api/",
+        "PaymentFacadeApi:BaseUrl": "https://localhost:7107/"
       }
     },
     "IIS Express": {

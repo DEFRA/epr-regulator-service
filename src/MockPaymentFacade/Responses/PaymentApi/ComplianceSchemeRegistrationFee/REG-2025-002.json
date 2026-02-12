@@ -1,0 +1,17 @@
+{
+  "complianceSchemeRegistrationFee": 262000,
+  "totalFee": 285400,
+  "previousPayment": 50000,
+  "outstandingPayment": 235400,
+  "complianceSchemeMembersWithFees": [
+    {
+      "memberId": "100002",
+      "memberType": "large",
+      "memberRegistrationFee": 165800,
+      "memberOnlineMarketPlaceFee": 25000,
+      "memberLateRegistrationFee": 10000,
+      "subsidiariesFee": 84600,
+      "totalMemberFee": 285400
+    }
+  ]
+}
