@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -7,26 +6,21 @@
     <AssemblyName>EPR.RegulatorService.Frontend.Core</AssemblyName>
     <RootNamespace>EPR.RegulatorService.Frontend.Core</RootNamespace>
   </PropertyGroup>
-
   <PropertyGroup>
     <!-- SonarCloud does not recognise file-scoped namespaces in current version. -->
     <NoWarn>S3903</NoWarn>
   </PropertyGroup>
-
   <ItemGroup>
     <!--Pinned versions for transitive dependencies-->
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
     <PackageReference Include="System.Text.Json" Version="8.0.6" />
-
     <PackageReference Include="CsvHelper" Version="33.0.1" />
-    <PackageReference Include="EPR.Common.Authorization" Version="1.0.23" />
     <PackageReference Include="libphonenumber-csharp" Version="8.13.44" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Identity.Web" Version="3.1.0" />
   </ItemGroup>
-
   <ItemGroup>
     <SonarQubeSetting Include="sonar.coverage.exclusions">
       <Value>
@@ -39,10 +33,11 @@
       </Value>
     </SonarQubeSetting>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
     <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
   </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="../../../epr-common/src/EPR.Common/EPR.Common.Authorization/EPR.Common.Authorization.csproj" />
+  </ItemGroup>
 </Project>
