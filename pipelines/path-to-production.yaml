@@ -36,7 +36,7 @@ steps:
   - task: AzureCLI@2
     displayName: Current Docker Image Tag ${{ parameters.serviceName }}
     inputs:
-      azureSubscription: ${{ parameters.azureSubscription }}
+      azureSubscription: ${{ variables.azureSubscription }}
       scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
