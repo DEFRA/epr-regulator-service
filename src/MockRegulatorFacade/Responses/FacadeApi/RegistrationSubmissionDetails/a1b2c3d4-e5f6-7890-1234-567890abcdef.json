@@ -61,7 +61,7 @@
   "regulatorResubmissionDecisionDate": null,
   "producerCommentDate": "2025-01-19T10:00:00Z",
   "regulatorUserId": null,
-  "isOnlineMarketPlace": false,
+  "isOnlineMarketPlace": true,
   "numberOfSubsidiaries": 2,
   "numberOfOnlineSubsidiaries": 0,
   "isLateSubmission": false,
