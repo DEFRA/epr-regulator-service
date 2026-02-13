@@ -1,6 +1,6 @@
 {
   "producerRegistrationFee": 165800,
-  "producerOnlineMarketPlaceFee": 0,
+  "producerOnlineMarketPlaceFee": 25000,
   "producerLateRegistrationFee": 0,
   "totalFee": 165800,
   "previousPayment": 0,
