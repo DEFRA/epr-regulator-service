@@ -31,20 +31,25 @@ This repo supports [automatic generation of release notes](pipelines/release-not
 - Dotnet SDK v8.0
 - NodeJs v24
 
-### NuGet dependencies
+### EPR Common Dependencies
 
-This project depends on private nuget feed with a packaged version of [epr-common](https://github.com/DEFRA/epr-common).
+This project depends on [epr-common](https://github.com/DEFRA/epr-common) which has been included as a `git subtree`
 
-If you have access to the private feed then you can use [The Azure Artifacts Credential Provider](https://github.com/microsoft/artifacts-credprovider).
+For a normal checkout and build this needs no extra work locally or in build pipelines are included in this project's file tree as normal files in folder [`git-subtree-epr-common/`](git-subtree-epr-common).
 
-If you don't have access to the private feed you can clone [epr-common](https://github.com/DEFRA/epr-common) and use [DNT](https://github.com/RicoSuter/DNT?tab=readme-ov-file#switch-to-projects) to switch from NuGet package references to local project references:
+#### Updating epr-common
 
-```sh
-cd src
-dnt switch-to-projects   # switch to local project references
+```shell
+git subtree pull --prefix git-subtree-epr-common https://github.com/DEFRA/epr-common.git
 ```
 
-The mappings are defined in [`src/switcher.json`](src/switcher.json).
+Or use the convenience sh [`update-common.sh`](update-common.sh).
+
+#### More about git-subtree
+
+- https://www.atlassian.com/git/tutorials/git-subtree
+- https://www.grizzlypeaksoftware.com/library/git-submodules-and-subtrees-when-to-use-each-ck193k9t
+- https://docs.github.com/en/get-started/using-git/about-git-subtree-merges
 
 ### Redis
 
