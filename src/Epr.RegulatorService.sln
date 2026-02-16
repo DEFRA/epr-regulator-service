@@ -64,6 +64,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "epr-common", "epr-common", "{97722E13-5F00-4046-883E-C01B43BC6104}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization.Test", "..\git-subtree-epr-common\src\EPR.Common\EPR.Common.Authorization.Test\EPR.Common.Authorization.Test.csproj", "{59E3A260-4A20-4E63-84D4-617036BBE143}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Logging", "..\git-subtree-epr-common\src\EPR.Common\EPR.Common.Logging\EPR.Common.Logging.csproj", "{72477DC7-7A41-414B-AFB3-62EA37C4B597}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Functions", "..\git-subtree-epr-common\src\EPR.Common\EPR.Common.Functions\EPR.Common.Functions.csproj", "{59CB39E2-D6A1-4567-8F66-72F5747DD129}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Logging.Tests", "..\git-subtree-epr-common\src\EPR.Common\EPR.Common.Logging.Tests\EPR.Common.Logging.Tests.csproj", "{A61E3DF6-4D5D-4622-B8FA-F199960B9A61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Functions.Test", "..\git-subtree-epr-common\src\EPR.Common\EPR.Common.Functions.Test\EPR.Common.Functions.Test.csproj", "{641B7062-380B-425B-B9AD-AEDAE71BC573}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +108,26 @@ Global
 		{8A5A1ED9-7914-459E-ABD7-F3F8DBFA2EB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A5A1ED9-7914-459E-ABD7-F3F8DBFA2EB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A5A1ED9-7914-459E-ABD7-F3F8DBFA2EB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59E3A260-4A20-4E63-84D4-617036BBE143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59E3A260-4A20-4E63-84D4-617036BBE143}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59E3A260-4A20-4E63-84D4-617036BBE143}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59E3A260-4A20-4E63-84D4-617036BBE143}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72477DC7-7A41-414B-AFB3-62EA37C4B597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72477DC7-7A41-414B-AFB3-62EA37C4B597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72477DC7-7A41-414B-AFB3-62EA37C4B597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72477DC7-7A41-414B-AFB3-62EA37C4B597}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59CB39E2-D6A1-4567-8F66-72F5747DD129}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59CB39E2-D6A1-4567-8F66-72F5747DD129}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59CB39E2-D6A1-4567-8F66-72F5747DD129}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59CB39E2-D6A1-4567-8F66-72F5747DD129}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A61E3DF6-4D5D-4622-B8FA-F199960B9A61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A61E3DF6-4D5D-4622-B8FA-F199960B9A61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A61E3DF6-4D5D-4622-B8FA-F199960B9A61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A61E3DF6-4D5D-4622-B8FA-F199960B9A61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{641B7062-380B-425B-B9AD-AEDAE71BC573}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{641B7062-380B-425B-B9AD-AEDAE71BC573}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{641B7062-380B-425B-B9AD-AEDAE71BC573}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{641B7062-380B-425B-B9AD-AEDAE71BC573}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,5 +137,10 @@ Global
 		{001FA203-F7EF-400E-B048-51A39B50C1D4} = {9E27FC4A-3A20-4D62-93D9-8067AA3DE035}
 		{1EF30474-B3B6-4EED-89F2-401985C9197D} = {9E27FC4A-3A20-4D62-93D9-8067AA3DE035}
 		{8A5A1ED9-7914-459E-ABD7-F3F8DBFA2EB7} = {97722E13-5F00-4046-883E-C01B43BC6104}
+		{59E3A260-4A20-4E63-84D4-617036BBE143} = {97722E13-5F00-4046-883E-C01B43BC6104}
+		{72477DC7-7A41-414B-AFB3-62EA37C4B597} = {97722E13-5F00-4046-883E-C01B43BC6104}
+		{59CB39E2-D6A1-4567-8F66-72F5747DD129} = {97722E13-5F00-4046-883E-C01B43BC6104}
+		{A61E3DF6-4D5D-4622-B8FA-F199960B9A61} = {97722E13-5F00-4046-883E-C01B43BC6104}
+		{641B7062-380B-425B-B9AD-AEDAE71BC573} = {97722E13-5F00-4046-883E-C01B43BC6104}
 	EndGlobalSection
 EndGlobal
