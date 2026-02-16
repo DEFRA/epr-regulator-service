@@ -60,6 +60,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockRegulatorFacade", "Mock
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockPaymentFacade", "MockPaymentFacade\MockPaymentFacade.csproj", "{542D3337-0A9F-4808-898F-D2E7D36A4625}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization", "..\git-subtree-epr-common\src\EPR.Common\EPR.Common.Authorization\EPR.Common.Authorization.csproj", "{8A5A1ED9-7914-459E-ABD7-F3F8DBFA2EB7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "epr-common", "epr-common", "{97722E13-5F00-4046-883E-C01B43BC6104}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +94,10 @@ Global
 		{542D3337-0A9F-4808-898F-D2E7D36A4625}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{542D3337-0A9F-4808-898F-D2E7D36A4625}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{542D3337-0A9F-4808-898F-D2E7D36A4625}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A5A1ED9-7914-459E-ABD7-F3F8DBFA2EB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A5A1ED9-7914-459E-ABD7-F3F8DBFA2EB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A5A1ED9-7914-459E-ABD7-F3F8DBFA2EB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A5A1ED9-7914-459E-ABD7-F3F8DBFA2EB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,5 +106,6 @@ Global
 		{9E27FC4A-3A20-4D62-93D9-8067AA3DE035} = {3B602B5A-BE5F-499A-937A-7038258B2E7D}
 		{001FA203-F7EF-400E-B048-51A39B50C1D4} = {9E27FC4A-3A20-4D62-93D9-8067AA3DE035}
 		{1EF30474-B3B6-4EED-89F2-401985C9197D} = {9E27FC4A-3A20-4D62-93D9-8067AA3DE035}
+		{8A5A1ED9-7914-459E-ABD7-F3F8DBFA2EB7} = {97722E13-5F00-4046-883E-C01B43BC6104}
 	EndGlobalSection
 EndGlobal
