@@ -2,7 +2,7 @@
   "solution": "Epr.RegulatorService.sln",
   "solutionFolder": null,
   "mappings": {
-    "EPR.Common.Authorization": "../../epr-common/src/EPR.Common/EPR.Common.Authorization/EPR.Common.Authorization.csproj"
+    "EPR.Common.Authorization": "../git-subtree-epr-common/src/EPR.Common/EPR.Common.Authorization/EPR.Common.Authorization.csproj"
   },
   "restore": [
     {
