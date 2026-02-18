@@ -1,0 +1,55 @@
+pr: none
+trigger:
+  branches:
+    include:
+    - '*'
+  paths:
+    include:
+    - 'src/EPR.Common/EPR.Common.Logging/'
+    exclude:
+    - 'src/EPR.Common/EPR.Common.Authorization/'
+    - 'src/EPR.Common/EPR.Common.Functions/'
+
+parameters:
+  - name: solutionFolder
+    default: 'src/EPR.Common/'
+    values:
+    - 'src/EPR.Common/'
+  - name: sonarqubeInstance
+    displayName: 'Select SonarQube for v9.9 or SonarQubeLatest for 10.4'
+    type: string
+    default: 'SonarQubeLatest'
+    values:
+    - 'SonarQube'
+    - 'SonarQubeLatest'
+
+pool: DEFRA-COMMON-ubuntu2004-SSV3
+
+variables:
+  NUGET_ENABLE_LEGACY_CSPROJ_PACK: true
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+
+resources:
+  repositories:
+    - repository: CommonTemplates
+      name: RWD-CPR-EPR4P-ADO/epr-webapps-code-deploy-templates
+      type: git
+      ref: main
+
+stages:
+  - template: templates/template-build-test.yaml
+    parameters:
+      versionVariableGroupName: EPR.Common.Logging
+      solutionFolder: src/EPR.Common/
+      solutionName: EPR.Common
+      projectName: EPR.Common.Logging
+      runTests: true
+      testProjectName: EPR.Common.Logging.Tests
+      sonarqubeInstance: ${{ parameters.sonarqubeInstance }}
+      dotnetVersion: dotnetVersion8
+      sonarQubeProjectKey: epr-prn-common-logging
+      sonarQubeProjectName: epr-prn-common-logging
+      runNugetTasks: true
+      projectFolder: src/EPR.Common/EPR.Common.Logging
+      testFolder: src/EPR.Common/EPR.Common.Logging.Tests
+      # versioningScheme: $(versioningScheme)

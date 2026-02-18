@@ -1,0 +1,94 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version
+VisualStudioVersion = 
+MinimumVisualStudioVersion = 
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Functions", "EPR.Common.Functions\EPR.Common.Functions.csproj", "{EB2A2B7E-504C-44F3-BD09-F4A307282838}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Functions.Test", "EPR.Common.Functions.Test\EPR.Common.Functions.Test.csproj", "{E3E4F40A-1078-47B2-96C3-3FC8C212584B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization", "EPR.Common.Authorization\EPR.Common.Authorization.csproj", "{74F74FC9-BDF2-42C9-B41F-2531D671725B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization.Test", "EPR.Common.Authorization.Test\EPR.Common.Authorization.Test.csproj", "{8E8ED83F-32C9-458B-85D9-557F5848B525}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Logging", "EPR.Common.Logging\EPR.Common.Logging.csproj", "{DC95204E-2F2E-4531-A290-7F9CD458FE6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Logging.Tests", "EPR.Common.Logging.Tests\EPR.Common.Logging.Tests.csproj", "{D9A2AA81-66D5-4D35-9521-9E1C1C69BE0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4D2C00FA-26C7-4CEF-A62D-562905B87999}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\LICENCE.md = ..\..\LICENCE.md
+		..\..\README.md = ..\..\README.md
+		..\..\CONTRIBUTING.md = ..\..\CONTRIBUTING.md
+		../stylecop.ruleset = ../stylecop.ruleset
+		../../CODEOWNERS = ../../CODEOWNERS
+		../../.tool-versions = ../../.tool-versions
+		NuGet.Config = NuGet.Config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{535784D6-03A4-4A98-89C6-50690BEFCC5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pipelines", "pipelines", "{3E55DED7-F669-4B41-A6C4-F7DFBCF2FF69}"
+	ProjectSection(SolutionItems) = preProject
+		../../build\pipelines\build-test-push-package-logging.yaml = ../../build\pipelines\build-test-push-package-logging.yaml
+		../../build\pipelines\build-test-push-package-authorization.yaml = ../../build\pipelines\build-test-push-package-authorization.yaml
+		../../build\pipelines\build-test-push-package-functions.yaml = ../../build\pipelines\build-test-push-package-functions.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{5B4D7403-33D3-4F25-94E8-D26333E8F5F4}"
+	ProjectSection(SolutionItems) = preProject
+		../../build\pipelines\templates\template-build-test.yaml = ../../build\pipelines\templates\template-build-test.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{221DDE73-7ABA-4C1E-AA62-3E17FDDA7761}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{1EFBF152-C144-487B-82D7-14FCB8E88065}"
+	ProjectSection(SolutionItems) = preProject
+		../../.github\workflows\build-test.yml = ../../.github\workflows\build-test.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "epr.common", "epr.common", "{14A63798-3ABA-415B-968F-2AE8098B2366}"
+	ProjectSection(SolutionItems) = preProject
+		stylecop.ruleset = stylecop.ruleset
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EB2A2B7E-504C-44F3-BD09-F4A307282838}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB2A2B7E-504C-44F3-BD09-F4A307282838}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB2A2B7E-504C-44F3-BD09-F4A307282838}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB2A2B7E-504C-44F3-BD09-F4A307282838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3E4F40A-1078-47B2-96C3-3FC8C212584B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3E4F40A-1078-47B2-96C3-3FC8C212584B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3E4F40A-1078-47B2-96C3-3FC8C212584B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3E4F40A-1078-47B2-96C3-3FC8C212584B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74F74FC9-BDF2-42C9-B41F-2531D671725B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74F74FC9-BDF2-42C9-B41F-2531D671725B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74F74FC9-BDF2-42C9-B41F-2531D671725B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74F74FC9-BDF2-42C9-B41F-2531D671725B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E8ED83F-32C9-458B-85D9-557F5848B525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E8ED83F-32C9-458B-85D9-557F5848B525}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E8ED83F-32C9-458B-85D9-557F5848B525}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E8ED83F-32C9-458B-85D9-557F5848B525}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC95204E-2F2E-4531-A290-7F9CD458FE6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC95204E-2F2E-4531-A290-7F9CD458FE6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC95204E-2F2E-4531-A290-7F9CD458FE6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC95204E-2F2E-4531-A290-7F9CD458FE6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9A2AA81-66D5-4D35-9521-9E1C1C69BE0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9A2AA81-66D5-4D35-9521-9E1C1C69BE0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9A2AA81-66D5-4D35-9521-9E1C1C69BE0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9A2AA81-66D5-4D35-9521-9E1C1C69BE0A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{535784D6-03A4-4A98-89C6-50690BEFCC5C} = {4D2C00FA-26C7-4CEF-A62D-562905B87999}
+		{221DDE73-7ABA-4C1E-AA62-3E17FDDA7761} = {4D2C00FA-26C7-4CEF-A62D-562905B87999}
+		{3E55DED7-F669-4B41-A6C4-F7DFBCF2FF69} = {535784D6-03A4-4A98-89C6-50690BEFCC5C}
+		{5B4D7403-33D3-4F25-94E8-D26333E8F5F4} = {3E55DED7-F669-4B41-A6C4-F7DFBCF2FF69}
+		{1EFBF152-C144-487B-82D7-14FCB8E88065} = {221DDE73-7ABA-4C1E-AA62-3E17FDDA7761}
+		{14A63798-3ABA-415B-968F-2AE8098B2366} = {4D2C00FA-26C7-4CEF-A62D-562905B87999}
+	EndGlobalSection
+EndGlobal
