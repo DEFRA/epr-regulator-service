@@ -10,17 +10,9 @@ EXPOSE ${PORT}
 COPY EPR.RegulatorService.Frontend.Web/*.csproj ./EPR.RegulatorService.Frontend.Web/
 COPY EPR.RegulatorService.Frontend.Core/*.csproj ./EPR.RegulatorService.Frontend.Core/
 COPY git-subtree-epr-common/src/EPR.Common/EPR.Common.Authorization/*.csproj ./git-subtree-epr-common/src/EPR.Common/EPR.Common.Authorization/
-# Move up 2 directorys as Nuget.config is located in src
-COPY NuGet.Config ./NuGet.Config
-
-# Use Build Argument to insert PAT into Nuget file
-ARG PAT=localhost
-RUN sed -i "s|</configuration>|<packageSourceCredentials><epr-packaging-common><add key=\"Username\" value=\"PAT\" /><add key=\"ClearTextPassword\" value=\"${PAT}\" /></epr-packaging-common></packageSourceCredentials></configuration>|" NuGet.Config
-
-RUN find . -name "*.csproj" -type f -print
 
 # Restore as distinct layers
-RUN dotnet restore "./EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj" --configfile "NuGet.Config"
+RUN dotnet restore "./EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj"
 
 # Install NPM
 USER root
