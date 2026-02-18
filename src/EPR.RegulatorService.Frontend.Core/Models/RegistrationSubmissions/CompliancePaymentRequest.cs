@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
 public class CompliancePaymentRequest
@@ -12,6 +14,7 @@ public class CompliancePaymentRequest
     public bool IncludeRegistrationFee { get; set; } = true;
 }
 
+[ExcludeFromCodeCoverage]
 public class ComplianceSchemeMemberRequest
 {
     public required string MemberId { get; set; }

@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 
+[ExcludeFromCodeCoverage]
 public class ProducerPaymentRequest
 {
     public required string ApplicationReferenceNumber { get; set; }
@@ -7,6 +10,8 @@ public class ProducerPaymentRequest
     public int NoOfSubsidiariesOnlineMarketplace { get; set; }
 
     public int NumberOfSubsidiaries { get; set; }
+
+    public int NumberOfLateSubsidiaries { get; set; }
 
     public bool IsLateFeeApplicable { get; set; }
 

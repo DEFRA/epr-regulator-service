@@ -50,6 +50,7 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public bool IsOnlineMarketPlace { get; set; }
     public int NumberOfSubsidiaries { get; set; }
     public int NumberOfOnlineSubsidiaries { get; set; }
+    public int NumberOfLateSubsidiaries { get; set; }
     public bool IsLateSubmission { get; set; }
     public string OrganisationSize { get; set; }
     public bool IsComplianceScheme { get; set; }
