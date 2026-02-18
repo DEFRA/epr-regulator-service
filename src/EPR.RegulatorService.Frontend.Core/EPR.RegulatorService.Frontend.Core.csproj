@@ -38,6 +38,6 @@
     <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../../git-subtree-epr-common/src/EPR.Common/EPR.Common.Authorization/EPR.Common.Authorization.csproj" />
+    <ProjectReference Include="../git-subtree-epr-common/src/EPR.Common/EPR.Common.Authorization/EPR.Common.Authorization.csproj" />
   </ItemGroup>
 </Project>
