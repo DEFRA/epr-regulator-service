@@ -1,0 +1,233 @@
+parameters:
+- name: solutionFolder
+  type: string
+  default: ''
+- name: solutionName
+  type: string
+  default: ''
+- name: projectName
+  type: string
+  default: ''
+- name: runTests
+  type: boolean
+  default: true
+- name: testProjectName
+  type: string
+  default: ''
+- name: versionVariableGroupName
+  type: string
+- name: sonarQubeProjectKey
+  type: string
+- name: sonarQubeProjectName
+  type: string
+- name: sonarqubeInstance
+  type: string
+  default: SonarQube
+- name: dotnetVersion
+  type: string
+  default: 'dotnetVersion6'
+- name: runNugetTasks
+  type: boolean
+  default: false
+- name: projectFolder
+  type: string
+  default: ''
+- name: testFolder
+  type: string
+  default: ''
+
+stages:
+  - stage: SonarQube_Analysis
+    jobs:
+      - job: RunSonarQubeAnalysis
+        displayName: 'Run SonarQube Analysis'
+        steps:
+          - template: templates/analyse-and-test.yaml@CommonTemplates
+            parameters:
+              solutionFolder: ${{ parameters.solutionFolder }}
+              sonarQubeProjectKey: ${{ parameters.sonarQubeProjectKey }}
+              sonarQubeProjectName: ${{ parameters.sonarQubeProjectName }}
+              runTests: ${{ parameters.runTests }}
+              runNugetTasks: ${{ parameters.runNugetTasks }}
+              sonarqubeInstance: ${{ parameters.sonarqubeInstance }}
+              projectFolder: ${{ parameters.projectFolder }}
+              testFolder: ${{ parameters.testFolder }}
+
+  - stage: BuildTestPublish
+    displayName: 'Build, Test & Publish'
+    jobs:
+      - job: BuildTestPublish
+        displayName: 'Build, Test & Publish'
+        steps:
+        - script: |
+            dotnet --list-sdks
+              echo '{"sdk":{"version":"8.0.303","rollForward":"latestFeature","allowPrerelease":false}}' > ${{ parameters.solutionFolder }}/global.json
+              cat ${{ parameters.solutionFolder }}/global.json
+        - pwsh: | 
+            Set-StrictMode -Version 3.0
+
+            [string]$adoExtensionName = 'azure-devops'
+            Write-Debug "adoExtensionName=$adoExtensionName"
+
+            $ENV:AZURE_DEVOPS_EXT_PAT = '$(System.AccessToken)'
+
+            $adoExtension = az extension list | ConvertFrom-Json -Depth 99 | Where-Object -FilterScript { $_.Name -eq $adoExtensionName } 
+
+            if ($null -eq $adoExtension) {
+              Write-Host "Install Az CLI extension '$adoExtensionName' ..."
+              az extension add --name $adoExtensionName
+            }
+            else {
+              Write-Host "Az CLI extension '$adoExtensionName' already installed"
+            }
+          displayName: Initialize Az CLI ADO Extension
+
+        - ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')) }}:
+
+          - pwsh: | 
+              Set-StrictMode -Version 3.0
+              [string]$variableGroupName = '${{parameters.versionVariableGroupName}}'
+              [string]$organizationUri = '$(System.CollectionUri)'
+              [string]$teamProject = '$(System.TeamProject)'
+              Write-Debug "organizationUri=$organizationUri"
+              Write-Debug "teamProject=$teamProject"
+              Write-Debug "variableGroupName=$variableGroupName"
+
+              $ENV:AZURE_DEVOPS_EXT_PAT = '$(System.AccessToken)'
+
+              Write-Host "Setting default organization to '$organizationUri' and project to '$teamProject'"
+              az devops configure --defaults organization=$organizationUri project=$teamProject
+
+              $variableGroupSummary = az pipelines variable-group list | ConvertFrom-Json -Depth 99 | Where-Object -FilterScript { $_.Name -eq $variableGroupName } 
+
+              if ($null -eq $variableGroupSummary) {
+                throw "Could not find variable group $variableGroupName"
+              } 
+              else {
+                $variableGroup = az pipelines variable-group show --id $variableGroupSummary.id | ConvertFrom-Json -Depth 99
+
+                [System.Version]$currentVersion = [System.Version]::new($variableGroup.variables.major.value, $variableGroup.variables.minor.value, $variableGroup.variables.patch.value)
+                [System.Version]$newVersion = [System.Version]::new($currentVersion.Major, $currentVersion.Minor, $currentVersion.Build + 1)
+                Write-Host "Incrementing $($currentVersion.ToString()) to $($newVersion.ToString())"
+
+                az pipelines variable-group variable update --id $variableGroup.Id --name Patch --value $newVersion.Build
+                az pipelines variable-group variable update --id $variableGroup.Id --name Version --value $newVersion.ToString()
+
+                Write-Host "##vso[task.setvariable variable=MajorVersion]$($newVersion.Major)"
+                Write-Host "##vso[task.setvariable variable=MinorVersion]$($newVersion.Minor)"
+                Write-Host "##vso[task.setvariable variable=PatchVersion]$($newVersion.Build)"
+                Write-Host "##vso[task.setvariable variable=Version]$($newVersion.ToString())"
+                Write-Host "##vso[task.setvariable variable=versioningScheme]byBuildNumber"
+                Write-Host "##vso[task.setvariable variable=configuration]Release"
+              }
+            displayName: Version up
+        - ${{ else }}:
+          - pwsh: | 
+              Set-StrictMode -Version 3.0
+              [string]$variableGroupName = '${{parameters.versionVariableGroupName}}'
+              [string]$organizationUri = '$(System.CollectionUri)'
+              [string]$teamProject = '$(System.TeamProject)'
+              Write-Debug "organizationUri=$organizationUri"
+              Write-Debug "teamProject=$teamProject"
+              Write-Debug "variableGroupName=$variableGroupName"
+
+              $ENV:AZURE_DEVOPS_EXT_PAT = '$(System.AccessToken)'
+
+              Write-Host "Setting default organization to '$organizationUri' and project to '$teamProject'"
+              az devops configure --defaults organization=$organizationUri project=$teamProject
+
+              $variableGroupSummary = az pipelines variable-group list | ConvertFrom-Json -Depth 99 | Where-Object -FilterScript { $_.Name -eq $variableGroupName } 
+
+              if ($null -eq $variableGroupSummary) {
+                throw "Could not find variable group $variableGroupName"
+              } 
+              else {
+                $variableGroup = az pipelines variable-group show --id $variableGroupSummary.id | ConvertFrom-Json -Depth 99
+
+                [System.Version]$currentVersion = [System.Version]::new($variableGroup.variables.major.value, $variableGroup.variables.minor.value, $variableGroup.variables.patch.value)
+                Write-Host "Obtained $($currentVersion.ToString())"
+                [string]$previewVersion = "$($currentVersion.ToString())-rc.$($env:BUILD_BUILDID)"
+                Write-Host "##vso[task.setvariable variable=MajorVersion]$($currentVersion.Major)"
+                Write-Host "##vso[task.setvariable variable=MinorVersion]$($currentVersion.Minor)"
+                Write-Host "##vso[task.setvariable variable=PatchVersion]$($currentVersion.Build)"
+                Write-Host "##vso[task.setvariable variable=Version]$previewVersion"
+                Write-Host "##vso[task.setvariable variable=versioningScheme]byEnvVar"
+                Write-Host "##vso[task.setvariable variable=configuration]Debug"
+              }
+            displayName: Preview Version
+
+        - task: PowerShell@2
+          displayName: Set the name of the build (i.e. the Build.BuildNumber)
+          inputs:
+            targetType: 'inline'
+            script: |
+              Write-Host "Setting the name of the build to '$(Version)'."
+              Write-Host "##vso[build.updatebuildnumber]$(Version)"
+              Write-Host "version: $(Version)"
+              Write-Host "configuration: $(configuration)"
+              Write-Host "solutionFolder: ${{parameters.solutionFolder}}"
+              Write-Host "solutionName: ${{parameters.solutionName}}"
+              Write-Host "projectName: ${{parameters.projectName}}"
+              Write-Host "runTests: ${{parameters.runTests}}"
+              Write-Host "testProjectName: ${{parameters.testProjectName}}"
+              Write-Host "versioningScheme: $(versioningScheme)"
+
+        - task: NuGetToolInstaller@1
+          displayName: 'Use NuGet Latest'
+
+        - task: NuGetCommand@2
+          displayName: 'List NuGet config'
+          inputs:
+            command: 'custom'
+            arguments: 'locals all -list'
+
+        - task: NuGetCommand@2
+          displayName: "Package Restore"
+          inputs:
+            command: 'restore'
+            restoreSolution: '${{parameters.solutionFolder}}/*.sln'
+            feedsToUse: 'select'
+
+        - task: DotNetCoreCLI@2
+          condition: eq(${{parameters.runTests}}, true)
+          displayName: "Build Test Project"
+          inputs:
+            command: 'build'
+            projects: '${{parameters.solutionFolder}}${{parameters.testProjectName}}/${{parameters.testProjectName}}.csproj'
+            arguments: '--configuration $(configuration) /p:Version=$(Version)'
+
+        - task: DotNetCoreCLI@2
+          displayName: "Run Unit Tests"
+          condition: eq(${{parameters.runTests}}, true)
+          inputs:
+            command: test
+            projects: '${{parameters.solutionFolder}}${{parameters.testProjectName}}/${{parameters.testProjectName}}.csproj'
+            arguments: '--configuration $(configuration) --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/coverage/ /p:MergeWith=$(Build.SourcesDirectory)/coverage/ --collect "Code coverage"'
+
+        - task: DotNetCoreCLI@2
+          displayName: 'Build Project'
+          inputs:
+            command: build
+            projects: '${{parameters.solutionFolder}}${{parameters.projectName}}/${{parameters.projectName}}.csproj'
+            arguments: '--configuration $(configuration)'
+
+        - task: NuGetCommand@2
+          displayName: "Create nuget Package"
+          inputs:
+            command: 'pack'
+            arguments: '--configuration $(configuration) --no-build'
+            packagesToPack: '${{parameters.solutionFolder}}${{parameters.projectName}}/${{parameters.projectName}}.csproj'
+            versioningScheme: $(versioningScheme)
+            versionEnvVar: Build.BuildNumber
+
+        - task: NuGetCommand@2
+          displayName: 'Publish Packages'
+          inputs:
+            command: 'push'
+            feedsToUse: 'select'
+            packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*${{parameters.projectName}}*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*${{parameters.projectName}}*.symbols.nupkg'
+            nuGetFeedType: 'internal'
+            publishVstsFeed: 'RWD-CPR-EPR4P-ADO/defra-epr-common'
+            allowPackageConflicts: true
+            versioningScheme: $(versioningScheme)
+            versionEnvVar: Build.BuildNumber

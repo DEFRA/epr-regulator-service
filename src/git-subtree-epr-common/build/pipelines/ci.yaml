@@ -1,0 +1,108 @@
+trigger:
+  branches:
+    include:
+      - '*'
+  paths:
+    include:
+      - 'src/*'
+
+pool: DEFRA-COMMON-ubuntu2004-SSV3
+
+variables:
+  solutionFolder: src/EPR.Common
+  solution: src/EPR.Common/EPR.Common.sln
+  buildConfiguration: Release
+  sonarQubeProjectKey: epr-common
+  sonarQubeProjectName: epr-common
+
+stages:
+  - stage: Build_Test_Analyse
+    displayName: 'Build, Test & Analyse'
+    jobs:
+      - job: BuildTestAnalyse
+        displayName: 'Build, Test & Analyse'
+        steps:
+          - task: SonarQubePrepare@6
+            displayName: 'SonarQube Prepare'
+            inputs:
+              SonarQube: 'SonarQube'
+              scannerMode: 'MSBuild'
+              projectKey: $(sonarQubeProjectKey)
+              projectName: $(sonarQubeProjectName)
+              extraProperties: sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Restore'
+            inputs:
+              command: 'restore'
+              projects: $(solution)
+              feedsToUse: 'config'
+              nugetConfigPath: '$(solutionFolder)/NuGet.Config'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Build'
+            inputs:
+              command: 'build'
+              projects: $(solution)
+              arguments: '--configuration $(buildConfiguration) --no-restore'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Test'
+            inputs:
+              command: 'test'
+              projects: '$(solutionFolder)/**/*.Test*/*.csproj'
+              arguments: '--configuration $(buildConfiguration) --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+              publishTestResults: true
+
+          - task: SonarQubeAnalyze@6
+            displayName: 'SonarQube Analyze'
+            inputs:
+              jdkversion: 'JAVA_HOME_17_X64'
+
+          - task: SonarQubePublish@6
+            displayName: 'SonarQube Publish'
+            inputs:
+              pollingTimeoutSec: '300'
+
+          - task: AzureKeyVault@2
+            displayName: 'Get SonarQube Token'
+            inputs:
+              azureSubscription: 'AZD-RWD-DEV1'
+              KeyVaultName: 'DEVRWDINFKV1401'
+              SecretsFilter: 'EPRADO-SonarQubeToken'
+
+          - powershell: |
+              if ("$(Build.Reason)" -eq "PullRequest") {
+                Switch ("$(Build.Repository.Provider)") {
+                  "TfsGit" { $pullRequestId = "$(System.PullRequest.PullRequestId)" }
+                  "GitHub" { $pullRequestId = "$(System.PullRequest.PullRequestNumber)" }
+                  Default { Write-Host "Unexpected provider: $(Build.Repository.Provider)"; exit 1 }
+                }
+                Write-Host "Checking quality gate for PR $pullRequestId"
+                $qualifier = "&pullRequest=$pullRequestId"
+              } else {
+                $branchName = "$(Build.SourceBranch)".Replace('refs/heads/', '')
+                Write-Host "Checking quality gate for branch $branchName"
+                $qualifier = "&branch=" + [uri]::EscapeDataString($branchName)
+              }
+
+              $token = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("$(EPRADO-SonarQubeToken):"))
+              $headers = @{ "Authorization" = "Basic $token"; "Accept" = "application/json" }
+              $uri = "https://vss-sonarqube.azure.defra.cloud/api/qualitygates/project_status?projectKey=$(sonarQubeProjectKey)$qualifier"
+
+              Write-Host "SonarQube URI: $uri"
+              try {
+                $result = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
+              } catch {
+                Write-Host "Error getting SonarQube status: $_"
+                exit 0
+              }
+
+              if ($result.projectStatus.status -eq "OK") {
+                Write-Host "Quality Gate passed"
+              } else {
+                Write-Host "##vso[task.logissue type=error]Quality Gate failed"
+                $result.projectStatus.conditions | Where-Object { $_.status -eq "ERROR" } | ConvertTo-Json
+                exit 1
+              }
+            displayName: 'Check Quality Gate'

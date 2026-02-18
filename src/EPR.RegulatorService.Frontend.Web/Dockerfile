@@ -6,20 +6,13 @@ ARG PORT=3000
 ENV ASPNETCORE_URLS=http://*:${PORT}
 EXPOSE ${PORT}
 
-# Copy everything
+# Copy csproj files for restore
 COPY EPR.RegulatorService.Frontend.Web/*.csproj ./EPR.RegulatorService.Frontend.Web/
 COPY EPR.RegulatorService.Frontend.Core/*.csproj ./EPR.RegulatorService.Frontend.Core/
-# Move up 2 directorys as Nuget.config is located in src
-COPY NuGet.Config ./NuGet.Config
-
-# Use Build Argument to insert PAT into Nuget file
-ARG PAT=localhost
-RUN sed -i "s|</configuration>|<packageSourceCredentials><epr-packaging-common><add key=\"Username\" value=\"PAT\" /><add key=\"ClearTextPassword\" value=\"${PAT}\" /></epr-packaging-common></packageSourceCredentials></configuration>|" NuGet.Config
-
-RUN find . -name "*.csproj" -type f -print
+COPY git-subtree-epr-common/src/EPR.Common/EPR.Common.Authorization/*.csproj ./git-subtree-epr-common/src/EPR.Common/EPR.Common.Authorization/
 
 # Restore as distinct layers
-RUN dotnet restore "./EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj" --configfile "NuGet.Config"
+RUN dotnet restore "./EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj"
 
 # Install NPM
 USER root
@@ -30,6 +23,7 @@ ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/internal-ca.crt
 # Build and publish a release
 COPY EPR.RegulatorService.Frontend.Web/. ./EPR.RegulatorService.Frontend.Web/.
 COPY EPR.RegulatorService.Frontend.Core/. ./EPR.RegulatorService.Frontend.Core/.
+COPY git-subtree-epr-common/. ./git-subtree-epr-common/.
 WORKDIR /home/dotnet/EPR.RegulatorService.Frontend.Web
 
 RUN dotnet publish -c Release -o out
