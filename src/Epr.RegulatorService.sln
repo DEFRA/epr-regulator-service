@@ -64,7 +64,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "epr-common", "epr-common", "{97722E13-5F00-4046-883E-C01B43BC6104}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization.Test", "git-subtree-epr-common\src\EPR.Common\EPR.Common.Authorization.Test\EPR.Common.Authorization.Test.csproj", "{59E3A260-4A20-4E63-84D4-617036BBE143}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization.Tests", "git-subtree-epr-common\src\EPR.Common\EPR.Common.Authorization.Tests\EPR.Common.Authorization.Tests.csproj", "{59E3A260-4A20-4E63-84D4-617036BBE143}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Logging", "git-subtree-epr-common\src\EPR.Common\EPR.Common.Logging\EPR.Common.Logging.csproj", "{72477DC7-7A41-414B-AFB3-62EA37C4B597}"
 EndProject
@@ -72,7 +72,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Functions", "git
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Logging.Tests", "git-subtree-epr-common\src\EPR.Common\EPR.Common.Logging.Tests\EPR.Common.Logging.Tests.csproj", "{A61E3DF6-4D5D-4622-B8FA-F199960B9A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Functions.Test", "git-subtree-epr-common\src\EPR.Common\EPR.Common.Functions.Test\EPR.Common.Functions.Test.csproj", "{641B7062-380B-425B-B9AD-AEDAE71BC573}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Functions.Tests", "git-subtree-epr-common\src\EPR.Common\EPR.Common.Functions.Tests\EPR.Common.Functions.Tests.csproj", "{641B7062-380B-425B-B9AD-AEDAE71BC573}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
