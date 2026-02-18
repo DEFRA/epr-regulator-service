@@ -46,6 +46,15 @@ dnt switch-to-projects   # switch to local project references
 
 The mappings are defined in [`src/switcher.json`](src/switcher.json).
 
+### Docker
+
+Build and run the application with Docker:
+
+```sh
+docker build -t epr-regulator-service -f src/EPR.RegulatorService.Frontend.Web/Dockerfile src/
+docker run -p 3000:3000 epr-regulator-service
+```
+
 ### Redis
 
 The regulator service requires Redis, the recommended way of running Redis is to run it via Docker.
