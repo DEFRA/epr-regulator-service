@@ -24,5 +24,7 @@ public class ComplianceSchemeMemberRequest
 
     public int NumberOfSubsidiaries { get; set; }
 
+    public int NumberOfLateSubsidiaries { get; set; }
+
     public int NoOfSubsidiariesOnlineMarketplace { get; set; }
 }
