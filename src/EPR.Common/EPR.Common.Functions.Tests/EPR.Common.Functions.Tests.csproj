@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <CodeAnalysisRuleSet>..\stylecop.ruleset</CodeAnalysisRuleSet>
         <IsPackable>false</IsPackable>
+        <RootNamespace>EPR.Common.Functions.Test</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
