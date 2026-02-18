@@ -5,11 +5,11 @@ VisualStudioVersion =
 MinimumVisualStudioVersion = 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Functions", "EPR.Common.Functions\EPR.Common.Functions.csproj", "{EB2A2B7E-504C-44F3-BD09-F4A307282838}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Functions.Test", "EPR.Common.Functions.Test\EPR.Common.Functions.Test.csproj", "{E3E4F40A-1078-47B2-96C3-3FC8C212584B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Functions.Tests", "EPR.Common.Functions.Tests\EPR.Common.Functions.Tests.csproj", "{E3E4F40A-1078-47B2-96C3-3FC8C212584B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization", "EPR.Common.Authorization\EPR.Common.Authorization.csproj", "{74F74FC9-BDF2-42C9-B41F-2531D671725B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization.Test", "EPR.Common.Authorization.Test\EPR.Common.Authorization.Test.csproj", "{8E8ED83F-32C9-458B-85D9-557F5848B525}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Authorization.Tests", "EPR.Common.Authorization.Tests\EPR.Common.Authorization.Tests.csproj", "{8E8ED83F-32C9-458B-85D9-557F5848B525}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPR.Common.Logging", "EPR.Common.Logging\EPR.Common.Logging.csproj", "{DC95204E-2F2E-4531-A290-7F9CD458FE6E}"
 EndProject
