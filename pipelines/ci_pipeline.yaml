@@ -24,8 +24,6 @@ variables:
     value: src
   - name: projectFolder
     value: 'EPR.RegulatorService.Frontend.Web'
-  - name: testProjectFolder
-    value: 'EPR.RegulatorService.Frontend.UnitTests'
   - name: sonarQubeProjectKey
     value: epr-regulator-service
   - name: sonarQubeProjectName
@@ -50,7 +48,7 @@ extends:
   parameters:
     solutionFolder: ${{ variables.solutionFolder }}
     projectFolder: ${{ variables.projectFolder }}
-    testProjectFolder: ${{ variables.testProjectFolder }}
+    testProjectFolder: '' # Empty to use wildcard and run all test projects
     sonarQubeProjectKey: ${{ variables.sonarQubeProjectKey }}
     sonarQubeProjectName: ${{ variables.sonarQubeProjectName }}
     runTests: ${{ variables.runTests }}
