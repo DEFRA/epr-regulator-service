@@ -6,9 +6,10 @@ ARG PORT=3000
 ENV ASPNETCORE_URLS=http://*:${PORT}
 EXPOSE ${PORT}
 
-# Copy everything
+# Copy csproj files for restore
 COPY EPR.RegulatorService.Frontend.Web/*.csproj ./EPR.RegulatorService.Frontend.Web/
 COPY EPR.RegulatorService.Frontend.Core/*.csproj ./EPR.RegulatorService.Frontend.Core/
+COPY git-subtree-epr-common/src/EPR.Common/EPR.Common.Authorization/*.csproj ./git-subtree-epr-common/src/EPR.Common/EPR.Common.Authorization/
 # Move up 2 directorys as Nuget.config is located in src
 COPY NuGet.Config ./NuGet.Config
 
@@ -30,6 +31,7 @@ ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/internal-ca.crt
 # Build and publish a release
 COPY EPR.RegulatorService.Frontend.Web/. ./EPR.RegulatorService.Frontend.Web/.
 COPY EPR.RegulatorService.Frontend.Core/. ./EPR.RegulatorService.Frontend.Core/.
+COPY git-subtree-epr-common/. ./git-subtree-epr-common/.
 WORKDIR /home/dotnet/EPR.RegulatorService.Frontend.Web
 
 RUN dotnet publish -c Release -o out
