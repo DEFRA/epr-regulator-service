@@ -43,7 +43,6 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
         [HttpGet]
         [Consumes("application/json")]
         [Route(PagePath.Applications)]
-        [Route("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Applications(int? pageNumber = null)
