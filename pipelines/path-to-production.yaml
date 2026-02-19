@@ -55,7 +55,6 @@ steps:
 
   - bash: |
       echo "Current dockerImage for "${{ upper(parameters.serviceName) }}" --> $(currentImageTag)"
-      echo "Deploying dockerImage --> "${{ parameters.registryName }}:${{ parameters.imageTag }} "to env --> "${{ parameters.targetEnvironment }}
       echo "Deploying dockerImage to "${{ upper(parameters.serviceName) }}
     displayName: 'Show Environment Details'
   
