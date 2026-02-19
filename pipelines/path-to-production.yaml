@@ -28,11 +28,6 @@ resources:
       ref: main
 
 steps:
-  # - template: templates/get-current-dockertag.yaml@CommonTemplates
-  #   parameters:
-  #     azureSubscription: ${{ variables.azureSubscription }}
-  #     serviceName: devrwdwebwa1411
-
   - task: AzureCLI@2
     displayName: Current Docker Image Tag ${{ parameters.serviceName }}
     inputs:
@@ -41,6 +36,7 @@ steps:
       scriptLocation: inlineScript
       inlineScript: |
         Set-StrictMode -Version 3.0
+        Set-PSDebug -Trace 1
 
         $serviceName = "${{ parameters.serviceName }}".ToUpper()
         $currentImageTag = ""
@@ -56,3 +52,25 @@ steps:
 
         Write-Host ("Current Image Tag for {0}: {1}" -f $serviceName, $currentImageTag)
         Write-Host "##vso[task.setvariable variable=currentImageTag;]$currentImageTag"
+
+  - bash: |
+      echo "Current dockerImage for "${{ upper(parameters.serviceName) }}" --> $(currentImageTag)"
+      echo "Deploying dockerImage --> "${{ parameters.registryName }}:${{ parameters.imageTag }} "to env --> "${{ parameters.targetEnvironment }}
+      echo "Deploying dockerImage to "${{ upper(parameters.serviceName) }}
+    displayName: 'Show Environment Details'
+  
+  - task: AzureCLI@2
+    displayName: Check Image Tag '${{ parameters.imageTag }}' exists
+    inputs:
+      azureSubscription: ${{ variables.azureSubscription }}
+      scriptType: pscore
+      scriptLocation: inlineScript
+      inlineScript: |
+        az acr repository show --name devrwdinfac1401 --image eprregulatorfrontendregistry:${{ parameters.imageTag }} --output none 2>$null
+
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "❌ ACR image '$acrName/$image' does not exist (or is not accessible). Failing pipeline."
+          exit 1
+        }
+
+        Write-Host "✅ Found ACR image: devrwdinfac1401/eprregulatorfrontendregistry:${{ parameters.imageTag }}"
