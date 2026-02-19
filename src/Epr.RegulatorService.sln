@@ -13,10 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
-		Dockerfile = Dockerfile
 		NuGet.Config = NuGet.Config
 		SonarAnalyzer.ruleset = SonarAnalyzer.ruleset
 		../README.md = ../README.md
+		EPR.RegulatorService.Frontend.Web/Dockerfile = EPR.RegulatorService.Frontend.Web/Dockerfile
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pipelines", "pipelines", "{9E27FC4A-3A20-4D62-93D9-8067AA3DE035}"
