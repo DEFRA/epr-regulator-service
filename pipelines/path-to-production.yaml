@@ -5,6 +5,8 @@ appendCommitMessageToRunName: false
 name: Path-To-Prod epr-regulator-service
 
 variables:
+  acr.name: devrwdinfac1401
+  acr.repoName: eprregulatorfrontendregistry
   azureSubscription: AZD-RWD-DEV1
 
 parameters:
@@ -59,17 +61,17 @@ steps:
     displayName: 'Show Environment Details'
   
   - task: AzureCLI@2
-    displayName: Check Image Tag '${{ parameters.imageTag }}' exists
+    displayName: Check Image with tag '${{ parameters.imageTag }}' exists
     inputs:
       azureSubscription: ${{ variables.azureSubscription }}
       scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
-        az acr repository show --name devrwdinfac1401 --image eprregulatorfrontendregistry:${{ parameters.imageTag }} --output none 2>$null
+        az acr repository show --name ${{ variables.acr.name }} --image ${{ variables.acr.repoName }}:${{ parameters.imageTag }} --output none 2>$null
 
         if ($LASTEXITCODE -ne 0) {
-          Write-Error "❌ ACR image '$acrName/$image' does not exist (or is not accessible). Failing pipeline."
+          Write-Error "❌ ACR image '${{ variables.acr.repoName }}:${{ parameters.imageTag }}' does not exist (or is not accessible). Failing pipeline."
           exit 1
         }
 
-        Write-Host "✅ Found ACR image: devrwdinfac1401/eprregulatorfrontendregistry:${{ parameters.imageTag }}"
+        Write-Host "✅ Found ACR image: ${{ variables.acr.name }}/${{ variables.acr.repoName }}:${{ parameters.imageTag }}"
