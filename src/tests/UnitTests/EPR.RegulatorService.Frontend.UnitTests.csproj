@@ -49,8 +49,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\EPR.RegulatorService.Frontend.Core\EPR.RegulatorService.Frontend.Core.csproj" />
-      <ProjectReference Include="..\EPR.RegulatorService.Frontend.Web\EPR.RegulatorService.Frontend.Web.csproj" />
+      <ProjectReference Include="..\..\EPR.RegulatorService.Frontend.Core\EPR.RegulatorService.Frontend.Core.csproj" />
+      <ProjectReference Include="..\..\EPR.RegulatorService.Frontend.Web\EPR.RegulatorService.Frontend.Web.csproj" />
     </ItemGroup>
 
     <ItemGroup>

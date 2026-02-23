@@ -26,8 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../EPR.RegulatorService.Frontend.Web/EPR.RegulatorService.Frontend.Web.csproj" />
-    <ProjectReference Include="..\MockRegulatorFacade\MockRegulatorFacade.csproj" />
+    <ProjectReference Include="..\..\EPR.RegulatorService.Frontend.Web\EPR.RegulatorService.Frontend.Web.csproj" />
+    <ProjectReference Include="..\..\MockRegulatorFacade\MockRegulatorFacade.csproj" />
   </ItemGroup>
 
 </Project>

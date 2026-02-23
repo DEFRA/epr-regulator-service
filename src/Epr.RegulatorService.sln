@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPR.RegulatorService.Fronte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPR.RegulatorService.Frontend.Web", "EPR.RegulatorService.Frontend.Web\EPR.RegulatorService.Frontend.Web.csproj", "{2A9F6DCA-F5FF-4B2C-9703-E71CDC225A1D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPR.RegulatorService.Frontend.UnitTests", "EPR.RegulatorService.Frontend.UnitTests\EPR.RegulatorService.Frontend.UnitTests.csproj", "{4B38E54D-26F9-4C21-8859-ED5691DAEB13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPR.RegulatorService.Frontend.UnitTests", "tests\UnitTests\EPR.RegulatorService.Frontend.UnitTests.csproj", "{4B38E54D-26F9-4C21-8859-ED5691DAEB13}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{3B602B5A-BE5F-499A-937A-7038258B2E7D}"
 	ProjectSection(SolutionItems) = preProject
@@ -54,7 +54,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{
 		../pipelines\templates\docker.yaml = ../pipelines\templates\docker.yaml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{3DC4D29D-FDF7-4ACF-8870-1B8C6B11E323}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "tests\IntegrationTests\IntegrationTests.csproj", "{3DC4D29D-FDF7-4ACF-8870-1B8C6B11E323}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockRegulatorFacade", "MockRegulatorFacade\MockRegulatorFacade.csproj", "{A1B2C3D4-E5F6-47A8-B9C0-D1E2F3A4B5C6}"
 EndProject
