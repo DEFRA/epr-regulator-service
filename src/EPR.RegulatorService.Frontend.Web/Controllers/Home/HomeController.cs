@@ -46,6 +46,10 @@ public class HomeController : RegulatorSessionBaseController
         return View();
     }
 
+    // Note this home/index page is not available on /regulators/, only on /regulators/home
+    // and there is no intention to change it currently as it has not been reported as causing
+    // problems for regulators in user research
+    // https://eaflood.atlassian.net/browse/AMCR-8
     [HttpGet]
     [ActionName("LandingPage")]
     [Route(PagePath.Home)]
