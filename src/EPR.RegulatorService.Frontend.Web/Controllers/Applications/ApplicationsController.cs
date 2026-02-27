@@ -43,7 +43,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
         [HttpGet]
         [Consumes("application/json")]
         [Route(PagePath.Applications)]
-        [Route("")]
+        [Route("")] // This page is served on /regulators/. You might expect to find the home/index on the root path, but this hasn't shown up as a problem in user research so there currently is no plan to alter this route - https://eaflood.atlassian.net/browse/AMCR-8
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Applications(int? pageNumber = null)
