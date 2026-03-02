@@ -88,8 +88,17 @@ Internal developers can set appropriate user-secrets by using the private [epr-t
 #### B2C Client 
 `AzureAdB2C.ClientSecret` will need to be set for the `ClientId` being used.
 
+#### EprAuthorizationConfig
+
+Authorization is handled by NuGet package [EPR.Common.Authorization](https://github.com/DEFRA/epr-common/tree/main/src/EPR.Common/EPR.Common.Authorization) which requires [settings under the EprAuthorizationConfig section](https://github.com/DEFRA/epr-common/blob/d910b3579c789202e311495e1577e47bf1c4404c/src/EPR.Common/EPR.Common.Authorization/Config/EprAuthorizationConfig.cs#L3).
+
+`EprAuthorizationConfig:FacadeBaseUrl` should to point to the [regulator-facade](https://github.com/DEFRA/epr-regulator-service-facade) (WAx406).
+
 #### Facade APIs
-If the `epr_regulator_service_facade` has had its port changed, `FacadeApi.BaseUrl` and `EprAuthorizationConfig.FacadeBaseUrl` will need to be updated to reflect this.
+
+`FacadeApi:BaseUrl` should point to the [regulator-facade](https://github.com/DEFRA/epr-regulator-service-facade) (WAx406).
+
+Regulator facade can be swapped out for the mock facade running locally. launchSettings have been added to easily flip to the local mock or local running facade api.
 
 #### Landing page urls
 
