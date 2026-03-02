@@ -167,7 +167,9 @@ public static class ServiceProviderExtension
         services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApp(options =>
             {
-                configuration.GetSection("AzureAdB2C").Bind(options);
+                var b2CConfig = configuration.GetSection("AzureAdB2C");
+                ValidateB2CConfig(b2CConfig);
+                b2CConfig.Bind(options);
                 options.ErrorPath = "/error";
             }, options =>
             {
@@ -180,6 +182,29 @@ public static class ServiceProviderExtension
             })
             .EnableTokenAcquisitionToCallDownstreamApi(new string[] { configuration.GetValue<string>("FacadeAPI:DownstreamScope") })
             .AddDistributedTokenCaches();
+    }
+
+    private static IConfigurationSection ValidateB2CConfig(IConfigurationSection section)
+    {
+        var b2CKeys = new[]
+        {
+            "CallbackPath",
+            "ClientId",
+            "ClientSecret",
+            "Domain",
+            "EditProfilePolicyId",
+            "Instance",
+            "ResetPasswordPolicyId",
+            "SignUpSignInPolicyId",
+            "SignedOutCallbackPath",
+        };
+        var missing = b2CKeys.Where(k => string.IsNullOrWhiteSpace(section[k])).ToList();
+        if (missing.Any())
+        {
+            throw new Exception($"Missing required AzureAdB2C config value(s) for: {string.Join(",", missing)}");
+        }
+
+        return section;
     }
 
     private static void ConfigureAuthorization(IServiceCollection services, IConfiguration configuration)
