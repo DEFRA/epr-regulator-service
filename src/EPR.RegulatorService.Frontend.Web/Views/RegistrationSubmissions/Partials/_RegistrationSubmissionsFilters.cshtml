@@ -5,7 +5,6 @@
 @using (Html.BeginForm("RegistrationSubmissions", "RegistrationSubmissions", FormMethod.Post))
 {
     @Html.HiddenFor(r => r.NationId)
-    @Html.HiddenFor(r => r.Show2026RelevantYearFilter)
     <div class="epr-filter-panel">
         <div class="govuk-width-container">
             <div class="govuk-grid-row">
@@ -181,26 +180,27 @@
                                 <span class="govuk-label govuk-label--m">@Localizer["SubTitle.RelevantYear"].Value</span>
                             </legend>
                             <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                                <div class="epr-filter-panel-checkbox-layout">
-                                    <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
-                                        @Html.CheckBoxFor(x => x.Is2025Checked,
-                                                                                new { id = "is-year-2025-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-year-2025-checked-label" })
-                                        @Html.LabelFor(x => x.Is2025Checked, Localizer["Checkbox.Year-2025"].Value,
-                                                                                new { id = "is-year-2025-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-year-2025-checked-check" })
+                                @foreach (var year in Model.SubmissionYears ?? [])
+                                {
+                                    var yearId = $"is-year-{year}-checked";
+                                    <div class="epr-filter-panel-checkbox-layout">
+                                        <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
+                                            <input class="govuk-checkboxes__input"
+                                                   id="@(yearId)-check"
+                                                   name="SelectedYears"
+                                                   type="checkbox"
+                                                   value="@year"
+                                                   aria-labelledby="@(yearId)-label"
+                                                   @(Model.SelectedYears?.Contains(year) == true ? "checked" : "")>
+                                            <label class="govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label"
+                                                   id="@(yearId)-label"
+                                                   for="@(yearId)-check">
+                                                @year
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
-                                @if (Model.Show2026RelevantYearFilter)
-                                    {
-                                        <div class="epr-filter-panel-checkbox-layout">
-                                            <div class="govuk-checkboxes__item epr-filter-panel-checkbox">
-                                                @Html.CheckBoxFor(x => x.Is2026Checked,
-                                                new { id = "is-year-2026-checked-check", @class = "govuk-checkboxes__input", labelledby = "is-year-2026-checked-label" })
-                                        @Html.LabelFor(x => x.Is2026Checked, Localizer["Checkbox.Year-2026"].Value,
-                                                                                new { id = "is-year-2026-checked-label", @class = "govuk-label govuk-checkboxes__label epr-filter-panel-checkboxes-label", @for = "is-year-2026-checked-check" })
-                                    </div>
-                                </div>
-                                                                }
-                                </div>
+                                }
+                            </div>
                             </fieldset>
                         </div>
                         <button type="submit" class="govuk-button epr-filter-panel-control" data-module="govuk-button"

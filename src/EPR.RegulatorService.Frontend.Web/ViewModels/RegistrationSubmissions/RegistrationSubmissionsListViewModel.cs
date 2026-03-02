@@ -11,6 +11,6 @@ public class RegistrationSubmissionsListViewModel
 
     public PaginationNavigationModel PaginationNavigationModel { get; set; }
 
-    public RegistrationSubmissionsFilterViewModel RegistrationsFilterModel { get; set; } = new RegistrationSubmissionsFilterViewModel();
+    public RegistrationSubmissionsFilterViewModel RegistrationsFilterViewModel { get; set; } = new RegistrationSubmissionsFilterViewModel();
     public int NationId { get; internal set; }
 }

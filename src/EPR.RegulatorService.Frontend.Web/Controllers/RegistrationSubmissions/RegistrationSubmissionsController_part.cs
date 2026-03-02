@@ -22,14 +22,24 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
             RegulatorRegistrationSubmissionSession session,
             int nationId)
         {
-            var existingSessionFilters = session.LatestFilterChoices ?? new RegistrationSubmissionsFilterViewModel()
+            RegistrationSubmissionsFilterViewModel existingSessionFilters = session.LatestFilterChoices != null
+                ? (RegistrationSubmissionsFilterViewModel)session.LatestFilterChoices
+                : new RegistrationSubmissionsFilterViewModel
+                {
+                    PageNumber = 1,
+                    PageSize = 20,
+                    NationId = nationId
+                };
+
+            int currentPageNumber = session.CurrentPageNumber ?? 1;
+            existingSessionFilters.PageNumber = currentPageNumber;
+            existingSessionFilters.SubmissionYears = _submissionFiltersConfig.Years?
+                .Select(y => y.ToString())
+                .ToArray() ?? [];
+            if (session.LatestFilterChoices != null)
             {
-                PageNumber = 1,
-                PageSize = 20,
-                NationId = nationId,
-                Show2026RelevantYearFilter = _registrationSubmissionOptions.Show2026RelevantYearFilter
-            };
-            existingSessionFilters.PageNumber = session.CurrentPageNumber;
+                session.LatestFilterChoices.PageNumber = currentPageNumber;
+            }
 
             return new RegistrationSubmissionsViewModel
             {
@@ -37,10 +47,10 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
                 ListViewModel = new RegistrationSubmissionsListViewModel
                 {
                     NationId = nationId,
-                    RegistrationsFilterModel = existingSessionFilters,
+                    RegistrationsFilterViewModel = existingSessionFilters,
                     PaginationNavigationModel = new ViewModels.Shared.PaginationNavigationModel
                     {
-                        CurrentPage = session.CurrentPageNumber.Value
+                        CurrentPage = session.CurrentPageNumber ?? 1
                     }
                 },
                 PowerBiLogin = _externalUrlsOptions.PowerBiLogin,
