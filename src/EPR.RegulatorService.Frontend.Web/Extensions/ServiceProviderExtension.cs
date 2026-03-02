@@ -132,7 +132,7 @@ public static class ServiceProviderExtension
 
         if (!useLocalSession)
         {
-            var redisConnection = configuration.GetConnectionString("REDIS_CONNECTION");
+            var redisConnection = configuration.GetConnectionString("REDIS_CONNECTION") ?? throw new Exception("Missing required configuration ConnectionStrings:REDIS_CONNECTION");
 
             services.AddDataProtection()
                 .SetApplicationName("EprProducers")
