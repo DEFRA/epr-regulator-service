@@ -1,5 +1,6 @@
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 {
+    using EPR.RegulatorService.Frontend.Core.Configs;
     using EPR.RegulatorService.Frontend.Core.Enums;
     using EPR.RegulatorService.Frontend.Core.Models;
     using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
@@ -29,18 +30,17 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         protected RegistrationSubmissionsController _controller = null!;
         protected Mock<HttpContext> _mockHttpContext = null!;
         protected Mock<IOptions<ExternalUrlsOptions>> _mockUrlsOptions = null!;
-        protected Mock<IOptions<RegistrationSubmissionsOptions>> _mockRegistrationSubmissionOptions = null!;
+        protected Mock<IOptions<SubmissionFiltersConfig>> _mockSubmissionFiltersConfig = null!;
         protected Mock<IConfiguration> _mockConfiguration = null!;
         protected Mock<ISessionManager<JourneySession>> _mockSessionManager = null!;
         protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
         protected Mock<IUrlHelper> _mockUrlHelper = null!;
 
-        protected void SetupBase(bool? show2026RelevantYearFilter = false)
+        protected void SetupBase()
         {
             _mockHttpContext = new Mock<HttpContext>();
             _mockUrlsOptions = new Mock<IOptions<ExternalUrlsOptions>>();
-            _mockRegistrationSubmissionOptions = new Mock<IOptions<RegistrationSubmissionsOptions>>();
             _mockConfiguration = new Mock<IConfiguration>();
             _loggerMock = new Mock<ILogger<RegistrationSubmissionsController>>();
             _facadeServiceMock = new Mock<IFacadeService>();
@@ -61,12 +61,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     PowerBiLogin = PowerBiLogin
                 });
 
-            _mockRegistrationSubmissionOptions.Setup(mockRegistrationSubmissionOptions =>
-                mockRegistrationSubmissionOptions.Value)
-                .Returns(new RegistrationSubmissionsOptions
-                {
-                    Show2026RelevantYearFilter = show2026RelevantYearFilter.Value
-                });
+            _mockSubmissionFiltersConfig = new Mock<IOptions<SubmissionFiltersConfig>>();
+            _mockSubmissionFiltersConfig.Setup(m => m.Value).Returns(new SubmissionFiltersConfig
+            {
+                Years = [2023, 2024, 2025, 2026, 2027]
+            });
 
             SetupJourneySession(null, null);
 
@@ -82,7 +81,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 _loggerMock.Object,
                 _mockConfiguration.Object,
                 _mockUrlsOptions.Object,
-                _mockRegistrationSubmissionOptions.Object)
+                _mockSubmissionFiltersConfig.Object)
             {
                 ControllerContext = new ControllerContext
                 {

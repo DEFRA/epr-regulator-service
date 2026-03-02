@@ -15,8 +15,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
         {
             var emptyFilterViewModel = new RegistrationSubmissionsFilterViewModel
             {
-                Is2025Checked = false,
-                Is2026Checked = false,
+                SelectedYears = [],
                 IsOrganisationComplianceChecked = false,
                 IsOrganisationLargeChecked = false,
                 IsOrganisationSmallChecked = false,
@@ -30,9 +29,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
                 OrganisationRef = null
             };
 
-            _sut.RegistrationsFilterModel = emptyFilterViewModel;
+            _sut.RegistrationsFilterViewModel = emptyFilterViewModel;
 
-            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
+            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterViewModel;
             result.OrganisationName.Should().BeNull();
             result.OrganisationReference.Should().BeNull();
             result.OrganisationType.Should().BeEmpty();
@@ -45,8 +44,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
         {
             var emptyFilterViewModel = new RegistrationSubmissionsFilterViewModel
             {
-                Is2025Checked = false,
-                Is2026Checked = false,
+                SelectedYears = [],
                 IsOrganisationComplianceChecked = false,
                 IsOrganisationLargeChecked = false,
                 IsOrganisationSmallChecked = false,
@@ -60,8 +58,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
                 OrganisationRef = null
             };
 
-            _sut.RegistrationsFilterModel = emptyFilterViewModel;
-            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
+            _sut.RegistrationsFilterViewModel = emptyFilterViewModel;
+            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterViewModel;
             result.PageNumber.Should().Be(1);
         }
 
@@ -70,8 +68,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
         {
             var emptyFilterViewModel = new RegistrationSubmissionsFilterViewModel
             {
-                Is2025Checked = false,
-                Is2026Checked = false,
+                SelectedYears = [],
                 IsOrganisationComplianceChecked = false,
                 IsOrganisationLargeChecked = false,
                 IsOrganisationSmallChecked = false,
@@ -86,8 +83,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
                 PageNumber = 2
             };
 
-            _sut.RegistrationsFilterModel = emptyFilterViewModel;
-            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
+            _sut.RegistrationsFilterViewModel = emptyFilterViewModel;
+            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterViewModel;
             result.PageNumber.Should().Be(2);
         }
 
@@ -96,8 +93,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
         {
             var emptyFilterViewModel = new RegistrationSubmissionsFilterViewModel
             {
-                Is2025Checked = true,
-                Is2026Checked = false,
+                SelectedYears = ["2025"],
                 IsOrganisationComplianceChecked = true,
                 IsOrganisationLargeChecked = true,
                 IsOrganisationSmallChecked = false,
@@ -112,9 +108,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels
                 PageNumber = 2
             };
 
-            _sut.RegistrationsFilterModel = emptyFilterViewModel;
+            _sut.RegistrationsFilterViewModel = emptyFilterViewModel;
 
-            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterModel;
+            var result = (RegistrationSubmissionsFilterModel)_sut.RegistrationsFilterViewModel;
 
             result.OrganisationName.Should().Be("Org name");
             result.OrganisationReference.Should().Be("Org ref");
