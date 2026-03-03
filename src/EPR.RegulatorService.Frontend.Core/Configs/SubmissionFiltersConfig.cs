@@ -7,6 +7,8 @@ namespace EPR.RegulatorService.Frontend.Core.Configs
     {
         public const string ConfigSection = "SubmissionFilters";
 
+        public int[] SubmissionYears { get; set; }
+
         public int[] Years { get; set; }
 
         public int[] OrgYears { get; set; }

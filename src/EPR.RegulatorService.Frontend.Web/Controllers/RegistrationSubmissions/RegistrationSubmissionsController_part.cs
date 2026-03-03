@@ -33,7 +33,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
             int currentPageNumber = session.CurrentPageNumber ?? 1;
             existingSessionFilters.PageNumber = currentPageNumber;
-            existingSessionFilters.SubmissionYears = _submissionFiltersConfig.Years?
+            existingSessionFilters.SubmissionYears = _submissionFiltersConfig.SubmissionYears?
                 .Select(y => y.ToString())
                 .ToArray() ?? [];
             if (session.LatestFilterChoices != null)
