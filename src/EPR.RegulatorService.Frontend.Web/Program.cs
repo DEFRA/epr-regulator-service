@@ -13,11 +13,18 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string? containerImage = builder.Configuration.GetValue<string>("DOCKER_CUSTOM_IMAGE_NAME");
+string? buildNumber = builder.Configuration.GetValue<string>("BUILD_NUMBER");
+string? gitSha = builder.Configuration.GetValue<string>("GIT_SHA");
+
 builder.Logging.ClearProviders();
 builder.Host.UseSerilog((context, _, config) =>
 {
     config.ReadFrom.Configuration(context.Configuration);
     config.Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName);
+    config.Enrich.WithProperty("ContainerImage", containerImage ?? "NOT_SET");
+    config.Enrich.WithProperty("BuildNumber", buildNumber ?? "NOT_SET");
+    config.Enrich.WithProperty("GitSha", gitSha ?? "NOT_SET");
 });
 
 builder.Services
