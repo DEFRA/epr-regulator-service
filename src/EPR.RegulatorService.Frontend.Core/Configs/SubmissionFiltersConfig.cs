@@ -7,7 +7,10 @@ namespace EPR.RegulatorService.Frontend.Core.Configs
     {
         public const string ConfigSection = "SubmissionFilters";
 
-        public int[] SubmissionYears { get; set; }
+        /// <summary>
+        /// Comma separated list of years to show in filters
+        /// </summary>
+        public string? SubmissionYears { get; set; }
 
         public int[] Years { get; set; }
 
@@ -16,5 +19,15 @@ namespace EPR.RegulatorService.Frontend.Core.Configs
         public string[] PomPeriods { get; set; }
 
         public string[] OrgPeriods { get; set; }
+
+        public int[] ParseSubmissionYears() =>
+            SubmissionYears?.Split(",").Select(year =>
+            {
+                if (!int.TryParse(year, out int parsedYear))
+                {
+                    throw new Exception($"Invalid year in {ConfigSection}:{nameof(SubmissionYears)} '{year}'");
+                }
+                return parsedYear;
+            }).ToArray() ?? [];
     }
 }

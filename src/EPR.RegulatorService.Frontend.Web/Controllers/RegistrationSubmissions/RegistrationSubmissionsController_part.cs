@@ -33,9 +33,9 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.RegistrationSubmissions
 
             int currentPageNumber = session.CurrentPageNumber ?? 1;
             existingSessionFilters.PageNumber = currentPageNumber;
-            existingSessionFilters.SubmissionYears = _submissionFiltersConfig.SubmissionYears?
+            existingSessionFilters.SubmissionYears = _submissionFiltersConfig.ParseSubmissionYears()
                 .Select(y => y.ToString())
-                .ToArray() ?? [];
+                .ToArray();
             if (session.LatestFilterChoices != null)
             {
                 session.LatestFilterChoices.PageNumber = currentPageNumber;
