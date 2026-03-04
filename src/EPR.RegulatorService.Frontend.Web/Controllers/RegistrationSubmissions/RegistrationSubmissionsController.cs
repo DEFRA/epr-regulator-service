@@ -52,31 +52,23 @@ public partial class RegistrationSubmissionsController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RegistrationSubmissions(int? pageNumber)
     {
-        try
-        {
-            _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
+        _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
 
-            int nationId = _currentSession.UserData.Organisations[0].NationId ?? 0;
+        int nationId = _currentSession.UserData.Organisations[0].NationId ?? 0;
 
-            InitialiseOrContinuePaging(_currentSession.RegulatorRegistrationSubmissionSession, pageNumber);
+        InitialiseOrContinuePaging(_currentSession.RegulatorRegistrationSubmissionSession, pageNumber);
 
-            ViewBag.PowerBiLogin = _externalUrlsOptions.PowerBiLogin;
+        ViewBag.PowerBiLogin = _externalUrlsOptions.PowerBiLogin;
 
-            SetBacklinkToHome();
+        SetBacklinkToHome();
 
-            var viewModel = InitialiseOrCreateViewModel(
-                _currentSession.RegulatorRegistrationSubmissionSession,
-                nationId);
+        var viewModel = InitialiseOrCreateViewModel(
+            _currentSession.RegulatorRegistrationSubmissionSession,
+            nationId);
 
-            await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
+        await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
-            return View(viewModel);
-        }
-        catch (Exception ex)
-        {
-            _logControllerError.Invoke(logger, $"Exception received processing GET to {nameof(RegistrationSubmissionsController)}.{nameof(RegistrationSubmissions)}", ex);
-            return RedirectToAction(PagePath.Error, "Error");
-        }
+        return View(viewModel);
     }
 
     [HttpPost]

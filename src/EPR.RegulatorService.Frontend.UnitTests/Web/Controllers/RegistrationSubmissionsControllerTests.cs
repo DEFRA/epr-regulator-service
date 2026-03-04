@@ -598,16 +598,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GettingFrom_RegistrationSubmissions_Return_ErrorPage_When_Exception_Received()
-        {
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(1);
-            Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToActionResult>();
-            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
-        }
-
-        [TestMethod]
         public async Task PostTo_RegistrationSubmissions_Logs_Error_When_Exception_Received()
         {
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
@@ -621,24 +611,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                             It.Is<EventId>((eid) => eid == 1001),
                             It.IsAny<It.IsAnyType>(),
                             It.Is<Exception>((v, t) => v.ToString().Contains("Test")),
-                            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                        Times.Once);
-        }
-
-        [TestMethod]
-        public async Task GettingFrom_RegistrationSubmissions_Logs_Error_When_Exception_Received()
-        {
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(1);
-            Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToActionResult>();
-            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
-            _loggerMock.Verify(
-                        x => x.Log(
-                            It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
-                            It.IsAny<EventId>(),
-                            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("An error occurred while processing a message: Exception received processing GET to RegistrationSubmissionsController.RegistrationSubmissions")),
-                            It.IsAny<Exception>(),
                             It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                         Times.Once);
         }
