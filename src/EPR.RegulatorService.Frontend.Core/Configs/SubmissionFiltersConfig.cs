@@ -1,6 +1,7 @@
 namespace EPR.RegulatorService.Frontend.Core.Configs
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
 
     [ExcludeFromCodeCoverage]
     public class SubmissionFiltersConfig
@@ -23,7 +24,7 @@ namespace EPR.RegulatorService.Frontend.Core.Configs
         public int[] ParseSubmissionYears() =>
             SubmissionYears?.Split(",").Select(year =>
             {
-                if (!int.TryParse(year, out int parsedYear))
+                if (!int.TryParse(year, CultureInfo.InvariantCulture, out int parsedYear))
                 {
                     throw new Exception($"Invalid year in {ConfigSection}:{nameof(SubmissionYears)} '{year}'");
                 }
