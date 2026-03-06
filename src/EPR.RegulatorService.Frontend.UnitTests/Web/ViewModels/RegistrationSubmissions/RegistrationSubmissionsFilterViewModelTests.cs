@@ -25,8 +25,7 @@ public class RegistrationSubmissionsFilterTests
             IsResubmissionRejectedRegistrationChecked = true,
             IsResubmissionPendingRegistrationChecked = true,
             PageNumber = 2,
-            Is2025Checked = true,
-            Is2026Checked = true,
+            SelectedYears = ["2025", "2026"],
             // Act
             ClearFilters = true
         };
@@ -45,8 +44,7 @@ public class RegistrationSubmissionsFilterTests
         Assert.IsFalse(viewModel.IsResubmissionRejectedRegistrationChecked, "IsResubmissionRejectedRegistrationChecked should be false");
         Assert.IsFalse(viewModel.IsResubmissionPendingRegistrationChecked, "IsResubmissionPendingRegistrationChecked should be false");
 
-        Assert.IsFalse(viewModel.Is2025Checked, "Is2025Checked should be false");
-        Assert.IsFalse(viewModel.Is2026Checked, "Is2026Checked should be false");
+        Assert.AreEqual(0, viewModel.SelectedYears.Count, "SelectedYears should be empty");
     }
 
     [TestMethod]
@@ -59,8 +57,7 @@ public class RegistrationSubmissionsFilterTests
             IsOrganisationSmallChecked = true,
             IsOrganisationLargeChecked = false, // Only two flags set
             PageNumber = 2,
-            Is2025Checked = true,
-            Is2026Checked = true
+            SelectedYears = ["2025", "2026"]
         };
 
         // Act
@@ -133,8 +130,8 @@ public class RegistrationSubmissionsFilterTests
         Assert.IsTrue(viewModel.IsOrganisationComplianceChecked);
         Assert.IsTrue(viewModel.IsOrganisationSmallChecked);
         Assert.IsFalse(viewModel.IsOrganisationLargeChecked);
-        Assert.IsTrue(viewModel.Is2025Checked);
-        Assert.IsFalse(viewModel.Is2026Checked);
+        Assert.IsTrue(viewModel.SelectedYears.Contains("2025"));
+        Assert.IsFalse(viewModel.SelectedYears.Contains("2026"));
     }
 
     [TestMethod]

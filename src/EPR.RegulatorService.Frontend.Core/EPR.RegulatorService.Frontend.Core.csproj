@@ -9,8 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- SonarCloud does not recognise file-scoped namespaces in current version. -->
-    <NoWarn>S3903</NoWarn>
+    <NoWarn>S3903, S112</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

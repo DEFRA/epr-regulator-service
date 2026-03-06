@@ -35,7 +35,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [DataRow(2, "Northern Ireland Environment Agency (NIEA)")]
         [DataRow(3, "Scottish Environment Protection Agency (SEPA)")]
         [DataRow(4, "Natural Resources Wales (NRW)")]
-        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel_WhenShow2026RelevantYearFilter_IsDisabled(
+        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel(
             int nationId,
             string agencyName)
         {
@@ -68,55 +68,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             var resultModel = viewResult.Model as RegistrationSubmissionsViewModel;
             Assert.AreEqual(expectedViewModel.AgencyName, resultModel.AgencyName);
-            Assert.IsFalse(resultModel.ListViewModel.RegistrationsFilterModel.Show2026RelevantYearFilter);
-
-            var actualBackLink = _controller.ViewBag.CustomBackLinkToDisplay;
-            Assert.IsNotNull(actualBackLink);
-            Assert.AreEqual(expectedBackLink, actualBackLink);
-        }
-
-        [TestMethod]
-        [DataRow(0, "")]
-        [DataRow(1, "Environment Agency (EA)")]
-        [DataRow(2, "Northern Ireland Environment Agency (NIEA)")]
-        [DataRow(3, "Scottish Environment Protection Agency (SEPA)")]
-        [DataRow(4, "Natural Resources Wales (NRW)")]
-        public async Task RegistrationSubmissions_ReturnsView_WithCorrectViewModel_WhenShow2026RelevantYearFilter_IsEnabled(
-            int nationId,
-            string agencyName)
-        {
-            SetupBase(show2026RelevantYearFilter: true);
-
-            // Arrange
-            var expectedViewModel = new RegistrationSubmissionsViewModel
-            {
-                AgencyName = agencyName
-            };
-            string expectedBackLink = "/regulators/home";
-
-            // Ensure the Organisation has a valid NationId
-            _journeySession.UserData.Organisations.Add(new Organisation
-            {
-                NationId = nationId
-            });
-
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
-                .ReturnsAsync(_journeySession);
-
-            // Act
-            var result = await _controller.RegistrationSubmissions(1);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Should().BeOfType<ViewResult>();
-
-            var viewResult = result as ViewResult;
-            viewResult.Should().NotBeNull();
-            Assert.IsInstanceOfType(expectedViewModel, viewResult!.Model.GetType());
-
-            var resultModel = viewResult.Model as RegistrationSubmissionsViewModel;
-            Assert.AreEqual(expectedViewModel.AgencyName, resultModel.AgencyName);
-            Assert.IsTrue(resultModel.ListViewModel.RegistrationsFilterModel.Show2026RelevantYearFilter);
 
             var actualBackLink = _controller.ViewBag.CustomBackLinkToDisplay;
             Assert.IsNotNull(actualBackLink);
@@ -346,12 +297,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.Should().NotBeNull();
             model!.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
             model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(1);
-            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(1);
-            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
-            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterViewModel.PageNumber.Should().Be(1);
+            model.ListViewModel.RegistrationsFilterViewModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterViewModel.SelectedYears.Should().Contain("2025");
+            model.ListViewModel.RegistrationsFilterViewModel.SelectedYears.Should().Contain("2026");
+            model.ListViewModel.RegistrationsFilterViewModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterViewModel.IsOrganisationSmallChecked.Should().BeTrue();
         }
 
         [TestMethod]
@@ -420,12 +371,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.Should().NotBeNull();
             model.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
             model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(new_page_number);
-            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(new_page_number);
-            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeFalse();
-            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
-            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterViewModel.PageNumber.Should().Be(new_page_number);
+            model.ListViewModel.RegistrationsFilterViewModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterViewModel.SelectedYears.Should().Contain("2025");
+            model.ListViewModel.RegistrationsFilterViewModel.SelectedYears.Should().NotContain("2026");
+            model.ListViewModel.RegistrationsFilterViewModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterViewModel.IsOrganisationSmallChecked.Should().BeTrue();
         }
 
         [TestMethod]
@@ -443,8 +394,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 RelevantYears = "2025, 2026",
                 PageNumber = expectedPageNumber,
                 PageSize = 500,
-                Statuses = "Pending",
-                Show2026RelevantYearFilter = true
+                Statuses = "Pending"
             };
 
             _journeySession.RegulatorRegistrationSubmissionSession = new RegulatorRegistrationSubmissionSession
@@ -500,13 +450,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             model.Should().NotBeNull();
             model!.ListViewModel.PagedRegistrationSubmissions.Should().BeNull();
             model.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(4);
-            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(4);
-            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be("braun");
-            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.Show2026RelevantYearFilter.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterViewModel.PageNumber.Should().Be(4);
+            model.ListViewModel.RegistrationsFilterViewModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterViewModel.SelectedYears.Should().Contain("2025");
+            model.ListViewModel.RegistrationsFilterViewModel.SelectedYears.Should().Contain("2026");
+            model.ListViewModel.RegistrationsFilterViewModel.OrganisationName.Should().Be("braun");
+            model.ListViewModel.RegistrationsFilterViewModel.IsOrganisationSmallChecked.Should().BeTrue();
         }
 
         [TestMethod]
@@ -569,12 +518,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             var session = _journeySession.RegulatorRegistrationSubmissionSession;
             session.Should().NotBeNull();
             model!.ListViewModel.PaginationNavigationModel.CurrentPage.Should().Be(pageNumber);
-            model.ListViewModel.RegistrationsFilterModel.PageNumber.Should().Be(pageNumber);
-            model.ListViewModel.RegistrationsFilterModel.IsStatusPendingChecked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.Is2025Checked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.Is2026Checked.Should().BeTrue();
-            model.ListViewModel.RegistrationsFilterModel.OrganisationName.Should().Be(organisationName);
-            model.ListViewModel.RegistrationsFilterModel.IsOrganisationSmallChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterViewModel.PageNumber.Should().Be(pageNumber);
+            model.ListViewModel.RegistrationsFilterViewModel.IsStatusPendingChecked.Should().BeTrue();
+            model.ListViewModel.RegistrationsFilterViewModel.SelectedYears.Should().Contain("2025");
+            model.ListViewModel.RegistrationsFilterViewModel.SelectedYears.Should().Contain("2026");
+            model.ListViewModel.RegistrationsFilterViewModel.OrganisationName.Should().Be(organisationName);
+            model.ListViewModel.RegistrationsFilterViewModel.IsOrganisationSmallChecked.Should().BeTrue();
             session.LatestFilterChoices.OrganisationName.Should().Be(organisationName);
             session.LatestFilterChoices.OrganisationType.Should().Be(organisationType);
             session.LatestFilterChoices.RelevantYears.Should().Be(relevantYears);
@@ -649,16 +598,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task GettingFrom_RegistrationSubmissions_Return_ErrorPage_When_Exception_Received()
-        {
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(1);
-            Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToActionResult>();
-            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
-        }
-
-        [TestMethod]
         public async Task PostTo_RegistrationSubmissions_Logs_Error_When_Exception_Received()
         {
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
@@ -672,24 +611,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                             It.Is<EventId>((eid) => eid == 1001),
                             It.IsAny<It.IsAnyType>(),
                             It.Is<Exception>((v, t) => v.ToString().Contains("Test")),
-                            It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                        Times.Once);
-        }
-
-        [TestMethod]
-        public async Task GettingFrom_RegistrationSubmissions_Logs_Error_When_Exception_Received()
-        {
-            _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(1);
-            Assert.IsNotNull(result);
-            result.Should().BeOfType<RedirectToActionResult>();
-            (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
-            _loggerMock.Verify(
-                        x => x.Log(
-                            It.Is<LogLevel>(logLevel => logLevel == LogLevel.Error),
-                            It.IsAny<EventId>(),
-                            It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("An error occurred while processing a message: Exception received processing GET to RegistrationSubmissionsController.RegistrationSubmissions")),
-                            It.IsAny<Exception>(),
                             It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                         Times.Once);
         }

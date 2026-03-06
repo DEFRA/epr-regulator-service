@@ -46,9 +46,16 @@ USER dotnet
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0
 
+# pass build info through from docker build args to env for running app
+ARG BUILD_NUMBER
+ARG GIT_SHA
+ENV BUILD_NUMBER=$BUILD_NUMBER
+ENV GIT_SHA=$GIT_SHA
+
 # Expose the app on a defined port, configurable via a build argument
 ARG PORT=3000
 ENV ASPNETCORE_URLS=http://*:${PORT}
+
 EXPOSE ${PORT}
 
 CMD dotnet EPR.RegulatorService.Frontend.Web.dll

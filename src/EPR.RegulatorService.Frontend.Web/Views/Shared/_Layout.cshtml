@@ -10,6 +10,12 @@
     var useGoogleAnalyticsCookie = (bool?)Context.Items[ContextKeys.UseGoogleAnalyticsCookieKey];
     var googleTagManagerContainerId = (string?)Context.Items[ContextKeys.TagManagerContainerIdKey];
     var scriptNonce = (string?)Context.Items[ContextKeys.ScriptNonceKey];
+    var dockerImage = Environment.GetEnvironmentVariable("DOCKER_CUSTOM_IMAGE_NAME");
+    var dockerImageString = "not_set";
+    if (!string.IsNullOrWhiteSpace(dockerImage))
+    {
+        dockerImageString = dockerImage.Split(":").Last();
+    }
 }
 
 <!DOCTYPE html>
@@ -21,7 +27,9 @@
     <meta name="theme-color" content="#0b0c0c">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="application-name" content="@SharedLocalizer["Application.Title"]" data-version="@System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()">
-    <meta name="govuk:app-image-name" content="@Environment.GetEnvironmentVariable("DOCKER_CUSTOM_IMAGE_NAME")">
+    <meta name="govuk:app-image-name" content="@dockerImageString">
+    <meta name="govuk:app-image-build-number" content="@Environment.GetEnvironmentVariable("BUILD_NUMBER")">
+    <meta name="govuk:app-image-git-sha" content="@Environment.GetEnvironmentVariable("GIT_SHA")">
     <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="~/images/favicon.ico" type="image/x-icon">
     <link rel="mask-icon" href="~/images/govuk-mask-icon.svg" color="#0b0c0c">
     <link rel="apple-touch-icon" sizes="180x180" href="~/images/govuk-apple-touch-icon-180x180.png">

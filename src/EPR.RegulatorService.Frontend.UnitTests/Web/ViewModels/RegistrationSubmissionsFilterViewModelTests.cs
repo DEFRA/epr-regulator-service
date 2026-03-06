@@ -23,8 +23,7 @@ public class RegistrationSubmissionsFilterTests
             IsStatusRefusedChecked = true,
             IsStatusUpdatedChecked = true,
             PageNumber = 2,
-            Is2025Checked = true,
-            Is2026Checked = true
+            SelectedYears = ["2025", "2026"]
         };
 
         // Act
@@ -41,8 +40,7 @@ public class RegistrationSubmissionsFilterTests
         Assert.IsFalse(viewModel.IsStatusQueriedChecked, "IsStatusQueriedChecked should be false");
         Assert.IsFalse(viewModel.IsStatusRefusedChecked, "IsStatusRefusedChecked should be false");
         Assert.IsFalse(viewModel.IsStatusUpdatedChecked, "IsStatusUpdatedChecked should be false");
-        Assert.IsFalse(viewModel.Is2025Checked, "Is2025Checked should be false");
-        Assert.IsFalse(viewModel.Is2026Checked, "Is2026Checked should be false");
+        Assert.AreEqual(0, viewModel.SelectedYears.Count, "SelectedYears should be empty");
     }
 
     [TestMethod]
@@ -56,8 +54,7 @@ public class RegistrationSubmissionsFilterTests
             IsOrganisationSmallChecked = true,
             IsOrganisationLargeChecked = false, // Only two flags set
             PageNumber = 2,
-            Is2025Checked = true,
-            Is2026Checked = true
+            SelectedYears = ["2025", "2026"]
         };
 
         // Act
@@ -80,8 +77,7 @@ public class RegistrationSubmissionsFilterTests
             IsOrganisationSmallChecked = false,
             IsOrganisationLargeChecked = false,
             PageNumber = 2,
-            Is2025Checked = true,
-            Is2026Checked = true
+            SelectedYears = ["2025", "2026"]
         };
 
         // Act
@@ -155,8 +151,8 @@ public class RegistrationSubmissionsFilterTests
         Assert.IsFalse(viewModel.IsDirectProducerChecked);
         Assert.IsTrue(viewModel.IsOrganisationSmallChecked);
         Assert.IsFalse(viewModel.IsOrganisationLargeChecked);
-        Assert.IsTrue(viewModel.Is2025Checked);
-        Assert.IsFalse(viewModel.Is2026Checked);
+        Assert.IsTrue(viewModel.SelectedYears.Contains("2025"));
+        Assert.IsFalse(viewModel.SelectedYears.Contains("2026"));
     }
 
     [TestMethod]

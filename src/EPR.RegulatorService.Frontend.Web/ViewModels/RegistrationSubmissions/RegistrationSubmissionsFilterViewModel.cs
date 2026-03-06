@@ -24,10 +24,8 @@ public class RegistrationSubmissionsFilterViewModel
     public bool IsResubmissionAcceptedRegistrationChecked { get; set; }
     public bool IsResubmissionRejectedRegistrationChecked { get; set; }
 
-    public bool Show2026RelevantYearFilter { get; set; }
-
-    public bool Is2025Checked { get; set; }
-    public bool Is2026Checked { get; set; }
+    public string[] SubmissionYears { get; set; } = [];
+    public List<string> SelectedYears { get; set; } = [];
 
     public int PageNumber { get; set; } = 1;
     public int? PageSize { get; set; }
@@ -47,8 +45,7 @@ public class RegistrationSubmissionsFilterViewModel
                     IsStatusQueriedChecked = IsStatusRefusedChecked = IsStatusUpdatedChecked = false;
                 IsResubmissionPendingRegistrationChecked = IsResubmissionAcceptedRegistrationChecked =
                     IsResubmissionRejectedRegistrationChecked = false;
-                Is2025Checked = false;
-                Is2026Checked = false;
+                SelectedYears = [];
             }
         }
     }
@@ -62,11 +59,10 @@ public class RegistrationSubmissionsFilterViewModel
         PageNumber = viewModel.PageNumber,
         PageSize = viewModel.PageSize,
         NationId = viewModel.NationId,
-        Show2026RelevantYearFilter = viewModel.Show2026RelevantYearFilter,
         RelevantYears =
-            string.Join(", ",
-                new[] { viewModel.Is2025Checked ? "2025" : null, viewModel.Is2026Checked ? "2026" : null }
-                    .Where(year => !string.IsNullOrWhiteSpace(year))),
+            viewModel.SelectedYears != null && viewModel.SelectedYears.Count > 0
+                ? string.Join(", ", viewModel.SelectedYears)
+                : string.Empty,
         OrganisationReference = !string.IsNullOrEmpty(viewModel.OrganisationRef) ? viewModel.OrganisationRef : null,
         OrganisationName = !string.IsNullOrEmpty(viewModel.OrganisationName) ? viewModel.OrganisationName : null,
         OrganisationType =
@@ -162,15 +158,16 @@ public class RegistrationSubmissionsFilterViewModel
             IsResubmissionRejectedRegistrationChecked =
                 model.ResubmissionStatuses != null &&
                 model.ResubmissionStatuses.Contains("rejected", StringComparison.OrdinalIgnoreCase),
-            Is2025Checked =
-                model.RelevantYears != null &&
-                model.RelevantYears.Contains("2025", StringComparison.OrdinalIgnoreCase),
-            Is2026Checked =
-                model.RelevantYears != null &&
-                model.RelevantYears.Contains("2026", StringComparison.OrdinalIgnoreCase),
+            SelectedYears =
+                model.RelevantYears != null
+                    ? model.RelevantYears
+                        .Split([',', ' '], StringSplitOptions.RemoveEmptyEntries)
+                        .Select(y => y.Trim())
+                        .Where(y => !string.IsNullOrWhiteSpace(y))
+                        .ToList()
+                    : [],
             PageNumber = model.PageNumber ?? 1,
             PageSize = model.PageSize ?? 20,
-            NationId = model.NationId,
-            Show2026RelevantYearFilter = model.Show2026RelevantYearFilter
+            NationId = model.NationId
         };
 }

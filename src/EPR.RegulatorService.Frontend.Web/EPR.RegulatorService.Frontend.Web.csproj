@@ -8,14 +8,8 @@
     <UserSecretsId>522d7393-4c74-4943-83be-f9143842f27c</UserSecretsId>
   </PropertyGroup>
 
-  <PropertyGroup> 
-    <!-- SonarCloud does not recognise file-scoped namespaces in current version. -->
-    <NoWarn>S3903, S6967, S6964, S6934</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup> 
-    <!-- SonarCloud does not recognise file-scoped namespaces in current version. -->
-    <NoWarn>S3903</NoWarn>
+  <PropertyGroup>
+    <NoWarn>S3903, S6967, S6964, S6934, S6608</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
