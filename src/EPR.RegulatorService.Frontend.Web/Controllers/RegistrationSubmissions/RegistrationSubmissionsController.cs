@@ -912,7 +912,8 @@ public partial class RegistrationSubmissionsController(
             Description = "Registration fee",
             Reference = existingModel.ReferenceNumber,
             Regulator = regulator,
-            UserId = (Guid)_currentSession.UserData.Id
+            UserId = (Guid)_currentSession.UserData.Id,
+            FileId = existingModel.IsResubmission && Guid.TryParse(existingModel.ResubmissionFileId, out var fileId) ? fileId : null
         });
 
         if (response == EndpointResponseStatus.Fail)
