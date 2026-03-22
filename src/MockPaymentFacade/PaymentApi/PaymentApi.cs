@@ -21,6 +21,38 @@ public static class PaymentApi
                 .WithHeader("Content-Type", "text/plain")
                 .WithBody("MockPaymentFacade up.\nReady to process API requests."));
 
+        // Compliance scheme registration fee resubmission - matched by FileId in request body (registered first for priority)
+        foreach (var filePath in Directory.GetFiles("Responses/PaymentApi/ComplianceSchemeRegistrationFeeResubmission", "*.json"))
+        {
+            server.Given(Request.Create()
+                    .UsingPost()
+                    .WithPath("/compliance-scheme/registration-fee")
+                    .WithBody(new JsonPartialMatcher(JsonSerializer.Serialize(new
+                    {
+                        FileId = Path.GetFileNameWithoutExtension(filePath),
+                    }), ignoreCase: true)))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyFromFile(filePath));
+        }
+
+        // Producer registration fee resubmission - matched by FileId in request body (registered first for priority)
+        foreach (var filePath in Directory.GetFiles("Responses/PaymentApi/ProducerRegistrationFeeResubmission", "*.json"))
+        {
+            server.Given(Request.Create()
+                    .UsingPost()
+                    .WithPath("/producer/registration-fee")
+                    .WithBody(new JsonPartialMatcher(JsonSerializer.Serialize(new
+                    {
+                        FileId = Path.GetFileNameWithoutExtension(filePath),
+                    }), ignoreCase: true)))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyFromFile(filePath));
+        }
+
         // Compliance scheme registration fee endpoints - matched by applicationReferenceNumber in request body
         foreach (var filePath in Directory.GetFiles("Responses/PaymentApi/ComplianceSchemeRegistrationFee", "*.json"))
         {

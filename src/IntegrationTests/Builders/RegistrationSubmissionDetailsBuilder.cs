@@ -8,6 +8,12 @@ public class RegistrationSubmissionDetailsBuilder
     private int _relevantYear = 2025;
     private string _submissionDate = "2025-01-10T09:30:00Z";
     private string _submissionStatus = "Pending";
+    private bool _isResubmission = false;
+    private string? _resubmissionFileId = null;
+    private string? _resubmissionDate = null;
+    private bool _isComplianceScheme = true;
+    private string _registrationJourneyType = "CsoLargeProducer";
+    private string? _organisationSize = null;
 
     private RegistrationSubmissionDetailsBuilder(Guid submissionId)
     {
@@ -46,6 +52,22 @@ public class RegistrationSubmissionDetailsBuilder
         return this;
     }
 
+    public RegistrationSubmissionDetailsBuilder WithIsResubmission(bool isResubmission, string? resubmissionFileId = null, string? resubmissionDate = null)
+    {
+        _isResubmission = isResubmission;
+        _resubmissionFileId = resubmissionFileId;
+        _resubmissionDate = resubmissionDate ?? "2025-06-15T10:00:00Z";
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder AsProducer(string organisationSize = "Large")
+    {
+        _isComplianceScheme = false;
+        _registrationJourneyType = organisationSize == "Small" ? "DirectSmallProducer" : "DirectLargeProducer";
+        _organisationSize = organisationSize;
+        return this;
+    }
+
     public object Build() => new
     {
         submissionId = SubmissionId,
@@ -53,16 +75,16 @@ public class RegistrationSubmissionDetailsBuilder
         organisationReference = "100001",
         organisationName = _organisationName,
         organisationType = _organisationType,
-        registrationJourneyType = "CsoLargeProducer",
+        registrationJourneyType = _registrationJourneyType,
         nationId = 1,
         nationCode = "GB-ENG",
         relevantYear = _relevantYear,
         submissionDate = _submissionDate,
         submissionStatus = _submissionStatus,
-        resubmissionStatus = "Pending",
-        resubmissionDate = (string?)null,
+        resubmissionStatus = _isResubmission ? "Pending" : (string?)null,
+        resubmissionDate = _resubmissionDate,
         statusPendingDate = (string?)null,
-        isResubmission = false,
+        isResubmission = _isResubmission,
         registrationDate = (string?)null,
         regulatorComments = "",
         producerComments = "Test comment",
@@ -86,6 +108,7 @@ public class RegistrationSubmissionDetailsBuilder
             resubmissionDecisionDate = (string?)null,
             statusPendingDate = (string?)null,
             timeAndDateOfSubmission = _submissionDate,
+            timeAndDateOfResubmission = _resubmissionDate,
             submittedOnTime = false,
             submittedByUserId = "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
             accountRole = "Approved Person",
@@ -106,11 +129,11 @@ public class RegistrationSubmissionDetailsBuilder
             submissionPeriod = $"January to December {_relevantYear}",
             accountRoleId = 1,
             submittedBy = "Test User",
-            resubmissionStatus = (string?)null,
+            resubmissionStatus = _isResubmission ? "Pending" : (string?)null,
             registrationDate = (string?)null,
-            resubmissionDate = (string?)null,
-            isResubmission = false,
-            resubmissionFileId = (string?)null
+            resubmissionDate = _resubmissionDate,
+            isResubmission = _isResubmission,
+            resubmissionFileId = _resubmissionFileId
         },
         regulatorDecisionDate = (string?)null,
         regulatorResubmissionDecisionDate = (string?)null,
@@ -120,10 +143,10 @@ public class RegistrationSubmissionDetailsBuilder
         numberOfSubsidiaries = 0,
         numberOfOnlineSubsidiaries = 0,
         isLateSubmission = true,
-        organisationSize = (string?)null,
-        isComplianceScheme = true,
+        organisationSize = _organisationSize,
+        isComplianceScheme = _isComplianceScheme,
         submissionPeriod = $"January to December {_relevantYear}",
-        csoMembershipDetails = new[]
+        csoMembershipDetails = _isComplianceScheme ? new[]
         {
             new
             {
@@ -137,7 +160,7 @@ public class RegistrationSubmissionDetailsBuilder
                 submittedDate = _submissionDate,
                 submissionPeriodDescription = $"January to December {_relevantYear}"
             }
-        },
-        resubmissionFileId = (string?)null
+        } : Array.Empty<object>(),
+        resubmissionFileId = _resubmissionFileId
     };
 }
