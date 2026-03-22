@@ -4,6 +4,8 @@ public class ProducerPaymentRequest
 {
     public required string ApplicationReferenceNumber { get; set; }
 
+    public string? FileId { get; set; }
+
     public int NoOfSubsidiariesOnlineMarketplace { get; set; }
 
     public int NumberOfSubsidiaries { get; set; }

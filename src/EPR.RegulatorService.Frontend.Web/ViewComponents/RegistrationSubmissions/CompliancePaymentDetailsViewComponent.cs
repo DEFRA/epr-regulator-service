@@ -31,6 +31,7 @@ public class CompliancePaymentDetailsViewComponent(
                 new CompliancePaymentRequest
                 {
                     ApplicationReferenceNumber = viewModel.ReferenceNumber,
+                    FileId = viewModel.IsResubmission ? viewModel.ResubmissionFileId : null,
                     Regulator = viewModel.NationCode,
                     ComplianceSchemeMembers = viewModel.CSOMembershipDetails.Select(x => (ComplianceSchemeMemberRequest)x),
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission

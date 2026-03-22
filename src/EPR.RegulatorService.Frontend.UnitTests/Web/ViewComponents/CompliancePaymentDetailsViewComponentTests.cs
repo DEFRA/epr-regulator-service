@@ -75,7 +75,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
         .ReturnsAsync(new CompliancePaymentResponse // all values in pence
         {
-            ApplicationProcessingFee = 100.00M, 
+            ApplicationProcessingFee = 100.00M,
             TotalChargeableItems = 1000.00M,
             PreviousPaymentsReceived = 500.00M,
             TotalOutstanding = 500.00M,
@@ -102,7 +102,9 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.LateProducerCount.Should().Be(0);
         model.OnlineMarketPlaceCount.Should().Be(0);
         model.SubsidiariesCompanyCount.Should().Be(0);
-        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.AtMostOnce);
+        _paymentFacadeServiceMock.Verify(
+            r => r.GetCompliancePaymentDetailsAsync(It.Is<CompliancePaymentRequest>(c =>
+                c.FileId == _registrationSumissionDetailsViewModel.ResubmissionFileId)), Times.AtMostOnce);
     }
 
     [TestMethod]
