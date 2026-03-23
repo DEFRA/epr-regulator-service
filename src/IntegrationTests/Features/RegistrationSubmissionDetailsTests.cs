@@ -120,6 +120,41 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
     }
 
     [Fact]
+    public async Task ShowsTotalOutstandingForProducerResubmissionAtKnownSubmissionId()
+    {
+        // Arrange
+        var submissionId = Guid.Parse("c3d4e5f6-a7b8-9012-cdef-123456789013");
+        var resubmissionFileId = "d2e3f4a5-b6c7-8901-defa-123456789012";
+
+        SetupFacadeMockRegistrationSubmissionDetails(
+            RegistrationSubmissionDetailsBuilder.Default(submissionId)
+                .WithOrganisationName("Resubmission Direct Producer Ltd")
+                .WithOrganisationType("large")
+                .WithIsResubmission(true, resubmissionFileId)
+                .AsProducer("Large"));
+
+        SetupPaymentFacadeMockProducerRegistrationFeeByFileId(
+            resubmissionFileId,
+            ProducerPaymentResponseBuilder.Default()
+                .WithProducerRegistrationFee(165800)
+                .WithTotalFee(165800)
+                .WithPreviousPayment(82900)
+                .WithOutstandingPayment(82900));
+
+        // Act
+        var detailsPage = await GetAsPageModel<ManageRegistrationSubmissionDetailsPageModel>(
+            requestUri: $"/regulators/registration-submission-details/{submissionId}");
+
+        // Assert
+        using (new AssertionScope())
+        {
+            detailsPage.PaymentDetails.Should().NotBeNull();
+            detailsPage.PaymentDetails!.HasPaymentSection.Should().BeTrue();
+            detailsPage.TotalOutstanding.Should().Be(829.00m);
+        }
+    }
+
+    [Fact]
     public async Task ShowsProducerPaymentDetailsWithPreviousPaymentOnResubmission()
     {
         // Arrange

@@ -21,15 +21,15 @@ public static class PaymentApi
                 .WithHeader("Content-Type", "text/plain")
                 .WithBody("MockPaymentFacade up.\nReady to process API requests."));
 
-        // Compliance scheme registration fee resubmission - matched by FileId in request body (registered first for priority)
+        // Registration fee resubmission - matched by FileId in request body
         foreach (var filePath in Directory.GetFiles("Responses/PaymentApi/ComplianceSchemeRegistrationFeeResubmission", "*.json"))
         {
             server.Given(Request.Create()
                     .UsingPost()
-                    .WithPath("/compliance-scheme/registration-fee")
+                    .WithPath("/api/v1/compliance-scheme/registration-fee")
                     .WithBody(new JsonPartialMatcher(JsonSerializer.Serialize(new
                     {
-                        FileId = Path.GetFileNameWithoutExtension(filePath),
+                        fileId = Path.GetFileNameWithoutExtension(filePath),
                     }), ignoreCase: true)))
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
@@ -37,15 +37,14 @@ public static class PaymentApi
                     .WithBodyFromFile(filePath));
         }
 
-        // Producer registration fee resubmission - matched by FileId in request body (registered first for priority)
         foreach (var filePath in Directory.GetFiles("Responses/PaymentApi/ProducerRegistrationFeeResubmission", "*.json"))
         {
             server.Given(Request.Create()
                     .UsingPost()
-                    .WithPath("/producer/registration-fee")
+                    .WithPath("/api/v1/producer/registration-fee")
                     .WithBody(new JsonPartialMatcher(JsonSerializer.Serialize(new
                     {
-                        FileId = Path.GetFileNameWithoutExtension(filePath),
+                        fileId = Path.GetFileNameWithoutExtension(filePath),
                     }), ignoreCase: true)))
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
@@ -58,7 +57,7 @@ public static class PaymentApi
         {
             server.Given(Request.Create()
                     .UsingPost()
-                    .WithPath("/compliance-scheme/registration-fee")
+                    .WithPath("/api/v1/compliance-scheme/registration-fee")
                     .WithBody(new JsonPartialMatcher(JsonSerializer.Serialize(new
                     {
                         applicationReferenceNumber = Path.GetFileNameWithoutExtension(filePath),
@@ -72,7 +71,7 @@ public static class PaymentApi
         // Producer registration fee endpoint
         server.Given(Request.Create()
                 .UsingPost()
-                .WithPath("/producer/registration-fee"))
+                .WithPath("/api/v1/producer/registration-fee"))
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
@@ -81,14 +80,14 @@ public static class PaymentApi
         // Offline payments endpoint
         server.Given(Request.Create()
                 .UsingPost()
-                .WithPath("/offline-payments"))
+                .WithPath("/api/v1/offline-payments"))
             .RespondWith(Response.Create()
                 .WithStatusCode(200));
 
         // Producer resubmission fee endpoint
         server.Given(Request.Create()
                 .UsingPost()
-                .WithPath("/producer/resubmission-fee"))
+                .WithPath("/api/v1/producer/resubmission-fee"))
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
@@ -97,7 +96,7 @@ public static class PaymentApi
         // Compliance scheme resubmission fees endpoint
         server.Given(Request.Create()
                 .UsingPost()
-                .WithPath("/compliance-scheme/resubmission-fees"))
+                .WithPath("/api/v1/compliance-scheme/resubmission-fees"))
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
