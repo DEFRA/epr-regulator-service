@@ -100,7 +100,7 @@ public static class ServiceProviderExtension
     {
         services.Configure<CookieTempDataProviderOptions>(options =>
         {
-            options.Cookie.Name = configuration.GetValue<string>("CookieOptions:TempDataCookie");
+            options.Cookie.Name = EprCookieOptions.TempDataCookie;
             options.Cookie.Path = configuration.GetValue<string>("PATH_BASE");
 
             options.Cookie.HttpOnly = true;
@@ -150,7 +150,7 @@ public static class ServiceProviderExtension
 
         services.AddSession(options =>
         {
-            options.Cookie.Name = configuration.GetValue<string>("CookieOptions:SessionCookieName");
+            options.Cookie.Name = EprCookieOptions.SessionCookieName;
             options.IdleTimeout = TimeSpan.FromMinutes(configuration.GetValue<int>("SessionIdleTimeOutMinutes"));
             options.Cookie.IsEssential = true;
             options.Cookie.HttpOnly = true;
@@ -172,7 +172,7 @@ public static class ServiceProviderExtension
                 options.ErrorPath = "/error";
             }, options =>
             {
-                options.Cookie.Name = configuration.GetValue<string>("CookieOptions:AuthenticationCookieName");
+                options.Cookie.Name = EprCookieOptions.AuthenticationCookieName;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(configuration.GetValue<int>("CookieOptions:AuthenticationExpiryInMinutes"));
                 options.SlidingExpiration = true;
                 options.Cookie.Path = "/";

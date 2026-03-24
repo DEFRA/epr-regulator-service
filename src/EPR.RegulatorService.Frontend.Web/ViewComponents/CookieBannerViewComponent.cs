@@ -2,26 +2,14 @@
 using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.ViewModels.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents;
 
 public class CookieBannerViewComponent : ViewComponent
 {
-    private readonly EprCookieOptions _options;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CookieBannerViewComponent"/> class.
-    /// </summary>
-    /// <param name="options"></param>
-    public CookieBannerViewComponent(IOptions<EprCookieOptions> options)
-    {
-        _options = options.Value;
-    }
-
     public IViewComponentResult Invoke()
     {
-        var consentCookie = Request.Cookies[_options.CookiePolicyCookieName];
+        var consentCookie = Request.Cookies[EprCookieOptions.CookiePolicyCookieName];
 
         var cookieAcknowledgement = TempData[CookieAcceptance.CookieAcknowledgement]?.ToString();
 

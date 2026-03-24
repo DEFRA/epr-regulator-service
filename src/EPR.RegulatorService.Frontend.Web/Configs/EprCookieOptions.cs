@@ -8,21 +8,15 @@ public class EprCookieOptions
    
     public const string ConfigSection = "CookieOptions";
 
-    public int AuthenticationExpiryInMinutes {get; set; }
+    public const string B2CCookieName = "x-ms-cpim-*";
+    public const string SessionCookieName = ".epr_session";
+    public const string CookiePolicyCookieName = ".epr_regulator_cookies_policy";
+    public const string AntiForgeryCookieName = ".epr_anti_forgery";
+    public const string TsCookieName = "TSxxxxxxxx";
+    public const string AuthenticationCookieName = ".epr_auth";
+    public const string TempDataCookie = ".epr_temp";
+
+    public int AuthenticationExpiryInMinutes { get; set; }
 
     public int CookiePolicyDurationInMonths { get; set; }
-    
-    public string B2CCookieName { get; set; }
-
-    public string SessionCookieName { get; set; }
-
-    public string CookiePolicyCookieName { get; set; }
-
-    public string AntiForgeryCookieName { get; set; }
-
-    public string TsCookieName { get; set; }
-
-    public string AuthenticationCookieName { get; set; }
-
-    public string TempDataCookie { get; set; }
 }

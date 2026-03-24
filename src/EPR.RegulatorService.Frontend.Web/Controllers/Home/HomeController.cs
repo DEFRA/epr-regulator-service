@@ -21,20 +21,16 @@ public class HomeController : RegulatorSessionBaseController
     private readonly ISessionManager<JourneySession> _sessionManager;
     private readonly IFeatureManager _featureManager;
     private readonly LandingPageConfig _landingPageConfig;
-    private readonly EprCookieOptions _cookieOptions;
-
     public HomeController(
         ISessionManager<JourneySession> sessionManager,
         IFeatureManager featureManager,
         IOptions<LandingPageConfig> landingPageConfig,
-        IOptions<EprCookieOptions> cookieOptions,
         IConfiguration configuration)
         : base(sessionManager, configuration)
     {
         _sessionManager = sessionManager;
         _featureManager = featureManager;
         _landingPageConfig = landingPageConfig.Value;
-        _cookieOptions = cookieOptions.Value;
     }
 
     [AllowAnonymous]
@@ -42,7 +38,7 @@ public class HomeController : RegulatorSessionBaseController
     public IActionResult SignedOut()
     {
         HttpContext.Session.Clear();
-        HttpContext.Response.Cookies.Delete(_cookieOptions.SessionCookieName);
+        HttpContext.Response.Cookies.Delete(EprCookieOptions.SessionCookieName);
         return View();
     }
 

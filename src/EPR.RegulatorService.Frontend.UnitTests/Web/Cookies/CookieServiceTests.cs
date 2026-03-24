@@ -12,7 +12,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Cookies;
 [TestClass]
 public class CookieServiceTests
 {
-    private const string CookieName = ".epr_cookies_policy";
+    private const string CookieName = EprCookieOptions.CookiePolicyCookieName;
     private const string GoogleAnalyticsDefaultCookieName = "_ga";
     private CookieService _systemUnderTest = null!;
     private Mock<IOptions<EprCookieOptions>> _cookieOptions = null!;
@@ -27,27 +27,12 @@ public class CookieServiceTests
     }
 
     [TestMethod]
-    public void SetCookieAcceptance_ShouldThrowArgumentNullException_WhenCookiePolicyCookieNameNotSet()
-    {
-        // Arrange
-        var requestCookieCollection = MockRequestCookieCollection("test", "test");
-        HttpContext context = new DefaultHttpContext();
-        MockService();
-
-        // Act
-        var act = () => _systemUnderTest.SetCookieAcceptance(true, requestCookieCollection, context.Response.Cookies);
-
-        // Assert
-        act.Should().Throw<ArgumentNullException>();
-    }
-
-    [TestMethod]
     public void SetCookieAcceptance_True_ReturnValidCookie()
     {
         // Arrange
         var requestCookieCollection = MockRequestCookieCollection();
         var context = new DefaultHttpContext();
-        MockService(CookieName);
+        MockService();
 
         // Act
         _systemUnderTest.SetCookieAcceptance(true, requestCookieCollection, context.Response.Cookies);
@@ -63,7 +48,7 @@ public class CookieServiceTests
         // Arrange
         var requestCookieCollection = MockRequestCookieCollection();
         var context = new DefaultHttpContext();
-        MockService(CookieName);
+        MockService();
 
         // Act
         _systemUnderTest.SetCookieAcceptance(false, requestCookieCollection, context.Response.Cookies);
@@ -79,7 +64,7 @@ public class CookieServiceTests
         // Arrange
         var requestCookieCollection = MockRequestCookieCollection(GoogleAnalyticsDefaultCookieName, "1234");
         var context = new DefaultHttpContext();
-        MockService(CookieName);
+        MockService();
 
         // Act
         _systemUnderTest.SetCookieAcceptance(false, requestCookieCollection, context.Response.Cookies);
@@ -89,26 +74,13 @@ public class CookieServiceTests
         cookieValue.Should().Be("1234");
     }
 
-    [TestMethod]
-    public void HasUserAcceptedCookies_ShouldThrowArgumentNullException_WhenCookiePolicyCookieNameNotSet()
-    {
-        // Arrange
-        var requestCookieCollection = MockRequestCookieCollection("test", "test");
-        MockService();
-
-        // Act
-        var act = () => _systemUnderTest.HasUserAcceptedCookies(requestCookieCollection);
-
-        // Assert
-        act.Should().Throw<ArgumentNullException>();
-    }
 
     [TestMethod]
     public void HasUserAcceptedCookies_True_ReturnsValidValue()
     {
         // Arrange
         var requestCookieCollection = MockRequestCookieCollection(CookieName, "True");
-        MockService(CookieName);
+        MockService();
 
         // Act
         bool result = _systemUnderTest.HasUserAcceptedCookies(requestCookieCollection);
@@ -122,7 +94,7 @@ public class CookieServiceTests
     {
         // Arrange
         var requestCookieCollection = MockRequestCookieCollection(CookieName, "False");
-        MockService(CookieName);
+        MockService();
 
         // Act
         bool result = _systemUnderTest.HasUserAcceptedCookies(requestCookieCollection);
@@ -136,7 +108,7 @@ public class CookieServiceTests
     {
         // Arrange
         var requestCookieCollection = MockRequestCookieCollection("test", "test");
-        MockService(CookieName);
+        MockService();
 
         // Act
         bool result = _systemUnderTest.HasUserAcceptedCookies(requestCookieCollection);
@@ -183,13 +155,9 @@ public class CookieServiceTests
         return null;
     }
 
-    private void MockService(string? cookieName = null)
+    private void MockService()
     {
         var eprCookieOptions = new EprCookieOptions();
-        if(cookieName != null)
-        {
-            eprCookieOptions.CookiePolicyCookieName = cookieName;   
-        }
 
         var googleAnalyticsOptions = new AnalyticsOptions { CookiePrefix = GoogleAnalyticsDefaultCookieName };
 

@@ -43,7 +43,7 @@ public class ServiceProviderExtensionTests
         _configuration = new ConfigurationBuilder()
         .AddInMemoryCollection(new Dictionary<string, string>
         {
-            {EprCookieOptions.ConfigSection, JsonSerializer.Serialize(new EprCookieOptions{TempDataCookie = "testing_cookie" })},
+            {EprCookieOptions.ConfigSection, JsonSerializer.Serialize(new EprCookieOptions())},
             {AnalyticsOptions.ConfigSection, JsonSerializer.Serialize(new AnalyticsOptions())},
             {PhaseBannerOptions.ConfigSection, JsonSerializer.Serialize(new PhaseBannerOptions())},
             {ExternalUrlsOptions.ConfigSection, JsonSerializer.Serialize(new ExternalUrlsOptions())},

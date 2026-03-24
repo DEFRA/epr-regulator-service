@@ -29,7 +29,6 @@ public class HomeControllerTests
     private Mock<HttpResponse> _httpResponseMock;
     private Mock<ISessionManager<JourneySession>> _sessionManagerMock;
     private Mock<IOptions<LandingPageConfig>> _configMock;
-    private Mock<IOptions<EprCookieOptions>> _cookieConfig;
     private Mock<IResponseCookies> _responseCookiesMock;
     private Mock<ISession> _sessionMock;
     private Mock<IFeatureManager> _mockFeatureManager;
@@ -42,7 +41,7 @@ public class HomeControllerTests
     private const string OrganisationName = "ACME";
     private const string ManageAccountUrl = "/manage-account/manage";
     private const string ApplicationsUrl = "/regulators/applications";
-    private const string SessionCookieName = "SessionCookieName";
+
     private const string ManageRegistraionSubmissionsUrl = "/manage-registration-submissions";
 
     public void Setup(
@@ -55,7 +54,6 @@ public class HomeControllerTests
         _responseCookiesMock = new Mock<IResponseCookies>();
         _sessionManagerMock = new Mock<ISessionManager<JourneySession>>();
         _configMock = new Mock<IOptions<LandingPageConfig>>();
-        _cookieConfig = new Mock<IOptions<EprCookieOptions>>();
         _sessionMock = new Mock<ISession>();
         _mockFeatureManager = new Mock<IFeatureManager>();
 
@@ -96,7 +94,6 @@ public class HomeControllerTests
             });
         }
 
-        _cookieConfig.Setup(m => m.Value).Returns(new EprCookieOptions { SessionCookieName = "SessionCookieName" });
         _httpContextMock.Setup(m => m.Response).Returns(_httpResponseMock.Object);
         _httpContextMock.Setup(m => m.Session).Returns(_sessionMock.Object);
         _httpResponseMock.Setup(m => m.Cookies).Returns(_responseCookiesMock.Object);
@@ -111,7 +108,6 @@ public class HomeControllerTests
             _sessionManagerMock.Object,
             _mockFeatureManager.Object,
             _configMock.Object,
-            _cookieConfig.Object,
             configurationMock.Object);
         _systemUnderTest.ControllerContext.HttpContext = _httpContextMock.Object;
     }
@@ -268,7 +264,7 @@ public class HomeControllerTests
         _systemUnderTest.SignedOut();
 
         // Assert
-        _responseCookiesMock.Verify(x => x.Delete(SessionCookieName), Times.Once);
+        _responseCookiesMock.Verify(x => x.Delete(EprCookieOptions.SessionCookieName), Times.Once);
     }
 
     [TestMethod]

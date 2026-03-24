@@ -35,13 +35,9 @@ public class CookieBannerViewComponentTests : ViewComponentsTestBase
         // Arrange
         const string currentPage = "/currentPage";
 
-        var eprCookieOptions = _fixture.Create<EprCookieOptions>();
-        var options = new Mock<IOptions<EprCookieOptions>>();
-        options.Setup(o => o.Value).Returns(eprCookieOptions);
-
         var cookies = new Mock<IRequestCookieCollection>();
 
-        cookies.Setup(c => c[eprCookieOptions.CookiePolicyCookieName]).Returns(consentCookie);
+        cookies.Setup(c => c[EprCookieOptions.CookiePolicyCookieName]).Returns(consentCookie);
 
         _fixture.Customize<HttpRequest>(
             c => c.With(req => req.Path, new PathString(currentPage))
@@ -60,7 +56,7 @@ public class CookieBannerViewComponentTests : ViewComponentsTestBase
         _viewContext.RouteData = routeData;
         _viewContext.TempData = tempData;
 
-        var component = new CookieBannerViewComponent(options.Object);
+        var component = new CookieBannerViewComponent();
 
         SetViewComponentContext(currentPage, component, null);
 

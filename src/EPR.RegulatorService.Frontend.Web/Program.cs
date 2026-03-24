@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Core.Extensions;
+using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.FeatureManagement;
 using EPR.RegulatorService.Frontend.Web.HealthChecks;
@@ -40,7 +41,7 @@ builder.Services
     {
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.Name = builder.Configuration.GetValue<string>("CookieOptions:AntiForgeryCookieName");
+        options.Cookie.Name = EprCookieOptions.AntiForgeryCookieName;
     })
     .AddControllersWithViews(
         options => options.ModelBinderProviders.Insert(0, new PaymentMethodTypeModelBinderProvider()))

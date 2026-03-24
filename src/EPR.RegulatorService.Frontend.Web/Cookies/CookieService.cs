@@ -45,11 +45,8 @@ public class CookieService : ICookieService
                 }
             }
 
-            var cookieName = _eprCookieOptions.CookiePolicyCookieName;
-            ArgumentNullException.ThrowIfNull(cookieName);
-
             responseCookies.Append(
-                key: cookieName,
+                key: EprCookieOptions.CookiePolicyCookieName,
                 value: accept.ToString(),
                 options: new CookieOptions()
                 {
@@ -71,10 +68,7 @@ public class CookieService : ICookieService
         bool cookieAcceptedResult;
         try
         {
-            var cookieName = _eprCookieOptions.CookiePolicyCookieName;
-            ArgumentNullException.ThrowIfNull(cookieName);
-
-            var cookie = cookies[cookieName];
+            var cookie = cookies[EprCookieOptions.CookiePolicyCookieName];
             cookieAcceptedResult = bool.TryParse(cookie, out bool cookieAccepted) && cookieAccepted;
         }
         catch (Exception ex)

@@ -15,7 +15,6 @@ public class CookiesControllerTests
 {
     ControllerContext _controllerContext;
     Mock<ICookieService> _cookieServiceMock;
-    IOptions<EprCookieOptions> _eprCookieOptions;
 
     [TestInitialize]
     public void TestInitialize()
@@ -29,17 +28,6 @@ public class CookiesControllerTests
         };
 
         _cookieServiceMock = new Mock<ICookieService>();
-
-        _eprCookieOptions = Options.Create(new EprCookieOptions
-        {
-            SessionCookieName = "sessionCookie",
-            B2CCookieName = "b2cCookie",
-            CookiePolicyCookieName = "policyCookie",
-            AntiForgeryCookieName = "antiForgeryCookie",
-            AuthenticationCookieName = "authCookie",
-            TsCookieName = "tsCookie",
-            TempDataCookie = "tempDataCookie"
-        });
     }
 
     [TestMethod]
@@ -50,7 +38,7 @@ public class CookiesControllerTests
         // Arrange
         var cookieService = new Mock<ICookieService>();
 
-        using var cookieController = new CookiesController(cookieService.Object, Mock.Of<IOptions<EprCookieOptions>>(), Mock.Of<IOptions<AnalyticsOptions>>())
+        using var cookieController = new CookiesController(cookieService.Object, Mock.Of<IOptions<AnalyticsOptions>>())
         {
             TempData = new TempDataDictionary(_controllerContext.HttpContext, Mock.Of<ITempDataProvider>()),
             ControllerContext = _controllerContext
@@ -72,7 +60,7 @@ public class CookiesControllerTests
         const string returnUrl = "returnUrl";
         var cookieService = new Mock<ICookieService>();
 
-        using var cookieController = new CookiesController(cookieService.Object, Mock.Of<IOptions<EprCookieOptions>>(), Mock.Of<IOptions<AnalyticsOptions>>())
+        using var cookieController = new CookiesController(cookieService.Object, Mock.Of<IOptions<AnalyticsOptions>>())
         {
             TempData = new TempDataDictionary(_controllerContext.HttpContext, Mock.Of<ITempDataProvider>()),
 
@@ -96,7 +84,7 @@ public class CookiesControllerTests
         var urlHelper = new Mock<IUrlHelper>();
         urlHelper.Setup(h => h.IsLocalUrl(returnUrl)).Returns(true);
 
-        using var cookieController = new CookiesController(Mock.Of<ICookieService>(), Mock.Of<IOptions<EprCookieOptions>>(), Mock.Of<IOptions<AnalyticsOptions>>())
+        using var cookieController = new CookiesController(Mock.Of<ICookieService>(), Mock.Of<IOptions<AnalyticsOptions>>())
         {
             Url = urlHelper.Object,
             TempData = new TempDataDictionary(_controllerContext.HttpContext, Mock.Of<ITempDataProvider>()),
@@ -117,7 +105,7 @@ public class CookiesControllerTests
         string localUrl = "/local/path";
         var urlHelper = new Mock<IUrlHelper>();
         urlHelper.Setup(u => u.IsLocalUrl(localUrl)).Returns(true);
-        using var cookieController = new CookiesController(_cookieServiceMock.Object, _eprCookieOptions, Mock.Of<IOptions<AnalyticsOptions>>())
+        using var cookieController = new CookiesController(_cookieServiceMock.Object, Mock.Of<IOptions<AnalyticsOptions>>())
         {
             Url = urlHelper.Object,
             TempData = new TempDataDictionary(_controllerContext.HttpContext, Mock.Of<ITempDataProvider>()),

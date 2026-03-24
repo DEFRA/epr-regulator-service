@@ -13,16 +13,13 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Cookies;
 public class CookiesController : Controller
 {
     private readonly ICookieService _cookieService;
-    private readonly EprCookieOptions _eprCookieOptions;
     private readonly AnalyticsOptions _googleAnalyticsOptions;
 
     public CookiesController(
         ICookieService cookieService,
-        IOptions<EprCookieOptions> eprCookieOptions,
         IOptions<AnalyticsOptions> googleAnalyticsOptions)
     {
         _cookieService = cookieService;
-        _eprCookieOptions = eprCookieOptions.Value;
         _googleAnalyticsOptions = googleAnalyticsOptions.Value;
     }
 
@@ -62,15 +59,15 @@ public class CookiesController : Controller
 
         var cookieViewModel = new CookieDetailViewModel
         {
-            SessionCookieName = _eprCookieOptions.SessionCookieName,
-            B2CCookieName = _eprCookieOptions.B2CCookieName,
-            CookiePolicyCookieName = _eprCookieOptions.CookiePolicyCookieName,
-            AntiForgeryCookieName = _eprCookieOptions.AntiForgeryCookieName,
+            SessionCookieName = EprCookieOptions.SessionCookieName,
+            B2CCookieName = EprCookieOptions.B2CCookieName,
+            CookiePolicyCookieName = EprCookieOptions.CookiePolicyCookieName,
+            AntiForgeryCookieName = EprCookieOptions.AntiForgeryCookieName,
             GoogleAnalyticsDefaultCookieName = _googleAnalyticsOptions.DefaultCookieName,
             GoogleAnalyticsAdditionalCookieName = _googleAnalyticsOptions.AdditionalCookieName,
-            AuthenticationCookieName= _eprCookieOptions.AuthenticationCookieName,
-            TsCookieName= _eprCookieOptions.TsCookieName,
-            TempDataCookieName= _eprCookieOptions.TempDataCookie,
+            AuthenticationCookieName = EprCookieOptions.AuthenticationCookieName,
+            TsCookieName = EprCookieOptions.TsCookieName,
+            TempDataCookieName = EprCookieOptions.TempDataCookie,
             CookiesAccepted = hasUserAcceptedCookies,
             ReturnUrl = $"~{returnPath}{Request.QueryString}",
             ShowAcknowledgement = TempData[CookieAcceptance.CookieAcknowledgement] != null,
