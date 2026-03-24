@@ -166,9 +166,10 @@ public static class ServiceProviderExtension
         services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApp(options =>
             {
-                var b2CConfig = configuration.GetSection("AzureAdB2C");
-                ValidateB2CConfig(b2CConfig);
-                b2CConfig.Bind(options);
+                configuration
+                    .GetSection("AzureAdB2C")
+                    .ValidateB2CConfig()
+                    .Bind(options);
                 options.ErrorPath = "/error";
             }, options =>
             {
@@ -183,7 +184,7 @@ public static class ServiceProviderExtension
             .AddDistributedTokenCaches();
     }
 
-    private static IConfigurationSection ValidateB2CConfig(IConfigurationSection section)
+    private static IConfigurationSection ValidateB2CConfig(this IConfigurationSection section)
     {
         var b2CKeys = new[]
         {
