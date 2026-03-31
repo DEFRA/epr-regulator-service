@@ -3,6 +3,7 @@ namespace IntegrationTests.Infrastructure;
 using System.Text.Json;
 
 using IntegrationTests.Builders;
+using Microsoft.AspNetCore.Mvc.Testing;
 using PageModels;
 
 using WireMock.RequestBuilders;
@@ -11,7 +12,7 @@ using WireMock.Server;
 
 public abstract class IntegrationTestBase : IAsyncLifetime
 {
-    private RegulatorServiceWebApplicationFactory Factory { get; set; } = null!;
+    protected RegulatorServiceWebApplicationFactory Factory { get; private set; } = null!;
     protected HttpClient Client { get; private set; } = null!;
     protected WireMockServer FacadeServer => Factory.FacadeServer;
 
@@ -28,6 +29,10 @@ public abstract class IntegrationTestBase : IAsyncLifetime
         Client.Dispose();
         await Factory.DisposeAsync();
     }
+
+    /// <summary>HTTP client that does not follow redirects (e.g. assert 302 Location for form posts).</summary>
+    protected HttpClient CreateNoRedirectClient() =>
+        Factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
 
     protected void SetupUserAccountsMock() =>
         SetupUserAccountsMock(UserAccountBuilder.Default());
