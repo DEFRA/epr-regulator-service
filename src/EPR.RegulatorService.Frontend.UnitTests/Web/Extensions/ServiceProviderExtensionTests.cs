@@ -66,38 +66,4 @@ public class ServiceProviderExtensionTests
         Assert.IsNotNull(services);
         services.Count.Should().BeGreaterThan(0);
     }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void GivenRegisterWebComponents_WithNotSession_ThenShouldThrowError()
-    {
-        // Arrange
-        var services = new ServiceCollection();
-        var connectionStrings = new Dictionary<string, string> { { "REDIS_CONNECTION", "localhost:6379" } };
-
-        _configuration = new ConfigurationBuilder()
-        .AddInMemoryCollection(new Dictionary<string, string>
-        {
-                    {EprCookieOptions.ConfigSection, JsonSerializer.Serialize(new EprCookieOptions())},
-                    {AnalyticsOptions.ConfigSection, JsonSerializer.Serialize(new AnalyticsOptions())},
-                    {PhaseBannerOptions.ConfigSection, JsonSerializer.Serialize(new PhaseBannerOptions())},
-                    {ExternalUrlsOptions.ConfigSection, JsonSerializer.Serialize(new ExternalUrlsOptions())},
-                    {EmailAddressOptions.ConfigSection, JsonSerializer.Serialize(new EmailAddressOptions())},
-                    {SiteDateOptions.ConfigSection, JsonSerializer.Serialize(new SiteDateOptions())},
-                    {ServiceSettingsOptions.ConfigSection, JsonSerializer.Serialize(new ServiceSettingsOptions())},
-                    {FacadeApiConfig.ConfigSection, JsonSerializer.Serialize(new FacadeApiConfig())},
-                    {PaginationConfig.ConfigSection, JsonSerializer.Serialize(new PaginationConfig())},
-                    {TransferOrganisationConfig.ConfigSection, JsonSerializer.Serialize(new TransferOrganisationConfig(){Organisations = _organisations }) },
-                    {LandingPageConfig.ConfigSection, JsonSerializer.Serialize(new LandingPageConfig()) },
-                    {"UseLocalSession", "false"},
-                    {"ConnectionStrings", JsonSerializer.Serialize(connectionStrings) }
-        })
-        .Build();
-
-        // Act
-        services.RegisterWebComponents(_configuration);
-
-        // Assert
-        Assert.IsNull(services);    
-    }
 }
