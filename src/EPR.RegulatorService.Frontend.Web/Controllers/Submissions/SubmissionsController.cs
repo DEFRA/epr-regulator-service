@@ -296,6 +296,7 @@ public partial class SubmissionsController : Controller
         }
 
         TempData.Remove("OfflinePaymentAmount");
+        Guid? fileId = submission.FileId == Guid.Empty ? null : submission.FileId;
         return string.IsNullOrWhiteSpace(model.OfflinePaymentAmount)
             ? RedirectToAction(
                 PagePath.Error,
@@ -312,7 +313,7 @@ public partial class SubmissionsController : Controller
                 submission.UserId.Value,
                 submission.SubmissionId,
                 model.SubmissionHash.Value,
-                submission.FileId == Guid.Empty ? null : submission.FileId);
+                fileId);
     }
 
     [HttpGet]
