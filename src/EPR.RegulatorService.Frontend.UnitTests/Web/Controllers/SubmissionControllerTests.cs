@@ -993,6 +993,42 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_POST_PassesNullFileId_WhenFileIdIsEmpty()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
+            {
+                SubmissionId = submissionId,
+                UserId = Guid.NewGuid(),
+                ReferenceNumber = "degreg",
+                NationCode = "GB-ENG",
+                FileId = Guid.Empty
+            };
+
+            JourneySessionMock.UserData.Organisations =
+            [
+               new() { NationId = 1 }
+            ];
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                SubmissionHash = _hashCode,
+                IsOfflinePaymentConfirmed = true,
+                OfflinePaymentAmount = DefaultOfflinePaymentAmount,
+            };
+
+            // Act
+            await _systemUnderTest.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            _paymentFacadeServiceMock.Verify(r =>
+                r.SubmitOfflinePaymentAsync(
+                    It.Is<OfflinePaymentRequest>(req => req.FileId == null)),
+                    Times.AtMostOnce);
+        }
+
+        [TestMethod]
         public async Task ConfirmOfflinePaymentSubmission_POST_RedirectsToServiceNotAvailable_WhenPaymentFacade_ReturnsNonSuccess()
         {
             // Arrange

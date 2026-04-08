@@ -312,7 +312,7 @@ public partial class SubmissionsController : Controller
                 submission.UserId.Value,
                 submission.SubmissionId,
                 model.SubmissionHash.Value,
-                submission.FileId);
+                submission.FileId == Guid.Empty ? null : submission.FileId);
     }
 
     [HttpGet]

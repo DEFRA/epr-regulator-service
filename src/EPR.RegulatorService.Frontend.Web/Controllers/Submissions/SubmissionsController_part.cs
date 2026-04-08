@@ -163,7 +163,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 ReferenceNumber = submission.ReferenceNumber,
                 MemberCount = submission.MemberCount,
                 ComplianceSchemeId = submission.ComplianceSchemeId,
-                FileId = submission.FileId
+                FileId = submission.FileId == Guid.Empty ? null : submission.FileId
             };
 
             return model;
