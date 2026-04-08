@@ -46,7 +46,8 @@ public class PackagingCompliancePaymentDetailsViewComponent(IOptions<PaymentDeta
                     ReferenceNumber = viewModel.ReferenceNumber,
                     MemberCount = viewModel.MemberCount,
                     Regulator = viewModel.NationCode,
-                    ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format                    
+                    ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate), //payment facade in utc format
+                    FileId = viewModel.FileId
                 });
 
             if (compliancePaymentResponse is null)

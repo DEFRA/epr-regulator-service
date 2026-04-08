@@ -311,7 +311,8 @@ public partial class SubmissionsController : Controller
                 model.OfflinePaymentAmount,
                 submission.UserId.Value,
                 submission.SubmissionId,
-                model.SubmissionHash.Value);
+                model.SubmissionHash.Value,
+                submission.FileId);
     }
 
     [HttpGet]

@@ -949,12 +949,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid(),
                 ReferenceNumber = "degreg",
-                NationCode = "GB-ENG"
+                NationCode = "GB-ENG",
+                FileId = fileId
             };
 
             JourneySessionMock.UserData.Organisations =
@@ -981,7 +983,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _paymentFacadeServiceMock.Verify(r =>
                 r.SubmitOfflinePaymentAsync(
-                    It.IsAny<OfflinePaymentRequest>()),
+                    It.Is<OfflinePaymentRequest>(req => req.FileId == fileId)),
                     Times.AtMostOnce);
 
             _facadeServiceMock.Verify(r =>
@@ -995,10 +997,12 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
+            var fileId = Guid.NewGuid();
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
-                UserId = Guid.NewGuid()
+                UserId = Guid.NewGuid(),
+                FileId = fileId
             };
 
             JourneySessionMock.UserData.Organisations =

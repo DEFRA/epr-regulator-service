@@ -9,4 +9,6 @@ public class PackagingProducerPaymentRequest
     public required DateTime ResubmissionDate { get; set; }
 
     public required int MemberCount { get; set; }
+
+    public Guid? FileId { get; set; }
 }

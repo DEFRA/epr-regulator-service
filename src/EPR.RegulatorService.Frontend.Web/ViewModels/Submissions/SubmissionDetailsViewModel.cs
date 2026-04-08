@@ -25,4 +25,5 @@ public class SubmissionDetailsViewModel : BaseSubmissionDetailsViewModel
     public DateTime SubmittedDate { get; set; }
     public string SubmissionBlobName { get; set; }
     public Guid? ComplianceSchemeId { get; set; }
+    public Guid? FileId { get; set; }
 }
