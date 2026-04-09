@@ -86,20 +86,6 @@
                         </div>
                     }
 
-                    @if (Model.SubsidiariesCompanyCount > 0)
-                    {
-                        <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
-                            <dd class="govuk-summary-list__value" style="width: 285px;">
-                            </dd>
-                            <dd class="govuk-summary-list__value" style="width: 410px;">
-                                @Localizer[Model.SubsidiariesCompanyCount == 1
-                                         ? "CompliancePaymentDetails.SubsidiariesCompanyDescription1"
-                                         : "CompliancePaymentDetails.SubsidiariesCompanyDescription2", Model.SubsidiariesCompanyCount]
-                            </dd>
-                            <payment-amount amount="@Model.SubsidiariesCompanyFee"></payment-amount>
-                        </div>
-                    }
-
                     @if (Model.LateProducerCount > 0)
                     {
                         <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
@@ -121,6 +107,19 @@
                     <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
                     <payment-amount amount="@Model.SubTotal" property-name="SubTotal"></payment-amount>
                 </div>
+
+                @if (Model.ClosedLoopRegistrationCount > 0)
+                {
+                    <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                        <dd class="govuk-summary-list__value" style="width: 285px;">
+                            <strong>@Localizer["CompliancePaymentDetails.ClosedLoopRegistrationFee"]</strong>
+                        </dd>
+                        <dd class="govuk-summary-list__value" style="width: 410px;">
+                            @Localizer["CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription"]
+                        </dd>
+                        <payment-amount amount="@Model.ClosedLoopRegistrationFee"></payment-amount>
+                    </div>
+                }
 
                 @if (Model.PreviousPaymentReceived > 0)
                 {
