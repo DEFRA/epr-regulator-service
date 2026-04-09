@@ -50,6 +50,7 @@ public class CompliancePaymentDetailsViewComponent(
             var lateProducers = compliancePaymentResponse.ComplianceSchemeMembers.GetLateProducers();
             var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.GetOnlineMarketPlaces();
             var subsidiariesCompanies = compliancePaymentResponse.ComplianceSchemeMembers.GetSubsidiariesCompanies();
+            var closedLoopRegistrationFee = compliancePaymentResponse.ComplianceSchemeMembers.GetClosedLoopRegistrationFee();
 
             var compliancePaymentDetailsViewModel = new CompliancePaymentDetailsViewModel
             {
@@ -69,6 +70,8 @@ public class CompliancePaymentDetailsViewComponent(
                 LateProducerFee = ConvertToPoundsFromPence(lateProducers.Sum()),
                 OnlineMarketPlaceCount = onlineMarketPlaces.Count,
                 OnlineMarketPlaceFee = ConvertToPoundsFromPence(onlineMarketPlaces.Sum()),
+                ClosedLoopRegistrationCount = closedLoopRegistrationFee.Count,
+                ClosedLoopRegistrationFee = ConvertToPoundsFromPence(closedLoopRegistrationFee.Sum()),
                 SubsidiariesCompanyCount = viewModel.CSOMembershipDetails.Sum(r => r.NumberOfSubsidiaries),
                 SubsidiariesCompanyFee = ConvertToPoundsFromPence(subsidiariesCompanies.Sum()),
                 ResubmissionStatus = viewModel.ResubmissionStatus,

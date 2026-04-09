@@ -43,6 +43,9 @@ public class ComplianceSchemeMember
     [JsonPropertyName("subsidiariesFee")]
     public decimal SubsidiaryFee { get; set; }
 
+    [JsonPropertyName("closedLoopRegistrationFee")]
+    public decimal ClosedLoopRegistrationFee { get; set; }
+
     [JsonPropertyName("totalMemberFee")]
     public decimal TotalFee { get; set; }
 

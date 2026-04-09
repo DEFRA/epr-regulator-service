@@ -31,6 +31,10 @@ public class CompliancePaymentDetailsViewModel : PaymentDetailsViewModel
 
     public decimal LateProducerFee { get; set; }
 
+    public int ClosedLoopRegistrationCount { get; set; }
+
+    public decimal ClosedLoopRegistrationFee { get; set; }
+
     public decimal SubTotal { get; set; }
 
     public decimal PreviousPaymentReceived { get; set; }
