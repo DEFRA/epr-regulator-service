@@ -131,7 +131,7 @@
     <value>Rydych chi wedi trosglwyddo {0} i {1}</value>
   </data>
   <data name="RejectedApprovedPerson" xml:space="preserve">
-    <value>WYou rejected {0} as an approved person. The organisation cannot submit data.</value>
+    <value>Fe wnaethoch chi wrthod {0} fel person cymeradwy. Ni all y sefydliad gyflwyno data.</value>
   </data>
   <data name="Applications.Title" xml:space="preserve">
     <value>Asiantaeth yr Amgylchedd</value>
