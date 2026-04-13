@@ -19,18 +19,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Page.Panel" xml:space="preserve">
-      <value>WApproved person removed</value>
+      <value>Person a gymeradwywyd wedi'i dynnu</value>
   </data>
   <data name="Page.Heading" xml:space="preserve">
-      <value>WWhat happens next</value>
+      <value>Beth sy'n digwydd nesaf</value>
   </data>
   <data name="Page.Title" xml:space="preserve">
-      <value>WYou have selected {0} to be removed from {1} account</value>
+      <value>Rydych chi wedi dewis tynnu {0} o gyfrif {1}</value>
   </data>
   <data name="Confirmation.CannotSubmit.PackagingData" xml:space="preserve">
-      <value>WThe organisation has not nominated a new approved person. They cannot submit packaging data.</value>
+      <value>Nid yw'r sefydliad wedi enwebu person cymeradwy newydd. Ni allant gyflwyno data pecynnu.</value>
   </data>
   <data name="Confirmation.Nominate.ApprovedUser" xml:space="preserve">
-      <value>WYou need to ask the organisation to contact the service desk to nominate a new approved person.</value>
+      <value>Mae angen i chi ofyn i'r sefydliad gysylltu â'r ddesg wasanaeth i enwebu person cymeradwy newydd.</value>
   </data>
 </root>
