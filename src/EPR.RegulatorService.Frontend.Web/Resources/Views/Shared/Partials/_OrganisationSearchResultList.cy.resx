@@ -139,6 +139,6 @@
     <value>Cynhyrchydd anuniongyrchol</value>
   </data>
   <data name="OrgType.MemberOfScheme" xml:space="preserve">
-    <value>WMember of {0} compliance scheme</value>
+    <value>Aelod o gynllun cydymffurfio {0}</value>
   </data>
 </root>
