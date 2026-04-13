@@ -31,21 +31,21 @@
     <value>Rhowch eu cyfeiriad ebost</value>
   </data>
   <data name="ErrorTitle.InvalidEmail" xml:space="preserve">
-    <value>WEnter an email in the correct format, like name example.com 111</value>
+    <value>Rhowch gyfeiriad ebost yn y fformat cywir, fel enw@enghraifft.com</value>
   </data>
   <data name="ErrorTitle.InvalidEmailLength" xml:space="preserve">
-    <value>WEmail address must be 254 characters or less</value>
+    <value>Rhaid i gyfeiriad ebost fod yn 254 neu lai o gymeriadau</value>
   </data>
   <data name="Email.Label" xml:space="preserve">
-    <value>WEmail</value>
+    <value>Ebost</value>
   </data>
   <data name="PersonEmail.MissingError" xml:space="preserve">
     <value>Rhowch eu cyfeiriad ebost</value>
   </data>
   <data name="PersonEmail.TooLongError" xml:space="preserve">
-    <value>WEmail address must be 254 characters or less</value>
+    <value>Rhaid i gyfeiriad ebost fod yn 254 neu lai o gymeriadau</value>
   </data>
   <data name="PersonEmail.InvalidFormat" xml:space="preserve">
-    <value>WEnter an email in the correct format, like name@example.com 222</value>
+    <value>Rhowch gyfeiriad ebost yn y fformat cywir, fel enw@enghraifft.com</value>
   </data>
 </root>
