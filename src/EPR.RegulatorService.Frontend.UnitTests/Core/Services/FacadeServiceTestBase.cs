@@ -44,7 +44,7 @@ public abstract class FacadeServiceTestBase
                 ["FileDownload"] = "https://api.example.com/file/download",
                 ["OrganisationRegistrationSubmissions"] = "registrations/get-organisations&currentPage={0}&pageSize={1}",
                 ["OrganisationRegistrationSubmissionDecisionPath"] = "organisation-registration-submission-decision",
-                ["GetOrganisationRegistrationSubmissionDetailsPath"] = "registrations-submission-details/submissionId/{0}",
+                ["GetOrganisationRegistrationSubmissionDetailsPath"] = "organisation-registration-submission-details/{0}",
                 ["GetOrganisationRegistrationSubmissionsPath"] = "organisation-registration-submissions",
                 ["SubmitRegistrationFeePaymentPath"] = "organisation-registration-fee-payment",
                 ["PackagingDataResubmissionFeePaymentPath"] = "organisation-packaging-data-resubmission-fee-payment",

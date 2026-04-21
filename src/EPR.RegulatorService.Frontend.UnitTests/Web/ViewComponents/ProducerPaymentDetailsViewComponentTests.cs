@@ -70,6 +70,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             ApplicationProcessingFee = 100.00M,
             LateRegistrationFee = 200.00M,
             OnlineMarketplaceFee = 300.00M,
+            ClosedLoopRegistrationFee = 2800.00M,
             SubsidiaryFee = 400.00M,
             TotalChargeableItems = 1000.00M,
             PreviousPaymentsReceived = 500.00M,
@@ -97,6 +98,8 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.ApplicationProcessingFee.Should().Be(1.00M);
         model.LateRegistrationFee.Should().Be(2.00M);
         model.OnlineMarketplaceFee.Should().Be(3.00M);
+        model.ClosedLoopRegistrationFee.Should().Be(28.00M);
+        model.NumberOfClosedLoopRegistrationFees.Should().Be(1);
         model.ProducerSize.Should().Be(expectedProducerSize);
         model.SubsidiaryFee.Should().Be(2.00M);
         model.SubsidiaryOnlineMarketPlaceFee.Should().Be(2.00M);

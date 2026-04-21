@@ -17,6 +17,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.IsNull(dto.MemberType);
             Assert.IsFalse(dto.IsOnlineMarketPlace);
             Assert.IsFalse(dto.IsLateFeeApplicable);
+            Assert.IsNull(dto.IsClosedLoopRecycler);
             Assert.AreEqual(0, dto.NumberOfSubsidiaries);
             Assert.AreEqual(0, dto.NoOfSubsidiariesOnlineMarketplace);
             Assert.AreEqual(0, dto.RelevantYear);
@@ -32,6 +33,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             var memberType = "TypeA";
             var isOnlineMarketplace = true;
             var isLateFeeApplicable = true;
+            var isClosedLoopRecycler = true;
             var numberOfSubsidiaries = 5;
             var noOfSubsidiariesOnlineMarketplace = 2;
             var relevantYear = 2024;
@@ -45,6 +47,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberType = memberType,
                 IsOnlineMarketPlace = isOnlineMarketplace,
                 IsLateFeeApplicable = isLateFeeApplicable,
+                IsClosedLoopRecycler = isClosedLoopRecycler,
                 NumberOfSubsidiaries = numberOfSubsidiaries,
                 NoOfSubsidiariesOnlineMarketplace = noOfSubsidiariesOnlineMarketplace,
                 RelevantYear = relevantYear,
@@ -57,6 +60,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(memberType, dto.MemberType);
             Assert.AreEqual(isOnlineMarketplace, dto.IsOnlineMarketPlace);
             Assert.AreEqual(isLateFeeApplicable, dto.IsLateFeeApplicable);
+            Assert.AreEqual(isClosedLoopRecycler, dto.IsClosedLoopRecycler);
             Assert.AreEqual(numberOfSubsidiaries, dto.NumberOfSubsidiaries);
             Assert.AreEqual(noOfSubsidiariesOnlineMarketplace, dto.NoOfSubsidiariesOnlineMarketplace);
             Assert.AreEqual(relevantYear, dto.RelevantYear);
@@ -99,6 +103,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberType = "Large",
                 IsOnlineMarketPlace = true,
                 IsLateFeeApplicable = false,
+                IsClosedLoopRecycler = true,
                 NumberOfSubsidiaries = 5,
                 NoOfSubsidiariesOnlineMarketplace = 2,
                 RelevantYear = 2024,
@@ -114,6 +119,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.MemberType, request.MemberType);
             Assert.AreEqual(dto.IsOnlineMarketPlace, request.IsOnlineMarketplace);
             Assert.AreEqual(dto.IsLateFeeApplicable, request.IsLateFeeApplicable);
+            Assert.AreEqual(dto.IsClosedLoopRecycler ?? false, request.IsClosedLoopRecycler);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
             Assert.AreEqual(dto.NoOfSubsidiariesOnlineMarketplace, request.NoOfSubsidiariesOnlineMarketplace);
         }
@@ -128,6 +134,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberType = string.Empty,
                 IsOnlineMarketPlace = false,
                 IsLateFeeApplicable = false,
+                IsClosedLoopRecycler = null,
                 NumberOfSubsidiaries = 0,
                 NoOfSubsidiariesOnlineMarketplace = 0,
                 RelevantYear = 0,
@@ -143,8 +150,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.MemberType, request.MemberType);
             Assert.AreEqual(dto.IsOnlineMarketPlace, request.IsOnlineMarketplace);
             Assert.AreEqual(dto.IsLateFeeApplicable, request.IsLateFeeApplicable);
+            Assert.AreEqual(dto.IsClosedLoopRecycler ?? false, request.IsClosedLoopRecycler);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
-            Assert.AreEqual(dto.NumberOfSubsidiaries, request.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NoOfSubsidiariesOnlineMarketplace, request.NoOfSubsidiariesOnlineMarketplace);
         }
 
         [TestMethod]
@@ -157,6 +165,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberType = null,
                 IsOnlineMarketPlace = false,
                 IsLateFeeApplicable = false,
+                IsClosedLoopRecycler = null,
                 NumberOfSubsidiaries = 0,
                 NoOfSubsidiariesOnlineMarketplace = 0,
                 RelevantYear = 0,
@@ -172,8 +181,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.IsNull(request.MemberType);
             Assert.AreEqual(dto.IsOnlineMarketPlace, request.IsOnlineMarketplace);
             Assert.AreEqual(dto.IsLateFeeApplicable, request.IsLateFeeApplicable);
+            Assert.AreEqual(dto.IsClosedLoopRecycler ?? false, request.IsClosedLoopRecycler);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
-            Assert.AreEqual(dto.NumberOfSubsidiaries, request.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NoOfSubsidiariesOnlineMarketplace, request.NoOfSubsidiariesOnlineMarketplace);
         }
     }
 }

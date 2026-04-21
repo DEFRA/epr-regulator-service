@@ -10,6 +10,7 @@
       "memberRegistrationFee": 165800,
       "memberOnlineMarketPlaceFee": 25000,
       "memberLateRegistrationFee": 10000,
+      "memberClosedLoopRegistrationFee": 2500,
       "subsidiariesFee": 84600,
       "totalMemberFee": 285400
     }

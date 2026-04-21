@@ -2,6 +2,7 @@
   "producerRegistrationFee": 165800,
   "producerOnlineMarketPlaceFee": 25000,
   "producerLateRegistrationFee": 0,
+  "producerClosedLoopRegistrationFee": 24850,
   "totalFee": 165800,
   "previousPayment": 0,
   "outstandingPayment": 165800,
