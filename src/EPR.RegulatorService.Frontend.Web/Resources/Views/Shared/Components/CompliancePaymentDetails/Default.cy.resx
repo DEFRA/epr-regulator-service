@@ -198,7 +198,10 @@
   <data name="CompliancePaymentDetails.TotalOutstanding" xml:space="preserve">
     <value>Y cyfanswm sydd heb ei dalu</value>
   </data>
-  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription" xml:space="preserve">
-    <value />
+  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription1" xml:space="preserve">
+    <value>{0} cofrestru</value>
+  </data>
+  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription2" xml:space="preserve">
+    <value>{0} cofrestriad</value>
   </data>
 </root>

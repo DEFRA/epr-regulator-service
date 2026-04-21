@@ -47,6 +47,8 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 ApplicationProcessingFee = ConvertToPoundsFromPence(producerPaymentResponse.ApplicationProcessingFee),
                 LateRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.LateRegistrationFee),
                 OnlineMarketplaceFee = ConvertToPoundsFromPence(producerPaymentResponse.OnlineMarketplaceFee),
+                ClosedLoopRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.ClosedLoopRegistrationFee),
+                NumberOfClosedLoopRegistrationFees = producerPaymentResponse.ClosedLoopRegistrationFee > 0 ? 1 : 0,
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
                 SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),

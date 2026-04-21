@@ -189,7 +189,10 @@
   <data name="CompliancePaymentDetails.ClosedLoopRegistrationFee" xml:space="preserve">
     <value>Closed loop packaging waste</value>
   </data>
-  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription" xml:space="preserve">
-    <value>Registration to submit closed loop packaging data</value>
+  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription1" xml:space="preserve">
+    <value>{0} registration</value>
+  </data>
+  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription2" xml:space="preserve">
+    <value>{0} registrations</value>
   </data>
 </root>

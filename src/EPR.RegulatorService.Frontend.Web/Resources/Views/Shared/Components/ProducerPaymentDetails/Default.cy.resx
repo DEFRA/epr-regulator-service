@@ -201,4 +201,10 @@
   <data name="ProducerPaymentValidation.ValueCannotBeZero" xml:space="preserve">
     <value>Chaiff y swm ddim bod yn sero</value>
   </data>
+  <data name="ProducerPaymentDetails.ClosedLoopRegistrationFeeDescription1" xml:space="preserve">
+    <value>{0} cofrestru</value>
+  </data>
+  <data name="ProducerPaymentDetails.ClosedLoopRegistrationFeeDescription2" xml:space="preserve">
+    <value>{0} cofrestriad</value>
+  </data>
 </root>

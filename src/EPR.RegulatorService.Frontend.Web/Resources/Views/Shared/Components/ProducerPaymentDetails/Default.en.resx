@@ -174,4 +174,13 @@
   <data name="ProducerPaymentDetails.WaiveFees" xml:space="preserve">
     <value>Waive fees</value>
   </data>
+  <data name="ProducerPaymentDetails.ClosedLoopRegistrationFee" xml:space="preserve">
+    <value>Closed loop packaging waste</value>
+  </data>
+  <data name="ProducerPaymentDetails.ClosedLoopRegistrationFeeDescription1" xml:space="preserve">
+    <value>{0} registration</value>
+  </data>
+  <data name="ProducerPaymentDetails.ClosedLoopRegistrationFeeDescription2" xml:space="preserve">
+    <value>{0} registrations</value>
+  </data>
 </root>

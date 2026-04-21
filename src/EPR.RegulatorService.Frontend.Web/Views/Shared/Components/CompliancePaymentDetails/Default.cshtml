@@ -115,7 +115,9 @@
                             <strong>@Localizer["CompliancePaymentDetails.ClosedLoopRegistrationFee"]</strong>
                         </dd>
                         <dd class="govuk-summary-list__value" style="width: 410px;">
-                            @Localizer["CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription"]
+                            @Localizer[Model.ClosedLoopRegistrationCount == 1
+                                ? "CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription1"
+                                : "CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription2", Model.ClosedLoopRegistrationCount]
                         </dd>
                         <payment-amount amount="@Model.ClosedLoopRegistrationFee"></payment-amount>
                     </div>
