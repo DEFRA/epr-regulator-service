@@ -22,6 +22,8 @@ public class ComplianceSchemeMemberRequest
 
     public bool IsLateFeeApplicable { get; set; }
 
+    public bool IsClosedLoopRecycler { get; set; }
+
     public int NumberOfSubsidiaries { get; set; }
 
     public int NoOfSubsidiariesOnlineMarketplace { get; set; }

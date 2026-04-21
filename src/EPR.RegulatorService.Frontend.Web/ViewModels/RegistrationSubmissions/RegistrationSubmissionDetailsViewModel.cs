@@ -52,6 +52,8 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
 
     public bool IsResubmission { get; set; }
 
+    public bool IsClosedLoopRecycler { get; set; }
+
     public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
     public string ResubmissionFileId { get; set; }
 
@@ -104,7 +106,8 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             ProducerDetails = details.ProducerDetails,
             CSOMembershipDetails = details.CsoMembershipDetails,
             IsResubmission = details.IsResubmission,
-            ResubmissionFileId = details.ResubmissionFileId
+            ResubmissionFileId = details.ResubmissionFileId,
+            IsClosedLoopRecycler = details.IsClosedLoopRecycler
         };
     }
 
@@ -153,7 +156,8 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             CsoMembershipDetails = details.CSOMembershipDetails?.ToList(),
             ProducerDetails = details.ProducerDetails,
             IsResubmission = details.IsResubmission,
-            ResubmissionFileId = details.ResubmissionFileId
+            ResubmissionFileId = details.ResubmissionFileId,
+            IsClosedLoopRecycler = details.IsClosedLoopRecycler
         };
     }
 }

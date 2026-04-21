@@ -32,7 +32,16 @@ public class CompliancePaymentDetailsViewComponent(
                 {
                     ApplicationReferenceNumber = viewModel.ReferenceNumber,
                     Regulator = viewModel.NationCode,
-                    ComplianceSchemeMembers = viewModel.CSOMembershipDetails.Select(x => (ComplianceSchemeMemberRequest)x),
+                    ComplianceSchemeMembers = viewModel.CSOMembershipDetails.Select(x => new ComplianceSchemeMemberRequest
+                    {
+                        MemberId = x.MemberId,
+                        MemberType = x.MemberType,
+                        IsOnlineMarketplace = x.IsOnlineMarketPlace,
+                        IsLateFeeApplicable = x.IsLateFeeApplicable,
+                        IsClosedLoopRecycler = x.IsClosedLoopRecycler ?? viewModel.IsClosedLoopRecycler,
+                        NumberOfSubsidiaries = x.NumberOfSubsidiaries,
+                        NoOfSubsidiariesOnlineMarketplace = x.NoOfSubsidiariesOnlineMarketplace
+                    }),
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                         ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.GetValueOrDefault()
                         : viewModel.SubmissionDetails.TimeAndDateOfSubmission),
