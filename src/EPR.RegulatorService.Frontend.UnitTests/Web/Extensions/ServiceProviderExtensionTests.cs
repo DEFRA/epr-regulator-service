@@ -1,6 +1,10 @@
+using AutoMapper;
+using AutoMapper.Internal;
+
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Extensions;
+using EPR.RegulatorService.Frontend.Web.Mappings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -65,5 +69,26 @@ public class ServiceProviderExtensionTests
         // Assert
         Assert.IsNotNull(services);
         services.Count.Should().BeGreaterThan(0);
+    }
+
+    [TestMethod]
+    public void RegisterAutoMapper_ShouldApplyMaxDepthToAllMaps()
+    {
+        // Arrange
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.Internal().ForAllMaps((_, mapping) => mapping.MaxDepth(64));
+            cfg.AddMaps(typeof(ManageRegistrationsMappingProfile).Assembly);
+        });
+
+        // Act
+        var typeMaps = config.Internal().GetAllTypeMaps();
+
+        // Assert
+        typeMaps.Should().NotBeEmpty();
+        foreach (var typeMap in typeMaps)
+        {
+            typeMap.MaxDepth.Should().Be(64, $"MaxDepth should be 64 for {typeMap.SourceType.Name} -> {typeMap.DestinationType.Name}");
+        }
     }
 }
