@@ -378,3 +378,9 @@ src/certs/kainos-chain.p7b
 
 # these should be redundant
 /src/EPR.RegulatorService.Frontend.Web/out
+
+# SonarScanner folder
+**/.sonarqube/*
+
+# VS Code config
+**/.vscode/
