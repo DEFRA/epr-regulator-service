@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 using EPR.RegulatorService.Frontend.Web.Extensions;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Extensions
@@ -37,14 +39,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Extensions
 
         private sealed class TestLogger : ILogger
         {
-            public IList<LogEntry> Entries { get; } = new List<LogEntry>();
+            public IList<LogEntry> Entries { get; } = [];
 
             public ILogger Logger => this;
 
-            ILogger BeginScope<TState>(TState state) => NullLogger.Instance;
-            bool IsEnabled(LogLevel logLevel) => true;
+            public IDisposable BeginScope<TState>(TState state) => NullLogger.Instance;
 
-            void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+            public bool IsEnabled(LogLevel logLevel) => true;
+
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
             {
                 string formatted = formatter(state, exception);
                 var stateDictionary = new Dictionary<string, object?>();
@@ -67,15 +70,9 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Extensions
                     EventId = eventId,
                     Message = formatted,
                     Exception = exception,
-                    State = stateDictionary
+                    State = new ReadOnlyDictionary<string, object?>(stateDictionary)
                 });
             }
-
-            // Explicit interface implementation so this class can be used as ILogger directly
-            IDisposable ILogger.BeginScope<TState>(TState state) => (IDisposable)BeginScope(state);
-            bool ILogger.IsEnabled(LogLevel logLevel) => IsEnabled(logLevel);
-            void ILogger.Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-                => Log(logLevel, eventId, state, exception, formatter);
         }
 
         private sealed class LogEntry
@@ -84,7 +81,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Extensions
             public EventId EventId { get; init; }
             public string Message { get; init; } = string.Empty;
             public Exception? Exception { get; init; }
-            public IReadOnlyDictionary<string, object?> State { get; init; } = new Dictionary<string, object?>();
+            public required ReadOnlyDictionary<string, object?> State { get; init; }
         }
 
         // Minimal null logger used for BeginScope implementation.
