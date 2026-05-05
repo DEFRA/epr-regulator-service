@@ -62,12 +62,6 @@ public class FacadeService : IFacadeService
         Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
     };
 
-    private static readonly Action<ILogger, string, Exception?> _logFacadeServiceError =
-        LoggerMessage.Define<string>(
-            LogLevel.Error,
-            new EventId(1001, nameof(FacadeService)),
-            "An error occurred while processing a message: {ErrorMessage}");
-
     public FacadeService(
         HttpClient httpClient,
         ITokenAcquisition tokenAcquisition,
@@ -399,13 +393,13 @@ public class FacadeService : IFacadeService
 
     public async Task<PaginatedList<RegistrationSubmissionOrganisationDetails>> GetRegistrationSubmissions(RegistrationSubmissionsFilterModel filters)
     {
-        using var _ = _logger.BeginScope("{@Filters}", filters);
+        using var _ = _logger.BeginRegistrationSubmissionsScope(filters);
 
         await PrepareAuthenticatedClient();
 
         string path = _facadeApiConfig.Endpoints[GetOrganisationRegistationSubmissionsPath];
 
-        _logger.LogInformation("Retrieving Registration Submissions from facade API path: {FacadePath}", path);
+        _logger.LogRetrievingRegistrationSubmissions(path);
 
         var response = await _httpClient.PostAsJsonAsync(path, filters);
         response.EnsureSuccessStatusCode();
@@ -414,10 +408,7 @@ public class FacadeService : IFacadeService
         var detailsList = commonData.items
             .Select(summaryResponse => (RegistrationSubmissionOrganisationDetails)summaryResponse).ToList();
 
-        _logger.LogInformation(
-            "Successfully retrieved {SubmissionCount} registration submissions from facade API out of a total of {SubmissionCountTotal}",
-            commonData.items.Count,
-            commonData.totalItems);
+        _logger.LogRetrievingRegistrationSubmissionsSuccess(commonData.items.Count, commonData.totalItems);
 
         return new PaginatedList<RegistrationSubmissionOrganisationDetails>
         {
@@ -498,7 +489,7 @@ public class FacadeService : IFacadeService
         }
         catch (Exception ex)
         {
-            _logFacadeServiceError.Invoke(_logger, $"Exception occurred while submitting registration fee payment {nameof(FacadeService)}.{nameof(SubmitRegistrationFeePaymentAsync)}", ex);
+            _logger.LogFacadeServiceError(ex, $"Exception occurred while submitting registration fee payment {nameof(FacadeService)}.{nameof(SubmitRegistrationFeePaymentAsync)}");
         }
     }
 
@@ -514,10 +505,9 @@ public class FacadeService : IFacadeService
         }
         catch (Exception exception)
         {
-            _logFacadeServiceError.Invoke(
-                _logger,
-                $"Exception occurred while submitting packaging data resubmission fee payment {nameof(FacadeService)}.{nameof(SubmitPackagingDataResubmissionFeePaymentEventAsync)}",
-                exception);
+            _logger.LogFacadeServiceError(
+                exception,
+                $"Exception occurred while submitting packaging data resubmission fee payment {nameof(FacadeService)}.{nameof(SubmitPackagingDataResubmissionFeePaymentEventAsync)}");
         }
     }
 
@@ -542,10 +532,9 @@ public class FacadeService : IFacadeService
         }
         catch (Exception exception)
         {
-            _logFacadeServiceError.Invoke(
-                _logger,
-                $"Exception occurred while retrieving pom resubmission pay cal parameters {nameof(FacadeService)}.{nameof(GetPomPayCalParameters)}",
-                exception);
+            _logger.LogFacadeServiceError(
+                exception,
+                $"Exception occurred while retrieving pom resubmission pay cal parameters {nameof(FacadeService)}.{nameof(GetPomPayCalParameters)}");
 
             return default;
         }
