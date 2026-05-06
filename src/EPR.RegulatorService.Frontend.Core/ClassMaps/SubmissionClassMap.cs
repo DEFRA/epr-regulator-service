@@ -5,7 +5,7 @@ using CsvHelper.Configuration;
 using EPR.RegulatorService.Frontend.Core.Models;
 
 [ExcludeFromCodeCoverage]
-public class SubmissionClassMap : ClassMap<SubmissionCsvModel>
+public sealed class SubmissionClassMap : ClassMap<SubmissionCsvModel>
 {
     public SubmissionClassMap()
     {
