@@ -39,7 +39,6 @@ public class AccreditationStatusControllerTests
 
 
     private Mock<IValidator<IdAndYearRequest>> _validatorMock;
-    private Mock<IOptions<ReprocessorExporterConfig>> _configOptionsMock;
     private AccreditationStatusSession _accreditationStatusSession;
     private JourneySession _journeySession;
 
@@ -87,7 +86,6 @@ public class AccreditationStatusControllerTests
 
         _validatorMock = new Mock<IValidator<IdAndYearRequest>>();
         _mockReprocessorExporterService = new Mock<IReprocessorExporterService>();
-        _configOptionsMock = new Mock<IOptions<ReprocessorExporterConfig>>();
 
         var reprocessorConfigMock = new Mock<IOptions<ReprocessorExporterConfig>>();
         reprocessorConfigMock.Setup(c => c.Value).Returns(new ReprocessorExporterConfig { DeterminationWeeks = DeterminationWeeks });
@@ -306,7 +304,7 @@ public class AccreditationStatusControllerTests
         var viewModel = new PaymentMethodViewModel
         {
             ApplicationType = ApplicationOrganisationType.Reprocessor,
-            PaymentMethod = PaymentMethodType.AllTypes.First()
+            PaymentMethod = PaymentMethodType.AllTypes[0]
         };
 
         _mapperMock.Setup(m =>
@@ -327,7 +325,7 @@ public class AccreditationStatusControllerTests
         var viewModel = new PaymentMethodViewModel
         {
             ApplicationType = ApplicationOrganisationType.Reprocessor,
-            PaymentMethod = PaymentMethodType.AllTypes.First()
+            PaymentMethod = PaymentMethodType.AllTypes[0]
         };
 
         _mapperMock.Setup(m =>
@@ -419,7 +417,7 @@ public class AccreditationStatusControllerTests
         await _controller.PaymentDate(viewModel);
 
         // Assert
-        _accreditationStatusSession.PaymentDate.Should().Be(new DateTime(viewModel.Year.Value, viewModel.Month.Value, viewModel.Day.Value));
+        _accreditationStatusSession.PaymentDate.Should().Be(new DateTime(viewModel.Year.Value, viewModel.Month.Value, viewModel.Day.Value, 0, 0, 0, DateTimeKind.Utc));
     }
 
     [TestMethod]

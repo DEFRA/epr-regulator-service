@@ -92,7 +92,7 @@ public class ManageRegistrationSubmissionDetailsPageModel : PageModelBase, IPage
         // The tag helper renders amounts as <dd class="govuk-summary-list__actions"> with £X,XXX.XX format
         var amounts = paymentCard.QuerySelectorAll("dd.govuk-summary-list__actions")
             .Select(dd => dd.TextContent.Trim())
-            .Where(text => text.StartsWith("£") || text.Contains("£"))
+            .Where(text => text.StartsWith('£') || text.Contains("£"))
             .ToList();
 
         return new PaymentDetailsUnderTest
