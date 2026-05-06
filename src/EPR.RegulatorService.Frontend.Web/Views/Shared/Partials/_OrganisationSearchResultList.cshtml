@@ -1,9 +1,7 @@
 @using EPR.RegulatorService.Frontend.Web.Configs
 @inject Microsoft.FeatureManagement.IFeatureManager FeatureManager;
 @model EPR.RegulatorService.Frontend.Web.ViewModels.RegulatorSearchPage.OrganisationSearchResultsListViewModel
-@{
-    var organisationRecordIndex = "";
-}
+
 <h1 id="tableTitle" class="govuk-heading-xl govuk-!-margin-bottom-8">@Localizer["Table.Title"]</h1>
 
 <table id="organisationTable" class="govuk-table responsive-table" aria-label="Organisation Application Listing">
@@ -20,8 +18,6 @@
         @foreach (var organisation in Model.PagedOrganisationSearchResults
           .Select((value, index) => new { Index = index, Value = value }))
         {
-            organisationRecordIndex = organisation.Index == 0 ? "" : organisation.Index.ToString();
-
             <tr id="row@(organisation.Index)" role="row" class="govuk-table__row">
                 <td id="companyCell@(organisation.Index)" role="gridcell" class="govuk-table__cell vertical-middle-align">
                     <span class="responsive-table__heading" aria-hidden="true">@Localizer["Table.Header.Company"]</span>

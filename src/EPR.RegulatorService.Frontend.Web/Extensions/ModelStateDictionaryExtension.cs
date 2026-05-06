@@ -21,9 +21,7 @@ public static class ModelStateDictionaryExtension
             }
         }
 
-        var filterdErrors = new List<ErrorViewModel>();
-
-        filterdErrors = keys is not null ? errors.Where(x => keys.Contains(x.Key)).ToList() : errors;
+        var filterdErrors = keys is not null ? errors.Where(x => keys.Contains(x.Key)).ToList() : errors;
 
         var errorsDictionary = new List<(string Key, List<ErrorViewModel> Errors)>();
 
