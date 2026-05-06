@@ -59,7 +59,7 @@ public class CookieService : ICookieService
                     SameSite = SameSiteMode.Lax,
                 });
         }
-        catch (Exception ex)
+        catch
         {
             _logger.SettingCookieAcceptanceException(accept);
             throw;
@@ -77,7 +77,7 @@ public class CookieService : ICookieService
             var cookie = cookies[cookieName];
             cookieAcceptedResult = bool.TryParse(cookie, out bool cookieAccepted) && cookieAccepted;
         }
-        catch (Exception ex)
+        catch
         {
             _logger.ReadCookieAcceptanceException();
             throw;

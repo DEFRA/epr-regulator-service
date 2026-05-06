@@ -176,12 +176,6 @@ public class AccreditationStatusControllerTests
     [TestMethod]
     public async Task PaymentCheck_WhenCalledWithViewModelAndSessionIsNull_ShouldReturnViewResult()
     {
-        // Arrange
-        var expectedViewModel = new PaymentCheckViewModel
-        {
-            ApplicationType = ApplicationOrganisationType.Reprocessor
-        };
-
         _journeySession.ReprocessorExporterSession.AccreditationStatusSession = null;
 
         // Act/Assert
@@ -683,7 +677,7 @@ public class AccreditationStatusControllerTests
         journeySession.RegulatorSession.Journey.Add(PagePath.AccreditationBusinessPlan);
 
         var queryNotes = new List<QueryNote>();
-        
+
 
         var queryNote1 = new QueryNote
         {
@@ -710,32 +704,8 @@ public class AccreditationStatusControllerTests
         queryNotes.Add(queryNote2);
         queryNotes.Add(queryNote3);
 
-        var viewModel = new AccreditationBusinessPlanViewModel
-        {
-            AccreditationId = _accreditationId,
-            BusinessCollectionsNotes = string.Empty,
-            BusinessCollectionsPercentage = 0.00M,
-            CommunicationsNotes = string.Empty,
-            CommunicationsPercentage = 0.20M,
-            InfrastructureNotes = "Infrastructure notes testing",
-            InfrastructurePercentage = 0.30M,
-            MaterialName = "Plastic",
-            NewMarketsNotes = "New Market Testing notes",
-            NewMarketsPercentage = 0.40M,
-            NewUsersRecycledPackagingWasteNotes = string.Empty,
-            NewUsersRecycledPackagingWastePercentage = 0.25M,
-            NotCoveredOtherCategoriesNotes = string.Empty,
-            NotCoveredOtherCategoriesPercentage = 5.00M,
-            OrganisationName = "",
-            RecycledWasteNotes = "No recycled waste notes at this time",
-            RecycledWastePercentage = 10.00M,
-            SiteAddress = "To Be Confirmed",
-            TaskStatus = "Reviewed",
-            QueryNotes = queryNotes           
-        };
-
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
-       
+
         _mockReprocessorExporterService.Setup(x => x.GetAccreditionBusinessPlanByIdAsync(_accreditationId))
             .Returns(It.IsAny<Task<AccreditationBusinessPlanDto>>);
 
@@ -743,7 +713,7 @@ public class AccreditationStatusControllerTests
         var result = await _controller.CompleteAccreditationBusinessPlan(_accreditationId);
 
         // Assert
-        Assert.IsNotNull(result);       
+        Assert.IsNotNull(result);
     }
 
     [TestMethod]
@@ -779,7 +749,7 @@ public class AccreditationStatusControllerTests
 
         queryNotes.Add(queryNote1);
         queryNotes.Add(queryNote2);
-        queryNotes.Add(queryNote3);       
+        queryNotes.Add(queryNote3);
 
         _sessionManagerMock.Setup(sm => sm.GetSessionAsync(It.IsAny<ISession>())).ReturnsAsync(journeySession);
         var dto = new AccreditationBusinessPlanDto {
@@ -814,7 +784,7 @@ public class AccreditationStatusControllerTests
         var redirectResult = result as RedirectToActionResult;
 
         // Assert
-        redirectResult.Should().BeOfType<RedirectToActionResult>();       
+        redirectResult.Should().BeOfType<RedirectToActionResult>();
     }
 
 
