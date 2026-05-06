@@ -753,7 +753,7 @@ public partial class RegistrationSubmissionsController(
         int currentPageNumber = session.CurrentPageNumber ?? 1;
         existingSessionFilters.PageNumber = currentPageNumber;
         existingSessionFilters.SubmissionYears = _submissionFiltersConfig.ParseSubmissionYears()
-            .Select(y => y.ToString())
+            .Select(y => y.ToString(CultureInfo.InvariantCulture))
             .ToArray();
         if (session.LatestFilterChoices != null)
         {
