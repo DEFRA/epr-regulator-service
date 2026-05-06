@@ -1,32 +1,31 @@
-namespace MockRegulatorFacade;
-
 using System.Diagnostics.CodeAnalysis;
-
-using FacadeApi;
-
+using MockRegulatorFacade.FacadeApi;
 using WireMock.Logging;
 using WireMock.Net.StandAlone;
 using WireMock.Server;
 using WireMock.Settings;
 
-[ExcludeFromCodeCoverage]
-public static class MockRegulatorFacadeServer
+namespace MockRegulatorFacade
 {
-    public static WireMockServer Start(int? port = null, bool useSsl = false)
+    [ExcludeFromCodeCoverage]
+    public static class MockRegulatorFacadeServer
     {
-        var settings = new WireMockServerSettings
+        public static WireMockServer Start(int? port = null, bool useSsl = false)
         {
-            UseSSL = useSsl,
-            Logger = new WireMockConsoleLogger()
-        };
-        if (port.HasValue)
-        {
-            settings.Port = port.Value;
+            var settings = new WireMockServerSettings
+            {
+                UseSSL = useSsl,
+                Logger = new WireMockConsoleLogger()
+            };
+            if (port.HasValue)
+            {
+                settings.Port = port.Value;
+            }
+
+            var server = StandAloneApp.Start(settings)
+                .WithFacadeApi();
+
+            return server;
         }
-
-        var server = StandAloneApp.Start(settings)
-            .WithFacadeApi();
-
-        return server;
     }
 }

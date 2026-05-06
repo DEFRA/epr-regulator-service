@@ -1,32 +1,33 @@
-namespace MockPaymentFacade;
-
 using System.Diagnostics.CodeAnalysis;
 
-using PaymentApi;
+using static MockPaymentFacade.PaymentApi.PaymentApi;
 
 using WireMock.Logging;
 using WireMock.Net.StandAlone;
 using WireMock.Server;
 using WireMock.Settings;
 
-[ExcludeFromCodeCoverage]
-public static class MockPaymentFacadeServer
+namespace MockPaymentFacade
 {
-    public static WireMockServer Start(int? port = null, bool useSsl = false)
+    [ExcludeFromCodeCoverage]
+    public static class MockPaymentFacadeServer
     {
-        var settings = new WireMockServerSettings
+        public static WireMockServer Start(int? port = null, bool useSsl = false)
         {
-            UseSSL = useSsl,
-            Logger = new WireMockConsoleLogger()
-        };
-        if (port.HasValue)
-        {
-            settings.Port = port.Value;
+            var settings = new WireMockServerSettings
+            {
+                UseSSL = useSsl,
+                Logger = new WireMockConsoleLogger()
+            };
+            if (port.HasValue)
+            {
+                settings.Port = port.Value;
+            }
+
+            var server = StandAloneApp.Start(settings)
+                .WithPaymentApi();
+
+            return server;
         }
-
-        var server = StandAloneApp.Start(settings)
-            .WithPaymentApi();
-
-        return server;
     }
 }
