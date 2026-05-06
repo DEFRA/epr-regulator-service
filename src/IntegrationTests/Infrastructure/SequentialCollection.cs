@@ -6,7 +6,7 @@ namespace IntegrationTests.Infrastructure;
 /// integration tests to run sequentially.
 ///  </summary>
 [CollectionDefinition(Sequential, DisableParallelization = true)]
-public class SequentialCollection
+public static class SequentialCollection
 {
     public const string Sequential = nameof(Sequential);
 }
