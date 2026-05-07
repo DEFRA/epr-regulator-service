@@ -503,10 +503,10 @@ public class FacadeService : IFacadeService
             var response = await _httpClient.PostAsJsonAsync(path, request);
             response.EnsureSuccessStatusCode();
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
             _logger.LogFacadeServiceError(
-                exception,
+                ex,
                 $"Exception occurred while submitting packaging data resubmission fee payment {nameof(FacadeService)}.{nameof(SubmitPackagingDataResubmissionFeePaymentEventAsync)}");
         }
     }
@@ -530,10 +530,10 @@ public class FacadeService : IFacadeService
             var payCalDetailsResponse = JsonSerializer.Deserialize<PomPayCalParametersResponse>(content);
             return payCalDetailsResponse;
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
             _logger.LogFacadeServiceError(
-                exception,
+                ex,
                 $"Exception occurred while retrieving pom resubmission pay cal parameters {nameof(FacadeService)}.{nameof(GetPomPayCalParameters)}");
 
             return default;
