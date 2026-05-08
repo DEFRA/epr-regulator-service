@@ -29,7 +29,7 @@
   </data>
 
   <data name="Content.WhenAccountIsCreated" xml:space="preserve">
-      <value>WOnce {0} has made an application to change their account permissions to submit data, you will need to accept or reject the request.</value>
+      <value>Ar ôl i {0} wneud cais am newid caniatâd eu cyfrif er mwyn cyflwyno data, bydd angen ichi dderbyn neu wrthod y cais.</value>
   </data>
   <data name="Content.DoesNotApply" xml:space="preserve">
       <value>Os na fydd {0} yn gwneud cais am fod yn ddefnyddiwr a gymeradwywyd, bydd angen ichi gysylltu â nhw.</value>
