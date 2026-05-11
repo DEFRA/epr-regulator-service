@@ -121,6 +121,6 @@
     <value>Cais yn yr arfaeth</value>
   </data>
   <data name="Enrolment.Status.Awaiting" xml:space="preserve">
-    <value>WAPPLICATION AWAITING APPROVAL</value>
+    <value>Mae'r cais yn aros i gael ei gymeradwyo</value>
   </data>
 </root>

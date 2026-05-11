@@ -136,6 +136,6 @@
     <value>Cyfnod y cyflwyniad</value>
   </data>
   <data name="Body.NoResultsFound" xml:space="preserve">
-    <value>WNo results found</value>
+    <value>Dim cofnodion wedi'u canfod</value>
   </data>
 </root>
