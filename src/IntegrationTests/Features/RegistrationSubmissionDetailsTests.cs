@@ -10,6 +10,7 @@ using Infrastructure;
 using PageModels;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.Server;
 
 [Collection(SequentialCollection.Sequential)]
 public class RegistrationSubmissionDetailsTests : IntegrationTestBase
@@ -82,6 +83,63 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         }
     }
 
+    [Fact]
+    public async Task ComplianceSchemeRegistrationFeeRequest_IncludesNoOfSubsidiariesClosedLoopRecyclingFromFacade()
+    {
+        var submissionId = Guid.NewGuid();
+        const string appRef = "REG-INT-CSO-CL-001";
+
+        SetupFacadeMockRegistrationSubmissionDetails(
+            RegistrationSubmissionDetailsBuilder.Default(submissionId)
+                .WithOrganisationType("compliance")
+                .WithRegistrationJourneyType("CsoLargeProducer")
+                .WithApplicationReferenceNumber(appRef)
+                .WithCsoMemberClosedLoopRecycling(8));
+
+        SetupPaymentFacadeMockComplianceSchemeRegistrationFee(
+            CompliancePaymentResponseBuilder.Default()
+                .WithComplianceSchemeRegistrationFee(100000)
+                .WithTotalFee(100000));
+
+        await GetAsPageModel<ManageRegistrationSubmissionDetailsPageModel>(
+            $"/regulators/registration-submission-details/{submissionId}");
+
+        var requestBody = FindLastRegistrationFeePostBody(FacadeServer, "compliance-scheme/registration-fee", appRef);
+        requestBody.Should().NotBeNull();
+
+        using var doc = JsonDocument.Parse(requestBody!);
+        var members = GetJsonPropertyCaseInsensitive(doc.RootElement, "complianceSchemeMembers");
+        members.ValueKind.Should().Be(JsonValueKind.Array);
+        var firstMember = members.EnumerateArray().First();
+        GetJsonPropertyCaseInsensitive(firstMember, "noOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(8);
+        GetJsonPropertyCaseInsensitive(firstMember, "isClosedLoopRecycling").GetBoolean().Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ProducerRegistrationFeeRequest_IncludesNoOfSubsidiariesClosedLoopRecyclingFromFacade()
+    {
+        var submissionId = Guid.NewGuid();
+        const string appRef = "REG-INT-DIRECT-CL-001";
+
+        SetupFacadeMockRegistrationSubmissionDetails(
+            RegistrationSubmissionDetailsBuilder.Default(submissionId)
+                .AsDirectLargeProducer()
+                .WithApplicationReferenceNumber(appRef)
+                .WithProducerClosedLoopRecycling(5));
+
+        SetupPaymentFacadeMockProducerRegistrationFee();
+
+        await GetAsPageModel<ManageRegistrationSubmissionDetailsPageModel>(
+            $"/regulators/registration-submission-details/{submissionId}");
+
+        var requestBody = FindLastRegistrationFeePostBody(FacadeServer, "producer/registration-fee", appRef);
+        requestBody.Should().NotBeNull();
+
+        using var doc = JsonDocument.Parse(requestBody!);
+        GetJsonPropertyCaseInsensitive(doc.RootElement, "noOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(5);
+        GetJsonPropertyCaseInsensitive(doc.RootElement, "isClosedLoopRecycling").GetBoolean().Should().BeTrue();
+    }
+
     private void SetupPaymentFacadeMockComplianceSchemeRegistrationFee(CompliancePaymentResponseBuilder builder) =>
         FacadeServer.Given(Request.Create()
                 .UsingPost()
@@ -91,6 +149,30 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                 .WithHeader("Content-Type", "application/json")
                 .WithBody(JsonSerializer.Serialize(builder.Build())));
 
+    private void SetupPaymentFacadeMockProducerRegistrationFee() =>
+        FacadeServer.Given(Request.Create()
+                .UsingPost()
+                .WithPath("/producer/registration-fee"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBody(JsonSerializer.Serialize(new
+                {
+                    producerRegistrationFee = 165800m,
+                    producerLateRegistrationFee = 0m,
+                    producerOnlineMarketPlaceFee = 0m,
+                    producerClosedLoopRecyclingFee = 0m,
+                    previousPayment = 0m,
+                    subsidiariesFee = 0m,
+                    totalFee = 165800m,
+                    outstandingPayment = 165800m,
+                    subsidiariesFeeBreakdown = new
+                    {
+                        totalSubsidiariesOMPFees = 0m,
+                        countOfOMPSubsidiaries = 0
+                    }
+                })));
+
     private void SetupFacadeMockRegistrationSubmissionDetails(RegistrationSubmissionDetailsBuilder builder) =>
         FacadeServer.Given(Request.Create()
                 .UsingGet()
@@ -99,4 +181,48 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
                 .WithBody(JsonSerializer.Serialize(builder.Build())));
+
+    private static string? FindLastRegistrationFeePostBody(WireMockServer server, string pathSubstring, string applicationReferenceSnippet)
+    {
+        var entries = server.LogEntries.ToList();
+        for (var i = entries.Count - 1; i >= 0; i--)
+        {
+            var e = entries[i];
+            if (!string.Equals(e.RequestMessage.Method, "post", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (e.RequestMessage.Path is not { } path || !path.Contains(pathSubstring, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var body = e.RequestMessage.Body;
+            if (string.IsNullOrEmpty(body))
+            {
+                body = e.RequestMessage.BodyData?.BodyAsString;
+            }
+
+            if (!string.IsNullOrEmpty(body) && body.Contains(applicationReferenceSnippet, StringComparison.Ordinal))
+            {
+                return body;
+            }
+        }
+
+        return null;
+    }
+
+    private static JsonElement GetJsonPropertyCaseInsensitive(JsonElement parent, string name)
+    {
+        foreach (var p in parent.EnumerateObject())
+        {
+            if (string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
+            {
+                return p.Value;
+            }
+        }
+
+        throw new InvalidOperationException($"Missing JSON property '{name}'.");
+    }
 }

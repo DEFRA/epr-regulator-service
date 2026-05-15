@@ -1,0 +1,22 @@
+namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmissions;
+
+[TestClass]
+public sealed class RegistrationSubmissionOrganisationDetailsTests
+{
+    [TestMethod]
+    public void ImplicitOperator_FromResponse_Maps_NumberOfSubsidiariesClosedLoopRecycling_ToProducerDetails()
+    {
+        var response = new RegistrationSubmissionOrganisationDetailsResponse
+        {
+            SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails(),
+            OrganisationSize = "large",
+            NumberOfSubsidiariesClosedLoopRecycling = 11,
+            IsClosedLoopRecycling = true
+        };
+
+        RegistrationSubmissionOrganisationDetails details = response;
+
+        Assert.AreEqual(11, details.ProducerDetails.NoOfSubsidiariesClosedLoopRecycling);
+        Assert.IsTrue(details.ProducerDetails.IsClosedLoopRecycling);
+    }
+}

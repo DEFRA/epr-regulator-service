@@ -1,3 +1,4 @@
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Services;
@@ -141,5 +142,46 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
                     exception,
                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_Passes_NoOfSubsidiariesClosedLoopRecycling_ToPaymentFacade()
+    {
+        // Arrange
+        ProducerPaymentRequest? capturedRequest = null;
+        _registrationSumissionDetailsViewModel.NationCode = "GB-ENG";
+        _registrationSumissionDetailsViewModel.OrganisationType = RegistrationSubmissionOrganisationType.large;
+        _registrationSumissionDetailsViewModel.ProducerDetails.IsClosedLoopRecycling = true;
+        _registrationSumissionDetailsViewModel.ProducerDetails.NoOfSubsidiariesClosedLoopRecycling = 6;
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>()))
+            .Callback<ProducerPaymentRequest>(r => capturedRequest = r)
+            .ReturnsAsync(new ProducerPaymentResponse
+            {
+                ApplicationProcessingFee = 100.00M,
+                LateRegistrationFee = 200.00M,
+                OnlineMarketplaceFee = 300.00M,
+                ClosedLoopRegistrationFee = 2800.00M,
+                SubsidiaryFee = 400.00M,
+                TotalChargeableItems = 1000.00M,
+                PreviousPaymentsReceived = 500.00M,
+                TotalOutstanding = 500.00M,
+                SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+                {
+                    OnlineMarketPlaceSubsidiariesCount = 1,
+                    SubsidiaryOnlineMarketPlaceFee = 200.00M
+                }
+            });
+
+        // Act
+        await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.NoOfSubsidiariesClosedLoopRecycling.Should().Be(6);
+        capturedRequest.IsClosedLoopRecycling.Should().BeTrue();
     }
 }
