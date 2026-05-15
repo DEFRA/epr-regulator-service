@@ -52,6 +52,6 @@ namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.Faca
         public DateTime? RegulatorDecisionDate { get; set; }
         public string ResubmissionFileId { get; internal set; }
 
-        public bool IsClosedLoopRecycler { get; set; }
+        public bool IsClosedLoopRecycling { get; set; }
     }
 }

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 
+using Core.Enums;
+
 public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions> options,
     IPaymentFacadeService paymentFacadeService, ILogger<ProducerPaymentDetailsViewComponent> logger) : ViewComponent
 {
@@ -29,6 +31,8 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
                 IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
+                IsClosedLoopRecycling = viewModel.ProducerDetails.IsClosedLoopRecycling && viewModel.OrganisationType == RegistrationSubmissionOrganisationType.large,
+                NoOfSubsidiariesClosedLoopRecycling = viewModel.ProducerDetails.NoOfSubsidiariesClosedLoopRecycling,
                 IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
                 ProducerType = viewModel.ProducerDetails.ProducerType,
                 Regulator = viewModel.NationCode,

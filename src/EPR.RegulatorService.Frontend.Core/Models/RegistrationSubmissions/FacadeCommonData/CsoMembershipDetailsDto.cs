@@ -8,7 +8,11 @@ public class CsoMembershipDetailsDto
     public string MemberType { get; set; }
     public bool IsOnlineMarketPlace { get; set; }
     public bool IsLateFeeApplicable { get; set; }
-    public bool? IsClosedLoopRecycler { get; set; }
+    public bool IsClosedLoopRecycling { get; set; }
+
+    [JsonPropertyName("NumberOfSubsidiariesClosedLoopRecycling")]
+    public int NoOfSubsidiariesClosedLoopRecycling { get; set; }
+
     public int NumberOfSubsidiaries { get; set; }
 
     [JsonPropertyName("NumberOfSubsidiariesOnlineMarketPlace")]
@@ -23,7 +27,8 @@ public class CsoMembershipDetailsDto
         MemberType = dto.MemberType,
         IsOnlineMarketplace = dto.IsOnlineMarketPlace,
         IsLateFeeApplicable = dto.IsLateFeeApplicable,
-        IsClosedLoopRecycler = dto.IsClosedLoopRecycler ?? false,
+        IsClosedLoopRecycling = dto.IsClosedLoopRecycling,
+        NoOfSubsidiariesClosedLoopRecycling = dto.NoOfSubsidiariesClosedLoopRecycling,
         NoOfSubsidiariesOnlineMarketplace = dto.NoOfSubsidiariesOnlineMarketplace,
         NumberOfSubsidiaries = dto.NumberOfSubsidiaries
     };
