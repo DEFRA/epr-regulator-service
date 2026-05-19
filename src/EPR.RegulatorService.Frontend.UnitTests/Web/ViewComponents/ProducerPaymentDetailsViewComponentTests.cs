@@ -151,6 +151,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         ProducerPaymentRequest? capturedRequest = null;
         _registrationSumissionDetailsViewModel.NationCode = "GB-ENG";
         _registrationSumissionDetailsViewModel.OrganisationType = RegistrationSubmissionOrganisationType.large;
+        _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.DirectLargeProducer;
         _registrationSumissionDetailsViewModel.ProducerDetails.IsClosedLoopRecycling = true;
         _registrationSumissionDetailsViewModel.ProducerDetails.NoOfSubsidiariesClosedLoopRecycling = 6;
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
