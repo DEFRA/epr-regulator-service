@@ -31,7 +31,7 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
                 IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
-                IsClosedLoopRecycling = viewModel.ProducerDetails.IsClosedLoopRecycling && viewModel.OrganisationType == RegistrationSubmissionOrganisationType.large,
+                IsClosedLoopRecycling = viewModel.ProducerDetails.IsClosedLoopRecycling && viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer,
                 NoOfSubsidiariesClosedLoopRecycling = viewModel.ProducerDetails.NoOfSubsidiariesClosedLoopRecycling,
                 IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
                 ProducerType = viewModel.ProducerDetails.ProducerType,

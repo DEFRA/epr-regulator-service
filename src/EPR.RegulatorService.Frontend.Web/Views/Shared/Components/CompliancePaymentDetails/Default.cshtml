@@ -47,6 +47,9 @@
                     {
                         <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                             <dd class="govuk-summary-list__value" style="width: 285px;">
+                                <strong>@Localizer["ProducerPaymentDetails.SubsidiaryFee"]</strong>
+                            </dd>
+                            <dd class="govuk-summary-list__value" style="width: 285px;">
                                 <strong>@Localizer["CompliancePaymentDetails.SchemeMemberDescription"]</strong>
                             </dd>
                             <dd class="govuk-summary-list__value" style="width: 410px;">
@@ -100,13 +103,6 @@
                         </div>
                     }
                 }
-                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
-                    <dd class="govuk-summary-list__value" style="width: 285px;">
-                        <strong>@Localizer["CompliancePaymentDetails.SubTotalDescription"]</strong>
-                    </dd>
-                    <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
-                    <payment-amount amount="@Model.SubTotal" property-name="SubTotal"></payment-amount>
-                </div>
 
                 @if (Model.ClosedLoopRegistrationCount > 0)
                 {
@@ -122,6 +118,14 @@
                         <payment-amount amount="@Model.ClosedLoopRegistrationFee"></payment-amount>
                     </div>
                 }
+
+                <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                    <dd class="govuk-summary-list__value" style="width: 285px;">
+                        <strong>@Localizer["CompliancePaymentDetails.SubTotalDescription"]</strong>
+                    </dd>
+                    <dd class="govuk-summary-list__value" style="width: 410px;"></dd>
+                    <payment-amount amount="@Model.SubTotal" property-name="SubTotal"></payment-amount>
+                </div>
 
                 @if (Model.PreviousPaymentReceived > 0)
                 {
