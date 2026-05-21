@@ -132,6 +132,9 @@
   <data name="CompliancePaymentDetails.Items" xml:space="preserve">
     <value>Items</value>
   </data>
+  <data name="CompliancePaymentDetails.SubsidiaryFee" xml:space="preserve">
+    <value>Subsidiary fee</value>
+  </data>
   <data name="CompliancePaymentDetails.LargeProducerDescription1" xml:space="preserve">
     <value>{0} Large producer</value>
   </data>

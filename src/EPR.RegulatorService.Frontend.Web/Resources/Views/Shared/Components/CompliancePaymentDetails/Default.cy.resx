@@ -141,6 +141,9 @@
   <data name="CompliancePaymentDetails.Items" xml:space="preserve">
     <value>Eitemau</value>
   </data>
+  <data name="CompliancePaymentDetails.SubsidiaryFee" xml:space="preserve">
+    <value>Ffi atodol</value>
+  </data>
   <data name="CompliancePaymentDetails.LargeProducerDescription1" xml:space="preserve">
     <value>{0} Cynhyrchydd mawr</value>
   </data>
