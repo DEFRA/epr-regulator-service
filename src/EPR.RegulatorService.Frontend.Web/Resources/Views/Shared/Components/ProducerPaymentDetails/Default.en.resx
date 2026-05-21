@@ -148,10 +148,10 @@
     <value>Subsidiary fee</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeDescription1" xml:space="preserve">
-    <value>{0} subsidiary</value>
+    <value>{0} subsidiary company</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeDescription2" xml:space="preserve">
-    <value>{0} subsidiaries</value>
+    <value>{0} subsidiary companies</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription1" xml:space="preserve">
     <value>{0} is an online marketplace</value>

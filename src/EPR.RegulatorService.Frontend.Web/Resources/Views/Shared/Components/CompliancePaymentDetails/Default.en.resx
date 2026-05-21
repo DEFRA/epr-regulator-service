@@ -132,9 +132,6 @@
   <data name="CompliancePaymentDetails.Items" xml:space="preserve">
     <value>Items</value>
   </data>
-  <data name="CompliancePaymentDetails.SubsidiaryFee" xml:space="preserve">
-    <value>Subsidiary fee</value>
-  </data>
   <data name="CompliancePaymentDetails.LargeProducerDescription1" xml:space="preserve">
     <value>{0} Large producer</value>
   </data>
@@ -175,7 +172,7 @@
     <value>{0} subsidiary company</value>
   </data>
   <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription2" xml:space="preserve">
-    <value>{0} subsidiaries companies</value>
+    <value>{0} subsidiary companies</value>
   </data>
   <data name="CompliancePaymentDetails.SubTotalDescription" xml:space="preserve">
     <value>Sub-total</value>
