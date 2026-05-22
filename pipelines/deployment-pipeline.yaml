@@ -96,7 +96,7 @@ extends:
       imageTag: $(DEVRWDWEBWAx411)
     ${{ else }}:
       imageTag: ${{ parameters.imageTag }}
-    azureSubscription: $(azureSubscription)
+    azureSubscription: AZD-RWD-DEV-APP
     acrName: $(acr.azureContainerRegistryName)
     registryName: $(acr.repositoryName)
     serviceName: $(serviceName)
