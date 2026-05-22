@@ -63,6 +63,17 @@
                         <payment-amount amount="@Model.OnlineMarketplaceFee"></payment-amount>
                     </div>
                 }
+                @if (Model.ProducerClosedLoopRecyclingFee > 0)
+                {
+                    <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                        <dd class="govuk-summary-list__value" style="width: 285px;">
+                        </dd>
+                        <dd class="govuk-summary-list__value" style="width: 410px;">
+                            @Localizer["ProducerPaymentDetails.ProducerClosedLoopRecyclingFeeDescription"]
+                        </dd>
+                        <payment-amount amount="@Model.ProducerClosedLoopRecyclingFee"></payment-amount>
+                    </div>
+                }
                 @if (Model.NumberOfSubsidiaries > 0)
                 {
                     <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
@@ -87,6 +98,19 @@
                                          , Model.NumberOfSubsidiariesBeingOnlineMarketplace]
                             </dd>
                             <payment-amount amount="@Model.SubsidiaryOnlineMarketPlaceFee"></payment-amount>
+                        </div>
+                    }
+                    @if (Model.NumberOfSubsidiariesWithClosedLoopRecycling > 0)
+                    {
+                        <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                            <dd class="govuk-summary-list__value" style="width: 285px;">
+                            </dd>
+                            <dd class="govuk-summary-list__value" style="width: 410px;">
+                                @Localizer[Model.NumberOfSubsidiariesWithClosedLoopRecycling == 1
+                                         ? "ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingDescription1" : "ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingDescription2"
+                                         , Model.NumberOfSubsidiariesWithClosedLoopRecycling]
+                            </dd>
+                            <payment-amount amount="@Model.SubsidiaryClosedLoopRecyclingFee"></payment-amount>
                         </div>
                     }
                 }

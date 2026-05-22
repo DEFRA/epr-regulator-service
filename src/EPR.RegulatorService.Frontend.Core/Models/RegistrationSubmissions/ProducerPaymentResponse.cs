@@ -14,7 +14,7 @@ public class ProducerPaymentResponse
     public decimal OnlineMarketplaceFee { get; set; }
 
     [JsonPropertyName("producerClosedLoopRecyclingFee")]
-    public decimal ClosedLoopRecyclingFee { get; set; }
+    public decimal ProducerClosedLoopRecyclingFee { get; set; }
 
     [JsonPropertyName("previousPayment")]
     public decimal PreviousPaymentsReceived { get; set; }

@@ -16,6 +16,10 @@ public class ProducerPaymentRequest
 
     public bool IsProducerOnlineMarketplace { get; set; }
 
+    public bool IsClosedLoopRecycling { get; set; }
+
+    public int NoOfSubsidiariesClosedLoopRecycling { get; set; }
+
     public required string ProducerType { get; set; }
 
     public required string Regulator { get; set; }

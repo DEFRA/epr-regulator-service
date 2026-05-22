@@ -46,19 +46,26 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 return View(default(ProducerPaymentDetailsViewModel));
             }
 
+            var subsidiariesFeeBreakdown = producerPaymentResponse.SubsidiariesFeeBreakdown ?? new SubsidiariesFeeBreakdownResponse();
+
             var producerPaymentDetailsViewModel = new ProducerPaymentDetailsViewModel
             {
                 ApplicationProcessingFee = ConvertToPoundsFromPence(producerPaymentResponse.ApplicationProcessingFee),
                 LateRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.LateRegistrationFee),
                 OnlineMarketplaceFee = ConvertToPoundsFromPence(producerPaymentResponse.OnlineMarketplaceFee),
+                ProducerClosedLoopRecyclingFee = ConvertToPoundsFromPence(producerPaymentResponse.ProducerClosedLoopRecyclingFee),
                 ClosedLoopRecyclingFee = ConvertToPoundsFromPence(producerPaymentResponse.ClosedLoopRecyclingFee),
                 HasClosedLoopRecyclingFees = producerPaymentResponse.ClosedLoopRecyclingFee > 0,
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
-                SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
-                SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
+                SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - subsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
+                SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(subsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
+                SubsidiaryClosedLoopRecyclingFee = ConvertToPoundsFromPence(subsidiariesFeeBreakdown.TotalSubsidiariesClosedLoopRecyclingFees),
                 SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
                 TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
                 ProducerSize = $"{char.ToUpperInvariant(viewModel.ProducerDetails.ProducerType[0])}{viewModel.ProducerDetails.ProducerType[1..]}",
+                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
+                NumberOfSubsidiariesBeingOnlineMarketplace = subsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount,
+                NumberOfSubsidiariesWithClosedLoopRecycling = subsidiariesFeeBreakdown.CountOfClosedLoopRecyclingSubsidiaries,
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NumberOfSubsidiaries,
                 NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount,
                 ResubmissionStatus = viewModel.ResubmissionStatus,

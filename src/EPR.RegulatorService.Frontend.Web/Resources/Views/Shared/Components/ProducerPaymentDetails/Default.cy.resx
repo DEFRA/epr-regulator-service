@@ -171,6 +171,15 @@
   <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlacePluralDescription" xml:space="preserve">
     <value>Mae {0} yn farchnadoedd ar-lein</value>
   </data>
+  <data name="ProducerPaymentDetails.ProducerClosedLoopRecyclingFeeDescription" xml:space="preserve">
+    <value>Ffi ailgylchu cylch caeedig</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingDescription1" xml:space="preserve">
+    <value>{0} is-gwmni — gwastraff pecynnu cylch caeedig is-gwmni</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingDescription2" xml:space="preserve">
+    <value>{0} is-gwmnïau — gwastraff pecynnu cylch caeedig is-gwmnïau</value>
+  </data>
   <data name="ProducerPaymentDetails.Title" xml:space="preserve">
     <value>Manylion y taliad</value>
   </data>

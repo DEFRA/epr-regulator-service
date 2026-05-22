@@ -138,6 +138,15 @@
   <data name="ProducerPaymentDetails.OnlineMarketplaceFeeDescription" xml:space="preserve">
     <value>Online marketplace fee</value>
   </data>
+  <data name="ProducerPaymentDetails.ProducerClosedLoopRecyclingFeeDescription" xml:space="preserve">
+    <value>Closed loop recycling fee</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingDescription1" xml:space="preserve">
+    <value>{0} subsidiary — Subsidiary closed loop packaging waste</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingDescription2" xml:space="preserve">
+    <value>{0} subsidiaries — Subsidiaries closed loop packaging waste</value>
+  </data>
   <data name="ProducerPaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
     <value>Previous payments</value>
   </data>

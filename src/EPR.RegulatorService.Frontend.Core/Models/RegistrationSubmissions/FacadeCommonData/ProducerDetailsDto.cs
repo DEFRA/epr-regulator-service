@@ -15,4 +15,8 @@ public class ProducerDetailsDto
     public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
 
     public bool IsProducerOnlineMarketplace { get; set; }
+
+    public bool IsClosedLoopRecycling { get; set; }
+
+    public int NoOfSubsidiariesClosedLoopRecycling { get; set; }
 }
