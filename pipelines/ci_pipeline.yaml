@@ -55,7 +55,7 @@ extends:
     sonarQubeProjectName: ${{ variables.sonarQubeProjectName }}
     runTests: ${{ variables.runTests }}
     testPattern: '**/*Tests.csproj'
-    azureSubscription: $(azureSubscription)
+    azureSubscription: AZD-RWD-DEV-APP
     acrAzureContainerRegistryName: $(acr.azureContainerRegistryName)
     acrRepositoryName: $(acr.repositoryName)
     branchName: ${{ replace(replace(variables['Build.SourceBranch'], 'refs/heads/', ''), '/', '_') }}
