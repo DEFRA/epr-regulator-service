@@ -1,0 +1,17 @@
+{
+  "producerRegistrationFee": 165800,
+  "producerOnlineMarketPlaceFee": 0,
+  "producerClosedLoopRecyclingFee": 33200,
+  "producerLateRegistrationFee": 0,
+  "subsidiariesFee": 69000,
+  "totalFee": 299400,
+  "previousPayment": 0,
+  "outstandingPayment": 299400,
+  "subsidiariesFeeBreakdown": {
+    "totalSubsidiariesOMPFees": 0,
+    "countOfOMPSubsidiaries": 0,
+    "totalSubsidiariesClosedLoopRecyclingFees": 509600,
+    "countOfClosedLoopRecyclingSubsidiaries": 2,
+    "unitClosedLoopRecyclingFees": 49800
+  }
+}

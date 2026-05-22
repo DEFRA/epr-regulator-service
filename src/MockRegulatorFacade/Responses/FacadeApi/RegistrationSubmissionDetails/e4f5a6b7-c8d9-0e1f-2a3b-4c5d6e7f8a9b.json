@@ -64,6 +64,8 @@
   "isOnlineMarketPlace": false,
   "numberOfSubsidiaries": 2,
   "numberOfOnlineSubsidiaries": 0,
+  "isClosedLoopRecycling": true,
+  "numberOfSubsidiariesClosedLoopRecycling": 2,
   "isLateSubmission": false,
   "organisationSize": "Large",
   "isComplianceScheme": false,
