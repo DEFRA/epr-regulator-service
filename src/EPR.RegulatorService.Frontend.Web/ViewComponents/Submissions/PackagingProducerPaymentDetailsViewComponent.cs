@@ -50,7 +50,8 @@ public class PackagingProducerPaymentDetailsViewComponent(
                     ReferenceNumber = viewModel.ReferenceNumber,
                     Regulator = viewModel.NationCode,
                     MemberCount = memberCount,
-                    ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate) //payment facade in utc format
+                    ResubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.SubmittedDate), //payment facade in utc format
+                    FileId = viewModel.FileId
                 });
 
             if (producerPaymentResponse is null)

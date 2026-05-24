@@ -4,6 +4,8 @@ public class CompliancePaymentRequest
 {
     public required string ApplicationReferenceNumber { get; set; }
 
+    public string? FileId { get; set; }
+
     public required string Regulator { get; set; }
 
     public DateTime SubmissionDate { get; set; }

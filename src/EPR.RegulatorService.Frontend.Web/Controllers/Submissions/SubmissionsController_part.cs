@@ -162,7 +162,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 NationCode = submission.NationCode,
                 ReferenceNumber = submission.ReferenceNumber,
                 MemberCount = submission.MemberCount,
-                ComplianceSchemeId = submission.ComplianceSchemeId
+                ComplianceSchemeId = submission.ComplianceSchemeId,
+                FileId = submission.FileId == Guid.Empty ? null : submission.FileId
             };
 
             return model;
@@ -174,7 +175,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             string offlinePaymentAmount,
             Guid userId,
             Guid submissionId,
-            int submissionHash)
+            int submissionHash,
+            Guid? fileId)
         {
             var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
             {
@@ -182,7 +184,8 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 Description = "Packaging data resubmission fee",
                 Reference = referenceNumber,
                 Regulator = nationCode,
-                UserId = userId
+                UserId = userId,
+                FileId = fileId
             });
 
             if (response == EndpointResponseStatus.Fail)
