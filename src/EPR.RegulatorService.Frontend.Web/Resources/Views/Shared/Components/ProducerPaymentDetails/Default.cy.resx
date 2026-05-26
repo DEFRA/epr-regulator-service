@@ -159,16 +159,16 @@
   <data name="ProducerPaymentDetails.SubsidiaryFee" xml:space="preserve">
     <value>Ffi atodol</value>
   </data>
-  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription1" xml:space="preserve">
+  <data name="ProducerPaymentDetails.SubsidiaryFeeSingularDescription" xml:space="preserve">
     <value>{0} is-gwmni</value>
   </data>
-  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription2" xml:space="preserve">
+  <data name="ProducerPaymentDetails.SubsidiaryFeePluralDescription" xml:space="preserve">
     <value>{0} is-gwmnïau</value>
   </data>
-  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription1" xml:space="preserve">
+  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceSingularDescription" xml:space="preserve">
     <value>Mae {0} yn farchnad ar-lein</value>
   </data>
-  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription2" xml:space="preserve">
+  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlacePluralDescription" xml:space="preserve">
     <value>Mae {0} yn farchnadoedd ar-lein</value>
   </data>
   <data name="ProducerPaymentDetails.Title" xml:space="preserve">
@@ -204,10 +204,10 @@
   <data name="ProducerPaymentDetails.ClosedLoopRecyclingFee" xml:space="preserve">
     <value>Gwastraff pecynnu dolen gaeedig</value>
   </data>
-  <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeeDescription1" xml:space="preserve">
+  <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeeSingularDescription" xml:space="preserve">
     <value>{0} cofrestru</value>
   </data>
-  <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeeDescription2" xml:space="preserve">
+  <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeePluralDescription" xml:space="preserve">
     <value>{0} cofrestriad</value>
   </data>
 </root>
