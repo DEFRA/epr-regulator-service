@@ -4,15 +4,15 @@ public class ProducerPaymentRequest
 {
     public required string ApplicationReferenceNumber { get; set; }
 
-    public int NumberOfSubsidiariesOnlineMarketplace { get; set; }
+    public int NoOfSubsidiariesOnlineMarketplace { get; set; }
 
     public int NumberOfSubsidiaries { get; set; }
 
     public bool IsLateFeeApplicable { get; set; }
 
-    public bool IsClosedLoopRecycling  { get; set; }
+    public bool IsClosedLoopRecycling { get; set; }
 
-    public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
+    public int NoOfSubsidiariesClosedLoopRecycling { get; set; }
 
     public bool IsProducerOnlineMarketplace { get; set; }
 

@@ -28,11 +28,11 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ReferenceNumber,
-                NumberOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NumberOfOnlineSubsidiaries,
+                NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NumberOfOnlineSubsidiaries,
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NumberOfSubsidiaries,
                 IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
-                IsClosedLoopRecycling = viewModel.ProducerDetails.IsClosedLoopRecycling && viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer,
-                NumberOfSubsidiariesClosedLoopRecycling = viewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling,
+                IsClosedLoopRecycling = viewModel.ProducerDetails.IsClosedLoopRecycler && viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer,
+                NoOfSubsidiariesClosedLoopRecycling = viewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling,
                 IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
                 ProducerType = viewModel.ProducerDetails.ProducerType,
                 Regulator = viewModel.NationCode,

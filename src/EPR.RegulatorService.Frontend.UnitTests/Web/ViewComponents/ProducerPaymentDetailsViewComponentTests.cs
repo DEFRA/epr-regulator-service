@@ -152,7 +152,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         _registrationSumissionDetailsViewModel.NationCode = "GB-ENG";
         _registrationSumissionDetailsViewModel.OrganisationType = RegistrationSubmissionOrganisationType.large;
         _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.DirectLargeProducer;
-        _registrationSumissionDetailsViewModel.ProducerDetails.IsClosedLoopRecycling = true;
+        _registrationSumissionDetailsViewModel.ProducerDetails.IsClosedLoopRecycler = true;
         _registrationSumissionDetailsViewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling = 6;
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
         {
@@ -182,7 +182,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
 
         // Assert
         capturedRequest.Should().NotBeNull();
-        capturedRequest!.NumberOfSubsidiariesClosedLoopRecycling.Should().Be(6);
+        capturedRequest!.NoOfSubsidiariesClosedLoopRecycling.Should().Be(6);
         capturedRequest.IsClosedLoopRecycling.Should().BeTrue();
     }
 }

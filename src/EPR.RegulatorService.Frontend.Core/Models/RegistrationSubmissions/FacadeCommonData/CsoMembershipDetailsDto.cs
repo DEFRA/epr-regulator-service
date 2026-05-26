@@ -1,14 +1,12 @@
 namespace EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 
-using System.Text.Json.Serialization;
-
 public class CsoMembershipDetailsDto
 {
     public string MemberId { get; set; }
     public string MemberType { get; set; }
     public bool IsOnlineMarketPlace { get; set; }
     public bool IsLateFeeApplicable { get; set; }
-    public bool IsClosedLoopRecycling { get; set; }
+    public bool? IsClosedLoopRecycler { get; set; }
 
     public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
 
@@ -25,9 +23,9 @@ public class CsoMembershipDetailsDto
         MemberType = dto.MemberType,
         IsOnlineMarketplace = dto.IsOnlineMarketPlace,
         IsLateFeeApplicable = dto.IsLateFeeApplicable,
-        IsClosedLoopRecycling = dto.IsClosedLoopRecycling,
-        NumberOfSubsidiariesClosedLoopRecycling = dto.NumberOfSubsidiariesClosedLoopRecycling,
-        NumberOfSubsidiariesOnlineMarketplace = dto.NumberOfSubsidiariesOnlineMarketPlace,
+        IsClosedLoopRecycling = dto.IsClosedLoopRecycler ?? false,
+        NoOfSubsidiariesClosedLoopRecycling = dto.NumberOfSubsidiariesClosedLoopRecycling,
+        NoOfSubsidiariesOnlineMarketplace = dto.NumberOfSubsidiariesOnlineMarketPlace,
         NumberOfSubsidiaries = dto.NumberOfSubsidiaries
     };
 }

@@ -160,7 +160,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
             {
                 MemberId = "memberid1",
                 MemberType = "large",
-                IsClosedLoopRecycling = true,
+                IsClosedLoopRecycler = true,
                 NumberOfSubsidiariesClosedLoopRecycling = 7
             }
         ];
@@ -190,7 +190,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         capturedRequest.Should().NotBeNull();
         var members = capturedRequest!.ComplianceSchemeMembers!.ToList();
         members.Should().ContainSingle();
-        members[0].NumberOfSubsidiariesClosedLoopRecycling.Should().Be(7);
+        members[0].NoOfSubsidiariesClosedLoopRecycling.Should().Be(7);
         members[0].IsClosedLoopRecycling.Should().BeTrue();
     }
 }

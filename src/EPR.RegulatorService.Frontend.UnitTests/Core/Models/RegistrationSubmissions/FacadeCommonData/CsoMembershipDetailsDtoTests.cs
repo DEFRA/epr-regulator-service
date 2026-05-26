@@ -17,7 +17,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.IsNull(dto.MemberType);
             Assert.IsFalse(dto.IsOnlineMarketPlace);
             Assert.IsFalse(dto.IsLateFeeApplicable);
-            Assert.IsFalse(dto.IsClosedLoopRecycling);
+            Assert.IsNull(dto.IsClosedLoopRecycler);
             Assert.AreEqual(0, dto.NumberOfSubsidiaries);
             Assert.AreEqual(0, dto.NumberOfSubsidiariesClosedLoopRecycling);
             Assert.AreEqual(0, dto.NumberOfSubsidiariesOnlineMarketPlace);
@@ -49,7 +49,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberType = memberType,
                 IsOnlineMarketPlace = isOnlineMarketplace,
                 IsLateFeeApplicable = isLateFeeApplicable,
-                IsClosedLoopRecycling = isClosedLoopRecycling,
+                IsClosedLoopRecycler = isClosedLoopRecycling,
                 NumberOfSubsidiaries = numberOfSubsidiaries,
                 NumberOfSubsidiariesClosedLoopRecycling = numberOfSubsidiariesClosedLoopRecycling,
                 NumberOfSubsidiariesOnlineMarketPlace = numberOfSubsidiariesOnlineMarketplace,
@@ -63,7 +63,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(memberType, dto.MemberType);
             Assert.AreEqual(isOnlineMarketplace, dto.IsOnlineMarketPlace);
             Assert.AreEqual(isLateFeeApplicable, dto.IsLateFeeApplicable);
-            Assert.AreEqual(isClosedLoopRecycling, dto.IsClosedLoopRecycling);
+            Assert.AreEqual(isClosedLoopRecycling, dto.IsClosedLoopRecycler);
             Assert.AreEqual(numberOfSubsidiaries, dto.NumberOfSubsidiaries);
             Assert.AreEqual(numberOfSubsidiariesClosedLoopRecycling, dto.NumberOfSubsidiariesClosedLoopRecycling);
             Assert.AreEqual(numberOfSubsidiariesOnlineMarketplace, dto.NumberOfSubsidiariesOnlineMarketPlace);
@@ -109,7 +109,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberType = "Large",
                 IsOnlineMarketPlace = true,
                 IsLateFeeApplicable = false,
-                IsClosedLoopRecycling = true,
+                IsClosedLoopRecycler = true,
                 NumberOfSubsidiaries = 5,
                 NumberOfSubsidiariesClosedLoopRecycling = 4,
                 NumberOfSubsidiariesOnlineMarketPlace = 2,
@@ -126,10 +126,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.MemberType, request.MemberType);
             Assert.AreEqual(dto.IsOnlineMarketPlace, request.IsOnlineMarketplace);
             Assert.AreEqual(dto.IsLateFeeApplicable, request.IsLateFeeApplicable);
-            Assert.AreEqual(dto.IsClosedLoopRecycling, request.IsClosedLoopRecycling);
+            Assert.AreEqual(dto.IsClosedLoopRecycler ?? false, request.IsClosedLoopRecycling);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
-            Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NumberOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NumberOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NoOfSubsidiariesClosedLoopRecycling);
+            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NoOfSubsidiariesOnlineMarketplace);
         }
 
         [TestMethod]
@@ -142,7 +142,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberType = string.Empty,
                 IsOnlineMarketPlace = false,
                 IsLateFeeApplicable = false,
-                IsClosedLoopRecycling = false,
+                IsClosedLoopRecycler = false,
                 NumberOfSubsidiaries = 0,
                 NumberOfSubsidiariesOnlineMarketPlace = 0,
                 RelevantYear = 0,
@@ -158,10 +158,28 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.MemberType, request.MemberType);
             Assert.AreEqual(dto.IsOnlineMarketPlace, request.IsOnlineMarketplace);
             Assert.AreEqual(dto.IsLateFeeApplicable, request.IsLateFeeApplicable);
-            Assert.AreEqual(dto.IsClosedLoopRecycling, request.IsClosedLoopRecycling);
+            Assert.AreEqual(dto.IsClosedLoopRecycler ?? false, request.IsClosedLoopRecycling);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
-            Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NumberOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NumberOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NoOfSubsidiariesClosedLoopRecycling);
+            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NoOfSubsidiariesOnlineMarketplace);
+        }
+
+        [TestMethod]
+        public void ImplicitOperator_ShouldHandleNullIsClosedLoopRecycler_OnDto()
+        {
+            // Arrange
+            var dto = new CsoMembershipDetailsDto
+            {
+                MemberId = "M12345",
+                MemberType = "Large",
+                IsClosedLoopRecycler = null,
+            };
+
+            // Act
+            var request = (ComplianceSchemeMemberRequest)dto;
+
+            // Assert
+            Assert.IsFalse(request.IsClosedLoopRecycling);
         }
 
         [TestMethod]
@@ -174,7 +192,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberType = null,
                 IsOnlineMarketPlace = false,
                 IsLateFeeApplicable = false,
-                IsClosedLoopRecycling = false,
                 NumberOfSubsidiaries = 0,
                 NumberOfSubsidiariesOnlineMarketPlace = 0,
                 RelevantYear = 0,
@@ -190,10 +207,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.IsNull(request.MemberType);
             Assert.AreEqual(dto.IsOnlineMarketPlace, request.IsOnlineMarketplace);
             Assert.AreEqual(dto.IsLateFeeApplicable, request.IsLateFeeApplicable);
-            Assert.AreEqual(dto.IsClosedLoopRecycling, request.IsClosedLoopRecycling);
+            Assert.AreEqual(dto.IsClosedLoopRecycler ?? false, request.IsClosedLoopRecycling);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
-            Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NumberOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NumberOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NoOfSubsidiariesClosedLoopRecycling);
+            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NoOfSubsidiariesOnlineMarketplace);
         }
     }
 }

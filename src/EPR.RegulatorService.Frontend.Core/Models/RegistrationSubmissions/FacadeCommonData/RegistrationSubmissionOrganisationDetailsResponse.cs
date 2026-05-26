@@ -58,6 +58,6 @@ public class RegistrationSubmissionOrganisationDetailsResponse
 
     public bool IsResubmission { get; set; }
     public string ResubmissionFileId { get; set; }
-    public bool IsClosedLoopRecycling { get; set; }
+    public bool IsClosedLoopRecycler { get; set; }
     public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
 }

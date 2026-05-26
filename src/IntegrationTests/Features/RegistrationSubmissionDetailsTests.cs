@@ -112,7 +112,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         members.ValueKind.Should().Be(JsonValueKind.Array);
         var firstMember = members.EnumerateArray().First();
         GetJsonPropertyCaseInsensitive(firstMember, "memberType").GetString().Should().Be("large");
-        GetJsonPropertyCaseInsensitive(firstMember, "numberOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(8);
+        GetJsonPropertyCaseInsensitive(firstMember, "noOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(8);
         GetJsonPropertyCaseInsensitive(firstMember, "isClosedLoopRecycling").GetBoolean().Should().BeTrue();
     }
 
@@ -138,7 +138,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
 
         using var doc = JsonDocument.Parse(requestBody!);
         GetJsonPropertyCaseInsensitive(doc.RootElement, "producerType").GetString().Should().Be("large");
-        GetJsonPropertyCaseInsensitive(doc.RootElement, "numberOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(5);
+        GetJsonPropertyCaseInsensitive(doc.RootElement, "noOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(5);
         GetJsonPropertyCaseInsensitive(doc.RootElement, "isClosedLoopRecycling").GetBoolean().Should().BeTrue();
     }
 

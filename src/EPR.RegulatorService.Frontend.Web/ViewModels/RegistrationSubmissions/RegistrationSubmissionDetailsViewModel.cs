@@ -106,7 +106,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             IsResubmission = details.IsResubmission,
             ResubmissionFileId = details.ResubmissionFileId
             // ,
-            // IsClosedLoopRecycling = details.IsClosedLoopRecycling
+            // IsClosedLoopRecycler = details.IsClosedLoopRecycler
         };
     }
 

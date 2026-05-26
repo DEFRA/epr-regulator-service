@@ -38,10 +38,10 @@ public class CompliancePaymentDetailsViewComponent(
                         MemberType = csoMember.MemberType,
                         IsOnlineMarketplace = csoMember.IsOnlineMarketPlace,
                         IsLateFeeApplicable = csoMember.IsLateFeeApplicable,
-                        IsClosedLoopRecycling = csoMember.IsClosedLoopRecycling && viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer,
-                        NumberOfSubsidiariesClosedLoopRecycling = csoMember.NumberOfSubsidiariesClosedLoopRecycling,
+                        IsClosedLoopRecycling = (csoMember.IsClosedLoopRecycler ?? false) && viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer,
+                        NoOfSubsidiariesClosedLoopRecycling = csoMember.NumberOfSubsidiariesClosedLoopRecycling,
                         NumberOfSubsidiaries = csoMember.NumberOfSubsidiaries,
-                        NumberOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace
+                        NoOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace
                     }),
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                         ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.GetValueOrDefault()
