@@ -16,6 +16,7 @@ public class RegistrationSubmissionDetailsBuilder
     private bool _isClosedLoopRecyclingRoot;
     private bool _csoMemberIsClosedLoopRecycling;
     private int _csoMemberNumberOfSubsidiariesClosedLoopRecycling;
+    private string _csoMemberType = "large";
     private string _applicationReferenceNumber = "REG-2025-001";
 
     private RegistrationSubmissionDetailsBuilder(Guid submissionId)
@@ -89,6 +90,18 @@ public class RegistrationSubmissionDetailsBuilder
     {
         _csoMemberNumberOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling;
         _csoMemberIsClosedLoopRecycling = memberIsClosedLoopRecycling;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithOrganisationSize(string organisationSize)
+    {
+        _organisationSize = organisationSize;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithCsoMemberType(string memberType)
+    {
+        _csoMemberType = memberType;
         return this;
     }
 
@@ -178,7 +191,7 @@ public class RegistrationSubmissionDetailsBuilder
                 new
                 {
                     memberId = "100001",
-                    memberType = "large",
+                    memberType = _csoMemberType,
                     isOnlineMarketPlace = false,
                     isLateFeeApplicable = true,
                     isClosedLoopRecycling = _csoMemberIsClosedLoopRecycling,

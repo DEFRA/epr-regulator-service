@@ -28,7 +28,7 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ReferenceNumber,
-                NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NumberOfSubsidiariesOnlineMarketPlace,
+                NumberOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NumberOfOnlineSubsidiaries,
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NumberOfSubsidiaries,
                 IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
                 IsClosedLoopRecycling = viewModel.ProducerDetails.IsClosedLoopRecycling && viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer,

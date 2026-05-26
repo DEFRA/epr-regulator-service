@@ -132,22 +132,22 @@
   <data name="CompliancePaymentDetails.Items" xml:space="preserve">
     <value>Items</value>
   </data>
-  <data name="CompliancePaymentDetails.LargeProducerDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LargeProducerSingularDescription" xml:space="preserve">
     <value>{0} Large producer</value>
   </data>
-  <data name="CompliancePaymentDetails.LargeProducerDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LargeProducerPluralDescription" xml:space="preserve">
     <value>{0} Large producers</value>
   </data>
-  <data name="CompliancePaymentDetails.LateProducerDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LateProducerSingularDescription" xml:space="preserve">
     <value>{0} late producer fee</value>
   </data>
-  <data name="CompliancePaymentDetails.LateProducerDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LateProducerPluralDescription" xml:space="preserve">
     <value>{0} late producer fees</value>
   </data>
-  <data name="CompliancePaymentDetails.OnlineMarketPlaceDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.OnlineMarketPlaceSingularDescription" xml:space="preserve">
     <value>{0} is an online marketplace</value>
   </data>
-  <data name="CompliancePaymentDetails.OnlineMarketPlaceDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.OnlineMarketPlacePluralDescription" xml:space="preserve">
     <value>{0} are online marketplaces</value>
   </data>
   <data name="CompliancePaymentDetails.PreviousPaymentReceived" xml:space="preserve">
@@ -162,16 +162,16 @@
   <data name="CompliancePaymentDetails.ServiceIssueDescription" xml:space="preserve">
     <value>Unable to retrieve compliance scheme payment details</value>
   </data>
-  <data name="CompliancePaymentDetails.SmallProducerDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SmallProducerSingularDescription" xml:space="preserve">
     <value>{0} Small producer</value>
   </data>
-  <data name="CompliancePaymentDetails.SmallProducerDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SmallProducerPluralDescription" xml:space="preserve">
     <value>{0} Small producers</value>
   </data>
-  <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SubsidiariesCompanySingularDescription" xml:space="preserve">
     <value>{0} subsidiary company</value>
   </data>
-  <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SubsidiariesCompanyPluralDescription" xml:space="preserve">
     <value>{0} subsidiary companies</value>
   </data>
   <data name="CompliancePaymentDetails.SubTotalDescription" xml:space="preserve">
@@ -189,10 +189,10 @@
   <data name="CompliancePaymentDetails.ClosedLoopRecyclingFee" xml:space="preserve">
     <value>Closed loop packaging waste</value>
   </data>
-  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeeDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeeSingularDescription" xml:space="preserve">
     <value>{0} registration</value>
   </data>
-  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeeDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeePluralDescription" xml:space="preserve">
     <value>{0} registrations</value>
   </data>
 </root>

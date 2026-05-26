@@ -198,13 +198,13 @@
   <data name="CompliancePaymentDetails.TotalOutstanding" xml:space="preserve">
     <value>Y cyfanswm sydd heb ei dalu</value>
   </data>
-  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFee" xml:space="preserve">
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFee" xml:space="preserve">
     <value>Gwastraff pecynnu dolen gaeedig</value>
   </data>
-  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeeSingularDescription" xml:space="preserve">
     <value>{0} cofrestru</value>
   </data>
-  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeePluralDescription" xml:space="preserve">
     <value>{0} cofrestriad</value>
   </data>
 </root>

@@ -71,7 +71,7 @@
                         </dd>
                         <dd class="govuk-summary-list__value" style="width: 410px;">
                             @Localizer[Model.NumberOfSubsidiaries == 1
-                                     ? "ProducerPaymentDetails.SubsidiaryFeeDescription1" : "ProducerPaymentDetails.SubsidiaryFeeDescription2"
+                                     ? "ProducerPaymentDetails.SubsidiaryFeeSingularDescription" : "ProducerPaymentDetails.SubsidiaryFeePluralDescription"
                                      , Model.NumberOfSubsidiaries]
                         </dd>
                         <payment-amount amount="@Model.SubsidiaryFee"></payment-amount>
@@ -83,7 +83,7 @@
                             </dd>
                             <dd class="govuk-summary-list__value" style="width: 410px;">
                                 @Localizer[Model.NumberOfSubsidiariesBeingOnlineMarketplace == 1
-                                         ? "ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription1" : "ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription2"
+                                         ? "ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceSingularDescription" : "ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlacePluralDescription"
                                          , Model.NumberOfSubsidiariesBeingOnlineMarketplace]
                             </dd>
                             <payment-amount amount="@Model.SubsidiaryOnlineMarketPlaceFee"></payment-amount>
@@ -99,8 +99,8 @@
                         </dd>
                         <dd class="govuk-summary-list__value" style="width: 410px;">
                             @Localizer[Model.NumberOfClosedLoopRecyclingFees == 1
-                                ? "ProducerPaymentDetails.ClosedLoopRecyclingFeeDescription1"
-                                : "ProducerPaymentDetails.ClosedLoopRecyclingFeeDescription2", Model.NumberOfClosedLoopRecyclingFees]
+                                ? "ProducerPaymentDetails.ClosedLoopRecyclingFeeSingularDescription"
+                                : "ProducerPaymentDetails.ClosedLoopRecyclingFeePluralDescription", Model.NumberOfClosedLoopRecyclingFees]
                         </dd>
                         <payment-amount amount="@Model.ClosedLoopRecyclingFee"></payment-amount>
                     </div>

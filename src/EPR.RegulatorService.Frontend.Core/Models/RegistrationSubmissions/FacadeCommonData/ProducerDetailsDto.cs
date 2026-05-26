@@ -4,7 +4,7 @@ public class ProducerDetailsDto
 {
     public string ProducerType { get; set; }
 
-    public int NumberOfSubsidiariesOnlineMarketPlace { get; set; }
+    public int NumberOfOnlineSubsidiaries { get; set; }
 
     public int NumberOfSubsidiaries { get; set; }
 

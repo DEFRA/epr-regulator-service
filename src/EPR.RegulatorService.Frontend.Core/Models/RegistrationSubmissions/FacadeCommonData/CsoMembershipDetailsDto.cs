@@ -27,7 +27,7 @@ public class CsoMembershipDetailsDto
         IsLateFeeApplicable = dto.IsLateFeeApplicable,
         IsClosedLoopRecycling = dto.IsClosedLoopRecycling,
         NumberOfSubsidiariesClosedLoopRecycling = dto.NumberOfSubsidiariesClosedLoopRecycling,
-        NoOfSubsidiariesOnlineMarketplace = dto.NumberOfSubsidiariesOnlineMarketPlace,
+        NumberOfSubsidiariesOnlineMarketplace = dto.NumberOfSubsidiariesOnlineMarketPlace,
         NumberOfSubsidiaries = dto.NumberOfSubsidiaries
     };
 }

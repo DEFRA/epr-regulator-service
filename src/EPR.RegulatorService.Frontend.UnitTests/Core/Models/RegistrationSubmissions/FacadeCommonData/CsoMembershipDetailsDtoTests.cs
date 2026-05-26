@@ -36,8 +36,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             var isLateFeeApplicable = true;
             var isClosedLoopRecycling = true;
             var numberOfSubsidiaries = 5;
-            var noOfSubsidiariesClosedLoopRecycling = 3;
-            var noOfSubsidiariesOnlineMarketplace = 2;
+            var numberOfSubsidiariesClosedLoopRecycling = 3;
+            var numberOfSubsidiariesOnlineMarketplace = 2;
             var relevantYear = 2024;
             var submittedDate = DateTime.Now;
             var submissionPeriodDescription = "Period 1";
@@ -51,8 +51,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 IsLateFeeApplicable = isLateFeeApplicable,
                 IsClosedLoopRecycling = isClosedLoopRecycling,
                 NumberOfSubsidiaries = numberOfSubsidiaries,
-                NumberOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling,
-                NumberOfSubsidiariesOnlineMarketPlace = noOfSubsidiariesOnlineMarketplace,
+                NumberOfSubsidiariesClosedLoopRecycling = numberOfSubsidiariesClosedLoopRecycling,
+                NumberOfSubsidiariesOnlineMarketPlace = numberOfSubsidiariesOnlineMarketplace,
                 RelevantYear = relevantYear,
                 SubmittedDate = submittedDate,
                 SubmissionPeriodDescription = submissionPeriodDescription
@@ -65,8 +65,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(isLateFeeApplicable, dto.IsLateFeeApplicable);
             Assert.AreEqual(isClosedLoopRecycling, dto.IsClosedLoopRecycling);
             Assert.AreEqual(numberOfSubsidiaries, dto.NumberOfSubsidiaries);
-            Assert.AreEqual(noOfSubsidiariesClosedLoopRecycling, dto.NumberOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(noOfSubsidiariesOnlineMarketplace, dto.NumberOfSubsidiariesOnlineMarketPlace);
+            Assert.AreEqual(numberOfSubsidiariesClosedLoopRecycling, dto.NumberOfSubsidiariesClosedLoopRecycling);
+            Assert.AreEqual(numberOfSubsidiariesOnlineMarketplace, dto.NumberOfSubsidiariesOnlineMarketPlace);
             Assert.AreEqual(relevantYear, dto.RelevantYear);
             Assert.AreEqual(submittedDate, dto.SubmittedDate);
             Assert.AreEqual(submissionPeriodDescription, dto.SubmissionPeriodDescription);
@@ -129,7 +129,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.IsClosedLoopRecycling, request.IsClosedLoopRecycling);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
             Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NumberOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NumberOfSubsidiariesOnlineMarketplace);
         }
 
         [TestMethod]
@@ -161,7 +161,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.IsClosedLoopRecycling, request.IsClosedLoopRecycling);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
             Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NumberOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NumberOfSubsidiariesOnlineMarketplace);
         }
 
         [TestMethod]
@@ -193,7 +193,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.IsClosedLoopRecycling, request.IsClosedLoopRecycling);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
             Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NumberOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NumberOfSubsidiariesOnlineMarketplace);
         }
     }
 }

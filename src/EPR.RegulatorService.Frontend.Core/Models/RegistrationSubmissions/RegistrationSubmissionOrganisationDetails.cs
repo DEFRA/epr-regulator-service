@@ -170,7 +170,7 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
                 NumberOfSubsidiariesClosedLoopRecycling = response.NumberOfSubsidiariesClosedLoopRecycling,
                 IsProducerOnlineMarketplace = response.IsOnlineMarketPlace,
                 NumberOfSubsidiaries = response.NumberOfSubsidiaries,
-                NumberOfSubsidiariesOnlineMarketPlace = response.NumberOfOnlineSubsidiaries,
+                NumberOfOnlineSubsidiaries = response.NumberOfOnlineSubsidiaries,
                 ProducerType = response.OrganisationSize
             }
         };

@@ -32,16 +32,16 @@ public class CompliancePaymentDetailsViewComponent(
                 {
                     ApplicationReferenceNumber = viewModel.ReferenceNumber,
                     Regulator = viewModel.NationCode,
-                    ComplianceSchemeMembers = viewModel.CSOMembershipDetails.Select(x => new ComplianceSchemeMemberRequest
+                    ComplianceSchemeMembers = viewModel.CSOMembershipDetails.Select(csoMember => new ComplianceSchemeMemberRequest
                     {
-                        MemberId = x.MemberId,
-                        MemberType = x.MemberType,
-                        IsOnlineMarketplace = x.IsOnlineMarketPlace,
-                        IsLateFeeApplicable = x.IsLateFeeApplicable,
-                        IsClosedLoopRecycling = x.IsClosedLoopRecycling && viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer,
-                        NumberOfSubsidiariesClosedLoopRecycling = x.NumberOfSubsidiariesClosedLoopRecycling,
-                        NumberOfSubsidiaries = x.NumberOfSubsidiaries,
-                        NoOfSubsidiariesOnlineMarketplace = x.NumberOfSubsidiariesOnlineMarketPlace
+                        MemberId = csoMember.MemberId,
+                        MemberType = csoMember.MemberType,
+                        IsOnlineMarketplace = csoMember.IsOnlineMarketPlace,
+                        IsLateFeeApplicable = csoMember.IsLateFeeApplicable,
+                        IsClosedLoopRecycling = csoMember.IsClosedLoopRecycling && viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer,
+                        NumberOfSubsidiariesClosedLoopRecycling = csoMember.NumberOfSubsidiariesClosedLoopRecycling,
+                        NumberOfSubsidiaries = csoMember.NumberOfSubsidiaries,
+                        NumberOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace
                     }),
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                         ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.GetValueOrDefault()

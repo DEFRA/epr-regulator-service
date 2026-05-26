@@ -111,6 +111,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         var members = GetJsonPropertyCaseInsensitive(doc.RootElement, "complianceSchemeMembers");
         members.ValueKind.Should().Be(JsonValueKind.Array);
         var firstMember = members.EnumerateArray().First();
+        GetJsonPropertyCaseInsensitive(firstMember, "memberType").GetString().Should().Be("large");
         GetJsonPropertyCaseInsensitive(firstMember, "numberOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(8);
         GetJsonPropertyCaseInsensitive(firstMember, "isClosedLoopRecycling").GetBoolean().Should().BeTrue();
     }
@@ -136,6 +137,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         requestBody.Should().NotBeNull();
 
         using var doc = JsonDocument.Parse(requestBody!);
+        GetJsonPropertyCaseInsensitive(doc.RootElement, "producerType").GetString().Should().Be("large");
         GetJsonPropertyCaseInsensitive(doc.RootElement, "numberOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(5);
         GetJsonPropertyCaseInsensitive(doc.RootElement, "isClosedLoopRecycling").GetBoolean().Should().BeTrue();
     }
@@ -182,6 +184,16 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                 .WithHeader("Content-Type", "application/json")
                 .WithBody(JsonSerializer.Serialize(builder.Build())));
 
+    /// <summary>
+    /// Returns the JSON request body from the most recent POST to the payment-facade WireMock stub
+    /// whose path contains <paramref name="pathSubstring"/> and whose body includes
+    /// <paramref name="applicationReferenceSnippet"/> (typically the application reference number).
+    /// Used to assert paycal parameters sent outbound during a page render, without parsing HTML.
+    /// </summary>
+    /// <param name="server">WireMock server that records outbound HTTP calls from the app under test.</param>
+    /// <param name="pathSubstring">Fragment of the request path, e.g. <c>producer/registration-fee</c>.</param>
+    /// <param name="applicationReferenceSnippet">Text that must appear in the POST body to identify the correct request.</param>
+    /// <returns>The raw JSON body, or <see langword="null"/> if no matching request was logged.</returns>
     private static string? FindLastRegistrationFeePostBody(WireMockServer server, string pathSubstring, string applicationReferenceSnippet)
     {
         var entries = server.LogEntries.ToList();
