@@ -84,7 +84,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
     }
 
     [Fact]
-    public async Task ComplianceSchemeRegistrationFeeRequest_IncludesNoOfSubsidiariesClosedLoopRecyclingFromFacade()
+    public async Task ComplianceSchemeRegistrationFeeRequest_IncludesNumberOfSubsidiariesClosedLoopRecyclingFromFacade()
     {
         var submissionId = Guid.NewGuid();
         const string appRef = "REG-INT-CSO-CL-001";
@@ -111,12 +111,12 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         var members = GetJsonPropertyCaseInsensitive(doc.RootElement, "complianceSchemeMembers");
         members.ValueKind.Should().Be(JsonValueKind.Array);
         var firstMember = members.EnumerateArray().First();
-        GetJsonPropertyCaseInsensitive(firstMember, "noOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(8);
+        GetJsonPropertyCaseInsensitive(firstMember, "numberOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(8);
         GetJsonPropertyCaseInsensitive(firstMember, "isClosedLoopRecycling").GetBoolean().Should().BeTrue();
     }
 
     [Fact]
-    public async Task ProducerRegistrationFeeRequest_IncludesNoOfSubsidiariesClosedLoopRecyclingFromFacade()
+    public async Task ProducerRegistrationFeeRequest_IncludesNumberOfSubsidiariesClosedLoopRecyclingFromFacade()
     {
         var submissionId = Guid.NewGuid();
         const string appRef = "REG-INT-DIRECT-CL-001";
@@ -136,7 +136,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         requestBody.Should().NotBeNull();
 
         using var doc = JsonDocument.Parse(requestBody!);
-        GetJsonPropertyCaseInsensitive(doc.RootElement, "noOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(5);
+        GetJsonPropertyCaseInsensitive(doc.RootElement, "numberOfSubsidiariesClosedLoopRecycling").GetInt32().Should().Be(5);
         GetJsonPropertyCaseInsensitive(doc.RootElement, "isClosedLoopRecycling").GetBoolean().Should().BeTrue();
     }
 

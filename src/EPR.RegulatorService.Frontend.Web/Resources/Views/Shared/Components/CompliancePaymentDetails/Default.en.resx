@@ -186,13 +186,13 @@
   <data name="CompliancePaymentDetails.WaiveFees" xml:space="preserve">
     <value>Waive fees</value>
   </data>
-  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFee" xml:space="preserve">
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFee" xml:space="preserve">
     <value>Closed loop packaging waste</value>
   </data>
-  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeeDescription1" xml:space="preserve">
     <value>{0} registration</value>
   </data>
-  <data name="CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeeDescription2" xml:space="preserve">
     <value>{0} registrations</value>
   </data>
 </root>

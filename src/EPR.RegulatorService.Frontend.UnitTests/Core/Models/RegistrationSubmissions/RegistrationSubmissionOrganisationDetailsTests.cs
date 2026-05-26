@@ -16,7 +16,7 @@ public sealed class RegistrationSubmissionOrganisationDetailsTests
 
         RegistrationSubmissionOrganisationDetails details = response;
 
-        Assert.AreEqual(11, details.ProducerDetails.NoOfSubsidiariesClosedLoopRecycling);
+        Assert.AreEqual(11, details.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling);
         Assert.IsTrue(details.ProducerDetails.IsClosedLoopRecycling);
     }
 }

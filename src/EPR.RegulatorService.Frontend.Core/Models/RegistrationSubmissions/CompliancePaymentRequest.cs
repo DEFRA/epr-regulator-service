@@ -24,7 +24,7 @@ public class ComplianceSchemeMemberRequest
 
     public bool IsClosedLoopRecycling { get; set; }
 
-    public int NoOfSubsidiariesClosedLoopRecycling { get; set; }
+    public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
 
     public int NumberOfSubsidiaries { get; set; }
 

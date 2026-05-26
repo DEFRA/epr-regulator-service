@@ -167,10 +167,10 @@ public sealed class RegistrationSubmissionOrganisationDetails : IEquatable<Regis
             {
                 IsLateFeeApplicable = response.IsLateSubmission,
                 IsClosedLoopRecycling = response.IsClosedLoopRecycling,
-                NoOfSubsidiariesClosedLoopRecycling = response.NumberOfSubsidiariesClosedLoopRecycling,
+                NumberOfSubsidiariesClosedLoopRecycling = response.NumberOfSubsidiariesClosedLoopRecycling,
                 IsProducerOnlineMarketplace = response.IsOnlineMarketPlace,
-                NoOfSubsidiaries = response.NumberOfSubsidiaries,
-                NoOfSubsidiariesOnlineMarketPlace = response.NumberOfOnlineSubsidiaries,
+                NumberOfSubsidiaries = response.NumberOfSubsidiaries,
+                NumberOfSubsidiariesOnlineMarketPlace = response.NumberOfOnlineSubsidiaries,
                 ProducerType = response.OrganisationSize
             }
         };

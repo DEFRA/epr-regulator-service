@@ -4,15 +4,15 @@ public class ProducerDetailsDto
 {
     public string ProducerType { get; set; }
 
-    public int NoOfSubsidiariesOnlineMarketPlace { get; set; }
+    public int NumberOfSubsidiariesOnlineMarketPlace { get; set; }
 
-    public int NoOfSubsidiaries { get; set; }
+    public int NumberOfSubsidiaries { get; set; }
 
     public bool IsLateFeeApplicable { get; set; }
 
     public bool IsClosedLoopRecycling { get; set; }
 
-    public int NoOfSubsidiariesClosedLoopRecycling { get; set; }
+    public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
 
     public bool IsProducerOnlineMarketplace { get; set; }
 }

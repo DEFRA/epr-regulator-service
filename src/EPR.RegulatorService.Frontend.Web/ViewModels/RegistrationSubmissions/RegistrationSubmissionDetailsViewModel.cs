@@ -156,8 +156,6 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             ProducerDetails = details.ProducerDetails,
             IsResubmission = details.IsResubmission,
             ResubmissionFileId = details.ResubmissionFileId
-            // ,
-//            IsClosedLoopRecycling = details.IsClosedLoopRecycling
         };
     }
 }

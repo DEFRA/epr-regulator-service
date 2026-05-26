@@ -19,8 +19,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.IsFalse(dto.IsLateFeeApplicable);
             Assert.IsFalse(dto.IsClosedLoopRecycling);
             Assert.AreEqual(0, dto.NumberOfSubsidiaries);
-            Assert.AreEqual(0, dto.NoOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(0, dto.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(0, dto.NumberOfSubsidiariesClosedLoopRecycling);
+            Assert.AreEqual(0, dto.NumberOfSubsidiariesOnlineMarketPlace);
             Assert.AreEqual(0, dto.RelevantYear);
             Assert.AreEqual(default(DateTime), dto.SubmittedDate);
             Assert.IsNull(dto.SubmissionPeriodDescription);
@@ -51,8 +51,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 IsLateFeeApplicable = isLateFeeApplicable,
                 IsClosedLoopRecycling = isClosedLoopRecycling,
                 NumberOfSubsidiaries = numberOfSubsidiaries,
-                NoOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling,
-                NoOfSubsidiariesOnlineMarketplace = noOfSubsidiariesOnlineMarketplace,
+                NumberOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling,
+                NumberOfSubsidiariesOnlineMarketPlace = noOfSubsidiariesOnlineMarketplace,
                 RelevantYear = relevantYear,
                 SubmittedDate = submittedDate,
                 SubmissionPeriodDescription = submissionPeriodDescription
@@ -65,8 +65,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(isLateFeeApplicable, dto.IsLateFeeApplicable);
             Assert.AreEqual(isClosedLoopRecycling, dto.IsClosedLoopRecycling);
             Assert.AreEqual(numberOfSubsidiaries, dto.NumberOfSubsidiaries);
-            Assert.AreEqual(noOfSubsidiariesClosedLoopRecycling, dto.NoOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(noOfSubsidiariesOnlineMarketplace, dto.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(noOfSubsidiariesClosedLoopRecycling, dto.NumberOfSubsidiariesClosedLoopRecycling);
+            Assert.AreEqual(noOfSubsidiariesOnlineMarketplace, dto.NumberOfSubsidiariesOnlineMarketPlace);
             Assert.AreEqual(relevantYear, dto.RelevantYear);
             Assert.AreEqual(submittedDate, dto.SubmittedDate);
             Assert.AreEqual(submissionPeriodDescription, dto.SubmissionPeriodDescription);
@@ -81,8 +81,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberId = string.Empty,
                 MemberType = string.Empty,
                 NumberOfSubsidiaries = int.MinValue,
-                NoOfSubsidiariesClosedLoopRecycling = int.MaxValue,
-                NoOfSubsidiariesOnlineMarketplace = int.MaxValue,
+                NumberOfSubsidiariesClosedLoopRecycling = int.MaxValue,
+                NumberOfSubsidiariesOnlineMarketPlace = int.MaxValue,
                 RelevantYear = int.MaxValue,
                 SubmittedDate = DateTime.MaxValue,
                 SubmissionPeriodDescription = string.Empty
@@ -92,8 +92,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(string.Empty, dto.MemberId);
             Assert.AreEqual(string.Empty, dto.MemberType);
             Assert.AreEqual(int.MinValue, dto.NumberOfSubsidiaries);
-            Assert.AreEqual(int.MaxValue, dto.NoOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(int.MaxValue, dto.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(int.MaxValue, dto.NumberOfSubsidiariesClosedLoopRecycling);
+            Assert.AreEqual(int.MaxValue, dto.NumberOfSubsidiariesOnlineMarketPlace);
             Assert.AreEqual(int.MaxValue, dto.RelevantYear);
             Assert.AreEqual(DateTime.MaxValue, dto.SubmittedDate);
             Assert.AreEqual(string.Empty, dto.SubmissionPeriodDescription);
@@ -111,8 +111,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 IsLateFeeApplicable = false,
                 IsClosedLoopRecycling = true,
                 NumberOfSubsidiaries = 5,
-                NoOfSubsidiariesClosedLoopRecycling = 4,
-                NoOfSubsidiariesOnlineMarketplace = 2,
+                NumberOfSubsidiariesClosedLoopRecycling = 4,
+                NumberOfSubsidiariesOnlineMarketPlace = 2,
                 RelevantYear = 2024,
                 SubmittedDate = DateTime.Now,
                 SubmissionPeriodDescription = "Period 1"
@@ -128,8 +128,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.IsLateFeeApplicable, request.IsLateFeeApplicable);
             Assert.AreEqual(dto.IsClosedLoopRecycling, request.IsClosedLoopRecycling);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
-            Assert.AreEqual(dto.NoOfSubsidiariesClosedLoopRecycling, request.NoOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(dto.NoOfSubsidiariesOnlineMarketplace, request.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NumberOfSubsidiariesClosedLoopRecycling);
+            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NoOfSubsidiariesOnlineMarketplace);
         }
 
         [TestMethod]
@@ -144,7 +144,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 IsLateFeeApplicable = false,
                 IsClosedLoopRecycling = false,
                 NumberOfSubsidiaries = 0,
-                NoOfSubsidiariesOnlineMarketplace = 0,
+                NumberOfSubsidiariesOnlineMarketPlace = 0,
                 RelevantYear = 0,
                 SubmittedDate = default,
                 SubmissionPeriodDescription = string.Empty
@@ -160,8 +160,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.IsLateFeeApplicable, request.IsLateFeeApplicable);
             Assert.AreEqual(dto.IsClosedLoopRecycling, request.IsClosedLoopRecycling);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
-            Assert.AreEqual(dto.NoOfSubsidiariesClosedLoopRecycling, request.NoOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(dto.NoOfSubsidiariesOnlineMarketplace, request.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NumberOfSubsidiariesClosedLoopRecycling);
+            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NoOfSubsidiariesOnlineMarketplace);
         }
 
         [TestMethod]
@@ -176,7 +176,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 IsLateFeeApplicable = false,
                 IsClosedLoopRecycling = false,
                 NumberOfSubsidiaries = 0,
-                NoOfSubsidiariesOnlineMarketplace = 0,
+                NumberOfSubsidiariesOnlineMarketPlace = 0,
                 RelevantYear = 0,
                 SubmittedDate = default,
                 SubmissionPeriodDescription = null
@@ -192,8 +192,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(dto.IsLateFeeApplicable, request.IsLateFeeApplicable);
             Assert.AreEqual(dto.IsClosedLoopRecycling, request.IsClosedLoopRecycling);
             Assert.AreEqual(dto.NumberOfSubsidiaries, request.NumberOfSubsidiaries);
-            Assert.AreEqual(dto.NoOfSubsidiariesClosedLoopRecycling, request.NoOfSubsidiariesClosedLoopRecycling);
-            Assert.AreEqual(dto.NoOfSubsidiariesOnlineMarketplace, request.NoOfSubsidiariesOnlineMarketplace);
+            Assert.AreEqual(dto.NumberOfSubsidiariesClosedLoopRecycling, request.NumberOfSubsidiariesClosedLoopRecycling);
+            Assert.AreEqual(dto.NumberOfSubsidiariesOnlineMarketPlace, request.NoOfSubsidiariesOnlineMarketplace);
         }
     }
 }

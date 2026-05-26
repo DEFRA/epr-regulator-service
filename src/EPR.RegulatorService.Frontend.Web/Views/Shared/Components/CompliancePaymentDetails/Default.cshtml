@@ -119,14 +119,14 @@
                 {
                     <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                         <dd class="govuk-summary-list__value" style="width: 285px;">
-                            <strong>@Localizer["CompliancePaymentDetails.ClosedLoopRegistrationFee"]</strong>
+                            <strong>@Localizer["CompliancePaymentDetails.ClosedLoopRecyclingFee"]</strong>
                         </dd>
                         <dd class="govuk-summary-list__value" style="width: 410px;">
                             @Localizer[Model.ClosedLoopRegistrationCount == 1
-                                ? "CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription1"
-                                : "CompliancePaymentDetails.ClosedLoopRegistrationFeeDescription2", Model.ClosedLoopRegistrationCount]
+                                ? "CompliancePaymentDetails.ClosedLoopRecyclingFeeDescription1"
+                                : "CompliancePaymentDetails.ClosedLoopRecyclingFeeDescription2", Model.ClosedLoopRegistrationCount]
                         </dd>
-                        <payment-amount amount="@Model.ClosedLoopRegistrationFee"></payment-amount>
+                        <payment-amount amount="@Model.ClosedLoopRecyclingFee"></payment-amount>
                     </div>
                 }
                 <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">

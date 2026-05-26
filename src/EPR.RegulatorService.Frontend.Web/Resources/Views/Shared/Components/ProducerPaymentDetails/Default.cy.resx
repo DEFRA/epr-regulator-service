@@ -201,13 +201,13 @@
   <data name="ProducerPaymentValidation.ValueCannotBeZero" xml:space="preserve">
     <value>Chaiff y swm ddim bod yn sero</value>
   </data>
-  <data name="ProducerPaymentDetails.ClosedLoopRegistrationFee" xml:space="preserve">
+  <data name="ProducerPaymentDetails.ClosedLoopRecyclingFee" xml:space="preserve">
     <value>Gwastraff pecynnu dolen gaeedig</value>
   </data>
-  <data name="ProducerPaymentDetails.ClosedLoopRegistrationFeeDescription1" xml:space="preserve">
+  <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeeDescription1" xml:space="preserve">
     <value>{0} cofrestru</value>
   </data>
-  <data name="ProducerPaymentDetails.ClosedLoopRegistrationFeeDescription2" xml:space="preserve">
+  <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeeDescription2" xml:space="preserve">
     <value>{0} cofrestriad</value>
   </data>
 </root>

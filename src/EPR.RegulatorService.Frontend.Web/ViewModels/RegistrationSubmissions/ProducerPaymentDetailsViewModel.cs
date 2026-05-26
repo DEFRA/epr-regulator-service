@@ -17,9 +17,9 @@ public class ProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 
     public decimal SubsidiaryOnlineMarketPlaceFee { get; set; }
 
-    public decimal ClosedLoopRegistrationFee { get; set; }
+    public decimal ClosedLoopRecyclingFee { get; set; }
 
-    public int NumberOfClosedLoopRegistrationFees { get; set; }
+    public int NumberOfClosedLoopRecyclingFees { get; set; }
 
     public decimal SubTotal { get; set; }
 

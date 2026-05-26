@@ -33,7 +33,7 @@ public class CompliancePaymentDetailsViewModel : PaymentDetailsViewModel
 
     public int ClosedLoopRegistrationCount { get; set; }
 
-    public decimal ClosedLoopRegistrationFee { get; set; }
+    public decimal ClosedLoopRecyclingFee { get; set; }
 
     public decimal SubTotal { get; set; }
 
