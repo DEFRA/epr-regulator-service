@@ -91,16 +91,14 @@
                     }
                 }
 
-                @if (Model.NumberOfClosedLoopRecyclingFees > 0)
+                @if (Model.HasClosedLoopRecyclingFees)
                 {
                     <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                         <dd class="govuk-summary-list__value" style="width: 285px;">
                             <strong>@Localizer["ProducerPaymentDetails.ClosedLoopRecyclingFee"]</strong>
                         </dd>
                         <dd class="govuk-summary-list__value" style="width: 410px;">
-                            @Localizer[Model.NumberOfClosedLoopRecyclingFees == 1
-                                ? "ProducerPaymentDetails.ClosedLoopRecyclingFeeSingularDescription"
-                                : "ProducerPaymentDetails.ClosedLoopRecyclingFeePluralDescription", Model.NumberOfClosedLoopRecyclingFees]
+                            @Localizer["ProducerPaymentDetails.ClosedLoopRecyclingFeeSingularDescription"]
                         </dd>
                         <payment-amount amount="@Model.ClosedLoopRecyclingFee"></payment-amount>
                     </div>

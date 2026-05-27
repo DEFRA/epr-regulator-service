@@ -52,7 +52,7 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 LateRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.LateRegistrationFee),
                 OnlineMarketplaceFee = ConvertToPoundsFromPence(producerPaymentResponse.OnlineMarketplaceFee),
                 ClosedLoopRecyclingFee = ConvertToPoundsFromPence(producerPaymentResponse.ClosedLoopRecyclingFee),
-                NumberOfClosedLoopRecyclingFees = producerPaymentResponse.ClosedLoopRecyclingFee > 0 ? 1 : 0,
+                HasClosedLoopRecyclingFees = producerPaymentResponse.ClosedLoopRecyclingFee > 0,
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
                 SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),

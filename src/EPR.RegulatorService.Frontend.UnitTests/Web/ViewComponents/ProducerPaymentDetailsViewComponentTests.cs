@@ -100,7 +100,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.LateRegistrationFee.Should().Be(2.00M);
         model.OnlineMarketplaceFee.Should().Be(3.00M);
         model.ClosedLoopRecyclingFee.Should().Be(28.00M);
-        model.NumberOfClosedLoopRecyclingFees.Should().Be(1);
+        model.HasClosedLoopRecyclingFees.Should().Be(true);
         model.ProducerSize.Should().Be(expectedProducerSize);
         model.SubsidiaryFee.Should().Be(2.00M);
         model.SubsidiaryOnlineMarketPlaceFee.Should().Be(2.00M);

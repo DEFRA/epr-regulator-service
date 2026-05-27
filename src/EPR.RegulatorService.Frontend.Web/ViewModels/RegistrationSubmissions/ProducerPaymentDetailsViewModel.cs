@@ -19,7 +19,7 @@ public class ProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 
     public decimal ClosedLoopRecyclingFee { get; set; }
 
-    public int NumberOfClosedLoopRecyclingFees { get; set; }
+    public bool HasClosedLoopRecyclingFees { get; set; }
 
     public decimal SubTotal { get; set; }
 
