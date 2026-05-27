@@ -141,25 +141,25 @@
   <data name="CompliancePaymentDetails.Items" xml:space="preserve">
     <value>Eitemau</value>
   </data>
-  <data name="CompliancePaymentDetails.LargeProducerDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LargeProducerSingularDescription" xml:space="preserve">
     <value>{0} Cynhyrchydd mawr</value>
   </data>
-  <data name="CompliancePaymentDetails.LargeProducerDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LargeProducerPluralDescription" xml:space="preserve">
     <value>{0} Cynhyrchwyr mawr</value>
   </data>
-  <data name="CompliancePaymentDetails.LateProducerDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LateProducerSingularDescription" xml:space="preserve">
     <value>{0} ffi cynhyrchydd hwyr</value>
   </data>
-  <data name="CompliancePaymentDetails.LateProducerDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LateProducerPluralDescription" xml:space="preserve">
     <value>{0} ffioedd cynhyrchydd hwyr</value>
   </data>
   <data name="CompliancePaymentDetails.OnlineMarketplaceFee" xml:space="preserve">
     <value>Ffi marchnad ar-lein</value>
   </data>
-  <data name="CompliancePaymentDetails.OnlineMarketPlaceDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.OnlineMarketPlaceSingularDescription" xml:space="preserve">
     <value>Mae {0} yn farchnad ar-lein</value>
   </data>
-  <data name="CompliancePaymentDetails.OnlineMarketPlaceDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.OnlineMarketPlacePluralDescription" xml:space="preserve">
     <value>Mae {0} yn farchnadoedd ar-lein</value>
   </data>
   <data name="CompliancePaymentDetails.PreviousPaymentReceived" xml:space="preserve">
@@ -177,16 +177,16 @@
   <data name="CompliancePaymentDetails.TotalPaymentsReceived" xml:space="preserve">
     <value>Cyfanswm y taliadau blaenorol sydd wedi dod i law'r rheoleiddiwr</value>
   </data>
-  <data name="CompliancePaymentDetails.SmallProducerDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SmallProducerSingularDescription" xml:space="preserve">
     <value>{0} Cynhyrchydd bach</value>
   </data>
-  <data name="CompliancePaymentDetails.SmallProducerDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SmallProducerPluralDescription" xml:space="preserve">
     <value>{0} Cynhyrchwyr bach</value>
   </data>
-  <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SubsidiariesCompanySingularDescription" xml:space="preserve">
     <value>{0} is-gwmni</value>
   </data>
-  <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SubsidiariesCompanyPluralDescription" xml:space="preserve">
     <value>{0} is-gwmnïau</value>
   </data>
   <data name="CompliancePaymentDetails.SubTotalDescription" xml:space="preserve">
