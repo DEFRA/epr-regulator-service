@@ -4,10 +4,10 @@ using System.Text.Json;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
 using Builders;
-using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using Infrastructure;
 using PageModels;
 using WireMock.AwesomeAssertions;
+using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -111,21 +111,19 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         assertions
             .UsingPost().And
             .AtPath("/compliance-scheme/registration-fee").And
-            .WithBody($"*\"applicationReferenceNumber\"*{appRef}*");
-
-        // RequestMessages is narrowed by the assertions above to the payment-facade POST under test.
-        var request = JsonSerializer.Deserialize<CompliancePaymentRequest>(
-            assertions.RequestMessages.Single().Body!,
-            PaymentFacadeWireMockHelpers.JsonOptions);
-
-        using (new AssertionScope())
-        {
-            request.Should().NotBeNull();
-            var member = request!.ComplianceSchemeMembers.Should().ContainSingle().Subject;
-            member.MemberType.Should().Be("large");
-            member.NoOfSubsidiariesClosedLoopRecycling.Should().Be(8);
-            member.IsClosedLoopRecycling.Should().BeTrue();
-        }
+            .WithBodyAsJson(new JsonPartialMatcher(new
+            {
+                applicationReferenceNumber = appRef,
+                complianceSchemeMembers = new[]
+                {
+                    new
+                    {
+                        memberType = "large",
+                        isClosedLoopRecycling = true,
+                        noOfSubsidiariesClosedLoopRecycling = 8,
+                    },
+                },
+            }));
     }
 
     [Fact]
@@ -152,20 +150,13 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         assertions
             .UsingPost().And
             .AtPath("/producer/registration-fee").And
-            .WithBody($"*\"applicationReferenceNumber\"*{appRef}*");
-
-        // RequestMessages is narrowed by the assertions above to the payment-facade POST under test.
-        var request = JsonSerializer.Deserialize<ProducerPaymentRequest>(
-            assertions.RequestMessages.Single().Body!,
-            PaymentFacadeWireMockHelpers.JsonOptions);
-
-        using (new AssertionScope())
-        {
-            request.Should().NotBeNull();
-            request!.ProducerType.Should().Be("large");
-            request.NoOfSubsidiariesClosedLoopRecycling.Should().Be(5);
-            request.IsClosedLoopRecycling.Should().BeTrue();
-        }
+            .WithBodyAsJson(new JsonPartialMatcher(new
+            {
+                applicationReferenceNumber = appRef,
+                producerType = "large",
+                isClosedLoopRecycling = true,
+                noOfSubsidiariesClosedLoopRecycling = 5,
+            }));
     }
 
     private void SetupPaymentFacadeMockComplianceSchemeRegistrationFee(CompliancePaymentResponseBuilder builder) =>
