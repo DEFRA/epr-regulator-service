@@ -10,6 +10,8 @@ using Microsoft.Extensions.Options;
 
 namespace EPR.RegulatorService.Frontend.Web.ViewComponents.RegistrationSubmissions;
 
+using Core.Enums;
+
 public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions> options,
     IPaymentFacadeService paymentFacadeService, ILogger<ProducerPaymentDetailsViewComponent> logger) : ViewComponent
 {
@@ -26,9 +28,11 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ReferenceNumber,
-                NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NoOfSubsidiariesOnlineMarketPlace,
-                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
+                NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NumberOfOnlineSubsidiaries,
+                NumberOfSubsidiaries = viewModel.ProducerDetails.NumberOfSubsidiaries,
                 IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
+                IsClosedLoopRecycling = viewModel.ProducerDetails.IsClosedLoopRecycler && viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer,
+                NoOfSubsidiariesClosedLoopRecycling = viewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling,
                 IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
                 ProducerType = viewModel.ProducerDetails.ProducerType,
                 Regulator = viewModel.NationCode,
@@ -47,13 +51,15 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 ApplicationProcessingFee = ConvertToPoundsFromPence(producerPaymentResponse.ApplicationProcessingFee),
                 LateRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.LateRegistrationFee),
                 OnlineMarketplaceFee = ConvertToPoundsFromPence(producerPaymentResponse.OnlineMarketplaceFee),
+                ClosedLoopRecyclingFee = ConvertToPoundsFromPence(producerPaymentResponse.ClosedLoopRecyclingFee),
+                HasClosedLoopRecyclingFees = producerPaymentResponse.ClosedLoopRecyclingFee > 0,
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
                 SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
                 TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
                 ProducerSize = $"{char.ToUpperInvariant(viewModel.ProducerDetails.ProducerType[0])}{viewModel.ProducerDetails.ProducerType[1..]}",
-                NumberOfSubsidiaries = viewModel.ProducerDetails.NoOfSubsidiaries,
+                NumberOfSubsidiaries = viewModel.ProducerDetails.NumberOfSubsidiaries,
                 NumberOfSubsidiariesBeingOnlineMarketplace = producerPaymentResponse.SubsidiariesFeeBreakdown.OnlineMarketPlaceSubsidiariesCount,
                 ResubmissionStatus = viewModel.ResubmissionStatus,
                 Status = viewModel.Status,

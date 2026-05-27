@@ -15,6 +15,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.ViewModels.RegistrationSub
                 ApplicationProcessingFee = 100.00m,
                 LateRegistrationFee = 50.00m,
                 OnlineMarketplaceFee = 25.00m,
+                ClosedLoopRecyclingFee = 150.00m,
                 SubsidiaryFee = 30.00m,
                 SubsidiaryOnlineMarketPlaceFee = 40.00m,
                 //TotalChargeableItems = 245.00m,

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -132,22 +132,22 @@
   <data name="CompliancePaymentDetails.Items" xml:space="preserve">
     <value>Items</value>
   </data>
-  <data name="CompliancePaymentDetails.LargeProducerDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LargeProducerSingularDescription" xml:space="preserve">
     <value>{0} Large producer</value>
   </data>
-  <data name="CompliancePaymentDetails.LargeProducerDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LargeProducerPluralDescription" xml:space="preserve">
     <value>{0} Large producers</value>
   </data>
-  <data name="CompliancePaymentDetails.LateProducerDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LateProducerSingularDescription" xml:space="preserve">
     <value>{0} late producer fee</value>
   </data>
-  <data name="CompliancePaymentDetails.LateProducerDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.LateProducerPluralDescription" xml:space="preserve">
     <value>{0} late producer fees</value>
   </data>
-  <data name="CompliancePaymentDetails.OnlineMarketPlaceDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.OnlineMarketPlaceSingularDescription" xml:space="preserve">
     <value>{0} is an online marketplace</value>
   </data>
-  <data name="CompliancePaymentDetails.OnlineMarketPlaceDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.OnlineMarketPlacePluralDescription" xml:space="preserve">
     <value>{0} are online marketplaces</value>
   </data>
   <data name="CompliancePaymentDetails.PreviousPaymentReceived" xml:space="preserve">
@@ -162,17 +162,17 @@
   <data name="CompliancePaymentDetails.ServiceIssueDescription" xml:space="preserve">
     <value>Unable to retrieve compliance scheme payment details</value>
   </data>
-  <data name="CompliancePaymentDetails.SmallProducerDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SmallProducerSingularDescription" xml:space="preserve">
     <value>{0} Small producer</value>
   </data>
-  <data name="CompliancePaymentDetails.SmallProducerDescription2" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SmallProducerPluralDescription" xml:space="preserve">
     <value>{0} Small producers</value>
   </data>
-  <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription1" xml:space="preserve">
+  <data name="CompliancePaymentDetails.SubsidiariesCompanySingularDescription" xml:space="preserve">
     <value>{0} subsidiary company</value>
   </data>
-  <data name="CompliancePaymentDetails.SubsidiariesCompanyDescription2" xml:space="preserve">
-    <value>{0} subsidiaries companies</value>
+  <data name="CompliancePaymentDetails.SubsidiariesCompanyPluralDescription" xml:space="preserve">
+    <value>{0} subsidiary companies</value>
   </data>
   <data name="CompliancePaymentDetails.SubTotalDescription" xml:space="preserve">
     <value>Sub-total</value>
@@ -185,5 +185,14 @@
   </data>
   <data name="CompliancePaymentDetails.WaiveFees" xml:space="preserve">
     <value>Waive fees</value>
+  </data>
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFee" xml:space="preserve">
+    <value>Closed loop packaging waste</value>
+  </data>
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeeSingularDescription" xml:space="preserve">
+    <value>{0} registration</value>
+  </data>
+  <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeePluralDescription" xml:space="preserve">
+    <value>{0} registrations</value>
   </data>
 </root>

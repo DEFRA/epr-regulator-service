@@ -8,6 +8,16 @@ public class RegistrationSubmissionDetailsBuilder
     private int _relevantYear = 2025;
     private string _submissionDate = "2025-01-10T09:30:00Z";
     private string _submissionStatus = "Pending";
+    private string _registrationJourneyType = "CsoLargeProducer";
+    private bool _isComplianceScheme = true;
+    private bool _emptyCsoMembershipDetails;
+    private string? _organisationSize;
+    private int _numberOfSubsidiariesClosedLoopRecyclingRoot;
+    private bool _isClosedLoopRecyclerRoot;
+    private bool _csoMemberIsClosedLoopRecycler;
+    private int _csoMemberNumberOfSubsidiariesClosedLoopRecycling;
+    private string _csoMemberType = "large";
+    private string _applicationReferenceNumber = "REG-2025-001";
 
     private RegistrationSubmissionDetailsBuilder(Guid submissionId)
     {
@@ -46,6 +56,55 @@ public class RegistrationSubmissionDetailsBuilder
         return this;
     }
 
+    public RegistrationSubmissionDetailsBuilder WithApplicationReferenceNumber(string applicationReferenceNumber)
+    {
+        _applicationReferenceNumber = applicationReferenceNumber;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithRegistrationJourneyType(string registrationJourneyType)
+    {
+        _registrationJourneyType = registrationJourneyType;
+        return this;
+    }
+
+    /// <summary>Direct large producer: compliance scheme payment component is not used; producer payment API is called instead.</summary>
+    public RegistrationSubmissionDetailsBuilder AsDirectLargeProducer()
+    {
+        _organisationType = "large";
+        _registrationJourneyType = "DirectLargeProducer";
+        _isComplianceScheme = false;
+        _emptyCsoMembershipDetails = true;
+        _organisationSize = "large";
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithProducerClosedLoopRecycling(int noOfSubsidiariesClosedLoopRecycling, bool isClosedLoopRecycler = true)
+    {
+        _numberOfSubsidiariesClosedLoopRecyclingRoot = noOfSubsidiariesClosedLoopRecycling;
+        _isClosedLoopRecyclerRoot = isClosedLoopRecycler;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithCsoMemberClosedLoopRecycling(int noOfSubsidiariesClosedLoopRecycling, bool memberIsClosedLoopRecycler = true)
+    {
+        _csoMemberNumberOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling;
+        _csoMemberIsClosedLoopRecycler = memberIsClosedLoopRecycler;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithOrganisationSize(string organisationSize)
+    {
+        _organisationSize = organisationSize;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithCsoMemberType(string memberType)
+    {
+        _csoMemberType = memberType;
+        return this;
+    }
+
     public object Build() => new
     {
         submissionId = SubmissionId,
@@ -53,7 +112,7 @@ public class RegistrationSubmissionDetailsBuilder
         organisationReference = "100001",
         organisationName = _organisationName,
         organisationType = _organisationType,
-        registrationJourneyType = "CsoLargeProducer",
+        registrationJourneyType = _registrationJourneyType,
         nationId = 1,
         nationCode = "GB-ENG",
         relevantYear = _relevantYear,
@@ -66,7 +125,7 @@ public class RegistrationSubmissionDetailsBuilder
         registrationDate = (string?)null,
         regulatorComments = "",
         producerComments = "Test comment",
-        applicationReferenceNumber = "REG-2025-001",
+        applicationReferenceNumber = _applicationReferenceNumber,
         registrationReferenceNumber = "",
         companiesHouseNumber = "CS123456",
         buildingName = "Test Building",
@@ -119,25 +178,31 @@ public class RegistrationSubmissionDetailsBuilder
         isOnlineMarketPlace = false,
         numberOfSubsidiaries = 0,
         numberOfOnlineSubsidiaries = 0,
+        numberOfSubsidiariesClosedLoopRecycling = _numberOfSubsidiariesClosedLoopRecyclingRoot,
         isLateSubmission = true,
-        organisationSize = (string?)null,
-        isComplianceScheme = true,
+        isClosedLoopRecycler = _isClosedLoopRecyclerRoot,
+        organisationSize = _organisationSize,
+        isComplianceScheme = _isComplianceScheme,
         submissionPeriod = $"January to December {_relevantYear}",
-        csoMembershipDetails = new[]
-        {
-            new
+        csoMembershipDetails = _emptyCsoMembershipDetails
+            ? Array.Empty<object>()
+            : new object[]
             {
-                memberId = "100001",
-                memberType = "large",
-                isOnlineMarketPlace = false,
-                isLateFeeApplicable = true,
-                numberOfSubsidiaries = 0,
-                NumberOfSubsidiariesOnlineMarketPlace = 0,
-                relevantYear = _relevantYear,
-                submittedDate = _submissionDate,
-                submissionPeriodDescription = $"January to December {_relevantYear}"
-            }
-        },
+                new
+                {
+                    memberId = "100001",
+                    memberType = _csoMemberType,
+                    isOnlineMarketPlace = false,
+                    isLateFeeApplicable = true,
+                    isClosedLoopRecycler = _csoMemberIsClosedLoopRecycler,
+                    NumberOfSubsidiariesClosedLoopRecycling = _csoMemberNumberOfSubsidiariesClosedLoopRecycling,
+                    numberOfSubsidiaries = 0,
+                    NumberOfSubsidiariesOnlineMarketPlace = 0,
+                    relevantYear = _relevantYear,
+                    submittedDate = _submissionDate,
+                    submissionPeriodDescription = $"January to December {_relevantYear}"
+                }
+            },
         resubmissionFileId = (string?)null
     };
 }

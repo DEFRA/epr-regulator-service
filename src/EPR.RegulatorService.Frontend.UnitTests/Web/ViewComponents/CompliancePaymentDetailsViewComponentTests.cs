@@ -1,3 +1,4 @@
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Services;
@@ -75,7 +76,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
         .ReturnsAsync(new CompliancePaymentResponse // all values in pence
         {
-            ApplicationProcessingFee = 100.00M, 
+            ApplicationProcessingFee = 100.00M,
             TotalChargeableItems = 1000.00M,
             PreviousPaymentsReceived = 500.00M,
             TotalOutstanding = 500.00M,
@@ -140,5 +141,56 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
                     exception,
                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                Times.Once);
+    }
+
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public async Task InvokeAsync_Passes_NumberOfSubsidiariesClosedLoopRecycling_ToPaymentFacade(bool isResubmission)
+    {
+        // Arrange
+        CompliancePaymentRequest? capturedRequest = null;
+        _registrationSumissionDetailsViewModel.ReferenceNumber = "REF-CLOSED-LOOP";
+        _registrationSumissionDetailsViewModel.NationCode = "GB-ENG";
+        _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.CsoLargeProducer;
+        _registrationSumissionDetailsViewModel.IsResubmission = isResubmission;
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails =
+        [
+            new CsoMembershipDetailsDto
+            {
+                MemberId = "memberid1",
+                MemberType = "large",
+                IsClosedLoopRecycler = true,
+                NumberOfSubsidiariesClosedLoopRecycling = 7
+            }
+        ];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
+            TimeAndDateOfResubmission = DateTime.UtcNow
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+            .ReturnsAsync(new CompliancePaymentResponse
+            {
+                ApplicationProcessingFee = 100.00M,
+                TotalChargeableItems = 1000.00M,
+                PreviousPaymentsReceived = 500.00M,
+                TotalOutstanding = 500.00M,
+                ComplianceSchemeMembers =
+                [
+                    new() { MemberId = "memberid1", MemberType = "large", MemberFee = 2.00M }
+                ]
+            });
+
+        // Act
+        await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        var members = capturedRequest!.ComplianceSchemeMembers!.ToList();
+        members.Should().ContainSingle();
+        members[0].NoOfSubsidiariesClosedLoopRecycling.Should().Be(7);
+        members[0].IsClosedLoopRecycling.Should().BeTrue();
     }
 }

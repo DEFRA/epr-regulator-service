@@ -65,6 +65,7 @@
   "numberOfSubsidiaries": 0,
   "numberOfOnlineSubsidiaries": 0,
   "isLateSubmission": true,
+  "isClosedLoopRecycler": true,
   "organisationSize": null,
   "isComplianceScheme": true,
   "submissionPeriod": "January to December 2025",

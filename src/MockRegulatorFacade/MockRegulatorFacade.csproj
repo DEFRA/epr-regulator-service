@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WireMock.Net.StandAlone" Version="1.5.54" />
+    <PackageReference Include="WireMock.Net.StandAlone" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +17,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Responses\FacadeApi\RegistrationSubmissionDetails\0163a629-7780-445f-b00e-1898546bdf0c.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Responses\FacadeApi\RegistrationSubmissionDetails\ee29cfae-81ab-435f-8759-7285959530db.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

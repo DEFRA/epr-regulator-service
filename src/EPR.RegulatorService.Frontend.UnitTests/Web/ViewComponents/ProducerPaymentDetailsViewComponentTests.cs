@@ -1,3 +1,4 @@
+using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Services;
@@ -70,6 +71,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             ApplicationProcessingFee = 100.00M,
             LateRegistrationFee = 200.00M,
             OnlineMarketplaceFee = 300.00M,
+            ClosedLoopRecyclingFee = 2800.00M,
             SubsidiaryFee = 400.00M,
             TotalChargeableItems = 1000.00M,
             PreviousPaymentsReceived = 500.00M,
@@ -97,6 +99,8 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.ApplicationProcessingFee.Should().Be(1.00M);
         model.LateRegistrationFee.Should().Be(2.00M);
         model.OnlineMarketplaceFee.Should().Be(3.00M);
+        model.ClosedLoopRecyclingFee.Should().Be(28.00M);
+        model.HasClosedLoopRecyclingFees.Should().Be(true);
         model.ProducerSize.Should().Be(expectedProducerSize);
         model.SubsidiaryFee.Should().Be(2.00M);
         model.SubsidiaryOnlineMarketPlaceFee.Should().Be(2.00M);
@@ -138,5 +142,47 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
                     exception,
                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_Passes_NumberOfSubsidiariesClosedLoopRecycling_ToPaymentFacade()
+    {
+        // Arrange
+        ProducerPaymentRequest? capturedRequest = null;
+        _registrationSumissionDetailsViewModel.NationCode = "GB-ENG";
+        _registrationSumissionDetailsViewModel.OrganisationType = RegistrationSubmissionOrganisationType.large;
+        _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.DirectLargeProducer;
+        _registrationSumissionDetailsViewModel.ProducerDetails.IsClosedLoopRecycler = true;
+        _registrationSumissionDetailsViewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling = 6;
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>()))
+            .Callback<ProducerPaymentRequest>(r => capturedRequest = r)
+            .ReturnsAsync(new ProducerPaymentResponse
+            {
+                ApplicationProcessingFee = 100.00M,
+                LateRegistrationFee = 200.00M,
+                OnlineMarketplaceFee = 300.00M,
+                ClosedLoopRecyclingFee = 2800.00M,
+                SubsidiaryFee = 400.00M,
+                TotalChargeableItems = 1000.00M,
+                PreviousPaymentsReceived = 500.00M,
+                TotalOutstanding = 500.00M,
+                SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+                {
+                    OnlineMarketPlaceSubsidiariesCount = 1,
+                    SubsidiaryOnlineMarketPlaceFee = 200.00M
+                }
+            });
+
+        // Act
+        await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.NoOfSubsidiariesClosedLoopRecycling.Should().Be(6);
+        capturedRequest.IsClosedLoopRecycling.Should().BeTrue();
     }
 }

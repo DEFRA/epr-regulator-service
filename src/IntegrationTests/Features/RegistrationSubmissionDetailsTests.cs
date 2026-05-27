@@ -3,13 +3,14 @@ namespace IntegrationTests.Features;
 using System.Text.Json;
 using AwesomeAssertions;
 using AwesomeAssertions.Execution;
-
 using Builders;
-
 using Infrastructure;
 using PageModels;
+using WireMock.AwesomeAssertions;
+using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
+using WireMock.Server;
 
 [Collection(SequentialCollection.Sequential)]
 public class RegistrationSubmissionDetailsTests : IntegrationTestBase
@@ -23,7 +24,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
     }
 
     [Fact]
-    public async Task ShowsOrganisationDetailFromFacade()
+    public async Task RegistrationSubmissionDetailsPage_ShowsOrganisationDetailsFromFacade()
     {
         // Arrange
         var submissionId = Guid.Parse("0163A629-7780-445F-B00E-1898546BDF0C");
@@ -48,7 +49,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
     }
 
     [Fact]
-    public async Task ShowsPaymentDetailsFromPaymentFacade()
+    public async Task RegistrationSubmissionDetailsPage_ShowsComplianceSchemePaymentDetailsFromPaymentFacade()
     {
         // Arrange
         var submissionId = Guid.Parse("1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e");
@@ -82,6 +83,82 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         }
     }
 
+    [Fact]
+    public async Task RegistrationSubmissionDetailsPage_PostsComplianceSchemeRegistrationFeeWithClosedLoopRecyclingFields()
+    {
+        // Arrange
+        var submissionId = Guid.NewGuid();
+        const string appRef = "REG-INT-CSO-CL-001";
+
+        SetupFacadeMockRegistrationSubmissionDetails(
+            RegistrationSubmissionDetailsBuilder.Default(submissionId)
+                .WithOrganisationType("compliance")
+                .WithRegistrationJourneyType("CsoLargeProducer")
+                .WithApplicationReferenceNumber(appRef)
+                .WithCsoMemberClosedLoopRecycling(8));
+
+        SetupPaymentFacadeMockComplianceSchemeRegistrationFee(
+            CompliancePaymentResponseBuilder.Default()
+                .WithComplianceSchemeRegistrationFee(100000)
+                .WithTotalFee(100000));
+
+        // Act
+        await GetAsPageModel<ManageRegistrationSubmissionDetailsPageModel>(
+            $"/regulators/registration-submission-details/{submissionId}");
+
+        // Assert
+        var assertions = FacadeServer.Should().HaveReceivedACall();
+        assertions
+            .UsingPost().And
+            .AtPath("/compliance-scheme/registration-fee").And
+            .WithBodyAsJson(new JsonPartialMatcher(new
+            {
+                applicationReferenceNumber = appRef,
+                complianceSchemeMembers = new[]
+                {
+                    new
+                    {
+                        memberType = "large",
+                        isClosedLoopRecycling = true,
+                        noOfSubsidiariesClosedLoopRecycling = 8,
+                    },
+                },
+            }));
+    }
+
+    [Fact]
+    public async Task RegistrationSubmissionDetailsPage_PostsProducerRegistrationFeeWithClosedLoopRecyclingFields()
+    {
+        // Arrange
+        var submissionId = Guid.NewGuid();
+        const string appRef = "REG-INT-DIRECT-CL-001";
+
+        SetupFacadeMockRegistrationSubmissionDetails(
+            RegistrationSubmissionDetailsBuilder.Default(submissionId)
+                .AsDirectLargeProducer()
+                .WithApplicationReferenceNumber(appRef)
+                .WithProducerClosedLoopRecycling(5));
+
+        SetupPaymentFacadeMockProducerRegistrationFee();
+
+        // Act
+        await GetAsPageModel<ManageRegistrationSubmissionDetailsPageModel>(
+            $"/regulators/registration-submission-details/{submissionId}");
+
+        // Assert
+        var assertions = FacadeServer.Should().HaveReceivedACall();
+        assertions
+            .UsingPost().And
+            .AtPath("/producer/registration-fee").And
+            .WithBodyAsJson(new JsonPartialMatcher(new
+            {
+                applicationReferenceNumber = appRef,
+                producerType = "large",
+                isClosedLoopRecycling = true,
+                noOfSubsidiariesClosedLoopRecycling = 5,
+            }));
+    }
+
     private void SetupPaymentFacadeMockComplianceSchemeRegistrationFee(CompliancePaymentResponseBuilder builder) =>
         FacadeServer.Given(Request.Create()
                 .UsingPost()
@@ -90,6 +167,30 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
                 .WithBody(JsonSerializer.Serialize(builder.Build())));
+
+    private void SetupPaymentFacadeMockProducerRegistrationFee() =>
+        FacadeServer.Given(Request.Create()
+                .UsingPost()
+                .WithPath("/producer/registration-fee"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBody(JsonSerializer.Serialize(new
+                {
+                    producerRegistrationFee = 165800m,
+                    producerLateRegistrationFee = 0m,
+                    producerOnlineMarketPlaceFee = 0m,
+                    producerClosedLoopRecyclingFee = 0m,
+                    previousPayment = 0m,
+                    subsidiariesFee = 0m,
+                    totalFee = 165800m,
+                    outstandingPayment = 165800m,
+                    subsidiariesFeeBreakdown = new
+                    {
+                        totalSubsidiariesOMPFees = 0m,
+                        countOfOMPSubsidiaries = 0
+                    }
+                })));
 
     private void SetupFacadeMockRegistrationSubmissionDetails(RegistrationSubmissionDetailsBuilder builder) =>
         FacadeServer.Given(Request.Create()

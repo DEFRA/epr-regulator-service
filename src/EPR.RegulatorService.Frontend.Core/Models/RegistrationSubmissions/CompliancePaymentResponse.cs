@@ -40,6 +40,9 @@ public class ComplianceSchemeMember
     [JsonPropertyName("memberLateRegistrationFee")]
     public decimal LateRegistrationFee { get; set; }
 
+    [JsonPropertyName("memberClosedLoopRecyclingFee")]
+    public decimal ClosedLoopRecyclingFee { get; set; }
+
     [JsonPropertyName("subsidiariesFee")]
     public decimal SubsidiaryFee { get; set; }
 

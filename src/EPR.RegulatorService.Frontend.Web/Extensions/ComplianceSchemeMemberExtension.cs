@@ -44,4 +44,7 @@ internal static class ComplianceSchemeMemberExtension
 
     internal static IList<decimal> GetSubsidiariesCompanies(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
         complianceSchemeMembers.Where(r => r.SubsidiaryFee > 0).Select(r => r.SubsidiaryFee).ToList();
+
+    internal static IList<decimal> GetClosedLoopRecyclingFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Where(r => r.ClosedLoopRecyclingFee > 0).Select(r => r.ClosedLoopRecyclingFee).ToList();
 }

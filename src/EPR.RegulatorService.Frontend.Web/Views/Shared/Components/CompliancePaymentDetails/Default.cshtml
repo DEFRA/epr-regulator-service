@@ -51,8 +51,8 @@
                             </dd>
                             <dd class="govuk-summary-list__value" style="width: 410px;">
                                 @Localizer[Model.SmallProducerCount == 1
-                                         ? "CompliancePaymentDetails.SmallProducerDescription1"
-                                         : "CompliancePaymentDetails.SmallProducerDescription2", Model.SmallProducerCount]
+                                         ? "CompliancePaymentDetails.SmallProducerSingularDescription"
+                                         : "CompliancePaymentDetails.SmallProducerPluralDescription", Model.SmallProducerCount]
                             </dd>
                             <payment-amount amount="@Model.SmallProducerFee"></payment-amount>
                         </div>
@@ -65,8 +65,8 @@
                             </dd>
                             <dd class="govuk-summary-list__value" style="width: 410px;">
                                 @Localizer[Model.LargeProducerCount == 1
-                                         ? "CompliancePaymentDetails.LargeProducerDescription1"
-                                         : "CompliancePaymentDetails.LargeProducerDescription2", Model.LargeProducerCount]
+                                         ? "CompliancePaymentDetails.LargeProducerSingularDescription"
+                                         : "CompliancePaymentDetails.LargeProducerPluralDescription", Model.LargeProducerCount]
                             </dd>
                             <payment-amount amount="@Model.LargeProducerFee"></payment-amount>
                         </div>
@@ -79,8 +79,8 @@
                             </dd>
                             <dd class="govuk-summary-list__value" style="width: 410px;">
                                 @Localizer[Model.OnlineMarketPlaceCount == 1
-                                         ? "CompliancePaymentDetails.OnlineMarketPlaceDescription1"
-                                         : "CompliancePaymentDetails.OnlineMarketPlaceDescription2", Model.OnlineMarketPlaceCount]
+                                         ? "CompliancePaymentDetails.OnlineMarketPlaceSingularDescription"
+                                         : "CompliancePaymentDetails.OnlineMarketPlacePluralDescription", Model.OnlineMarketPlaceCount]
                             </dd>
                             <payment-amount amount="@Model.OnlineMarketPlaceFee"></payment-amount>
                         </div>
@@ -93,8 +93,8 @@
                             </dd>
                             <dd class="govuk-summary-list__value" style="width: 410px;">
                                 @Localizer[Model.SubsidiariesCompanyCount == 1
-                                         ? "CompliancePaymentDetails.SubsidiariesCompanyDescription1"
-                                         : "CompliancePaymentDetails.SubsidiariesCompanyDescription2", Model.SubsidiariesCompanyCount]
+                                    ? "CompliancePaymentDetails.SubsidiariesCompanySingularDescription"
+                                    : "CompliancePaymentDetails.SubsidiariesCompanyPluralDescription", Model.SubsidiariesCompanyCount]
                             </dd>
                             <payment-amount amount="@Model.SubsidiariesCompanyFee"></payment-amount>
                         </div>
@@ -107,12 +107,27 @@
                             </dd>
                             <dd class="govuk-summary-list__value" style="width: 410px;">
                                 @Localizer[Model.LateProducerCount == 1
-                                         ? "CompliancePaymentDetails.LateProducerDescription1"
-                                         : "CompliancePaymentDetails.LateProducerDescription2", Model.LateProducerCount]
+                                         ? "CompliancePaymentDetails.LateProducerSingularDescription"
+                                         : "CompliancePaymentDetails.LateProducerPluralDescription", Model.LateProducerCount]
                             </dd>
                             <payment-amount amount="@Model.LateProducerFee"></payment-amount>
                         </div>
                     }
+                }
+
+                @if (Model.ClosedLoopRegistrationCount > 0)
+                {
+                    <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                        <dd class="govuk-summary-list__value" style="width: 285px;">
+                            <strong>@Localizer["CompliancePaymentDetails.ClosedLoopRecyclingFee"]</strong>
+                        </dd>
+                        <dd class="govuk-summary-list__value" style="width: 410px;">
+                            @Localizer[Model.ClosedLoopRegistrationCount == 1
+                                ? "CompliancePaymentDetails.ClosedLoopRecyclingFeeSingularDescription"
+                                : "CompliancePaymentDetails.ClosedLoopRecyclingFeePluralDescription", Model.ClosedLoopRegistrationCount]
+                        </dd>
+                        <payment-amount amount="@Model.ClosedLoopRecyclingFee"></payment-amount>
+                    </div>
                 }
                 <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
                     <dd class="govuk-summary-list__value" style="width: 285px;">

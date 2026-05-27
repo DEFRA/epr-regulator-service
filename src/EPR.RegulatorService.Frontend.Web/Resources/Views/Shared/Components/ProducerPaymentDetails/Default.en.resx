@@ -147,16 +147,16 @@
   <data name="ProducerPaymentDetails.SubsidiaryFee" xml:space="preserve">
     <value>Subsidiary fee</value>
   </data>
-  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription1" xml:space="preserve">
-    <value>{0} subsidiary</value>
+  <data name="ProducerPaymentDetails.SubsidiaryFeeSingularDescription" xml:space="preserve">
+    <value>{0} subsidiary company</value>
   </data>
-  <data name="ProducerPaymentDetails.SubsidiaryFeeDescription2" xml:space="preserve">
-    <value>{0} subsidiaries</value>
+  <data name="ProducerPaymentDetails.SubsidiaryFeePluralDescription" xml:space="preserve">
+    <value>{0} subsidiary companies</value>
   </data>
-  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription1" xml:space="preserve">
+  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceSingularDescription" xml:space="preserve">
     <value>{0} is an online marketplace</value>
   </data>
-  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceDescription2" xml:space="preserve">
+  <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlacePluralDescription" xml:space="preserve">
     <value>{0} are online marketplaces</value>
   </data>
   <data name="ProducerPaymentDetails.Title" xml:space="preserve">
@@ -173,5 +173,14 @@
   </data>
   <data name="ProducerPaymentDetails.WaiveFees" xml:space="preserve">
     <value>Waive fees</value>
+  </data>
+  <data name="ProducerPaymentDetails.ClosedLoopRecyclingFee" xml:space="preserve">
+    <value>Closed loop packaging waste</value>
+  </data>
+  <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeeSingularDescription" xml:space="preserve">
+    <value>{0} registration</value>
+  </data>
+  <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeePluralDescription" xml:space="preserve">
+    <value>{0} registrations</value>
   </data>
 </root>
