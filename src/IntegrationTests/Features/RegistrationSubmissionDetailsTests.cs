@@ -113,6 +113,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
             .AtPath("/compliance-scheme/registration-fee").And
             .WithBody($"*\"applicationReferenceNumber\"*{appRef}*");
 
+        // RequestMessages is narrowed by the assertions above to the payment-facade POST under test.
         var request = JsonSerializer.Deserialize<CompliancePaymentRequest>(
             assertions.RequestMessages.Single().Body!,
             PaymentFacadeWireMockHelpers.JsonOptions);
@@ -153,6 +154,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
             .AtPath("/producer/registration-fee").And
             .WithBody($"*\"applicationReferenceNumber\"*{appRef}*");
 
+        // RequestMessages is narrowed by the assertions above to the payment-facade POST under test.
         var request = JsonSerializer.Deserialize<ProducerPaymentRequest>(
             assertions.RequestMessages.Single().Body!,
             PaymentFacadeWireMockHelpers.JsonOptions);
