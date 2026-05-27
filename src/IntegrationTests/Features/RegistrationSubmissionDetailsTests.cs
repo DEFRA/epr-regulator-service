@@ -107,16 +107,14 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
             $"/regulators/registration-submission-details/{submissionId}");
 
         // Assert
-        FacadeServer.Should()
-            .HaveReceivedACall()
-            .UsingPost()
-            .And
-            .AtPath("/compliance-scheme/registration-fee")
-            .And
+        var assertions = FacadeServer.Should().HaveReceivedACall();
+        assertions
+            .UsingPost().And
+            .AtPath("/compliance-scheme/registration-fee").And
             .WithBody($"*\"applicationReferenceNumber\"*{appRef}*");
 
         var request = JsonSerializer.Deserialize<CompliancePaymentRequest>(
-            PaymentFacadeWireMockHelpers.GetLastPostBody(FacadeServer, "compliance-scheme/registration-fee", appRef),
+            assertions.RequestMessages.Single().Body!,
             PaymentFacadeWireMockHelpers.JsonOptions);
 
         using (new AssertionScope())
@@ -149,16 +147,14 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
             $"/regulators/registration-submission-details/{submissionId}");
 
         // Assert
-        FacadeServer.Should()
-            .HaveReceivedACall()
-            .UsingPost()
-            .And
-            .AtPath("/producer/registration-fee")
-            .And
+        var assertions = FacadeServer.Should().HaveReceivedACall();
+        assertions
+            .UsingPost().And
+            .AtPath("/producer/registration-fee").And
             .WithBody($"*\"applicationReferenceNumber\"*{appRef}*");
 
         var request = JsonSerializer.Deserialize<ProducerPaymentRequest>(
-            PaymentFacadeWireMockHelpers.GetLastPostBody(FacadeServer, "producer/registration-fee", appRef),
+            assertions.RequestMessages.Single().Body!,
             PaymentFacadeWireMockHelpers.JsonOptions);
 
         using (new AssertionScope())
