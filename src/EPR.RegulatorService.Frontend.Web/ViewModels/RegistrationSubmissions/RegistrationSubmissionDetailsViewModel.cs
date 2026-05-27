@@ -105,8 +105,6 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             CSOMembershipDetails = details.CsoMembershipDetails,
             IsResubmission = details.IsResubmission,
             ResubmissionFileId = details.ResubmissionFileId
-            // ,
-            // IsClosedLoopRecycler = details.IsClosedLoopRecycler
         };
     }
 
