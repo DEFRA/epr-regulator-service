@@ -69,6 +69,7 @@ public class PaymentFacadeService : IPaymentFacadeService
 
         var response = await _httpClient.PostAsJsonAsync(_paymentFacadeApiConfig.Endpoints[GetProducerPaymentDetailsPath], request);
         response.EnsureSuccessStatusCode();
+        var result = response.Content.ReadAsStringAsync();
 
         return JsonSerializer.Deserialize<ProducerPaymentResponse>(await response.Content.ReadAsStringAsync());
     }

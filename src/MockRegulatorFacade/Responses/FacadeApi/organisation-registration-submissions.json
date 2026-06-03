@@ -426,6 +426,31 @@
       "regulatorUserId": null
     },
     {
+      "submissionId": "b7c8d9e0-f1a2-4b3c-5d6e-7f8a9b0c1d2e",
+      "organisationId": "c8d9e0f1-a2b3-4c5d-6e7f-8a9b0c1d2e3f",
+      "organisationReference": "100018",
+      "organisationName": "Direct Producer-with Sub",
+      "organisationType": "large",
+      "registrationJourneyType": "DirectLargeProducer",
+      "applicationReferenceNumber": "REG-2025-018",
+      "registrationReferenceNumber": null,
+      "submissionDate": "2025-01-28T10:15:00Z",
+      "registrationYear": 2025,
+      "nationId": 1,
+      "submissionStatus": "Pending",
+      "resubmissionStatus": null,
+      "statusPendingDate": "2025-01-28T10:15:00Z",
+      "isResubmission": false,
+      "resubmissionFileId": null,
+      "resubmissionDate": null,
+      "registrationDate": null,
+      "regulatorDecisionDate": null,
+      "resubmissionDecisionDate": null,
+      "regulatorCommentDate": null,
+      "producerCommentDate": null,
+      "regulatorUserId": null
+    },
+    {
       "submissionId": "a6b7c8d9-e0f1-2a3b-4c5d-6e7f8a9b0c1d",
       "organisationId": "b7c8d9e0-f1a2-3b4c-5d6e-7f8a9b0c1d2e",
       "organisationReference": "100018",
@@ -503,5 +528,5 @@
   ],
   "currentPage": 1,
   "pageSize": 20,
-  "totalItems": 20
+  "totalItems": 21
 }
