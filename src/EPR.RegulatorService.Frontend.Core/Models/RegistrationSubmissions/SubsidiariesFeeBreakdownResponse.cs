@@ -9,4 +9,10 @@ public class SubsidiariesFeeBreakdownResponse
 
     [JsonPropertyName("countOfOMPSubsidiaries")]
     public int OnlineMarketPlaceSubsidiariesCount { get; set; }
+
+    [JsonPropertyName("totalSubsidiariesClosedLoopRecyclingFees")]
+    public decimal TotalSubsidiariesClosedLoopRecyclingFees { get; set; }
+
+    [JsonPropertyName("countOfClosedLoopRecyclingSubsidiaries")]
+    public int CountOfClosedLoopRecyclingSubsidiaries { get; set; }
 }

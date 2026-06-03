@@ -132,6 +132,9 @@
   <data name="ProducerPaymentDetails.Items" xml:space="preserve">
     <value>Items</value>
   </data>
+  <data name="ProducerPaymentDetails.Units" xml:space="preserve">
+    <value>Units</value>
+  </data>
   <data name="ProducerPaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
     <value>Late fee</value>
   </data>
@@ -141,11 +144,11 @@
   <data name="ProducerPaymentDetails.ProducerClosedLoopRecyclingFeeDescription" xml:space="preserve">
     <value>Closed loop recycling fee</value>
   </data>
-  <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingDescription1" xml:space="preserve">
-    <value>{0} subsidiary — Subsidiary closed loop packaging waste</value>
+  <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingSingularDescription" xml:space="preserve">
+    <value>Subsidiary closed loop packaging waste</value>
   </data>
-  <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingDescription2" xml:space="preserve">
-    <value>{0} subsidiaries — Subsidiaries closed loop packaging waste</value>
+  <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingPluralDescription" xml:space="preserve">
+    <value>Subsidiaries closed loop packaging waste</value>
   </data>
   <data name="ProducerPaymentDetails.PreviousPaymentsReceived" xml:space="preserve">
     <value>Previous payments</value>
@@ -157,16 +160,16 @@
     <value>Subsidiary fee</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeSingularDescription" xml:space="preserve">
-    <value>{0} subsidiary company</value>
+    <value>Subsidiary company</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeePluralDescription" xml:space="preserve">
-    <value>{0} subsidiary companies</value>
+    <value>Subsidiary companies</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceSingularDescription" xml:space="preserve">
-    <value>{0} is an online marketplace</value>
+    <value>Online marketplace</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlacePluralDescription" xml:space="preserve">
-    <value>{0} are online marketplaces</value>
+    <value>Online marketplaces</value>
   </data>
   <data name="ProducerPaymentDetails.Title" xml:space="preserve">
     <value>Payment details</value>
@@ -187,9 +190,9 @@
     <value>Closed loop packaging waste</value>
   </data>
   <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeeSingularDescription" xml:space="preserve">
-    <value>{0} registration</value>
+    <value>Registration</value>
   </data>
   <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeePluralDescription" xml:space="preserve">
-    <value>{0} registrations</value>
+    <value>Registrations</value>
   </data>
 </root>

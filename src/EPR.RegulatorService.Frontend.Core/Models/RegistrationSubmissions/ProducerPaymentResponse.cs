@@ -13,9 +13,6 @@ public class ProducerPaymentResponse
     [JsonPropertyName("producerOnlineMarketPlaceFee")]
     public decimal OnlineMarketplaceFee { get; set; }
 
-    [JsonPropertyName("producerClosedLoopRecyclingFee")]
-    public decimal ProducerClosedLoopRecyclingFee { get; set; }
-
     [JsonPropertyName("previousPayment")]
     public decimal PreviousPaymentsReceived { get; set; }
 
@@ -30,4 +27,7 @@ public class ProducerPaymentResponse
 
     [JsonPropertyName("subsidiariesFeeBreakdown")]
     public SubsidiariesFeeBreakdownResponse SubsidiariesFeeBreakdown { get; set; }
+
+    [JsonPropertyName("producerClosedLoopRecyclingFee")]
+    public decimal ProducerClosedLoopRecyclingFee { get; set; }
 }

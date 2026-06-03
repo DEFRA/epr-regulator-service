@@ -50,8 +50,6 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public bool IsOnlineMarketPlace { get; set; }
     public int NumberOfSubsidiaries { get; set; }
     public int NumberOfOnlineSubsidiaries { get; set; }
-    public bool IsClosedLoopRecycling { get; set; }
-    public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
     public bool IsLateSubmission { get; set; }
     public string OrganisationSize { get; set; }
     public bool IsComplianceScheme { get; set; }
@@ -60,6 +58,6 @@ public class RegistrationSubmissionOrganisationDetailsResponse
 
     public bool IsResubmission { get; set; }
     public string ResubmissionFileId { get; set; }
-    public bool IsClosedLoopRecycler { get; set; }
+    public int NumberOfHoldingCompaniesClosedLoopRecycling { get; set; }
     public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
 }

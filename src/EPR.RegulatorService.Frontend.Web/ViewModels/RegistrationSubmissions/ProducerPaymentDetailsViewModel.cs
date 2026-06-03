@@ -21,8 +21,6 @@ public class ProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 
     public decimal SubsidiaryClosedLoopRecyclingFee { get; set; }
 
-    public decimal ClosedLoopRecyclingFee { get; set; }
-
     public bool HasClosedLoopRecyclingFees { get; set; }
 
     public decimal SubTotal { get; set; }
@@ -37,7 +35,10 @@ public class ProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 
     public int NumberOfSubsidiariesBeingOnlineMarketplace { get; set; }
 
+    public int NumberOfSubsidiariesWithClosedLoopRecycling { get; set; }
+
     public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
 
     public RegistrationSubmissionStatus Status { get; set; }
+
 }

@@ -10,13 +10,11 @@ public class ProducerDetailsDto
 
     public bool IsLateFeeApplicable { get; set; }
 
-    public bool IsClosedLoopRecycler { get; set; }
+    public int NumberOfHoldingCompaniesClosedLoopRecycling { get; set; }
 
     public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
 
     public bool IsProducerOnlineMarketplace { get; set; }
 
-    public bool IsClosedLoopRecycling { get; set; }
-
-    public int NoOfSubsidiariesClosedLoopRecycling { get; set; }
+    public int NumberOfSubsidiariesOnlineMarketPlace { get; set; }
 }

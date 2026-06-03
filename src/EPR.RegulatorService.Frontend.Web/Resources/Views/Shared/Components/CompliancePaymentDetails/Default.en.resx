@@ -190,9 +190,9 @@
     <value>Closed loop packaging waste</value>
   </data>
   <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeeSingularDescription" xml:space="preserve">
-    <value>{0} registration</value>
+    <value>{0} subsidiary closed loop packaging waste</value>
   </data>
   <data name="CompliancePaymentDetails.ClosedLoopRecyclingFeePluralDescription" xml:space="preserve">
-    <value>{0} registrations</value>
+    <value>{0} subsidiaries closed loop packaging waste</value>
   </data>
 </root>

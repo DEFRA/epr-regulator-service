@@ -71,7 +71,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
             ApplicationProcessingFee = 100.00M,
             LateRegistrationFee = 200.00M,
             OnlineMarketplaceFee = 300.00M,
-            ClosedLoopRecyclingFee = 2800.00M,
+            ProducerClosedLoopRecyclingFee = 2800.00M,
             SubsidiaryFee = 400.00M,
             TotalChargeableItems = 1000.00M,
             PreviousPaymentsReceived = 500.00M,
@@ -152,7 +152,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         _registrationSumissionDetailsViewModel.NationCode = "GB-ENG";
         _registrationSumissionDetailsViewModel.OrganisationType = RegistrationSubmissionOrganisationType.large;
         _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.DirectLargeProducer;
-        _registrationSumissionDetailsViewModel.ProducerDetails.IsClosedLoopRecycler = true;
+        _registrationSumissionDetailsViewModel.ProducerDetails.NumberOfHoldingCompaniesClosedLoopRecycling = 1;
         _registrationSumissionDetailsViewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling = 6;
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
         {
@@ -165,7 +165,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
                 ApplicationProcessingFee = 100.00M,
                 LateRegistrationFee = 200.00M,
                 OnlineMarketplaceFee = 300.00M,
-                ClosedLoopRecyclingFee = 2800.00M,
+                ProducerClosedLoopRecyclingFee = 2800.00M,
                 SubsidiaryFee = 400.00M,
                 TotalChargeableItems = 1000.00M,
                 PreviousPaymentsReceived = 500.00M,
@@ -183,6 +183,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         // Assert
         capturedRequest.Should().NotBeNull();
         capturedRequest!.NoOfSubsidiariesClosedLoopRecycling.Should().Be(6);
+        capturedRequest.NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(1);
         capturedRequest.IsClosedLoopRecycling.Should().BeTrue();
     }
 }
