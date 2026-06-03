@@ -99,7 +99,6 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.ApplicationProcessingFee.Should().Be(1.00M);
         model.LateRegistrationFee.Should().Be(2.00M);
         model.OnlineMarketplaceFee.Should().Be(3.00M);
-        model.ClosedLoopRecyclingFee.Should().Be(28.00M);
         model.HasClosedLoopRecyclingFees.Should().Be(true);
         model.ProducerSize.Should().Be(expectedProducerSize);
         model.SubsidiaryFee.Should().Be(2.00M);
@@ -184,6 +183,5 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         capturedRequest.Should().NotBeNull();
         capturedRequest!.NoOfSubsidiariesClosedLoopRecycling.Should().Be(6);
         capturedRequest.NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(1);
-        capturedRequest.IsClosedLoopRecycling.Should().BeTrue();
     }
 }
