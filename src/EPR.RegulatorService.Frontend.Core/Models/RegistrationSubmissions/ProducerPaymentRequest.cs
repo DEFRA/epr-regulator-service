@@ -12,6 +12,8 @@ public class ProducerPaymentRequest
 
     public int NoOfHoldingCompaniesClosedLoopRecycling { get; set; }
 
+    public bool IsClosedLoopRecycling { get; set; }
+
     public int NoOfSubsidiariesClosedLoopRecycling { get; set; }
 
     public bool IsProducerOnlineMarketplace { get; set; }

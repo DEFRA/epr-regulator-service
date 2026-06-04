@@ -25,16 +25,23 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
     {
         try
         {
+            int numberOfHoldingCompaniesClosedLoopRecycling = viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer
+                ? viewModel.ProducerDetails.NumberOfHoldingCompaniesClosedLoopRecycling
+                : 0;
+
+            int numberOfSubsidiariesClosedLoopRecycling = viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer
+                ? viewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling
+                : 0;
+
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ReferenceNumber,
                 NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NumberOfSubsidiariesOnlineMarketPlace,
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NumberOfSubsidiaries,
                 IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,
-                NoOfHoldingCompaniesClosedLoopRecycling = viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer
-                    ? viewModel.ProducerDetails.NumberOfHoldingCompaniesClosedLoopRecycling
-                    : 0,
-                NoOfSubsidiariesClosedLoopRecycling = viewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling,
+                NoOfHoldingCompaniesClosedLoopRecycling = numberOfHoldingCompaniesClosedLoopRecycling,
+                IsClosedLoopRecycling = numberOfHoldingCompaniesClosedLoopRecycling > 0,
+                NoOfSubsidiariesClosedLoopRecycling = numberOfSubsidiariesClosedLoopRecycling,
                 IsProducerOnlineMarketplace = viewModel.ProducerDetails.IsProducerOnlineMarketplace,
                 ProducerType = viewModel.ProducerDetails.ProducerType,
                 Regulator = viewModel.NationCode,
@@ -49,6 +56,10 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
             }
 
             var subsidiariesFeeBreakdown = producerPaymentResponse.SubsidiariesFeeBreakdown;
+            decimal subsidiaryFee = ConvertToPoundsFromPence(
+                producerPaymentResponse.SubsidiaryFee
+                - subsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee
+                - subsidiariesFeeBreakdown.TotalSubsidiariesClosedLoopRecyclingFees);
 
             var producerPaymentDetailsViewModel = new ProducerPaymentDetailsViewModel
             {
@@ -56,10 +67,9 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 LateRegistrationFee = ConvertToPoundsFromPence(producerPaymentResponse.LateRegistrationFee),
                 OnlineMarketplaceFee = ConvertToPoundsFromPence(producerPaymentResponse.OnlineMarketplaceFee),
                 ProducerClosedLoopRecyclingFee = ConvertToPoundsFromPence(producerPaymentResponse.ProducerClosedLoopRecyclingFee),
-                //ClosedLoopRecyclingFee = ConvertToPoundsFromPence(producerPaymentResponse.ProducerClosedLoopRecyclingFee),
                 HasClosedLoopRecyclingFees = producerPaymentResponse.ProducerClosedLoopRecyclingFee > 0,
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
-                SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.SubsidiaryFee - subsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
+                SubsidiaryFee = subsidiaryFee,
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(subsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 SubsidiaryClosedLoopRecyclingFee = ConvertToPoundsFromPence(subsidiariesFeeBreakdown.TotalSubsidiariesClosedLoopRecyclingFees),
                 SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
