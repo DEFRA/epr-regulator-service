@@ -157,6 +157,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                 applicationReferenceNumber = appRef,
                 producerType = "large",
                 noOfHoldingCompaniesClosedLoopRecycling = 1,
+                isClosedLoopRecycling = true,
                 noOfSubsidiariesClosedLoopRecycling = 5,
             }));
     }
