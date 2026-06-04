@@ -28,7 +28,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             ReferenceNumber = "SomeGuid",
             RegistrationDateTime = DateTime.Now.AddDays(-1),
-            NationId = 1
+            NationId = 1,
+            ProducerDetails = new ProducerDetailsDto()
         };
         _loggerMock.Setup(x => x.IsEnabled(It.IsAny<LogLevel>())).Returns(true);
         _paymentDetailsOptionsMock.Setup(r => r.Value).Returns(new PaymentDetailsOptions());
@@ -193,5 +194,167 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         members[0].NoOfSubsidiariesClosedLoopRecycling.Should().Be(7);
         members[0].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(1);
         members[0].IsClosedLoopRecycling.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_Zeros_ClosedLoopCounts_For_CsoSmallProducer()
+    {
+        // Arrange
+        CompliancePaymentRequest? capturedRequest = null;
+        _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.CsoSmallProducer;
+        _registrationSumissionDetailsViewModel.ProducerDetails.NumberOfHoldingCompaniesClosedLoopRecycling = 2;
+        _registrationSumissionDetailsViewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling = 4;
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails =
+        [
+            new CsoMembershipDetailsDto
+            {
+                MemberId = "memberid1",
+                MemberType = "small",
+                NumberOfHoldingCompaniesClosedLoopRecycling = 2,
+                NumberOfSubsidiariesClosedLoopRecycling = 4
+            }
+        ];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+            .ReturnsAsync((CompliancePaymentResponse?)null);
+
+        // Act
+        await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        var members = capturedRequest!.ComplianceSchemeMembers!.ToList();
+        members.Should().ContainSingle();
+        members[0].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(0);
+        members[0].NoOfSubsidiariesClosedLoopRecycling.Should().Be(0);
+        members[0].IsClosedLoopRecycling.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_WhenCsoMembershipDetailsEmpty_SendsNoComplianceSchemeMembers()
+    {
+        // Arrange
+        CompliancePaymentRequest? capturedRequest = null;
+        _registrationSumissionDetailsViewModel.NationCode = "GB-ENG";
+        _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.CsoLargeProducer;
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails = [];
+        _registrationSumissionDetailsViewModel.ProducerDetails = new ProducerDetailsDto
+        {
+            ProducerType = "large",
+            NumberOfHoldingCompaniesClosedLoopRecycling = 1,
+            NumberOfSubsidiariesClosedLoopRecycling = 8
+        };
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+            .ReturnsAsync((CompliancePaymentResponse?)null);
+
+        // Act
+        await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.ComplianceSchemeMembers.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_WhenCsoMembersPresent_DoesNotUseProducerDetailsForClosedLoopCounts()
+    {
+        // Arrange
+        CompliancePaymentRequest? capturedRequest = null;
+        _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.CsoLargeProducer;
+        _registrationSumissionDetailsViewModel.ProducerDetails.NumberOfHoldingCompaniesClosedLoopRecycling = 5;
+        _registrationSumissionDetailsViewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling = 7;
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails =
+        [
+            new CsoMembershipDetailsDto
+            {
+                MemberId = "memberid1",
+                MemberType = "large",
+                NumberOfHoldingCompaniesClosedLoopRecycling = null,
+                NumberOfSubsidiariesClosedLoopRecycling = 0
+            }
+        ];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+            .ReturnsAsync((CompliancePaymentResponse?)null);
+
+        // Act
+        await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        var members = capturedRequest!.ComplianceSchemeMembers!.ToList();
+        members[0].NoOfSubsidiariesClosedLoopRecycling.Should().Be(0);
+        members[0].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(0);
+        members[0].IsClosedLoopRecycling.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_SubsidiariesCompanyFee_Excludes_Omp_And_Clr_From_SubsidiariesFee()
+    {
+        // Arrange
+        const decimal subsidiariesFeePence = 100_000m;
+        const decimal ompPence = 20_000m;
+        const decimal clrPence = 30_000m;
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails =
+        [
+            new CsoMembershipDetailsDto
+            {
+                MemberId = "memberid1",
+                MemberType = "large",
+                NumberOfSubsidiaries = 2
+            }
+        ];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+            .ReturnsAsync(new CompliancePaymentResponse
+            {
+                ApplicationProcessingFee = 100.00M,
+                TotalChargeableItems = 1000.00M,
+                PreviousPaymentsReceived = 500.00M,
+                TotalOutstanding = 500.00M,
+                ComplianceSchemeMembers =
+                [
+                    new()
+                    {
+                        MemberId = "memberid1",
+                        MemberType = "large",
+                        MemberFee = 2.00M,
+                        SubsidiaryFee = subsidiariesFeePence,
+                        SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+                        {
+                            SubsidiaryOnlineMarketPlaceFee = ompPence,
+                            TotalSubsidiariesClosedLoopRecyclingFees = clrPence,
+                            CountOfClosedLoopRecyclingSubsidiaries = 1
+                        }
+                    }
+                ]
+            });
+
+        // Act
+        var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        var model = result.ViewData.Model as CompliancePaymentDetailsViewModel;
+        model.Should().NotBeNull();
+        model!.SubsidiariesCompanyCount.Should().Be(2);
+        model.SubsidiariesCompanyFee.Should().Be((subsidiariesFeePence - ompPence - clrPence) / 100m);
+        model.SubsidiariesClosedLoopRecyclingCount.Should().Be(1);
+        model.SubsidiariesClosedLoopRecyclingFee.Should().Be(clrPence / 100m);
     }
 }

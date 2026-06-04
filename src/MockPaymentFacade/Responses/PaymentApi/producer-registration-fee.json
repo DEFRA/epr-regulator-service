@@ -2,10 +2,10 @@
   "producerRegistrationFee": 284200,
   "producerOnlineMarketPlaceFee": 25000,
   "producerClosedLoopRecyclingFee": 254800,
-  "producerLateRegistrationFee": 38600,
-  "totalFee": 577750,
+  "producerLateRegistrationFee": 77200,
+  "totalFee": 641200,
   "previousPayment": 0,
-  "outstandingPayment": 577750,
+  "outstandingPayment": 641200,
   "subsidiariesFee": 0,
   "subsidiariesFeeBreakdown": {
     "totalSubsidiariesOMPFees": 0,

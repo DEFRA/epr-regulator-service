@@ -451,6 +451,31 @@
       "regulatorUserId": null
     },
     {
+      "submissionId": "c1d2e3f4-a5b6-7c8d-9e0f-1a2b3c4d5e6f",
+      "organisationId": "d2e3f4a5-b6c7-8d9e-0f1a-2b3c4d5e6f7a",
+      "organisationReference": "100021",
+      "organisationName": "CSO With Sub Ltd",
+      "organisationType": "compliance",
+      "registrationJourneyType": "CsoLargeProducer",
+      "applicationReferenceNumber": "REG-2025-020",
+      "registrationReferenceNumber": null,
+      "submissionDate": "2025-01-29T11:00:00Z",
+      "registrationYear": 2025,
+      "nationId": 1,
+      "submissionStatus": "Pending",
+      "resubmissionStatus": null,
+      "statusPendingDate": "2025-01-29T11:00:00Z",
+      "isResubmission": false,
+      "resubmissionFileId": null,
+      "resubmissionDate": null,
+      "registrationDate": null,
+      "regulatorDecisionDate": null,
+      "resubmissionDecisionDate": null,
+      "regulatorCommentDate": null,
+      "producerCommentDate": null,
+      "regulatorUserId": null
+    },
+    {
       "submissionId": "a6b7c8d9-e0f1-2a3b-4c5d-6e7f8a9b0c1d",
       "organisationId": "b7c8d9e0-f1a2-3b4c-5d6e-7f8a9b0c1d2e",
       "organisationReference": "100018",
@@ -528,5 +553,5 @@
   ],
   "currentPage": 1,
   "pageSize": 20,
-  "totalItems": 21
+  "totalItems": 22
 }
