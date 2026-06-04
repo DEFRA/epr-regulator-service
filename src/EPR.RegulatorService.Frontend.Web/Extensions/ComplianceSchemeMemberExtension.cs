@@ -42,9 +42,28 @@ internal static class ComplianceSchemeMemberExtension
     internal static IList<decimal> GetOnlineMarketPlaces(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
         complianceSchemeMembers.Where(r => r.OnlineMarketPlaceFee > 0).Select(r => r.OnlineMarketPlaceFee).ToList();
 
-    internal static IList<decimal> GetSubsidiariesCompanies(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
-        complianceSchemeMembers.Where(r => r.SubsidiaryFee > 0).Select(r => r.SubsidiaryFee).ToList();
+    internal static decimal GetSubsidiariesCompanyNetFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Where(r => r.SubsidiaryFee > 0).Sum(GetNetSubsidiariesCompanyFee);
+
+    internal static int GetSubsidiariesClosedLoopRecyclingCount(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.CountOfClosedLoopRecyclingSubsidiaries ?? 0);
+
+    internal static decimal GetSubsidiariesClosedLoopRecyclingFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.TotalSubsidiariesClosedLoopRecyclingFees ?? 0);
 
     internal static IList<decimal> GetClosedLoopRecyclingFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
         complianceSchemeMembers.Where(r => r.ClosedLoopRecyclingFee > 0).Select(r => r.ClosedLoopRecyclingFee).ToList();
+
+    private static decimal GetNetSubsidiariesCompanyFee(this ComplianceSchemeMember member)
+    {
+        var breakdown = member.SubsidiariesFeeBreakdown;
+        if (breakdown is null)
+        {
+            return member.SubsidiaryFee;
+        }
+
+        return member.SubsidiaryFee
+            - breakdown.SubsidiaryOnlineMarketPlaceFee
+            - breakdown.TotalSubsidiariesClosedLoopRecyclingFees;
+    }
 }
