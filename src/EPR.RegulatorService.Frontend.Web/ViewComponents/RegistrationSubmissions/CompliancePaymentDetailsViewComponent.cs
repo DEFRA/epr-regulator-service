@@ -41,7 +41,8 @@ public class CompliancePaymentDetailsViewComponent(
                         IsOnlineMarketplace = csoMember.IsOnlineMarketPlace,
                         IsLateFeeApplicable = csoMember.IsLateFeeApplicable,
                         NoOfHoldingCompaniesClosedLoopRecycling = isLargeProducer ? csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0 : 0,
-                        IsClosedLoopRecycling = isLargeProducer && ((csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0) > 0),                        NoOfSubsidiariesClosedLoopRecycling = csoMember.NumberOfSubsidiariesClosedLoopRecycling,
+                        IsClosedLoopRecycling = isLargeProducer && ((csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0) > 0),
+                        NoOfSubsidiariesClosedLoopRecycling = csoMember.NumberOfSubsidiariesClosedLoopRecycling,
                         NumberOfSubsidiaries = csoMember.NumberOfSubsidiaries,
                         NoOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace
                     }),
