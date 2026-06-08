@@ -3,7 +3,6 @@ namespace MockRegulatorFacade;
 using System.Diagnostics.CodeAnalysis;
 
 using FacadeApi;
-using PaymentApi;
 
 using WireMock.Logging;
 using WireMock.Net.StandAlone;
