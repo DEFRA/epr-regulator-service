@@ -37,6 +37,25 @@ public static class PaymentApi
                     .WithBodyFromFile(filePath));
         }
 
+        var producerFeeByReferenceDir = Path.Combine("Responses/PaymentApi/ProducerRegistrationFee");
+        if (Directory.Exists(producerFeeByReferenceDir))
+        {
+            foreach (var filePath in Directory.GetFiles(producerFeeByReferenceDir, "*.json"))
+            {
+                server.Given(Request.Create()
+                        .UsingPost()
+                        .WithPath("/producer/registration-fee")
+                        .WithBody(new JsonPartialMatcher(JsonSerializer.Serialize(new
+                        {
+                            applicationReferenceNumber = Path.GetFileNameWithoutExtension(filePath),
+                        }))))
+                    .RespondWith(Response.Create()
+                        .WithStatusCode(200)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBodyFromFile(filePath));
+            }
+        }
+
         // Producer registration fee endpoint
         server.Given(Request.Create()
                 .UsingPost()

@@ -13,8 +13,8 @@ public class RegistrationSubmissionDetailsBuilder
     private bool _emptyCsoMembershipDetails;
     private string? _organisationSize;
     private int _numberOfSubsidiariesClosedLoopRecyclingRoot;
-    private bool _isClosedLoopRecyclerRoot;
-    private bool _csoMemberIsClosedLoopRecycler;
+    private int _numberOfHoldingCompaniesClosedLoopRecyclingRoot;
+    private int _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling;
     private int _csoMemberNumberOfSubsidiariesClosedLoopRecycling;
     private string _csoMemberType = "large";
     private string _applicationReferenceNumber = "REG-2025-001";
@@ -79,17 +79,21 @@ public class RegistrationSubmissionDetailsBuilder
         return this;
     }
 
-    public RegistrationSubmissionDetailsBuilder WithProducerClosedLoopRecycling(int noOfSubsidiariesClosedLoopRecycling, bool isClosedLoopRecycler = true)
+    public RegistrationSubmissionDetailsBuilder WithProducerClosedLoopRecycling(
+        int noOfSubsidiariesClosedLoopRecycling,
+        int noOfHoldingCompaniesClosedLoopRecycling = 1)
     {
         _numberOfSubsidiariesClosedLoopRecyclingRoot = noOfSubsidiariesClosedLoopRecycling;
-        _isClosedLoopRecyclerRoot = isClosedLoopRecycler;
+        _numberOfHoldingCompaniesClosedLoopRecyclingRoot = noOfHoldingCompaniesClosedLoopRecycling;
         return this;
     }
 
-    public RegistrationSubmissionDetailsBuilder WithCsoMemberClosedLoopRecycling(int noOfSubsidiariesClosedLoopRecycling, bool memberIsClosedLoopRecycler = true)
+    public RegistrationSubmissionDetailsBuilder WithCsoMemberClosedLoopRecycling(
+        int noOfSubsidiariesClosedLoopRecycling,
+        int memberNoOfHoldingCompaniesClosedLoopRecycling = 1)
     {
         _csoMemberNumberOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling;
-        _csoMemberIsClosedLoopRecycler = memberIsClosedLoopRecycler;
+        _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling = memberNoOfHoldingCompaniesClosedLoopRecycling;
         return this;
     }
 
@@ -180,7 +184,7 @@ public class RegistrationSubmissionDetailsBuilder
         numberOfOnlineSubsidiaries = 0,
         numberOfSubsidiariesClosedLoopRecycling = _numberOfSubsidiariesClosedLoopRecyclingRoot,
         isLateSubmission = true,
-        isClosedLoopRecycler = _isClosedLoopRecyclerRoot,
+        numberOfHoldingCompaniesClosedLoopRecycling = _numberOfHoldingCompaniesClosedLoopRecyclingRoot,
         organisationSize = _organisationSize,
         isComplianceScheme = _isComplianceScheme,
         submissionPeriod = $"January to December {_relevantYear}",
@@ -194,7 +198,7 @@ public class RegistrationSubmissionDetailsBuilder
                     memberType = _csoMemberType,
                     isOnlineMarketPlace = false,
                     isLateFeeApplicable = true,
-                    isClosedLoopRecycler = _csoMemberIsClosedLoopRecycler,
+                    numberOfHoldingCompaniesClosedLoopRecycling = _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling,
                     NumberOfSubsidiariesClosedLoopRecycling = _csoMemberNumberOfSubsidiariesClosedLoopRecycling,
                     numberOfSubsidiaries = 0,
                     NumberOfSubsidiariesOnlineMarketPlace = 0,

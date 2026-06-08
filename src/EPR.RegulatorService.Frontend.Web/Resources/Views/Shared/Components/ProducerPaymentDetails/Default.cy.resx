@@ -144,6 +144,9 @@
   <data name="ProducerPaymentDetails.Items" xml:space="preserve">
     <value>Eitemau</value>
   </data>
+  <data name="ProducerPaymentDetails.Units" xml:space="preserve">
+    <value>Unedau</value>
+  </data>
   <data name="ProducerPaymentDetails.LateRegistrationFeeDescription" xml:space="preserve">
     <value>Ffi hwyr</value>
   </data>
@@ -160,16 +163,25 @@
     <value>Ffi atodol</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeSingularDescription" xml:space="preserve">
-    <value>{0} is-gwmni</value>
+    <value>Is-gwmni</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeePluralDescription" xml:space="preserve">
-    <value>{0} is-gwmnïau</value>
+    <value>Is-gwmnïau</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlaceSingularDescription" xml:space="preserve">
-    <value>Mae {0} yn farchnad ar-lein</value>
+    <value>Marchnad ar-lein</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryFeeOnlineMarketPlacePluralDescription" xml:space="preserve">
-    <value>Mae {0} yn farchnadoedd ar-lein</value>
+    <value>Marchnadoedd ar-lein</value>
+  </data>
+  <data name="ProducerPaymentDetails.ProducerClosedLoopRecyclingFeeDescription" xml:space="preserve">
+    <value>Ffi ailgylchu cylch caeedig</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingSingularDescription" xml:space="preserve">
+    <value>Gwastraff pecynnu cylch caeedig is-gwmni</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingPluralDescription" xml:space="preserve">
+    <value>Gwastraff pecynnu cylch caeedig is-gwmnïau</value>
   </data>
   <data name="ProducerPaymentDetails.Title" xml:space="preserve">
     <value>Manylion y taliad</value>
@@ -205,9 +217,9 @@
     <value>Gwastraff pecynnu dolen gaeedig</value>
   </data>
   <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeeSingularDescription" xml:space="preserve">
-    <value>{0} cofrestru</value>
+    <value>Cofrestriad</value>
   </data>
   <data name="ProducerPaymentDetails.ClosedLoopRecyclingFeePluralDescription" xml:space="preserve">
-    <value>{0} cofrestriad</value>
+    <value>Cofrestriadau</value>
   </data>
 </root>

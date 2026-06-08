@@ -11,11 +11,8 @@ public class SubsidiariesFeeBreakdownResponse
     public int OnlineMarketPlaceSubsidiariesCount { get; set; }
 
     [JsonPropertyName("totalSubsidiariesClosedLoopRecyclingFees")]
-    public decimal SubsidiaryClosedLoopRecyclingFee { get; set; }
+    public decimal TotalSubsidiariesClosedLoopRecyclingFees { get; set; }
 
     [JsonPropertyName("countOfClosedLoopRecyclingSubsidiaries")]
-    public int ClosedLoopRecyclingSubsidiariesCount { get; set; }
-
-    [JsonPropertyName("unitClosedLoopRecyclingFees")]
-    public decimal UnitClosedLoopRecyclingFee { get; set; }
+    public int CountOfClosedLoopRecyclingSubsidiaries { get; set; }
 }

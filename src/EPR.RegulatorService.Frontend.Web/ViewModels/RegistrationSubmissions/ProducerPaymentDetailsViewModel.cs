@@ -13,11 +13,13 @@ public class ProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 
     public decimal OnlineMarketplaceFee { get; set; }
 
+    public decimal ProducerClosedLoopRecyclingFee { get; set; }
+
     public decimal SubsidiaryFee { get; set; }
 
     public decimal SubsidiaryOnlineMarketPlaceFee { get; set; }
 
-    public decimal ClosedLoopRecyclingFee { get; set; }
+    public decimal SubsidiaryClosedLoopRecyclingFee { get; set; }
 
     public bool HasClosedLoopRecyclingFees { get; set; }
 
@@ -33,7 +35,10 @@ public class ProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 
     public int NumberOfSubsidiariesBeingOnlineMarketplace { get; set; }
 
+    public int NumberOfSubsidiariesWithClosedLoopRecycling { get; set; }
+
     public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
 
     public RegistrationSubmissionStatus Status { get; set; }
+
 }

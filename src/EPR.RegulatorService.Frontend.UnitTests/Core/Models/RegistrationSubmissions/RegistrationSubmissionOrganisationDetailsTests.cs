@@ -11,13 +11,13 @@ public sealed class RegistrationSubmissionOrganisationDetailsTests
             SubmissionDetails = new RegistrationSubmissionOrganisationSubmissionSummaryDetails(),
             OrganisationSize = "large",
             NumberOfSubsidiariesClosedLoopRecycling = 11,
-            IsClosedLoopRecycler = true
+            NumberOfHoldingCompaniesClosedLoopRecycling = 2
         };
 
         RegistrationSubmissionOrganisationDetails details = response;
 
         Assert.AreEqual("large", details.ProducerDetails.ProducerType);
         Assert.AreEqual(11, details.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling);
-        Assert.IsTrue(details.ProducerDetails.IsClosedLoopRecycler);
+        Assert.AreEqual(2, details.ProducerDetails.NumberOfHoldingCompaniesClosedLoopRecycling);
     }
 }

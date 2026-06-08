@@ -46,6 +46,19 @@ public class CompliancePaymentResponseBuilder
         return this;
     }
 
+    public CompliancePaymentResponseBuilder WithDefaultMemberFees(
+        int lateRegistrationFeeInPence,
+        int closedLoopRecyclingFeeInPence,
+        int totalMemberFeeInPence)
+    {
+        _members.Clear();
+        _members.Add(ComplianceSchemeMemberFeeBuilder.Default()
+            .WithLateRegistrationFee(lateRegistrationFeeInPence)
+            .WithMemberClosedLoopRecyclingFee(closedLoopRecyclingFeeInPence)
+            .WithTotalMemberFee(totalMemberFeeInPence));
+        return this;
+    }
+
     public object Build() => new
     {
         complianceSchemeRegistrationFee = _complianceSchemeRegistrationFee,
@@ -63,6 +76,7 @@ public class ComplianceSchemeMemberFeeBuilder
     private int _memberRegistrationFee = 165800;
     private int _memberOnlineMarketPlaceFee = 0;
     private int _memberLateRegistrationFee = 0;
+    private int _memberClosedLoopRecyclingFee = 0;
     private int _subsidiariesFee = 0;
     private int _totalMemberFee = 165800;
 
@@ -102,6 +116,12 @@ public class ComplianceSchemeMemberFeeBuilder
         return this;
     }
 
+    public ComplianceSchemeMemberFeeBuilder WithMemberClosedLoopRecyclingFee(int feeInPence)
+    {
+        _memberClosedLoopRecyclingFee = feeInPence;
+        return this;
+    }
+
     public ComplianceSchemeMemberFeeBuilder WithSubsidiariesFee(int feeInPence)
     {
         _subsidiariesFee = feeInPence;
@@ -121,6 +141,7 @@ public class ComplianceSchemeMemberFeeBuilder
         memberRegistrationFee = _memberRegistrationFee,
         memberOnlineMarketPlaceFee = _memberOnlineMarketPlaceFee,
         memberLateRegistrationFee = _memberLateRegistrationFee,
+        memberClosedLoopRecyclingFee = _memberClosedLoopRecyclingFee,
         subsidiariesFee = _subsidiariesFee,
         totalMemberFee = _totalMemberFee
     };

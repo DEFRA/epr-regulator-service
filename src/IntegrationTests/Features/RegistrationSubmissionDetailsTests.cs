@@ -62,10 +62,11 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
 
         SetupPaymentFacadeMockComplianceSchemeRegistrationFee(
             CompliancePaymentResponseBuilder.Default()
-                .WithComplianceSchemeRegistrationFee(262000)
-                .WithTotalFee(285400)
+                .WithComplianceSchemeRegistrationFee(284200)
+                .WithTotalFee(588500)
                 .WithPreviousPayment(50000)
-                .WithOutstandingPayment(235400));
+                .WithOutstandingPayment(538500)
+                .WithDefaultMemberFees(38600, 254800, 566300));
 
         // Act
         var detailsPage = await GetAsPageModel<ManageRegistrationSubmissionDetailsPageModel>(
@@ -76,10 +77,10 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         {
             detailsPage.PaymentDetails.Should().NotBeNull();
             detailsPage.PaymentDetails!.HasPaymentSection.Should().BeTrue();
-            detailsPage.ApplicationFee.Should().Be(2620.00m);
-            detailsPage.SubTotal.Should().Be(2854.00m);
+            detailsPage.ApplicationFee.Should().Be(2842.00m);
+            detailsPage.SubTotal.Should().Be(5885.00m);
             detailsPage.PreviousPaymentReceived.Should().Be(500.00m);
-            detailsPage.TotalOutstanding.Should().Be(2354.00m);
+            detailsPage.TotalOutstanding.Should().Be(5385.00m);
         }
     }
 
@@ -120,6 +121,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                     {
                         memberType = "large",
                         isClosedLoopRecycling = true,
+                        noOfHoldingCompaniesClosedLoopRecycling = 1,
                         noOfSubsidiariesClosedLoopRecycling = 8,
                     },
                 },
@@ -154,6 +156,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
             {
                 applicationReferenceNumber = appRef,
                 producerType = "large",
+                noOfHoldingCompaniesClosedLoopRecycling = 1,
                 isClosedLoopRecycling = true,
                 noOfSubsidiariesClosedLoopRecycling = 5,
             }));
@@ -177,14 +180,14 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                 .WithHeader("Content-Type", "application/json")
                 .WithBody(JsonSerializer.Serialize(new
                 {
-                    producerRegistrationFee = 165800m,
-                    producerLateRegistrationFee = 0m,
+                    producerRegistrationFee = 284200m,
+                    producerLateRegistrationFee = 38600m,
                     producerOnlineMarketPlaceFee = 0m,
                     producerClosedLoopRecyclingFee = 0m,
                     previousPayment = 0m,
                     subsidiariesFee = 0m,
-                    totalFee = 165800m,
-                    outstandingPayment = 165800m,
+                    totalFee = 322800m,
+                    outstandingPayment = 322800m,
                     subsidiariesFeeBreakdown = new
                     {
                         totalSubsidiariesOMPFees = 0m,
