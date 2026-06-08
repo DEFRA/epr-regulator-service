@@ -26,8 +26,7 @@ public static class MockRegulatorFacadeServer
         }
 
         var server = StandAloneApp.Start(settings)
-            .WithFacadeApi()
-            .WithPaymentApi();
+            .WithFacadeApi();
 
         return server;
     }

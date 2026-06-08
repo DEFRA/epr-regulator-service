@@ -25,13 +25,9 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
     {
         try
         {
-            int numberOfHoldingCompaniesClosedLoopRecycling = viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer
-                ? viewModel.ProducerDetails.NumberOfHoldingCompaniesClosedLoopRecycling
-                : 0;
-
-            int numberOfSubsidiariesClosedLoopRecycling = viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer
-                ? viewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling
-                : 0;
+            bool isLargeProducer = viewModel.RegistrationJourneyType == RegistrationJourneyType.DirectLargeProducer;
+            int numberOfHoldingCompaniesClosedLoopRecycling = isLargeProducer ? viewModel.ProducerDetails.NumberOfHoldingCompaniesClosedLoopRecycling : 0;
+            int numberOfSubsidiariesClosedLoopRecycling = isLargeProducer ? viewModel.ProducerDetails.NumberOfSubsidiariesClosedLoopRecycling : 0;
 
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {

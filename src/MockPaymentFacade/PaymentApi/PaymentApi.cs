@@ -56,7 +56,7 @@ public static class PaymentApi
             }
         }
 
-        // Producer registration fee endpoint — default when no reference-specific stub matches
+        // Producer registration fee endpoint
         server.Given(Request.Create()
                 .UsingPost()
                 .WithPath("/producer/registration-fee"))
