@@ -27,6 +27,8 @@ public class CompliancePaymentDetailsViewComponent(
     {
         try
         {
+            bool isLargeProducer = viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer;
+
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(
                 new CompliancePaymentRequest
                 {
@@ -38,12 +40,8 @@ public class CompliancePaymentDetailsViewComponent(
                         MemberType = csoMember.MemberType,
                         IsOnlineMarketplace = csoMember.IsOnlineMarketPlace,
                         IsLateFeeApplicable = csoMember.IsLateFeeApplicable,
-                        NoOfHoldingCompaniesClosedLoopRecycling = viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer
-                            ? csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0
-                            : 0,
-                        IsClosedLoopRecycling = viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer
-                            && (csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0) > 0,
-                        NoOfSubsidiariesClosedLoopRecycling = csoMember.NumberOfSubsidiariesClosedLoopRecycling,
+                        NoOfHoldingCompaniesClosedLoopRecycling = isLargeProducer ? csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0 : 0,
+                        IsClosedLoopRecycling = isLargeProducer && ((csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0) > 0),                        NoOfSubsidiariesClosedLoopRecycling = csoMember.NumberOfSubsidiariesClosedLoopRecycling,
                         NumberOfSubsidiaries = csoMember.NumberOfSubsidiaries,
                         NoOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace
                     }),
