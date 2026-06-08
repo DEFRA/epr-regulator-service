@@ -1,6 +1,7 @@
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Configs;
+using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.Helpers;
 using EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions;
 
@@ -52,10 +53,6 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
             }
 
             var subsidiariesFeeBreakdown = producerPaymentResponse.SubsidiariesFeeBreakdown;
-            decimal subsidiaryFee = ConvertToPoundsFromPence(
-                producerPaymentResponse.SubsidiaryFee
-                - subsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee
-                - subsidiariesFeeBreakdown.TotalSubsidiariesClosedLoopRecyclingFees);
 
             var producerPaymentDetailsViewModel = new ProducerPaymentDetailsViewModel
             {
@@ -65,7 +62,7 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 ProducerClosedLoopRecyclingFee = ConvertToPoundsFromPence(producerPaymentResponse.ProducerClosedLoopRecyclingFee),
                 HasClosedLoopRecyclingFees = producerPaymentResponse.ProducerClosedLoopRecyclingFee > 0,
                 PreviousPaymentsReceived = ConvertToPoundsFromPence(producerPaymentResponse.PreviousPaymentsReceived),
-                SubsidiaryFee = subsidiaryFee,
+                SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.GetSubsidiaryCompaniesFee()),
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(subsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 SubsidiaryClosedLoopRecyclingFee = ConvertToPoundsFromPence(subsidiariesFeeBreakdown.TotalSubsidiariesClosedLoopRecyclingFees),
                 SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
