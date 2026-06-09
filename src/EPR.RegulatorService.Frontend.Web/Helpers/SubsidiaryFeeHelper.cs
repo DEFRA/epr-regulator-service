@@ -1,8 +1,8 @@
-namespace EPR.RegulatorService.Frontend.Web.Extensions;
+namespace EPR.RegulatorService.Frontend.Web.Helpers;
 
 using Core.Models.RegistrationSubmissions;
 
-internal static class SubsidiaryFeeExtensions
+internal static class SubsidiaryFeeHelper
 {
     /// <summary>
     /// Returns the net subsidiary companies registration fee.

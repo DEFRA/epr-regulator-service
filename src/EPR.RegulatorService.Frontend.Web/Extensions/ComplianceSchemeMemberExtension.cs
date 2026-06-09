@@ -2,6 +2,7 @@ namespace EPR.RegulatorService.Frontend.Web.Extensions;
 
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 
 internal static class ComplianceSchemeMemberExtension
 {
@@ -45,7 +46,7 @@ internal static class ComplianceSchemeMemberExtension
     internal static decimal GetNetSubsidiariesCompanyFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
         complianceSchemeMembers
             .Where(r => r.SubsidiaryFee > 0)
-            .Sum(r => SubsidiaryFeeExtensions.GetNetSubsidiaryCompaniesFee(
+            .Sum(r => SubsidiaryFeeHelper.GetNetSubsidiaryCompaniesFee(
                 r.SubsidiaryFee,
                 r.SubsidiariesFeeBreakdown));
 

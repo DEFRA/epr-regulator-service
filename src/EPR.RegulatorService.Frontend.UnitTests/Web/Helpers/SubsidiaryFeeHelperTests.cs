@@ -1,15 +1,16 @@
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Web.Extensions;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 
-namespace EPR.RegulatorService.Frontend.UnitTests.Web.Extensions;
+namespace EPR.RegulatorService.Frontend.UnitTests.Web.Helpers;
 
 [TestClass]
-public class SubsidiaryFeeExtensionsTests
+public class SubsidiaryFeeHelperTests
 {
     [TestMethod]
     public void GetNetSubsidiaryCompaniesFee_WhenBreakdownIsNull_ReturnsSubsidiaryFee()
     {
-        SubsidiaryFeeExtensions.GetNetSubsidiaryCompaniesFee(50_000m, null)
+        SubsidiaryFeeHelper.GetNetSubsidiaryCompaniesFee(50_000m, null)
             .Should().Be(50_000m);
     }
 
@@ -22,7 +23,7 @@ public class SubsidiaryFeeExtensionsTests
             TotalSubsidiariesClosedLoopRecyclingFees = 15_000m
         };
 
-        SubsidiaryFeeExtensions.GetNetSubsidiaryCompaniesFee(100_000m, breakdown)
+        SubsidiaryFeeHelper.GetNetSubsidiaryCompaniesFee(100_000m, breakdown)
             .Should().Be(75_000m);
     }
 
