@@ -107,10 +107,56 @@ public class ManageRegistrationSubmissionDetailsPageModel : PageModelBase, IPage
     public decimal? PreviousPaymentReceived => ExtractPaymentAmount("Previous payments");
     public decimal? TotalOutstanding => ExtractPaymentAmount("Total outstanding");
 
+    public PaymentLineItemUnderTest? FindPaymentLineItem(string descriptionContains)
+    {
+        var paymentCard = GetPaymentCard();
+        if (paymentCard is null)
+        {
+            return null;
+        }
+
+        foreach (var row in paymentCard.QuerySelectorAll("div.govuk-summary-list__row"))
+        {
+            var valueColumns = row.QuerySelectorAll("dd.govuk-summary-list__value").ToList();
+            if (valueColumns.Count < 2)
+            {
+                continue;
+            }
+
+            var description = valueColumns[1].TextContent.Trim();
+            if (!description.Contains(descriptionContains, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            int? units = null;
+            if (valueColumns.Count >= 3)
+            {
+                var unitsText = valueColumns[2].TextContent.Trim();
+                if (int.TryParse(unitsText, NumberStyles.None, CultureInfo.InvariantCulture, out var parsedUnits))
+                {
+                    units = parsedUnits;
+                }
+            }
+
+            var amountElement = row.QuerySelector("dd.govuk-summary-list__actions");
+            var amount = amountElement is not null
+                ? ParseCurrencyAmount(amountElement.TextContent)
+                : null;
+
+            return new PaymentLineItemUnderTest(description, units, amount);
+        }
+
+        return null;
+    }
+
+    private IElement? GetPaymentCard() =>
+        _document.QuerySelectorAll("div.govuk-summary-card")
+            .FirstOrDefault(card => card.QuerySelector("h2.govuk-summary-card__title")?.TextContent?.Contains("Payment") == true);
+
     private decimal? ExtractPaymentAmount(string label)
     {
-        var paymentCard = _document.QuerySelectorAll("div.govuk-summary-card")
-            .FirstOrDefault(card => card.QuerySelector("h2.govuk-summary-card__title")?.TextContent?.Contains("Payment") == true);
+        var paymentCard = GetPaymentCard();
 
         if (paymentCard == null)
         {
@@ -289,3 +335,5 @@ public sealed record PaymentDetailsUnderTest
     public bool HasPaymentSection { get; init; }
     public List<string> AllAmounts { get; init; } = new();
 }
+
+public sealed record PaymentLineItemUnderTest(string Description, int? Units, decimal? Amount);

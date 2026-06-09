@@ -162,6 +162,103 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
             }));
     }
 
+    [Fact]
+    public async Task RegistrationSubmissionDetailsPage_ShowsComplianceSchemeSubsidiaryClrPaymentLineItems()
+    {
+        // Arrange — values aligned with REG-2025-020 mock data
+        var submissionId = Guid.NewGuid();
+        const int subsidiariesFeePence = 647600;
+        const int subsidiaryClrFeePence = 509600;
+        const int subsidiaryClrCount = 2;
+        const int netSubsidiaryFeePence = subsidiariesFeePence - subsidiaryClrFeePence;
+
+        SetupFacadeMockRegistrationSubmissionDetails(
+            RegistrationSubmissionDetailsBuilder.Default(submissionId)
+                .WithOrganisationType("compliance")
+                .WithRegistrationJourneyType("CsoLargeProducer")
+                .WithCsoMemberSubsidiaries(subsidiaryClrCount));
+
+        SetupPaymentFacadeMockComplianceSchemeRegistrationFee(
+            CompliancePaymentResponseBuilder.Default()
+                .WithComplianceSchemeRegistrationFee(284200)
+                .WithTotalFee(1174800)
+                .WithMembersOnly(ComplianceSchemeMemberFeeBuilder.Default()
+                    .WithLateRegistrationFee(77200)
+                    .WithTotalMemberFee(890600)
+                    .WithSubsidiariesFeeBreakdown(
+                        subsidiariesFeePence,
+                        subsidiaryClrFeePence,
+                        subsidiaryClrCount)));
+
+        // Act
+        var detailsPage = await GetAsPageModel<ManageRegistrationSubmissionDetailsPageModel>(
+            $"/regulators/registration-submission-details/{submissionId}");
+
+        // Assert
+        using (new AssertionScope())
+        {
+            detailsPage.ApplicationFee.Should().Be(2842.00m);
+            detailsPage.SubTotal.Should().Be(11748.00m);
+
+            var subsidiaryCompanies = detailsPage.FindPaymentLineItem("Subsidiary companies");
+            subsidiaryCompanies.Should().NotBeNull();
+            subsidiaryCompanies!.Units.Should().Be(subsidiaryClrCount);
+            subsidiaryCompanies.Amount.Should().Be(netSubsidiaryFeePence / 100m);
+
+            var subsidiaryClr = detailsPage.FindPaymentLineItem("Subsidiaries closed loop packaging waste");
+            subsidiaryClr.Should().NotBeNull();
+            subsidiaryClr!.Units.Should().Be(subsidiaryClrCount);
+            subsidiaryClr.Amount.Should().Be(subsidiaryClrFeePence / 100m);
+        }
+    }
+
+    [Fact]
+    public async Task RegistrationSubmissionDetailsPage_ShowsDirectProducerSubsidiaryClrPaymentLineItems()
+    {
+        // Arrange — values aligned with REG-2025-017 mock data
+        var submissionId = Guid.NewGuid();
+        const int subsidiariesFeePence = 647600;
+        const int subsidiaryClrFeePence = 509600;
+        const int subsidiaryClrCount = 2;
+        const int netSubsidiaryFeePence = subsidiariesFeePence - subsidiaryClrFeePence;
+
+        SetupFacadeMockRegistrationSubmissionDetails(
+            RegistrationSubmissionDetailsBuilder.Default(submissionId)
+                .AsDirectLargeProducer()
+                .WithProducerSubsidiaries(subsidiaryClrCount)
+                .WithProducerClosedLoopRecycling(subsidiaryClrCount));
+
+        SetupPaymentFacadeMockProducerRegistrationFee(
+            ProducerPaymentResponseBuilder.Default()
+                .WithProducerRegistrationFee(284200)
+                .WithProducerLateRegistrationFee(77200)
+                .WithProducerClosedLoopRecyclingFee(254800)
+                .WithTotalFee(1264800)
+                .WithOutstandingPayment(1264800)
+                .WithSubsidiariesFeeBreakdown(
+                    subsidiariesFeePence,
+                    subsidiaryClrFeePence,
+                    subsidiaryClrCount));
+
+        // Act
+        var detailsPage = await GetAsPageModel<ManageRegistrationSubmissionDetailsPageModel>(
+            $"/regulators/registration-submission-details/{submissionId}");
+
+        // Assert
+        using (new AssertionScope())
+        {
+            var subsidiaryCompanies = detailsPage.FindPaymentLineItem("Subsidiary companies");
+            subsidiaryCompanies.Should().NotBeNull();
+            subsidiaryCompanies!.Units.Should().Be(subsidiaryClrCount);
+            subsidiaryCompanies.Amount.Should().Be(netSubsidiaryFeePence / 100m);
+
+            var subsidiaryClr = detailsPage.FindPaymentLineItem("Subsidiaries closed loop packaging waste");
+            subsidiaryClr.Should().NotBeNull();
+            subsidiaryClr!.Units.Should().Be(subsidiaryClrCount);
+            subsidiaryClr.Amount.Should().Be(subsidiaryClrFeePence / 100m);
+        }
+    }
+
     private void SetupPaymentFacadeMockComplianceSchemeRegistrationFee(CompliancePaymentResponseBuilder builder) =>
         FacadeServer.Given(Request.Create()
                 .UsingPost()
@@ -171,29 +268,14 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                 .WithHeader("Content-Type", "application/json")
                 .WithBody(JsonSerializer.Serialize(builder.Build())));
 
-    private void SetupPaymentFacadeMockProducerRegistrationFee() =>
+    private void SetupPaymentFacadeMockProducerRegistrationFee(ProducerPaymentResponseBuilder? builder = null) =>
         FacadeServer.Given(Request.Create()
                 .UsingPost()
                 .WithPath("/producer/registration-fee"))
             .RespondWith(Response.Create()
                 .WithStatusCode(200)
                 .WithHeader("Content-Type", "application/json")
-                .WithBody(JsonSerializer.Serialize(new
-                {
-                    producerRegistrationFee = 284200m,
-                    producerLateRegistrationFee = 38600m,
-                    producerOnlineMarketPlaceFee = 0m,
-                    producerClosedLoopRecyclingFee = 0m,
-                    previousPayment = 0m,
-                    subsidiariesFee = 0m,
-                    totalFee = 322800m,
-                    outstandingPayment = 322800m,
-                    subsidiariesFeeBreakdown = new
-                    {
-                        totalSubsidiariesOMPFees = 0m,
-                        countOfOMPSubsidiaries = 0
-                    }
-                })));
+                .WithBody(JsonSerializer.Serialize((builder ?? ProducerPaymentResponseBuilder.Default()).Build())));
 
     private void SetupFacadeMockRegistrationSubmissionDetails(RegistrationSubmissionDetailsBuilder builder) =>
         FacadeServer.Given(Request.Create()

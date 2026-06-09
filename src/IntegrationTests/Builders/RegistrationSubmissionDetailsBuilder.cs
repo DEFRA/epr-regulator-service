@@ -16,6 +16,8 @@ public class RegistrationSubmissionDetailsBuilder
     private int _numberOfHoldingCompaniesClosedLoopRecyclingRoot;
     private int _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling;
     private int _csoMemberNumberOfSubsidiariesClosedLoopRecycling;
+    private int _numberOfSubsidiariesRoot;
+    private int _csoMemberNumberOfSubsidiaries;
     private string _csoMemberType = "large";
     private string _applicationReferenceNumber = "REG-2025-001";
 
@@ -109,6 +111,18 @@ public class RegistrationSubmissionDetailsBuilder
         return this;
     }
 
+    public RegistrationSubmissionDetailsBuilder WithProducerSubsidiaries(int count)
+    {
+        _numberOfSubsidiariesRoot = count;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithCsoMemberSubsidiaries(int count)
+    {
+        _csoMemberNumberOfSubsidiaries = count;
+        return this;
+    }
+
     public object Build() => new
     {
         submissionId = SubmissionId,
@@ -180,7 +194,7 @@ public class RegistrationSubmissionDetailsBuilder
         producerCommentDate = (string?)null,
         regulatorUserId = (string?)null,
         isOnlineMarketPlace = false,
-        numberOfSubsidiaries = 0,
+        numberOfSubsidiaries = _numberOfSubsidiariesRoot,
         numberOfOnlineSubsidiaries = 0,
         numberOfSubsidiariesClosedLoopRecycling = _numberOfSubsidiariesClosedLoopRecyclingRoot,
         isLateSubmission = true,
@@ -200,7 +214,7 @@ public class RegistrationSubmissionDetailsBuilder
                     isLateFeeApplicable = true,
                     numberOfHoldingCompaniesClosedLoopRecycling = _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling,
                     NumberOfSubsidiariesClosedLoopRecycling = _csoMemberNumberOfSubsidiariesClosedLoopRecycling,
-                    numberOfSubsidiaries = 0,
+                    numberOfSubsidiaries = _csoMemberNumberOfSubsidiaries,
                     NumberOfSubsidiariesOnlineMarketPlace = 0,
                     relevantYear = _relevantYear,
                     submittedDate = _submissionDate,
