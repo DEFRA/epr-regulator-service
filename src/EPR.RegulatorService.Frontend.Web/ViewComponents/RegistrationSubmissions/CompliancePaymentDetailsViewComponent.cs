@@ -28,7 +28,7 @@ public class CompliancePaymentDetailsViewComponent(
     {
         try
         {
-            var csoMembers = viewModel.CSOMembershipDetails ?? [];
+            var csoMembers = viewModel.CSOMembershipDetails;
 
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(
                 new CompliancePaymentRequest
@@ -39,7 +39,8 @@ public class CompliancePaymentDetailsViewComponent(
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                         ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.GetValueOrDefault()
                         : viewModel.SubmissionDetails.TimeAndDateOfSubmission),
-                    IncludeRegistrationFee = viewModel.RegistrationJourneyType != RegistrationJourneyType.CsoSmallProducer
+                    IncludeRegistrationFee =
+                        viewModel.RegistrationJourneyType != RegistrationJourneyType.CsoSmallProducer
                 });
 
             if (compliancePaymentResponse is null)
@@ -47,8 +48,8 @@ public class CompliancePaymentDetailsViewComponent(
                 return View(default(CompliancePaymentDetailsViewModel));
             }
 
-            var (largeProducers, smallProducers) = compliancePaymentResponse.ComplianceSchemeMembers
-                .GetIndividualProducers(csoMembers);
+            var (largeProducers, smallProducers) =
+                compliancePaymentResponse.ComplianceSchemeMembers.GetIndividualProducers(csoMembers);
             var lateProducers = compliancePaymentResponse.ComplianceSchemeMembers.GetLateProducers();
             var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.GetOnlineMarketPlaces();
             var complianceSchemeMembers = compliancePaymentResponse.ComplianceSchemeMembers;
@@ -75,8 +76,10 @@ public class CompliancePaymentDetailsViewComponent(
                 ClosedLoopRegistrationCount = closedLoopRecyclingFees.Count,
                 ClosedLoopRecyclingFee = ConvertToPoundsFromPence(closedLoopRecyclingFees.Sum()),
                 SubsidiariesCompanyCount = csoMembers.Sum(r => r.NumberOfSubsidiaries),
-                SubsidiariesCompanyFee = ConvertToPoundsFromPence(complianceSchemeMembers.GetSubsidiariesCompanyNetFees()),
-                SubsidiariesClosedLoopRecyclingCount = complianceSchemeMembers.GetSubsidiariesClosedLoopRecyclingCount(),
+                SubsidiariesCompanyFee =
+                    ConvertToPoundsFromPence(complianceSchemeMembers.GetNetSubsidiariesCompanyFees()),
+                SubsidiariesClosedLoopRecyclingCount =
+                    complianceSchemeMembers.GetSubsidiariesClosedLoopRecyclingCount(),
                 SubsidiariesClosedLoopRecyclingFee =
                     ConvertToPoundsFromPence(complianceSchemeMembers.GetSubsidiariesClosedLoopRecyclingFees()),
                 ResubmissionStatus = viewModel.ResubmissionStatus,
@@ -100,7 +103,7 @@ public class CompliancePaymentDetailsViewComponent(
         CsoMembershipDetailsDto csoMember,
         RegistrationSubmissionDetailsViewModel viewModel)
     {
-        var isCsoLargeProducer = viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer;
+        bool isCsoLargeProducer = viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer;
 
         int noOfHoldingCompaniesClosedLoopRecycling;
         int noOfSubsidiariesClosedLoopRecycling;
