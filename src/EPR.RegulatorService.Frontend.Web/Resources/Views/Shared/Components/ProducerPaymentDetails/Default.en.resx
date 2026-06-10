@@ -142,7 +142,7 @@
     <value>Online marketplace fee</value>
   </data>
   <data name="ProducerPaymentDetails.ProducerClosedLoopRecyclingFeeDescription" xml:space="preserve">
-    <value>Closed loop recycling fee</value>
+    <value>Closed loop packaging waste</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingSingularDescription" xml:space="preserve">
     <value>Subsidiary closed loop packaging waste</value>
