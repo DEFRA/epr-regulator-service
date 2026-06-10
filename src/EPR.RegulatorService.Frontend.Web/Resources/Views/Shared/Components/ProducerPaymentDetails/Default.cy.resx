@@ -175,7 +175,7 @@
     <value>Marchnadoedd ar-lein</value>
   </data>
   <data name="ProducerPaymentDetails.ProducerClosedLoopRecyclingFeeDescription" xml:space="preserve">
-    <value>Ffi ailgylchu cylch caeedig</value>
+    <value>Gwastraff pecynnu dolen gaeedig</value>
   </data>
   <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingSingularDescription" xml:space="preserve">
     <value>Gwastraff pecynnu cylch caeedig is-gwmni</value>

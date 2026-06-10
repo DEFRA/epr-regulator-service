@@ -10,8 +10,6 @@ public class CompliancePaymentResponseBuilder
 
     private CompliancePaymentResponseBuilder()
     {
-        // Include a default member so the response is valid
-        _members.Add(ComplianceSchemeMemberFeeBuilder.Default());
     }
 
     public static CompliancePaymentResponseBuilder Default() => new();
@@ -46,6 +44,12 @@ public class CompliancePaymentResponseBuilder
         return this;
     }
 
+    public CompliancePaymentResponseBuilder WithMembers(params ComplianceSchemeMemberFeeBuilder[] members)
+    {
+        _members.AddRange(members);
+        return this;
+    }
+
     public CompliancePaymentResponseBuilder WithDefaultMemberFees(
         int lateRegistrationFeeInPence,
         int closedLoopRecyclingFeeInPence,
@@ -59,14 +63,21 @@ public class CompliancePaymentResponseBuilder
         return this;
     }
 
-    public object Build() => new
+    public object Build()
     {
-        complianceSchemeRegistrationFee = _complianceSchemeRegistrationFee,
-        totalFee = _totalFee,
-        previousPayment = _previousPayment,
-        outstandingPayment = _outstandingPayment,
-        complianceSchemeMembersWithFees = _members.Select(m => m.Build()).ToArray()
-    };
+        var members = _members.Count == 0
+            ? [ComplianceSchemeMemberFeeBuilder.Default()]
+            : _members;
+
+        return new
+        {
+            complianceSchemeRegistrationFee = _complianceSchemeRegistrationFee,
+            totalFee = _totalFee,
+            previousPayment = _previousPayment,
+            outstandingPayment = _outstandingPayment,
+            complianceSchemeMembersWithFees = members.Select(m => m.Build()).ToArray()
+        };
+    }
 }
 
 public class ComplianceSchemeMemberFeeBuilder
@@ -79,6 +90,7 @@ public class ComplianceSchemeMemberFeeBuilder
     private int _memberClosedLoopRecyclingFee = 0;
     private int _subsidiariesFee = 0;
     private int _totalMemberFee = 165800;
+    private object? _subsidiariesFeeBreakdown;
 
     private ComplianceSchemeMemberFeeBuilder()
     {
@@ -134,15 +146,52 @@ public class ComplianceSchemeMemberFeeBuilder
         return this;
     }
 
-    public object Build() => new
+    public ComplianceSchemeMemberFeeBuilder WithSubsidiariesFeeBreakdown(
+        int subsidiariesFeeInPence,
+        int closedLoopRecyclingFeeInPence,
+        int closedLoopRecyclingCount,
+        int ompFeeInPence = 0,
+        int ompCount = 0)
     {
-        memberId = _memberId,
-        memberType = _memberType,
-        memberRegistrationFee = _memberRegistrationFee,
-        memberOnlineMarketPlaceFee = _memberOnlineMarketPlaceFee,
-        memberLateRegistrationFee = _memberLateRegistrationFee,
-        memberClosedLoopRecyclingFee = _memberClosedLoopRecyclingFee,
-        subsidiariesFee = _subsidiariesFee,
-        totalMemberFee = _totalMemberFee
-    };
+        _subsidiariesFee = subsidiariesFeeInPence;
+        _subsidiariesFeeBreakdown = new
+        {
+            totalSubsidiariesOMPFees = ompFeeInPence,
+            countOfOMPSubsidiaries = ompCount,
+            totalSubsidiariesClosedLoopRecyclingFees = closedLoopRecyclingFeeInPence,
+            countOfClosedLoopRecyclingSubsidiaries = closedLoopRecyclingCount
+        };
+        return this;
+    }
+
+    public object Build()
+    {
+        if (_subsidiariesFeeBreakdown is null)
+        {
+            return new
+            {
+                memberId = _memberId,
+                memberType = _memberType,
+                memberRegistrationFee = _memberRegistrationFee,
+                memberOnlineMarketPlaceFee = _memberOnlineMarketPlaceFee,
+                memberLateRegistrationFee = _memberLateRegistrationFee,
+                memberClosedLoopRecyclingFee = _memberClosedLoopRecyclingFee,
+                subsidiariesFee = _subsidiariesFee,
+                totalMemberFee = _totalMemberFee
+            };
+        }
+
+        return new
+        {
+            memberId = _memberId,
+            memberType = _memberType,
+            memberRegistrationFee = _memberRegistrationFee,
+            memberOnlineMarketPlaceFee = _memberOnlineMarketPlaceFee,
+            memberLateRegistrationFee = _memberLateRegistrationFee,
+            memberClosedLoopRecyclingFee = _memberClosedLoopRecyclingFee,
+            subsidiariesFee = _subsidiariesFee,
+            totalMemberFee = _totalMemberFee,
+            subsidiariesFeeBreakdown = _subsidiariesFeeBreakdown
+        };
+    }
 }

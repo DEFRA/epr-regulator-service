@@ -1,0 +1,33 @@
+{
+  "complianceSchemeRegistrationFee": 284200,
+  "totalFee": 1174800,
+  "previousPayment": 0,
+  "outstandingPayment": 1174800,
+  "complianceSchemeMembersWithFees": [
+    {
+      "memberId": "100021-M1",
+      "memberType": "large",
+      "memberRegistrationFee": 165800,
+      "memberOnlineMarketPlaceFee": 0,
+      "memberLateRegistrationFee": 77200,
+      "memberClosedLoopRecyclingFee": 0,
+      "subsidiariesFee": 647600,
+      "totalMemberFee": 890600,
+      "subsidiariesFeeBreakdown": {
+        "totalSubsidiariesOMPFees": 0,
+        "countOfOMPSubsidiaries": 0,
+        "totalSubsidiariesClosedLoopRecyclingFees": 509600,
+        "countOfClosedLoopRecyclingSubsidiaries": 2,
+        "unitClosedLoopRecyclingFees": 254800,
+        "feeBreakdowns": [
+          {
+            "bandNumber": 1,
+            "unitCount": 2,
+            "unitPrice": 69000,
+            "totalPrice": 138000
+          }
+        ]
+      }
+    }
+  ]
+}
