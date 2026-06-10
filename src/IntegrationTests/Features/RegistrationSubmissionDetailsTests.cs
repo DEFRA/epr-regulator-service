@@ -141,7 +141,11 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                 .WithApplicationReferenceNumber(appRef)
                 .WithProducerClosedLoopRecycling(5));
 
-        SetupPaymentFacadeMockProducerRegistrationFee();
+        SetupPaymentFacadeMockProducerRegistrationFee(
+            ProducerPaymentResponseBuilder.Default()
+                .WithProducerRegistrationFee(100000)
+                .WithTotalFee(100000)
+                .WithOutstandingPayment(100000));
 
         // Act
         await GetAsPageModel<ManageRegistrationSubmissionDetailsPageModel>(
@@ -165,7 +169,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
     [Fact]
     public async Task RegistrationSubmissionDetailsPage_ShowsComplianceSchemeSubsidiaryClrPaymentLineItems()
     {
-        // Arrange — values aligned with REG-2025-020 mock data
+        // Arrange
         var submissionId = Guid.NewGuid();
         const int subsidiariesFeePence = 647600;
         const int subsidiaryClrFeePence = 509600;
@@ -182,7 +186,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
             CompliancePaymentResponseBuilder.Default()
                 .WithComplianceSchemeRegistrationFee(284200)
                 .WithTotalFee(1174800)
-                .WithMembersOnly(ComplianceSchemeMemberFeeBuilder.Default()
+                .WithMembers(ComplianceSchemeMemberFeeBuilder.Default()
                     .WithLateRegistrationFee(77200)
                     .WithTotalMemberFee(890600)
                     .WithSubsidiariesFeeBreakdown(
@@ -215,11 +219,16 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
     [Fact]
     public async Task RegistrationSubmissionDetailsPage_ShowsDirectProducerSubsidiaryClrPaymentLineItems()
     {
-        // Arrange — values aligned with REG-2025-017 mock data
+        // Arrange
         var submissionId = Guid.NewGuid();
+        const int producerRegistrationFeePence = 284200;
+        const int lateRegistrationFeePence = 77200;
+        const int producerClosedLoopRecyclingFeePence = 254800;
         const int subsidiariesFeePence = 647600;
         const int subsidiaryClrFeePence = 509600;
         const int subsidiaryClrCount = 2;
+        const int totalFeePence = 1264800;
+        const int outstandingPaymentPence = 1264800;
         const int netSubsidiaryFeePence = subsidiariesFeePence - subsidiaryClrFeePence;
 
         SetupFacadeMockRegistrationSubmissionDetails(
@@ -230,11 +239,11 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
 
         SetupPaymentFacadeMockProducerRegistrationFee(
             ProducerPaymentResponseBuilder.Default()
-                .WithProducerRegistrationFee(284200)
-                .WithProducerLateRegistrationFee(77200)
-                .WithProducerClosedLoopRecyclingFee(254800)
-                .WithTotalFee(1264800)
-                .WithOutstandingPayment(1264800)
+                .WithProducerRegistrationFee(producerRegistrationFeePence)
+                .WithProducerLateRegistrationFee(lateRegistrationFeePence)
+                .WithProducerClosedLoopRecyclingFee(producerClosedLoopRecyclingFeePence)
+                .WithTotalFee(totalFeePence)
+                .WithOutstandingPayment(outstandingPaymentPence)
                 .WithSubsidiariesFeeBreakdown(
                     subsidiariesFeePence,
                     subsidiaryClrFeePence,

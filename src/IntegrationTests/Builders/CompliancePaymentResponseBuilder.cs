@@ -10,8 +10,6 @@ public class CompliancePaymentResponseBuilder
 
     private CompliancePaymentResponseBuilder()
     {
-        // Include a default member so the response is valid
-        _members.Add(ComplianceSchemeMemberFeeBuilder.Default());
     }
 
     public static CompliancePaymentResponseBuilder Default() => new();
@@ -46,9 +44,8 @@ public class CompliancePaymentResponseBuilder
         return this;
     }
 
-    public CompliancePaymentResponseBuilder WithMembersOnly(params ComplianceSchemeMemberFeeBuilder[] members)
+    public CompliancePaymentResponseBuilder WithMembers(params ComplianceSchemeMemberFeeBuilder[] members)
     {
-        _members.Clear();
         _members.AddRange(members);
         return this;
     }
@@ -66,14 +63,21 @@ public class CompliancePaymentResponseBuilder
         return this;
     }
 
-    public object Build() => new
+    public object Build()
     {
-        complianceSchemeRegistrationFee = _complianceSchemeRegistrationFee,
-        totalFee = _totalFee,
-        previousPayment = _previousPayment,
-        outstandingPayment = _outstandingPayment,
-        complianceSchemeMembersWithFees = _members.Select(m => m.Build()).ToArray()
-    };
+        var members = _members.Count == 0
+            ? [ComplianceSchemeMemberFeeBuilder.Default()]
+            : _members;
+
+        return new
+        {
+            complianceSchemeRegistrationFee = _complianceSchemeRegistrationFee,
+            totalFee = _totalFee,
+            previousPayment = _previousPayment,
+            outstandingPayment = _outstandingPayment,
+            complianceSchemeMembersWithFees = members.Select(m => m.Build()).ToArray()
+        };
+    }
 }
 
 public class ComplianceSchemeMemberFeeBuilder

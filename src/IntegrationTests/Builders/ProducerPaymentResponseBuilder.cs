@@ -2,14 +2,14 @@ namespace IntegrationTests.Builders;
 
 public class ProducerPaymentResponseBuilder
 {
-    private int _producerRegistrationFee = 284200;
-    private int _producerLateRegistrationFee = 38600;
+    private int _producerRegistrationFee;
+    private int _producerLateRegistrationFee;
     private int _producerOnlineMarketPlaceFee = 0;
-    private int _producerClosedLoopRecyclingFee = 0;
+    private int _producerClosedLoopRecyclingFee;
     private int _previousPayment = 0;
-    private int _subsidiariesFee = 0;
-    private int _totalFee = 322800;
-    private int _outstandingPayment = 322800;
+    private int _subsidiariesFee;
+    private int _totalFee;
+    private int _outstandingPayment;
     private int _ompFee = 0;
     private int _ompCount = 0;
     private int _closedLoopRecyclingFee = 0;
