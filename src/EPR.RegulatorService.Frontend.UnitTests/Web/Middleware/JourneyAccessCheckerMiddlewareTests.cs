@@ -53,7 +53,7 @@ public class JourneyAccessCheckerMiddlewareTests
             _configuration);
     }
 
-    private IConfiguration CreateConfiguration(string healthCheckPath)
+    private static IConfiguration CreateConfiguration(string healthCheckPath)
     {
         var configurationBuilder = new ConfigurationBuilder();
         configurationBuilder.AddInMemoryCollection(new Dictionary<string, string?>

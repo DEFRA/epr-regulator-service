@@ -689,7 +689,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
 
-            var inputDate = new DateTime(2025, 1, 8, 9, 30, 0); // 9:30 AM, 8th January 2025
+            var inputDate = new DateTime(2025, 1, 8, 9, 30, 0, DateTimeKind.Utc); // 9:30 AM, 8th January 2025
             var expectedOutput = "9:30am on 08 January 2025";
 
             // Act
@@ -703,7 +703,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_AfternoonTime()
         {
             // Arrange
-            var inputDate = new DateTime(2025, 1, 8, 14, 15, 0); // 2:15 PM, 8th January 2025
+            var inputDate = new DateTime(2025, 1, 8, 14, 15, 0, DateTimeKind.Utc); // 2:15 PM, 8th January 2025
             var expectedOutput = "2:15pm on 08 January 2025";
 
             // Act
@@ -717,7 +717,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_EdgeCaseMidnight()
         {
             // Arrange
-            var inputDate = new DateTime(2025, 1, 8, 0, 0, 0); // Midnight, 8th January 2025
+            var inputDate = new DateTime(2025, 1, 8, 0, 0, 0, DateTimeKind.Utc); // Midnight, 8th January 2025
             var expectedOutput = "12:00am on 08 January 2025";
 
             // Act
@@ -731,7 +731,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_EdgeCaseNoon()
         {
             // Arrange
-            var inputDate = new DateTime(2025, 1, 8, 12, 0, 0); // Noon, 8th January 2025
+            var inputDate = new DateTime(2025, 1, 8, 12, 0, 0, DateTimeKind.Utc); // Noon, 8th January 2025
             var expectedOutput = "12:00pm on 08 January 2025";
 
             // Act
@@ -745,7 +745,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public void FormatTimeAndDateForSubmission_ReturnsCorrectFormat_LeapYear()
         {
             // Arrange
-            var inputDate = new DateTime(2024, 2, 29, 8, 45, 0); // 8:45 AM, 29th February 2024 (leap year)
+            var inputDate = new DateTime(2024, 2, 29, 8, 45, 0, DateTimeKind.Utc); // 8:45 AM, 29th February 2024 (leap year)
             var expectedOutput = "8:45am on 29 February 2024";
 
             // Act

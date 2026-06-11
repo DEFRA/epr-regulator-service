@@ -17,6 +17,8 @@ public class ErrorControllerTests
     {
         _errorController = new ErrorController(_mockLogger.Object);
         _errorController.ControllerContext.HttpContext = new DefaultHttpContext();
+
+        _mockLogger.Setup(logger => logger.IsEnabled(LogLevel.Warning)).Returns(true);
     }
 
     [TestMethod]

@@ -254,7 +254,6 @@ public class ManageAccreditationsMappingProfileTests
     [TestMethod]
     public void Map_InvalidStatusString_To_Enum_ShouldFallbackToStarted()
     {
-        var profile = new ManageAccreditationsMappingProfile();
         var method = typeof(ManageAccreditationsMappingProfile)
             .GetMethod("MapStatusStringToEnum", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
 
@@ -280,7 +279,6 @@ public class ManageAccreditationsMappingProfileTests
     [TestMethod]
     public void MapTaskStatusCssClass_WithUnknownStatus_ShouldReturnGrey()
     {
-        var profile = new ManageAccreditationsMappingProfile();
         var method = typeof(ManageAccreditationsMappingProfile)
             .GetMethod("MapTaskStatusCssClass", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
 
@@ -292,7 +290,6 @@ public class ManageAccreditationsMappingProfileTests
     [TestMethod]
     public void MapApplicationStatus_NullStatus_ShouldReturnDefaults()
     {
-        var profile = new ManageAccreditationsMappingProfile();
         var mapText = typeof(ManageAccreditationsMappingProfile)
             .GetMethod("MapApplicationStatusText", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
         var mapClass = typeof(ManageAccreditationsMappingProfile)

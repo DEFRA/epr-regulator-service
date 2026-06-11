@@ -467,7 +467,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Applications
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
                 _logger.ApplicationAcceptanceError(acceptedUserEmail, organisationDetails.OrganisationId);
             }

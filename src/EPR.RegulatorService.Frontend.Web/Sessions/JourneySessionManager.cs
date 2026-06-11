@@ -51,10 +51,10 @@ public class JourneySessionManager : ISessionManager<JourneySession>
 
     public async Task UpdateSessionAsync(ISession session, Action<JourneySession> updateFunc)
     {
-        var sesionValue = await GetSessionAsync(session) ?? new JourneySession();
+        var sessionValue = await GetSessionAsync(session) ?? new JourneySession();
 
-        updateFunc(sesionValue);
+        updateFunc(sessionValue);
 
-        await SaveSessionAsync(session, sesionValue);
+        await SaveSessionAsync(session, sessionValue);
     }
 }

@@ -115,10 +115,8 @@
                 </dd>
             </div>
 
-            @foreach (var file in model.Files)
+            @foreach (var file in model.Files.Where(f => !string.IsNullOrWhiteSpace(f.DownloadType)))
             {
-                if (!string.IsNullOrWhiteSpace(file.DownloadType))
-                {
                 <div class="govuk-summary-list__row">
                     <dd class="govuk-summary-list__value">
                         <strong>@Localizer[file.Label]</strong>
@@ -140,7 +138,6 @@
                                      })
                     </dd>
                 </div>
-            }
             }
 
         </dl>

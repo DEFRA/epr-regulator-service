@@ -81,7 +81,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
         [TestMethod]
         public async Task GivenInvokeAsync_WhenHomePathAndAuthenticated_ThenNoError()
         {
-            // Arrange            
+            // Arrange
             _httpRequestMock.Setup(x => x.Path).Returns("/" + PagePath.FullName);
             _httpContextMock.Setup(x => x.Request).Returns(_httpRequestMock.Object);
             _httpContextMock.Setup(x => x.User!.Identity!.IsAuthenticated).Returns(true);
@@ -113,7 +113,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
         [TestMethod]
         public async Task GivenInvokeAsync_WhenInvalidHomePathAndAuthenticated_ThenNoError()
         {
-            // Arrange            
+            // Arrange
             _httpRequestMock.Setup(x => x.Path).Returns("/home");
 
             var authenticationServiceMock = new Mock<IAuthenticationService>();
@@ -215,6 +215,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
             failureResponse.Dispose();
         }
 
+        private static Mock<RequestDelegate> CreateVerifiableNext()
+        {
+            var next = new Mock<RequestDelegate>();
+            next.Setup(rd => rd(It.IsAny<HttpContext>())).Returns(Task.CompletedTask).Verifiable();
+            return next;
+        }
+
         private void SetupControllerName(string controllerName)
         {
             var controllerActionDescriptor = new ControllerActionDescriptor { ControllerName = controllerName };
@@ -242,13 +249,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Middleware
         {
             _httpRequestMock.Setup(r => r.Path).Returns(new PathString(path));
             _httpContextMock.Setup(c => c.Request).Returns(_httpRequestMock.Object);
-        }
-
-        private Mock<RequestDelegate> CreateVerifiableNext()
-        {
-            var next = new Mock<RequestDelegate>();
-            next.Setup(rd => rd(It.IsAny<HttpContext>())).Returns(Task.CompletedTask).Verifiable();
-            return next;
         }
 
         private DefaultHttpContext EnsureWritableResponse()

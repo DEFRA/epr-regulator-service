@@ -431,35 +431,56 @@ dotnet_diagnostic.ide0070.severity = warning
 ##########################################
 
 # CA1021: Avoid out parameters
-dotnet_diagnostic.ca1021.severity = suggestion
+dotnet_diagnostic.CA1021.severity = suggestion
 
 # CA1034: Nested types should not be visible
-dotnet_diagnostic.ca1034.severity = silent
+dotnet_diagnostic.CA1034.severity = silent
 
 # CA1303: Do not pass literals as localized parameters
-dotnet_diagnostic.ca1303.severity = suggestion
+dotnet_diagnostic.CA1303.severity = suggestion
 
 # CA1304: Specify CultureInfo
-dotnet_diagnostic.ca1304.severity = suggestion
+dotnet_diagnostic.CA1304.severity = suggestion
 
 # CA1305: Specify IFormatProvider
-dotnet_diagnostic.ca1305.severity = suggestion
+dotnet_diagnostic.CA1305.severity = suggestion
 
 # CA1310: Specify StringComparison for correctness
-dotnet_diagnostic.ca1310.severity = suggestion
+dotnet_diagnostic.CA1310.severity = suggestion
 
 # CA1812: Avoid uninstantiated internal classes
 # Internal classes should be created by DI
-dotnet_diagnostic.ca1812.severity = none
+dotnet_diagnostic.CA1812.severity = none
 
 # CA1822: Mark members as static
-dotnet_diagnostic.ca1822.severity = suggestion
+dotnet_diagnostic.CA1822.severity = warning
 
 # CA1848: Set use of LoggerMessage delegates as suggestion rather than warning
-dotnet_diagnostic.ca1848.severity = suggestion
+dotnet_diagnostic.CA1848.severity = warning
+
+# CA1859: Use concrete types where possible
+dotnet_diagnostic.CA1859.severity = warning
+
+# CA1860: Avoid using 'Enumerable.Any()' extension method
+dotnet_diagnostic.CA1860.severity = warning
+
+# CA1862: Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
+dotnet_diagnostic.CA1862.severity = warning
+
+# CA1869: Cache and reuse 'JsonSerializerOptions' instances
+dotnet_diagnostic.CA1869.severity = warning
 
 # CA2007: Do not directly await a Task
-dotnet_diagnostic.ca2007.severity = silent
+dotnet_diagnostic.CA2007.severity = silent
+
+# CA2016: Forward the 'CancellationToken' parameter to methods
+dotnet_diagnostic.CA2016.severity = warning
+
+# CA2253: Named placeholders should not be numeric values
+dotnet_diagnostic.CA2253.severity = warning
+
+# CA2254: Template should be a static expression
+dotnet_diagnostic.CA2254.severity = warning
 
 ##########################################
 # StyleCop Rules
@@ -488,20 +509,6 @@ dotnet_diagnostic.SA1603.severity = none    # Documentation should contain valid
 dotnet_diagnostic.SA1609.severity = none    # Property documentation should have value
 dotnet_diagnostic.SA1618.severity = none    # Generic type parameters should be documented
 dotnet_diagnostic.SA1633.severity = none    # File should have header
-
-##########################################
-# SonarLint Rules
-##########################################
-
-dotnet_diagnostic.S1075.severity = warning    # URIs should not be hardcoded
-dotnet_diagnostic.S1104.severity = warning    # Fields should not have public accessibility
-dotnet_diagnostic.S1449.severity = suggestion # Culture should be specified for "string" operations
-dotnet_diagnostic.S1451.severity = none       # Lack of copyright and license headers RSPEC-1451
-dotnet_diagnostic.S1541.severity = suggestion # Methods and properties should not be too complex (max threshold 10)
-dotnet_diagnostic.S2219.severity = none       # Runtime type checking should be simplified
-dotnet_diagnostic.S3925.severity = suggestion # "ISerializable" should be implemented correctly
-dotnet_diagnostic.S4457.severity = none       # Parameter validation in "async"/"await" methods should be wrapped
-dotnet_diagnostic.S3903.severity = none       # Types should be defined in named namespaces, disabled as it doesn't support file-scoped namespaces
 
 ##########################################
 # ReSharper inspection severities
@@ -535,6 +542,9 @@ dotnet_diagnostic.cs8618.severity = none
 
 # CA1001: Types that own disposable fields should be disposable
 dotnet_diagnostic.ca1001.severity = none
+
+# MSTEST0037: Use proper 'Assert' methods
+dotnet_diagnostic.MSTEST0037.severity = warning
 
 [*/Migrations/**.cs]
 

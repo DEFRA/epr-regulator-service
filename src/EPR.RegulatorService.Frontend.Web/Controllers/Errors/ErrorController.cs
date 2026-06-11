@@ -9,15 +9,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace EPR.RegulatorService.Frontend.Web.Controllers.Errors;
 
 [AllowAnonymous]
-public class ErrorController(ILogger<ErrorController> logger) : Controller
+public partial class ErrorController(ILogger<ErrorController> logger) : Controller
 {
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Unhandled Application Error: status code {StatusCode} backlink {Backlink}")]
+    private static partial void LogUnhandledApplicationError(ILogger logger, int? statusCode, string? backLink);
+
     [ActionName(PagePath.Error)]
     [Route(PagePath.Error)]
     [Route(PagePath.PageNotFoundPath)]
     public ViewResult Error(int? statusCode, string? backLink)
     {
-        logger.LogWarning("Unhandled Application Error: status code {StatusCode} backlink {Backlink}", statusCode,
-            backLink);
+        LogUnhandledApplicationError(logger, statusCode, backLink);
 
         bool isPageNotFoundError = statusCode == (int?)HttpStatusCode.NotFound;
         string errorView = isPageNotFoundError ? PagePath.PageNotFound : "Error";

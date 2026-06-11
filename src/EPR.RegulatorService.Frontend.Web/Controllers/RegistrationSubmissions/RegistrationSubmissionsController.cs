@@ -259,7 +259,7 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out RegistrationSubmissionDetailsViewModel existingModel))
+        if (!GetOrRejectProvidedSubmissionId(submissionId, out RegistrationSubmissionDetailsViewModel _))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -396,7 +396,7 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        if (!GetOrRejectProvidedSubmissionId(submissionId, out var _))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -579,7 +579,7 @@ public partial class RegistrationSubmissionsController(
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session);
 
-        if (!GetOrRejectProvidedSubmissionId(submissionId, out var existingModel))
+        if (!GetOrRejectProvidedSubmissionId(submissionId, out var _))
         {
             return RedirectToAction(PagePath.PageNotFound, "RegistrationSubmissions");
         }
@@ -753,7 +753,7 @@ public partial class RegistrationSubmissionsController(
         int currentPageNumber = session.CurrentPageNumber ?? 1;
         existingSessionFilters.PageNumber = currentPageNumber;
         existingSessionFilters.SubmissionYears = _submissionFiltersConfig.ParseSubmissionYears()
-            .Select(y => y.ToString())
+            .Select(y => y.ToString(CultureInfo.InvariantCulture))
             .ToArray();
         if (session.LatestFilterChoices != null)
         {

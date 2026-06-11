@@ -6,7 +6,7 @@
 @inject Microsoft.FeatureManagement.IFeatureManager FeatureManager;
 @await Html.PartialAsync("Partials/_RegulatorSubmissionFilters", Model.RegulatorSubmissionFiltersModel)
 
-@if (Model.PagedOrganisationSubmissions?.Count() > 0)
+@if (Model.PagedOrganisationSubmissions?.Any() == true)
 {
     <table class="govuk-table responsive-table" aria-label="Organisation Submission Listing">
         <thead role="rowgroup" class="govuk-table__head">

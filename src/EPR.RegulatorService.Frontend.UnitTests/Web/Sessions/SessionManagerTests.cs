@@ -128,34 +128,9 @@ public class SessionManagerTests
     }
 
     [TestMethod]
-    public async Task GivenNoSessionInMemory_WhenUpdateSessionAsyncCalled_ThenSessionHasBeenUpdatedInMemoryAndStore()
-    {
-        // Arrange
-        _sessionMock.Setup(x => x.Set(_sessionKey, It.IsAny<byte[]>()));
-        await _sessionManager.SaveSessionAsync(_sessionMock.Object, _testSession);
-
-        // Act
-        await _sessionManager.UpdateSessionAsync(
-            _sessionMock.Object, (x) => x.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName = OrganisationName
-        );
-        var savedSession = await _sessionManager.GetSessionAsync(_sessionMock.Object);
-
-        // Assert
-        Assert.IsNotNull(savedSession);
-        savedSession.Should().BeOfType<JourneySession>();
-        Assert.AreEqual(
-            expected: OrganisationName,
-            actual: savedSession.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode].OrganisationName
-        );
-        _sessionMock.Verify(x => x.LoadAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
-        _sessionMock.Verify(x => x.Set(_sessionKey, It.IsAny<byte[]>()), Times.Exactly(2));
-    }
-
-    [TestMethod]
     public async Task GivenSessionInMemory_WhenUpdateSessionAsyncCalled_ThenSessionHasBeenUpdatedInMemoryAndStore()
     {
         // Arrange
-        _sessionMock.Setup(x => x.Set(_sessionKey, It.IsAny<byte[]>()));
         await _sessionManager.SaveSessionAsync(_sessionMock.Object, _testSession);
 
         // Act
