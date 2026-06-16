@@ -37,7 +37,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vars", "vars", "{001FA203-F
 		../pipelines\vars\DEV1-development.yaml = ../pipelines\vars\DEV1-development.yaml
 		../pipelines\vars\DEV16-development.yaml = ../pipelines\vars\DEV16-development.yaml
 		../pipelines\vars\DEV15.yaml = ../pipelines\vars\DEV15.yaml
-		../pipelines\vars\DEV10-development.yaml = ../pipelines\vars\DEV10-development.yaml
 		../pipelines\vars\DEV2-development.yaml = ../pipelines\vars\DEV2-development.yaml
 		../pipelines\vars\tst.yaml = ../pipelines\vars\tst.yaml
 		../pipelines\vars\DEV7-development.yaml = ../pipelines\vars\DEV7-development.yaml
