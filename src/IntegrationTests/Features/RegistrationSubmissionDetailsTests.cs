@@ -96,6 +96,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                 .WithOrganisationType("compliance")
                 .WithRegistrationJourneyType("CsoLargeProducer")
                 .WithApplicationReferenceNumber(appRef)
+                .WithCsoMemberSubsidiaries(1)
                 .WithCsoMemberClosedLoopRecycling(8));
 
         SetupPaymentFacadeMockComplianceSchemeRegistrationFee(
@@ -122,7 +123,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
                         memberType = "large",
                         isClosedLoopRecycling = true,
                         noOfHoldingCompaniesClosedLoopRecycling = 1,
-                        noOfSubsidiariesClosedLoopRecycling = 8,
+                        noOfSubsidiariesClosedLoopRecycling = 0,
                     },
                 },
             }));
@@ -174,7 +175,6 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         const int subsidiariesFeePence = 647600;
         const int subsidiaryClrFeePence = 509600;
         const int subsidiaryClrCount = 2;
-        const int netSubsidiaryFeePence = subsidiariesFeePence - subsidiaryClrFeePence;
 
         SetupFacadeMockRegistrationSubmissionDetails(
             RegistrationSubmissionDetailsBuilder.Default(submissionId)
@@ -207,7 +207,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
             var subsidiaryCompanies = detailsPage.FindPaymentLineItem("Subsidiary companies");
             subsidiaryCompanies.Should().NotBeNull();
             subsidiaryCompanies!.Units.Should().Be(subsidiaryClrCount);
-            subsidiaryCompanies.Amount.Should().Be(netSubsidiaryFeePence / 100m);
+            subsidiaryCompanies.Amount.Should().Be(subsidiariesFeePence / 100m);
 
             var subsidiaryClr = detailsPage.FindPaymentLineItem("Subsidiaries closed loop packaging waste");
             subsidiaryClr.Should().NotBeNull();
