@@ -7,7 +7,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Extensions;
 public class ComplianceSchemeMemberExtensionTests
 {
     [TestMethod]
-    [Ignore("Temporary: SubsidiariesFeeBreakdown excluded from GetNetSubsidiariesCompanyFees")]
     public void GetNetSubsidiariesCompanyFees_SumsNetFeesForMembersWithSubsidiaryFee()
     {
         var members = new List<ComplianceSchemeMember>
@@ -96,7 +95,7 @@ public class ComplianceSchemeMemberExtensionTests
     }
 
     [TestMethod]
-    public void GetClosedLoopRecyclingFee_ReturnsMaxFeeWhenMembersHaveClosedLoopFees()
+    public void GetClosedLoopRecyclingFees_ReturnsFeesForMembersWithClosedLoopFees()
     {
         var members = new List<ComplianceSchemeMember>
         {
@@ -105,25 +104,53 @@ public class ComplianceSchemeMemberExtensionTests
             new() { ClosedLoopRecyclingFee = 0m }
         };
 
-        members.GetClosedLoopRecyclingFee().Should().Be(30_000m);
+        members.GetClosedLoopRecyclingFees().Should().BeEquivalentTo([20_000m, 30_000m]);
     }
 
     [TestMethod]
-    public void GetClosedLoopRecyclingFee_ReturnsZeroWhenNoMembersHaveClosedLoopFees()
+    public void GetClosedLoopRecyclingFees_ReturnsEmptyListWhenNoMembersHaveClosedLoopFees()
     {
         var members = new List<ComplianceSchemeMember>
         {
             new() { ClosedLoopRecyclingFee = 0m }
         };
 
-        members.GetClosedLoopRecyclingFee().Should().Be(0m);
+        members.GetClosedLoopRecyclingFees().Should().BeEmpty();
     }
 
     [TestMethod]
-    public void GetClosedLoopRecyclingFee_ReturnsZeroWhenMembersListIsEmpty()
+    public void GetClosedLoopRecyclingFees_ReturnsEmptyListWhenMembersListIsEmpty()
     {
         var members = new List<ComplianceSchemeMember>();
 
-        members.GetClosedLoopRecyclingFee().Should().Be(0m);
+        members.GetClosedLoopRecyclingFees().Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void GetSubsidiariesOnlineMarketPlaceFees_SumsFeesAndTreatsNullBreakdownAsZero()
+    {
+        var members = new List<ComplianceSchemeMember>
+        {
+            new()
+            {
+                SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+                {
+                    SubsidiaryOnlineMarketPlaceFee = 20_000m
+                }
+            },
+            new()
+            {
+                SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+                {
+                    SubsidiaryOnlineMarketPlaceFee = 30_000m
+                }
+            },
+            new()
+            {
+                SubsidiariesFeeBreakdown = null
+            }
+        };
+
+        members.GetSubsidiariesOnlineMarketPlaceFees().Should().Be(50_000m);
     }
 }

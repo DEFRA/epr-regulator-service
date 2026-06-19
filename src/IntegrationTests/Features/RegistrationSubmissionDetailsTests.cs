@@ -175,6 +175,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         const int subsidiariesFeePence = 647600;
         const int subsidiaryClrFeePence = 509600;
         const int subsidiaryClrCount = 2;
+        const int netSubsidiaryFeePence = subsidiariesFeePence - subsidiaryClrFeePence;
 
         SetupFacadeMockRegistrationSubmissionDetails(
             RegistrationSubmissionDetailsBuilder.Default(submissionId)
@@ -207,7 +208,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
             var subsidiaryCompanies = detailsPage.FindPaymentLineItem("Subsidiary companies");
             subsidiaryCompanies.Should().NotBeNull();
             subsidiaryCompanies!.Units.Should().Be(subsidiaryClrCount);
-            subsidiaryCompanies.Amount.Should().Be(subsidiariesFeePence / 100m);
+            subsidiaryCompanies.Amount.Should().Be(netSubsidiaryFeePence / 100m);
 
             var subsidiaryClr = detailsPage.FindPaymentLineItem("Subsidiaries closed loop packaging waste");
             subsidiaryClr.Should().NotBeNull();

@@ -304,7 +304,40 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
-    [Ignore("Temporary: SubsidiariesFeeBreakdown excluded from GetNetSubsidiariesCompanyFees")]
+    public async Task InvokeAsync_DoesNotSetIsClosedLoopRecycling_WhenMemberHasHoldingCompanyClrButNoSubsidiaries()
+    {
+        // Arrange
+        CompliancePaymentRequest? capturedRequest = null;
+        _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.CsoLargeProducer;
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails =
+        [
+            new CsoMembershipDetailsDto
+            {
+                MemberId = "memberid1",
+                MemberType = "large",
+                NumberOfHoldingCompaniesClosedLoopRecycling = 1,
+                NumberOfSubsidiaries = 0
+            }
+        ];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+            .ReturnsAsync((CompliancePaymentResponse?)null);
+
+        // Act
+        await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        var members = capturedRequest!.ComplianceSchemeMembers!.ToList();
+        members[0].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(1);
+        members[0].IsClosedLoopRecycling.Should().BeFalse();
+    }
+
+    [TestMethod]
     public async Task InvokeAsync_SubsidiariesCompanyFee_Excludes_Omp_And_Clr_From_SubsidiariesFee()
     {
         // Arrange
