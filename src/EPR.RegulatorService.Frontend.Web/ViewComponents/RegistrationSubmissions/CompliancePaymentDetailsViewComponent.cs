@@ -53,7 +53,6 @@ public class CompliancePaymentDetailsViewComponent(
             var lateProducers = compliancePaymentResponse.ComplianceSchemeMembers.GetLateProducers();
             var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.GetOnlineMarketPlaces();
             var complianceSchemeMembers = compliancePaymentResponse.ComplianceSchemeMembers;
-            var closedLoopRecyclingFees = complianceSchemeMembers.GetClosedLoopRecyclingFees();
 
             var compliancePaymentDetailsViewModel = new CompliancePaymentDetailsViewModel
             {
@@ -73,8 +72,9 @@ public class CompliancePaymentDetailsViewComponent(
                 LateProducerFee = ConvertToPoundsFromPence(lateProducers.Sum()),
                 OnlineMarketPlaceCount = onlineMarketPlaces.Count,
                 OnlineMarketPlaceFee = ConvertToPoundsFromPence(onlineMarketPlaces.Sum()),
-                ClosedLoopRegistrationCount = closedLoopRecyclingFees.Count,
-                ClosedLoopRecyclingFee = ConvertToPoundsFromPence(closedLoopRecyclingFees.Sum()),
+                ClosedLoopRegistrationCount = viewModel.ProducerDetails.NumberOfHoldingCompaniesClosedLoopRecycling,
+                ClosedLoopRecyclingFee =
+                    ConvertToPoundsFromPence(complianceSchemeMembers.GetClosedLoopRecyclingFee()),
                 SubsidiariesCompanyCount = csoMembers.Sum(r => r.NumberOfSubsidiaries),
                 SubsidiariesCompanyFee =
                     ConvertToPoundsFromPence(complianceSchemeMembers.GetNetSubsidiariesCompanyFees()),
@@ -106,16 +106,13 @@ public class CompliancePaymentDetailsViewComponent(
         bool isCsoLargeProducer = viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer;
 
         int noOfHoldingCompaniesClosedLoopRecycling;
-        int noOfSubsidiariesClosedLoopRecycling;
         if (!isCsoLargeProducer)
         {
             noOfHoldingCompaniesClosedLoopRecycling = 0;
-            noOfSubsidiariesClosedLoopRecycling = 0;
         }
         else
         {
             noOfHoldingCompaniesClosedLoopRecycling = csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0;
-            noOfSubsidiariesClosedLoopRecycling = csoMember.NumberOfSubsidiariesClosedLoopRecycling;
         }
 
         return new ComplianceSchemeMemberRequest
@@ -125,8 +122,8 @@ public class CompliancePaymentDetailsViewComponent(
             IsOnlineMarketplace = csoMember.IsOnlineMarketPlace,
             IsLateFeeApplicable = csoMember.IsLateFeeApplicable,
             NoOfHoldingCompaniesClosedLoopRecycling = noOfHoldingCompaniesClosedLoopRecycling,
-            IsClosedLoopRecycling = noOfHoldingCompaniesClosedLoopRecycling > 0,
-            NoOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling,
+            IsClosedLoopRecycling = (csoMember.NumberOfSubsidiaries > 0) && (csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0) > 0,
+            NoOfSubsidiariesClosedLoopRecycling = 0,
             NumberOfSubsidiaries = csoMember.NumberOfSubsidiaries,
             NoOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace
         };
