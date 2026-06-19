@@ -27,4 +27,7 @@ public class ProducerPaymentResponse
 
     [JsonPropertyName("subsidiariesFeeBreakdown")]
     public SubsidiariesFeeBreakdownResponse SubsidiariesFeeBreakdown { get; set; }
+
+    [JsonPropertyName("producerClosedLoopRecyclingFee")]
+    public decimal ProducerClosedLoopRecyclingFee { get; set; }
 }

@@ -8,12 +8,21 @@ public class RegistrationSubmissionDetailsBuilder
     private int _relevantYear = 2025;
     private string _submissionDate = "2025-01-10T09:30:00Z";
     private string _submissionStatus = "Pending";
-    private bool _isResubmission = false;
+    private string _registrationJourneyType = "CsoLargeProducer";
+    private bool _isComplianceScheme = true;
+    private bool _emptyCsoMembershipDetails;
+    private string? _organisationSize;
+    private int _numberOfSubsidiariesClosedLoopRecyclingRoot;
+    private int _numberOfHoldingCompaniesClosedLoopRecyclingRoot;
+    private int _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling;
+    private int _csoMemberNumberOfSubsidiariesClosedLoopRecycling;
+    private int _numberOfSubsidiariesRoot;
+    private int _csoMemberNumberOfSubsidiaries;
+    private string _csoMemberType = "large";
+    private string _applicationReferenceNumber = "REG-2025-001";
     private string? _resubmissionFileId = null;
     private string? _resubmissionDate = null;
-    private bool _isComplianceScheme = true;
-    private string _registrationJourneyType = "CsoLargeProducer";
-    private string? _organisationSize = null;
+    private bool _isResubmission;
 
     private RegistrationSubmissionDetailsBuilder(Guid submissionId)
     {
@@ -49,6 +58,71 @@ public class RegistrationSubmissionDetailsBuilder
     public RegistrationSubmissionDetailsBuilder WithSubmissionStatus(string submissionStatus)
     {
         _submissionStatus = submissionStatus;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithApplicationReferenceNumber(string applicationReferenceNumber)
+    {
+        _applicationReferenceNumber = applicationReferenceNumber;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithRegistrationJourneyType(string registrationJourneyType)
+    {
+        _registrationJourneyType = registrationJourneyType;
+        return this;
+    }
+
+    /// <summary>Direct large producer: compliance scheme payment component is not used; producer payment API is called instead.</summary>
+    public RegistrationSubmissionDetailsBuilder AsDirectLargeProducer()
+    {
+        _organisationType = "large";
+        _registrationJourneyType = "DirectLargeProducer";
+        _isComplianceScheme = false;
+        _emptyCsoMembershipDetails = true;
+        _organisationSize = "large";
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithProducerClosedLoopRecycling(
+        int noOfSubsidiariesClosedLoopRecycling,
+        int noOfHoldingCompaniesClosedLoopRecycling = 1)
+    {
+        _numberOfSubsidiariesClosedLoopRecyclingRoot = noOfSubsidiariesClosedLoopRecycling;
+        _numberOfHoldingCompaniesClosedLoopRecyclingRoot = noOfHoldingCompaniesClosedLoopRecycling;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithCsoMemberClosedLoopRecycling(
+        int noOfSubsidiariesClosedLoopRecycling,
+        int memberNoOfHoldingCompaniesClosedLoopRecycling = 1)
+    {
+        _csoMemberNumberOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling;
+        _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling = memberNoOfHoldingCompaniesClosedLoopRecycling;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithOrganisationSize(string organisationSize)
+    {
+        _organisationSize = organisationSize;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithCsoMemberType(string memberType)
+    {
+        _csoMemberType = memberType;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithProducerSubsidiaries(int count)
+    {
+        _numberOfSubsidiariesRoot = count;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithCsoMemberSubsidiaries(int count)
+    {
+        _csoMemberNumberOfSubsidiaries = count;
         return this;
     }
 
@@ -88,7 +162,7 @@ public class RegistrationSubmissionDetailsBuilder
         registrationDate = (string?)null,
         regulatorComments = "",
         producerComments = "Test comment",
-        applicationReferenceNumber = "REG-2025-001",
+        applicationReferenceNumber = _applicationReferenceNumber,
         registrationReferenceNumber = "",
         companiesHouseNumber = "CS123456",
         buildingName = "Test Building",
@@ -140,27 +214,33 @@ public class RegistrationSubmissionDetailsBuilder
         producerCommentDate = (string?)null,
         regulatorUserId = (string?)null,
         isOnlineMarketPlace = false,
-        numberOfSubsidiaries = 0,
+        numberOfSubsidiaries = _numberOfSubsidiariesRoot,
         numberOfOnlineSubsidiaries = 0,
+        numberOfSubsidiariesClosedLoopRecycling = _numberOfSubsidiariesClosedLoopRecyclingRoot,
         isLateSubmission = true,
+        numberOfHoldingCompaniesClosedLoopRecycling = _numberOfHoldingCompaniesClosedLoopRecyclingRoot,
         organisationSize = _organisationSize,
         isComplianceScheme = _isComplianceScheme,
         submissionPeriod = $"January to December {_relevantYear}",
-        csoMembershipDetails = _isComplianceScheme ? new[]
-        {
-            new
+        csoMembershipDetails = _emptyCsoMembershipDetails
+            ? Array.Empty<object>()
+            : new object[]
             {
-                memberId = "100001",
-                memberType = "large",
-                isOnlineMarketPlace = false,
-                isLateFeeApplicable = true,
-                numberOfSubsidiaries = 0,
-                NumberOfSubsidiariesOnlineMarketPlace = 0,
-                relevantYear = _relevantYear,
-                submittedDate = _submissionDate,
-                submissionPeriodDescription = $"January to December {_relevantYear}"
-            }
-        } : Array.Empty<object>(),
+                new
+                {
+                    memberId = "100001",
+                    memberType = _csoMemberType,
+                    isOnlineMarketPlace = false,
+                    isLateFeeApplicable = true,
+                    numberOfHoldingCompaniesClosedLoopRecycling = _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling,
+                    NumberOfSubsidiariesClosedLoopRecycling = _csoMemberNumberOfSubsidiariesClosedLoopRecycling,
+                    numberOfSubsidiaries = _csoMemberNumberOfSubsidiaries,
+                    NumberOfSubsidiariesOnlineMarketPlace = 0,
+                    relevantYear = _relevantYear,
+                    submittedDate = _submissionDate,
+                    submissionPeriodDescription = $"January to December {_relevantYear}"
+                }
+            },
         resubmissionFileId = _resubmissionFileId
     };
 }

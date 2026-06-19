@@ -34,18 +34,18 @@
     <value>Rhowch eu henw cyntaf</value>
   </data>
   <data name="ErrorTitle.FirstNameDigits" xml:space="preserve">
-    <value>WFirst name must not include numbers</value>
+    <value>Chaiff yr enw cyntaf ddim cynnwys rhifaus</value>
   </data>
   <data name="ErrorTitle.FirstNameLength" xml:space="preserve">
-    <value>WFirst name must be 35 characters or less</value>
+    <value>Rhaid i'r enw cyntaf fod yn 35 neu lai o gymeriadau</value>
   </data>
   <data name="ErrorTitle.LastNameNull" xml:space="preserve">
     <value>Rhowch eu henw olaf</value>
   </data>
   <data name="ErrorTitle.LastNameDigits" xml:space="preserve">
-    <value>WLast name must not include numbers</value>
+    <value>Chaiff yr enw olaf ddim cynnwys rhifau</value>
   </data>
   <data name="ErrorTitle.LastNameLength" xml:space="preserve">
-    <value>WLast name must be 35 characters or less</value>
+    <value>Rhaid i'r enw olaf fod yn 35 neu lai o gymeriadau</value>
   </data>
 </root>

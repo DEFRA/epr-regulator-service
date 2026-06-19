@@ -1,5 +1,6 @@
 using EPR.RegulatorService.Frontend.Core.Enums;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Core.Services;
 using EPR.RegulatorService.Frontend.Web.Configs;
 using EPR.RegulatorService.Frontend.Web.Extensions;
@@ -27,13 +28,15 @@ public class CompliancePaymentDetailsViewComponent(
     {
         try
         {
+            var csoMembers = viewModel.CSOMembershipDetails;
+
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(
                 new CompliancePaymentRequest
                 {
                     ApplicationReferenceNumber = viewModel.ReferenceNumber,
                     FileId = viewModel.IsResubmission ? viewModel.ResubmissionFileId : null,
                     Regulator = viewModel.NationCode,
-                    ComplianceSchemeMembers = viewModel.CSOMembershipDetails.Select(x => (ComplianceSchemeMemberRequest)x),
+                    ComplianceSchemeMembers = csoMembers.Select(m => MapToComplianceSchemeMemberRequest(m, viewModel)),
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                         ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.GetValueOrDefault()
                         : viewModel.SubmissionDetails.TimeAndDateOfSubmission),
@@ -46,11 +49,12 @@ public class CompliancePaymentDetailsViewComponent(
                 return View(default(CompliancePaymentDetailsViewModel));
             }
 
-            var (largeProducers, smallProducers) = compliancePaymentResponse.ComplianceSchemeMembers
-                .GetIndividualProducers(viewModel.CSOMembershipDetails);
+            var (largeProducers, smallProducers) =
+                compliancePaymentResponse.ComplianceSchemeMembers.GetIndividualProducers(csoMembers);
             var lateProducers = compliancePaymentResponse.ComplianceSchemeMembers.GetLateProducers();
             var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.GetOnlineMarketPlaces();
-            var subsidiariesCompanies = compliancePaymentResponse.ComplianceSchemeMembers.GetSubsidiariesCompanies();
+            var complianceSchemeMembers = compliancePaymentResponse.ComplianceSchemeMembers;
+            var closedLoopRecyclingFees = complianceSchemeMembers.GetClosedLoopRecyclingFees();
 
             var compliancePaymentDetailsViewModel = new CompliancePaymentDetailsViewModel
             {
@@ -70,8 +74,15 @@ public class CompliancePaymentDetailsViewComponent(
                 LateProducerFee = ConvertToPoundsFromPence(lateProducers.Sum()),
                 OnlineMarketPlaceCount = onlineMarketPlaces.Count,
                 OnlineMarketPlaceFee = ConvertToPoundsFromPence(onlineMarketPlaces.Sum()),
-                SubsidiariesCompanyCount = viewModel.CSOMembershipDetails.Sum(r => r.NumberOfSubsidiaries),
-                SubsidiariesCompanyFee = ConvertToPoundsFromPence(subsidiariesCompanies.Sum()),
+                ClosedLoopRegistrationCount = closedLoopRecyclingFees.Count,
+                ClosedLoopRecyclingFee = ConvertToPoundsFromPence(closedLoopRecyclingFees.Sum()),
+                SubsidiariesCompanyCount = csoMembers.Sum(r => r.NumberOfSubsidiaries),
+                SubsidiariesCompanyFee =
+                    ConvertToPoundsFromPence(complianceSchemeMembers.GetNetSubsidiariesCompanyFees()),
+                SubsidiariesClosedLoopRecyclingCount =
+                    complianceSchemeMembers.GetSubsidiariesClosedLoopRecyclingCount(),
+                SubsidiariesClosedLoopRecyclingFee =
+                    ConvertToPoundsFromPence(complianceSchemeMembers.GetSubsidiariesClosedLoopRecyclingFees()),
                 ResubmissionStatus = viewModel.ResubmissionStatus,
                 Status = viewModel.Status
             };
@@ -87,6 +98,39 @@ public class CompliancePaymentDetailsViewComponent(
 
             return View(default(CompliancePaymentDetailsViewModel));
         }
+    }
+
+    private static ComplianceSchemeMemberRequest MapToComplianceSchemeMemberRequest(
+        CsoMembershipDetailsDto csoMember,
+        RegistrationSubmissionDetailsViewModel viewModel)
+    {
+        bool isCsoLargeProducer = viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer;
+
+        int noOfHoldingCompaniesClosedLoopRecycling;
+        int noOfSubsidiariesClosedLoopRecycling;
+        if (!isCsoLargeProducer)
+        {
+            noOfHoldingCompaniesClosedLoopRecycling = 0;
+            noOfSubsidiariesClosedLoopRecycling = 0;
+        }
+        else
+        {
+            noOfHoldingCompaniesClosedLoopRecycling = csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0;
+            noOfSubsidiariesClosedLoopRecycling = csoMember.NumberOfSubsidiariesClosedLoopRecycling;
+        }
+
+        return new ComplianceSchemeMemberRequest
+        {
+            MemberId = csoMember.MemberId,
+            MemberType = csoMember.MemberType,
+            IsOnlineMarketplace = csoMember.IsOnlineMarketPlace,
+            IsLateFeeApplicable = csoMember.IsLateFeeApplicable,
+            NoOfHoldingCompaniesClosedLoopRecycling = noOfHoldingCompaniesClosedLoopRecycling,
+            IsClosedLoopRecycling = noOfHoldingCompaniesClosedLoopRecycling > 0,
+            NoOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling,
+            NumberOfSubsidiaries = csoMember.NumberOfSubsidiaries,
+            NoOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace
+        };
     }
 
     private static decimal ConvertToPoundsFromPence(decimal amount) => amount / 100;

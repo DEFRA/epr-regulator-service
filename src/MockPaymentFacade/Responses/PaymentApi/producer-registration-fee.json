@@ -1,13 +1,17 @@
 {
-  "producerRegistrationFee": 165800,
+  "producerRegistrationFee": 284200,
   "producerOnlineMarketPlaceFee": 25000,
-  "producerLateRegistrationFee": 0,
-  "totalFee": 165800,
+  "producerClosedLoopRecyclingFee": 254800,
+  "producerLateRegistrationFee": 77200,
+  "totalFee": 641200,
   "previousPayment": 0,
-  "outstandingPayment": 165800,
+  "outstandingPayment": 641200,
   "subsidiariesFee": 0,
   "subsidiariesFeeBreakdown": {
     "totalSubsidiariesOMPFees": 0,
-    "countOfOMPSubsidiaries": 0
+    "countOfOMPSubsidiaries": 0,
+    "totalSubsidiariesClosedLoopRecyclingFees": 0,
+    "countOfClosedLoopRecyclingSubsidiaries": 0,
+    "unitClosedLoopRecyclingFees": 0
   }
 }

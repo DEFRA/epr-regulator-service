@@ -13,7 +13,6 @@ parameters:
     - DEV1
     - DEV2
     - DEV3
-    - DEV5
     - DEV6
     - DEV7
     - DEV8
@@ -92,6 +91,7 @@ resources:
 extends:
   template: epr-deployment-pipeline.yaml@CommonTemplates
   parameters:
+    envToDeploy: ${{ parameters.envToDeploy }}
     ${{ if contains(parameters.imageTag, 'RELEASE-') }}:
       imageTag: $(DEVRWDWEBWAx411)
     ${{ else }}:

@@ -1,5 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 
+using AutoMapper;
+using AutoMapper.Internal;
+
 using EPR.Common.Authorization.Extensions;
 using EPR.RegulatorService.Frontend.Core.Configs;
 using EPR.RegulatorService.Frontend.Core.Sessions;
@@ -220,6 +223,12 @@ public static class ServiceProviderExtension
 
     private static void RegisterAutoMapper(IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(ManageRegistrationsMappingProfile));
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.Internal().ForAllMaps((_, mapping) => mapping.MaxDepth(64));
+            cfg.AddMaps(typeof(ManageRegistrationsMappingProfile).Assembly);
+        });
+
+        services.AddSingleton<IMapper>(config.CreateMapper());
     }
 }

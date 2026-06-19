@@ -28,7 +28,7 @@
     <value>Rydyn ni’n defnyddio’r wybodaeth yma mewn neges ebost at {0} {1}</value>
   </data>
   <data name="Reject.CommentsRequiredError" xml:space="preserve">
-    <value>WEnter your reason for rejecting {0}</value>
+    <value>Rhowch eich rheswm dros wrthod {0}</value>
   </data>
   <data name="Reject.CommentsMaxLengthError" xml:space="preserve">
     <value>Rhaid i’ch crynodeb fod yn 200 neu lai o gymeriadau</value>
