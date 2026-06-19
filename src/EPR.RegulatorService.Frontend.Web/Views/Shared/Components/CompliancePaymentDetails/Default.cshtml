@@ -137,6 +137,21 @@
                             <payment-amount amount="@Model.SubsidiariesCompanyFee"></payment-amount>
                         </div>
 
+                        @if (Model.SubsidiariesOnlineMarketPlaceCount > 0)
+                        {
+                            <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                                <dd class="govuk-summary-list__value" style="width: 285px;">
+                                </dd>
+                                <dd class="govuk-summary-list__value" style="width: 310px;">
+                                    @Localizer[Model.SubsidiariesOnlineMarketPlaceCount == 1
+                                        ? "CompliancePaymentDetails.SubsidiaryOnlineMarketPlaceSingularDescription"
+                                        : "CompliancePaymentDetails.SubsidiaryOnlineMarketPlacePluralDescription"]
+                                </dd>
+                                <dd class="govuk-summary-list__value" style="width: 100px; text-align: right;">@Model.SubsidiariesOnlineMarketPlaceCount</dd>
+                                <payment-amount amount="@Model.SubsidiariesOnlineMarketPlaceFee"></payment-amount>
+                            </div>
+                        }
+
                         @if (Model.SubsidiariesClosedLoopRecyclingCount > 0)
                         {
                             <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">

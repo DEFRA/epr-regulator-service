@@ -53,6 +53,7 @@ public class CompliancePaymentDetailsViewComponent(
             var lateProducers = compliancePaymentResponse.ComplianceSchemeMembers.GetLateProducers();
             var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.GetOnlineMarketPlaces();
             var complianceSchemeMembers = compliancePaymentResponse.ComplianceSchemeMembers;
+            var closedLoopRecyclingFees = complianceSchemeMembers.GetClosedLoopRecyclingFees();
 
             var compliancePaymentDetailsViewModel = new CompliancePaymentDetailsViewModel
             {
@@ -72,12 +73,15 @@ public class CompliancePaymentDetailsViewComponent(
                 LateProducerFee = ConvertToPoundsFromPence(lateProducers.Sum()),
                 OnlineMarketPlaceCount = onlineMarketPlaces.Count,
                 OnlineMarketPlaceFee = ConvertToPoundsFromPence(onlineMarketPlaces.Sum()),
-                ClosedLoopRegistrationCount = viewModel.ProducerDetails.NumberOfHoldingCompaniesClosedLoopRecycling,
-                ClosedLoopRecyclingFee =
-                    ConvertToPoundsFromPence(complianceSchemeMembers.GetClosedLoopRecyclingFee()),
+                ClosedLoopRegistrationCount = closedLoopRecyclingFees.Count,
+                ClosedLoopRecyclingFee = ConvertToPoundsFromPence(closedLoopRecyclingFees.Sum()),
                 SubsidiariesCompanyCount = csoMembers.Sum(r => r.NumberOfSubsidiaries),
                 SubsidiariesCompanyFee =
                     ConvertToPoundsFromPence(complianceSchemeMembers.GetNetSubsidiariesCompanyFees()),
+                SubsidiariesOnlineMarketPlaceCount =
+                    complianceSchemeMembers.GetSubsidiariesOnlineMarketPlaceCount(),
+                SubsidiariesOnlineMarketPlaceFee =
+                    ConvertToPoundsFromPence(complianceSchemeMembers.GetSubsidiariesOnlineMarketPlaceFees()),
                 SubsidiariesClosedLoopRecyclingCount =
                     complianceSchemeMembers.GetSubsidiariesClosedLoopRecyclingCount(),
                 SubsidiariesClosedLoopRecyclingFee =
@@ -122,7 +126,8 @@ public class CompliancePaymentDetailsViewComponent(
             IsOnlineMarketplace = csoMember.IsOnlineMarketPlace,
             IsLateFeeApplicable = csoMember.IsLateFeeApplicable,
             NoOfHoldingCompaniesClosedLoopRecycling = noOfHoldingCompaniesClosedLoopRecycling,
-            IsClosedLoopRecycling = (csoMember.NumberOfSubsidiaries > 0) && (csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0) > 0,
+            IsClosedLoopRecycling = csoMember.NumberOfSubsidiaries > 0
+                && (csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0) > 0,
             NoOfSubsidiariesClosedLoopRecycling = 0,
             NumberOfSubsidiaries = csoMember.NumberOfSubsidiaries,
             NoOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace

@@ -2,6 +2,7 @@ namespace EPR.RegulatorService.Frontend.Web.Extensions;
 
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
+using EPR.RegulatorService.Frontend.Web.Helpers;
 
 internal static class ComplianceSchemeMemberExtension
 {
@@ -45,7 +46,9 @@ internal static class ComplianceSchemeMemberExtension
     internal static decimal GetNetSubsidiariesCompanyFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
         complianceSchemeMembers
             .Where(r => r.SubsidiaryFee > 0)
-            .Sum(r => r.SubsidiaryFee);
+            .Sum(r => SubsidiaryFeeHelper.GetNetSubsidiaryCompaniesFee(
+                r.SubsidiaryFee,
+                r.SubsidiariesFeeBreakdown));
 
     internal static int GetSubsidiariesClosedLoopRecyclingCount(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
         complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.CountOfClosedLoopRecyclingSubsidiaries ?? 0);
@@ -53,10 +56,12 @@ internal static class ComplianceSchemeMemberExtension
     internal static decimal GetSubsidiariesClosedLoopRecyclingFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
         complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.TotalSubsidiariesClosedLoopRecyclingFees ?? 0);
 
-    internal static decimal GetClosedLoopRecyclingFee(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
-        complianceSchemeMembers
-            .Where(r => r.ClosedLoopRecyclingFee > 0)
-            .Select(r => r.ClosedLoopRecyclingFee)
-            .DefaultIfEmpty(0)
-            .Max();
+    internal static IList<decimal> GetClosedLoopRecyclingFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Where(r => r.ClosedLoopRecyclingFee > 0).Select(r => r.ClosedLoopRecyclingFee).ToList();
+
+    internal static decimal GetSubsidiariesOnlineMarketPlaceFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.SubsidiaryOnlineMarketPlaceFee ?? 0);
+
+    internal static int GetSubsidiariesOnlineMarketPlaceCount(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.OnlineMarketPlaceSubsidiariesCount ?? 0);
 }
