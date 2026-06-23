@@ -35,7 +35,7 @@ public class CompliancePaymentDetailsViewComponent(
                 {
                     ApplicationReferenceNumber = viewModel.ReferenceNumber,
                     Regulator = viewModel.NationCode,
-                    ComplianceSchemeMembers = csoMembers.Select(m => MapToComplianceSchemeMemberRequest(m, viewModel)),
+                    ComplianceSchemeMembers = MapToComplianceSchemeMemberRequests(csoMembers, viewModel),
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                         ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.GetValueOrDefault()
                         : viewModel.SubmissionDetails.TimeAndDateOfSubmission),
@@ -103,36 +103,43 @@ public class CompliancePaymentDetailsViewComponent(
         }
     }
 
-    private static ComplianceSchemeMemberRequest MapToComplianceSchemeMemberRequest(
-        CsoMembershipDetailsDto csoMember,
+    private static List<ComplianceSchemeMemberRequest> MapToComplianceSchemeMemberRequests(
+        IReadOnlyList<CsoMembershipDetailsDto> csoMembers,
         RegistrationSubmissionDetailsViewModel viewModel)
     {
-        bool isCsoLargeProducer = viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer;
+        int holdingCompanyClosedLoopRecyclingCount =
+            viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer && csoMembers.Count > 0
+                ? csoMembers[0].NumberOfHoldingCompaniesClosedLoopRecycling ?? 0
+                : 0;
 
-        int noOfHoldingCompaniesClosedLoopRecycling;
-        if (!isCsoLargeProducer)
-        {
-            noOfHoldingCompaniesClosedLoopRecycling = 0;
-        }
-        else
-        {
-            noOfHoldingCompaniesClosedLoopRecycling = csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0;
-        }
+        return csoMembers
+            .Select((csoMember, index) => MapToComplianceSchemeMemberRequest(
+                csoMember,
+                IsHoldingCompanyClosedLoopRecyclingMember(csoMember, index, holdingCompanyClosedLoopRecyclingCount)))
+            .ToList();
+    }
 
-        return new ComplianceSchemeMemberRequest
+    private static bool IsHoldingCompanyClosedLoopRecyclingMember(
+        CsoMembershipDetailsDto csoMember,
+        int index,
+        int holdingCompanyClosedLoopRecyclingCount) =>
+        index < holdingCompanyClosedLoopRecyclingCount && csoMember is { MemberType: "large" };
+
+    private static ComplianceSchemeMemberRequest MapToComplianceSchemeMemberRequest(
+        CsoMembershipDetailsDto csoMember,
+        bool isClosedLoopRecycling) =>
+        new()
         {
             MemberId = csoMember.MemberId,
             MemberType = csoMember.MemberType,
             IsOnlineMarketplace = csoMember.IsOnlineMarketPlace,
             IsLateFeeApplicable = csoMember.IsLateFeeApplicable,
-            NoOfHoldingCompaniesClosedLoopRecycling = noOfHoldingCompaniesClosedLoopRecycling,
-            IsClosedLoopRecycling = csoMember is { MemberType: "large", NumberOfSubsidiaries: > 0 }
-                                    && (csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0) > 0,
+            IsClosedLoopRecycling = isClosedLoopRecycling,
+            NoOfHoldingCompaniesClosedLoopRecycling = isClosedLoopRecycling ? 1 : 0,
             NoOfSubsidiariesClosedLoopRecycling = 0,
             NumberOfSubsidiaries = csoMember.NumberOfSubsidiaries,
             NoOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace
         };
-    }
 
     private static decimal ConvertToPoundsFromPence(decimal amount) => amount / 100;
 }
