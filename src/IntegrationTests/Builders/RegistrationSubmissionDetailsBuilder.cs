@@ -20,6 +20,7 @@ public class RegistrationSubmissionDetailsBuilder
     private int _csoMemberNumberOfSubsidiaries;
     private string _csoMemberType = "large";
     private string _applicationReferenceNumber = "REG-2025-001";
+    private List<CsoMemberBuilder>? _csoMembers;
 
     private RegistrationSubmissionDetailsBuilder(Guid submissionId)
     {
@@ -123,6 +124,16 @@ public class RegistrationSubmissionDetailsBuilder
         return this;
     }
 
+    public RegistrationSubmissionDetailsBuilder WithCsoMembers(params CsoMemberBuilder[] members)
+    {
+        _csoMembers = members.ToList();
+        _emptyCsoMembershipDetails = false;
+        _isComplianceScheme = true;
+        _organisationType = "compliance";
+        _registrationJourneyType = "CsoLargeProducer";
+        return this;
+    }
+
     public object Build() => new
     {
         submissionId = SubmissionId,
@@ -202,25 +213,38 @@ public class RegistrationSubmissionDetailsBuilder
         organisationSize = _organisationSize,
         isComplianceScheme = _isComplianceScheme,
         submissionPeriod = $"January to December {_relevantYear}",
-        csoMembershipDetails = _emptyCsoMembershipDetails
-            ? Array.Empty<object>()
-            : new object[]
-            {
-                new
-                {
-                    memberId = "100001",
-                    memberType = _csoMemberType,
-                    isOnlineMarketPlace = false,
-                    isLateFeeApplicable = true,
-                    numberOfHoldingCompaniesClosedLoopRecycling = _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling,
-                    NumberOfSubsidiariesClosedLoopRecycling = _csoMemberNumberOfSubsidiariesClosedLoopRecycling,
-                    numberOfSubsidiaries = _csoMemberNumberOfSubsidiaries,
-                    NumberOfSubsidiariesOnlineMarketPlace = 0,
-                    relevantYear = _relevantYear,
-                    submittedDate = _submissionDate,
-                    submissionPeriodDescription = $"January to December {_relevantYear}"
-                }
-            },
+        csoMembershipDetails = BuildCsoMembershipDetails(),
         resubmissionFileId = (string?)null
     };
+
+    private object[] BuildCsoMembershipDetails()
+    {
+        if (_emptyCsoMembershipDetails)
+        {
+            return Array.Empty<object>();
+        }
+
+        if (_csoMembers is not null)
+        {
+            return _csoMembers.Select(m => m.Build(_relevantYear, _submissionDate)).ToArray<object>();
+        }
+
+        return
+        [
+            new
+            {
+                memberId = "100001",
+                memberType = _csoMemberType,
+                isOnlineMarketPlace = false,
+                isLateFeeApplicable = true,
+                numberOfHoldingCompaniesClosedLoopRecycling = _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling,
+                NumberOfSubsidiariesClosedLoopRecycling = _csoMemberNumberOfSubsidiariesClosedLoopRecycling,
+                numberOfSubsidiaries = _csoMemberNumberOfSubsidiaries,
+                NumberOfSubsidiariesOnlineMarketPlace = 0,
+                relevantYear = _relevantYear,
+                submittedDate = _submissionDate,
+                submissionPeriodDescription = $"January to December {_relevantYear}"
+            }
+        ];
+    }
 }
