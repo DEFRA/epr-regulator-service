@@ -147,7 +147,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     [TestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public async Task InvokeAsync_Passes_NumberOfSubsidiariesClosedLoopRecycling_ToPaymentFacade(bool isResubmission)
+    public async Task InvokeAsync_Passes_HoldingCompanyClosedLoopRecycling_And_Zeros_SubsidiariesClosedLoopRecycling_For_CsoLargeProducer(
+        bool isResubmission)
     {
         // Arrange
         CompliancePaymentRequest? capturedRequest = null;
@@ -162,6 +163,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
                 MemberId = "memberid1",
                 MemberType = "large",
                 NumberOfHoldingCompaniesClosedLoopRecycling = 1,
+                NumberOfSubsidiaries = 1,
                 NumberOfSubsidiariesClosedLoopRecycling = 7
             }
         ];
@@ -191,8 +193,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         capturedRequest.Should().NotBeNull();
         var members = capturedRequest!.ComplianceSchemeMembers!.ToList();
         members.Should().ContainSingle();
-        members[0].NoOfSubsidiariesClosedLoopRecycling.Should().Be(7);
         members[0].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(1);
+        members[0].NoOfSubsidiariesClosedLoopRecycling.Should().Be(0);
         members[0].IsClosedLoopRecycling.Should().BeTrue();
     }
 
@@ -299,6 +301,81 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         members[0].NoOfSubsidiariesClosedLoopRecycling.Should().Be(0);
         members[0].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(0);
         members[0].IsClosedLoopRecycling.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_SetsIsClosedLoopRecycling_WhenMemberHasHoldingCompanyClrButNoSubsidiaries()
+    {
+        // Arrange
+        CompliancePaymentRequest? capturedRequest = null;
+        _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.CsoLargeProducer;
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails =
+        [
+            new CsoMembershipDetailsDto
+            {
+                MemberId = "memberid1",
+                MemberType = "large",
+                NumberOfHoldingCompaniesClosedLoopRecycling = 1,
+                NumberOfSubsidiaries = 0
+            }
+        ];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+            .ReturnsAsync((CompliancePaymentResponse?)null);
+
+        // Act
+        await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        var members = capturedRequest!.ComplianceSchemeMembers!.ToList();
+        members[0].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(1);
+        members[0].IsClosedLoopRecycling.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_SetsIsClosedLoopRecycling_ForFirstNLargeMembers_WhenMultipleHoldingCompaniesHaveClr()
+    {
+        // Arrange
+        CompliancePaymentRequest? capturedRequest = null;
+        _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.CsoLargeProducer;
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails =
+        [
+            new CsoMembershipDetailsDto { MemberId = "member1", MemberType = "large", NumberOfHoldingCompaniesClosedLoopRecycling = 3 },
+            new CsoMembershipDetailsDto { MemberId = "member2", MemberType = "large", NumberOfHoldingCompaniesClosedLoopRecycling = 3 },
+            new CsoMembershipDetailsDto { MemberId = "member3", MemberType = "large", NumberOfHoldingCompaniesClosedLoopRecycling = 3 },
+            new CsoMembershipDetailsDto { MemberId = "member4", MemberType = "large", NumberOfHoldingCompaniesClosedLoopRecycling = 3 },
+            new CsoMembershipDetailsDto { MemberId = "member5", MemberType = "small", NumberOfHoldingCompaniesClosedLoopRecycling = 3 }
+        ];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+            .ReturnsAsync((CompliancePaymentResponse?)null);
+
+        // Act
+        await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        capturedRequest.Should().NotBeNull();
+        var members = capturedRequest!.ComplianceSchemeMembers!.ToList();
+        members.Should().HaveCount(5);
+        members[0].IsClosedLoopRecycling.Should().BeTrue();
+        members[0].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(1);
+        members[1].IsClosedLoopRecycling.Should().BeTrue();
+        members[1].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(1);
+        members[2].IsClosedLoopRecycling.Should().BeTrue();
+        members[2].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(1);
+        members[3].IsClosedLoopRecycling.Should().BeFalse();
+        members[3].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(0);
+        members[4].IsClosedLoopRecycling.Should().BeFalse();
+        members[4].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(0);
     }
 
     [TestMethod]

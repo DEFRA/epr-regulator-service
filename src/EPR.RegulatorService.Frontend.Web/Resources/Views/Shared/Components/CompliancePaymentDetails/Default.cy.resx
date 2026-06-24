@@ -216,4 +216,10 @@
   <data name="CompliancePaymentDetails.SubsidiaryClosedLoopRecyclingPluralDescription" xml:space="preserve">
     <value>Gwastraff pecynnu dolen gaeedig is-gwmnïau</value>
   </data>
+  <data name="CompliancePaymentDetails.SubsidiaryOnlineMarketPlaceSingularDescription" xml:space="preserve">
+    <value>Mae'r is-gwmni yn farchnad ar-lein</value>
+  </data>
+  <data name="CompliancePaymentDetails.SubsidiaryOnlineMarketPlacePluralDescription" xml:space="preserve">
+    <value>Mae'r is-gwmnïau yn farchnadoedd ar-lein</value>
+  </data>
 </root>
