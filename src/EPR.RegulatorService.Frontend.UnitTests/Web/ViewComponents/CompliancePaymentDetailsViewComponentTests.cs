@@ -147,7 +147,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     [TestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public async Task InvokeAsync_Passes_HoldingCompanyClosedLoopRecycling_And_Zeros_SubsidiariesClosedLoopRecycling_For_CsoLargeProducer(
+    public async Task InvokeAsync_Passes_HoldingCompanyClosedLoopRecycling_And_SubsidiariesClosedLoopRecycling_FromFacade_For_CsoLargeProducer(
         bool isResubmission)
     {
         // Arrange
@@ -162,9 +162,9 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
             {
                 MemberId = "memberid1",
                 MemberType = "large",
-                NumberOfHoldingCompaniesClosedLoopRecycling = 1,
-                NumberOfSubsidiaries = 1,
-                NumberOfSubsidiariesClosedLoopRecycling = 7
+                IsClosedLoopRecycling = true,
+                NumberOfSubsidiaries = 3,
+                NumberOfSubsidiariesClosedLoopRecycling = 3
             }
         ];
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
@@ -194,8 +194,43 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         var members = capturedRequest!.ComplianceSchemeMembers!.ToList();
         members.Should().ContainSingle();
         members[0].NoOfHoldingCompaniesClosedLoopRecycling.Should().Be(1);
-        members[0].NoOfSubsidiariesClosedLoopRecycling.Should().Be(0);
+        members[0].NoOfSubsidiariesClosedLoopRecycling.Should().Be(3);
         members[0].IsClosedLoopRecycling.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_Passes_PerMemberSubsidiariesClosedLoopRecycling_FromFacade_For_CsoLargeProducer()
+    {
+        CompliancePaymentRequest? capturedRequest = null;
+        _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.CsoLargeProducer;
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails =
+        [
+            new CsoMembershipDetailsDto
+            {
+                MemberId = "memberid1",
+                MemberType = "large",
+                NumberOfSubsidiaries = 1,
+                NumberOfSubsidiariesClosedLoopRecycling = 7
+            }
+        ];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+            .ReturnsAsync(new CompliancePaymentResponse
+            {
+                ComplianceSchemeMembers =
+                [
+                    new() { MemberId = "memberid1", MemberType = "large", MemberFee = 2.00M }
+                ]
+            });
+
+        await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.ComplianceSchemeMembers!.Single().NoOfSubsidiariesClosedLoopRecycling.Should().Be(7);
     }
 
     [TestMethod]
@@ -315,7 +350,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
             {
                 MemberId = "memberid1",
                 MemberType = "large",
-                NumberOfHoldingCompaniesClosedLoopRecycling = 1,
+                IsClosedLoopRecycling = true,
                 NumberOfSubsidiaries = 0
             }
         ];
@@ -338,18 +373,18 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
-    public async Task InvokeAsync_SetsIsClosedLoopRecycling_ForFirstNLargeMembers_WhenMultipleHoldingCompaniesHaveClr()
+    public async Task InvokeAsync_SetsIsClosedLoopRecycling_FromPerMemberFlag()
     {
         // Arrange
         CompliancePaymentRequest? capturedRequest = null;
         _registrationSumissionDetailsViewModel.RegistrationJourneyType = RegistrationJourneyType.CsoLargeProducer;
         _registrationSumissionDetailsViewModel.CSOMembershipDetails =
         [
-            new CsoMembershipDetailsDto { MemberId = "member1", MemberType = "large", NumberOfHoldingCompaniesClosedLoopRecycling = 3 },
-            new CsoMembershipDetailsDto { MemberId = "member2", MemberType = "large", NumberOfHoldingCompaniesClosedLoopRecycling = 3 },
-            new CsoMembershipDetailsDto { MemberId = "member3", MemberType = "large", NumberOfHoldingCompaniesClosedLoopRecycling = 3 },
-            new CsoMembershipDetailsDto { MemberId = "member4", MemberType = "large", NumberOfHoldingCompaniesClosedLoopRecycling = 3 },
-            new CsoMembershipDetailsDto { MemberId = "member5", MemberType = "small", NumberOfHoldingCompaniesClosedLoopRecycling = 3 }
+            new CsoMembershipDetailsDto { MemberId = "member1", MemberType = "large", IsClosedLoopRecycling = true },
+            new CsoMembershipDetailsDto { MemberId = "member2", MemberType = "large", IsClosedLoopRecycling = true },
+            new CsoMembershipDetailsDto { MemberId = "member3", MemberType = "large", IsClosedLoopRecycling = true },
+            new CsoMembershipDetailsDto { MemberId = "member4", MemberType = "large", IsClosedLoopRecycling = false },
+            new CsoMembershipDetailsDto { MemberId = "member5", MemberType = "small", IsClosedLoopRecycling = false }
         ];
         _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
         {

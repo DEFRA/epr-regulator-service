@@ -238,7 +238,7 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
 
     [Fact]
     [Trait("Scenario", "06")]
-    public async Task Cso_1Member_HcClrOn_SubClrOff_DisplaysHcClrLine_AndZerosSubClrInRequest()
+    public async Task Cso_1Member_HcClrOn_SubClrOff_DisplaysHcClrLine_AndPostsSubClrZeroInRequest()
     {
         const int scenario = 6;
         var submissionId = ClrPaymentScenarioIds.Scenario06;
@@ -251,7 +251,7 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
                 .WithRegistrationJourneyType("CsoLargeProducer")
                 .WithApplicationReferenceNumber(appRef)
                 .WithCsoMemberSubsidiaries(1)
-                .WithCsoMemberClosedLoopRecycling(8));
+                .WithCsoMemberClosedLoopRecycling(0, isClosedLoopRecycling: true));
 
         FacadeServer.SetupComplianceSchemeRegistrationFee(
             CompliancePaymentResponseBuilder.Default()
@@ -342,7 +342,7 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
     [Fact]
     [Trait("Scenario", "08")]
     [Trait("Category", "AMCR-291")]
-    public async Task Cso_3Members_3SubsEach_HcClr3_SubClr3_DisplaysAggregatedClrFees_AndZerosSubClrInRequest()
+    public async Task Cso_3Members_3SubsEach_HcClr3_SubClr3_DisplaysAggregatedClrFees_AndPostsSubClrInRequest()
     {
         const int scenario = 8;
         var submissionId = ClrPaymentScenarioIds.Scenario08;
@@ -357,13 +357,15 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
                 .WithApplicationReferenceNumber(appRef)
                 .WithCsoMembers(
                     CsoMemberBuilder.Large("100001")
-                        .WithHoldingCompanyClrCount(3)
+                        .WithIsClosedLoopRecycling()
                         .WithSubsidiaries(3)
                         .WithSubsidiariesClosedLoopRecycling(3),
                     CsoMemberBuilder.Large("100002")
+                        .WithIsClosedLoopRecycling()
                         .WithSubsidiaries(3)
                         .WithSubsidiariesClosedLoopRecycling(3),
                     CsoMemberBuilder.Large("100003")
+                        .WithIsClosedLoopRecycling()
                         .WithSubsidiaries(3)
                         .WithSubsidiariesClosedLoopRecycling(3)));
 
@@ -390,9 +392,9 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
             applicationReferenceNumber = appRef,
             complianceSchemeMembers = new[]
             {
-                new { memberId = "100001", isClosedLoopRecycling = true, noOfHoldingCompaniesClosedLoopRecycling = 1, noOfSubsidiariesClosedLoopRecycling = 0 },
-                new { memberId = "100002", isClosedLoopRecycling = true, noOfHoldingCompaniesClosedLoopRecycling = 1, noOfSubsidiariesClosedLoopRecycling = 0 },
-                new { memberId = "100003", isClosedLoopRecycling = true, noOfHoldingCompaniesClosedLoopRecycling = 1, noOfSubsidiariesClosedLoopRecycling = 0 },
+                new { memberId = "100001", isClosedLoopRecycling = true, noOfHoldingCompaniesClosedLoopRecycling = 1, noOfSubsidiariesClosedLoopRecycling = 3 },
+                new { memberId = "100002", isClosedLoopRecycling = true, noOfHoldingCompaniesClosedLoopRecycling = 1, noOfSubsidiariesClosedLoopRecycling = 3 },
+                new { memberId = "100003", isClosedLoopRecycling = true, noOfHoldingCompaniesClosedLoopRecycling = 1, noOfSubsidiariesClosedLoopRecycling = 3 },
             },
         });
     }
@@ -536,7 +538,7 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
 
     [Fact]
     [Trait("Scenario", "12")]
-    public async Task Cso_3LargeMembers_HcClr2_SubClrOff_FlagsFirstTwoMembersOnly_AndDisplaysHcClrLine()
+    public async Task Cso_3LargeMembers_HcClr2_SubClrOff_UsesPerMemberHcClrFlags_AndDisplaysHcClrLine()
     {
         const int scenario = 12;
         var submissionId = ClrPaymentScenarioIds.Scenario12;
@@ -547,8 +549,8 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
             RegistrationSubmissionDetailsBuilder.Default(submissionId)
                 .WithApplicationReferenceNumber(appRef)
                 .WithCsoMembers(
-                    CsoMemberBuilder.Large("100001").WithHoldingCompanyClrCount(2),
-                    CsoMemberBuilder.Large("100002"),
+                    CsoMemberBuilder.Large("100001").WithIsClosedLoopRecycling(),
+                    CsoMemberBuilder.Large("100002").WithIsClosedLoopRecycling(),
                     CsoMemberBuilder.Large("100003")));
 
         FacadeServer.SetupComplianceSchemeRegistrationFee(
@@ -596,8 +598,8 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
             RegistrationSubmissionDetailsBuilder.Default(submissionId)
                 .WithApplicationReferenceNumber(appRef)
                 .WithCsoMembers(
-                    CsoMemberBuilder.Large("100001").WithHoldingCompanyClrCount(2),
-                    CsoMemberBuilder.Large("100002"),
+                    CsoMemberBuilder.Large("100001").WithIsClosedLoopRecycling(),
+                    CsoMemberBuilder.Large("100002").WithIsClosedLoopRecycling(),
                     CsoMemberBuilder.Large("100003").WithMemberType("small")));
 
         FacadeServer.SetupComplianceSchemeRegistrationFee(
@@ -636,7 +638,7 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
 
     [Fact]
     [Trait("Scenario", "14")]
-    public async Task Cso_3Members_3SubsEach_HcClrOff_SubClrMixed_DisplaysAggregatedPartialSubClr_AndZerosSubClrInRequest()
+    public async Task Cso_3Members_3SubsEach_HcClrOff_SubClrMixed_DisplaysAggregatedPartialSubClr_AndPostsSubClrInRequest()
     {
         const int scenario = 14;
         var submissionId = ClrPaymentScenarioIds.Scenario14;
@@ -681,8 +683,8 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
             applicationReferenceNumber = appRef,
             complianceSchemeMembers = new[]
             {
-                new { memberId = "100001", isClosedLoopRecycling = false, noOfSubsidiariesClosedLoopRecycling = 0 },
-                new { memberId = "100002", isClosedLoopRecycling = false, noOfSubsidiariesClosedLoopRecycling = 0 },
+                new { memberId = "100001", isClosedLoopRecycling = false, noOfSubsidiariesClosedLoopRecycling = 3 },
+                new { memberId = "100002", isClosedLoopRecycling = false, noOfSubsidiariesClosedLoopRecycling = 1 },
                 new { memberId = "100003", isClosedLoopRecycling = false, noOfSubsidiariesClosedLoopRecycling = 0 },
             },
         });
@@ -690,7 +692,7 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
 
     [Fact]
     [Trait("Scenario", "15")]
-    public async Task Cso_3Members_3SubsEach_HcClr2_SubClrMixed_DisplaysBothClrTypes_AndZerosSubClrInRequest()
+    public async Task Cso_3Members_3SubsEach_HcClr2_SubClrMixed_DisplaysBothClrTypes_AndPostsSubClrInRequest()
     {
         const int scenario = 15;
         var submissionId = ClrPaymentScenarioIds.Scenario15;
@@ -709,10 +711,11 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
                 .WithApplicationReferenceNumber(appRef)
                 .WithCsoMembers(
                     CsoMemberBuilder.Large("100001")
-                        .WithHoldingCompanyClrCount(2)
+                        .WithIsClosedLoopRecycling()
                         .WithSubsidiaries(3)
                         .WithSubsidiariesClosedLoopRecycling(3),
                     CsoMemberBuilder.Large("100002")
+                        .WithIsClosedLoopRecycling()
                         .WithSubsidiaries(3)
                         .WithSubsidiariesClosedLoopRecycling(1),
                     CsoMemberBuilder.Large("100003").WithSubsidiaries(3)));
@@ -740,9 +743,123 @@ public class ClrPaymentScenarioTests : IntegrationTestBase
             applicationReferenceNumber = appRef,
             complianceSchemeMembers = new[]
             {
-                new { memberId = "100001", isClosedLoopRecycling = true, noOfSubsidiariesClosedLoopRecycling = 0 },
-                new { memberId = "100002", isClosedLoopRecycling = true, noOfSubsidiariesClosedLoopRecycling = 0 },
+                new { memberId = "100001", isClosedLoopRecycling = true, noOfSubsidiariesClosedLoopRecycling = 3 },
+                new { memberId = "100002", isClosedLoopRecycling = true, noOfSubsidiariesClosedLoopRecycling = 1 },
                 new { memberId = "100003", isClosedLoopRecycling = false, noOfSubsidiariesClosedLoopRecycling = 0 },
+            },
+        });
+    }
+
+    [Fact]
+    [Trait("Scenario", "16")]
+    [Trait("Category", "AMCR-298")]
+    public async Task DirectProducer_6Subsidiaries_SubClr3_DisplaysPartialSubClrOnly_AndPostsProducerFeeRequest()
+    {
+        const int scenario = 16;
+        var submissionId = ClrPaymentScenarioIds.Scenario16;
+        var appRef = ClrPaymentScenarioIds.AppRef(scenario);
+        const int subsidiariesFeePence = 1295200;
+        const int subsidiaryClrFeePence = 509600;
+        const int netSubsidiaryFeePence = subsidiariesFeePence - subsidiaryClrFeePence;
+
+        FacadeServer.SetupRegistrationSubmissionDetails(
+            RegistrationSubmissionDetailsBuilder.Default(submissionId)
+                .AsDirectLargeProducer()
+                .WithApplicationReferenceNumber(appRef)
+                .WithProducerSubsidiaries(6)
+                .WithProducerClosedLoopRecycling(3, 0));
+
+        FacadeServer.SetupProducerRegistrationFee(
+            ProducerPaymentResponseBuilder.Default()
+                .WithProducerRegistrationFee(284200)
+                .WithProducerLateRegistrationFee(77200)
+                .WithTotalFee(1656600)
+                .WithOutstandingPayment(1656600)
+                .WithSubsidiariesFeeBreakdown(subsidiariesFeePence, subsidiaryClrFeePence, 3));
+
+        var page = await LoadDetailsPage(submissionId);
+
+        using (new AssertionScope())
+        {
+            page.SubTotal.Should().Be(16566.00m);
+            page.FindDirectProducerHoldingCompanyClrLine().Should().BeNull();
+            AssertDirectProducerSubsidiaryCompaniesLine(page, units: 6, amountPence: netSubsidiaryFeePence);
+            AssertDirectProducerSubsidiaryClrLine(page, units: 3, amountPence: subsidiaryClrFeePence);
+        }
+
+        FacadeServer.ShouldHavePostedProducerRegistrationFee(new
+        {
+            applicationReferenceNumber = appRef,
+            isClosedLoopRecycling = false,
+            noOfHoldingCompaniesClosedLoopRecycling = 0,
+            noOfSubsidiariesClosedLoopRecycling = 3,
+        });
+    }
+
+    [Fact]
+    [Trait("Scenario", "17")]
+    [Trait("Category", "AMCR-298")]
+    public async Task Cso_2Members_SubClr2And3_DisplaysAggregatedClrFees_AndPostsSubClrInRequest()
+    {
+        const int scenario = 17;
+        var submissionId = ClrPaymentScenarioIds.Scenario17;
+        var appRef = ClrPaymentScenarioIds.AppRef(scenario);
+        const int hcClrFeePence = 254800;
+        const int memberOneSubsidiariesFeePence = 431700;
+        const int memberOneSubClrFeePence = 339700;
+        const int memberTwoSubsidiariesFeePence = 647600;
+        const int memberTwoSubClrFeePence = 509600;
+        const int netSubsidiaryFeePence =
+            (memberOneSubsidiariesFeePence - memberOneSubClrFeePence)
+            + (memberTwoSubsidiariesFeePence - memberTwoSubClrFeePence);
+
+        FacadeServer.SetupRegistrationSubmissionDetails(
+            RegistrationSubmissionDetailsBuilder.Default(submissionId)
+                .WithApplicationReferenceNumber(appRef)
+                .WithCsoMembers(
+                    CsoMemberBuilder.Large("100001")
+                        .WithIsClosedLoopRecycling()
+                        .WithSubsidiaries(2)
+                        .WithSubsidiariesClosedLoopRecycling(2),
+                    CsoMemberBuilder.Large("100002")
+                        .WithIsClosedLoopRecycling()
+                        .WithSubsidiaries(3)
+                        .WithSubsidiariesClosedLoopRecycling(3)));
+
+        FacadeServer.SetupComplianceSchemeRegistrationFee(
+            CompliancePaymentResponseBuilder.Default()
+                .WithComplianceSchemeRegistrationFee(284200)
+                .WithTotalFee(3000000)
+                .WithMembers(
+                    BuildCsoMemberWithSubsidiaryClr(
+                        "100001",
+                        hcClrFeePence,
+                        memberOneSubsidiariesFeePence,
+                        memberOneSubClrFeePence,
+                        2),
+                    BuildCsoMemberWithSubsidiaryClr(
+                        "100002",
+                        hcClrFeePence,
+                        memberTwoSubsidiariesFeePence,
+                        memberTwoSubClrFeePence,
+                        3)));
+
+        var page = await LoadDetailsPage(submissionId);
+
+        using (new AssertionScope())
+        {
+            AssertCsoHcClrLine(page, units: 2, amountPence: hcClrFeePence * 2);
+            AssertCsoSubsidiaryCompaniesLine(page, units: 5, amountPence: netSubsidiaryFeePence);
+            AssertCsoSubsidiaryClrLine(page, units: 5, amountPence: memberOneSubClrFeePence + memberTwoSubClrFeePence);
+        }
+
+        FacadeServer.ShouldHavePostedComplianceSchemeRegistrationFee(new
+        {
+            applicationReferenceNumber = appRef,
+            complianceSchemeMembers = new[]
+            {
+                new { memberId = "100001", isClosedLoopRecycling = true, noOfHoldingCompaniesClosedLoopRecycling = 1, noOfSubsidiariesClosedLoopRecycling = 2 },
+                new { memberId = "100002", isClosedLoopRecycling = true, noOfHoldingCompaniesClosedLoopRecycling = 1, noOfSubsidiariesClosedLoopRecycling = 3 },
             },
         });
     }
