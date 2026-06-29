@@ -35,7 +35,7 @@ public class CompliancePaymentDetailsViewComponent(
                 {
                     ApplicationReferenceNumber = viewModel.ReferenceNumber,
                     Regulator = viewModel.NationCode,
-                    ComplianceSchemeMembers = MapToComplianceSchemeMemberRequests(csoMembers, viewModel),
+                    ComplianceSchemeMembers = MapToComplianceSchemeMemberRequests(csoMembers),
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                         ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.GetValueOrDefault()
                         : viewModel.SubmissionDetails.TimeAndDateOfSubmission),
@@ -104,39 +104,22 @@ public class CompliancePaymentDetailsViewComponent(
     }
 
     private static List<ComplianceSchemeMemberRequest> MapToComplianceSchemeMemberRequests(
-        IReadOnlyList<CsoMembershipDetailsDto> csoMembers,
-        RegistrationSubmissionDetailsViewModel viewModel)
-    {
-        int holdingCompanyClosedLoopRecyclingCount =
-            viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer && csoMembers.Count > 0
-                ? csoMembers[0].NumberOfHoldingCompaniesClosedLoopRecycling ?? 0
-                : 0;
-
-        return csoMembers
-            .Select((csoMember, index) => MapToComplianceSchemeMemberRequest(
-                csoMember,
-                IsHoldingCompanyClosedLoopRecyclingMember(csoMember, index, holdingCompanyClosedLoopRecyclingCount)))
-            .ToList();
-    }
-
-    private static bool IsHoldingCompanyClosedLoopRecyclingMember(
-        CsoMembershipDetailsDto csoMember,
-        int index,
-        int holdingCompanyClosedLoopRecyclingCount) =>
-        index < holdingCompanyClosedLoopRecyclingCount && csoMember is { MemberType: "large" };
+        IReadOnlyList<CsoMembershipDetailsDto> csoMembers) =>
+        csoMembers.Select(MapToComplianceSchemeMemberRequest).ToList();
 
     private static ComplianceSchemeMemberRequest MapToComplianceSchemeMemberRequest(
-        CsoMembershipDetailsDto csoMember,
-        bool isClosedLoopRecycling) =>
+        CsoMembershipDetailsDto csoMember) =>
         new()
         {
             MemberId = csoMember.MemberId,
             MemberType = csoMember.MemberType,
             IsOnlineMarketplace = csoMember.IsOnlineMarketPlace,
             IsLateFeeApplicable = csoMember.IsLateFeeApplicable,
-            IsClosedLoopRecycling = isClosedLoopRecycling,
-            NoOfHoldingCompaniesClosedLoopRecycling = isClosedLoopRecycling ? 1 : 0,
-            NoOfSubsidiariesClosedLoopRecycling = 0,
+            IsClosedLoopRecycling = csoMember.IsClosedLoopRecycling,
+            NoOfHoldingCompaniesClosedLoopRecycling = csoMember.IsClosedLoopRecycling ? 1 : 0,
+            NoOfSubsidiariesClosedLoopRecycling = csoMember is { MemberType: "large" }
+                ? csoMember.NumberOfSubsidiariesClosedLoopRecycling
+                : 0,
             NumberOfSubsidiaries = csoMember.NumberOfSubsidiaries,
             NoOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace
         };
