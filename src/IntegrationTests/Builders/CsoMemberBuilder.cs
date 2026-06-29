@@ -5,7 +5,7 @@ public class CsoMemberBuilder
     private readonly string _memberId;
     private string _memberType = "large";
     private int _numberOfSubsidiaries;
-    private int _numberOfHoldingCompaniesClosedLoopRecycling;
+    private bool _isClosedLoopRecycling;
     private int _numberOfSubsidiariesClosedLoopRecycling;
 
     private CsoMemberBuilder(string memberId)
@@ -27,17 +27,14 @@ public class CsoMemberBuilder
         return this;
     }
 
-    /// <summary>
-    /// Holding-company CLR count on the first CSO member drives how many large members receive the CLR flag.
-    /// </summary>
-    public CsoMemberBuilder WithHoldingCompanyClrCount(int count)
+    public CsoMemberBuilder WithIsClosedLoopRecycling(bool isClosedLoopRecycling = true)
     {
-        _numberOfHoldingCompaniesClosedLoopRecycling = count;
+        _isClosedLoopRecycling = isClosedLoopRecycling;
         return this;
     }
 
     /// <summary>
-    /// Facade-only subsidiary CLR count; must not be forwarded to the payment API request.
+    /// Subsidiary CLR count from facade data; forwarded to the payment API request per member.
     /// </summary>
     public CsoMemberBuilder WithSubsidiariesClosedLoopRecycling(int count)
     {
@@ -51,8 +48,8 @@ public class CsoMemberBuilder
         memberType = _memberType,
         isOnlineMarketPlace = false,
         isLateFeeApplicable = true,
-        numberOfHoldingCompaniesClosedLoopRecycling = _numberOfHoldingCompaniesClosedLoopRecycling,
-        NumberOfSubsidiariesClosedLoopRecycling = _numberOfSubsidiariesClosedLoopRecycling,
+        isClosedLoopRecycling = _isClosedLoopRecycling,
+        numberOfSubsidiariesClosedLoopRecycling = _numberOfSubsidiariesClosedLoopRecycling,
         numberOfSubsidiaries = _numberOfSubsidiaries,
         NumberOfSubsidiariesOnlineMarketPlace = 0,
         relevantYear,
