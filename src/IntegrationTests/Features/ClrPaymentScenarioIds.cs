@@ -17,6 +17,8 @@ internal static class ClrPaymentScenarioIds
     internal static readonly Guid Scenario13 = Guid.Parse("a5e6f7b8-c9d0-1234-efab-345678901234");
     internal static readonly Guid Scenario14 = Guid.Parse("b6f7a8c9-d0e1-2345-fabc-456789012345");
     internal static readonly Guid Scenario15 = Guid.Parse("c7a8b9d0-e1f2-3456-abcd-567890123456");
+    internal static readonly Guid Scenario16 = Guid.Parse("d8b9c0e1-f2a3-4567-bcde-678901234567");
+    internal static readonly Guid Scenario17 = Guid.Parse("e9c0d1f2-a3b4-5678-cdef-789012345678");
 
     internal static string AppRef(int scenario) => $"REG-SCENARIO-{scenario:D2}";
 }

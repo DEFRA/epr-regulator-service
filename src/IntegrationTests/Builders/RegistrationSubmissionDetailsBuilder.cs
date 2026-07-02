@@ -14,7 +14,7 @@ public class RegistrationSubmissionDetailsBuilder
     private string? _organisationSize;
     private int _numberOfSubsidiariesClosedLoopRecyclingRoot;
     private int _numberOfHoldingCompaniesClosedLoopRecyclingRoot;
-    private int _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling;
+    private bool _csoMemberIsClosedLoopRecycling;
     private int _csoMemberNumberOfSubsidiariesClosedLoopRecycling;
     private int _numberOfSubsidiariesRoot;
     private int _csoMemberNumberOfSubsidiaries;
@@ -93,10 +93,10 @@ public class RegistrationSubmissionDetailsBuilder
 
     public RegistrationSubmissionDetailsBuilder WithCsoMemberClosedLoopRecycling(
         int noOfSubsidiariesClosedLoopRecycling,
-        int memberNoOfHoldingCompaniesClosedLoopRecycling = 1)
+        bool isClosedLoopRecycling = true)
     {
         _csoMemberNumberOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling;
-        _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling = memberNoOfHoldingCompaniesClosedLoopRecycling;
+        _csoMemberIsClosedLoopRecycling = isClosedLoopRecycling;
         return this;
     }
 
@@ -237,8 +237,8 @@ public class RegistrationSubmissionDetailsBuilder
                 memberType = _csoMemberType,
                 isOnlineMarketPlace = false,
                 isLateFeeApplicable = true,
-                numberOfHoldingCompaniesClosedLoopRecycling = _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling,
-                NumberOfSubsidiariesClosedLoopRecycling = _csoMemberNumberOfSubsidiariesClosedLoopRecycling,
+                isClosedLoopRecycling = _csoMemberIsClosedLoopRecycling,
+                numberOfSubsidiariesClosedLoopRecycling = _csoMemberNumberOfSubsidiariesClosedLoopRecycling,
                 numberOfSubsidiaries = _csoMemberNumberOfSubsidiaries,
                 NumberOfSubsidiariesOnlineMarketPlace = 0,
                 relevantYear = _relevantYear,

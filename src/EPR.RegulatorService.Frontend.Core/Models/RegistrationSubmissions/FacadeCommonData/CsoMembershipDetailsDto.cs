@@ -6,6 +6,7 @@ public class CsoMembershipDetailsDto
     public string MemberType { get; set; }
     public bool IsOnlineMarketPlace { get; set; }
     public bool IsLateFeeApplicable { get; set; }
+    public bool IsClosedLoopRecycling { get; set; }
     public int? NumberOfHoldingCompaniesClosedLoopRecycling { get; set; }
 
     public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
@@ -23,8 +24,8 @@ public class CsoMembershipDetailsDto
         MemberType = dto.MemberType,
         IsOnlineMarketplace = dto.IsOnlineMarketPlace,
         IsLateFeeApplicable = dto.IsLateFeeApplicable,
-        NoOfHoldingCompaniesClosedLoopRecycling = dto.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0,
-        IsClosedLoopRecycling = (dto.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0) > 0,
+        NoOfHoldingCompaniesClosedLoopRecycling = dto.IsClosedLoopRecycling ? 1 : 0,
+        IsClosedLoopRecycling = dto.IsClosedLoopRecycling,
         NoOfSubsidiariesClosedLoopRecycling = dto.NumberOfSubsidiariesClosedLoopRecycling,
         NoOfSubsidiariesOnlineMarketplace = dto.NumberOfSubsidiariesOnlineMarketPlace,
         NumberOfSubsidiaries = dto.NumberOfSubsidiaries
