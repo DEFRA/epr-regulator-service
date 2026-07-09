@@ -36,6 +36,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         protected JourneySession _journeySession;
         private const string PowerBiLogin = "https://app.powerbi.com/";
         protected Mock<IUrlHelper> _mockUrlHelper = null!;
+        protected Mock<TimeProvider> _mockTimeProvider = null!;
 
         protected void SetupBase()
         {
@@ -68,6 +69,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             });
 
             SetupJourneySession(null, null);
+
+            _mockTimeProvider = new Mock<TimeProvider>();
+            _mockTimeProvider.Setup(tp => tp.GetUtcNow())
+                .Returns(new DateTimeOffset(2025, 6, 1, 0, 0, 0, TimeSpan.Zero));
 
             _mockUrlHelper = new Mock<IUrlHelper>();
             _mockUrlHelper

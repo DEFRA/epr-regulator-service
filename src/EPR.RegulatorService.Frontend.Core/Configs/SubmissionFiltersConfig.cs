@@ -8,11 +8,6 @@ namespace EPR.RegulatorService.Frontend.Core.Configs
     {
         public const string ConfigSection = "SubmissionFilters";
 
-        /// <summary>
-        /// Comma separated list of years to show in filters
-        /// </summary>
-        public string? SubmissionYears { get; set; }
-
         public int[] Years { get; set; }
 
         public int[] OrgYears { get; set; }
@@ -21,14 +16,32 @@ namespace EPR.RegulatorService.Frontend.Core.Configs
 
         public string[] OrgPeriods { get; set; }
 
-        public int[] ParseSubmissionYears() =>
-            SubmissionYears?.Split(",").Select(year =>
+        public int[] ParseSubmissionYears(TimeProvider timeProvider)
+        {
+            var startYear = 2025;
+            var addYears = true;
+
+            var yearList = new List<int>{startYear};
+
+            while (addYears)
             {
-                if (!int.TryParse(year, CultureInfo.InvariantCulture, out int parsedYear))
+                if (timeProvider.GetUtcNow().Year == startYear)
                 {
-                    throw new Exception($"Invalid year in {ConfigSection}:{nameof(SubmissionYears)} '{year}'");
+                    if (timeProvider.GetUtcNow().Month > 6)
+                    {
+                        yearList.Add(startYear + 1);
+                    }
+
+                    addYears = false;
                 }
-                return parsedYear;
-            }).ToArray() ?? [];
+                else
+                {
+                    startYear++;
+                    yearList.Add(startYear);
+                }
+
+            }
+            return yearList.ToArray();
+        }
     }
 }

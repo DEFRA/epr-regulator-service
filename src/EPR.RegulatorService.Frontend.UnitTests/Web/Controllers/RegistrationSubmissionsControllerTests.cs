@@ -56,7 +56,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(_journeySession);
 
             // Act
-            var result = await _controller.RegistrationSubmissions(1);
+            var result = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, 1);
 
             // Assert
             result.Should().NotBeNull();
@@ -87,7 +87,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(_journeySession);
 
             // Act
-            var result = await _controller.RegistrationSubmissions(1);
+            var result = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, 1);
 
             // Assert
             result.Should().NotBeNull();
@@ -117,7 +117,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(_journeySession);
 
             // Act
-            var result = await _controller.RegistrationSubmissions(null);
+            var result = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, null);
 
             // Assert
             result.Should().NotBeNull();
@@ -144,7 +144,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(_journeySession);
 
             // Act
-            var result = await _controller.RegistrationSubmissions(null);
+            var result = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, null);
 
             // Assert
             result.Should().NotBeNull();
@@ -172,7 +172,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(_journeySession);
 
             // Act
-            var result = await _controller.RegistrationSubmissions(3);
+            var result = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, 3);
 
             // Assert
             result.Should().NotBeNull();
@@ -223,7 +223,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             int pageNumber = 1;
 
             // Act
-            var result = await _controller.RegistrationSubmissions(pageNumber);
+            var result = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, pageNumber);
 
             // Assert: Verify session retrieval was attempted once
             _mockSessionManager.Verify(sm => sm.GetSessionAsync(It.IsAny<ISession>()), Times.Once);
@@ -278,7 +278,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             MergeFilterChoices(existingSession, latestFilterChoices);
 
             // Act
-            var result = await _controller.RegistrationSubmissions(null);
+            var result = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, null);
 
             // Assert
             result.Should().BeOfType<ViewResult>();
@@ -348,7 +348,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(journeySession);
 
             // Act
-            var result = await _controller.RegistrationSubmissions(new_page_number);
+            var result = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, new_page_number);
 
             // Debugging: Check if the session page number was updated correctly
             var session = journeySession.RegulatorRegistrationSubmissionSession;
@@ -412,7 +412,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 .ReturnsAsync(_journeySession);
 
             // Act: Perform initial GET request
-            var getResult = await _controller.RegistrationSubmissions(null);
+            var getResult = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, null);
 
             // Assert: Initial state
             getResult.Should().BeOfType<ViewResult>();
@@ -436,7 +436,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             (postResult as RedirectToActionResult)?.ActionName.Should().Be(PagePath.RegistrationSubmissionsAction);
 
             // Act: Perform GET request with updated filters
-            getResult = await _controller.RegistrationSubmissions(4);
+            getResult = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, 4);
 
             // Assert: Final state
             session.LatestFilterChoices.OrganisationName.Should().Be("braun");
@@ -464,7 +464,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Arrange
             SetupSessionWithFilters("braun", "small", "2025, 2026", 2, 200, "Pending");
             // Act: Perform initial GET request
-            var getResult = await _controller.RegistrationSubmissions(null);
+            var getResult = await _controller.RegistrationSubmissions(_mockTimeProvider.Object, null);
             // Assert: Verify initial state
             AssertInitialFilters(getResult, "braun", "small", "2025, 2026", 2, 200, "Pending");
             // Act: Perform POST request to clear filters
@@ -581,7 +581,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         [TestMethod]
         public async Task RegistrationSubmissions_Return_PageNot_Found_When_No_Filter_Or_Query_Supplied()
         {
-            var result = await _controller.RegistrationSubmissions(null, null);
+            var result = await _controller.RegistrationSubmissions();
             Assert.IsNotNull(result);
             result.Should().BeOfType<RedirectToActionResult>();
             (result as RedirectToActionResult).ActionName.Should().Be(PagePath.PageNotFound);
@@ -591,7 +591,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task PostingTo_RegistrationSubmissions_Return_ErrorPage_When_Exception_Received()
         {
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(null, null);
+            var result = await _controller.RegistrationSubmissions();
             Assert.IsNotNull(result);
             result.Should().BeOfType<RedirectToActionResult>();
             (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
@@ -601,7 +601,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         public async Task PostTo_RegistrationSubmissions_Logs_Error_When_Exception_Received()
         {
             _mockSessionManager.Setup(x => x.GetSessionAsync(It.IsAny<ISession>())).Throws(new Exception("Test"));
-            var result = await _controller.RegistrationSubmissions(null, null);
+            var result = await _controller.RegistrationSubmissions();
             Assert.IsNotNull(result);
             result.Should().BeOfType<RedirectToActionResult>();
             (result as RedirectToActionResult).ActionName.Should().Be(PagePath.Error);
