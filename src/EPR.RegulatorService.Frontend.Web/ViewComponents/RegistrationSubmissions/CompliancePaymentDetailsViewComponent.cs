@@ -36,7 +36,7 @@ public class CompliancePaymentDetailsViewComponent(
                     ApplicationReferenceNumber = viewModel.ReferenceNumber,
                     FileId = viewModel.IsResubmission ? viewModel.ResubmissionFileId : null,
                     Regulator = viewModel.NationCode,
-                    ComplianceSchemeMembers = csoMembers.Select(m => MapToComplianceSchemeMemberRequest(m, viewModel)),
+                    ComplianceSchemeMembers = MapToComplianceSchemeMemberRequests(csoMembers),
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                         ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.GetValueOrDefault()
                         : viewModel.SubmissionDetails.TimeAndDateOfSubmission),
@@ -79,6 +79,10 @@ public class CompliancePaymentDetailsViewComponent(
                 SubsidiariesCompanyCount = csoMembers.Sum(r => r.NumberOfSubsidiaries),
                 SubsidiariesCompanyFee =
                     ConvertToPoundsFromPence(complianceSchemeMembers.GetNetSubsidiariesCompanyFees()),
+                SubsidiariesOnlineMarketPlaceCount =
+                    complianceSchemeMembers.GetSubsidiariesOnlineMarketPlaceCount(),
+                SubsidiariesOnlineMarketPlaceFee =
+                    ConvertToPoundsFromPence(complianceSchemeMembers.GetSubsidiariesOnlineMarketPlaceFees()),
                 SubsidiariesClosedLoopRecyclingCount =
                     complianceSchemeMembers.GetSubsidiariesClosedLoopRecyclingCount(),
                 SubsidiariesClosedLoopRecyclingFee =
@@ -100,38 +104,26 @@ public class CompliancePaymentDetailsViewComponent(
         }
     }
 
+    private static List<ComplianceSchemeMemberRequest> MapToComplianceSchemeMemberRequests(
+        IReadOnlyList<CsoMembershipDetailsDto> csoMembers) =>
+        csoMembers.Select(MapToComplianceSchemeMemberRequest).ToList();
+
     private static ComplianceSchemeMemberRequest MapToComplianceSchemeMemberRequest(
-        CsoMembershipDetailsDto csoMember,
-        RegistrationSubmissionDetailsViewModel viewModel)
-    {
-        bool isCsoLargeProducer = viewModel.RegistrationJourneyType == RegistrationJourneyType.CsoLargeProducer;
-
-        int noOfHoldingCompaniesClosedLoopRecycling;
-        int noOfSubsidiariesClosedLoopRecycling;
-        if (!isCsoLargeProducer)
-        {
-            noOfHoldingCompaniesClosedLoopRecycling = 0;
-            noOfSubsidiariesClosedLoopRecycling = 0;
-        }
-        else
-        {
-            noOfHoldingCompaniesClosedLoopRecycling = csoMember.NumberOfHoldingCompaniesClosedLoopRecycling ?? 0;
-            noOfSubsidiariesClosedLoopRecycling = csoMember.NumberOfSubsidiariesClosedLoopRecycling;
-        }
-
-        return new ComplianceSchemeMemberRequest
+        CsoMembershipDetailsDto csoMember) =>
+        new()
         {
             MemberId = csoMember.MemberId,
             MemberType = csoMember.MemberType,
             IsOnlineMarketplace = csoMember.IsOnlineMarketPlace,
             IsLateFeeApplicable = csoMember.IsLateFeeApplicable,
-            NoOfHoldingCompaniesClosedLoopRecycling = noOfHoldingCompaniesClosedLoopRecycling,
-            IsClosedLoopRecycling = noOfHoldingCompaniesClosedLoopRecycling > 0,
-            NoOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling,
+            IsClosedLoopRecycling = csoMember.IsClosedLoopRecycling,
+            NoOfHoldingCompaniesClosedLoopRecycling = csoMember.IsClosedLoopRecycling ? 1 : 0,
+            NoOfSubsidiariesClosedLoopRecycling = csoMember is { MemberType: "large" }
+                ? csoMember.NumberOfSubsidiariesClosedLoopRecycling
+                : 0,
             NumberOfSubsidiaries = csoMember.NumberOfSubsidiaries,
             NoOfSubsidiariesOnlineMarketplace = csoMember.NumberOfSubsidiariesOnlineMarketPlace
         };
-    }
 
     private static decimal ConvertToPoundsFromPence(decimal amount) => amount / 100;
 }

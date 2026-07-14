@@ -58,4 +58,10 @@ internal static class ComplianceSchemeMemberExtension
 
     internal static IList<decimal> GetClosedLoopRecyclingFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
         complianceSchemeMembers.Where(r => r.ClosedLoopRecyclingFee > 0).Select(r => r.ClosedLoopRecyclingFee).ToList();
+
+    internal static decimal GetSubsidiariesOnlineMarketPlaceFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.SubsidiaryOnlineMarketPlaceFee ?? 0);
+
+    internal static int GetSubsidiariesOnlineMarketPlaceCount(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.OnlineMarketPlaceSubsidiariesCount ?? 0);
 }

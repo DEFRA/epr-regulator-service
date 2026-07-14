@@ -92,7 +92,7 @@ public class ManageRegistrationSubmissionDetailsPageModel : PageModelBase, IPage
         // The tag helper renders amounts as <dd class="govuk-summary-list__actions"> with £X,XXX.XX format
         var amounts = paymentCard.QuerySelectorAll("dd.govuk-summary-list__actions")
             .Select(dd => dd.TextContent.Trim())
-            .Where(text => text.StartsWith("£") || text.Contains("£"))
+            .Where(text => text.StartsWith('£') || text.Contains('£'))
             .ToList();
 
         return new PaymentDetailsUnderTest
@@ -149,6 +149,28 @@ public class ManageRegistrationSubmissionDetailsPageModel : PageModelBase, IPage
 
         return null;
     }
+
+    public PaymentLineItemUnderTest? FindDirectProducerHoldingCompanyClrLine()
+    {
+        var item = FindPaymentLineItem("Closed loop packaging waste");
+        return item is not null &&
+               !item.Description.Contains("Subsidiaries", StringComparison.OrdinalIgnoreCase)
+            ? item
+            : null;
+    }
+
+    public PaymentLineItemUnderTest? FindCsoHoldingCompanyClrLine() =>
+        FindPaymentLineItem("Producer closed loop packaging waste")
+        ?? FindPaymentLineItem("Producers closed loop packaging waste");
+
+    public PaymentLineItemUnderTest? FindSubsidiaryClrLine() =>
+        FindPaymentLineItem("Subsidiaries closed loop packaging waste");
+
+    public PaymentLineItemUnderTest? FindSubsidiaryCompaniesLine() =>
+        FindPaymentLineItem("Subsidiary companies");
+
+    public PaymentLineItemUnderTest? FindLargeProducersLine() =>
+        FindPaymentLineItem("Large producers");
 
     private IElement? GetPaymentCard() =>
         _document.QuerySelectorAll("div.govuk-summary-card")

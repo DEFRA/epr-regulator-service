@@ -204,4 +204,10 @@
   <data name="CompliancePaymentDetails.SubsidiaryClosedLoopRecyclingPluralDescription" xml:space="preserve">
     <value>Subsidiaries closed loop packaging waste</value>
   </data>
+  <data name="CompliancePaymentDetails.SubsidiaryOnlineMarketPlaceSingularDescription" xml:space="preserve">
+    <value>Subsidiary is an online marketplace</value>
+  </data>
+  <data name="CompliancePaymentDetails.SubsidiaryOnlineMarketPlacePluralDescription" xml:space="preserve">
+    <value>Subsidiaries are online marketplaces</value>
+  </data>
 </root>

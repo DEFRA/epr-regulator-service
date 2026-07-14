@@ -10,7 +10,6 @@ using WireMock.AwesomeAssertions;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using WireMock.Server;
 
 [Collection(SequentialCollection.Sequential)]
 public class RegistrationSubmissionDetailsTests : IntegrationTestBase
@@ -29,7 +28,7 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         // Arrange
         var submissionId = Guid.Parse("0163A629-7780-445F-B00E-1898546BDF0C");
 
-        SetupFacadeMockRegistrationSubmissionDetails(
+        FacadeServer.SetupRegistrationSubmissionDetails(
             RegistrationSubmissionDetailsBuilder.Default(submissionId)
                 .WithOrganisationName("Compliance Scheme Ltd")
                 .WithOrganisationType("compliance")
@@ -54,13 +53,13 @@ public class RegistrationSubmissionDetailsTests : IntegrationTestBase
         // Arrange
         var submissionId = Guid.Parse("1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e");
 
-        SetupFacadeMockRegistrationSubmissionDetails(
+        FacadeServer.SetupRegistrationSubmissionDetails(
             RegistrationSubmissionDetailsBuilder.Default(submissionId)
                 .WithOrganisationName("CSO Large Producer Ltd")
                 .WithOrganisationType("compliance")
                 .WithRelevantYear(2025));
 
-        SetupPaymentFacadeMockComplianceSchemeRegistrationFee(
+        FacadeServer.SetupComplianceSchemeRegistrationFee(
             CompliancePaymentResponseBuilder.Default()
                 .WithComplianceSchemeRegistrationFee(284200)
                 .WithTotalFee(588500)

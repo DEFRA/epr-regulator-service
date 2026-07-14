@@ -54,7 +54,7 @@ public partial class RegistrationSubmissionsController(
     [Route(PagePath.RegistrationSubmissionsRoute)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RegistrationSubmissions(int? pageNumber)
+    public async Task<IActionResult> RegistrationSubmissions([FromServices] TimeProvider timeProvider, int? pageNumber)
     {
         _currentSession = await _sessionManager.GetSessionAsync(HttpContext.Session) ?? new JourneySession();
 
@@ -68,7 +68,8 @@ public partial class RegistrationSubmissionsController(
 
         var viewModel = InitialiseOrCreateViewModel(
             _currentSession.RegulatorRegistrationSubmissionSession,
-            nationId);
+            nationId,
+            timeProvider);
 
         await SaveSessionAndJourney(_currentSession.RegulatorRegistrationSubmissionSession, PagePath.RegistrationSubmissionsRoute, PagePath.RegistrationSubmissionsRoute);
 
@@ -739,7 +740,7 @@ public partial class RegistrationSubmissionsController(
 
     private RegistrationSubmissionsViewModel InitialiseOrCreateViewModel(
         RegulatorRegistrationSubmissionSession session,
-        int nationId)
+        int nationId, TimeProvider timeProvider)
     {
         RegistrationSubmissionsFilterViewModel existingSessionFilters = session.LatestFilterChoices != null
             ? (RegistrationSubmissionsFilterViewModel)session.LatestFilterChoices
@@ -752,7 +753,7 @@ public partial class RegistrationSubmissionsController(
 
         int currentPageNumber = session.CurrentPageNumber ?? 1;
         existingSessionFilters.PageNumber = currentPageNumber;
-        existingSessionFilters.SubmissionYears = _submissionFiltersConfig.ParseSubmissionYears()
+        existingSessionFilters.SubmissionYears = _submissionFiltersConfig.ParseSubmissionYears(timeProvider)
             .Select(y => y.ToString())
             .ToArray();
         if (session.LatestFilterChoices != null)

@@ -14,12 +14,13 @@ public class RegistrationSubmissionDetailsBuilder
     private string? _organisationSize;
     private int _numberOfSubsidiariesClosedLoopRecyclingRoot;
     private int _numberOfHoldingCompaniesClosedLoopRecyclingRoot;
-    private int _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling;
+    private bool _csoMemberIsClosedLoopRecycling;
     private int _csoMemberNumberOfSubsidiariesClosedLoopRecycling;
     private int _numberOfSubsidiariesRoot;
     private int _csoMemberNumberOfSubsidiaries;
     private string _csoMemberType = "large";
     private string _applicationReferenceNumber = "REG-2025-001";
+    private List<CsoMemberBuilder>? _csoMembers;
     private string? _resubmissionFileId = null;
     private string? _resubmissionDate = null;
     private bool _isResubmission;
@@ -95,10 +96,10 @@ public class RegistrationSubmissionDetailsBuilder
 
     public RegistrationSubmissionDetailsBuilder WithCsoMemberClosedLoopRecycling(
         int noOfSubsidiariesClosedLoopRecycling,
-        int memberNoOfHoldingCompaniesClosedLoopRecycling = 1)
+        bool isClosedLoopRecycling = true)
     {
         _csoMemberNumberOfSubsidiariesClosedLoopRecycling = noOfSubsidiariesClosedLoopRecycling;
-        _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling = memberNoOfHoldingCompaniesClosedLoopRecycling;
+        _csoMemberIsClosedLoopRecycling = isClosedLoopRecycling;
         return this;
     }
 
@@ -139,6 +140,16 @@ public class RegistrationSubmissionDetailsBuilder
         _isComplianceScheme = false;
         _registrationJourneyType = organisationSize == "Small" ? "DirectSmallProducer" : "DirectLargeProducer";
         _organisationSize = organisationSize;
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder WithCsoMembers(params CsoMemberBuilder[] members)
+    {
+        _csoMembers = members.ToList();
+        _emptyCsoMembershipDetails = false;
+        _isComplianceScheme = true;
+        _organisationType = "compliance";
+        _registrationJourneyType = "CsoLargeProducer";
         return this;
     }
 
@@ -222,25 +233,38 @@ public class RegistrationSubmissionDetailsBuilder
         organisationSize = _organisationSize,
         isComplianceScheme = _isComplianceScheme,
         submissionPeriod = $"January to December {_relevantYear}",
-        csoMembershipDetails = _emptyCsoMembershipDetails
-            ? Array.Empty<object>()
-            : new object[]
-            {
-                new
-                {
-                    memberId = "100001",
-                    memberType = _csoMemberType,
-                    isOnlineMarketPlace = false,
-                    isLateFeeApplicable = true,
-                    numberOfHoldingCompaniesClosedLoopRecycling = _csoMemberNumberOfHoldingCompaniesClosedLoopRecycling,
-                    NumberOfSubsidiariesClosedLoopRecycling = _csoMemberNumberOfSubsidiariesClosedLoopRecycling,
-                    numberOfSubsidiaries = _csoMemberNumberOfSubsidiaries,
-                    NumberOfSubsidiariesOnlineMarketPlace = 0,
-                    relevantYear = _relevantYear,
-                    submittedDate = _submissionDate,
-                    submissionPeriodDescription = $"January to December {_relevantYear}"
-                }
-            },
+        csoMembershipDetails = BuildCsoMembershipDetails(),
         resubmissionFileId = _resubmissionFileId
     };
+
+    private object[] BuildCsoMembershipDetails()
+    {
+        if (_emptyCsoMembershipDetails)
+        {
+            return Array.Empty<object>();
+        }
+
+        if (_csoMembers is not null)
+        {
+            return _csoMembers.Select(m => m.Build(_relevantYear, _submissionDate)).ToArray<object>();
+        }
+
+        return
+        [
+            new
+            {
+                memberId = "100001",
+                memberType = _csoMemberType,
+                isOnlineMarketPlace = false,
+                isLateFeeApplicable = true,
+                isClosedLoopRecycling = _csoMemberIsClosedLoopRecycling,
+                numberOfSubsidiariesClosedLoopRecycling = _csoMemberNumberOfSubsidiariesClosedLoopRecycling,
+                numberOfSubsidiaries = _csoMemberNumberOfSubsidiaries,
+                NumberOfSubsidiariesOnlineMarketPlace = 0,
+                relevantYear = _relevantYear,
+                submittedDate = _submissionDate,
+                submissionPeriodDescription = $"January to December {_relevantYear}"
+            }
+        ];
+    }
 }

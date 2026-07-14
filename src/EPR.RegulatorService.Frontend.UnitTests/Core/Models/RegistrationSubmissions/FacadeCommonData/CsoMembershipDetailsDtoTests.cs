@@ -17,6 +17,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.IsNull(dto.MemberType);
             Assert.IsFalse(dto.IsOnlineMarketPlace);
             Assert.IsFalse(dto.IsLateFeeApplicable);
+            Assert.IsFalse(dto.IsClosedLoopRecycling);
             Assert.IsNull(dto.NumberOfHoldingCompaniesClosedLoopRecycling);
             Assert.AreEqual(0, dto.NumberOfSubsidiaries);
             Assert.AreEqual(0, dto.NumberOfSubsidiariesClosedLoopRecycling);
@@ -34,6 +35,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             var memberType = "TypeA";
             var isOnlineMarketplace = true;
             var isLateFeeApplicable = true;
+            var isClosedLoopRecycling = true;
             var numberOfHoldingCompaniesClosedLoopRecycling = 2;
             var numberOfSubsidiaries = 5;
             var numberOfSubsidiariesClosedLoopRecycling = 3;
@@ -49,6 +51,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberType = memberType,
                 IsOnlineMarketPlace = isOnlineMarketplace,
                 IsLateFeeApplicable = isLateFeeApplicable,
+                IsClosedLoopRecycling = isClosedLoopRecycling,
                 NumberOfHoldingCompaniesClosedLoopRecycling = numberOfHoldingCompaniesClosedLoopRecycling,
                 NumberOfSubsidiaries = numberOfSubsidiaries,
                 NumberOfSubsidiariesClosedLoopRecycling = numberOfSubsidiariesClosedLoopRecycling,
@@ -63,6 +66,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
             Assert.AreEqual(memberType, dto.MemberType);
             Assert.AreEqual(isOnlineMarketplace, dto.IsOnlineMarketPlace);
             Assert.AreEqual(isLateFeeApplicable, dto.IsLateFeeApplicable);
+            Assert.AreEqual(isClosedLoopRecycling, dto.IsClosedLoopRecycling);
             Assert.AreEqual(numberOfHoldingCompaniesClosedLoopRecycling, dto.NumberOfHoldingCompaniesClosedLoopRecycling);
             Assert.AreEqual(numberOfSubsidiaries, dto.NumberOfSubsidiaries);
             Assert.AreEqual(numberOfSubsidiariesClosedLoopRecycling, dto.NumberOfSubsidiariesClosedLoopRecycling);
@@ -109,6 +113,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
                 MemberType = "Large",
                 IsOnlineMarketPlace = true,
                 IsLateFeeApplicable = false,
+                IsClosedLoopRecycling = true,
                 NumberOfHoldingCompaniesClosedLoopRecycling = 1,
                 NumberOfSubsidiaries = 5,
                 NumberOfSubsidiariesClosedLoopRecycling = 4,
@@ -167,14 +172,15 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Models.RegistrationSubmis
         }
 
         [TestMethod]
-        public void ImplicitOperator_ShouldHandleNullNumberOfHoldingCompaniesClosedLoopRecycling_OnDto()
+        public void ImplicitOperator_ShouldUseIsClosedLoopRecycling_ForClosedLoopFlags()
         {
             // Arrange
             var dto = new CsoMembershipDetailsDto
             {
                 MemberId = "M12345",
                 MemberType = "Large",
-                NumberOfHoldingCompaniesClosedLoopRecycling = null,
+                IsClosedLoopRecycling = false,
+                NumberOfHoldingCompaniesClosedLoopRecycling = 2,
             };
 
             // Act
