@@ -106,7 +106,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.SubsidiariesCompanyCount.Should().Be(0);
         _paymentFacadeServiceMock.Verify(
             r => r.GetCompliancePaymentDetailsAsync(It.Is<CompliancePaymentRequest>(c =>
-                c.FileId == _registrationSumissionDetailsViewModel.ResubmissionFileId)), Times.AtMostOnce);
+                c.RegistrationBlobName == _registrationSumissionDetailsViewModel.RegistrationBlobName)), Times.AtMostOnce);
     }
 
     [TestMethod]

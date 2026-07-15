@@ -10,5 +10,5 @@ public class GrantRegistrationSubmissionViewModel
     public bool? IsGrantRegistrationConfirmed { get; set; }
 
     public bool IsResubmission { get; set; }
-    public string? ResubmissionFileId { get; internal set; }
+    public string? RegistrationBlobName { get; internal set; }
 }

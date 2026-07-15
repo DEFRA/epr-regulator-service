@@ -53,7 +53,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         var model = result.ViewData.Model as ProducerPaymentResponse;
         model.Should().BeNull();
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync(
-            It.Is<ProducerPaymentRequest>(c=>c.FileId == _registrationSumissionDetailsViewModel.ResubmissionFileId)), Times.AtMostOnce);
+            It.Is<ProducerPaymentRequest>(c=>c.RegistrationBlobName == _registrationSumissionDetailsViewModel.RegistrationBlobName)), Times.AtMostOnce);
     }
 
     [TestMethod]

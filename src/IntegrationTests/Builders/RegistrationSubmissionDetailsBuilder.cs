@@ -21,7 +21,7 @@ public class RegistrationSubmissionDetailsBuilder
     private string _csoMemberType = "large";
     private string _applicationReferenceNumber = "REG-2025-001";
     private List<CsoMemberBuilder>? _csoMembers;
-    private string? _resubmissionFileId = null;
+    private string? _registrationBlobName = null;
     private string? _resubmissionDate = null;
     private bool _isResubmission;
 
@@ -127,10 +127,10 @@ public class RegistrationSubmissionDetailsBuilder
         return this;
     }
 
-    public RegistrationSubmissionDetailsBuilder WithIsResubmission(bool isResubmission, string? resubmissionFileId = null, string? resubmissionDate = null)
+    public RegistrationSubmissionDetailsBuilder WithIsResubmission(bool isResubmission, string? registrationBlobName = null, string? resubmissionDate = null)
     {
         _isResubmission = isResubmission;
-        _resubmissionFileId = resubmissionFileId;
+        _registrationBlobName = registrationBlobName;
         _resubmissionDate = resubmissionDate ?? "2025-06-15T10:00:00Z";
         return this;
     }
@@ -218,7 +218,7 @@ public class RegistrationSubmissionDetailsBuilder
             registrationDate = (string?)null,
             resubmissionDate = _resubmissionDate,
             isResubmission = _isResubmission,
-            resubmissionFileId = _resubmissionFileId
+            registrationBlobName = _registrationBlobName
         },
         regulatorDecisionDate = (string?)null,
         regulatorResubmissionDecisionDate = (string?)null,
@@ -234,7 +234,7 @@ public class RegistrationSubmissionDetailsBuilder
         isComplianceScheme = _isComplianceScheme,
         submissionPeriod = $"January to December {_relevantYear}",
         csoMembershipDetails = BuildCsoMembershipDetails(),
-        resubmissionFileId = _resubmissionFileId
+        registrationBlobName = _registrationBlobName
     };
 
     private object[] BuildCsoMembershipDetails()

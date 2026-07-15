@@ -11,6 +11,6 @@ namespace EPR.RegulatorService.Frontend.Web.ViewModels.RegistrationSubmissions
 
         public bool IsResubmission { get; set; }
 
-        public string? ResubmissionFileId { get; set; }
+        public string? RegistrationBlobName { get; set; }
     }
 }

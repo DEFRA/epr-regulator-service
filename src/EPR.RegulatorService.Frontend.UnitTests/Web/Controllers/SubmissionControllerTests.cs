@@ -949,14 +949,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            var fileId = Guid.NewGuid();
+            var pomBlobName = "some-pom-blob-name.csv";
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid(),
                 ReferenceNumber = "degreg",
                 NationCode = "GB-ENG",
-                FileId = fileId
+                PomBlobName = pomBlobName
             };
 
             JourneySessionMock.UserData.Organisations =
@@ -983,7 +983,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _paymentFacadeServiceMock.Verify(r =>
                 r.SubmitOfflinePaymentAsync(
-                    It.Is<OfflinePaymentRequest>(req => req.FileId == fileId)),
+                    It.Is<OfflinePaymentRequest>(req => req.RegistrationBlobName == pomBlobName)),
                     Times.AtMostOnce);
 
             _facadeServiceMock.Verify(r =>
@@ -993,7 +993,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         }
 
         [TestMethod]
-        public async Task ConfirmOfflinePaymentSubmission_POST_PassesNullFileId_WhenFileIdIsEmpty()
+        public async Task ConfirmOfflinePaymentSubmission_POST_PassesNullRegistrationBlobName_WhenPomBlobNameIsEmpty()
         {
             // Arrange
             var submissionId = Guid.NewGuid();
@@ -1003,7 +1003,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                 UserId = Guid.NewGuid(),
                 ReferenceNumber = "degreg",
                 NationCode = "GB-ENG",
-                FileId = Guid.Empty
+                PomBlobName = string.Empty
             };
 
             JourneySessionMock.UserData.Organisations =
@@ -1024,7 +1024,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Assert
             _paymentFacadeServiceMock.Verify(r =>
                 r.SubmitOfflinePaymentAsync(
-                    It.Is<OfflinePaymentRequest>(req => req.FileId == null)),
+                    It.Is<OfflinePaymentRequest>(req => req.RegistrationBlobName == null)),
                     Times.AtMostOnce);
         }
 
@@ -1033,12 +1033,10 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
-            var fileId = Guid.NewGuid();
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
-                UserId = Guid.NewGuid(),
-                FileId = fileId
+                UserId = Guid.NewGuid()
             };
 
             JourneySessionMock.UserData.Organisations =

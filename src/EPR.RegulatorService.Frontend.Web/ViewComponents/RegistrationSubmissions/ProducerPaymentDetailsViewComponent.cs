@@ -33,7 +33,7 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
             var producerPaymentResponse = await paymentFacadeService.GetProducerPaymentDetailsAsync(new ProducerPaymentRequest
             {
                 ApplicationReferenceNumber = viewModel.ReferenceNumber,
-                FileId = viewModel.IsResubmission ? viewModel.ResubmissionFileId : null,
+                RegistrationBlobName = viewModel.IsResubmission ? viewModel.RegistrationBlobName : null,
                 NoOfSubsidiariesOnlineMarketplace = viewModel.ProducerDetails.NumberOfOnlineSubsidiaries,
                 NumberOfSubsidiaries = viewModel.ProducerDetails.NumberOfSubsidiaries,
                 IsLateFeeApplicable = viewModel.ProducerDetails.IsLateFeeApplicable,

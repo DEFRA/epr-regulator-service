@@ -4,7 +4,7 @@ public class CompliancePaymentRequest
 {
     public required string ApplicationReferenceNumber { get; set; }
 
-    public string? FileId { get; set; }
+    public string? RegistrationBlobName { get; set; }
 
     public required string Regulator { get; set; }
 

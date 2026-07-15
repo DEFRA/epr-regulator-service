@@ -176,7 +176,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
             Guid userId,
             Guid submissionId,
             int submissionHash,
-            Guid? fileId)
+            string? registrationBlobName)
         {
             var response = await _paymentFacadeService.SubmitOfflinePaymentAsync(new OfflinePaymentRequest
             {
@@ -185,7 +185,7 @@ namespace EPR.RegulatorService.Frontend.Web.Controllers.Submissions
                 Reference = referenceNumber,
                 Regulator = nationCode,
                 UserId = userId,
-                FileId = fileId
+                RegistrationBlobName = registrationBlobName
             });
 
             if (response == EndpointResponseStatus.Fail)

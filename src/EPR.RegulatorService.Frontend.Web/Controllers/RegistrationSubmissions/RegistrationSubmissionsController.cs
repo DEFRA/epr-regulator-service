@@ -914,7 +914,7 @@ public partial class RegistrationSubmissionsController(
             Reference = existingModel.ReferenceNumber,
             Regulator = regulator,
             UserId = (Guid)_currentSession.UserData.Id,
-            FileId = existingModel.IsResubmission && Guid.TryParse(existingModel.ResubmissionFileId, out var fileId) ? fileId : null
+            RegistrationBlobName = existingModel.IsResubmission ? existingModel.RegistrationBlobName : null
         });
 
         if (response == EndpointResponseStatus.Fail)
@@ -1030,7 +1030,7 @@ public partial class RegistrationSubmissionsController(
             FileId = status switch
             {
                 RegistrationSubmissionStatus.Cancelled => null,
-                _ => existingModel.IsResubmission ? existingModel.ResubmissionFileId : null
+                _ => existingModel.IsResubmission ? existingModel.RegistrationBlobName : null
             }
         };
 

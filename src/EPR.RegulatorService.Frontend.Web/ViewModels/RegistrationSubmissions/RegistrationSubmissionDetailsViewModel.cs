@@ -53,7 +53,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
     public bool IsResubmission { get; set; }
 
     public RegistrationSubmissionStatus? ResubmissionStatus { get; set; }
-    public string ResubmissionFileId { get; set; }
+    public string RegistrationBlobName { get; set; }
 
     // Implicit operator from RegistrationSubmissionOrganisationDetails to RegistrationSubmissionDetailsViewModel
     public static implicit operator RegistrationSubmissionDetailsViewModel(RegistrationSubmissionOrganisationDetails details)
@@ -104,7 +104,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             ProducerDetails = details.ProducerDetails,
             CSOMembershipDetails = details.CsoMembershipDetails,
             IsResubmission = details.IsResubmission,
-            ResubmissionFileId = details.ResubmissionFileId
+            RegistrationBlobName = details.RegistrationBlobName
         };
     }
 
@@ -153,7 +153,7 @@ public class RegistrationSubmissionDetailsViewModel : BaseSubmissionDetailsViewM
             CsoMembershipDetails = details.CSOMembershipDetails?.ToList(),
             ProducerDetails = details.ProducerDetails,
             IsResubmission = details.IsResubmission,
-            ResubmissionFileId = details.ResubmissionFileId
+            RegistrationBlobName = details.RegistrationBlobName
         };
     }
 }

@@ -4,7 +4,7 @@ public class ProducerPaymentRequest
 {
     public required string ApplicationReferenceNumber { get; set; }
 
-    public string? FileId { get; set; }
+    public string? RegistrationBlobName { get; set; }
 
     public int NoOfSubsidiariesOnlineMarketplace { get; set; }
 
