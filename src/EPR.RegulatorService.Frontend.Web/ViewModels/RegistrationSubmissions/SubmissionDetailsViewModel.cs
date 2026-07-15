@@ -76,7 +76,7 @@ public class SubmissionDetailsViewModel
 
     public bool IsResubmission { get; set; }
 
-    public string ResubmissionFileId { get; set; }
+    public string RegistrationBlobName { get; set; }
 
     public SubmissionDetailsViewModel()
     {
@@ -126,7 +126,7 @@ public class SubmissionDetailsViewModel
             TimeAndDateOfResubmission = details.TimeAndDateOfResubmission,
             RegistrationDate = details.RegistrationDate,
             IsResubmission = details.IsResubmission,
-            ResubmissionFileId = details.ResubmissionFileId
+            RegistrationBlobName = details.RegistrationBlobName
         };
 
         if (details.Files != null)
@@ -166,7 +166,7 @@ public class SubmissionDetailsViewModel
             RegistrationDate = details.RegistrationDate,
             Files = details.Files.Select(file => (SubmissionDetailsViewModel.FileDetails)file).ToList(),
             IsResubmission = details.IsResubmission,
-            ResubmissionFileId = details.ResubmissionFileId
+            RegistrationBlobName = details.RegistrationBlobName
         };
     }
 

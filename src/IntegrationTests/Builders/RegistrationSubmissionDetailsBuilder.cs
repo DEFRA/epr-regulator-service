@@ -21,6 +21,9 @@ public class RegistrationSubmissionDetailsBuilder
     private string _csoMemberType = "large";
     private string _applicationReferenceNumber = "REG-2025-001";
     private List<CsoMemberBuilder>? _csoMembers;
+    private string? _registrationBlobName = null;
+    private string? _resubmissionDate = null;
+    private bool _isResubmission;
 
     private RegistrationSubmissionDetailsBuilder(Guid submissionId)
     {
@@ -124,6 +127,22 @@ public class RegistrationSubmissionDetailsBuilder
         return this;
     }
 
+    public RegistrationSubmissionDetailsBuilder WithIsResubmission(bool isResubmission, string? registrationBlobName = null, string? resubmissionDate = null)
+    {
+        _isResubmission = isResubmission;
+        _registrationBlobName = registrationBlobName;
+        _resubmissionDate = resubmissionDate ?? "2025-06-15T10:00:00Z";
+        return this;
+    }
+
+    public RegistrationSubmissionDetailsBuilder AsProducer(string organisationSize = "Large")
+    {
+        _isComplianceScheme = false;
+        _registrationJourneyType = organisationSize == "Small" ? "DirectSmallProducer" : "DirectLargeProducer";
+        _organisationSize = organisationSize;
+        return this;
+    }
+
     public RegistrationSubmissionDetailsBuilder WithCsoMembers(params CsoMemberBuilder[] members)
     {
         _csoMembers = members.ToList();
@@ -147,10 +166,10 @@ public class RegistrationSubmissionDetailsBuilder
         relevantYear = _relevantYear,
         submissionDate = _submissionDate,
         submissionStatus = _submissionStatus,
-        resubmissionStatus = "Pending",
-        resubmissionDate = (string?)null,
+        resubmissionStatus = _isResubmission ? "Pending" : (string?)null,
+        resubmissionDate = _resubmissionDate,
         statusPendingDate = (string?)null,
-        isResubmission = false,
+        isResubmission = _isResubmission,
         registrationDate = (string?)null,
         regulatorComments = "",
         producerComments = "Test comment",
@@ -174,6 +193,7 @@ public class RegistrationSubmissionDetailsBuilder
             resubmissionDecisionDate = (string?)null,
             statusPendingDate = (string?)null,
             timeAndDateOfSubmission = _submissionDate,
+            timeAndDateOfResubmission = _resubmissionDate,
             submittedOnTime = false,
             submittedByUserId = "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
             accountRole = "Approved Person",
@@ -194,11 +214,11 @@ public class RegistrationSubmissionDetailsBuilder
             submissionPeriod = $"January to December {_relevantYear}",
             accountRoleId = 1,
             submittedBy = "Test User",
-            resubmissionStatus = (string?)null,
+            resubmissionStatus = _isResubmission ? "Pending" : (string?)null,
             registrationDate = (string?)null,
-            resubmissionDate = (string?)null,
-            isResubmission = false,
-            resubmissionFileId = (string?)null
+            resubmissionDate = _resubmissionDate,
+            isResubmission = _isResubmission,
+            registrationBlobName = _registrationBlobName
         },
         regulatorDecisionDate = (string?)null,
         regulatorResubmissionDecisionDate = (string?)null,
@@ -214,7 +234,7 @@ public class RegistrationSubmissionDetailsBuilder
         isComplianceScheme = _isComplianceScheme,
         submissionPeriod = $"January to December {_relevantYear}",
         csoMembershipDetails = BuildCsoMembershipDetails(),
-        resubmissionFileId = (string?)null
+        registrationBlobName = _registrationBlobName
     };
 
     private object[] BuildCsoMembershipDetails()

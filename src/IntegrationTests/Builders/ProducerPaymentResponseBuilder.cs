@@ -39,6 +39,12 @@ public class ProducerPaymentResponseBuilder
         return this;
     }
 
+    public ProducerPaymentResponseBuilder WithPreviousPayment(int feeInPence)
+    {
+        _previousPayment = feeInPence;
+        return this;
+    }
+
     public ProducerPaymentResponseBuilder WithTotalFee(int feeInPence)
     {
         _totalFee = feeInPence;

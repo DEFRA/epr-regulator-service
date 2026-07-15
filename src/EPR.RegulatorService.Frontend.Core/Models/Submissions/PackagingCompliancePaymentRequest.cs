@@ -9,4 +9,6 @@ public class PackagingCompliancePaymentRequest
     public required string Regulator { get; set; }
 
     public DateTime ResubmissionDate { get; set; }
+
+    public Guid? FileId { get; set; }
 }

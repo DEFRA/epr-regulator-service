@@ -913,7 +913,8 @@ public partial class RegistrationSubmissionsController(
             Description = "Registration fee",
             Reference = existingModel.ReferenceNumber,
             Regulator = regulator,
-            UserId = (Guid)_currentSession.UserData.Id
+            UserId = (Guid)_currentSession.UserData.Id,
+            RegistrationBlobName = existingModel.IsResubmission ? existingModel.RegistrationBlobName : null
         });
 
         if (response == EndpointResponseStatus.Fail)
@@ -1029,7 +1030,7 @@ public partial class RegistrationSubmissionsController(
             FileId = status switch
             {
                 RegistrationSubmissionStatus.Cancelled => null,
-                _ => existingModel.IsResubmission ? existingModel.ResubmissionFileId : null
+                _ => existingModel.IsResubmission ? existingModel.RegistrationBlobName : null
             }
         };
 

@@ -57,7 +57,7 @@ public class RegistrationSubmissionOrganisationDetailsResponse
     public List<CsoMembershipDetailsDto> CsoMembershipDetails { get; set; }
 
     public bool IsResubmission { get; set; }
-    public string ResubmissionFileId { get; set; }
+    public string RegistrationBlobName { get; set; }
     public int NumberOfHoldingCompaniesClosedLoopRecycling { get; set; }
     public int NumberOfSubsidiariesClosedLoopRecycling { get; set; }
 }

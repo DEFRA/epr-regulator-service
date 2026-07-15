@@ -949,12 +949,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
         {
             // Arrange
             var submissionId = Guid.NewGuid();
+            var pomBlobName = "some-pom-blob-name.csv";
             JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
             {
                 SubmissionId = submissionId,
                 UserId = Guid.NewGuid(),
                 ReferenceNumber = "degreg",
-                NationCode = "GB-ENG"
+                NationCode = "GB-ENG",
+                PomBlobName = pomBlobName
             };
 
             JourneySessionMock.UserData.Organisations =
@@ -981,12 +983,48 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
 
             _paymentFacadeServiceMock.Verify(r =>
                 r.SubmitOfflinePaymentAsync(
-                    It.IsAny<OfflinePaymentRequest>()),
+                    It.Is<OfflinePaymentRequest>(req => req.RegistrationBlobName == pomBlobName)),
                     Times.AtMostOnce);
 
             _facadeServiceMock.Verify(r =>
                 r.SubmitPackagingDataResubmissionFeePaymentEventAsync(
                     It.IsAny<FeePaymentRequest>()),
+                    Times.AtMostOnce);
+        }
+
+        [TestMethod]
+        public async Task ConfirmOfflinePaymentSubmission_POST_PassesNullRegistrationBlobName_WhenPomBlobNameIsEmpty()
+        {
+            // Arrange
+            var submissionId = Guid.NewGuid();
+            JourneySessionMock.RegulatorSubmissionSession.OrganisationSubmissions[_hashCode] = new Submission
+            {
+                SubmissionId = submissionId,
+                UserId = Guid.NewGuid(),
+                ReferenceNumber = "degreg",
+                NationCode = "GB-ENG",
+                PomBlobName = string.Empty
+            };
+
+            JourneySessionMock.UserData.Organisations =
+            [
+               new() { NationId = 1 }
+            ];
+
+            var model = new ConfirmOfflinePaymentSubmissionViewModel
+            {
+                SubmissionHash = _hashCode,
+                IsOfflinePaymentConfirmed = true,
+                OfflinePaymentAmount = DefaultOfflinePaymentAmount,
+            };
+
+            // Act
+            await _systemUnderTest.ConfirmOfflinePaymentSubmission(model);
+
+            // Assert
+            _paymentFacadeServiceMock.Verify(r =>
+                r.SubmitOfflinePaymentAsync(
+                    It.Is<OfflinePaymentRequest>(req => req.RegistrationBlobName == null)),
                     Times.AtMostOnce);
         }
 

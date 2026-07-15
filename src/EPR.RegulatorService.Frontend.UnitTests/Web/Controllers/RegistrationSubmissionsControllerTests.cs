@@ -2375,7 +2375,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
             // Veryify the redirect URL
             result.RouteName.Should().Be("ServiceNotAvailable");
             result.RouteValues.First().Value.Should().Be($"{PagePath.RegistrationSubmissionDetails}/{submissionId}");
-            _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.IsAny<OfflinePaymentRequest>()), Times.AtMostOnce);
+            _paymentFacadeServiceMock.Verify(r => r.SubmitOfflinePaymentAsync(It.Is<OfflinePaymentRequest>(c=>c.RegistrationBlobName == submissionDetails.RegistrationBlobName)), Times.AtMostOnce);
         }
 
         [TestMethod]

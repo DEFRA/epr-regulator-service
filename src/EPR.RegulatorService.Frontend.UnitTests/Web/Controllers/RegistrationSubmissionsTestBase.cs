@@ -171,6 +171,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers
                     Files =
                     [
                     ],
+                    RegistrationBlobName = Guid.NewGuid().ToString()
                 },
                 ProducerComments = "producer comment",
                 RegulatorComments = "regulator comment",

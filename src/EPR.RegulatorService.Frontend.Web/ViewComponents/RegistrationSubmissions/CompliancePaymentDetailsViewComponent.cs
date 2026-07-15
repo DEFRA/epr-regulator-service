@@ -34,6 +34,7 @@ public class CompliancePaymentDetailsViewComponent(
                 new CompliancePaymentRequest
                 {
                     ApplicationReferenceNumber = viewModel.ReferenceNumber,
+                    RegistrationBlobName = viewModel.IsResubmission ? viewModel.RegistrationBlobName : null,
                     Regulator = viewModel.NationCode,
                     ComplianceSchemeMembers = MapToComplianceSchemeMemberRequests(csoMembers),
                     SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
