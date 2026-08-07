@@ -45,7 +45,7 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 SubmissionDate = TimeZoneInfo.ConvertTimeToUtc(viewModel.IsResubmission
                 ? viewModel.SubmissionDetails.TimeAndDateOfResubmission.Value
                 : viewModel.SubmissionDetails.TimeAndDateOfSubmission)
-            });
+            }, viewModel.SubmissionId);
 
             if (producerPaymentResponse is null)
             {

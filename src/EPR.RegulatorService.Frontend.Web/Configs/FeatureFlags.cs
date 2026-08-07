@@ -29,4 +29,6 @@ public static class FeatureFlags
     public const string ShowComplianceSchemeMembership = "ShowComplianceSchemeMembership";
 
     public const string IncludeSubsidiariesInFeeCalculationsForRegulators = "IncludeSubsidiariesInFeeCalculationsForRegulators";
+
+    public const string EnableRegistrationFeeCalculationViaPaymentService = nameof(EnableRegistrationFeeCalculationViaPaymentService);
 }

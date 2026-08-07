@@ -53,7 +53,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         var model = result.ViewData.Model as ProducerPaymentResponse;
         model.Should().BeNull();
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync(
-            It.IsAny<ProducerPaymentRequest>()), Times.AtMostOnce);
+            It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()), Times.AtMostOnce);
     }
 
     [TestMethod]
@@ -65,7 +65,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     {
         // Arrange
         _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(
-            It.IsAny<ProducerPaymentRequest>()))
+            It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()))
         .ReturnsAsync(new ProducerPaymentResponse // all values in pence
         {
             ApplicationProcessingFee = 100.00M,
@@ -107,7 +107,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.PreviousPaymentsReceived.Should().Be(5.00M);
         model.TotalOutstanding.Should().Be(5.00M);
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync(
-            It.IsAny<ProducerPaymentRequest>()), Times.AtMostOnce);
+            It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()), Times.AtMostOnce);
     }
 
     [TestMethod]
@@ -120,7 +120,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         };
         var exception = new Exception("error");
         _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(
-            It.IsAny<ProducerPaymentRequest>()))
+            It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()))
             .ThrowsAsync(exception);
 
         // Act
@@ -132,7 +132,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         var model = result.ViewData.Model as ProducerPaymentResponse;
         model.Should().BeNull();
         _paymentFacadeServiceMock.Verify(r => r.GetProducerPaymentDetailsAsync(
-            It.IsAny<ProducerPaymentRequest>()), Times.AtMostOnce);
+            It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()), Times.AtMostOnce);
         _loggerMock.Verify(logger =>
                logger.Log(
                    LogLevel.Error,
@@ -157,8 +157,8 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>()))
-            .Callback<ProducerPaymentRequest>(r => capturedRequest = r)
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()))
+            .Callback<ProducerPaymentRequest, Guid>((r, _) => capturedRequest = r)
             .ReturnsAsync(new ProducerPaymentResponse
             {
                 ApplicationProcessingFee = 100.00M,
@@ -199,8 +199,8 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>()))
-            .Callback<ProducerPaymentRequest>(r => capturedRequest = r)
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()))
+            .Callback<ProducerPaymentRequest, Guid>((r, _) => capturedRequest = r)
             .ReturnsAsync((ProducerPaymentResponse?)null);
 
         // Act
@@ -225,7 +225,7 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>()))
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()))
             .ReturnsAsync(new ProducerPaymentResponse
             {
                 SubsidiaryFee = subsidiariesFeePence,
@@ -260,8 +260,8 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>()))
-            .Callback<ProducerPaymentRequest>(r => capturedRequest = r)
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()))
+            .Callback<ProducerPaymentRequest, Guid>((r, _) => capturedRequest = r)
             .ReturnsAsync((ProducerPaymentResponse?)null);
 
         // Act

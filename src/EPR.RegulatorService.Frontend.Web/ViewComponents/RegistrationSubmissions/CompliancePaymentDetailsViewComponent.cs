@@ -41,7 +41,8 @@ public class CompliancePaymentDetailsViewComponent(
                         : viewModel.SubmissionDetails.TimeAndDateOfSubmission),
                     IncludeRegistrationFee =
                         viewModel.RegistrationJourneyType != RegistrationJourneyType.CsoSmallProducer
-                });
+                },
+                viewModel.SubmissionId);
 
             if (compliancePaymentResponse is null)
             {
