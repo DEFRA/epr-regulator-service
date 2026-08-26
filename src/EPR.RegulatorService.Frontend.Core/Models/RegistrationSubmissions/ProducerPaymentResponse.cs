@@ -30,4 +30,10 @@ public class ProducerPaymentResponse
 
     [JsonPropertyName("producerClosedLoopRecyclingFee")]
     public decimal ProducerClosedLoopRecyclingFee { get; set; }
+
+    [JsonPropertyName("producerSize")]
+    public string ProducerSize { get; set; }
+
+    [JsonPropertyName("numberOfSubsidiaries")]
+    public int NumberOfSubsidiaries { get; set; }
 }
