@@ -54,7 +54,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         result.Should().BeOfType<ViewViewComponentResult>();
         var model = result.ViewData.Model as CompliancePaymentResponse;
         model.Should().BeNull();
-        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.AtMostOnce);
+        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()), Times.AtMostOnce);
     }
 
     [TestMethod]
@@ -74,7 +74,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
             TimeAndDateOfResubmission = DateTime.UtcNow
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
         .ReturnsAsync(new CompliancePaymentResponse // all values in pence
         {
             ApplicationProcessingFee = 100.00M,
@@ -104,7 +104,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.LateProducerCount.Should().Be(0);
         model.OnlineMarketPlaceCount.Should().Be(0);
         model.SubsidiariesCompanyCount.Should().Be(0);
-        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.AtMostOnce);
+        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()), Times.AtMostOnce);
     }
 
     [TestMethod]
@@ -122,7 +122,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         };
         _registrationSumissionDetailsViewModel.CSOMembershipDetails = complianceSchemeMembers;
         var exception = new Exception("error");
-        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
             .ThrowsAsync(exception);
 
         // Act
@@ -133,7 +133,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         result.Should().BeOfType<ViewViewComponentResult>();
         var model = result.ViewData.Model as CompliancePaymentResponse;
         model.Should().BeNull();
-        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()), Times.AtMostOnce);
+        _paymentFacadeServiceMock.Verify(r => r.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()), Times.AtMostOnce);
         _loggerMock.Verify(logger =>
                logger.Log(
                    LogLevel.Error,
@@ -172,8 +172,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1),
             TimeAndDateOfResubmission = DateTime.UtcNow
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
-            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
+            .Callback<CompliancePaymentRequest, Guid>((r, _) => capturedRequest = r)
             .ReturnsAsync(new CompliancePaymentResponse
             {
                 ApplicationProcessingFee = 100.00M,
@@ -217,8 +217,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
-            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
+            .Callback<CompliancePaymentRequest, Guid>((r, _) => capturedRequest = r)
             .ReturnsAsync(new CompliancePaymentResponse
             {
                 ComplianceSchemeMembers =
@@ -255,8 +255,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
-            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
+            .Callback<CompliancePaymentRequest, Guid>((r, _) => capturedRequest = r)
             .ReturnsAsync((CompliancePaymentResponse?)null);
 
         // Act
@@ -289,8 +289,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
-            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
+            .Callback<CompliancePaymentRequest, Guid>((r, _) => capturedRequest = r)
             .ReturnsAsync((CompliancePaymentResponse?)null);
 
         // Act
@@ -323,8 +323,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
-            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
+            .Callback<CompliancePaymentRequest, Guid>((r, _) => capturedRequest = r)
             .ReturnsAsync((CompliancePaymentResponse?)null);
 
         // Act
@@ -358,8 +358,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
-            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
+            .Callback<CompliancePaymentRequest, Guid>((r, _) => capturedRequest = r)
             .ReturnsAsync((CompliancePaymentResponse?)null);
 
         // Act
@@ -390,8 +390,8 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
-            .Callback<CompliancePaymentRequest>(r => capturedRequest = r)
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
+            .Callback<CompliancePaymentRequest, Guid>((r, _) => capturedRequest = r)
             .ReturnsAsync((CompliancePaymentResponse?)null);
 
         // Act
@@ -433,7 +433,7 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         {
             TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
         };
-        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>()))
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
             .ReturnsAsync(new CompliancePaymentResponse
             {
                 ApplicationProcessingFee = 100.00M,

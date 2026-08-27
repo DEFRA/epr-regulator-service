@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -9,6 +10,7 @@ using EPR.RegulatorService.Frontend.Core.Models.Submissions;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 using Microsoft.Identity.Web;
 
 namespace EPR.RegulatorService.Frontend.Core.Services;
@@ -20,12 +22,18 @@ public class PaymentFacadeService : IPaymentFacadeService
     private const string GetCompliancePaymentDetailsPath = "GetCompliancePaymentDetailsPath";
     private const string GetProducerPaymentDetailsForResubmissionPath = "GetProducerPaymentDetailsForResubmissionPath";
     private const string GetCompliancePaymentDetailsResubmissionPath = "GetCompliancePaymentDetailsResubmissionPath";
+    private const string GetProducerPaymentDetailsBySubmissionPath = "GetProducerPaymentDetailsBySubmissionPath";
+    private const string GetCompliancePaymentDetailsBySubmissionPath = "GetCompliancePaymentDetailsBySubmissionPath";
+
+    private const string EnableRegistrationFeeCalculationViaPaymentService =
+        nameof(EnableRegistrationFeeCalculationViaPaymentService);
 
     private readonly HttpClient _httpClient;
     private readonly ITokenAcquisition _tokenAcquisition;
     private readonly string[] _scopes;
 
     private readonly PaymentFacadeApiConfig _paymentFacadeApiConfig;
+    private readonly IFeatureManager _featureManager;
     private readonly ILogger<PaymentFacadeService> _logger;
 
     private static readonly Action<ILogger, string, Exception?> _logPaymentFacadeServiceError =
@@ -38,12 +46,14 @@ public class PaymentFacadeService : IPaymentFacadeService
         HttpClient httpClient,
         ITokenAcquisition tokenAcquisition,
         IOptions<PaymentFacadeApiConfig> paymentFacadeApiOptions,
+        IFeatureManager featureManager,
         ILogger<PaymentFacadeService> logger)
     {
         _httpClient = httpClient;
         _paymentFacadeApiConfig = paymentFacadeApiOptions.Value;
         _tokenAcquisition = tokenAcquisition;
         _scopes = [_paymentFacadeApiConfig.DownstreamScope];
+        _featureManager = featureManager;
         _logger = logger;
     }
 
@@ -67,8 +77,15 @@ public class PaymentFacadeService : IPaymentFacadeService
         return EndpointResponseStatus.Fail;
     }
 
-    public async Task<ProducerPaymentResponse?> GetProducerPaymentDetailsAsync(ProducerPaymentRequest request)
+    public async Task<ProducerPaymentResponse?> GetProducerPaymentDetailsAsync(ProducerPaymentRequest request, Guid submissionId)
     {
+        var fromSubmission = await TryGetBySubmissionIdAsync<ProducerPaymentResponse>(
+            GetProducerPaymentDetailsBySubmissionPath, submissionId, nameof(GetProducerPaymentDetailsAsync));
+        if (fromSubmission is not null)
+        {
+            return fromSubmission;
+        }
+
         await SetAuthorisationHeaderAsync();
 
         var response =
@@ -79,8 +96,15 @@ public class PaymentFacadeService : IPaymentFacadeService
         return JsonSerializer.Deserialize<ProducerPaymentResponse>(await response.Content.ReadAsStringAsync());
     }
 
-    public async Task<CompliancePaymentResponse?> GetCompliancePaymentDetailsAsync(CompliancePaymentRequest request)
+    public async Task<CompliancePaymentResponse?> GetCompliancePaymentDetailsAsync(CompliancePaymentRequest request, Guid submissionId)
     {
+        var fromSubmission = await TryGetBySubmissionIdAsync<CompliancePaymentResponse>(
+            GetCompliancePaymentDetailsBySubmissionPath, submissionId, nameof(GetCompliancePaymentDetailsAsync));
+        if (fromSubmission is not null)
+        {
+            return fromSubmission;
+        }
+
         await SetAuthorisationHeaderAsync();
 
         var response =
@@ -89,6 +113,39 @@ public class PaymentFacadeService : IPaymentFacadeService
         response.EnsureSuccessStatusCode();
 
         return JsonSerializer.Deserialize<CompliancePaymentResponse>(await response.Content.ReadAsStringAsync());
+    }
+
+    private async Task<T?> TryGetBySubmissionIdAsync<T>(string endpointKey, Guid submissionId, string caller)
+    {
+        if (!await _featureManager.IsEnabledAsync(EnableRegistrationFeeCalculationViaPaymentService))
+        {
+            return default;
+        }
+
+        try
+        {
+            await SetAuthorisationHeaderAsync();
+
+            string path = _paymentFacadeApiConfig.Endpoints[endpointKey]
+                .Replace("{submissionId}", submissionId.ToString(), StringComparison.Ordinal);
+
+            var response = await _httpClient.GetAsync(path);
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return default;
+            }
+
+            response.EnsureSuccessStatusCode();
+            return JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync());
+        }
+        catch (Exception ex)
+        {
+            _logPaymentFacadeServiceError.Invoke(
+                _logger,
+                $"By-submission fee lookup failed for submission {submissionId} in {nameof(PaymentFacadeService)}.{caller}; falling back to POST.",
+                ex);
+            return default;
+        }
     }
 
     public async Task<PackagingProducerPaymentResponse?> GetProducerPaymentDetailsForResubmissionAsync(

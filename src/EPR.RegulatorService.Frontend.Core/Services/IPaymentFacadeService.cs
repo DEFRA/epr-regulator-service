@@ -8,9 +8,9 @@ public interface IPaymentFacadeService
 {
     Task<EndpointResponseStatus> SubmitOfflinePaymentAsync(OfflinePaymentRequest request);
 
-    Task<ProducerPaymentResponse?> GetProducerPaymentDetailsAsync(ProducerPaymentRequest request);
+    Task<ProducerPaymentResponse?> GetProducerPaymentDetailsAsync(ProducerPaymentRequest request, Guid submissionId);
 
-    Task<CompliancePaymentResponse?> GetCompliancePaymentDetailsAsync(CompliancePaymentRequest request);
+    Task<CompliancePaymentResponse?> GetCompliancePaymentDetailsAsync(CompliancePaymentRequest request, Guid submissionId);
 
     Task<PackagingProducerPaymentResponse?> GetProducerPaymentDetailsForResubmissionAsync(PackagingProducerPaymentRequest request);
 
