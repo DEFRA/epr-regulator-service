@@ -28,7 +28,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vars", "vars", "{001FA203-F7EF-400E-B048-51A39B50C1D4}"
 	ProjectSection(SolutionItems) = preProject
 		../pipelines\vars\DEV9-development.yaml = ../pipelines\vars\DEV9-development.yaml
-		../pipelines\vars\DEV12-development.yaml = ../pipelines\vars\DEV12-development.yaml
 		../pipelines\vars\DEV11-development.yaml = ../pipelines\vars\DEV11-development.yaml
 		../pipelines\vars\preprod.yaml = ../pipelines\vars\preprod.yaml
 		../pipelines\vars\DEV6-development.yaml = ../pipelines\vars\DEV6-development.yaml
