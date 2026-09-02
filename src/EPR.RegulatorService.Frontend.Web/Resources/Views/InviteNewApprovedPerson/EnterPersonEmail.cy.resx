@@ -33,6 +33,9 @@
   <data name="ErrorTitle.InvalidEmail" xml:space="preserve">
     <value>Rhowch gyfeiriad ebost yn y fformat cywir, fel enw@enghraifft.com</value>
   </data>
+  <data name="ErrorTitle.EmailAlreadyExists" xml:space="preserve">
+    <value>Email address already exists</value>
+  </data>
   <data name="ErrorTitle.InvalidEmailLength" xml:space="preserve">
     <value>Rhaid i gyfeiriad ebost fod yn 254 neu lai o gymeriadau</value>
   </data>
