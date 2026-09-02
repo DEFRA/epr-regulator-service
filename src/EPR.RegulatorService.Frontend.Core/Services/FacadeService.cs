@@ -360,9 +360,14 @@ public class FacadeService : IFacadeService
         await PrepareAuthenticatedClient();
         string path = _facadeApiConfig.Endpoints[AddRemoveApprovedUserPath];
 
-        var response = await _httpClient.PostAsJsonAsync(path, request);
+        using var response = await _httpClient.PostAsJsonAsync(path, request);
 
-        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+        return response.StatusCode switch
+        {
+            _ when response.IsSuccessStatusCode => EndpointResponseStatus.Success,
+            HttpStatusCode.Conflict => EndpointResponseStatus.UserExists,
+            _ => EndpointResponseStatus.Fail
+        };
     }
 
     public async Task<EndpointResponseStatus> SubmitRegistrationDecision(RegulatorRegistrationDecisionCreateRequest request)
