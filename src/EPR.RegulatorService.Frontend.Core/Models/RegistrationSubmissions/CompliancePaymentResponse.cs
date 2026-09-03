@@ -31,6 +31,9 @@ public class ComplianceSchemeMember
     [JsonPropertyName("memberType")]
     public string MemberType { get; set; }
 
+    [JsonPropertyName("numberOfSubsidiaries")]
+    public int NumberOfSubsidiaries { get; set; }
+
     [JsonPropertyName("memberRegistrationFee")]
     public decimal MemberFee { get; set; }
 
