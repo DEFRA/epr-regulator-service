@@ -42,7 +42,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vars", "vars", "{001FA203-F
 		../pipelines\vars\prod.yaml = ../pipelines\vars\prod.yaml
 		../pipelines\vars\DEV14-development.yaml = ../pipelines\vars\DEV14-development.yaml
 		../pipelines\vars\preprod2.yaml = ../pipelines\vars\preprod2.yaml
-		../pipelines\vars\DEV13-development.yaml = ../pipelines\vars\DEV13-development.yaml
 		../pipelines\vars\DEV4-development.yaml = ../pipelines\vars\DEV4-development.yaml
 	EndProjectSection
 EndProject
