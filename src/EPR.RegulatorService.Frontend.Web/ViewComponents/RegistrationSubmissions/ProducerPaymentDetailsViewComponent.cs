@@ -75,6 +75,8 @@ public class ProducerPaymentDetailsViewComponent(IOptions<PaymentDetailsOptions>
                 SubsidiaryFee = ConvertToPoundsFromPence(producerPaymentResponse.GetNetSubsidiaryCompaniesFee()),
                 SubsidiaryOnlineMarketPlaceFee = ConvertToPoundsFromPence(subsidiariesFeeBreakdown.SubsidiaryOnlineMarketPlaceFee),
                 SubsidiaryClosedLoopRecyclingFee = ConvertToPoundsFromPence(subsidiariesFeeBreakdown.TotalSubsidiariesClosedLoopRecyclingFees),
+                SubsidiaryLateFee = ConvertToPoundsFromPence(subsidiariesFeeBreakdown.TotalSubsidiariesLateFees),
+                NumberOfLateSubsidiaries = subsidiariesFeeBreakdown.CountOfLateSubsidiaries,
                 SubTotal = ConvertToPoundsFromPence(producerPaymentResponse.TotalChargeableItems),
                 TotalOutstanding = ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(producerPaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
                 ProducerSize = FormatProducerSize(producerSizeRaw),

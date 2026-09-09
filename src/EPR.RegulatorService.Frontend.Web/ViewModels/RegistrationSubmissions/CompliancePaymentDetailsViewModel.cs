@@ -35,6 +35,10 @@ public class CompliancePaymentDetailsViewModel : PaymentDetailsViewModel
 
     public decimal SubsidiariesClosedLoopRecyclingFee { get; set; }
 
+    public int SubsidiariesLateCount { get; set; }
+
+    public decimal SubsidiariesLateFee { get; set; }
+
     public int LateProducerCount { get; set; }
 
     public decimal LateProducerFee { get; set; }

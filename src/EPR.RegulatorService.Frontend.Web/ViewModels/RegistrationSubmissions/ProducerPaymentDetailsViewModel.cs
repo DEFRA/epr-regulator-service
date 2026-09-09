@@ -21,6 +21,10 @@ public class ProducerPaymentDetailsViewModel : PaymentDetailsViewModel
 
     public decimal SubsidiaryClosedLoopRecyclingFee { get; set; }
 
+    public decimal SubsidiaryLateFee { get; set; }
+
+    public int NumberOfLateSubsidiaries { get; set; }
+
     public bool HasClosedLoopRecyclingFees { get; set; }
 
     public decimal SubTotal { get; set; }

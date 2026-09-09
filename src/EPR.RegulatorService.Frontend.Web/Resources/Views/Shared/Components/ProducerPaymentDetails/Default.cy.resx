@@ -183,6 +183,12 @@
   <data name="ProducerPaymentDetails.SubsidiaryClosedLoopRecyclingPluralDescription" xml:space="preserve">
     <value>Gwastraff pecynnu cylch caeedig is-gwmnïau</value>
   </data>
+  <data name="ProducerPaymentDetails.SubsidiaryLateFeeSingularDescription" xml:space="preserve">
+    <value>[Welsh] Subsidiary late fee</value>
+  </data>
+  <data name="ProducerPaymentDetails.SubsidiaryLateFeePluralDescription" xml:space="preserve">
+    <value>[Welsh] Subsidiaries late fees</value>
+  </data>
   <data name="ProducerPaymentDetails.Title" xml:space="preserve">
     <value>Manylion y taliad</value>
   </data>

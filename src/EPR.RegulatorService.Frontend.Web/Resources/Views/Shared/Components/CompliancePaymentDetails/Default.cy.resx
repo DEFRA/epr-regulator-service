@@ -222,4 +222,10 @@
   <data name="CompliancePaymentDetails.SubsidiaryOnlineMarketPlacePluralDescription" xml:space="preserve">
     <value>Mae'r is-gwmnïau yn farchnadoedd ar-lein</value>
   </data>
+  <data name="CompliancePaymentDetails.SubsidiariesLateFeeSingularDescription" xml:space="preserve">
+    <value>[Welsh] Subsidiary late fee</value>
+  </data>
+  <data name="CompliancePaymentDetails.SubsidiariesLateFeePluralDescription" xml:space="preserve">
+    <value>[Welsh] Subsidiaries late fees</value>
+  </data>
 </root>

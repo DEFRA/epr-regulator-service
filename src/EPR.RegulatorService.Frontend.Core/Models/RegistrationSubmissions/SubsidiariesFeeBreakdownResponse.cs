@@ -15,4 +15,10 @@ public class SubsidiariesFeeBreakdownResponse
 
     [JsonPropertyName("countOfClosedLoopRecyclingSubsidiaries")]
     public int CountOfClosedLoopRecyclingSubsidiaries { get; set; }
+
+    [JsonPropertyName("totalSubsidiariesLateFees")]
+    public decimal TotalSubsidiariesLateFees { get; set; }
+
+    [JsonPropertyName("countOfLateSubsidiaries")]
+    public int CountOfLateSubsidiaries { get; set; }
 }
