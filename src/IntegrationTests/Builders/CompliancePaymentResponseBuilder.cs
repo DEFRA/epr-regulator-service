@@ -83,13 +83,14 @@ public class CompliancePaymentResponseBuilder
 public class ComplianceSchemeMemberFeeBuilder
 {
     private string _memberId = "100001";
-    private string _memberType = "large";
+    private string? _memberType = "large";
     private int _memberRegistrationFee = 165800;
     private int _memberOnlineMarketPlaceFee = 0;
     private int _memberLateRegistrationFee = 0;
     private int _memberClosedLoopRecyclingFee = 0;
     private int _subsidiariesFee = 0;
     private int _totalMemberFee = 165800;
+    private int _numberOfSubsidiaries;
     private object? _subsidiariesFeeBreakdown;
 
     private ComplianceSchemeMemberFeeBuilder()
@@ -104,9 +105,15 @@ public class ComplianceSchemeMemberFeeBuilder
         return this;
     }
 
-    public ComplianceSchemeMemberFeeBuilder WithMemberType(string memberType)
+    public ComplianceSchemeMemberFeeBuilder WithMemberType(string? memberType)
     {
         _memberType = memberType;
+        return this;
+    }
+
+    public ComplianceSchemeMemberFeeBuilder WithNumberOfSubsidiaries(int numberOfSubsidiaries)
+    {
+        _numberOfSubsidiaries = numberOfSubsidiaries;
         return this;
     }
 
@@ -172,6 +179,7 @@ public class ComplianceSchemeMemberFeeBuilder
             {
                 memberId = _memberId,
                 memberType = _memberType,
+                numberOfSubsidiaries = _numberOfSubsidiaries,
                 memberRegistrationFee = _memberRegistrationFee,
                 memberOnlineMarketPlaceFee = _memberOnlineMarketPlaceFee,
                 memberLateRegistrationFee = _memberLateRegistrationFee,
@@ -185,6 +193,7 @@ public class ComplianceSchemeMemberFeeBuilder
         {
             memberId = _memberId,
             memberType = _memberType,
+            numberOfSubsidiaries = _numberOfSubsidiaries,
             memberRegistrationFee = _memberRegistrationFee,
             memberOnlineMarketPlaceFee = _memberOnlineMarketPlaceFee,
             memberLateRegistrationFee = _memberLateRegistrationFee,

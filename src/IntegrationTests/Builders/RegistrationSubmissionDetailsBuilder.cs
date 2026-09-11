@@ -124,6 +124,16 @@ public class RegistrationSubmissionDetailsBuilder
         return this;
     }
 
+    /// <summary>A compliance scheme submission the facade reports zero CSO membership rows for -
+    /// regression case for the null/empty-safety fixes in ComplianceSchemeMemberExtension and
+    /// CompliancePaymentDetailsViewComponent (as opposed to AsDirectLargeProducer, which also
+    /// switches the submission to a non-compliance-scheme journey type).</summary>
+    public RegistrationSubmissionDetailsBuilder WithEmptyCsoMembershipDetails()
+    {
+        _emptyCsoMembershipDetails = true;
+        return this;
+    }
+
     public RegistrationSubmissionDetailsBuilder WithCsoMembers(params CsoMemberBuilder[] members)
     {
         _csoMembers = members.ToList();
