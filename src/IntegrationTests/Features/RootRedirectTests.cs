@@ -35,4 +35,24 @@ public class RootRedirectTests : IntegrationTestBase
         // Assert
         response.Headers.Location.Should().Be(cdpIndexUrl);
     }
+
+    [Fact]
+    public async Task HomePage_WhenPathCasingDiffers_StillRedirectsToConfiguredUrl()
+    {
+        // Arrange
+        const string cdpIndexUrl = "https://regulator.cdp.example/home";
+        using var factory = Factory.WithWebHostBuilder(builder =>
+            builder.ConfigureAppConfiguration((_, config) =>
+                config.AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    ["REDIRECT_INDEX_TO"] = cdpIndexUrl,
+                })));
+        using var client = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+
+        // Act
+        var response = await client.GetAsync("/REGULATORS/HOME");
+
+        // Assert
+        response.Headers.Location.Should().Be(cdpIndexUrl);
+    }
 }
