@@ -126,8 +126,12 @@ public class PaymentFacadeService : IPaymentFacadeService
         {
             await SetAuthorisationHeaderAsync();
 
+            // Regulator must never see a WIP resubmission the producer has not yet formally
+            // submitted for approval. The by-submission endpoint on the payment facade honours
+            // this filter through the requireSubmittedForApproval query flag.
             string path = _paymentFacadeApiConfig.Endpoints[endpointKey]
-                .Replace("{submissionId}", submissionId.ToString(), StringComparison.Ordinal);
+                .Replace("{submissionId}", submissionId.ToString(), StringComparison.Ordinal)
+                + "?requireSubmittedForApproval=true";
 
             var response = await _httpClient.GetAsync(path);
             if (response.StatusCode == HttpStatusCode.NotFound)

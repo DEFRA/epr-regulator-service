@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions;
+using EPR.RegulatorService.Frontend.Core.Models.RegistrationSubmissions.FacadeCommonData;
 using EPR.RegulatorService.Frontend.Web.Extensions;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Extensions;
@@ -6,6 +7,57 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Extensions;
 [TestClass]
 public class ComplianceSchemeMemberExtensionTests
 {
+    [TestMethod]
+    public void GetIndividualProducers_UsesMemberTypeFromMemberWhenSet_IgnoresCsoDetails()
+    {
+        var members = new List<ComplianceSchemeMember>
+        {
+            new() { MemberId = "ORG-1", MemberType = "Large", MemberFee = 500m },
+        };
+
+        var (large, small) = members.GetIndividualProducers(csoMembershipDetails: null);
+
+        large.Should().ContainSingle().Which.MemberId.Should().Be("ORG-1");
+        small.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void GetIndividualProducers_FallsBackToCsoMembershipDetailsWhenMemberTypeMissing()
+    {
+        var members = new List<ComplianceSchemeMember>
+        {
+            new() { MemberId = "ORG-1", MemberType = null, MemberFee = 250m },
+        };
+        var csoDetails = new List<CsoMembershipDetailsDto>
+        {
+            new() { MemberId = "org-1", MemberType = "Small" },
+        };
+
+        var (large, small) = members.GetIndividualProducers(csoDetails);
+
+        large.Should().BeEmpty();
+        small.Should().ContainSingle().Which.MemberId.Should().Be("ORG-1");
+    }
+
+    [TestMethod]
+    public void GetIndividualProducers_SkipsMemberWhenTypeCannotBeResolvedFromEitherSource()
+    {
+        var members = new List<ComplianceSchemeMember>
+        {
+            new() { MemberId = "ORG-1", MemberType = null, MemberFee = 100m },
+            new() { MemberId = "ORG-2", MemberType = string.Empty, MemberFee = 100m },
+        };
+        var csoDetails = new List<CsoMembershipDetailsDto>
+        {
+            new() { MemberId = "ORG-3", MemberType = "Large" },
+        };
+
+        var (large, small) = members.GetIndividualProducers(csoDetails);
+
+        large.Should().BeEmpty();
+        small.Should().BeEmpty();
+    }
+
     [TestMethod]
     public void GetNetSubsidiariesCompanyFees_SumsNetFeesForMembersWithSubsidiaryFee()
     {

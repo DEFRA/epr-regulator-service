@@ -12,26 +12,39 @@ internal static class ComplianceSchemeMemberExtension
         IList<ComplianceSchemeMember> largeProducers = [];
         IList<ComplianceSchemeMember> smallProducers = [];
 
-        foreach (var csoMembershipDetail in csoMembershipDetails)
+        foreach (var complianceSchemeMember in complianceSchemeMembers)
         {
-            //Filter the member based on the member id match between the req and res object
-            var complianceSchemeMember = complianceSchemeMembers
-                .Find(r => r.MemberId.Equals(csoMembershipDetail.MemberId, StringComparison.OrdinalIgnoreCase) && r.MemberFee > 0);
+            var memberType = ResolveMemberType(complianceSchemeMember, csoMembershipDetails);
+            if (string.IsNullOrEmpty(memberType))
+            {
+                continue;
+            }
 
-            //Check the member type from the request object to filter the large producers
-            if (csoMembershipDetail.MemberType.Equals("Large", StringComparison.OrdinalIgnoreCase))
+            if (memberType.Equals("Large", StringComparison.OrdinalIgnoreCase) && complianceSchemeMember.MemberFee > 0)
             {
                 largeProducers.Add(complianceSchemeMember);
             }
-
-            //Check the member type from the request object to filter the small producers
-            if (csoMembershipDetail.MemberType.Equals("Small", StringComparison.OrdinalIgnoreCase))
+            else if (memberType.Equals("Small", StringComparison.OrdinalIgnoreCase) && complianceSchemeMember.MemberFee > 0)
             {
                 smallProducers.Add(complianceSchemeMember);
             }
         }
 
         return (largeProducers, smallProducers);
+    }
+
+    private static string ResolveMemberType(
+        ComplianceSchemeMember complianceSchemeMember,
+        List<CsoMembershipDetailsDto> csoMembershipDetails)
+    {
+        if (!string.IsNullOrEmpty(complianceSchemeMember.MemberType))
+        {
+            return complianceSchemeMember.MemberType;
+        }
+
+        var matched = csoMembershipDetails?.Find(
+            c => c.MemberId.Equals(complianceSchemeMember.MemberId, StringComparison.OrdinalIgnoreCase));
+        return matched?.MemberType;
     }
 
     internal static decimal GetFees(this IList<ComplianceSchemeMember> complianceSchemeMembers) =>

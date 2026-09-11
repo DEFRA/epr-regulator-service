@@ -16,9 +16,13 @@ public abstract class IntegrationTestBase : IAsyncLifetime
     protected HttpClient Client { get; private set; } = null!;
     protected WireMockServer FacadeServer => Factory.FacadeServer;
 
+    /// <summary>Override to inject extra host configuration (e.g. a feature flag override) before
+    /// the factory is built. Null by default - most tests don't need this.</summary>
+    protected virtual IDictionary<string, string?>? AdditionalConfiguration => null;
+
     public virtual Task InitializeAsync()
     {
-        Factory = new RegulatorServiceWebApplicationFactory();
+        Factory = new RegulatorServiceWebApplicationFactory(AdditionalConfiguration);
         Client = Factory.CreateClient();
         FacadeServer.ResetMappings(); // Avoid mystery-guest of json based default mappings. Tests should define their own required data explicitly
         return Task.CompletedTask;

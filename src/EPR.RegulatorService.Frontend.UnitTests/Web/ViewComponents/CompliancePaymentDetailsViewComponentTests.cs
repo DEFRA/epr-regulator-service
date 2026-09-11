@@ -469,4 +469,54 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
         model.SubsidiariesClosedLoopRecyclingCount.Should().Be(1);
         model.SubsidiariesClosedLoopRecyclingFee.Should().Be(clrPence / 100m);
     }
+
+    [TestMethod]
+    public async Task InvokeAsync_WhenCsoMembershipDetailsIsNull_RendersFromResponseWithoutThrowing()
+    {
+        // Arrange: Synapse hasn't caught up so CSOMembershipDetails is null,
+        // but the payment-service by-submission response carries the members with MemberType.
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails = null;
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock
+            .Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
+            .ReturnsAsync(new CompliancePaymentResponse
+            {
+                ApplicationProcessingFee = 100.00M,
+                TotalChargeableItems = 1000.00M,
+                PreviousPaymentsReceived = 0M,
+                TotalOutstanding = 1000.00M,
+                ComplianceSchemeMembers =
+                [
+                    new()
+                    {
+                        MemberId = "memberid1",
+                        MemberType = "large",
+                        NumberOfSubsidiaries = 3,
+                        MemberFee = 200M
+                    },
+                    new()
+                    {
+                        MemberId = "memberid2",
+                        MemberType = "small",
+                        NumberOfSubsidiaries = 1,
+                        MemberFee = 100M
+                    }
+                ]
+            });
+
+        // Act
+        var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        // Assert
+        result.Should().BeOfType<ViewViewComponentResult>();
+        var model = result.ViewData.Model as CompliancePaymentDetailsViewModel;
+        model.Should().NotBeNull();
+        model!.SchemeMemberCount.Should().Be(2);
+        model.LargeProducerCount.Should().Be(1);
+        model.SmallProducerCount.Should().Be(1);
+        model.SubsidiariesCompanyCount.Should().Be(4);
+    }
 }
