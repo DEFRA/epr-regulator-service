@@ -10,7 +10,7 @@ public static class ApplicationBuilderRedirectExtension
     /// </summary>
     public static IApplicationBuilder UseAbsoluteRedirect(this IApplicationBuilder app, string path, string redirectTo) =>
         app.MapWhen(
-            context => context.Request.Path.Value == path,
+            context => string.Equals(context.Request.Path.Value, path, StringComparison.OrdinalIgnoreCase),
             branch => branch.Run(context =>
             {
                 context.Response.Redirect(redirectTo);
