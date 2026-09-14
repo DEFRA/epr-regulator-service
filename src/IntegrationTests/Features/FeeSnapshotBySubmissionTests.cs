@@ -5,6 +5,8 @@ using AwesomeAssertions.Execution;
 using Builders;
 using Infrastructure;
 using PageModels;
+using WireMock.AwesomeAssertions;
+using WireMock.Matchers;
 
 /// <summary>
 /// the regulator's payment-details view now prefers a snapshot-backed
@@ -52,8 +54,12 @@ public class FeeSnapshotBySubmissionTests : IntegrationTestBase
             page.SubTotal.Should().Be(2842.00m);
         }
 
-        FacadeServer.ShouldHaveGetProducerRegistrationFeeBySubmission(submissionId);
-        FacadeServer.ShouldNotHavePostedProducerRegistrationFee();
+        FacadeServer.LogEntries.Should().Contain(e =>
+            e.RequestMessage.Method.Equals("GET", StringComparison.OrdinalIgnoreCase) &&
+            e.RequestMessage.Path == $"/producer/registration-fee/{submissionId}");
+        FacadeServer.LogEntries.Should().NotContain(e =>
+            e.RequestMessage.Method.Equals("POST", StringComparison.OrdinalIgnoreCase) &&
+            e.RequestMessage.Path == "/producer/registration-fee");
     }
 
     [Fact]
@@ -79,8 +85,12 @@ public class FeeSnapshotBySubmissionTests : IntegrationTestBase
 
         page.PaymentDetails!.HasPaymentSection.Should().BeTrue();
 
-        FacadeServer.ShouldHaveGetComplianceSchemeRegistrationFeeBySubmission(submissionId);
-        FacadeServer.ShouldNotHavePostedComplianceSchemeRegistrationFee();
+        FacadeServer.LogEntries.Should().Contain(e =>
+            e.RequestMessage.Method.Equals("GET", StringComparison.OrdinalIgnoreCase) &&
+            e.RequestMessage.Path == $"/compliance-scheme/registration-fee/{submissionId}");
+        FacadeServer.LogEntries.Should().NotContain(e =>
+            e.RequestMessage.Method.Equals("POST", StringComparison.OrdinalIgnoreCase) &&
+            e.RequestMessage.Path == "/compliance-scheme/registration-fee");
     }
 
     // by-submission GET returns 404 (no snapshot yet): clean fallback to POST --------------
@@ -109,7 +119,10 @@ public class FeeSnapshotBySubmissionTests : IntegrationTestBase
         page.PaymentDetails!.HasPaymentSection.Should().BeTrue();
         page.SubTotal.Should().Be(2842.00m);
 
-        FacadeServer.ShouldHavePostedProducerRegistrationFee(new { applicationReferenceNumber = appRef });
+        FacadeServer.Should().HaveReceivedACall()
+            .UsingPost().And
+            .AtPath("/producer/registration-fee").And
+            .WithBodyAsJson(new JsonPartialMatcher(new { applicationReferenceNumber = appRef }));
     }
 
     [Fact]
@@ -135,7 +148,10 @@ public class FeeSnapshotBySubmissionTests : IntegrationTestBase
 
         page.PaymentDetails!.HasPaymentSection.Should().BeTrue();
 
-        FacadeServer.ShouldHavePostedComplianceSchemeRegistrationFee(new { applicationReferenceNumber = appRef });
+        FacadeServer.Should().HaveReceivedACall()
+            .UsingPost().And
+            .AtPath("/compliance-scheme/registration-fee").And
+            .WithBodyAsJson(new JsonPartialMatcher(new { applicationReferenceNumber = appRef }));
     }
 
     // by-submission GET throws/5xx: falls back to POST rather than surfacing an error ------
@@ -167,7 +183,10 @@ public class FeeSnapshotBySubmissionTests : IntegrationTestBase
         page.PaymentDetails!.HasPaymentSection.Should().BeTrue();
         page.SubTotal.Should().Be(2842.00m);
 
-        FacadeServer.ShouldHavePostedProducerRegistrationFee(new { applicationReferenceNumber = appRef });
+        FacadeServer.Should().HaveReceivedACall()
+            .UsingPost().And
+            .AtPath("/producer/registration-fee").And
+            .WithBodyAsJson(new JsonPartialMatcher(new { applicationReferenceNumber = appRef }));
 
         // Full assertion that the fallback was *logged* needs the same log-capture infrastructure
         // built for epr-payment-service (TestLogSink) - not wired up in this repo yet. The
@@ -308,7 +327,12 @@ public class FeeSnapshotBySubmissionFeatureFlagOffTests : IntegrationTestBase
 
         page.PaymentDetails!.HasPaymentSection.Should().BeTrue();
 
-        FacadeServer.ShouldNotHaveGetProducerRegistrationFeeBySubmission(submissionId);
-        FacadeServer.ShouldHavePostedProducerRegistrationFee(new { applicationReferenceNumber = appRef });
+        FacadeServer.LogEntries.Should().NotContain(e =>
+            e.RequestMessage.Method.Equals("GET", StringComparison.OrdinalIgnoreCase) &&
+            e.RequestMessage.Path == $"/producer/registration-fee/{submissionId}");
+        FacadeServer.Should().HaveReceivedACall()
+            .UsingPost().And
+            .AtPath("/producer/registration-fee").And
+            .WithBodyAsJson(new JsonPartialMatcher(new { applicationReferenceNumber = appRef }));
     }
 }

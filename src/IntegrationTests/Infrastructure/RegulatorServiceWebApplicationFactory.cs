@@ -23,7 +23,7 @@ public class RegulatorServiceWebApplicationFactory(IDictionary<string, string?>?
     {
         builder.ConfigureAppConfiguration((_, config) =>
         {
-            config.AddInMemoryCollection(new Dictionary<string, string?>
+            config.AddInMemoryCollection(new Dictionary<string, string>
             {
                 ["EprAuthorizationConfig:SignInRedirect"] = "",
             });
