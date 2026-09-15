@@ -28,7 +28,7 @@ public class CompliancePaymentDetailsViewComponent(
     {
         try
         {
-            var csoMembers = viewModel.CSOMembershipDetails;
+            var csoMembers = viewModel.CSOMembershipDetails ?? [];
 
             var compliancePaymentResponse = await paymentFacadeService.GetCompliancePaymentDetailsAsync(
                 new CompliancePaymentRequest
@@ -49,11 +49,10 @@ public class CompliancePaymentDetailsViewComponent(
                 return View(default(CompliancePaymentDetailsViewModel));
             }
 
-            var (largeProducers, smallProducers) =
-                compliancePaymentResponse.ComplianceSchemeMembers.GetIndividualProducers(csoMembers);
-            var lateProducers = compliancePaymentResponse.ComplianceSchemeMembers.GetLateProducers();
-            var onlineMarketPlaces = compliancePaymentResponse.ComplianceSchemeMembers.GetOnlineMarketPlaces();
-            var complianceSchemeMembers = compliancePaymentResponse.ComplianceSchemeMembers;
+            var complianceSchemeMembers = compliancePaymentResponse.ComplianceSchemeMembers ?? [];
+            var (largeProducers, smallProducers) = complianceSchemeMembers.GetIndividualProducers(csoMembers);
+            var lateProducers = complianceSchemeMembers.GetLateProducers();
+            var onlineMarketPlaces = complianceSchemeMembers.GetOnlineMarketPlaces();
             var closedLoopRecyclingFees = complianceSchemeMembers.GetClosedLoopRecyclingFees();
 
             var compliancePaymentDetailsViewModel = new CompliancePaymentDetailsViewModel
@@ -65,7 +64,7 @@ public class CompliancePaymentDetailsViewComponent(
                 TotalOutstanding =
                     ConvertToPoundsFromPence(PaymentHelper.GetUpdatedTotalOutstanding(
                         compliancePaymentResponse.TotalOutstanding, options.Value.ShowZeroFeeForTotalOutstanding)),
-                SchemeMemberCount = compliancePaymentResponse.ComplianceSchemeMembers.Count,
+                SchemeMemberCount = complianceSchemeMembers.Count,
                 LargeProducerCount = largeProducers.Count,
                 LargeProducerFee = ConvertToPoundsFromPence(largeProducers.GetFees()),
                 SmallProducerCount = smallProducers.Count,
@@ -76,7 +75,7 @@ public class CompliancePaymentDetailsViewComponent(
                 OnlineMarketPlaceFee = ConvertToPoundsFromPence(onlineMarketPlaces.Sum()),
                 ClosedLoopRegistrationCount = closedLoopRecyclingFees.Count,
                 ClosedLoopRecyclingFee = ConvertToPoundsFromPence(closedLoopRecyclingFees.Sum()),
-                SubsidiariesCompanyCount = csoMembers.Sum(r => r.NumberOfSubsidiaries),
+                SubsidiariesCompanyCount = GetSubsidiariesCompanyCount(complianceSchemeMembers, csoMembers),
                 SubsidiariesCompanyFee =
                     ConvertToPoundsFromPence(complianceSchemeMembers.GetNetSubsidiariesCompanyFees()),
                 SubsidiariesOnlineMarketPlaceCount =
@@ -104,9 +103,22 @@ public class CompliancePaymentDetailsViewComponent(
         }
     }
 
+    private static int GetSubsidiariesCompanyCount(
+        List<ComplianceSchemeMember> complianceSchemeMembers,
+        IReadOnlyList<CsoMembershipDetailsDto> csoMembers)
+    {
+        var responseCount = complianceSchemeMembers.Sum(m => m.NumberOfSubsidiaries);
+        if (responseCount > 0)
+        {
+            return responseCount;
+        }
+
+        return csoMembers?.Sum(r => r.NumberOfSubsidiaries) ?? 0;
+    }
+
     private static List<ComplianceSchemeMemberRequest> MapToComplianceSchemeMemberRequests(
         IReadOnlyList<CsoMembershipDetailsDto> csoMembers) =>
-        csoMembers.Select(MapToComplianceSchemeMemberRequest).ToList();
+        csoMembers?.Select(MapToComplianceSchemeMemberRequest).ToList() ?? [];
 
     private static ComplianceSchemeMemberRequest MapToComplianceSchemeMemberRequest(
         CsoMembershipDetailsDto csoMember) =>

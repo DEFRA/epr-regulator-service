@@ -453,6 +453,55 @@ public class PaymentFacadeServiceTests
         VerifyPost("compliance-scheme/registration-fee", Times.Once());
     }
 
+    [TestMethod]
+    public async Task GetProducerPaymentDetailsAsync_WhenFlagOn_AppendsRequireSubmittedForApprovalTrueToGet()
+    {
+        _featureManagerMock
+            .Setup(x => x.IsEnabledAsync(EnableRegistrationFeeCalculationViaPaymentService))
+            .ReturnsAsync(true);
+        var request = _fixture.Create<ProducerPaymentRequest>();
+        var submissionId = Guid.NewGuid();
+        var expected = new ProducerPaymentResponse { ApplicationProcessingFee = 1m };
+        SetupGetReturnsBody($"producer/registration-fee/{submissionId}?requireSubmittedForApproval=true", expected);
+
+        var result = await _paymentFacadeService.GetProducerPaymentDetailsAsync(request, submissionId);
+
+        result.Should().NotBeNull();
+        VerifyGet($"producer/registration-fee/{submissionId}?requireSubmittedForApproval=true", Times.Once());
+    }
+
+    [TestMethod]
+    public async Task GetCompliancePaymentDetailsAsync_WhenFlagOn_AppendsRequireSubmittedForApprovalTrueToGet()
+    {
+        _featureManagerMock
+            .Setup(x => x.IsEnabledAsync(EnableRegistrationFeeCalculationViaPaymentService))
+            .ReturnsAsync(true);
+        var request = _fixture.Create<CompliancePaymentRequest>();
+        var submissionId = Guid.NewGuid();
+        var expected = new CompliancePaymentResponse { ApplicationProcessingFee = 1m };
+        SetupGetReturnsBody($"compliance-scheme/registration-fee/{submissionId}?requireSubmittedForApproval=true", expected);
+
+        var result = await _paymentFacadeService.GetCompliancePaymentDetailsAsync(request, submissionId);
+
+        result.Should().NotBeNull();
+        VerifyGet($"compliance-scheme/registration-fee/{submissionId}?requireSubmittedForApproval=true", Times.Once());
+    }
+
+    private void SetupGetReturnsBody<T>(string uriFragment, T body) =>
+        _mockHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is<HttpRequestMessage>(req =>
+                    req.Method == HttpMethod.Get &&
+                    req.RequestUri!.ToString().Contains(uriFragment, StringComparison.Ordinal)),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(() => new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(body))
+            });
+
     private void SetupGetReturns(string uriFragment, HttpStatusCode status) =>
         _mockHandler
             .Protected()

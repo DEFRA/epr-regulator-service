@@ -12,7 +12,8 @@ using Microsoft.Identity.Web;
 
 using WireMock.Server;
 
-public class RegulatorServiceWebApplicationFactory : WebApplicationFactory<Program>
+public class RegulatorServiceWebApplicationFactory(IDictionary<string, string?>? additionalConfiguration = null)
+    : WebApplicationFactory<Program>
 {
     private readonly WireMockServer _facadeServer = MockRegulatorFacade.MockRegulatorFacadeServer.Start(useSsl: false);
 
@@ -26,6 +27,13 @@ public class RegulatorServiceWebApplicationFactory : WebApplicationFactory<Progr
             {
                 ["EprAuthorizationConfig:SignInRedirect"] = "",
             });
+
+            // e.g. FeatureManagement:EnableRegistrationFeeCalculationViaPaymentService - lets a
+            // test flip a flag/setting without a process-wide environment variable.
+            if (additionalConfiguration is { Count: > 0 })
+            {
+                config.AddInMemoryCollection(additionalConfiguration);
+            }
         });
 
         Environment.SetEnvironmentVariable("FacadeApi__BaseUrl", $"{_facadeServer.Url}/api/");

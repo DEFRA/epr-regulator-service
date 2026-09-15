@@ -14,6 +14,8 @@ public class ProducerPaymentResponseBuilder
     private int _ompCount = 0;
     private int _closedLoopRecyclingFee = 0;
     private int _closedLoopRecyclingCount = 0;
+    private string? _producerSize;
+    private int _numberOfSubsidiaries;
 
     private ProducerPaymentResponseBuilder()
     {
@@ -66,6 +68,18 @@ public class ProducerPaymentResponseBuilder
         return this;
     }
 
+    public ProducerPaymentResponseBuilder WithProducerSize(string? producerSize)
+    {
+        _producerSize = producerSize;
+        return this;
+    }
+
+    public ProducerPaymentResponseBuilder WithNumberOfSubsidiaries(int numberOfSubsidiaries)
+    {
+        _numberOfSubsidiaries = numberOfSubsidiaries;
+        return this;
+    }
+
     public object Build() => new
     {
         producerRegistrationFee = _producerRegistrationFee,
@@ -76,6 +90,8 @@ public class ProducerPaymentResponseBuilder
         subsidiariesFee = _subsidiariesFee,
         totalFee = _totalFee,
         outstandingPayment = _outstandingPayment,
+        producerSize = _producerSize,
+        numberOfSubsidiaries = _numberOfSubsidiaries,
         subsidiariesFeeBreakdown = new
         {
             totalSubsidiariesOMPFees = _ompFee,

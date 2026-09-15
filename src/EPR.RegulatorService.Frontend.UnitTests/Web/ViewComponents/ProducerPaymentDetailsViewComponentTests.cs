@@ -250,6 +250,50 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
+    public async Task InvokeAsync_UsesProducerSizeFromResponse_WhenSet_IgnoringProducerDetails()
+    {
+        _registrationSumissionDetailsViewModel.ProducerDetails.ProducerType = "small";
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()))
+            .ReturnsAsync(new ProducerPaymentResponse
+            {
+                ProducerSize = "large",
+                SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse()
+            });
+
+        var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        var model = result.ViewData.Model as ProducerPaymentDetailsViewModel;
+        model.Should().NotBeNull();
+        model!.ProducerSize.Should().Be("Large");
+    }
+
+    [TestMethod]
+    public async Task InvokeAsync_ResolvesEmptyProducerSize_When_ProducerDetails_Null_And_Response_ProducerSize_Empty()
+    {
+        _registrationSumissionDetailsViewModel.ProducerDetails = null;
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()))
+            .ReturnsAsync(new ProducerPaymentResponse
+            {
+                ProducerSize = null,
+                SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse()
+            });
+
+        var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        var model = result.ViewData.Model as ProducerPaymentDetailsViewModel;
+        model.Should().NotBeNull();
+        model!.ProducerSize.Should().BeEmpty();
+    }
+
+    [TestMethod]
     public async Task InvokeAsync_Sets_IsClosedLoopRecycling_False_When_Not_DirectLargeProducer()
     {
         // Arrange
