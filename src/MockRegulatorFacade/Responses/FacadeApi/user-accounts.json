@@ -6,9 +6,9 @@
     "email": "test.user@example.com",
     "roleInOrganisation": "Admin",
     "enrolmentStatus": "Approved",
-    "serviceRole": "Regulator Basic",
+    "serviceRole": "Regulator Admin",
     "service": "RegulatorService",
-    "serviceRoleId": 5,
+    "serviceRoleId": 4,
     "organisations": [
       {
         "id": "C7646CAE-EB96-48AC-9427-0120199BE6EE",
