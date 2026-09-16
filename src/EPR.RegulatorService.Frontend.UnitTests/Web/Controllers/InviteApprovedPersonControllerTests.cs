@@ -243,6 +243,38 @@ public class InviteApprovedPersonControllerTests
     }
 
     [TestMethod]
+    public async Task GivenEmailAlreadyExists_WhenCallingSubmit_ShouldReturnEnterPersonEmailViewWithModelError()
+    {
+        // Arrange
+        var session = new JourneySession
+        {
+            InviteNewApprovedPersonSession = new InviteNewApprovedPersonSession
+            {
+                InvitedPersonEmail = "test@email.com"
+            }
+        };
+    
+        _mockFacade
+            .Setup(x => x.AddRemoveApprovedUser(It.IsAny<AddRemoveApprovedUserRequest>()))
+            .ReturnsAsync(EndpointResponseStatus.UserExists);
+    
+        _mockSessionManager
+            .Setup(x => x.GetSessionAsync(It.IsAny<ISession>()))
+            .ReturnsAsync(session);
+    
+        // Act
+        var result = await _controller.Submit() as ViewResult;
+    
+        // Assert
+        result.Should().NotBeNull();
+        result.ViewName.Should().Be("EnterPersonEmail");
+        result.Model.Should().BeOfType<EnterPersonEmailModel>();
+        ((EnterPersonEmailModel)result.Model).Email.Should().Be("test@email.com");
+        _controller.ModelState.IsValid.Should().BeFalse();
+        _controller.ModelState[nameof(EnterPersonEmailModel.Email)].Errors.Should().ContainSingle();
+    }
+
+    [TestMethod]
     [DynamicData(nameof(GetExistingConnectionExternalIdToRemoveTestCases))]
     public async Task
         GivenExistingConnectionExternalIdToRemoveIsEmptyInSession_WhenCallingSubmit_ShouldRedirectToAccountPermissionHaveChangedAction(
