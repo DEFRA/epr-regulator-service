@@ -59,6 +59,31 @@ public class ComplianceSchemeMemberExtensionTests
     }
 
     [TestMethod]
+    public void GetIndividualProducers_MemberWithOnlySubsidiaryLateFee_IsExcludedFromBothLists()
+    {
+        var members = new List<ComplianceSchemeMember>
+        {
+            new()
+            {
+                MemberId = "ORG-1",
+                MemberType = "Large",
+                MemberFee = 0m,
+                SubsidiaryFee = 38_600m,
+                SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+                {
+                    TotalSubsidiariesLateFees = 38_600m,
+                    CountOfLateSubsidiaries = 1,
+                },
+            },
+        };
+
+        var (large, small) = members.GetIndividualProducers(csoMembershipDetails: null);
+
+        large.Should().BeEmpty();
+        small.Should().BeEmpty();
+    }
+
+    [TestMethod]
     public void GetNetSubsidiariesCompanyFees_SumsNetFeesForMembersWithSubsidiaryFee()
     {
         var members = new List<ComplianceSchemeMember>

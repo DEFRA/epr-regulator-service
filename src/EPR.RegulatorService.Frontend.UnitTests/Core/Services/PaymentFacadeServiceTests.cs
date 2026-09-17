@@ -184,6 +184,108 @@ public class PaymentFacadeServiceTests
     }
 
     [TestMethod]
+    public async Task GetProducerPaymentDetailsAsync_DeserializesSubsidiaryLateFeeFields_FromFacadeShapedJson()
+    {
+        // Arrange
+        var request = _fixture.Create<ProducerPaymentRequest>();
+        const string responseJson = """
+            {
+              "producerRegistrationFee": 165800,
+              "producerOnlineMarketPlaceFee": 0,
+              "producerClosedLoopRecyclingFee": 0,
+              "producerLateRegistrationFee": 0,
+              "subsidiariesFee": 38600,
+              "totalFee": 204400,
+              "previousPayment": 0,
+              "outstandingPayment": 204400,
+              "subsidiariesFeeBreakdown": {
+                "totalSubsidiariesOMPFees": 0,
+                "countOfOMPSubsidiaries": 0,
+                "totalSubsidiariesClosedLoopRecyclingFees": 0,
+                "countOfClosedLoopRecyclingSubsidiaries": 0,
+                "totalSubsidiariesLateFees": 38600,
+                "countOfLateSubsidiaries": 1
+              }
+            }
+            """;
+        _mockHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>()
+            )
+            .ReturnsAsync(() => new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(responseJson)
+            })
+            .Verifiable();
+
+        // Act
+        var result = await _paymentFacadeService.GetProducerPaymentDetailsAsync(request, Guid.NewGuid());
+
+        // Assert
+        result.SubsidiariesFeeBreakdown.TotalSubsidiariesLateFees.Should().Be(38600);
+        result.SubsidiariesFeeBreakdown.CountOfLateSubsidiaries.Should().Be(1);
+    }
+
+    [TestMethod]
+    public async Task GetCompliancePaymentDetailsAsync_DeserializesSubsidiaryLateFeeFields_FromFacadeShapedJson()
+    {
+        // Arrange
+        var request = _fixture.Create<CompliancePaymentRequest>();
+        const string responseJson = """
+            {
+              "complianceSchemeRegistrationFee": 1380400,
+              "previousPayment": 0,
+              "totalFee": 1419000,
+              "outstandingPayment": 1419000,
+              "complianceSchemeMembersWithFees": [{
+                "memberId": "123",
+                "memberType": "Large",
+                "numberOfSubsidiaries": 1,
+                "memberRegistrationFee": 0,
+                "memberOnlineMarketPlaceFee": 0,
+                "memberLateRegistrationFee": 0,
+                "memberClosedLoopRecyclingFee": 0,
+                "subsidiariesFee": 38600,
+                "totalMemberFee": 38600,
+                "subsidiariesFeeBreakdown": {
+                  "totalSubsidiariesOMPFees": 0,
+                  "countOfOMPSubsidiaries": 0,
+                  "totalSubsidiariesClosedLoopRecyclingFees": 0,
+                  "countOfClosedLoopRecyclingSubsidiaries": 0,
+                  "totalSubsidiariesLateFees": 38600,
+                  "countOfLateSubsidiaries": 1
+                }
+              }]
+            }
+            """;
+        _mockHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>()
+            )
+            .ReturnsAsync(() => new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(responseJson)
+            })
+            .Verifiable();
+
+        // Act
+        var result = await _paymentFacadeService.GetCompliancePaymentDetailsAsync(request, Guid.NewGuid());
+
+        // Assert
+        var member = result.ComplianceSchemeMembers.Should().ContainSingle().Subject;
+        member.SubsidiariesFeeBreakdown.TotalSubsidiariesLateFees.Should().Be(38600);
+        member.SubsidiariesFeeBreakdown.CountOfLateSubsidiaries.Should().Be(1);
+    }
+
+    [TestMethod]
     public async Task GetProducerPaymentDetailsForResubmissionAsync_ReturnsCorrectResponse_When_SuccessStatusCode()
     {
         // Arrange
