@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -21,7 +21,7 @@
         FluentAssertion -> pinned to version 6.12.0 as version 7 has breaking changes which,
         as of 30/09/2025 we are not addressing just yet and version 8 is paid.
         -->
-        <PackageReference Include="FluentAssertions" Version="6.12.0" />
+        <PackageReference Include="FluentAssertions" Version="6.12.2" />
 
         <!--Pinned versions for transitive dependencies-->
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
@@ -30,20 +30,20 @@
 
         <PackageReference Include="AutoFixture.AutoMoq" Version="4.18.1" />
         <PackageReference Include="ILogger.Moq" Version="1.1.10" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
-        <PackageReference Include="MSTest.TestAdapter" Version="3.5.2" />
-        <PackageReference Include="MSTest.TestFramework" Version="3.5.2" />
-        <PackageReference Include="coverlet.collector" Version="6.0.2">
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+        <PackageReference Include="MSTest.TestAdapter" Version="3.11.1" />
+        <PackageReference Include="MSTest.TestFramework" Version="3.11.1" />
+        <PackageReference Include="coverlet.collector" Version="6.0.4">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-        <PackageReference Include="coverlet.msbuild" Version="6.0.2">
+        <PackageReference Include="coverlet.msbuild" Version="6.0.4">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Moq" Version="4.20.70" />
-        <PackageReference Include="System.Drawing.Common" Version="8.0.8" />
+        <PackageReference Include="Moq" Version="4.20.72" />
+        <PackageReference Include="System.Drawing.Common" Version="8.0.31" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
         <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     </ItemGroup>
@@ -54,7 +54,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+      <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
       <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
     </ItemGroup>
 
