@@ -223,9 +223,9 @@
     <value>Mae'r is-gwmnïau yn farchnadoedd ar-lein</value>
   </data>
   <data name="CompliancePaymentDetails.SubsidiariesLateFeeSingularDescription" xml:space="preserve">
-    <value>[Welsh] Subsidiary late fee</value>
+    <value>Ffi hwyr is-gwmni</value>
   </data>
   <data name="CompliancePaymentDetails.SubsidiariesLateFeePluralDescription" xml:space="preserve">
-    <value>[Welsh] Subsidiaries late fees</value>
+    <value>Ffioedd hwyr is-gwmni</value>
   </data>
 </root>
