@@ -1,4 +1,5 @@
 using EPR.RegulatorService.Frontend.Core.Extensions;
+using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Extensions;
 using EPR.RegulatorService.Frontend.Web.FeatureManagement;
 using EPR.RegulatorService.Frontend.Web.HealthChecks;
@@ -73,6 +74,13 @@ var app = builder.Build();
 
 string pathBase = builder.Configuration["PATH_BASE"];
 app.UseAbsoluteRedirect(path: "/", redirectTo: pathBase);
+
+string? redirectIndexTo = builder.Configuration["REDIRECT_INDEX_TO"];
+if (!string.IsNullOrWhiteSpace(redirectIndexTo))
+{
+    app.UseAbsoluteRedirect(path: $"{pathBase}/{PagePath.Home}", redirectTo: redirectIndexTo);
+}
+
 app.UsePathBase(pathBase);
 
 if (app.Environment.IsDevelopment())
