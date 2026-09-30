@@ -86,6 +86,10 @@ public class CompliancePaymentDetailsViewComponent(
                     complianceSchemeMembers.GetSubsidiariesClosedLoopRecyclingCount(),
                 SubsidiariesClosedLoopRecyclingFee =
                     ConvertToPoundsFromPence(complianceSchemeMembers.GetSubsidiariesClosedLoopRecyclingFees()),
+                SubsidiariesLateCount =
+                    complianceSchemeMembers.GetSubsidiariesLateCount(),
+                SubsidiariesLateFee =
+                    ConvertToPoundsFromPence(complianceSchemeMembers.GetSubsidiariesLateFees()),
                 ResubmissionStatus = viewModel.ResubmissionStatus,
                 Status = viewModel.Status
             };

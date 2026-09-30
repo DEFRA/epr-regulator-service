@@ -471,6 +471,64 @@ public class CompliancePaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
+    public async Task InvokeAsync_PopulatesSubsidiariesLateFeeAcrossMembers()
+    {
+        const decimal member1LatePence = 15_000m;
+        const decimal member2LatePence = 25_000m;
+        _registrationSumissionDetailsViewModel.CSOMembershipDetails =
+        [
+            new CsoMembershipDetailsDto { MemberId = "m1", MemberType = "large", NumberOfSubsidiaries = 1 },
+            new CsoMembershipDetailsDto { MemberId = "m2", MemberType = "large", NumberOfSubsidiaries = 2 },
+        ];
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetCompliancePaymentDetailsAsync(It.IsAny<CompliancePaymentRequest>(), It.IsAny<Guid>()))
+            .ReturnsAsync(new CompliancePaymentResponse
+            {
+                ApplicationProcessingFee = 100.00M,
+                TotalChargeableItems = 1000.00M,
+                PreviousPaymentsReceived = 500.00M,
+                TotalOutstanding = 500.00M,
+                ComplianceSchemeMembers =
+                [
+                    new()
+                    {
+                        MemberId = "m1",
+                        MemberType = "large",
+                        MemberFee = 2.00M,
+                        SubsidiaryFee = member1LatePence,
+                        SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+                        {
+                            TotalSubsidiariesLateFees = member1LatePence,
+                            CountOfLateSubsidiaries = 1,
+                        },
+                    },
+                    new()
+                    {
+                        MemberId = "m2",
+                        MemberType = "large",
+                        MemberFee = 2.00M,
+                        SubsidiaryFee = member2LatePence,
+                        SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+                        {
+                            TotalSubsidiariesLateFees = member2LatePence,
+                            CountOfLateSubsidiaries = 2,
+                        },
+                    }
+                ]
+            });
+
+        var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        var model = result.ViewData.Model as CompliancePaymentDetailsViewModel;
+        model.Should().NotBeNull();
+        model!.SubsidiariesLateFee.Should().Be((member1LatePence + member2LatePence) / 100m);
+        model.SubsidiariesLateCount.Should().Be(1 + 2);
+    }
+
+    [TestMethod]
     public async Task InvokeAsync_WhenCsoMembershipDetailsIsNull_RendersFromResponseWithoutThrowing()
     {
         // Arrange: Synapse hasn't caught up so CSOMembershipDetails is null,

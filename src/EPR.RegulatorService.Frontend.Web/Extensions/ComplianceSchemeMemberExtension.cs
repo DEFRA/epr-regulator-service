@@ -77,4 +77,10 @@ internal static class ComplianceSchemeMemberExtension
 
     internal static int GetSubsidiariesOnlineMarketPlaceCount(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
         complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.OnlineMarketPlaceSubsidiariesCount ?? 0);
+
+    internal static decimal GetSubsidiariesLateFees(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.TotalSubsidiariesLateFees ?? 0);
+
+    internal static int GetSubsidiariesLateCount(this List<ComplianceSchemeMember> complianceSchemeMembers) =>
+        complianceSchemeMembers.Sum(r => r.SubsidiariesFeeBreakdown?.CountOfLateSubsidiaries ?? 0);
 }

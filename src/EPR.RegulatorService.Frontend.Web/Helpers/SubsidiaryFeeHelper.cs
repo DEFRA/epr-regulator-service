@@ -20,6 +20,7 @@ internal static class SubsidiaryFeeHelper
 
         return subsidiaryFee
             - breakdown.SubsidiaryOnlineMarketPlaceFee
-            - breakdown.TotalSubsidiariesClosedLoopRecyclingFees;
+            - breakdown.TotalSubsidiariesClosedLoopRecyclingFees
+            - breakdown.TotalSubsidiariesLateFees;
     }
 }

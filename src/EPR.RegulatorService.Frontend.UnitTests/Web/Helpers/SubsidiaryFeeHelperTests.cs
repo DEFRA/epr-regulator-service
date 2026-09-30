@@ -42,4 +42,18 @@ public class SubsidiaryFeeHelperTests
 
         response.GetNetSubsidiaryCompaniesFee().Should().Be(50_000m);
     }
+
+    [TestMethod]
+    public void GetNetSubsidiaryCompaniesFee_AlsoSubtractsSubsidiaryLateFees()
+    {
+        var breakdown = new SubsidiariesFeeBreakdownResponse
+        {
+            SubsidiaryOnlineMarketPlaceFee = 10_000m,
+            TotalSubsidiariesClosedLoopRecyclingFees = 15_000m,
+            TotalSubsidiariesLateFees = 20_000m,
+        };
+
+        SubsidiaryFeeHelper.GetNetSubsidiaryCompaniesFee(100_000m, breakdown)
+            .Should().Be(55_000m);
+    }
 }

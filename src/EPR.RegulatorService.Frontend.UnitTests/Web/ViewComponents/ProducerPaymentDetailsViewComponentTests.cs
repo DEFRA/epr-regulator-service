@@ -250,6 +250,43 @@ public class ProducerPaymentDetailsViewComponentTests : ViewComponentsTestBase
     }
 
     [TestMethod]
+    public async Task InvokeAsync_PopulatesSubsidiaryLateFeeAndSubtractsFromSubsidiaryFee()
+    {
+        const decimal subsidiariesFeePence = 200_000m;
+        const decimal ompPence = 20_000m;
+        const decimal clrPence = 30_000m;
+        const decimal latePence = 40_000m;
+        _registrationSumissionDetailsViewModel.ProducerDetails.ProducerType = "large";
+        _registrationSumissionDetailsViewModel.SubmissionDetails = new SubmissionDetailsViewModel
+        {
+            TimeAndDateOfSubmission = DateTime.UtcNow.AddDays(-1)
+        };
+        _paymentFacadeServiceMock.Setup(x => x.GetProducerPaymentDetailsAsync(It.IsAny<ProducerPaymentRequest>(), It.IsAny<Guid>()))
+            .ReturnsAsync(new ProducerPaymentResponse
+            {
+                SubsidiaryFee = subsidiariesFeePence,
+                SubsidiariesFeeBreakdown = new SubsidiariesFeeBreakdownResponse
+                {
+                    SubsidiaryOnlineMarketPlaceFee = ompPence,
+                    TotalSubsidiariesClosedLoopRecyclingFees = clrPence,
+                    TotalSubsidiariesLateFees = latePence,
+                    OnlineMarketPlaceSubsidiariesCount = 1,
+                    CountOfClosedLoopRecyclingSubsidiaries = 1,
+                    CountOfLateSubsidiaries = 4,
+                },
+            });
+
+        var result = await _sut.InvokeAsync(_registrationSumissionDetailsViewModel);
+
+        var model = result.ViewData.Model as ProducerPaymentDetailsViewModel;
+        model.Should().NotBeNull();
+        model!.SubsidiaryLateFee.Should().Be(latePence / 100m);
+        model.NumberOfLateSubsidiaries.Should().Be(4);
+        // Band-only total subtracts OMP, CLR AND the new subsidiary-late-fee.
+        model.SubsidiaryFee.Should().Be((subsidiariesFeePence - ompPence - clrPence - latePence) / 100m);
+    }
+
+    [TestMethod]
     public async Task InvokeAsync_UsesProducerSizeFromResponse_WhenSet_IgnoringProducerDetails()
     {
         _registrationSumissionDetailsViewModel.ProducerDetails.ProducerType = "small";

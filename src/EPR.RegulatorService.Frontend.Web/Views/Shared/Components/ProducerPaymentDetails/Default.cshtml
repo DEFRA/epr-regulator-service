@@ -122,6 +122,19 @@
                             <payment-amount amount="@Model.SubsidiaryClosedLoopRecyclingFee"></payment-amount>
                         </div>
                     }
+                    @if (Model.NumberOfLateSubsidiaries > 0)
+                    {
+                        <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
+                            <dd class="govuk-summary-list__value" style="width: 285px;">
+                            </dd>
+                            <dd class="govuk-summary-list__value" style="width: 310px;">
+                                @Localizer[Model.NumberOfLateSubsidiaries == 1
+                                         ? "ProducerPaymentDetails.SubsidiaryLateFeeSingularDescription" : "ProducerPaymentDetails.SubsidiaryLateFeePluralDescription"]
+                            </dd>
+                            <dd class="govuk-summary-list__value" style="width: 100px; text-align: right;">@Model.NumberOfLateSubsidiaries</dd>
+                            <payment-amount amount="@Model.SubsidiaryLateFee"></payment-amount>
+                        </div>
+                    }
                 }
 
                 <div class="govuk-summary-list__row" style="display: flex; justify-content: space-between;">
