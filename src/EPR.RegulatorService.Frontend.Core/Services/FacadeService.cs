@@ -359,10 +359,24 @@ public class FacadeService : IFacadeService
     {
         await PrepareAuthenticatedClient();
         string path = _facadeApiConfig.Endpoints[AddRemoveApprovedUserPath];
-
+    
         var response = await _httpClient.PostAsJsonAsync(path, request);
-
-        return response.IsSuccessStatusCode ? EndpointResponseStatus.Success : EndpointResponseStatus.Fail;
+    
+        if (response.IsSuccessStatusCode)
+        {
+            return EndpointResponseStatus.Success;
+        }
+    
+        if (response.StatusCode == HttpStatusCode.BadRequest && response.Content.Headers.ContentLength > 0)
+        {
+            var problem = await response.Content.ReadFromJsonAsync<ValidationProblemResponse>();
+            if (problem?.Errors.ContainsKey(nameof(request.InvitedPersonEmail)) == true)
+            {
+                return EndpointResponseStatus.UserExists;
+            }
+        }
+    
+        return EndpointResponseStatus.Fail;
     }
 
     public async Task<EndpointResponseStatus> SubmitRegistrationDecision(RegulatorRegistrationDecisionCreateRequest request)

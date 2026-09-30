@@ -160,6 +160,19 @@ public class InviteNewApprovedPersonController : RegulatorSessionBaseController
 
             return View("AccountPermissionHaveChanged", accountPermissionHaveChangedModel);
         }
+
+        if (response == EndpointResponseStatus.UserExists)
+        {
+            ModelState.AddModelError(nameof(EnterPersonEmailModel.Email), "ErrorTitle.EmailAlreadyExists");
+            await AddCurrentPageAndSaveSession(session, PagePath.InviteNewApprovedPersonEmail);
+            SetBackLink(session, PagePath.InviteNewApprovedPersonEmail);
+        
+            return View("EnterPersonEmail", new EnterPersonEmailModel
+            {
+                Email = session.InviteNewApprovedPersonSession.InvitedPersonEmail
+            });
+        }
+
         return RedirectToAction(PagePath.Error, "Error");
     }
 }
