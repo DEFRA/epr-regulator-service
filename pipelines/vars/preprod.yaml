@@ -1,5 +1,5 @@
 variables:
-  azureSubscription: 'AZR-RWD-PRE1'
+  azureSubscription: 'AZR-RWD-PRE1-APP'
   docker.imageName: 'eprregulatorfrontendregistry'
   acr.azureContainerRegistryName: 'prerwdinfac1401'
   acr.repositoryName: 'eprregulatorfrontendregistry'
