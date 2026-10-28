@@ -1,6 +1,12 @@
 variables:
-  azureSubscription: 'AZR-RWD-PRE1'
-  docker.imageName: 'eprregulatorfrontendregistry'
-  acr.azureContainerRegistryName: 'prerwdinfac1401'
-  acr.repositoryName: 'eprregulatorfrontendregistry'
-  serviceName: 'prerwdwebwa1411'
+- group: ServiceConnections
+- name: azureSubscription
+  value: $(ServiceConnectionPRE1)
+- name: docker.imageName
+  value: 'eprregulatorfrontendregistry'
+- name: acr.azureContainerRegistryName
+  value: 'prerwdinfac1401'
+- name: acr.repositoryName
+  value: 'eprregulatorfrontendregistry'
+- name: serviceName
+  value: 'prerwdwebwa1411'
