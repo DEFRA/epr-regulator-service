@@ -1267,6 +1267,43 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        public async Task AddRemoveApprovedUser_WhenHttpStatusCodeBadRequest_AndEmailAlreadyInvited_ThenReturnUserExists()
+        {
+            // Arrange
+            var request = new AddRemoveApprovedUserRequest { InvitedPersonEmail = "test@email.com" };
+        
+            var problem = new
+            {
+                Type = "https://dummytest/validation",
+                Title = "One or more validation errors occurred.",
+                Status = 400,
+                Errors = new Dictionary<string, string[]>
+                {
+                    [nameof(request.InvitedPersonEmail)] = new[] { "User 'test@email.com' is already invited" }
+                }
+            };
+        
+            using var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                Content = new StringContent(JsonSerializer.Serialize(problem), Encoding.UTF8, "application/json")
+            };
+        
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(response);
+        
+            // Act
+            var result = await _facadeService.AddRemoveApprovedUser(request);
+        
+            // Assert
+            result.Should().Be(EndpointResponseStatus.UserExists);
+        }
+
+        [TestMethod]
         public async Task SubmitRegistrationDecision_WhenHttpStatusCodeOk_ThenReturnSuccess()
         {
             // Arrange
