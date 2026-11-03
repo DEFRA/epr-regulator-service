@@ -1,0 +1,37 @@
+{
+  "organisationId": "EE29CFAE-81AB-435F-8759-7285959530DB",
+  "organisationName": "Compliance Scheme Ltd",
+  "organisationType": "CompaniesHouseCompany",
+  "organisationReferenceNumber": "100001",
+  "companiesHouseNumber": "12345678",
+  "isComplianceScheme": true,
+  "nationId": 1,
+  "nationName": "England",
+  "businessAddress": {
+    "buildingName": "Scheme House",
+    "subBuildingName": null,
+    "buildingNumber": "1",
+    "street": "Example Street",
+    "town": "Exampletown",
+    "county": "Exampleshire",
+    "country": "England",
+    "postCode": "ZZ99 1AA"
+  },
+  "users": [
+    {
+      "firstName": "Test",
+      "lastName": "Approved",
+      "email": "test.approved@example.com",
+      "jobTitle": "Director",
+      "telephoneNumber": "00000 000000",
+      "isEmployeeOfOrganisation": true,
+      "enrolments": {
+        "serviceRole": "Packaging.ApprovedPerson",
+        "enrolmentStatus": "Pending",
+        "externalId": "2859bb7b-ebe8-470b-ba8e-d7b591940cb6"
+      },
+      "transferComments": null
+    }
+  ],
+  "transferDetails": null
+}

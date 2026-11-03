@@ -27,6 +27,24 @@ public static class FacadeApi
                 .WithBodyFromFile("Responses/FacadeApi/organisation-registration-submissions.json"));
 
         server.Given(Request.Create()
+                .UsingPost()
+                .WithPath("/api/accounts/transfer-nation"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(204));
+
+        server.Given(Request.Create()
+                .UsingPost()
+                .WithPath("/api/regulators/accounts/govNotification"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(200));
+
+        server.Given(Request.Create()
+                .UsingPost()
+                .WithPath("/api/organisations/update-enrolment"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(204));
+
+        server.Given(Request.Create()
                 .UsingGet()
                 .WithPath("/api/organisations/pending-applications"))
             .RespondWith(Response.Create()
