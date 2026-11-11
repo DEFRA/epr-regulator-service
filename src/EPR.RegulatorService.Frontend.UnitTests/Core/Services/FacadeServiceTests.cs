@@ -1267,6 +1267,31 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
+        public async Task AddRemoveApprovedUser_WhenHttpStatusCodeConflict_ThenReturnUserExists()
+        {
+            // Arrange
+            var request = new AddRemoveApprovedUserRequest { InvitedPersonEmail = "test@email.com" };
+
+            using var response = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.Conflict
+            };
+
+            _mockHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await _facadeService.AddRemoveApprovedUser(request);
+
+            // Assert
+            result.Should().Be(EndpointResponseStatus.UserExists);
+        }
+
+        [TestMethod]
         public async Task SubmitRegistrationDecision_WhenHttpStatusCodeOk_ThenReturnSuccess()
         {
             // Arrange
