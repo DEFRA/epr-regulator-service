@@ -50,7 +50,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _queryController.AddMaterialQueryNote());
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _queryController.AddMaterialQueryNote());
     }
 
     [TestMethod]
@@ -60,7 +60,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
         _journeySession.ReprocessorExporterSession.QueryMaterialSession = null;
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _queryController.AddMaterialQueryNote());
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _queryController.AddMaterialQueryNote());
     }
 
     [TestMethod]
@@ -179,7 +179,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _queryController.AddRegistrationQueryNote());
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _queryController.AddRegistrationQueryNote());
     }
 
     [TestMethod]
@@ -189,7 +189,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
         _journeySession.ReprocessorExporterSession.QueryRegistrationSession = null;
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _queryController.AddRegistrationQueryNote());
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _queryController.AddRegistrationQueryNote());
     }
 
     [TestMethod]

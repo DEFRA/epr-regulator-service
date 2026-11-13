@@ -51,7 +51,7 @@ public class ApplicationUpdateControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
     }
 
     [TestMethod]
@@ -108,7 +108,7 @@ public class ApplicationUpdateControllerTests : RegistrationControllerTestBase
         _journeySession.ReprocessorExporterSession.ApplicationUpdateSession = null;
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(viewModel));
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _applicationUpdateController.ApplicationUpdate(viewModel));
     }
 
     [TestMethod]

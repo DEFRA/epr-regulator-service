@@ -143,7 +143,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetRegistrationByIdAsync(registrationId));
     }
 
@@ -185,7 +185,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetSiteDetailsByRegistrationIdAsync(registrationId));
     }
 
@@ -226,7 +226,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetRegistrationMaterialByIdAsync(registrationMaterialId));
     }
 
@@ -266,7 +266,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetWasteLicenceByRegistrationMaterialIdAsync(registrationMaterialId));
     }
 
@@ -306,7 +306,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetWasteCarrierDetailsByRegistrationIdAsync(registrationId));
     }
 
@@ -328,7 +328,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.UpdateRegistrationMaterialOutcomeAsync(registrationMaterialId, request));
     }
 
@@ -374,7 +374,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.UpdateRegulatorRegistrationTaskStatusAsync(request));
     }
 
@@ -396,7 +396,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.MarkAsDulyMadeAsync(registrationMaterialId, request));
     }
 
@@ -419,7 +419,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.SubmitOfflinePaymentAsync(request));
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() => _service.SubmitOfflinePaymentAsync(request));
     }
 
     [TestMethod]
@@ -439,7 +439,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.UpdateRegulatorApplicationTaskStatusAsync(request));
     }
 
@@ -480,7 +480,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, responseFactory);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetReprocessingIOByRegistrationMaterialIdAsync(registrationId));
     }
 
@@ -519,7 +519,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetSamplingPlanByRegistrationMaterialIdAsync(registrationId));
     }
 
@@ -560,7 +560,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetPaymentFeesByRegistrationMaterialIdAsync(registrationMaterialId));
     }
 
@@ -636,7 +636,7 @@ public class ReprocessorExporterServiceTests
             .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.NotFound));
 
         // Act & Assert
-        await Assert.ThrowsExceptionAsync<NotFoundException>(() => _service.DownloadSamplingInspectionFile(request));
+        await Assert.ThrowsExactlyAsync<NotFoundException>(() => _service.DownloadSamplingInspectionFile(request));
     }
 
     [TestMethod]
@@ -807,7 +807,7 @@ public class ReprocessorExporterServiceTests
                 Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
             });
 
-        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
+        await Assert.ThrowsExactlyAsync<InvalidOperationException>(() =>
             _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year));
     }
 
@@ -898,7 +898,7 @@ public class ReprocessorExporterServiceTests
                 Content = new StringContent(JsonSerializer.Serialize(registration, _jsonSerializerOptions))
             });
 
-        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
+        await Assert.ThrowsExactlyAsync<InvalidOperationException>(() =>
             _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year));
     }
 
@@ -911,7 +911,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, $"v1/registrations/{registrationId}/accreditations?year={year}",
             () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetRegistrationByIdWithAccreditationsAsync(registrationId, year));
     }
 
@@ -963,7 +963,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage(HttpStatusCode.NotFound));
 
         // Act & Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetPaymentFeesByAccreditationIdAsync(accreditationId));
     }
 
@@ -1027,7 +1027,7 @@ public class ReprocessorExporterServiceTests
             .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
         // Act & Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.SubmitAccreditationOfflinePaymentAsync(request));
 
         capturedRequest.Should().NotBeNull();
@@ -1091,7 +1091,7 @@ public class ReprocessorExporterServiceTests
             .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
         // Act & Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.MarkAccreditationAsDulyMadeAsync(accreditationId, request));
 
         capturedRequest.Should().NotBeNull();
@@ -1118,7 +1118,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _service.UpdateRegulatorAccreditationTaskStatusAsync(request));
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() => _service.UpdateRegulatorAccreditationTaskStatusAsync(request));
     }
     [TestMethod]
     public async Task GetSamplingPlanByAccreditationIdAsync_WhenSuccessResponse_ReturnsSamplingPlan()
@@ -1171,7 +1171,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Get, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.GetSamplingPlanByAccreditationIdAsync(accreditationId));
     }
 
@@ -1188,7 +1188,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.AddMaterialQueryNoteAsync(materialTaskId, request));
     }
 
@@ -1230,7 +1230,7 @@ public class ReprocessorExporterServiceTests
         SetupHttpMessageExpectations(HttpMethod.Post, expectedPath, () => new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError });
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() =>
+        await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
             _service.AddRegistrationQueryNoteAsync(registrationTaskId, request));
     }
 

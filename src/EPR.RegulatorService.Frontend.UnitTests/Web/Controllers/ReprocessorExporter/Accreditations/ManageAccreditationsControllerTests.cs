@@ -133,7 +133,7 @@ public class ManageAccreditationsControllerTests
             .Returns(validationResult);
 
         // Act & Assert
-        var exception = await Assert.ThrowsExceptionAsync<ValidationException>(async () =>
+        var exception = await Assert.ThrowsExactlyAsync<ValidationException>(async () =>
         {
             if (!validationResult.IsValid)
             {

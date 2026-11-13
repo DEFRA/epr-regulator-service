@@ -157,7 +157,7 @@ public class ManageRegistrationsControllerTests : RegistrationControllerTestBase
             .Returns(validationResult);
 
         // Act & Assert
-        var exception = await Assert.ThrowsExceptionAsync<ValidationException>(async () =>
+        var exception = await Assert.ThrowsExactlyAsync<ValidationException>(async () =>
         {
             if (!validationResult.IsValid)
             {
@@ -182,7 +182,7 @@ public class ManageRegistrationsControllerTests : RegistrationControllerTestBase
         _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationByIdAsync(_registrationId)).Throws(new Exception("Test exception"));
 
         // Act & Assert
-        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await _controller.Index(_registrationId));
+        var exception = await Assert.ThrowsExactlyAsync<Exception>(async () => await _controller.Index(_registrationId));
 
         exception.Message.Should().Be("Test exception");
     }

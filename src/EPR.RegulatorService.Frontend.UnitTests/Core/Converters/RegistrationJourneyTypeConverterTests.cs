@@ -46,7 +46,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Converters
             var options = CreateOptions();
             var json = "\"NotAValidJourney\"";
 
-            Assert.ThrowsException<JsonException>(() => JsonSerializer.Deserialize<RegistrationJourneyType>(json, options));
+            Assert.ThrowsExactly<JsonException>(() => JsonSerializer.Deserialize<RegistrationJourneyType>(json, options));
         }
 
         [TestMethod]

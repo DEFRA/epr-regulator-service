@@ -152,7 +152,7 @@ public class AccreditationsControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.SamplingInspection(_accreditationId, _year);
         });

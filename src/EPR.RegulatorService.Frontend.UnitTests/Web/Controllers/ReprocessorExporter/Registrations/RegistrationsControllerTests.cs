@@ -115,7 +115,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.BusinessAddress(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
@@ -133,7 +133,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!); // Simulating a null session
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.UkSiteDetails(registrationId);
         });
@@ -259,7 +259,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!); // Simulating a null session
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.WasteCarrierDetails(registrationId);
         });
@@ -381,7 +381,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!); // Simulating a null session
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.AuthorisedMaterials(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
@@ -584,7 +584,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!); // Simulating a null session
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.InputsAndOutputs(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
@@ -752,7 +752,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.SamplingInspection(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
@@ -909,7 +909,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.QueryRegistrationTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.SiteAddressAndContactDetails);
         });
@@ -945,7 +945,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.OverseasReprocessorInterim(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
@@ -1090,7 +1090,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.QueryMaterialTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.MaterialsAuthorisedOnSite);
         });
@@ -1126,7 +1126,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.WasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"));
         });
@@ -1230,7 +1230,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialDetails(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
+        await Assert.ThrowsExactlyAsync<SessionException>(async () => await _controller.MaterialDetails(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
     }
 
     [TestMethod]
@@ -1273,7 +1273,7 @@ public class RegistrationsControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () => await _controller.MaterialWasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
+        await Assert.ThrowsExactlyAsync<SessionException>(async () => await _controller.MaterialWasteLicences(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
     }
 
     [TestMethod]

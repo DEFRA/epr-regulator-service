@@ -92,17 +92,14 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Web.Attributes
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Given_Invalid_ValidationContext_When_Call_DateValidationAttribute_Then_Should_Throws_An_InvalidOperationException()
         {
             // Arrange
             var viewModel = new CancelDateRegistrationSubmissionViewModel { SubmissionId = Guid.NewGuid(), Day = 1, };
             var context = new ValidationContext(new CancellationConfirmationViewModel());
 
-            // Act
-            var result = _systemUnderTest.GetValidationResult(viewModel.Day, context);
-
-            result.Should().NotBeNull();
+            // Act / Assert
+            Assert.ThrowsExactly<InvalidOperationException>(() => _systemUnderTest.GetValidationResult(viewModel.Day, context));
         }
 
     }

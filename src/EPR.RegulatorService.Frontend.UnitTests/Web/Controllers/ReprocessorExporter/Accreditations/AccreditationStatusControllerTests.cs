@@ -114,7 +114,7 @@ public class AccreditationStatusControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _controller.FeesDue(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), 2025));
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _controller.FeesDue(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), 2025));
     }
 
     [TestMethod]
@@ -185,7 +185,7 @@ public class AccreditationStatusControllerTests
         _journeySession.ReprocessorExporterSession.AccreditationStatusSession = null;
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _controller.PaymentCheck());
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _controller.PaymentCheck());
     }
 
     [TestMethod]
@@ -614,7 +614,7 @@ public class AccreditationStatusControllerTests
             .ReturnsAsync((JourneySession)null!);
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(async () =>
+        await Assert.ThrowsExactlyAsync<SessionException>(async () =>
         {
             await _controller.QueryAccreditationTask(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC"), RegulatorTaskType.SiteAddressAndContactDetails);
         });
