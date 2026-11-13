@@ -6,7 +6,7 @@ using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Accreditatio
 using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Core.Services.ReprocessorExporter;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services.ReprocessorExporter;
 

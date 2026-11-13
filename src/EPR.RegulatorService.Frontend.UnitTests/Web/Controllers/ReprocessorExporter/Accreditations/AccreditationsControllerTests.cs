@@ -12,7 +12,7 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Accreditations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 using FluentValidation;
 

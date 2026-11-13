@@ -2,7 +2,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Configs
 {
     using EPR.RegulatorService.Frontend.Core.Configs;
 
-    using FluentAssertions;
+    using AwesomeAssertions;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 

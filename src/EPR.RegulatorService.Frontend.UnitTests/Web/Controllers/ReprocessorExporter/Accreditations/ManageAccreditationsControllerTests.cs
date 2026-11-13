@@ -8,7 +8,7 @@ using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Accredit
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 using FluentValidation;
 using FluentValidation.Results;

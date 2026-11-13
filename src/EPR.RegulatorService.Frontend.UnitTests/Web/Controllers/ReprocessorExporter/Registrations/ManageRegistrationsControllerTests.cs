@@ -3,7 +3,7 @@ using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registration
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 using FluentValidation;
 using FluentValidation.Results;

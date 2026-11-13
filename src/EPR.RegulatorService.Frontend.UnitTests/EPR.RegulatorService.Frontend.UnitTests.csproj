@@ -17,11 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!--
-        FluentAssertion -> pinned to version 6.12.0 as version 7 has breaking changes which,
-        as of 30/09/2025 we are not addressing just yet and version 8 is paid.
-        -->
-        <PackageReference Include="FluentAssertions" Version="6.12.2" />
+        <PackageReference Include="AwesomeAssertions" Version="9.6.0" />
 
         <!--Pinned versions for transitive dependencies-->
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />

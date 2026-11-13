@@ -8,7 +8,7 @@ using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registra
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 

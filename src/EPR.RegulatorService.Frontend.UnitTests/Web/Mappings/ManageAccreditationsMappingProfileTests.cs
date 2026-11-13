@@ -7,7 +7,7 @@ using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registration
 using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 
