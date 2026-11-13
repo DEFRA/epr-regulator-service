@@ -1,4 +1,5 @@
-FROM defradigital/dotnetcore-development:dotnet8.0 AS build-env
+# Pinned to an exact release so patched images are an explicit change: https://hub.docker.com/r/defradigital/dotnetcore-development/tags
+FROM defradigital/dotnetcore-development:2.1.8-dotnet10.0 AS build-env
 USER root
 
 # Expose the app on a defined port, configurable via a build argument
@@ -35,7 +36,8 @@ WORKDIR /home/dotnet/EPR.RegulatorService.Frontend.Web
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
-FROM defradigital/dotnetcore:dotnet8.0
+# Pinned to an exact release so patched images are an explicit change: https://hub.docker.com/r/defradigital/dotnetcore/tags
+FROM defradigital/dotnetcore:2.1.8-dotnet10.0
 USER dotnet
 COPY --from=build-env /home/dotnet/EPR.RegulatorService.Frontend.Web/out .
 

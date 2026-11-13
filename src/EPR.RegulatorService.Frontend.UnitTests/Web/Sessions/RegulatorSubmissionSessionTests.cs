@@ -10,7 +10,7 @@ public class RegulatorSubmissionSessionTests
     public void Given_Null_Submission_When_Call_GetSubmissionHashCode_Should_Retrun_ArgumentNullException()
     {
         // Act & Assert
-        var ex = Assert.ThrowsException<ArgumentNullException>(() => RegulatorSubmissionSession.GetSubmissionHashCode(null));
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => RegulatorSubmissionSession.GetSubmissionHashCode(null));
         Assert.AreEqual("submission", ex.ParamName); 
 
     }

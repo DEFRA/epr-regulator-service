@@ -72,7 +72,7 @@ public class SearchManagedApproversTests
     {
         var mockConfiguration = new Mock<IConfiguration>();
         var mockFacade = new Mock<IFacadeService>();
-        Assert.ThrowsException<ArgumentNullException>(() =>
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
             new SearchManageApproversController(null, mockConfiguration.Object, mockFacade.Object));
     }
 
@@ -81,7 +81,7 @@ public class SearchManagedApproversTests
     {
         var sessionManager = new Mock<ISessionManager<JourneySession>>();
         var mockFacade = new Mock<IFacadeService>();
-        Assert.ThrowsException<ArgumentNullException>(() =>
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
             new SearchManageApproversController(sessionManager.Object, null, mockFacade.Object));
     }
 

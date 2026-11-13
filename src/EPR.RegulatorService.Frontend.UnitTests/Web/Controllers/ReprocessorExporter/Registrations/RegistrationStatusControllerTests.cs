@@ -8,7 +8,7 @@ using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registra
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.RegistrationStatus;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 
@@ -64,7 +64,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _registrationStatusController.FeesDue(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _registrationStatusController.FeesDue(Guid.Parse("3B0AE13B-4162-41E6-8132-97B4D6865DAC")));
     }
     
     [TestMethod]
@@ -127,7 +127,7 @@ public class RegistrationStatusControllerTests : RegistrationControllerTestBase
         _journeySession.ReprocessorExporterSession.RegistrationStatusSession = null;
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _registrationStatusController.PaymentCheck(expectedViewModel));
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _registrationStatusController.PaymentCheck(expectedViewModel));
     }
 
     [TestMethod]

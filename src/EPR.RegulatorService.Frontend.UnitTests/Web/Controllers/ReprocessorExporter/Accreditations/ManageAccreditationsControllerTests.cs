@@ -8,7 +8,7 @@ using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Accredit
 using EPR.RegulatorService.Frontend.Web.Sessions;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 using FluentValidation;
 using FluentValidation.Results;
@@ -133,7 +133,7 @@ public class ManageAccreditationsControllerTests
             .Returns(validationResult);
 
         // Act & Assert
-        var exception = await Assert.ThrowsExceptionAsync<ValidationException>(async () =>
+        var exception = await Assert.ThrowsExactlyAsync<ValidationException>(async () =>
         {
             if (!validationResult.IsValid)
             {

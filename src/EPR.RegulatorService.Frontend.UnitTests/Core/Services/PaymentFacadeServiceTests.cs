@@ -13,7 +13,7 @@ using Microsoft.Identity.Web;
 
 using Moq.Protected;
 
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services;
 
@@ -146,7 +146,7 @@ public class PaymentFacadeServiceTests
             .ReturnsAsync(() => new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(JsonConvert.SerializeObject(new ProducerPaymentResponse()))
+                Content = new StringContent(JsonSerializer.Serialize(new ProducerPaymentResponse()))
             })
             .Verifiable();
 
@@ -172,7 +172,7 @@ public class PaymentFacadeServiceTests
             .ReturnsAsync(() => new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(JsonConvert.SerializeObject(new CompliancePaymentResponse()))
+                Content = new StringContent(JsonSerializer.Serialize(new CompliancePaymentResponse()))
             })
             .Verifiable();
 
@@ -300,7 +300,7 @@ public class PaymentFacadeServiceTests
             .ReturnsAsync(() => new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(JsonConvert.SerializeObject(new PackagingProducerPaymentResponse()))
+                Content = new StringContent(JsonSerializer.Serialize(new PackagingProducerPaymentResponse()))
             })
             .Verifiable();
 
@@ -326,7 +326,7 @@ public class PaymentFacadeServiceTests
             .ReturnsAsync(() => new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(JsonConvert.SerializeObject(new PackagingCompliancePaymentResponse()))
+                Content = new StringContent(JsonSerializer.Serialize(new PackagingCompliancePaymentResponse()))
             })
             .Verifiable();
 

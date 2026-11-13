@@ -6,7 +6,7 @@ using EPR.RegulatorService.Frontend.Core.Sessions.ReprocessorExporter;
 using EPR.RegulatorService.Frontend.Web.Mappings;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Accreditations.AccreditationStatus;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Mappings;
 

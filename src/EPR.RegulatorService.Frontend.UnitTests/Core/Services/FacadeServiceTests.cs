@@ -249,7 +249,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(HttpRequestException))]
         public async Task GetOrganisationEnrolments_WhenNotHttpStatusCodeOK_ThenThrowException()
         {
             // Arrange
@@ -267,17 +266,13 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(httpTestHandler);
 
-            // Act
-            var result = await _facadeService.GetOrganisationEnrolments(organisationId);
-
-            // Assert
-            Assert.IsNull(result);
+            // Act / Assert
+            await Assert.ThrowsExactlyAsync<HttpRequestException>(() => _facadeService.GetOrganisationEnrolments(organisationId));
 
             httpTestHandler.Dispose();
         }
 
         [TestMethod]
-        [ExpectedException(typeof(UriFormatException))]
         public async Task GetOrganisationEnrolments_WhenMissingBaseAddress_ThenThrowException()
         {
             // Arrange
@@ -286,15 +281,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             _httpClient.BaseAddress = null;
             _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
 
-            // Act
-            var result = await _facadeService.GetOrganisationEnrolments(organisationId);
-
-            // Assert
-            Assert.IsNull(result);
+            // Act / Assert
+            await Assert.ThrowsExactlyAsync<UriFormatException>(() => _facadeService.GetOrganisationEnrolments(organisationId));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(UriFormatException))]
         public async Task TransferOrganisationNation_WhenMissingBaseAddress_ThenThrowException()
         {
             // Arrange
@@ -303,11 +294,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             _httpClient.BaseAddress = null;
             _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
 
-            // Act
-            var result = await _facadeService.TransferOrganisationNation(organisationNationTransfer);
-
-            // Assert
-            Assert.IsNull(result);
+            // Act / Assert
+            await Assert.ThrowsExactlyAsync<UriFormatException>(() => _facadeService.TransferOrganisationNation(organisationNationTransfer));
         }
 
         [TestMethod]
@@ -339,7 +327,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
         public async Task TransferOrganisationNation_WhenNotHttpStatusCodeNoContent_ThenThrowException()
         {
             // Arrange
@@ -357,11 +344,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(httpTestHandler);
 
-            // Act
-            var result = await _facadeService.TransferOrganisationNation(organisationNationTransfer);
-
-            // Assert
-            Assert.IsNull(result);
+            // Act / Assert
+            await Assert.ThrowsExactlyAsync<Exception>(() => _facadeService.TransferOrganisationNation(organisationNationTransfer));
 
             httpTestHandler.Dispose();
         }
@@ -1478,7 +1462,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
 
 
         [TestMethod]
-        [ExpectedException(typeof(UriFormatException))]
         public async Task GetRegistrationSubmissionDetails_WhenMissingBaseAddress_ThenThrowException()
         {
             // Arrange
@@ -1487,11 +1470,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             _httpClient.BaseAddress = null;
             _facadeService = new FacadeService(_httpClient, _tokenAcquisitionMock.Object, _paginationConfig, _facadeApiConfig, _mockLogger.Object);
 
-            // Act
-            var result = await _facadeService.GetRegistrationSubmissionDetails(submissionId);
-
-            // Assert
-            Assert.IsNull(result);
+            // Act / Assert
+            await Assert.ThrowsExactlyAsync<UriFormatException>(() => _facadeService.GetRegistrationSubmissionDetails(submissionId));
         }
 
         [TestMethod]
@@ -1655,7 +1635,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
 
             // Act
-            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _facadeService.GetRegistrationSubmissions(filter));
+            await Assert.ThrowsExactlyAsync<HttpRequestException>(() => _facadeService.GetRegistrationSubmissions(filter));
         }
 
         [TestMethod]
@@ -1672,7 +1652,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                 .ReturnsAsync(() => new HttpResponseMessage(HttpStatusCode.BadRequest));
 
             // Act
-            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => _facadeService.GetRegistrationSubmissions(filter));
+            await Assert.ThrowsExactlyAsync<HttpRequestException>(() => _facadeService.GetRegistrationSubmissions(filter));
         }
 
         [TestMethod]
@@ -1706,7 +1686,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidDataException))]
         public async Task GetRegistrationSubmissionDetails_NonSuccess_ThrowsHttpRequestException()
         {
             // Arrange
@@ -1721,15 +1700,11 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                    Content = new StringContent("", Encoding.UTF8, "application/json")
                });
 
-            // Act
-            // EnsureSuccessStatusCode will throw HttpRequestException
-            await _facadeService.GetRegistrationSubmissionDetails(submissionId);
-
-            // Assert handled by ExpectedException
+            // Act / Assert
+            await Assert.ThrowsExactlyAsync<InvalidDataException>(() => _facadeService.GetRegistrationSubmissionDetails(submissionId));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidDataException))]
         public async Task GetRegistrationSubmissionDetails_InvalidJson_ThrowsInvalidDataException()
         {
             // Arrange
@@ -1746,11 +1721,8 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
                    Content = new StringContent(malformedJson, Encoding.UTF8, "application/json")
                });
 
-            // Act
-            // ConvertCommonDataToFE should throw a JsonException due to malformed JSON
-            await _facadeService.GetRegistrationSubmissionDetails(submissionId);
-
-            // Assert handled by ExpectedException
+            // Act / Assert
+            await Assert.ThrowsExactlyAsync<InvalidDataException>(() => _facadeService.GetRegistrationSubmissionDetails(submissionId));
         }
 
         [TestMethod]
@@ -1782,7 +1754,6 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidDataException))]
         public async Task ReadRequiredJsonContent_MalformedJson_ThrowsInvalidDataException()
         {
             // Arrange
@@ -1790,26 +1761,19 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             var json = @"{ ""items"": [ { ""Field"": ""Value"" } ";
             using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            // Act
-            // This should throw an InvalidDataException due to the catch block
-            await FacadeService.ReadRequiredJsonContent(content);
-
-            // Assert handled by ExpectedException
+            // Act / Assert
+            await Assert.ThrowsExactlyAsync<InvalidDataException>(() => FacadeService.ReadRequiredJsonContent(content));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidDataException))]
         public async Task ReadRequiredJsonContent_EmptyJson_ThrowsInvalidDataException()
         {
             // Arrange
             var json = ""; // empty string
             using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            // Act
-            // Empty JSON won't deserialize properly and should raise the exception
-            await FacadeService.ReadRequiredJsonContent(content);
-
-            // Assert handled by ExpectedException
+            // Act / Assert
+            await Assert.ThrowsExactlyAsync<InvalidDataException>(() => FacadeService.ReadRequiredJsonContent(content));
         }
 
         [TestMethod]
@@ -1823,7 +1787,7 @@ namespace EPR.RegulatorService.Frontend.UnitTests.Core.Services
             // Act
             var result = await FacadeService.ReadRequiredJsonContent(content);
 
-            // Assert handled by ExpectedException
+            // Assert
             result.Should().NotBeNull();
             result.Should().BeOfType<PaginatedList<OrganisationRegistrationSubmissionSummaryResponse>>();
         }

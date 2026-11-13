@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
@@ -43,33 +43,29 @@
 
   <ItemGroup>
     <!--
-    AutoMapper -> pinned to version 14 as version 15 has breaking changes and more importantly requires a paid licence.
     FluentValidation -> pinned to version 11.11.0 as version 12 has breaking changes which as of 30/09/2025 we are not addressing just yet.
     FluentValidation.AspNetCore -> pinned to version 11.3.0 as version 12 has breaking changes which as of 30/09/2025 we are not addressing just yet.
     -->
 
     <!--Pinning versions for transitive dependencies-->
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.23.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
     <PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
-    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="4.1.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="10.0.1" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="5.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
-    <PackageReference Include="System.Text.Json" Version="8.0.6" />
 
-    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="MagicMapper" Version="14.0.1" />
     <PackageReference Include="FluentValidation" Version="11.12.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.31" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.31" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.31" />
-    <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.5.0" />
-    <PackageReference Include="Microsoft.Graph" Version="5.105.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="3.15.1" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.22.0" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="10.0.15" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.15" />
+    <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Graph" Version="6.10.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="4.18.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.23.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -526,8 +522,8 @@
     </SonarQubeSetting>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
-    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="10.36.0.15337" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Views\ReprocessorExporter\Registrations\" />

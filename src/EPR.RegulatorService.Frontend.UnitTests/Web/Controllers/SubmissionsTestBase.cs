@@ -89,7 +89,7 @@ public abstract class SubmissionsTestBase
         var claims = new List<Claim>();
         if (userData != null)
         {
-            claims.Add(new(ClaimTypes.UserData, Newtonsoft.Json.JsonConvert.SerializeObject(userData)));
+            claims.Add(new(ClaimTypes.UserData, System.Text.Json.JsonSerializer.Serialize(userData)));
         }
 
         _userMock.Setup(x => x.Claims).Returns(claims);

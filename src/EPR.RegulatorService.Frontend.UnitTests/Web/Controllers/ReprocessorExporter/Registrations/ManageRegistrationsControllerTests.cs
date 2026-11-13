@@ -3,7 +3,7 @@ using EPR.RegulatorService.Frontend.Core.Models.ReprocessorExporter.Registration
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 using FluentValidation;
 using FluentValidation.Results;
@@ -157,7 +157,7 @@ public class ManageRegistrationsControllerTests : RegistrationControllerTestBase
             .Returns(validationResult);
 
         // Act & Assert
-        var exception = await Assert.ThrowsExceptionAsync<ValidationException>(async () =>
+        var exception = await Assert.ThrowsExactlyAsync<ValidationException>(async () =>
         {
             if (!validationResult.IsValid)
             {
@@ -182,7 +182,7 @@ public class ManageRegistrationsControllerTests : RegistrationControllerTestBase
         _reprocessorExporterServiceMock.Setup(s => s.GetRegistrationByIdAsync(_registrationId)).Throws(new Exception("Test exception"));
 
         // Act & Assert
-        var exception = await Assert.ThrowsExceptionAsync<Exception>(async () => await _controller.Index(_registrationId));
+        var exception = await Assert.ThrowsExactlyAsync<Exception>(async () => await _controller.Index(_registrationId));
 
         exception.Message.Should().Be("Test exception");
     }

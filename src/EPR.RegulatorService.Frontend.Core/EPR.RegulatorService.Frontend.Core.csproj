@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>EPR.RegulatorService.Frontend.Core</AssemblyName>
@@ -13,18 +13,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--Pinned versions for transitive dependencies-->
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
-    <PackageReference Include="System.Text.Json" Version="8.0.6" />
 
     <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="EPR.Common.Authorization" Version="1.0.24" />
-    <PackageReference Include="libphonenumber-csharp" Version="8.13.55" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.FeatureManagement" Version="3.5.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="3.15.1" />
+    <PackageReference Include="libphonenumber-csharp" Version="9.0.43" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.15" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.15" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.15" />
+    <PackageReference Include="Microsoft.FeatureManagement" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="4.18.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,8 +38,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
-    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.32.0.97167" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="10.36.0.15337" />
   </ItemGroup>
 
 </Project>

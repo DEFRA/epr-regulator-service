@@ -22,7 +22,7 @@ public class CurrencyValidationAttributeTests
 
     [TestMethod]
     public void CurrencyWillNotConstructWithBadMaxValue() =>
-        Assert.ThrowsException<ArgumentOutOfRangeException>(
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(
             () => new CurrencyValidationAttribute(
                 "requireMessage",
                 "valueTooBig",

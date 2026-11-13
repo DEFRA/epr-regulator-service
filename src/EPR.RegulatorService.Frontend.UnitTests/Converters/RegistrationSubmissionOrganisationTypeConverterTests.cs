@@ -34,37 +34,33 @@ public class RegistrationSubmissionOrganisationTypeConverterTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(JsonException))]
     public void Read_InvalidEnumValue_ThrowsJsonException()
     {
         // Arrange
         string json = "\"InvalidType\"";
-        Utf8JsonReader reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
 
-        reader.Read(); // Move to the value
-
-        // Act
-        _converter.Read(ref reader, typeof(RegistrationSubmissionOrganisationType), _options);
-
-        // Assert
-        // Exception is expected
+        // Act / Assert
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            Utf8JsonReader reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
+            reader.Read(); // Move to the value
+            _converter.Read(ref reader, typeof(RegistrationSubmissionOrganisationType), _options);
+        });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(JsonException))]
     public void Read_EmptyValue_ThrowsJsonException()
     {
         // Arrange
         string json = "\"\"";
-        Utf8JsonReader reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
 
-        reader.Read(); // Move to the value
-
-        // Act
-        _converter.Read(ref reader, typeof(RegistrationSubmissionOrganisationType), _options);
-
-        // Assert
-        // Exception is expected
+        // Act / Assert
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            Utf8JsonReader reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
+            reader.Read(); // Move to the value
+            _converter.Read(ref reader, typeof(RegistrationSubmissionOrganisationType), _options);
+        });
     }
 
     [TestMethod]

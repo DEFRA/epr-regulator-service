@@ -6,7 +6,7 @@ using EPR.RegulatorService.Frontend.Web.Constants;
 using EPR.RegulatorService.Frontend.Web.Controllers.ReprocessorExporter.Registrations;
 using EPR.RegulatorService.Frontend.Web.ViewModels.ReprocessorExporter.Registrations.Query;
 
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 using Microsoft.AspNetCore.Http;
 
 namespace EPR.RegulatorService.Frontend.UnitTests.Web.Controllers.ReprocessorExporter.Registrations;
@@ -50,7 +50,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _queryController.AddMaterialQueryNote());
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _queryController.AddMaterialQueryNote());
     }
 
     [TestMethod]
@@ -60,7 +60,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
         _journeySession.ReprocessorExporterSession.QueryMaterialSession = null;
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _queryController.AddMaterialQueryNote());
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _queryController.AddMaterialQueryNote());
     }
 
     [TestMethod]
@@ -179,7 +179,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
             .ReturnsAsync((JourneySession)null!);
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _queryController.AddRegistrationQueryNote());
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _queryController.AddRegistrationQueryNote());
     }
 
     [TestMethod]
@@ -189,7 +189,7 @@ public class QueryControllerTests : RegistrationControllerTestBase
         _journeySession.ReprocessorExporterSession.QueryRegistrationSession = null;
 
         // Act/Assert
-        await Assert.ThrowsExceptionAsync<SessionException>(() => _queryController.AddRegistrationQueryNote());
+        await Assert.ThrowsExactlyAsync<SessionException>(() => _queryController.AddRegistrationQueryNote());
     }
 
     [TestMethod]

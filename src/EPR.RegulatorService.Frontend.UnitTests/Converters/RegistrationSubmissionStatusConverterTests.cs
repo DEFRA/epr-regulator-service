@@ -48,35 +48,33 @@ namespace EPR.RegulatorService.Frontend.Core.Converters.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(JsonException))]
         public void Read_InvalidEnumValue_ThrowsJsonException()
         {
             // Arrange
             string json = "\"InvalidStatus\"";
-            Utf8JsonReader reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
-            reader.Read(); // Move to the value
 
-            // Act
-            _converter.Read(ref reader, typeof(RegistrationSubmissionStatus), _options);
-
-            // Assert
-            // Exception is expected
+            // Act / Assert
+            Assert.ThrowsExactly<JsonException>(() =>
+            {
+                Utf8JsonReader reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
+                reader.Read(); // Move to the value
+                _converter.Read(ref reader, typeof(RegistrationSubmissionStatus), _options);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(JsonException))]
         public void Read_EmptyValue_ThrowsJsonException()
         {
             // Arrange
             string json = "\"\"";
-            Utf8JsonReader reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
-            reader.Read(); // Move to the value
 
-            // Act
-            _converter.Read(ref reader, typeof(RegistrationSubmissionStatus), _options);
-
-            // Assert
-            // Exception is expected
+            // Act / Assert
+            Assert.ThrowsExactly<JsonException>(() =>
+            {
+                Utf8JsonReader reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
+                reader.Read(); // Move to the value
+                _converter.Read(ref reader, typeof(RegistrationSubmissionStatus), _options);
+            });
         }
 
         [TestMethod]
