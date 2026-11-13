@@ -690,7 +690,7 @@ public class FacadeService : IFacadeService
             await using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
             {
                 csv.Context.RegisterClassMap<SubmissionClassMap>();
-                csv.WriteRecordsAsync(submissions);
+                await csv.WriteRecordsAsync(submissions);
             }
 
             await writer.FlushAsync();
